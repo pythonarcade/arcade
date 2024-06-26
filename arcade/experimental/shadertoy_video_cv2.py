@@ -5,6 +5,7 @@ Dependencies:
     pip install opencv-python
 
 """
+
 from __future__ import annotations
 
 import arcade

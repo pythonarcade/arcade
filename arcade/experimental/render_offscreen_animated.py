@@ -4,6 +4,7 @@ City Scape Generator
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.shape_list_skylines
 """
+
 from __future__ import annotations
 
 import random
@@ -18,7 +19,7 @@ SCREEN_TITLE = "Skyline Using Buffered Shapes"
 
 
 def make_star_field(star_count):
-    """ Make a bunch of circles for stars. """
+    """Make a bunch of circles for stars."""
 
     shape_list = arcade.ShapeElementList()
 
@@ -34,11 +35,19 @@ def make_star_field(star_count):
     return shape_list
 
 
-def make_skyline(width, skyline_height, skyline_color,
-                 gap_chance=0.70, window_chance=0.30, light_on_chance=0.5,
-                 window_color=(255, 255, 200), window_margin=3, window_gap=2,
-                 cap_chance=0.20):
-    """ Make a skyline """
+def make_skyline(
+    width,
+    skyline_height,
+    skyline_color,
+    gap_chance=0.70,
+    window_chance=0.30,
+    light_on_chance=0.5,
+    window_color=(255, 255, 200),
+    window_margin=3,
+    window_gap=2,
+    cap_chance=0.20,
+):
+    """Make a skyline"""
 
     shape_list = arcade.ShapeElementList()
 
@@ -113,7 +122,7 @@ def make_skyline(width, skyline_height, skyline_color,
                         x1 = building_left_x + column * (window_width + window_gap) + window_margin
                         x2 = building_left_x + column * (window_width + window_gap) + window_width + window_margin
                         y1 = building_base_y + row * window_height
-                        y2 = building_base_y + row * window_height + window_height * .8
+                        y2 = building_base_y + row * window_height + window_height * 0.8
 
                         skyline_point_list.append([x1, y1])
                         skyline_point_list.append([x1, y2])
@@ -123,7 +132,7 @@ def make_skyline(width, skyline_height, skyline_color,
                         for i in range(4):
                             color_list.append((window_color[0], window_color[1], window_color[2]))
 
-        building_center_x += (building_width / 2)
+        building_center_x += building_width / 2
 
     shape = arcade.create_rectangles_filled_with_colors(skyline_point_list, color_list)
     shape_list.append(shape)
@@ -132,10 +141,10 @@ def make_skyline(width, skyline_height, skyline_color,
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, antialiasing=True)
 
@@ -146,10 +155,10 @@ class MyGame(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
         # Offscreen stuff
         self.program = self.ctx.program(
-            vertex_shader='''
+            vertex_shader="""
                 #version 330
 
                 in vec2 in_vert;
@@ -160,8 +169,8 @@ class MyGame(arcade.Window):
                     gl_Position = vec4(in_vert, 0.0, 1.0);
                     v_uv = in_uv;
                 }
-            ''',
-            fragment_shader='''
+            """,
+            fragment_shader="""
                 #version 330
 
                 uniform sampler2D tex;
@@ -184,7 +193,7 @@ class MyGame(arcade.Window):
                     );
                     f_color = texture(tex, (rotate * scale * vec3(v_uv + vec2(-0.5, -0.5), 1.0)).xy * zoom);
                 }
-            ''',
+            """,
         )
         self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
@@ -208,8 +217,8 @@ class MyGame(arcade.Window):
 
         self.use()
         self.color_attachment.use(0)
-        self.program['angle'] = -1 + (time.time() - self.t0) / 5
-        self.program['zoom'] = 3 + (time.time() - self.t0) / 5
+        self.program["angle"] = -1 + (time.time() - self.t0) / 5
+        self.program["zoom"] = 3 + (time.time() - self.t0) / 5
         self.quad_fs.render(self.program)
 
         end_time = int(round(time.time() * 1000))
@@ -224,7 +233,7 @@ class MyGame(arcade.Window):
         # self.frame += 1
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
         self.skyline1.center_x -= 0.5
         self.skyline2.center_x -= 1
 

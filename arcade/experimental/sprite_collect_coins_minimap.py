@@ -18,7 +18,7 @@ from arcade.gl import geometry
 
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
-SPRITE_SCALING_COIN = .25
+SPRITE_SCALING_COIN = 0.25
 COIN_COUNT = 50
 
 SCREEN_WIDTH = 800
@@ -27,10 +27,10 @@ SCREEN_TITLE = "Sprite Collect Coins Example"
 
 
 class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+    """Our custom Window Class"""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -60,12 +60,13 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Offscreen stuff
         self.program = self.ctx.load_program(
             vertex_shader=arcade.resources.shaders.vertex.default_projection,
-            fragment_shader=arcade.resources.shaders.fragment.texture)
+            fragment_shader=arcade.resources.shaders.fragment.texture,
+        )
         self.color_attachment = self.ctx.texture((SCREEN_WIDTH, SCREEN_HEIGHT), components=4)
         self.offscreen = self.ctx.framebuffer(color_attachments=[self.color_attachment])
         self.quad_fs = geometry.quad_2d_fs()
@@ -80,8 +81,9 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=SPRITE_SCALING_PLAYER
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -91,8 +93,7 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png",
-                                 scale=SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -102,36 +103,33 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
         self.clear()
 
         self.offscreen.use()
         self.offscreen.clear(color=arcade.color.AMAZON)
 
-        arcade.draw_rectangle_outline(SCREEN_WIDTH / 2,
-                                      SCREEN_HEIGHT / 2,
-                                      SCREEN_WIDTH,
-                                      SCREEN_HEIGHT,
-                                      arcade.color.WHITE,
-                                      10)
+        arcade.draw_rectangle_outline(
+            SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.WHITE, 10
+        )
         self.coin_list.draw()
         self.player_list.draw()
 
         self.use()
-        arcade.draw_rectangle_filled(SCREEN_WIDTH / 2,
-                                     SCREEN_HEIGHT / 2,
-                                     SCREEN_WIDTH,
-                                     SCREEN_HEIGHT,
-                                     arcade.color.AMAZON)
+        arcade.draw_rectangle_filled(
+            SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, arcade.color.AMAZON
+        )
 
         self.color_attachment.use(0)
         self.quad_fs.render(self.program)
 
-        arcade.draw_rectangle_filled(SCREEN_WIDTH - SCREEN_WIDTH / 8,
-                                     SCREEN_HEIGHT - SCREEN_HEIGHT / 8,
-                                     SCREEN_WIDTH / 4,
-                                     SCREEN_HEIGHT / 4,
-                                     arcade.color.BLACK)
+        arcade.draw_rectangle_filled(
+            SCREEN_WIDTH - SCREEN_WIDTH / 8,
+            SCREEN_HEIGHT - SCREEN_HEIGHT / 8,
+            SCREEN_WIDTH / 4,
+            SCREEN_HEIGHT / 4,
+            arcade.color.BLACK,
+        )
         self.color_attachment.use(0)
         self.mini_map_quad.render(self.program)
 
@@ -140,14 +138,14 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):
-        """ Handle Mouse Motion """
+        """Handle Mouse Motion"""
 
         # Move the center of the player sprite to match the mouse x, y
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
@@ -163,7 +161,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame()
     window.setup()
     arcade.run()

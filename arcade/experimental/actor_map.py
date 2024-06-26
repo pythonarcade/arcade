@@ -5,6 +5,7 @@ then view that map form different actor viewpoints.
 This example is using the lower level rendering API
 in arcade.
 """
+
 from __future__ import annotations
 
 import random
@@ -42,6 +43,7 @@ class Actor:
     It should support translation and rotations
     and possibly zoom.
     """
+
     def __init__(
         self,
         map,
@@ -128,8 +130,7 @@ class Map:
             ":resources:images/tiles/dirtCenter.png",
         ]
         self.textures = [
-            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box)
-            for path in texture_paths
+            arcade.load_texture(path, hit_box_algorithm=hitbox.algo_bounding_box) for path in texture_paths
         ]
 
         tex_size = 128
@@ -176,6 +177,7 @@ class Shaders:
     Quick and dirty contains for all the shaders we're using.
     We don't want to compile a program/shader multiple times.
     """
+
     def __init__(self, ctx):
         self.ctx = ctx
         self.actor_view = self.ctx.program(

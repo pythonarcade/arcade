@@ -20,20 +20,14 @@ class Player(arcade.Sprite):
         input_manager_template: input.InputManager,
         controller: Optional[pyglet.input.Controller] = None,
     ):
-        super().__init__(
-            ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
-        )
+        super().__init__(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
         self.center_x = random.randint(0, WINDOW_WIDTH)
         self.center_y = 128
 
-        self.input_manager = input.InputManager(
-            controller=controller, action_handlers=self.on_action
-        )
+        self.input_manager = input.InputManager(controller=controller, action_handlers=self.on_action)
         self.input_manager.copy_existing(input_manager_template)
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self, walls=walls, gravity_constant=1
-        )
+        self.physics_engine = arcade.PhysicsEnginePlatformer(self, walls=walls, gravity_constant=1)
 
     def on_update(self, delta_time: float):
         self.input_manager.update()
@@ -42,11 +36,7 @@ class Player(arcade.Sprite):
         self.physics_engine.update()
 
     def on_action(self, action: str, state: input.ActionState):
-        if (
-            action == "Jump"
-            and state == input.ActionState.PRESSED
-            and self.physics_engine.can_jump()
-        ):
+        if action == "Jump" and state == input.ActionState.PRESSED and self.physics_engine.can_jump():
             self.change_y = 20
 
 
@@ -67,9 +57,7 @@ class Game(arcade.Window):
         self.INPUT_TEMPLATE = input.InputManager(allow_keyboard=False)
         self.INPUT_TEMPLATE.new_action("Jump")
         self.INPUT_TEMPLATE.add_action_input("Jump", input.Keys.SPACE)
-        self.INPUT_TEMPLATE.add_action_input(
-            "Jump", input.ControllerButtons.BOTTOM_FACE
-        )
+        self.INPUT_TEMPLATE.add_action_input("Jump", input.ControllerButtons.BOTTOM_FACE)
 
         self.INPUT_TEMPLATE.new_axis("Move")
         self.INPUT_TEMPLATE.add_axis_input("Move", input.Keys.A, -1.0)

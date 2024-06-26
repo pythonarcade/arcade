@@ -3,6 +3,7 @@ Gaussian kernel calculator
 Adapted from:
 https://observablehq.com/@jobleonard/gaussian-kernel-calculater
 """
+
 from __future__ import annotations
 
 import math
@@ -28,10 +29,7 @@ def def_int_gaussian(x: float, mu: float, sigma: float):
     return 0.5 * erf((x - mu) / (SQRT2 * sigma))
 
 
-def gaussian_kernel(kernel_size: int = 5,
-                    sigma: float = 1,
-                    mu: float = 0,
-                    step: int = 1):
+def gaussian_kernel(kernel_size: int = 5, sigma: float = 1, mu: float = 0, step: int = 1):
     end = 0.5 * kernel_size
     start = -end
     coeff = []

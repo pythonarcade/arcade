@@ -19,6 +19,7 @@ both easier and more performant than more accurate blur approaches.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.experimental.examples.array_backed_grid
 """
+
 from typing import Tuple, Optional, cast
 from textwrap import dedent
 from math import cos, pi
@@ -42,11 +43,7 @@ class DepthOfField:
     :param clear_color: The color which will be used as the background.
     """
 
-    def __init__(
-            self,
-            size: Optional[Tuple[int, int]] = None,
-            clear_color: RGBA255 = (155, 155, 155, 255)
-    ):
+    def __init__(self, size: Optional[Tuple[int, int]] = None, clear_color: RGBA255 = (155, 155, 155, 255)):
         self._geo = geometry.quad_2d_fs()
         self._win: Window = get_window()
 
@@ -63,24 +60,16 @@ class DepthOfField:
                     components=4,
                     filter=(NEAREST, NEAREST),
                     wrap_x=self._win.ctx.REPEAT,
-                    wrap_y=self._win.ctx.REPEAT
+                    wrap_y=self._win.ctx.REPEAT,
                 ),
             ],
-            depth_attachment=self._win.ctx.depth_texture(
-                size
-            )
+            depth_attachment=self._win.ctx.depth_texture(size),
         )
 
         # Set up everything we need to perform blur and store results.
         # This includes the blur effect, a framebuffer, and an instance
         # variable to store the returned texture holding blur results.
-        self._blur_process = GaussianBlur(
-            size,
-            kernel_size=10,
-            sigma=2.0,
-            multiplier=2.0,
-            step=4
-        )
+        self._blur_process = GaussianBlur(size, kernel_size=10, sigma=2.0, multiplier=2.0, step=4)
         self._blur_target = self._win.ctx.framebuffer(
             color_attachments=[
                 self._win.ctx.texture(
@@ -88,7 +77,7 @@ class DepthOfField:
                     components=4,
                     filter=(NEAREST, NEAREST),
                     wrap_x=self._win.ctx.REPEAT,
-                    wrap_y=self._win.ctx.REPEAT
+                    wrap_y=self._win.ctx.REPEAT,
                 )
             ]
         )
@@ -109,7 +98,8 @@ class DepthOfField:
                 void main(){
                    gl_Position = vec4(in_vert, 0.0, 1.0);
                    out_uv = in_uv;
-                }"""),
+                }"""
+            ),
             fragment_shader=dedent(
                 """#version 330
 
@@ -130,13 +120,14 @@ class DepthOfField:
                    vec3 blur_tex = texture(texture_1, out_uv).rgb;
                    frag_colour = mix(crisp_tex, vec4(blur_tex, crisp_tex.a), depth_adjusted);
                    //if (depth_adjusted < 0.1){frag_colour = vec4(1.0, 0.0, 0.0, 1.0);}
-                }""")
+                }"""
+            ),
         )
 
         # Set the buffers the shader program will use
-        self._render_program['texture_0'] = 0
-        self._render_program['texture_1'] = 1
-        self._render_program['depth_0'] = 2
+        self._render_program["texture_0"] = 0
+        self._render_program["texture_1"] = 1
+        self._render_program["depth_0"] = 2
 
     @property
     def render_program(self) -> Program:
@@ -180,12 +171,8 @@ class App(Window):
     :param focus_change_speed: How fast the focus bounces back and forth
         between the ``-focus_range`` and ``focus_range``.
     """
-    def __init__(
-            self,
-            text_color: RGBA255 = RED,
-            focus_range: float = 16.0,
-            focus_change_speed: float = 0.1
-    ):
+
+    def __init__(self, text_color: RGBA255 = RED, focus_range: float = 16.0, focus_change_speed: float = 0.1):
         super().__init__()
         self.time: float = 0.0
         self.sprites: SpriteList = SpriteList()
@@ -194,11 +181,12 @@ class App(Window):
         self.focus_change_speed: float = focus_change_speed
         self.indicator_label = Text(
             f"Focus depth: {0:.3f} / {focus_range}",
-            self.width / 2, self.height / 2,
+            self.width / 2,
+            self.height / 2,
             text_color,
             align="center",
             anchor_x="center",
-            batch=self._batch
+            batch=self._batch,
         )
 
         # Randomize sprite depth, size, and angle, but set color from depth.
@@ -206,10 +194,12 @@ class App(Window):
             depth = uniform(-100, 100)
             color = Color.from_gray(int(255 * (depth + 100) / 200))
             s = SpriteSolidColor(
-                randint(100, 200), randint(100, 200),
-                uniform(20, self.width - 20), uniform(20, self.height - 20),
+                randint(100, 200),
+                randint(100, 200),
+                uniform(20, self.width - 20),
+                uniform(20, self.height - 20),
                 color,
-                uniform(0, 360)
+                uniform(0, 360),
             )
             s.depth = depth
             self.sprites.append(s)
@@ -235,5 +225,5 @@ class App(Window):
         self._batch.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     App().run()

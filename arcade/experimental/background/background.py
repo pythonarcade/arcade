@@ -47,37 +47,25 @@ class Background:
         try:
             self.shader["pos"] = pos
         except KeyError:
-            print(
-                "Attempting to set uniform 'pos' when the shader does not have a uniform with that name."
-            )
+            print("Attempting to set uniform 'pos' when the shader does not have a uniform with that name.")
 
         self._size = size
         try:
             self.shader["size"] = size
         except KeyError:
-            print(
-                "Attempting to set uniform 'size' when the shader does not have a uniform with that name."
-            )
+            print("Attempting to set uniform 'size' when the shader does not have a uniform with that name.")
 
         self._blend = 1.0
         try:
             self.shader["blend"] = 1.0
         except KeyError:
-            print(
-                "Attempting to set uniform 'blend' when the shader does not have a uniform with that name."
-            )
+            print("Attempting to set uniform 'blend' when the shader does not have a uniform with that name.")
 
-        self._color = (
-            color
-            if sum(color) <= 3.0
-            else (color[0] / 255, color[1] / 255, color[2] / 255)
-        )
+        self._color = color if sum(color) <= 3.0 else (color[0] / 255, color[1] / 255, color[2] / 255)
         try:
             self.shader["color"] = self._color
         except KeyError:
-            print(
-                "Attempting to set uniform 'color' when the shader does not have a uniform with that name."
-            )
+            print("Attempting to set uniform 'color' when the shader does not have a uniform with that name.")
 
     @staticmethod
     def from_file(
@@ -92,7 +80,7 @@ class Background:
         color: Optional[Tuple[int, int, int]] = None,
         color_norm: Optional[Tuple[float, float, float]] = None,
         shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None
+        geometry: Optional[gl.Geometry] = None,
     ):
         """
         This will generate a Background from an input image source. The generated texture is not stored in the
@@ -111,9 +99,7 @@ class Background:
         :param geometry: The geometry used for rendering (a rectangle equal to the size by default).
         :return: The generated Background.
         """
-        background_texture = BackgroundTexture.from_file(
-            tex_src, offset, scale, angle, filters
-        )
+        background_texture = BackgroundTexture.from_file(tex_src, offset, scale, angle, filters)
         if size is None:
             size = background_texture.texture.size
 
@@ -144,9 +130,7 @@ class Background:
         try:
             self.shader["size"] = value
         except KeyError:
-            print(
-                "Attempting to set uniform 'size' when the shader does not have a uniform with that name."
-            )
+            print("Attempting to set uniform 'size' when the shader does not have a uniform with that name.")
 
     @property
     def blend(self) -> float:
@@ -158,9 +142,7 @@ class Background:
         try:
             self.shader["blend"] = value
         except KeyError:
-            print(
-                "Attempting to set uniform 'blend' when the shader does not have a uniform with that name."
-            )
+            print("Attempting to set uniform 'blend' when the shader does not have a uniform with that name.")
 
     @property
     def color(self) -> Tuple[int, int, int]:
@@ -182,9 +164,7 @@ class Background:
         try:
             self.shader["color"] = self._color
         except KeyError:
-            print(
-                "Attempting to set uniform 'color' when shader does not have uniform with that name."
-            )
+            print("Attempting to set uniform 'color' when shader does not have uniform with that name.")
 
     @property
     def color_norm(self) -> Tuple[float, float, float]:
@@ -196,24 +176,18 @@ class Background:
         try:
             self.shader["color"] = self._color
         except KeyError:
-            print(
-                "Attempting to set uniform 'color' when shader does not have uniform with that name."
-            )
+            print("Attempting to set uniform 'color' when shader does not have uniform with that name.")
 
     def draw(self, shift: Tuple[float, float] = (0.0, 0.0)):
         try:
             self.shader["pixelTransform"] = self.texture.pixel_transform
         except KeyError:
-            print(
-                "Attempting to set uniform 'pixelTransform' when the shader does not have a uniform with that name."
-            )
+            print("Attempting to set uniform 'pixelTransform' when the shader does not have a uniform with that name.")
 
         try:
             self.shader["pos"] = self.pos[0] + shift[0], self.pos[1] + shift[1]
         except KeyError:
-            print(
-                "Attempting to set uniform 'pos' when the shader does not have a uniform with that name."
-            )
+            print("Attempting to set uniform 'pos' when the shader does not have a uniform with that name.")
 
         self.texture.use(0)
 
