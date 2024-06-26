@@ -193,9 +193,6 @@ class Texture:
             hit_box_points or self._calculate_hit_box_points()
         )
 
-        # Track what atlases the image is in
-        self._atlas_refs: Optional[WeakSet["TextureAtlas"]] = None
-
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
         self._crop_values: Optional[Tuple[int, int, int, int]] = None
@@ -845,8 +842,3 @@ class Texture:
     def __repr__(self) -> str:
         cache_name = getattr(self, "cache_name", None)
         return f"<Texture cache_name={cache_name}>"
-
-    def __del__(self):
-        if getattr(self, "_atlas_refs", None) is not None:
-            for atlas in self._atlas_refs:
-                atlas.remove(self)
