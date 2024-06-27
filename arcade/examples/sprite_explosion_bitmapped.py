@@ -122,7 +122,7 @@ class MyGame(arcade.Window):
                 ":resources:images/items/coinGold.png",
                 scale=SPRITE_SCALING_COIN,
                 center_x=random.randrange(25, SCREEN_WIDTH - 25),
-                center_y=random.randrange(150, SCREEN_HEIGHT)   
+                center_y=random.randrange(150, SCREEN_HEIGHT),
             )
             # Add the coin to enemy list
             self.enemy_list.append(coin)
@@ -226,8 +226,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    arcade.run()
+    MyGame().run()
 
 
 if __name__ == "__main__":

@@ -89,7 +89,7 @@ class MyGame(arcade.Window):
             self.close()
 
     def on_key_release(self, symbol: int, modifiers: int):
-        if symbol in (arcade.key.LEFT, arcade.key.A):   
+        if symbol in (arcade.key.LEFT, arcade.key.A):
             self.x_direction += PLAYER_SPEED
         elif symbol in (arcade.key.RIGHT, arcade.key.D):
             self.x_direction -= PLAYER_SPEED

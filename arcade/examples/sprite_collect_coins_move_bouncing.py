@@ -13,12 +13,12 @@ import random
 import arcade
 
 # --- Constants ---
-SPRITE_SCALING_PLAYER = 0.5
-SPRITE_SCALING_COIN = 0.2
+SPRITE_SCALING_PLAYER = 0.75
+SPRITE_SCALING_COIN = 0.3
 COIN_COUNT = 50
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Collect Moving and Bouncing Coins Example"
 
 

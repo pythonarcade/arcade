@@ -288,8 +288,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    arcade.run()
+    MyGame().run()
 
 
 if __name__ == "__main__":
