@@ -180,6 +180,8 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.ESCAPE:
             self.close()
 
+        return True
+
     def on_update(self, delta_time):
         """Movement and game logic"""
 

@@ -18,20 +18,20 @@ import typing
 
 import arcade
 
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sound Speed Demo"
 BUTTON_SIZE = 30
 
 
 SPEED_VARIATION = [0.1, 0.5, 1.0, 2.0, 4.0]
+MARGIN = SCREEN_WIDTH / 4
 BUTTON_X_POSITIONS = [
-    BUTTON_SIZE,
-    SCREEN_WIDTH / 4,
-    SCREEN_WIDTH / 2,
-    SCREEN_WIDTH / 4 * 3,
-    SCREEN_WIDTH - BUTTON_SIZE,
+    MARGIN,
+    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 1,
+    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 2,
+    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 3,
+    SCREEN_WIDTH - MARGIN,
 ]
 
 
@@ -46,7 +46,6 @@ class SoundButton(arcade.SpriteSolidColor):
     You can tell it to play a sound faster or slower, as well as adjust
     the volume of the sound.
     """
-
     def __init__(self, sound_file, speed, volume, center_x, center_y):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, color=arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file)
@@ -64,9 +63,6 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         self.background_color = arcade.color.AMAZON
-        self.button_sprites = None
-
-    def setup(self):
         self.button_sprites = arcade.SpriteList()
 
         # Position the grid of buttons
@@ -101,9 +97,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
-    arcade.run()
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE).run()
 
 
 if __name__ == "__main__":

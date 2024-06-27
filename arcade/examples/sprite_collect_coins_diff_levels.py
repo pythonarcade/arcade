@@ -12,10 +12,10 @@ python -m arcade.examples.sprite_collect_coins_diff_levels
 import random
 import arcade
 
-SPRITE_SCALING = 0.5
+SPRITE_SCALING = 1.0
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Collect Coins with Different Levels Example"
 
 

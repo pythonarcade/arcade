@@ -159,6 +159,9 @@ class MyGame(arcade.Window):
         if symbol == arcade.key.ESCAPE:
             self.close()
 
+        return True
+
+
 def main():
     """ Main function """
     window = MyGame()

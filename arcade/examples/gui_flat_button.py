@@ -80,6 +80,8 @@ class MyView(arcade.View):
         if symbol == arcade.key.ESCAPE:
             self.window.close()
 
+        return True
+
 
 if __name__ == '__main__':
     window = arcade.Window(1280, 720, "UIExample", resizable=True)

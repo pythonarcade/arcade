@@ -11,7 +11,7 @@ import arcade
 class Animated(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600, "Time based animated sprite")
+        super().__init__(1280, 720, "Time based animated sprite")
 
         # Load the 8 frames for the walking animation
         keyframes = [
@@ -26,9 +26,9 @@ class Animated(arcade.Window):
         anim = arcade.TextureAnimation(keyframes=keyframes)
         self.sprite = arcade.TextureAnimationSprite(
             animation=anim,
-            scale=1.0,
-            center_x=400,
-            center_y=300
+            scale=5.0,
+            center_x=self.width // 2,
+            center_y=self.height // 2,
         )
 
     def on_draw(self):
