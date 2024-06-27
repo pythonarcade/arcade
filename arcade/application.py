@@ -104,8 +104,8 @@ class Window(pyglet.window.Window):
 
     def __init__(
         self,
-        width: int = 800,
-        height: int = 600,
+        width: int = 1280,
+        height: int = 720,
         title: Optional[str] = "Arcade Window",
         fullscreen: bool = False,
         resizable: bool = False,
