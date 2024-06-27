@@ -27,7 +27,7 @@ __all__ = [
 ]
 
 
-def _dispatch_event(self, *args):
+def _dispatch_event(self, *args) -> None:
     """
     This function will be monkey-patched over Pyglet's dispatch event function.
     """
@@ -62,7 +62,7 @@ def _dispatch_event(self, *args):
         data.popleft()
 
 
-def print_timings():
+def print_timings() -> None:
     """
     Print event handler statistics to stdout as a table.
 

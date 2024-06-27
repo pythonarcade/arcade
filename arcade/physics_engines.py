@@ -22,11 +22,9 @@ __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 from arcade.utils import copy_dunders_unimplemented
 
 
-def _circular_check(player: Sprite, walls: List[SpriteList]):
+def _circular_check(player: Sprite, walls: List[SpriteList]) -> None:
     """
     This is a horrible kludge to 'guess' our way out of a collision
-    Returns:
-
     """
     original_x = player.center_x
     original_y = player.center_y
@@ -245,7 +243,7 @@ class PhysicsEngineSimple:
         self,
         player_sprite: Sprite,
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
-    ):
+    ) -> None:
         self.player_sprite: Sprite = player_sprite
         self._walls: List[SpriteList]
 
@@ -309,7 +307,7 @@ class PhysicsEnginePlatformer:
         gravity_constant: float = 0.5,
         ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
-    ):
+    ) -> None:
         self._ladders: Optional[List[SpriteList]]
         self._platforms: List[SpriteList]
         self._walls: List[SpriteList]
@@ -384,7 +382,7 @@ class PhysicsEnginePlatformer:
     def walls(self):
         self._walls = []
 
-    def is_on_ladder(self):
+    def is_on_ladder(self) -> bool:
         """Return 'true' if the player is in contact with a sprite in the ladder list."""
         # Check for touching a ladder
         if self.ladders:
@@ -422,7 +420,7 @@ class PhysicsEnginePlatformer:
         else:
             return False
 
-    def enable_multi_jump(self, allowed_jumps: int):
+    def enable_multi_jump(self, allowed_jumps: int) -> None:
         """
         Enables multi-jump.
         allowed_jumps should include the initial jump.
@@ -436,7 +434,7 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
 
-    def disable_multi_jump(self):
+    def disable_multi_jump(self) -> None:
         """
         Disables multi-jump.
 
@@ -452,7 +450,7 @@ class PhysicsEnginePlatformer:
         self.player_sprite.change_y = velocity
         self.increment_jump_counter()
 
-    def increment_jump_counter(self):
+    def increment_jump_counter(self) -> None:
         """
         Updates the jump counter for multi-jump tracking
         """

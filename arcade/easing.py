@@ -23,7 +23,7 @@ class EasingData:
     end_value: float
     ease_function: Callable
 
-    def reset(self):
+    def reset(self) -> None:
         self.cur_period = self.start_period
 
 
@@ -211,7 +211,9 @@ def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple:
     return done, angle
 
 
-def ease_value(start_value: float, end_value: float, *, time=None, rate=None, ease_function=linear):
+def ease_value(
+    start_value: float, end_value: float, *, time=None, rate=None, ease_function=linear
+) -> EasingData:
     """
     Get an easing value
     """
@@ -233,7 +235,9 @@ def ease_value(start_value: float, end_value: float, *, time=None, rate=None, ea
     return easing_data
 
 
-def ease_position(start_position, end_position, *, time=None, rate=None, ease_function=linear):
+def ease_position(
+    start_position, end_position, *, time=None, rate=None, ease_function=linear
+) -> Tuple[EasingData, EasingData]:
     """
     Get an easing position
     """
@@ -252,7 +256,7 @@ def ease_position(start_position, end_position, *, time=None, rate=None, ease_fu
     return easing_data_x, easing_data_y
 
 
-def ease_update(easing_data: EasingData, delta_time: float) -> Tuple:
+def ease_update(easing_data: EasingData, delta_time: float) -> Tuple[bool, float]:
     """
     Update easing between two values/
     """

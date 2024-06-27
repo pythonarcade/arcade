@@ -106,7 +106,7 @@ class SpriteList(Generic[SpriteType]):
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
-    ):
+    ) -> None:
         self.program: Optional[Program] = None
         self._atlas: Optional[TextureAtlas] = atlas
         self._initialized = False
@@ -479,7 +479,7 @@ class SpriteList(Generic[SpriteType]):
         a texture ID. This ID references a texture in the texture
         atlas assigned to this spritelist. The ID is used to look up
         texture coordinates in a 32bit floating point texture the
-        texter atlas provides. This system makes sure we can resize
+        texture atlas provides. This system makes sure we can resize
         and rebuild a texture atlas without having to rebuild every
         single spritelist.
 
