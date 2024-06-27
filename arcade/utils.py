@@ -46,7 +46,7 @@ class OutsideRangeError(ValueError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
-    def __init__(self, var_name: str, value: _CT, lower: _CT, upper: _CT):
+    def __init__(self, var_name: str, value: _CT, lower: _CT, upper: _CT) -> None:
         super().__init__(f"{var_name} must be between {lower} and {upper}, inclusive, not {value}")
         self.var_name = var_name
         self.value = value
@@ -66,7 +66,7 @@ class IntOutsideRangeError(OutsideRangeError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
-    def __init__(self, var_name: str, value: int, lower: int, upper: int):
+    def __init__(self, var_name: str, value: int, lower: int, upper: int) -> None:
         super().__init__(var_name, value, lower, upper)
 
 
@@ -79,7 +79,7 @@ class FloatOutsideRangeError(OutsideRangeError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
-    def __init__(self, var_name: str, value: float, lower: float, upper: float):
+    def __init__(self, var_name: str, value: float, lower: float, upper: float) -> None:
         super().__init__(var_name, value, lower, upper)
 
 
@@ -90,7 +90,7 @@ class ByteRangeError(IntOutsideRangeError):
     :param var_name: the name of the variable or argument
     :param value: the value to fall outside the expected range
     """
-    def __init__(self, var_name: str, value: int):
+    def __init__(self, var_name: str, value: int) -> None:
         super().__init__(var_name, value, 0, 255)
 
 
@@ -108,7 +108,7 @@ class NormalizedRangeError(FloatOutsideRangeError):
     :param var_name: the name of the variable or argument
     :param value: the value to fall outside the expected range
     """
-    def __init__(self, var_name: str, value: float):
+    def __init__(self, var_name: str, value: float) -> None:
         super().__init__(var_name, value, 0.0, 1.0)
 
 
@@ -210,8 +210,7 @@ def is_raspberry_pi() -> bool:
 
 def get_raspberry_pi_info() -> Tuple[bool, str, str]:
     """
-    Determine if the host is a raspberry pi
-    with additional info.
+    Determine if the host is a raspberry pi with additional info.
 
     :returns: 3 component tuple.
               bool (is host a raspi)

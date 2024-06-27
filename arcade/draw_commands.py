@@ -113,7 +113,7 @@ def draw_arc_filled(
     end_angle: float,
     tilt_angle: float = 0,
     num_segments: int = 128,
-):
+) -> None:
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
@@ -164,7 +164,7 @@ def draw_arc_outline(
     border_width: float = 1,
     tilt_angle: float = 0,
     num_segments: int = 128,
-):
+) -> None:
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
@@ -228,7 +228,7 @@ def draw_parabola_filled(
     height: float,
     color: RGBA255,
     tilt_angle: float = 0,
-):
+) -> None:
     """
     Draws a filled in parabola.
 
@@ -256,7 +256,7 @@ def draw_parabola_outline(
     color: RGBA255,
     border_width: float = 1,
     tilt_angle: float = 0,
-):
+) -> None:
     """
     Draws the outline of a parabola.
 
@@ -300,7 +300,7 @@ def draw_circle_filled(
     color: RGBA255,
     tilt_angle: float = 0,
     num_segments: int = -1,
-):
+) -> None:
     """
     Draw a filled-in circle.
 
@@ -334,7 +334,7 @@ def draw_circle_outline(
     border_width: float = 1,
     tilt_angle: float = 0,
     num_segments: int = -1,
-):
+) -> None:
     """
     Draw the outline of a circle.
 
@@ -377,7 +377,7 @@ def draw_ellipse_filled(
     color: RGBA255,
     tilt_angle: float = 0,
     num_segments: int = -1,
-):
+) -> None:
     """
     Draw a filled in ellipse.
 
@@ -425,7 +425,7 @@ def draw_ellipse_outline(
     border_width: float = 1,
     tilt_angle: float = 0,
     num_segments: int = -1,
-):
+) -> None:
     """
     Draw the outline of an ellipse.
 
@@ -469,7 +469,9 @@ def draw_ellipse_outline(
 # --- BEGIN LINE FUNCTIONS # # #
 
 
-def _generic_draw_line_strip(point_list: PointList, color: RGBA255, mode: int = gl.GL_LINE_STRIP):
+def _generic_draw_line_strip(
+    point_list: PointList, color: RGBA255, mode: int = gl.GL_LINE_STRIP
+) -> None:
     """
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
@@ -512,7 +514,7 @@ def _generic_draw_line_strip(point_list: PointList, color: RGBA255, mode: int = 
     geometry.render(program, mode=mode)
 
 
-def draw_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1):
+def draw_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1) -> None:
     """
     Draw a multi-point line.
 
@@ -545,7 +547,7 @@ def draw_line(
     end_y: float,
     color: RGBA255,
     line_width: float = 1,
-):
+) -> None:
     """
     Draw a line.
 
@@ -576,7 +578,7 @@ def draw_line(
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
 
 
-def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1):
+def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1) -> None:
     """
     Draw a set of lines.
 
@@ -619,7 +621,7 @@ def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1):
 # --- BEGIN POINT FUNCTIONS # # #
 
 
-def draw_point(x: float, y: float, color: RGBA255, size: float):
+def draw_point(x: float, y: float, color: RGBA255, size: float) -> None:
     """
     Draw a point.
 
@@ -632,7 +634,7 @@ def draw_point(x: float, y: float, color: RGBA255, size: float):
     draw_rect_filled(XYWH(x, y, size, size), color)
 
 
-def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
+def draw_points(point_list: PointList, color: RGBA255, size: float = 1) -> None:
     """
     Draw a set of points.
 
@@ -675,7 +677,7 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1):
 # --- BEGIN POLYGON FUNCTIONS # # #
 
 
-def draw_polygon_filled(point_list: Point2List, color: RGBA255):
+def draw_polygon_filled(point_list: Point2List, color: RGBA255) -> None:
     """
     Draw a polygon that is filled in.
 
@@ -688,7 +690,7 @@ def draw_polygon_filled(point_list: Point2List, color: RGBA255):
     _generic_draw_line_strip(flattened_list, color, gl.GL_TRIANGLES)
 
 
-def draw_polygon_outline(point_list: Point2List, color: RGBA255, line_width: float = 1):
+def draw_polygon_outline(point_list: Point2List, color: RGBA255, line_width: float = 1) -> None:
     """
     Draw a polygon outline. Also known as a "line loop."
 
@@ -728,7 +730,7 @@ def draw_polygon_outline(point_list: Point2List, color: RGBA255, line_width: flo
 
 def draw_triangle_filled(
     x1: float, y1: float, x2: float, y2: float, x3: float, y3: float, color: RGBA255
-):
+) -> None:
     """
     Draw a filled in triangle.
 
@@ -758,7 +760,7 @@ def draw_triangle_outline(
     y3: float,
     color: RGBA255,
     border_width: float = 1,
-):
+) -> None:
     """
     Draw a the outline of a triangle.
 
@@ -793,7 +795,7 @@ def draw_lrbt_rectangle_outline(
     top: float,
     color: RGBA255,
     border_width: float = 1,
-):
+) -> None:
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
@@ -822,7 +824,7 @@ def draw_lbwh_rectangle_outline(
     height: float,
     color: RGBA255,
     border_width: float = 1,
-):
+) -> None:
     """
     Draw a rectangle extending from bottom left to top right
 
@@ -840,7 +842,7 @@ def draw_lbwh_rectangle_outline(
 
 def draw_lrbt_rectangle_filled(
     left: float, right: float, bottom: float, top: float, color: RGBA255
-):
+) -> None:
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
@@ -866,7 +868,7 @@ def draw_lrbt_rectangle_filled(
 
 def draw_lbwh_rectangle_filled(
     left: float, bottom: float, width: float, height: float, color: RGBA255
-):
+) -> None:
     """
     Draw a filled rectangle extending from bottom left to top right
 
@@ -888,7 +890,7 @@ def draw_scaled_texture_rectangle(
     scale: float = 1.0,
     angle: float = 0,
     alpha: int = 255,
-):
+) -> None:
     """
     Draw a textured rectangle on-screen.
 
@@ -926,7 +928,7 @@ def draw_texture_rectangle(
     texture: Texture,
     angle: float = 0,
     alpha: int = 255,
-):
+) -> None:
     """
     Draw a textured rectangle on-screen.
 
@@ -949,7 +951,7 @@ def draw_lbwh_rectangle_textured(
     texture: Texture,
     angle: float = 0,
     alpha: int = 255,
-):
+) -> None:
     """
     Draw a texture extending from bottom left to top right.
 
@@ -970,7 +972,9 @@ def draw_lbwh_rectangle_textured(
 # Reference implementations: drawing of new Rect
 
 
-def draw_rect_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0):
+def draw_rect_outline(
+    rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0
+) -> None:
     """
     Draw a rectangle outline.
 
@@ -1007,7 +1011,7 @@ def draw_rect_outline(rect: Rect, color: RGBA255, border_width: float = 1, tilt_
     _generic_draw_line_strip(point_list, color, gl.GL_TRIANGLE_STRIP)
 
 
-def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
+def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
     """
     Draw a filled-in rectangle.
 
@@ -1038,12 +1042,14 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0):
 
 def draw_rect_outline_kwargs(
     color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
-):
+) -> None:
     rect = Rect.from_kwargs(**kwargs)
     draw_rect_outline(rect, color, border_width, tilt_angle)
 
 
-def draw_rect_filled_kwargs(color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat):
+def draw_rect_filled_kwargs(
+    color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
+) -> None:
     rect = Rect.from_kwargs(**kwargs)
     draw_rect_filled(rect, color, tilt_angle)
 

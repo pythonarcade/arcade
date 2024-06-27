@@ -10,7 +10,7 @@ from .buffer import Buffer
 from .types import BufferDescription, GLenumLike, GLuintLike, gl_name
 from .program import Program
 
-if TYPE_CHECKING:  # handle import cycle caused by type hinting
+if TYPE_CHECKING:
     from arcade.gl import Context
 
 # Index buffer types based on index element size
@@ -52,7 +52,7 @@ class VertexArray:
         content: Sequence[BufferDescription],
         index_buffer: Optional[Buffer] = None,
         index_element_size: int = 4,
-    ):
+    ) -> None:
         self._ctx = ctx
         self._program = program
         self._content = content
@@ -70,10 +70,10 @@ class VertexArray:
 
         self.ctx.stats.incr("vertex_array")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<VertexArray {self.glo.value}>"
 
-    def __del__(self):
+    def __del__(self) -> None:
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and self.glo.value > 0:
             self._ctx.objects.append(self)
@@ -114,7 +114,7 @@ class VertexArray:
         """
         return self._num_vertices
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Destroy the underlying OpenGL resource.
         Don't use this unless you know exactly what you are doing.
@@ -123,7 +123,7 @@ class VertexArray:
         self.glo.value = 0
 
     @staticmethod
-    def delete_glo(ctx: "Context", glo: gl.GLuint):
+    def delete_glo(ctx: "Context", glo: gl.GLuint) -> None:
         """
         Delete this object.
         This is automatically called when this object is garbage collected.
@@ -140,7 +140,7 @@ class VertexArray:
 
     def _build(
         self, program: Program, content: Sequence[BufferDescription], index_buffer: Optional[Buffer]
-    ):
+    ) -> None:
         """Build a vertex array compatible with the program passed in"""
         gl.glGenVertexArrays(1, byref(self.glo))
         gl.glBindVertexArray(self.glo)
@@ -247,7 +247,9 @@ class VertexArray:
             if buff_descr.instanced:
                 gl.glVertexAttribDivisor(prog_attr.location, 1)
 
-    def render(self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1):
+    def render(
+        self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1
+    ) -> None:
         """Render the VertexArray to the currently active framebuffer.
 
         :param mode: Primitive type to render. TRIANGLES, LINES etc.
@@ -269,7 +271,7 @@ class VertexArray:
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
-    def render_indirect(self, buffer: Buffer, mode: GLuintLike, count, first, stride):
+    def render_indirect(self, buffer: Buffer, mode: GLuintLike, count, first, stride) -> None:
         """
         Render the VertexArray to the framebuffer using indirect rendering.
 
@@ -318,7 +320,7 @@ class VertexArray:
         vertices: int = 0,
         instances: int = 1,
         buffer_offset=0,
-    ):
+    ) -> None:
         """Run a transform feedback.
 
         :param buffer: The buffer to write the output
@@ -371,7 +373,7 @@ class VertexArray:
         vertices: int = 0,
         instances: int = 1,
         buffer_offset=0,
-    ):
+    ) -> None:
         """
         Run a transform feedback writing to separate buffers.
 
@@ -453,7 +455,7 @@ class Geometry:
         index_buffer: Optional[Buffer] = None,
         mode: Optional[int] = None,
         index_element_size: int = 4,
-    ):
+    ) -> None:
         self._ctx = ctx
         self._content = list(content or [])
         self._index_buffer = index_buffer
@@ -620,7 +622,7 @@ class Geometry:
         count: int = -1,
         first: int = 0,
         stride: int = 0,
-    ):
+    ) -> None:
         """
         Render the VertexArray to the framebuffer using indirect rendering.
 
@@ -682,7 +684,7 @@ class Geometry:
         :param program: The Program to render with
         :param Union[Buffer, Sequence[Buffer]] buffer: The buffer(s) we transform into.
             This depends on the programs ``varyings_capture_mode``. We can transform
-            into one buffer interlaved or transform each attribute into separate buffers.
+            into one buffer interleaved or transform each attribute into separate buffers.
         :param first: Offset start vertex
         :param vertices: Number of vertices to render
         :param instances: Number of instances to render
@@ -752,6 +754,6 @@ class Geometry:
         return vao
 
     @staticmethod
-    def _release(ctx):
+    def _release(ctx) -> None:
         """Mainly here to count destroyed instances"""
         ctx.stats.decr("geometry")
