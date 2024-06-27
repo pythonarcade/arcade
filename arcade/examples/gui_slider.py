@@ -27,8 +27,8 @@ class MyView(arcade.View):
         self.ui = UIManager()
 
         # Create our pair of widgets
-        ui_slider = UISlider(value=50, width=300, height=50)
-        label = UILabel(text=f"{ui_slider.value:02.0f}")
+        ui_slider = UISlider(value=50, width=600, height=50)
+        label = UILabel(text=f"{ui_slider.value:02.0f}", font_size=20)
 
         # Change the label's text whenever the slider is dragged
         # See the gui_flat_button example for more information.
@@ -63,6 +63,6 @@ class MyView(arcade.View):
 
 
 if __name__ == '__main__':
-    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window = arcade.Window(1280, 720, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

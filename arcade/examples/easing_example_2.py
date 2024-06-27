@@ -111,7 +111,7 @@ class MyGame(arcade.Window):
         if key in [arcade.key.KEY_2, arcade.key.KEY_3, arcade.key.KEY_4, arcade.key.KEY_5]:
             p1 = self.player_sprite.position
             p2 = (x, y)
-            end_angle = -arcade.get_angle_degrees(p1[0], p1[1], p2[0], p2[1])
+            end_angle = -arcade.math.get_angle_degrees(p1[0], p1[1], p2[0], p2[1])
             start_angle = self.player_sprite.angle
             if key == arcade.key.KEY_2:
                 ease_function = easing.linear

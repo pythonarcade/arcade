@@ -16,7 +16,7 @@ import arcade
 from pyglet.graphics import Batch
 
 
-WINDOW_WIDTH = 1200  # Window width in pixels
+WINDOW_WIDTH = 1280  # Window width in pixels
 WINDOW_HEIGHT = 800  # Window height in pixels
 WINDOW_TITLE = "Drawing Text Example"  # Window title
 DEFAULT_LINE_HEIGHT = 45  # Line height to use in pixels
@@ -384,6 +384,11 @@ class MyGame(arcade.Window):
             arcade.color.BARN_RED,
             5,
         )
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        """ Handle key press events """
+        if symbol == arcade.key.ESCAPE:
+            self.close()
 
 
 def main():

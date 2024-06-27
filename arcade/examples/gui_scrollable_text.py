@@ -41,9 +41,9 @@ class MyView(arcade.View):
             texture=TEX_GREY_PANEL)
         text_area = UITextArea(
             x=100,
-            y=200,
-            width=200,
-            height=300,
+            y=400,
+            width=300,
+            height=200,
             text=LOREM_IPSUM,
             text_color=(0, 0, 0, 255),
         )
@@ -73,8 +73,12 @@ class MyView(arcade.View):
         self.clear()
         self.ui.draw()
 
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        if symbol == arcade.key.ESCAPE:
+            self.window.close()
+
 
 if __name__ == '__main__':
-    window = arcade.Window(800, 600, "UIExample", resizable=True)
+    window = arcade.Window(1280, 720, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()
