@@ -1,12 +1,18 @@
+"""
+Strictly unit tests for the sprite class.
+"""
 import pytest as pytest
 
 import arcade
 from pyglet.math import Vec2
 
 frame_counter = 0
+SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png")
+SPRITE_TEXTURE_GOLD_COIN = arcade.load_texture(":resources:images/items/coinGold.png")
 
 
 def test_velocity():
+    """Test if change_x/y and velocity are in sync."""
     sprite = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
     sprite.velocity = 1, 2
     assert sprite.velocity == (1, 2)
@@ -17,306 +23,8 @@ def test_velocity():
     assert sprite.velocity == (3, 4)
 
 
-def test_sprite(window: arcade.Window):
-    CHARACTER_SCALING = 0.5
-    window.background_color = arcade.color.AMAZON
-    window.clear()
-    global frame_counter
-    frame_counter = 0
-
-    character_list = arcade.SpriteList()
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    character_sprite.center_x = 50
-    character_sprite.center_y = 50
-    character_sprite.change_x = 2
-    character_sprite.change_y = 2
-    character_list.append(character_sprite)
-
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    character_sprite.center_x = 150
-    character_sprite.center_y = 50
-    character_list.append(character_sprite)
-
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    character_sprite.center_x = 200
-    character_sprite.center_y = 50
-    character_sprite.angle = 45
-    character_list.append(character_sprite)
-
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    character_sprite.center_x = 250
-    character_sprite.center_y = 50
-    character_sprite.angle = 90
-    character_list.append(character_sprite)
-
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    character_sprite.center_x = 300
-    character_sprite.center_y = 50
-    character_sprite.angle = 180
-    character_list.append(character_sprite)
-
-    character_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    character_sprite.center_x = 300
-    character_sprite.center_y = 50
-    character_sprite.angle = 90
-    assert character_sprite.center_x == 300
-    assert character_sprite.center_y == 50
-
-    character_sprite.angle = 0
-    assert character_sprite.center_x == 300
-    assert character_sprite.center_y == 50
-
-    character_list.append(character_sprite)
-
-    coin_list = arcade.SpriteList()
-    sprite = arcade.Sprite(":resources:images/items/coinGold.png", scale=CHARACTER_SCALING)
-    sprite.position = (130, 130)
-    sprite.angle = 90
-    coin_list.append(sprite)
-
-    individual_coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=CHARACTER_SCALING)
-    individual_coin.position = (230, 230)
-
-    def on_draw():
-        arcade.start_render()
-        coin_list.draw()
-        character_list.draw()
-        assert arcade.get_pixel(150, 50) == (191, 121, 88)
-
-        assert arcade.get_pixel(230, 230) == (59, 122, 87)
-        individual_coin.draw()
-        assert arcade.get_pixel(230, 230) == (255, 204, 0)
-
-        # Test for coin scaling
-        if frame_counter < 5:
-            assert arcade.get_pixel(130, 150) == (59, 122, 87)
-        else:
-            assert arcade.get_pixel(130, 150) == (227, 182, 2)
-
-    def update(delta_time):
-        global frame_counter
-        coin_list.update()
-        character_list.update()
-
-        frame_counter += 1
-        if frame_counter == 5:
-            character_list.pop()
-            coin_list[0].scale = 2.0
-
-        coin_hit_list = arcade.check_for_collision_with_list(character_sprite, coin_list)
-        for coin in coin_hit_list:
-            coin.kill()
-
-    window.on_draw = on_draw
-    window.update = update
-    window.test(10)
-
-
-def test_sprite_2(window):
-    CHARACTER_SCALING = 1.0
-    window.background_color = arcade.color.AMAZON
-
-    sprite = arcade.Sprite(":resources:images/items/coinGold.png", scale=CHARACTER_SCALING)
-    sprite.center_x = 50
-    sprite.center_y = 50
-
-    sprite_list = arcade.SpriteList()
-    sprite_list.append(sprite)
-
-    def on_draw():
-        arcade.start_render()
-        assert arcade.get_pixel(50, 50) == (59, 122, 87)
-        sprite.draw()
-        assert arcade.get_pixel(50, 50) == (255, 204, 0)
-
-    window.on_draw = on_draw
-    window.test(2)
-
-
-@pytest.mark.parametrize('not_a_texture', [
-    1, "not_a_texture", (1, 2, 3)
-])
-def test_sprite_texture_setter_raises_type_error_when_given_non_texture(not_a_texture):
-    sprite = arcade.Sprite(":resources:images/items/coinGold.png", scale=1.0)
-    with pytest.raises(TypeError):
-        sprite.texture = not_a_texture
-
-
-def test_sprite_sizes(window: arcade.Window):
-    SIZE = 50
-    SPACING = SIZE * 2
-    ROW_SPACING = 100
-    window.background_color = arcade.color.BLACK
-
-    character_list = arcade.SpriteList()
-
-    for i in range(7):
-        my_width = SIZE
-        my_height = SIZE + i * 3
-        my_color = (i * 40, 0, 255)
-        center_x = SPACING + (i * SPACING)
-        center_y = ROW_SPACING
-        character_sprite = arcade.SpriteSolidColor(my_width, my_height, color=my_color)
-        character_sprite.center_x = center_x
-        character_sprite.center_y = center_y
-        character_list.append(character_sprite)
-
-    for i in range(7):
-        my_width = SIZE + i * 3
-        my_height = SIZE
-        my_color = (0, i * 40, 255)
-        center_x = SPACING + (i * SPACING)
-        center_y = ROW_SPACING * 2
-        character_sprite = arcade.SpriteSolidColor(my_width, my_height, color=my_color)
-        character_sprite.center_x = center_x
-        character_sprite.center_y = center_y
-        character_list.append(character_sprite)
-
-    def on_draw():
-        arcade.start_render()
-        character_list.draw()
-
-        for i in range(7):
-            my_width = SIZE
-            my_height = SIZE + i * 3
-            my_color = (i * 40, 0, 255)
-            center_x = SPACING + (i * SPACING)
-            center_y = ROW_SPACING
-
-            # Sample bottom
-            pixel_color = arcade.get_pixel(center_x, center_y - (my_height // 2 - 4))
-            assert pixel_color == my_color
-
-            # Sample top
-            pixel_color = arcade.get_pixel(center_x, center_y + (my_height // 2 - 4))
-            assert pixel_color == my_color
-
-            # Sample right
-            pixel_color = arcade.get_pixel(center_x + (my_width // 2 - 4), center_y)
-            assert pixel_color == my_color
-
-        for i in range(7):
-            my_width = SIZE + i * 3
-            my_height = SIZE
-            my_color = (0, i * 40, 255)
-            center_x = SPACING + (i * SPACING)
-            center_y = ROW_SPACING * 2
-
-            # Sample bottom
-            pixel_color = arcade.get_pixel(center_x, center_y - (my_height // 2 - 4))
-            assert pixel_color == my_color
-
-            # Sample top
-            pixel_color = arcade.get_pixel(center_x, center_y + (my_height // 2 - 4))
-            assert pixel_color == my_color
-
-    window.on_draw = on_draw
-    window.test()
-
-
-def test_sprite_scale(window):
-    CHARACTER_SCALING = 0.5
-    window.background_color = arcade.color.AMAZON
-
-    # ensure normal scaling works correctly
-    gold_1 = arcade.Sprite(":resources:/images/items/gold_1.png")
-    assert gold_1.scale == 1.0
-    assert gold_1.width, gold_1.height == (64, 64)
-
-    gold_1.scale = 2.0
-    assert gold_1.scale == 2.0
-    assert gold_1.width, gold_1.height == (128, 128)
-
-    gold_1.scale *= 0.25
-    assert gold_1.scale == 0.5
-    assert gold_1.width, gold_1.height == (32, 32)
-
-    # edge case: negative scale values are supported
-    gold_1.scale *= -1.0
-    assert gold_1.scale == - 0.5
-    assert gold_1.width, gold_1.height == (-32, -32)
-
-    # visual spot check
-    character_list = arcade.SpriteList()
-    character_sprite = arcade.Sprite(
-        ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-        scale=CHARACTER_SCALING,
-    )
-    character_sprite.center_x = 150
-    character_sprite.center_y = 150
-    character_list.append(character_sprite)
-
-    def on_draw():
-        arcade.start_render()
-        character_list.draw()
-
-    def update(delta_time):
-        character_sprite.scale += 0.1
-
-    window.on_draw = on_draw
-    window.update = update
-    window.test()
-
-
-frame = 0
-
-
-def test_sprite_removal(window):
-    CHARACTER_SCALING = 0.5
-    global frame
-    frame = 0
-    window.background_color = arcade.color.AMAZON
-
-    character_list = arcade.SpriteList()
-
-    sprite_1 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    sprite_1.center_x = 150
-    sprite_1.center_y = 150
-    character_list.append(sprite_1)
-
-    sprite_2 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    sprite_2.center_x = 250
-    sprite_2.center_y = 250
-    character_list.append(sprite_2)
-
-    sprite_3 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
-    sprite_3.center_x = 250
-    sprite_3.center_y = 250
-    character_list.append(sprite_3)
-
-    def on_draw():
-        arcade.start_render()
-        character_list.draw()
-
-    def update(delta_time):
-        global frame
-        frame += 1
-
-        if frame == 3:
-            sprite_2.remove_from_sprite_lists()
-
-        if frame == 5:
-            character_list.remove(sprite_3)
-
-        if frame == 7:
-            sprite_2.center_x += 5
-
-        if frame == 9:
-            sprite_3.center_x += 5
-
-    window.on_draw = on_draw
-    window.update = update
-    window.test()
-
-
-def test_sprite_circle(window):
-    # TODO: Improve this
-    sprite = arcade.SpriteCircle(50, arcade.color.RED)
-    sprite = arcade.SpriteCircle(50, arcade.color.RED, soft=True)
-
-
 def test_visible():
-    sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
+    sprite = arcade.Sprite(SPRITE_TEXTURE_FEMALE_PERSON_IDLE)
 
     # Default values
     assert sprite.alpha == 255
@@ -337,8 +45,33 @@ def test_visible():
     assert sprite.alpha == 100
 
 
+def test_set_size():
+    """Test size property and relations to width, height, and scale."""
+    sprite = arcade.Sprite(SPRITE_TEXTURE_FEMALE_PERSON_IDLE)
+    assert sprite.size == (96, 128)
+    assert sprite.width == 96
+    assert sprite.height == 128
+    assert sprite.scale == 1.0
+
+    # Reduce to half width and height
+    sprite.size = 48, 64
+    assert sprite.size == (48, 64)
+    assert sprite.width == 48
+    assert sprite.height == 64
+    assert sprite.scale == 0.5
+
+
+@pytest.mark.parametrize('not_a_texture', [
+    1, "not_a_texture", (1, 2, 3)
+])
+def test_sprite_texture_setter_raises_type_error_when_given_non_texture(not_a_texture):
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=1.0)
+    with pytest.raises(TypeError):
+        sprite.texture = not_a_texture
+
+
 def test_sprite_rgb_property_basics():
-    sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png")
+    sprite = arcade.Sprite(SPRITE_TEXTURE_FEMALE_PERSON_IDLE)
 
     # Initial multiply tint is white
     assert sprite.rgb == (255, 255, 255)
@@ -366,7 +99,7 @@ def test_sprite_rgb_property_basics():
     assert sprite.color.a == 255
     assert sprite.alpha == 255
 
-    # Test .rgb sets rgb chanels when visible == False as with .color,
+    # Test .rgb sets rgb channels when visible == False as with .color,
     # but also still preserves original alpha values.
     sprite.visible = False
     sprite.color = (9, 11, 13, 15)
@@ -487,6 +220,32 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
     assert sprite.scale_xy == Vec2(2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
+
+
+# TODO: Possibly separate into a movement module
+def test_strafe(window):
+    """Test if strafe moves the sprite in the correct direction."""
+    sprite = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
+    assert sprite.position == (0, 0)
+
+    sprite.forward(2)
+    assert sprite.position == (0, 2)
+
+    sprite.reverse(2)
+    assert sprite.position == (0, 0)
+
+    sprite.strafe(2)
+    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
+    assert pos == (2, 0)
+
+    sprite.strafe(-2)
+    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
+    assert pos == (0, 0)
+
+    sprite.angle = 90
+    sprite.strafe(2)
+    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
+    assert pos == (0.0, -2.0)
 
 
 def test_rescale_relative_to_point(window):
@@ -718,27 +477,3 @@ def test_rescale_xy_relative_to_point(window):
     assert sprite_7.center_y == window_center_y + 81
     assert sprite_7.width == 64
     assert sprite_7.height == 64
-
-
-def test_strafe(window):
-    sprite = arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE)
-    assert sprite.position == (0, 0)
-
-    sprite.forward(2)
-    assert sprite.position == (0, 2)
-
-    sprite.reverse(2)
-    assert sprite.position == (0, 0)
-
-    sprite.strafe(2)
-    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
-    assert pos == (2, 0)
-
-    sprite.strafe(-2)
-    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
-    assert pos == (0, 0)
-
-    sprite.angle = 90
-    sprite.strafe(2)
-    pos = round(sprite.center_x, 2), round(sprite.center_y, 2)
-    assert pos == (0.0, -2.0)
