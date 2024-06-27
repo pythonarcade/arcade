@@ -173,14 +173,12 @@ class MyGame(arcade.Window):
         # Add the bullet to the appropriate lists
         self.bullet_list.append(bullet)
 
-    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+    def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.R:
             self.reset()
         # Close the window
         elif symbol == arcade.key.ESCAPE:
             self.close()
-
-        return True
 
     def on_update(self, delta_time):
         """Movement and game logic"""

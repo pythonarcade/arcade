@@ -83,11 +83,9 @@ class MyView(arcade.View):
         self.clear()
         self.ui.draw()
 
-    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+    def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.ESCAPE:
             self.window.close()
-
-        return True
 
 
 if __name__ == '__main__':
