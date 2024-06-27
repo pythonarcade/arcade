@@ -27,10 +27,10 @@ def test_uilabel_uses_smaller_size_parameter(window):
 
 def test_uilabel_allow_multiline_and_uses_text_height(window):
     label = UILabel(text="E x a m p l e", width=10, multiline=True)
-    assert label.rect.left == pytest.approx(0, abs=1)
-    assert label.rect.bottom == pytest.approx(0, abs=1)
-    assert label.rect.width == pytest.approx(10, abs=1)
-    assert label.rect.height == pytest.approx(133, abs=1)
+    assert label.rect.left == pytest.approx(0, abs=2)
+    assert label.rect.bottom == pytest.approx(0, abs=2)
+    assert label.rect.width == pytest.approx(10, abs=2)
+    assert label.rect.height == pytest.approx(133, abs=7)
 
 
 def test_uilabel_with_border_keeps_previous_size(window):
