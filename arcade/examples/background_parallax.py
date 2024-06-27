@@ -18,7 +18,7 @@ import arcade.experimental.background as background
 
 
 SCREEN_TITLE = "Background Group Example"
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 1280
 
 # How much we'll scale up our pixel art
 PIXEL_SCALE = 3

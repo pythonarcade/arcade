@@ -15,8 +15,8 @@ SPRITE_IMAGE_SIZE = 128
 SPRITE_SCALING = 0.25
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "A-Star Path-finding"
 
 MOVEMENT_SPEED = 5
@@ -219,25 +219,28 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP:
+        if key in (arcade.key.UP, arcade.key.W):
             self.up_pressed = True
-        elif key == arcade.key.DOWN:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.down_pressed = True
-        elif key == arcade.key.LEFT:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.left_pressed = True
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = True
+        # Close the window / exit game
+        elif key == arcade.key.ESCAPE:
+            self.close()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP:
+        if key in (arcade.key.UP, arcade.key.W):
             self.up_pressed = False
-        elif key == arcade.key.DOWN:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.down_pressed = False
-        elif key == arcade.key.LEFT:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.left_pressed = False
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = False
 
 
