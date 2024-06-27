@@ -13,8 +13,8 @@ python -m arcade.examples.view_pause_screen
 
 import arcade
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1280
+HEIGHT = 720
 SPRITE_SCALING = 0.5
 
 
@@ -41,7 +41,7 @@ class GameView(arcade.View):
                                            scale=SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
-        self.player_sprite.velocity = [3, 3]
+        self.player_sprite.velocity = 3, 3
 
     def on_show_view(self):
         self.window.background_color = arcade.color.AMAZON

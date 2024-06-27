@@ -15,8 +15,8 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Better Move Sprite with Keyboard Example"
 
 # Important constants for this example
@@ -101,11 +101,13 @@ class MyGame(arcade.Window):
         # Create the speed display objects with initial text
         self.x_speed_display = arcade.Text(
             f"X Speed: {self.player_sprite.change_x:6.3f}",
-            10, 50, arcade.color.BLACK)
+            10, 50, arcade.color.BLACK, font_size=15,
+        )
 
         self.y_speed_display = arcade.Text(
             f"Y Speed: {self.player_sprite.change_y:6.3f}",
-            10, 70, arcade.color.BLACK)
+            10, 70, color=arcade.color.BLACK, font_size=15,
+        )
 
     def on_draw(self):
         """

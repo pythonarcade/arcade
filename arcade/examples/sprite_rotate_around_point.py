@@ -12,8 +12,8 @@ python -m arcade.examples.sprite_rotate_around_point
 import arcade
 from arcade.math import rotate_point
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 QUARTER_WIDTH = SCREEN_WIDTH // 4
 HALF_HEIGHT = SCREEN_HEIGHT // 2
 

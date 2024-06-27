@@ -6,8 +6,8 @@ python -m arcade.examples.transitions
 """
 import arcade
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1280
+HEIGHT = 720
 FADE_RATE = 5
 
 
@@ -32,14 +32,16 @@ class FadingView(arcade.View):
 
     def draw_fading(self):
         if self.fade_out is not None:
-            arcade.draw_rectangle_filled(self.window.width / 2, self.window.height / 2,
-                                         self.window.width, self.window.height,
-                                         (0, 0, 0, self.fade_out))
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.window.width / 2, self.window.height / 2, self.window.width, self.window.height),
+                color=(0, 0, 0, self.fade_out),
+            )
 
         if self.fade_in is not None:
-            arcade.draw_rectangle_filled(self.window.width / 2, self.window.height / 2,
-                                         self.window.width, self.window.height,
-                                         (0, 0, 0, self.fade_in))
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.window.width / 2, self.window.height / 2, self.window.width, self.window.height),
+                color=(0, 0, 0, self.fade_in),
+            )
 
 
 class MenuView(FadingView):
