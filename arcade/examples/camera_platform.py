@@ -163,8 +163,8 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width, height):
         """Resize window"""
-        self.camera.projection = self.gui_camera.projection = (-width/2, width/2, -height/2, height/2)
-        self.camera.viewport = self.gui_camera.viewport = (0, 0, width, height)
+        super().on_resize(width, height)
+        self.camera.match_screen(and_projection=True)
 
     def on_draw(self):
         """Render the screen."""
