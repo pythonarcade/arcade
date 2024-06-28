@@ -86,7 +86,9 @@ class MyGame(arcade.Window):
 
         self.background_color = arcade.color.AMAZON
         self.score_text = arcade.Text("Score: 0", 10, 20, arcade.color.WHITE, 14)
-        self.game_over_text = arcade.Text("GAME OVER", self.width / 2, self.height / 2, arcade.color.WHITE, 60, anchor_x="center")
+        self.game_over_text = arcade.Text(
+            "GAME OVER", self.width / 2, self.height / 2, arcade.color.WHITE, 60, anchor_x="center",
+        )
 
     def setup_level_one(self):
         # Load the textures for the enemies, one facing left, one right
