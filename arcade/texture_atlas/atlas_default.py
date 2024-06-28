@@ -11,7 +11,7 @@ from typing import (
     TYPE_CHECKING,
     List,
 )
-from contextlib import contextmanager
+import contextlib
 from weakref import WeakSet, WeakValueDictionary, finalize
 
 import PIL.Image
@@ -23,7 +23,6 @@ from pyglet.image.atlas import (
 from pyglet.math import Mat4
 
 from arcade.window_commands import get_window
-from arcade.gl.framebuffer import Framebuffer
 from arcade.texture.transforms import Transform
 from arcade.camera.static import static_from_raw_orthographic
 
@@ -210,13 +209,6 @@ class DefaultTextureAtlas(TextureAtlasBase):
         return self._border
 
     @property
-    def texture(self) -> "Texture2D":
-        """
-        The atlas texture.
-        """
-        return self._texture
-
-    @property
     def image_uv_texture(self) -> "Texture2D":
         """
         Texture coordinate texture for images.
@@ -229,11 +221,6 @@ class DefaultTextureAtlas(TextureAtlasBase):
         Texture coordinate texture for textures.
         """
         return self._texture_uvs.texture
-
-    @property
-    def fbo(self) -> Framebuffer:
-        """The framebuffer object for this atlas"""
-        return self._fbo
 
     @property
     def textures(self) -> List["Texture"]:
@@ -711,7 +698,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         self._texture_uvs.texture.use(unit)
 
-    @contextmanager
+    @contextlib.contextmanager
     def render_into(
         self,
         texture: "Texture",

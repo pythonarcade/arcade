@@ -43,6 +43,7 @@ from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade import Texture, DefaultTextureAtlas
+    from arcade.texture_atlas import TextureAtlasBase
 
 LOG = logging.getLogger(__name__)
 
@@ -103,14 +104,14 @@ class SpriteList(Generic[SpriteType]):
         self,
         use_spatial_hash: bool = False,
         spatial_hash_cell_size: int = 128,
-        atlas: Optional[DefaultTextureAtlas] = None,
+        atlas: Optional[TextureAtlasBase] = None,
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
         blend: bool = True,
     ) -> None:
         self.program: Optional[Program] = None
-        self._atlas: Optional[DefaultTextureAtlas] = atlas
+        self._atlas: Optional[TextureAtlasBase] = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
@@ -388,7 +389,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> Optional["DefaultTextureAtlas"]:
+    def atlas(self) -> Optional[TextureAtlasBase]:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 

@@ -21,7 +21,7 @@ from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
 from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
-from arcade.texture_atlas import DefaultTextureAtlas
+from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
 from arcade.camera import Projector
 from arcade.camera.default import DefaultProjector
 
@@ -187,7 +187,7 @@ class ArcadeContext(Context):
         )
         self.atlas_geometry: Geometry = self.geometry()
 
-        self._atlas: Optional[DefaultTextureAtlas] = None
+        self._atlas: Optional[TextureAtlasBase] = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
         self.label_cache: Dict[str, arcade.Text] = {}
@@ -227,7 +227,7 @@ class ArcadeContext(Context):
         )
 
     @property
-    def default_atlas(self) -> DefaultTextureAtlas:
+    def default_atlas(self) -> TextureAtlasBase:
         """
         The default texture atlas. This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas

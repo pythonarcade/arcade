@@ -33,6 +33,7 @@ import arcade
 
 if TYPE_CHECKING:
     from arcade import DefaultTextureAtlas, Texture
+    from arcade.texture_atlas import TextureAtlasBase
 
 from pyglet.math import Vec2
 
@@ -207,7 +208,7 @@ class TileMap:
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         tiled_map: Optional[pytiled_parser.TiledMap] = None,
         offset: Vec2 = Vec2(0, 0),
-        texture_atlas: Optional["DefaultTextureAtlas"] = None,
+        texture_atlas: Optional["TextureAtlasBase"] = None,
         lazy: bool = False,
         texture_cache_manager: Optional[arcade.TextureCacheManager] = None,
     ) -> None:
