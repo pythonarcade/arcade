@@ -754,9 +754,9 @@ class MyGame(arcade.Window):
         self.obj.draw()
         if self.label:
             arcade.draw_text("#{} {}".format(self.emitter_factory_id, self.label),
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT - 20,
-                             arcade.color.PALE_GOLD, 20, width=SCREEN_WIDTH, align="center",
-                             anchor_x="center", anchor_y="center")
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT - 25,
+                             arcade.color.PALE_GOLD, 20, width=SCREEN_WIDTH,
+                             anchor_x="center")
         if self.emitter:
             self.emitter.draw()
             arcade.draw_text("Particles: " + str(self.emitter.get_count()), 10, 30, arcade.color.PALE_GOLD, 12)

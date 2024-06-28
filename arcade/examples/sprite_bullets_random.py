@@ -7,8 +7,8 @@ python -m arcade.examples.sprite_bullets_random
 import arcade
 import random
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprites and Random Bullets Example"
 
 

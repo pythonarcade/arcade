@@ -159,7 +159,7 @@ class Sound:
         return player.time
 
 
-def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Sound]:
+def load_sound(path: Union[str, Path], streaming: bool = False) -> Sound:
     """
     Load a sound.
 

@@ -22,19 +22,20 @@ import typing
 
 import arcade
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sound Panning Demo"
 BUTTON_SIZE = 30
 
 
 SOUND_PANNING = [-1.0, -0.5, 0.0, 0.5, 1.0]
+MARGIN = SCREEN_WIDTH / 4
 BUTTON_X_POSITIONS = [
-    BUTTON_SIZE,
-    SCREEN_WIDTH / 4,
-    SCREEN_WIDTH / 2,
-    SCREEN_WIDTH / 4 * 3,
-    SCREEN_WIDTH - BUTTON_SIZE,
+    MARGIN,
+    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 1,
+    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 2,
+    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 3,
+    SCREEN_WIDTH - MARGIN,
 ]
 
 
@@ -91,7 +92,7 @@ class MyGame(arcade.Window):
                 ":resources:music/funkyrobot.mp3",
                 pan=-1.0,
                 volume=0.1,
-                center_x=BUTTON_SIZE,
+                center_x=BUTTON_X_POSITIONS[0],
                 center_y=SCREEN_HEIGHT / 2 + 150,
                 streaming=True
             )

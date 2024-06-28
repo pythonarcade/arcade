@@ -155,9 +155,10 @@ class MyGame(arcade.Window):
         """ Movement and game logic """
         self.enemy_list.update()
 
-    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+    def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.ESCAPE:
             self.close()
+
 
 def main():
     """ Main function """

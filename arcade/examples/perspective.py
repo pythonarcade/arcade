@@ -25,7 +25,7 @@ from arcade.gl import BufferDescription
 class Perspective(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600, "Perspective", resizable=True)
+        super().__init__(1280, 720, "Perspective", resizable=True)
         # Simple texture shader for the plane.
         # It support projection and model matrix
         # and a scroll value for texture coordinates

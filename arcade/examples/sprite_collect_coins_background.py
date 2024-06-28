@@ -11,11 +11,11 @@ python -m arcade.examples.sprite_collect_coins_background
 import random
 import arcade
 
-PLAYER_SCALING = 0.5
-COIN_SCALING = 0.25
+PLAYER_SCALING = 0.75
+COIN_SCALING = 0.4
 
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Collect Coins with Background Example"
 
 

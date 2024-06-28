@@ -13,8 +13,8 @@ import arcade
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprites with Properties Example"
 
 
@@ -57,7 +57,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Create the sprites
-        for x in range(100, 800, 100):
+        for x in range(180, 1100, 100):
             coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=0.3, center_x=x, center_y=400)
             coin.intensity = 'dim'
             coin.alpha = 64

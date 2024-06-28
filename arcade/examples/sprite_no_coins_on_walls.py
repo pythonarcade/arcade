@@ -15,8 +15,8 @@ import random
 SPRITE_SCALING = 0.5
 SPRITE_SCALING_COIN = 0.2
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite No Coins on Walls Example"
 
 NUMBER_OF_COINS = 50
@@ -59,8 +59,8 @@ class MyGame(arcade.Window):
 
         # -- Set up the walls
         # Create a series of horizontal walls
-        for y in range(0, 800, 200):
-            for x in range(100, 700, 64):
+        for y in range(0, 720, 200):
+            for x in range(100, 1000, 64):
                 wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
                 wall.center_x = x
                 wall.center_y = y

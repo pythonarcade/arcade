@@ -10,8 +10,8 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1289
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite with Moving Platforms Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
@@ -78,10 +78,10 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Create floor
-        for i in range(30):
+        for i in range(50):
             wall = arcade.Sprite(":resources:images/tiles/grassMid.png", scale=SPRITE_SCALING)
             wall.bottom = 0
-            wall.center_x = i * GRID_PIXEL_SIZE
+            wall.center_x = - 1000 + i * GRID_PIXEL_SIZE
             self.static_wall_list.append(wall)
 
         # Create platform side to side

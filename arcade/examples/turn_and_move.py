@@ -9,8 +9,8 @@ python -m arcade.examples.turn_and_move
 import math
 import arcade
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Turn and Move Example"
 
 # Image might not be lined up right, set this to offset

@@ -17,10 +17,10 @@ import arcade
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.3
 SPRITE_SCALING_LASER = 0.8
-COIN_COUNT = 50
+ENEMY_COUNT = 50
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Explosion Example"
 
 BULLET_SPEED = 5
@@ -140,13 +140,18 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Variables that will hold sprite lists
-        self.player_list = None
-        self.coin_list = None
-        self.bullet_list = None
-        self.explosions_list = None
+        self.player_list = arcade.SpriteList()
+        self.enemy_list = arcade.SpriteList()
+        self.bullet_list = arcade.SpriteList()
+        self.explosions_list = arcade.SpriteList()
 
-        # Set up the player info
-        self.player_sprite = None
+        # Set up the player info. Image from kenney.nl
+        self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png",
+                                           scale=SPRITE_SCALING_PLAYER)
+        self.player_sprite.center_x = 50
+        self.player_sprite.center_y = 70
+        self.player_list.append(self.player_sprite)
+
         self.score = 0
 
         # Don't show the mouse cursor
@@ -157,60 +162,51 @@ class MyGame(arcade.Window):
         self.hit_sound = arcade.sound.load_sound(":resources:sounds/explosion2.wav")
 
         self.background_color = arcade.color.BLACK
+        self.score_display = arcade.Text("", 10, 20, arcade.color.WHITE, 14)
 
-    def setup(self):
+        self.spawn_enemies()
 
-        """ Set up the game and initialize the variables. """
-
-        # Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
-        self.bullet_list = arcade.SpriteList()
-        self.explosions_list = arcade.SpriteList()
-
-        # Set up the player
+    def reset(self):
+        """Restart the game"""
+        # Reset score
         self.score = 0
 
-        # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png",
-                                           scale=SPRITE_SCALING_PLAYER)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 70
-        self.player_list.append(self.player_sprite)
+        self.enemy_list.clear()
+        self.bullet_list.clear()
+        self.explosions_list.clear()
 
-        # Create the coins
-        for coin_index in range(COIN_COUNT):
+        self.spawn_enemies()
 
-            # Create the coin instance
-            # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png",
-                                 scale=SPRITE_SCALING_COIN)
-            coin.angle = 180
-
-            # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(150, SCREEN_HEIGHT)
-
-            # Add the coin to the lists
-            self.coin_list.append(coin)
+    def spawn_enemies(self):
+        # Spawn enemies
+        for index in range(ENEMY_COUNT):
+            # Create the coin instance. Image from kenney.nl
+            enemy = arcade.Sprite(
+                ":resources:images/space_shooter/playerShip1_green.png",
+                scale=SPRITE_SCALING_COIN,
+                angle=180,
+                center_x=random.randrange(25, SCREEN_WIDTH - 25),
+                center_y=random.randrange(150, SCREEN_HEIGHT)
+            )
+            # Add the ship to the lists
+            self.enemy_list.append(enemy)
 
     def on_draw(self):
         """
         Render the screen.
         """
-
         # This command has to happen before we start drawing
         self.clear()
 
         # Draw all the sprites.
-        self.coin_list.draw()
+        self.enemy_list.draw()
         self.bullet_list.draw()
         self.player_list.draw()
         self.explosions_list.draw()
 
         # Render the text
-        arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
-        print(len(self.ctx.default_atlas.textures))
+        self.score_display.text = f"Score: {self.score}"
+        self.score_display.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -222,7 +218,6 @@ class MyGame(arcade.Window):
         """
         Called whenever the mouse button is clicked.
         """
-
         # Gunshot sound
         arcade.sound.play_sound(self.gun_sound)
 
@@ -243,6 +238,13 @@ class MyGame(arcade.Window):
         # Add the bullet to the appropriate lists
         self.bullet_list.append(bullet)
 
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.R:
+            self.reset()
+        # Close the window
+        elif symbol == arcade.key.ESCAPE:
+            self.close()
+
     def on_update(self, delta_time):
         """ Movement and game logic """
 
@@ -254,7 +256,7 @@ class MyGame(arcade.Window):
         for bullet in self.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
 
             # If it did...
             if len(hit_list) > 0:
@@ -286,10 +288,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    window.center_window()
-    window.setup()
-    arcade.run()
+    MyGame().run()
 
 
 if __name__ == "__main__":
