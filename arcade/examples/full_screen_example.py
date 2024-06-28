@@ -10,7 +10,7 @@ python -m arcade.examples.full_screen_example
 """
 
 import arcade
-from arcade.types import Rect, LRBT
+from arcade.types import LRBT
 
 SPRITE_SCALING = 0.5
 
@@ -93,14 +93,7 @@ class MyGame(arcade.Window):
             self.camera.projection = LRBT(left=0, right=SCREEN_WIDTH, bottom=0, top=SCREEN_HEIGHT)
             self.camera.viewport = LRBT(left=0, right=self.width, bottom=0, top=self.height)
 
-        if key == arcade.key.Q:
-            self.camera.position = (0, 0)
 
-        if key == arcade.key.W:
-            self.camera.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-
-        print(f"{self.camera.position=}")
-        
 def main():
     """ Main function """
     MyGame()
