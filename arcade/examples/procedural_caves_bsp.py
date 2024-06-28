@@ -279,8 +279,8 @@ class MyGame(arcade.Window):
 
         self.sprite_count_text = None
         self.draw_time_text = None
-        self.processing_time_text = None        
-        
+        self.processing_time_text = None
+
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
         self.camera_sprites = arcade.camera.Camera2D()
@@ -364,10 +364,10 @@ class MyGame(arcade.Window):
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
-        
+
         # Select the scrolling camera
         self.camera_sprites.use()
-        
+
         # Draw the sprites
         self.wall_list.draw()
         self.player_list.draw()
