@@ -18,7 +18,7 @@ from arcade.gl import BufferDescription
 class TransformEmit(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600, "Transform Emit")
+        super().__init__(1280, 720, "Transform Emit")
         self.time = 0
 
         # Program to simply draw the points

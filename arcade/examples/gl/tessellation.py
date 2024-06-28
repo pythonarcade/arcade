@@ -11,8 +11,8 @@ from array import array
 import arcade
 from arcade.gl import BufferDescription
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Bezier Curve Tessellation"
 
 

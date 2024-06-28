@@ -188,6 +188,8 @@ class RenderIndirect(arcade.Window):
         self.clear()
         method = ""
 
+        self.ctx.enable(self.ctx.BLEND)
+
         # Cycle all three rendering methods:
         # * Direct rendering of all quads
         # * Indirectly draw each individual quad (no index buffer)

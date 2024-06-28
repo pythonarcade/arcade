@@ -106,6 +106,8 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
+
+        self.ctx.enable(self.ctx.BLEND)
         try:
             self.program["time"] = self.time
             self.points.render(self.program, mode=self.ctx.POINTS)

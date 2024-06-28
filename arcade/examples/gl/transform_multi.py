@@ -20,7 +20,7 @@ import arcade
 class App(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600)
+        super().__init__(1280, 720)
         self.num_invocations = 20
 
         # Simple transform program outputting the vertex id

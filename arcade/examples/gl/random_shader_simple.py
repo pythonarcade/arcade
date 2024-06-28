@@ -38,24 +38,24 @@ class App(Window):
             # This is not needed when using load_program() as it will automatically look for the file.
             vertex_shader=self.ctx.shader_inc(
                 """
-            #version 330
+                #version 330
 
-            in vec2 in_pos;
+                in vec2 in_pos;
 
-            // This in the index of this specific vertex.
-            // Flat just specifies that the value shouldn't be interpolated between vertices.
-            flat out int vert_id;
-            out vec2 vert_pos;
+                // This in the index of this specific vertex.
+                // Flat just specifies that the value shouldn't be interpolated between vertices.
+                flat out int vert_id;
+                out vec2 vert_pos;
 
-            void main(){
-                gl_Position = vec4(in_pos, 0.0, 1.0);
+                void main(){
+                    gl_Position = vec4(in_pos, 0.0, 1.0);
 
-                vert_id = gl_VertexID;
-                vert_pos = in_pos;
-            }
-
-            """,
-                fragment_shader="""
+                    vert_id = gl_VertexID;
+                    vert_pos = in_pos;
+                }
+                """
+            ),
+            fragment_shader=self.ctx.shader_inc("""
             #version 330
 
             #include :resources:/shaders/lib/random.glsl
@@ -75,16 +75,13 @@ class App(Window):
 
             out vec4 frag_colour;
 
-            void main(){
-
+            void main() {
                 float red = random(vec4(vert_pos.x, vert_pos.y, time_seed, vert_id));
                 float green = random(vec4(vert_id, time_seed, vert_pos.y, vert_pos.x));
                 float blue = random(vec4(vert_pos.y, vert_pos.x, time_seed, vert_id));
                 frag_colour = vec4(red, green, blue, 1.0);
             }
-
-            """,
-            ),
+            """),
         )
         self._program["time_seed"] = self._time_seed
 

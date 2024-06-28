@@ -148,10 +148,6 @@ class MyGame(arcade.Window):
         self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, "2f 2f", ["in_pos", "in_vel"])])
         self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])])
 
-        # Set up blending states
-        self.ctx.enable_only(self.ctx.BLEND)
-        self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
-
         self.mouse_pos = SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
         self.time = time.time()
 
@@ -164,6 +160,10 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
+
+        # Set up blending states
+        self.ctx.enable_only(self.ctx.BLEND)
+        self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
 
         # Calculate the actual delta time and current time
         t = time.time()

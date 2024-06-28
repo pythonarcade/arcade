@@ -20,8 +20,8 @@ import arcade
 from arcade.gl.types import BufferDescription
 from arcade import hitbox
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 
 NUM_COINS = 10_000
 

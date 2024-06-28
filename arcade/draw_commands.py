@@ -399,6 +399,8 @@ def draw_ellipse_filled(
     # Fail immediately if we have no window or context
     window = get_window()
     ctx = window.ctx
+    ctx.enable(ctx.BLEND)
+
     program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
     buffer = ctx.shape_ellipse_unbuffered_buffer
@@ -414,6 +416,7 @@ def draw_ellipse_filled(
     buffer.write(data=array.array("f", (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
+    ctx.disable(ctx.BLEND)
 
 
 def draw_ellipse_outline(

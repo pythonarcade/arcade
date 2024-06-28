@@ -9,8 +9,8 @@ python -m arcade.examples.gl.shader_setup
 import arcade
 from arcade.gl import geometry
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Shader Setup With Pixel Manipulation"
 
 

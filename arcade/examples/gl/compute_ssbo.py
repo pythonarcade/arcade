@@ -129,7 +129,7 @@ class App(arcade.Window):
 
     def __init__(self, *args, **kwargs):
         # We need to specify OpenGL 4.3 when using Compute Shaders
-        super().__init__(720, 720, "Compute Shader", gl_version=(4, 3), resizable=True, vsync=True)
+        super().__init__(1280, 720, "Compute Shader", gl_version=(4, 3), resizable=True, vsync=True)
         # Keep track of time
         self.time = 0
         self.frame_time = 0
