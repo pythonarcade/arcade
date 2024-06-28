@@ -200,7 +200,7 @@ class RLDungeonGenerator:
 
         shortest_distance = 99999
         start = None
-        start_group = None
+        start_group = []
         nearest = None
 
         for group in groups:
@@ -216,7 +216,7 @@ class RLDungeonGenerator:
         self.carve_corridor_between_rooms(start, nearest)
 
         # Merge the groups
-        other_group = None
+        other_group = []
         for group in groups:
             if nearest[0] in group:
                 other_group = group
@@ -277,12 +277,17 @@ class MyGame(arcade.Window):
         self.processing_time = 0
         self.draw_time = 0
 
-        self.background_color = arcade.color.BLACK
+        self.sprite_count_text = None
+        self.draw_time_text = None
+        self.processing_time_text = None        
+        
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
         self.camera_sprites = arcade.camera.Camera2D()
         self.camera_gui = arcade.camera.Camera2D()
-        
+
+        self.background_color = arcade.color.BLACK
+
     def setup(self):
         """ Set up the game """
         self.wall_list = arcade.SpriteList(use_spatial_hash=True)
@@ -325,6 +330,26 @@ class MyGame(arcade.Window):
                 # Not in a wall! Success!
                 placed = True
 
+        # Draw info on the screen
+        sprite_count = len(self.wall_list)
+        output = f"Sprite Count: {sprite_count:,}"
+        self.sprite_count_text = arcade.Text(output,
+                                             20,
+                                             self.height - 20,
+                                             arcade.color.WHITE, 16)
+
+        output = "Drawing time:"
+        self.draw_time_text = arcade.Text(output,
+                                          20,
+                                          self.height - 40,
+                                          arcade.color.WHITE, 16)
+
+        output = "Processing time:"
+        self.processing_time_text = arcade.Text(output,
+                                                20,
+                                                self.height - 60,
+                                                arcade.color.WHITE, 16)
+
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
                                                          self.wall_list)
 
@@ -347,31 +372,18 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.player_list.draw()
 
-        # Draw info on the screen
-        sprite_count = len(self.wall_list)
-
-        #
+        # Use the non-scrolling camera
         self.camera_gui.use()
-        
-        output = f"Sprite Count: {sprite_count}"
-        left, bottom = self.camera_gui.bottom_left
-        arcade.draw_text(output,
-                         left + 20,
-                         WINDOW_HEIGHT - 20 + bottom,
-                         arcade.color.WHITE, 16)
 
+        # Draw info on the screen
+        self.sprite_count_text.draw()
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output,
-                         left + 20,
-                         WINDOW_HEIGHT - 40 + bottom,
-                         arcade.color.WHITE, 16)
+        self.draw_time_text.text = output
+        self.draw_time_text.draw()
 
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output,
-                         left + 20,
-                         WINDOW_HEIGHT - 60 + bottom,
-                         arcade.color.WHITE, 16)
-
+        self.processing_time_text.text = output
+        self.processing_time_text.draw()
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_key_press(self, key, modifiers):
