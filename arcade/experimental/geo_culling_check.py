@@ -17,7 +17,7 @@ import arcade
 class GeoCullingTest(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 400, "Cull test", resizable=True)
+        super().__init__(1280, 720, "Cull test", resizable=True)
         self.proj = 0, self.width, 0, self.height
         self.texture = arcade.Texture(
             PIL.Image.new("RGBA", (2048, 2), (255, 255, 255, 255)),
@@ -43,7 +43,7 @@ class GeoCullingTest(arcade.Window):
     def on_draw(self):
         self.clear()
         self.ctx.projection_matrix = Mat4.orthogonal_projection(*self.proj, -100, 100)
-        self.spritelist.draw()
+        self.spritelist.draw(pixelated=True)
 
     def on_resize(self, width, height):
         super().on_resize(width, height)

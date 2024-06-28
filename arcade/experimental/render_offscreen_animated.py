@@ -13,15 +13,15 @@ import time
 
 from arcade.gl import geometry
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Skyline Using Buffered Shapes"
 
 
 def make_star_field(star_count):
     """Make a bunch of circles for stars."""
 
-    shape_list = arcade.ShapeElementList()
+    shape_list = arcade.shape_list.ShapeElementList()
 
     for star_no in range(star_count):
         x = random.randrange(SCREEN_WIDTH)
@@ -29,7 +29,7 @@ def make_star_field(star_count):
         radius = random.randrange(1, 4)
         brightness = random.randrange(127, 256)
         color = (brightness, brightness, brightness)
-        shape = arcade.create_rectangle_filled(x, y, radius, radius, color)
+        shape = arcade.shape_list.create_rectangle_filled(x, y, radius, radius, color)
         shape_list.append(shape)
 
     return shape_list
@@ -49,10 +49,10 @@ def make_skyline(
 ):
     """Make a skyline"""
 
-    shape_list = arcade.ShapeElementList()
+    shape_list = arcade.shape_list.ShapeElementList()
 
     # Add the "base" that we build the buildings on
-    shape = arcade.create_rectangle_filled(
+    shape = arcade.shape_list.create_rectangle_filled(
         width / 2, skyline_height / 2, width, skyline_height, skyline_color
     )
     shape_list.append(shape)
@@ -100,7 +100,7 @@ def make_skyline(
             y1 = y2 = building_center_y + building_height / 2
             y3 = y1 + building_width / 2
 
-            shape = arcade.create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
+            shape = arcade.shape_list.create_polygon([[x1, y1], [x2, y2], [x3, y3]], skyline_color)
             shape_list.append(shape)
 
         # See if we should have some windows
@@ -143,7 +143,7 @@ def make_skyline(
 
         building_center_x += building_width / 2
 
-    shape = arcade.create_rectangles_filled_with_colors(skyline_point_list, color_list)
+    shape = arcade.shape_list.create_rectangles_filled_with_colors(skyline_point_list, color_list)
     shape_list.append(shape)
 
     return shape_list

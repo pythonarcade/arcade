@@ -264,7 +264,7 @@ class MyGame(arcade.Window):
 
         # Draw to the 'slight bloom' layer
         self.slight_bloom_screen.use()
-        self.slight_bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
+        self.slight_bloom_screen.clear(color=arcade.color.TRANSPARENT_BLACK)
 
         self.cam.use()
 
@@ -273,7 +273,7 @@ class MyGame(arcade.Window):
 
         # # Draw to the 'intense bloom' layer
         self.intense_bloom_screen.use()
-        self.intense_bloom_screen.clear(arcade.color.TRANSPARENT_BLACK)
+        self.intense_bloom_screen.clear(color=arcade.color.TRANSPARENT_BLACK)
 
         self.cam.use()
 

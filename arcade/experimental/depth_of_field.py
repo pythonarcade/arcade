@@ -144,7 +144,7 @@ class DepthOfField:
         previous_fbo = self._win.ctx.active_framebuffer
         try:
             self._win.ctx.enable(self._win.ctx.DEPTH_TEST)
-            self._render_target.clear(self._clear_color)
+            self._render_target.clear(color=self._clear_color)
             self._render_target.use()
             yield self._render_target
         finally:
