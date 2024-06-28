@@ -42,7 +42,7 @@ from arcade.gl.vertex_array import Geometry
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
-    from arcade import Texture, TextureAtlas
+    from arcade import Texture, DefaultTextureAtlas
 
 LOG = logging.getLogger(__name__)
 
@@ -1027,7 +1027,7 @@ class SpriteList(Generic[SpriteType]):
                 self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         # Workarounds for Optional[TextureAtlas] + slow . lookup speed
-        atlas: TextureAtlas = self.atlas  # type: ignore
+        atlas: DefaultTextureAtlas = self.atlas  # type: ignore
         atlas_texture: Texture2D = atlas.texture
 
         # Set custom filter or reset to default

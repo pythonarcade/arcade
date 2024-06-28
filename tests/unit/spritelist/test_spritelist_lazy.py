@@ -1,6 +1,6 @@
 import pytest
 import arcade
-from arcade import TextureAtlas
+from arcade import DefaultTextureAtlas
 
 
 def test_create_lazy_equals_true():
@@ -41,7 +41,7 @@ def test_manual_initialization_after_lazy_equals_true(window):
     assert spritelist._initialized
     assert spritelist._sprite_pos_buf
     assert spritelist._geometry
-    assert isinstance(spritelist.atlas, TextureAtlas)
+    assert isinstance(spritelist.atlas, DefaultTextureAtlas)
 
     # Uncomment the next line and set a breakpoint on it to
     # spot-check the number of sprites drawn (it should be zero).

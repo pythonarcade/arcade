@@ -14,7 +14,7 @@
 # from arcade import cache
 # from arcade.texture import ImageData, Texture
 
-# from .atlas_2d import AtlasRegion, TextureAtlas
+# from .atlas_2d import AtlasRegion, DefaultTextureAtlas
 
 
 # class FakeImage:
@@ -39,7 +39,7 @@
 #     }
 
 
-# def save_atlas(atlas: TextureAtlas, directory: Path, name: str, resource_root: Path):
+# def save_atlas(atlas: DefaultTextureAtlas, directory: Path, name: str, resource_root: Path):
 #     """
 #     Dump the atlas to a file. This includes the atlas image
 #     and metadata.
@@ -107,7 +107,7 @@
 #     perf_data['load_meta'] = perf_counter() - t
 
 #     t = perf_counter()
-#     atlas = TextureAtlas(
+#     atlas = DefaultTextureAtlas(
 #         meta['size'],
 #         border=meta["border"],
 #         auto_resize=False,

@@ -10,7 +10,7 @@ def common():
 class Common:
 
     @staticmethod
-    def check_internals(atlas: arcade.TextureAtlas, *, num_textures = 0, num_images = 0):
+    def check_internals(atlas: arcade.DefaultTextureAtlas, *, num_textures = 0, num_images = 0):
         # Images
         # assert len(atlas._images) == num_images
         # assert len(atlas._image_uv_slots) == num_images

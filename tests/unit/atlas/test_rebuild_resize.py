@@ -2,7 +2,7 @@ import PIL
 import pytest
 from pyglet.image.atlas import AllocatorException
 import arcade
-from arcade import TextureAtlas, load_texture
+from arcade import DefaultTextureAtlas, load_texture
 
 
 def test_rebuild(ctx, common):
@@ -11,7 +11,7 @@ def test_rebuild(ctx, common):
     tex_small = load_texture(":resources:images/topdown_tanks/treeGreen_small.png")
     # 64 x 64
     tex_big = load_texture(":resources:images/topdown_tanks/treeGreen_large.png")
-    atlas = TextureAtlas((104, 104), border=1)
+    atlas = DefaultTextureAtlas((104, 104), border=1)
     slot_a, region_a = atlas.add(tex_big)
     slot_b, region_b = atlas.add(tex_small)
     region_a = atlas.get_texture_region_info(tex_big.atlas_name)
@@ -38,7 +38,7 @@ def test_rebuild(ctx, common):
 
 def test_resize(ctx, common):
     """Attempt to resize the atlas"""
-    atlas = TextureAtlas((50, 100), border=1, auto_resize=False)
+    atlas = DefaultTextureAtlas((50, 100), border=1, auto_resize=False)
     t1 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (255, 0, 0, 255)))
     t2 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (0, 255, 0, 255)))
     atlas.add(t1)
@@ -52,7 +52,7 @@ def test_resize(ctx, common):
         atlas.resize((50, 99))
 
     # Resize past max size
-    atlas = TextureAtlas((50, 50), border=0)
+    atlas = DefaultTextureAtlas((50, 50), border=0)
     atlas._max_size = 60, 60
     t1 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
     t2 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))

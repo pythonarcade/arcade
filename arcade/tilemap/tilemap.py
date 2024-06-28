@@ -32,7 +32,7 @@ from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
 import arcade
 
 if TYPE_CHECKING:
-    from arcade import TextureAtlas, Texture
+    from arcade import DefaultTextureAtlas, Texture
 
 from pyglet.math import Vec2
 
