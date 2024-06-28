@@ -34,7 +34,7 @@ class MyGame(arcade.Window):
         """
         # Open a window in full screen mode. Remove fullscreen=True if
         # you don't want to start this way.
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=False)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fullscreen=True)
 
         # This will get the size of the window, and set the viewport to match.
         # So if the window is 1000x1000, then so will our viewport. If
@@ -44,6 +44,8 @@ class MyGame(arcade.Window):
 
         # The camera used to update the viewport and projection on screen resize.
         self.camera = arcade.camera.Camera2D(position=(0, 0))
+        self.camera.projection = LRBT(left=0, right=self.width, bottom=0, top=self.height)
+        self.camera.viewport = LRBT(left=0, right=self.width, bottom=0, top=self.height)
 
     def on_draw(self):
         """
@@ -52,11 +54,11 @@ class MyGame(arcade.Window):
 
         self.clear()
         self.camera.use()
-
+        self.camera.position = 0, 0
         # Draw some boxes on the bottom so we can see how they change
         for count in range(100):
-            x = count * 64
-            y = count * 64
+            x = count * 128
+            y = count * 128
             width = 128
             height = 128
             arcade.draw_texture_rectangle(x, y, width, height, self.example_image)
