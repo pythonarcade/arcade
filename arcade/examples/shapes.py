@@ -128,13 +128,9 @@ class MyGame(arcade.Window):
         """ Render the screen. """
         self.clear()
 
-        self.ctx.enable(self.ctx.BLEND)
-
         # Draw the shapes
         for shape in self.shape_list:
             shape.draw()
-
-        self.ctx.disable(self.ctx.BLEND)
 
 
 def main():
