@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Iterable, Dict, Optional, Union, Sequence, Tuple
-from contextlib import contextmanager
 
 import pyglet
 from pyglet import gl
@@ -52,16 +51,13 @@ class ArcadeContext(Context):
     def __init__(
         self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
     ) -> None:
-
         super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
-
-        # Enabled blending by default
-        self.enable(self.BLEND)
-        self.blend_func = self.BLEND_DEFAULT
 
         # Set up a default orthogonal projection for sprites and shapes
         self._window_block: UniformBufferObject = window.ubo
         self.bind_window_block()
+
+        self.blend_func = self.BLEND_DEFAULT
 
         self._default_camera: DefaultProjector = DefaultProjector(context=self)
         self.current_camera: Projector = self._default_camera
@@ -315,20 +311,6 @@ class ArcadeContext(Context):
             raise ValueError("view_matrix must be a Mat4 object")
 
         self.window.view = value
-
-    @contextmanager
-    def pyglet_rendering(self):
-        """
-        Context manager for doing rendering with pyglet
-        ensuring context states are reverted. This
-        affects things like blending.
-        """
-        blend_enabled = self.is_enabled(self.BLEND)
-        try:
-            yield
-        finally:
-            if blend_enabled:
-                self.enable(self.BLEND)
 
     def load_program(
         self,

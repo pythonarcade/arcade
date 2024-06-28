@@ -44,16 +44,15 @@ class VideoPlayer:
             self._width = size[0] or self.width
             self._height = size[1] or self.height
 
-        with self.ctx.pyglet_rendering():
-            self.ctx.disable(self.ctx.BLEND)
-            video_texture = self.player.texture
-            if video_texture:
-                video_texture.blit(
-                    left,
-                    bottom,
-                    width=self.width,
-                    height=self.height,
-                )
+        self.ctx.disable(self.ctx.BLEND)
+        video_texture = self.player.texture
+        if video_texture:
+            video_texture.blit(
+                left,
+                bottom,
+                width=self.width,
+                height=self.height,
+            )
 
     @property
     def width(self) -> int:
@@ -89,6 +88,6 @@ class VideoPlayerView(arcade.View):
 
 
 if __name__ == "__main__":
-    window = arcade.Window(800, 600, "Video Player")
+    window = arcade.Window(1280, 720, "Video Player")
     window.show_view(VideoPlayerView(":resources:video/earth.mp4"))
     window.run()

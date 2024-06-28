@@ -808,9 +808,11 @@ class ShapeElementList(Generic[TShape]):
     move a lot of shapes it's better to use pyglet's shape system.
 
     Adding new shapes is fast, but removing them is slow.
+
+    :param blend: If True, shapes will be drawn with blending enabled.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, blend: bool = True) -> None:
         # The context this shape list belongs to
         self.ctx = get_window().ctx
         # List of sprites in the sprite list
@@ -823,6 +825,8 @@ class ShapeElementList(Generic[TShape]):
         self.program = self.ctx.shape_element_list_program
         self.batches: Dict[int, _Batch] = OrderedDict()
         self.dirties: Set[_Batch] = set()
+
+        self._blend = blend
 
     def append(self, item: TShape) -> None:
         """
@@ -871,12 +875,17 @@ class ShapeElementList(Generic[TShape]):
         self.program["Angle"] = -self._angle
 
         self.update()
-
         self.dirties.clear()
+
+        if self._blend:
+            self.ctx.enable_only(self.ctx.BLEND)
 
         # Draw the batches
         for batch in self.batches.values():
             batch.draw()
+
+        if self._blend:
+            self.ctx.disable(self.ctx.BLEND)
 
     def clear(self, position: bool = True, angle: bool = True) -> None:
         """

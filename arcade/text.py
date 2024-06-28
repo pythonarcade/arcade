@@ -97,11 +97,7 @@ def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     :param label: a pyglet label to wrap and draw
     """
     assert isinstance(label, pyglet.text.Label)
-    window = arcade.get_window()
-
-    # window.ctx.reset()
-    with window.ctx.pyglet_rendering():
-        label.draw()
+    label.draw()
 
 
 class Text:

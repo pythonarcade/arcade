@@ -96,6 +96,7 @@ class SpriteList(Generic[SpriteType]):
             :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
     :param visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
+    :param blend: Enable or disable blending for the sprite list
     """
 
     def __init__(
@@ -106,12 +107,14 @@ class SpriteList(Generic[SpriteType]):
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
+        blend: bool = True,
     ) -> None:
         self.program: Optional[Program] = None
         self._atlas: Optional[TextureAtlas] = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
+        self._blend = blend
         self._color: Tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
 
         # The initial capacity of the spritelist buffers (internal)
@@ -1015,12 +1018,13 @@ class SpriteList(Generic[SpriteType]):
         self._init_deferred()
         self._write_sprite_buffers_to_gpu()
 
-        self.ctx.enable(self.ctx.BLEND)
-        # Set custom blend function or revert to default
-        if blend_function is not None:
-            self.ctx.blend_func = blend_function
-        else:
-            self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+        if self._blend:
+            self.ctx.enable(self.ctx.BLEND)
+            # Set custom blend function or revert to default
+            if blend_function is not None:
+                self.ctx.blend_func = blend_function
+            else:
+                self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         # Workarounds for Optional[TextureAtlas] + slow . lookup speed
         atlas: TextureAtlas = self.atlas  # type: ignore
@@ -1060,6 +1064,9 @@ class SpriteList(Generic[SpriteType]):
             mode=self.ctx.POINTS,
             vertices=self._sprite_index_slots,
         )
+
+        if self._blend:
+            self.ctx.disable(self.ctx.BLEND)
 
     def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1.0) -> None:
         """Draw all the hit boxes in this list"""
