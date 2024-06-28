@@ -151,7 +151,10 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "use_declarations_in": [
             "arcade.texture_atlas",
             "arcade.texture_atlas.base",
-            "arcade.texture_atlas.atlas_2d"
+            "arcade.texture_atlas.atlas_default",
+            "arcade.texture_atlas.region",
+            "arcade.texture_atlas.uv_data",
+            "arcade.texture_atlas.ref_counters",
         ]
     },
     "perf_info.rst": {

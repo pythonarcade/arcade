@@ -587,7 +587,7 @@ def create_text_sprite(
     italic: bool = False,
     anchor_x: str = "left",
     multiline: bool = False,
-    texture_atlas: Optional[arcade.TextureAtlas] = None,
+    texture_atlas: Optional[arcade.DefaultTextureAtlas] = None,
     background_color: Optional[RGBA255] = None,
 ) -> arcade.Sprite:
     """

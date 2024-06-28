@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .atlas_2d import (
+from .atlas_default import (
     DefaultTextureAtlas,
     AtlasRegion,
 )

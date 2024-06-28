@@ -103,14 +103,14 @@ class SpriteList(Generic[SpriteType]):
         self,
         use_spatial_hash: bool = False,
         spatial_hash_cell_size: int = 128,
-        atlas: Optional["TextureAtlas"] = None,
+        atlas: Optional[DefaultTextureAtlas] = None,
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
         blend: bool = True,
     ) -> None:
         self.program: Optional[Program] = None
-        self._atlas: Optional[TextureAtlas] = atlas
+        self._atlas: Optional[DefaultTextureAtlas] = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
@@ -388,7 +388,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> Optional["TextureAtlas"]:
+    def atlas(self) -> Optional["DefaultTextureAtlas"]:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 

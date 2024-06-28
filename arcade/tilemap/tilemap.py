@@ -207,7 +207,7 @@ class TileMap:
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         tiled_map: Optional[pytiled_parser.TiledMap] = None,
         offset: Vec2 = Vec2(0, 0),
-        texture_atlas: Optional["TextureAtlas"] = None,
+        texture_atlas: Optional["DefaultTextureAtlas"] = None,
         lazy: bool = False,
         texture_cache_manager: Optional[arcade.TextureCacheManager] = None,
     ) -> None:
@@ -628,7 +628,7 @@ class TileMap:
     def _process_image_layer(
         self,
         layer: pytiled_parser.ImageLayer,
-        texture_atlas: "TextureAtlas",
+        texture_atlas: "DefaultTextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
@@ -713,7 +713,7 @@ class TileMap:
     def _process_tile_layer(
         self,
         layer: pytiled_parser.TileLayer,
-        texture_atlas: "TextureAtlas",
+        texture_atlas: "DefaultTextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
@@ -790,7 +790,7 @@ class TileMap:
     def _process_object_layer(
         self,
         layer: pytiled_parser.ObjectLayer,
-        texture_atlas: "TextureAtlas",
+        texture_atlas: "DefaultTextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
@@ -985,7 +985,7 @@ def load_tilemap(
     use_spatial_hash: bool = False,
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
     offset: Vec2 = Vec2(0, 0),
-    texture_atlas: Optional["TextureAtlas"] = None,
+    texture_atlas: Optional["DefaultTextureAtlas"] = None,
     lazy: bool = False,
 ) -> TileMap:
     """

@@ -36,7 +36,6 @@ import arcade
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
-    from arcade.texture import ImageData
     from arcade.texture_atlas import AtlasRegion
 
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
