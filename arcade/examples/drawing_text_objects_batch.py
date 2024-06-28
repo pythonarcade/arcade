@@ -333,8 +333,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw all the text objects
-        with self.ctx.pyglet_rendering():
-            self.batch.draw()
+        self.batch.draw()
 
         arcade.draw_point(
             self.default_baseline_left.x,

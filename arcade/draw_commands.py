@@ -399,6 +399,8 @@ def draw_ellipse_filled(
     # Fail immediately if we have no window or context
     window = get_window()
     ctx = window.ctx
+    ctx.enable(ctx.BLEND)
+
     program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
     buffer = ctx.shape_ellipse_unbuffered_buffer
@@ -414,6 +416,7 @@ def draw_ellipse_filled(
     buffer.write(data=array.array("f", (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
+    ctx.disable(ctx.BLEND)
 
 
 def draw_ellipse_outline(
@@ -453,6 +456,8 @@ def draw_ellipse_outline(
     # Normalize the color because this shader takes a float uniform
     color_normalized = Color.from_iterable(color).normalized
 
+    ctx.enable(ctx.BLEND)
+
     # Pass data to shader
     program["color"] = color_normalized
     program["shape"] = width / 2, height / 2, tilt_angle, border_width
@@ -461,6 +466,8 @@ def draw_ellipse_outline(
     buffer.write(data=array.array("f", (center_x, center_y)))
 
     geometry.render(program, mode=gl.GL_POINTS, vertices=1)
+
+    ctx.disable(ctx.BLEND)
 
 
 # --- END ELLIPSE FUNCTIONS # # #
@@ -508,10 +515,14 @@ def _generic_draw_line_strip(
         vertex_buffer.orphan()
         color_buffer.orphan()
 
+    ctx.enable(ctx.BLEND)
+
     # Write data & render
     vertex_buffer.write(vertex_array)
     color_buffer.write(color_array)
     geometry.render(program, mode=mode)
+
+    ctx.disable(ctx.BLEND)
 
 
 def draw_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1) -> None:
@@ -575,7 +586,9 @@ def draw_line(
     line_pos_buffer.orphan()  # Allocate new buffer internally
     line_pos_buffer.write(data=array.array("f", (start_x, start_y, end_x, end_y)))
 
+    ctx.enable(ctx.BLEND)
     geometry.render(program, mode=gl.GL_LINES, vertices=2)
+    ctx.disable(ctx.BLEND)
 
 
 def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1) -> None:
@@ -610,12 +623,16 @@ def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1) -> 
     else:
         ctx.shape_line_buffer_pos.orphan()
 
+    ctx.enable(ctx.BLEND)
+
     # Pass data to shader
     program["line_width"] = line_width
     program["color"] = color_normalized
     line_buffer_pos.write(data=line_pos_array)
 
     geometry.render(program, mode=gl.GL_LINES, vertices=num_points)
+
+    ctx.disable(ctx.BLEND)
 
 
 # --- BEGIN POINT FUNCTIONS # # #
@@ -663,6 +680,8 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1) -> None:
     # if data_size > buffer.size:
     buffer.orphan(size=data_size)
 
+    ctx.enable(ctx.BLEND)
+
     # Pass data to shader
     program["color"] = color_normalized
     program["shape"] = size, size, 0
@@ -670,6 +689,8 @@ def draw_points(point_list: PointList, color: RGBA255, size: float = 1) -> None:
 
     # Only render the # of points we have complete data for
     geometry.render(program, mode=ctx.POINTS, vertices=data_size // 8)
+
+    ctx.disable(ctx.BLEND)
 
 
 # --- END POINT FUNCTIONS # # #
@@ -836,7 +857,6 @@ def draw_lbwh_rectangle_outline(
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param border_width: The width of the border in pixels. Defaults to one.
     """
-
     draw_rect_outline(LBWH(left, bottom, width, height), color, border_width)
 
 
@@ -879,7 +899,6 @@ def draw_lbwh_rectangle_filled(
     :param color: The color of the rectangles an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     """
-
     draw_rect_filled(LBWH(left, bottom, width, height), color)
 
 
@@ -1031,6 +1050,8 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
 
+    ctx.enable(ctx.BLEND)
+
     # Pass data to the shader
     program["color"] = color_normalized
     program["shape"] = rect.width, rect.height, tilt_angle
@@ -1038,6 +1059,8 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
     buffer.write(data=array.array("f", (rect.x, rect.y)))
 
     geometry.render(program, mode=ctx.POINTS, vertices=1)
+
+    ctx.disable(ctx.BLEND)
 
 
 def draw_rect_outline_kwargs(

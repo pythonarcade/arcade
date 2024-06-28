@@ -30,5 +30,5 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    MyGame(800, 600, "Shadertoy Demo")
+    MyGame(1280, 720, "Shadertoy Demo")
     arcade.run()

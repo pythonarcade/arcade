@@ -465,8 +465,7 @@ class UIInputText(UIWidget):
         self._update_layout()
         self.prepare_render(surface)
 
-        with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+        self.layout.draw()
 
 
 class UITextArea(UIWidget):
@@ -582,8 +581,7 @@ class UITextArea(UIWidget):
     def do_render(self, surface: Surface):
         self._update_layout()
         self.prepare_render(surface)
-        with surface.ctx.pyglet_rendering():
-            self.layout.draw()
+        self.layout.draw()
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):

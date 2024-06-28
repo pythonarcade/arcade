@@ -29,9 +29,9 @@ class Background:
         shader: Optional[gl.Program] = None,
         geometry: Optional[gl.Geometry] = None,
     ):
-
+        self._ctx = get_window().ctx
         if shader is None:
-            shader = get_window().ctx.load_program(
+            shader = self._ctx.load_program(
                 vertex_shader=":system:/shaders/background_vs.glsl",
                 fragment_shader=":system:/shaders/background_fs.glsl",
             )
@@ -95,6 +95,7 @@ class Background:
         """
         This will generate a Background from an input image source. The generated texture is not stored in the
         texture cache or any texture atlas.
+
         :param tex_src: The image source.
         :param pos: The position of the Background (Bottom Left Corner by default).
         :param size: The width and height of the Background.
@@ -211,9 +212,13 @@ class Background:
                 "Attempting to set uniform 'pos' when the shader does not have a uniform with that name."
             )
 
-        self.texture.use(0)
+        if self.blend < 1.0:
+            self._ctx.enable(self._ctx.BLEND)
 
+        self.texture.use(0)
         self.geometry.render(self.shader)
+
+        self._ctx.disable(self._ctx.BLEND)
 
     def blend_layer(self, other, percent: float):
         self.blend = 1 - percent

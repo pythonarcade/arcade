@@ -126,8 +126,6 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Render the screen. """
-
-        # Clear teh screen
         self.clear()
 
         # Draw the shapes

@@ -104,5 +104,5 @@ class IndexBufferExample(arcade.Window):
 
 
 if __name__ == "__main__":
-    IndexBufferExample(800, 600, "Index Buffers: 8, 16 and 32 bit")
+    IndexBufferExample(1280, 720, "Index Buffers: 8, 16 and 32 bit")
     arcade.run()

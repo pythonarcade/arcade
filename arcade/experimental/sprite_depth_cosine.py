@@ -22,7 +22,7 @@ from pyglet.graphics import Batch
 
 
 # All constants are in pixels
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 1280, 720
 
 NUM_SPRITES = 10
 

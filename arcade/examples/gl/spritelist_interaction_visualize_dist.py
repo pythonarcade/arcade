@@ -11,8 +11,8 @@ python -m arcade.examples.gl.spritelist_interaction_visualize_dist
 import random
 import arcade
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 NUM_COINS = 1000
 INTERACTION_RADIUS = 250
 

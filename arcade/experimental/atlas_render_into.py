@@ -11,7 +11,7 @@ import arcade
 class AtlasRenderDemo(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600, "Atlas Render Demo")
+        super().__init__(1280, 720, "Atlas Render Demo")
         self.atlas = arcade.TextureAtlas((600, 600))
 
         self.texture_1 = arcade.Texture.create_empty("render_area_1", size=(256, 256))
