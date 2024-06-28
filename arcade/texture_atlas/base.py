@@ -72,20 +72,21 @@ class ImageDataRefCounter:
     def dec_ref_by_hash(self, hash: str) -> int:
         """
         Decrement the reference count for an image by hash returning the new value.
+
+        Returns -1 if the hash is no longer tracked meaning it doesn't exist
+        and/or the reference count is already zero. Otherwise the updated ref counter
+        is returned. When 0 is returned we removed the last reference to the image.
         """
-        if hash not in self._data:
-            raise RuntimeError(f"Image {hash} not in ref counter")
-
-        val = self._data[hash] - 1
-        self._data[hash] = val
-
+        val = self._data.get(hash, 0) - 1
         if val < 0:
-            raise RuntimeError(f"Image {hash} ref count went below zero")
+            return -1
+
         if val == 0:
             del self._data[hash]
+        else:
+            self._data[hash] = val
 
         self._num_decref += 1
-
         return val
 
     def get_ref_count(self, image_data: "ImageData") -> int:
@@ -155,20 +156,21 @@ class UniqueTextureRefCounter:
     def dec_ref_by_atlas_name(self, atlas_name: str) -> int:
         """
         Decrement the reference count for an image by name returning the new value.
+
+        Returns -1 if the atlas name is no longer tracked meaning it doesn't exist
+        and/or the reference count is already zero. Otherwise the updated ref counter
+        is returned. When 0 is returned we removed the last reference to the texture.
         """
-        if atlas_name not in self._data:
-            raise RuntimeError(f"Image {atlas_name} not in ref counter")
-
-        val = self._data[atlas_name] - 1
-        self._data[atlas_name] = val
-
+        val = self._data.get(atlas_name, 0) - 1
         if val < 0:
-            raise RuntimeError(f"Image {atlas_name} ref count went below zero")
+            return -1
+
         if val == 0:
             del self._data[atlas_name]
+        else:
+            self._data[atlas_name] = val
 
         self._num_decref += 1
-
         return val
 
     def get_ref_count(self, image_data: "ImageData") -> int:

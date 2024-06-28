@@ -259,14 +259,15 @@ class UVData:
     def free_slot_by_name(self, name: str) -> None:
         """
         Free a slot for a texture by name.
+        If the slot is not found no action is taken
 
         :param name: The name of the texture
         """
-        slot = self._slots.pop(name)
-        if slot is None:
-            raise Exception(f"Texture '{name}' not found in UVData")
-
-        self._slots_free.appendleft(slot)
+        try:
+            slot = self._slots.pop(name)
+            self._slots_free.appendleft(slot)
+        except KeyError:
+            return
 
     def set_slot_data(self, slot: int, data: TexCoords) -> None:
         """
@@ -741,10 +742,9 @@ class TextureAtlas(TextureAtlasBase):
         Remove a texture from the atlas without having the texture instance.
         This is for example called by the finalizer when the texture is GCed.
         """
-        # print("FINALIZE REMOVER", atlas_name, hash)
         # LOG.info("Removing texture: %s", atlas_name)
 
-        # Remove the unique texture if it's there
+        # Remove the unique texture if ref counter reaches 0
         if self._unique_texture_ref_count.dec_ref_by_atlas_name(atlas_name) == 0:
             # We need to remove the texture if manually removed from the atlas.
             # Otherwise it will be removed by GC and trigger KeyError
@@ -757,12 +757,11 @@ class TextureAtlas(TextureAtlasBase):
                 del self._texture_regions[atlas_name]
             except KeyError:
                 pass
-            try:
-                self._texture_uvs.free_slot_by_name(atlas_name)
-            except KeyError:
-                pass
 
-        # Reclaim the image in the atlas if it's not used by any other texture
+            # Reclaim the image uv slot
+            self._texture_uvs.free_slot_by_name(atlas_name)
+
+        # Remove the image if ref counter reaches 0
         if self._image_ref_count.dec_ref_by_hash(hash) == 0:
             # We need to remove the image if manually removed from the atlas.
             # Otherwise it will be removed by GC and trigger KeyError
@@ -774,6 +773,8 @@ class TextureAtlas(TextureAtlasBase):
                 del self._image_regions[hash]
             except KeyError:
                 pass
+
+            # Reclaim the image uv slot
             self._image_uvs.free_slot_by_name(hash)
 
     def update_texture_image(self, texture: "Texture"):
