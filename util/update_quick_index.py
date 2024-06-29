@@ -52,12 +52,8 @@ MEMBER_SPECIAL_RULES = {
 
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
-    "ImageData",
-    "FakeImage",
     "load_atlas",
     "save_atlas",
-    "ImageDataRefCounter",
-    "UVData",
 ]
 # Helper callable which returns a bool. Use it with filter
 member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
