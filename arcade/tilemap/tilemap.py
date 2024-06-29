@@ -14,7 +14,7 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
@@ -50,7 +50,7 @@ __all__ = ["TileMap", "load_tilemap", "read_tmx"]
 prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
 
-def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> Tuple[int, int, int, int]:
+def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> tuple[int, int, int, int]:
     image_x = 0
     image_y = 0
     if tile.tileset.image is not None:
@@ -188,10 +188,10 @@ class TileMap:
     "The background color of the map."
     scaling: float
     "A global scaling value to be applied to all Sprites in the map."
-    sprite_lists: Dict[str, SpriteList]
+    sprite_lists: dict[str, SpriteList]
     """A dictionary mapping SpriteLists to their layer names. This is used
                     for all tile layers of the map."""
-    object_lists: Dict[str, List[TiledObject]]
+    object_lists: dict[str, list[TiledObject]]
     """
     A dictionary mapping TiledObjects to their layer names. This is used
     for all object layers of the map.
@@ -203,7 +203,7 @@ class TileMap:
         self,
         map_file: Union[str, Path] = "",
         scaling: float = 1.0,
-        layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+        layer_options: Optional[dict[str, dict[str, Any]]] = None,
         use_spatial_hash: bool = False,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         tiled_map: Optional[pytiled_parser.TiledMap] = None,
@@ -255,8 +255,8 @@ class TileMap:
         self.offset = offset
 
         # Dictionaries to store the SpriteLists for processed layers
-        self.sprite_lists: Dict[str, SpriteList] = OrderedDict()
-        self.object_lists: Dict[str, List[TiledObject]] = OrderedDict()
+        self.sprite_lists: dict[str, SpriteList] = OrderedDict()
+        self.object_lists: dict[str, list[TiledObject]] = OrderedDict()
         self.properties = self.tiled_map.properties
 
         global_options = {  # type: ignore
@@ -280,10 +280,10 @@ class TileMap:
     def _process_layer(
         self,
         layer: pytiled_parser.Layer,
-        global_options: Dict[str, Any],
-        layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+        global_options: dict[str, Any],
+        layer_options: Optional[dict[str, dict[str, Any]]] = None,
     ) -> None:
-        processed: Union[SpriteList, Tuple[Optional[SpriteList], Optional[List[TiledObject]]]]
+        processed: Union[SpriteList, tuple[Optional[SpriteList], Optional[list[TiledObject]]]]
 
         options = global_options
 
@@ -319,7 +319,7 @@ class TileMap:
         self,
         x: float,
         y: float,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """
         Given a set of coordinates in pixel units, this returns the cartesian coordinates.
 
@@ -430,7 +430,7 @@ class TileMap:
         scaling: float = 1.0,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         custom_class: Optional[type] = None,
-        custom_class_args: Dict[str, Any] = {},
+        custom_class_args: dict[str, Any] = {},
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
 
@@ -505,7 +505,7 @@ class TileMap:
                     print("Warning, only one hit box supported for tile.")
 
             for hitbox in tile.objects.tiled_objects:
-                points: List[Point2] = []
+                points: list[Point2] = []
                 if isinstance(hitbox, pytiled_parser.tiled_object.Rectangle):
                     if hitbox.size is None:
                         print(
@@ -572,7 +572,7 @@ class TileMap:
                     points = [(point[1], point[0]) for point in points]
 
                 my_sprite.hit_box = RotatableHitBox(
-                    cast(List[Point2], points),
+                    cast(list[Point2], points),
                     position=my_sprite.position,
                     angle=my_sprite.angle,
                     scale=my_sprite.scale_xy,
@@ -635,7 +635,7 @@ class TileMap:
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
-        custom_class_args: Dict[str, Any] = {},
+        custom_class_args: dict[str, Any] = {},
     ) -> SpriteList:
         sprite_list: SpriteList = SpriteList(
             use_spatial_hash=use_spatial_hash,
@@ -720,7 +720,7 @@ class TileMap:
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
-        custom_class_args: Dict[str, Any] = {},
+        custom_class_args: dict[str, Any] = {},
     ) -> SpriteList:
         sprite_list: SpriteList = SpriteList(
             use_spatial_hash=use_spatial_hash,
@@ -797,15 +797,15 @@ class TileMap:
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         offset: Vec2 = Vec2(0, 0),
         custom_class: Optional[type] = None,
-        custom_class_args: Dict[str, Any] = {},
-    ) -> Tuple[Optional[SpriteList], Optional[List[TiledObject]]]:
+        custom_class_args: dict[str, Any] = {},
+    ) -> tuple[Optional[SpriteList], Optional[list[TiledObject]]]:
         if not scaling:
             scaling = self.scaling
 
         sprite_list: Optional[SpriteList] = None
-        objects_list: Optional[List[TiledObject]] = []
+        objects_list: Optional[list[TiledObject]] = []
 
-        shape: Union[List[Point2], Tuple[int, int, int, int], Point2, None] = None
+        shape: Union[list[Point2], tuple[int, int, int, int], Point2, None] = None
 
         for cur_object in layer.tiled_objects:
             # shape: Optional[Union[Point, PointList, Rect]] = None
@@ -935,7 +935,7 @@ class TileMap:
             elif isinstance(cur_object, pytiled_parser.tiled_object.Polygon) or isinstance(
                 cur_object, pytiled_parser.tiled_object.Polyline
             ):
-                points: List[Point2] = []
+                points: list[Point2] = []
                 shape = points
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
@@ -982,7 +982,7 @@ class TileMap:
 def load_tilemap(
     map_file: Union[str, Path],
     scaling: float = 1.0,
-    layer_options: Optional[Dict[str, Dict[str, Any]]] = None,
+    layer_options: Optional[dict[str, dict[str, Any]]] = None,
     use_spatial_hash: bool = False,
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
     offset: Vec2 = Vec2(0, 0),

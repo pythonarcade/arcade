@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Tuple
+from typing import Optional
 
 
 class PyMunk:
@@ -15,7 +15,7 @@ class PyMunk:
 
     def __init__(self):
         self.damping: Optional[float] = None
-        self.gravity: Optional[Tuple[float, float]] = None
+        self.gravity: Optional[tuple[float, float]] = None
         self.max_velocity: Optional[float] = None
         self.max_horizontal_velocity: Optional[float] = None
         self.max_vertical_velocity: Optional[float] = None

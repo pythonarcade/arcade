@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
+from typing import Any, Optional, Type, Union, TYPE_CHECKING
 from pathlib import Path
 
 import PIL.Image
@@ -84,7 +84,7 @@ class ImageData:
         return self.image.height
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         The size of the image
         """
@@ -190,11 +190,11 @@ class Texture:
 
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
-        self._crop_values: Optional[Tuple[int, int, int, int]] = None
-        self._properties: Dict[str, Any] = {}
+        self._crop_values: Optional[tuple[int, int, int, int]] = None
+        self._properties: dict[str, Any] = {}
 
     @property
-    def properties(self) -> Dict[str, Any]:
+    def properties(self) -> dict[str, Any]:
         """
         A dictionary of properties for this texture.
         This can be used to store any data you want.
@@ -232,7 +232,7 @@ class Texture:
         *,
         hash: str,
         hit_box_algorithm: HitBoxAlgorithm,
-        vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3),
+        vertex_order: tuple[int, int, int, int] = (0, 1, 2, 3),
     ) -> str:
         """
         Create a cache name for the texture.
@@ -251,7 +251,7 @@ class Texture:
         return f"{hash}|{vertex_order}|{hit_box_algorithm.cache_name}|"
 
     @classmethod
-    def create_atlas_name(cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)):
+    def create_atlas_name(cls, hash: str, vertex_order: tuple[int, int, int, int] = (0, 1, 2, 3)):
         return f"{hash}|{vertex_order}"
 
     def _update_cache_names(self):
@@ -270,7 +270,7 @@ class Texture:
 
     @classmethod
     def create_image_cache_name(
-        cls, path: Union[str, Path], crop: Tuple[int, int, int, int] = (0, 0, 0, 0)
+        cls, path: Union[str, Path], crop: tuple[int, int, int, int] = (0, 0, 0, 0)
     ):
         return f"{str(path)}|{crop}"
 
@@ -297,7 +297,7 @@ class Texture:
         self._file_path = path
 
     @property
-    def crop_values(self) -> Optional[Tuple[int, int, int, int]]:
+    def crop_values(self) -> Optional[tuple[int, int, int, int]]:
         """
         The crop values used to create this texture in the referenced file
 
@@ -306,7 +306,7 @@ class Texture:
         return self._crop_values
 
     @crop_values.setter
-    def crop_values(self, crop: Optional[Tuple[int, int, int, int]]):
+    def crop_values(self, crop: Optional[tuple[int, int, int, int]]):
         self._crop_values = crop
 
     @property
@@ -378,7 +378,7 @@ class Texture:
         self._size = (self._size[0], value)
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         The virtual size of the texture in pixels.
 
@@ -390,7 +390,7 @@ class Texture:
         return self._size
 
     @size.setter
-    def size(self, value: Tuple[int, int]):
+    def size(self, value: tuple[int, int]):
         self._size = value
 
     @property
@@ -413,7 +413,7 @@ class Texture:
         return self._hit_box_algorithm
 
     @classmethod
-    def create_filled(cls, name: str, size: Tuple[int, int], color: RGBA255) -> "Texture":
+    def create_filled(cls, name: str, size: tuple[int, int], color: RGBA255) -> "Texture":
         """
         Create a filled texture. This is an alias for :py:meth:`create_empty`.
 
@@ -428,7 +428,7 @@ class Texture:
     def create_empty(
         cls,
         name: str,
-        size: Tuple[int, int],
+        size: tuple[int, int],
         color: RGBA255 = TRANSPARENT_BLACK,
     ) -> "Texture":
         """

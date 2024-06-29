@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import weakref
-from typing import Callable, List, Dict, Any, Optional, TYPE_CHECKING
+from typing import Callable, Any, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from arcade.experimental.clock.clock import Clock
@@ -56,8 +58,8 @@ class Timer:
         self._complete: bool = False
 
         self._callback: Optional[Callable] = weakref.proxy(callback)
-        self._args: List[Any] = list(args)
-        self._kwargs: Dict[str, Any] = kwargs or dict()
+        self._args: list[Any] = list(args)
+        self._kwargs: dict[str, Any] = kwargs or dict()
 
         self.reusable: bool = reusable
 

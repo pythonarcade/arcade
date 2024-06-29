@@ -12,7 +12,7 @@ It allows you to do the following:
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Union, Iterable
+from typing import Optional, Union, Iterable
 
 from arcade import Sprite, SpriteList
 from arcade.types import Color, RGBA255
@@ -69,8 +69,8 @@ class Scene:
     """
 
     def __init__(self) -> None:
-        self._sprite_lists: List[SpriteList] = []
-        self._name_mapping: Dict[str, SpriteList] = {}
+        self._sprite_lists: list[SpriteList] = []
+        self._name_mapping: dict[str, SpriteList] = {}
 
     def __len__(self) -> int:
         """

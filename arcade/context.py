@@ -6,7 +6,7 @@ Contains pre-loaded programs
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Dict, Optional, Union, Sequence, Tuple
+from typing import Any, Iterable, Optional, Union, Sequence
 
 import pyglet
 from pyglet import gl
@@ -46,7 +46,7 @@ class ArcadeContext(Context):
                         it's not clear what thread will gc the object.
     """
 
-    atlas_size: Tuple[int, int] = 512, 512
+    atlas_size: tuple[int, int] = 512, 512
 
     def __init__(
         self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
@@ -190,7 +190,7 @@ class ArcadeContext(Context):
         self._atlas: Optional[TextureAtlasBase] = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
-        self.label_cache: Dict[str, arcade.Text] = {}
+        self.label_cache: dict[str, arcade.Text] = {}
 
         # self.active_program = None
         self.point_size = 1.0
@@ -248,7 +248,7 @@ class ArcadeContext(Context):
         return self._atlas
 
     @property
-    def viewport(self) -> Tuple[int, int, int, int]:
+    def viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the viewport for the currently active framebuffer.
         The viewport simply describes what pixels of the screen
@@ -267,7 +267,7 @@ class ArcadeContext(Context):
         return self.active_framebuffer.viewport
 
     @viewport.setter
-    def viewport(self, value: Tuple[int, int, int, int]):
+    def viewport(self, value: tuple[int, int, int, int]):
         self.active_framebuffer.viewport = value
         if self._default_camera == self.current_camera:
             self._default_camera.use()
@@ -319,7 +319,7 @@ class ArcadeContext(Context):
         tess_control_shader: Optional[Union[str, Path]] = None,
         tess_evaluation_shader: Optional[Union[str, Path]] = None,
         common: Iterable[Union[str, Path]] = (),
-        defines: Optional[Dict[str, Any]] = None,
+        defines: Optional[dict[str, Any]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:

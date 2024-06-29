@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from math import tan, pi
-from typing import Tuple
 
 from pyglet.math import Vec2, Vec3, Vec4, Mat4
 from arcade.camera.data_types import (
@@ -118,7 +119,7 @@ def generate_perspective_matrix(
 
 def project_orthographic(
     world_coordinate: Point,
-    viewport: Tuple[int, int, int, int],
+    viewport: tuple[int, int, int, int],
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec2:
@@ -137,7 +138,7 @@ def project_orthographic(
 
 def unproject_orthographic(
     screen_coordinate: Point,
-    viewport: Tuple[int, int, int, int],
+    viewport: tuple[int, int, int, int],
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec3:
@@ -158,7 +159,7 @@ def unproject_orthographic(
 
 def project_perspective(
     world_coordinate: Point,
-    viewport: Tuple[int, int, int, int],
+    viewport: tuple[int, int, int, int],
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec2:
@@ -181,7 +182,7 @@ def project_perspective(
 
 def unproject_perspective(
     screen_coordinate: Point,
-    viewport: Tuple[int, int, int, int],
+    viewport: tuple[int, int, int, int],
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec3:

@@ -4,7 +4,6 @@ Post-processing shaders.
 
 from __future__ import annotations
 
-from typing import Tuple
 from arcade.context import ArcadeContext
 from arcade.gl.texture import Texture2D
 from arcade import get_window
@@ -15,7 +14,7 @@ from arcade.experimental.gaussian_kernel import gaussian_kernel
 class PostProcessing:
     """Base class"""
 
-    def __init__(self, size: Tuple[int, int], *args, **kwargs):
+    def __init__(self, size: tuple[int, int], *args, **kwargs):
         self._size = size
         window = get_window()
         if not window:
@@ -46,7 +45,7 @@ class PostProcessing:
     #     """ Render. Should be over-loaded by the child class. """
     #     pass
 
-    def resize(self, size: Tuple[int, int]):
+    def resize(self, size: tuple[int, int]):
         """
         Resize post processing buffers.
         This is often needed of the screen since changes.
@@ -83,7 +82,7 @@ class GaussianBlurPass(PostProcessing):
 class GaussianBlurHorizontal(GaussianBlurPass):
     """Blur the buffer horizontally."""
 
-    def __init__(self, size: Tuple[int, int], kernel_size=5, sigma=2, multiplier=1, step=1):
+    def __init__(self, size: tuple[int, int], kernel_size=5, sigma=2, multiplier=1, step=1):
         super().__init__(size, kernel_size=5, sigma=2, multiplier=1, step=1)
         color_attachment = self.ctx.texture(
             size, components=3, wrap_x=self.ctx.CLAMP_TO_EDGE, wrap_y=self.ctx.CLAMP_TO_EDGE
@@ -108,7 +107,7 @@ class GaussianBlurHorizontal(GaussianBlurPass):
 class GaussianBlurVertical(GaussianBlurPass):
     """Blur the buffer vertically."""
 
-    def __init__(self, size: Tuple[int, int], kernel_size=5, sigma=2, multiplier=1, step=1):
+    def __init__(self, size: tuple[int, int], kernel_size=5, sigma=2, multiplier=1, step=1):
         super().__init__(
             size, kernel_size=kernel_size, sigma=sigma, multiplier=multiplier, step=step
         )

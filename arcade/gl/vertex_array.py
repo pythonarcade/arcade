@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ctypes import c_void_p, byref
-from typing import Dict, List, Optional, Sequence, TYPE_CHECKING, Union
+from typing import Optional, Sequence, TYPE_CHECKING, Union
 import weakref
 
 from pyglet import gl
@@ -366,7 +366,7 @@ class VertexArray:
 
     def transform_separate(
         self,
-        buffers: List[Buffer],
+        buffers: list[Buffer],
         mode: GLenumLike,
         output_mode: GLenumLike,
         first: int = 0,
@@ -461,7 +461,7 @@ class Geometry:
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
         self._mode = mode if mode is not None else ctx.TRIANGLES
-        self._vao_cache: Dict[str, VertexArray] = {}
+        self._vao_cache: dict[str, VertexArray] = {}
         self._num_vertices: int = -1
         """
         :param ctx: The context this object belongs to
@@ -669,7 +669,7 @@ class Geometry:
     def transform(
         self,
         program: Program,
-        buffer: Union[Buffer, List[Buffer]],
+        buffer: Union[Buffer, list[Buffer]],
         *,
         first: int = 0,
         vertices: Optional[int] = None,

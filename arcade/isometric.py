@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from arcade.shape_list import ShapeElementList, create_line
-from typing import Tuple
 from arcade.types import RGBA255
 
 
 def isometric_grid_to_screen(
     tile_x: int, tile_y: int, width: int, height: int, tile_width: int, tile_height: int
-) -> Tuple[int, int]:
+) -> tuple[int, int]:
     screen_x = tile_width * tile_x // 2 + height * tile_width // 2 - tile_y * tile_width // 2
     screen_y = (
         (height - tile_y - 1) * tile_height // 2
@@ -19,7 +18,7 @@ def isometric_grid_to_screen(
 
 def screen_to_isometric_grid(
     screen_x: int, screen_y: int, width: int, height: int, tile_width: int, tile_height: int
-) -> Tuple[int, int]:
+) -> tuple[int, int]:
     x2 = (1 / tile_width * screen_x / 2 - 1 / tile_height * screen_y / 2 + width / 2) * 2 - (
         width / 2 + 0.5
     )

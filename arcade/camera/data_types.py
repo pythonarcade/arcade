@@ -6,7 +6,7 @@ wide usage throughout Arcade's camera code.
 
 from __future__ import annotations
 from contextlib import contextmanager
-from typing import Protocol, Tuple, Generator
+from typing import Protocol, Generator
 
 from typing_extensions import Self
 from pyglet.math import Vec2, Vec3
@@ -56,15 +56,15 @@ class CameraData:
     ):
 
         #: A 3D vector which describes where the camera is located.
-        self.position: Tuple[float, float, float] = position
+        self.position: tuple[float, float, float] = position
         #: A 3D vector which describes which direction is up (+y).
-        self.up: Tuple[float, float, float] = up
+        self.up: tuple[float, float, float] = up
         #: A scalar which describes which direction the camera is pointing.
         #:
         #: While this affects the projection matrix, it also allows camera
         #: controllers to access zoom functionality without interacting with
         #: projection data.
-        self.forward: Tuple[float, float, float] = forward
+        self.forward: tuple[float, float, float] = forward
 
         # Zoom
         self.zoom: float = zoom

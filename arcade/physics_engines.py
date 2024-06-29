@@ -6,7 +6,7 @@ from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from typing import Iterable, List, Optional, Union
+from typing import Iterable, Optional, Union
 
 from arcade import (
     Sprite,
@@ -22,7 +22,7 @@ __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 from arcade.utils import copy_dunders_unimplemented
 
 
-def _circular_check(player: Sprite, walls: List[SpriteList]) -> None:
+def _circular_check(player: Sprite, walls: list[SpriteList]) -> None:
     """
     This is a horrible kludge to 'guess' our way out of a collision
     """
@@ -55,8 +55,8 @@ def _circular_check(player: Sprite, walls: List[SpriteList]) -> None:
 
 
 def _move_sprite(
-    moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ramp_up: bool
-) -> List[SpriteType]:
+    moving_sprite: Sprite, walls: list[SpriteList[SpriteType]], ramp_up: bool
+) -> list[SpriteType]:
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
@@ -245,7 +245,7 @@ class PhysicsEngineSimple:
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
     ) -> None:
         self.player_sprite: Sprite = player_sprite
-        self._walls: List[SpriteList]
+        self._walls: list[SpriteList]
 
         if walls:
             self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
@@ -308,9 +308,9 @@ class PhysicsEnginePlatformer:
         ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
     ) -> None:
-        self._ladders: Optional[List[SpriteList]]
-        self._platforms: List[SpriteList]
-        self._walls: List[SpriteList]
+        self._ladders: Optional[list[SpriteList]]
+        self._platforms: list[SpriteList]
+        self._walls: list[SpriteList]
 
         if ladders:
             self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional, Generator, TYPE_CHECKING
 from contextlib import contextmanager
 from typing_extensions import Self

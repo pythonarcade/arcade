@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Tuple
+from typing import Optional
 from weakref import WeakValueDictionary
 
 import PIL
@@ -47,7 +47,7 @@ class SpriteSolidColor(Sprite):
     # we cache them here weakly. Making a 100 x 100 grid of white sprites
     # only create 1 texture instead of 1000. This saves memory and processing
     # time for the default texture atlas.
-    _texture_cache: WeakValueDictionary[Tuple[int, int], Texture] = WeakValueDictionary()
+    _texture_cache: WeakValueDictionary[tuple[int, int], Texture] = WeakValueDictionary()
 
     def __init__(
         self,
@@ -121,7 +121,7 @@ class SpriteCircle(Sprite):
     """
 
     # Local weak cache for textures to avoid creating multiple instances with the same configuration
-    _texture_cache: WeakValueDictionary[Tuple[int, RGBA255, bool], Texture] = WeakValueDictionary()
+    _texture_cache: WeakValueDictionary[tuple[int, RGBA255, bool], Texture] = WeakValueDictionary()
 
     def __init__(self, radius: int, color: RGBA255, soft: bool = False, **kwargs):
         radius = int(radius)

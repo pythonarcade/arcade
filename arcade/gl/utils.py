@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from array import array
-from typing import Any, Tuple
+from typing import Any
 from ctypes import c_byte
 
 
-def data_to_ctypes(data: Any) -> Tuple[int, Any]:
+def data_to_ctypes(data: Any) -> tuple[int, Any]:
     """
     Attempts to convert the data to ctypes if needed by using the buffer protocol.
 

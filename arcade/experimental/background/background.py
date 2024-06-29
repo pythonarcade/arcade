@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Union, Tuple
+from typing import Optional, Union
 
 from arcade.window_commands import get_window
 import arcade.gl as gl
@@ -23,9 +23,9 @@ class Background:
     def __init__(
         self,
         texture: BackgroundTexture,
-        pos: Tuple[float, float],
-        size: Tuple[int, int],
-        color: Union[Tuple[float, float, float], Tuple[int, int, int]],
+        pos: tuple[float, float],
+        size: tuple[int, int],
+        color: Union[tuple[float, float, float], tuple[int, int, int]],
         shader: Optional[gl.Program] = None,
         geometry: Optional[gl.Geometry] = None,
     ):
@@ -80,15 +80,15 @@ class Background:
     @staticmethod
     def from_file(
         tex_src: str,
-        pos: Tuple[float, float] = (0.0, 0.0),
-        size: Optional[Tuple[int, int]] = None,
-        offset: Tuple[float, float] = (0.0, 0.0),
+        pos: tuple[float, float] = (0.0, 0.0),
+        size: Optional[tuple[int, int]] = None,
+        offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Optional[Tuple[int, int, int]] = None,
-        color_norm: Optional[Tuple[float, float, float]] = None,
+        color: Optional[tuple[int, int, int]] = None,
+        color_norm: Optional[tuple[float, float, float]] = None,
         shader: Optional[gl.Program] = None,
         geometry: Optional[gl.Geometry] = None,
     ):
@@ -124,19 +124,19 @@ class Background:
         return Background(background_texture, pos, size, _color, shader, geometry)
 
     @property
-    def pos(self) -> Tuple[float, float]:
+    def pos(self) -> tuple[float, float]:
         return self._pos
 
     @pos.setter
-    def pos(self, value: Tuple[float, float]):
+    def pos(self, value: tuple[float, float]):
         self._pos = value
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         return self._size
 
     @size.setter
-    def size(self, value: Tuple[int, int]):
+    def size(self, value: tuple[int, int]):
         self._size = value
         try:
             self.shader["size"] = value
@@ -160,7 +160,7 @@ class Background:
             )
 
     @property
-    def color(self) -> Tuple[int, int, int]:
+    def color(self) -> tuple[int, int, int]:
         """
         Color in the range of 0-255.
         """
@@ -171,7 +171,7 @@ class Background:
         )
 
     @color.setter
-    def color(self, value: Tuple[int, int, int]):
+    def color(self, value: tuple[int, int, int]):
         """
         Color in the range of 0-255.
         """
@@ -184,11 +184,11 @@ class Background:
             )
 
     @property
-    def color_norm(self) -> Tuple[float, float, float]:
+    def color_norm(self) -> tuple[float, float, float]:
         return self._color
 
     @color_norm.setter
-    def color_norm(self, value: Tuple[float, float, float]):
+    def color_norm(self, value: tuple[float, float, float]):
         self._color = value
         try:
             self.shader["color"] = self._color
@@ -197,7 +197,7 @@ class Background:
                 "Attempting to set uniform 'color' when shader does not have uniform with that name."
             )
 
-    def draw(self, shift: Tuple[float, float] = (0.0, 0.0)):
+    def draw(self, shift: tuple[float, float] = (0.0, 0.0)):
         try:
             self.shader["pixelTransform"] = self.texture.pixel_transform
         except KeyError:

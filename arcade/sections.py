@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, List, Iterable, Union, Set, Generator
+from typing import TYPE_CHECKING, Optional, Iterable, Union, Generator
 import math
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
@@ -336,17 +336,17 @@ class SectionManager:
 
         # store sections in update/event order and in draw order
         # a list of the current sections for this in update/event order
-        self._sections: List[Section] = []
+        self._sections: list[Section] = []
 
         # the list of current sections in draw order
-        self._sections_draw: List[Section] = []
+        self._sections_draw: list[Section] = []
 
         # generic camera to reset after a custom camera is use
         # this camera is set to the whole viewport
         self.camera: DefaultProjector = DefaultProjector()
 
         # Holds the section the mouse is currently on top
-        self.mouse_over_sections: List[Section] = []
+        self.mouse_over_sections: list[Section] = []
 
         # True will call view.on_draw before sections on_draw, False after, None will not call view on_draw
         self.view_draw_first: Optional[bool] = True
@@ -356,7 +356,7 @@ class SectionManager:
         self.view_resize_first: Optional[bool] = True
 
         # Events that the section manager should handle (instead of the View) if sections are present in a View
-        self.managed_events: Set = {
+        self.managed_events: set = {
             "on_mouse_motion",
             "on_mouse_drag",
             "on_mouse_press",
@@ -372,7 +372,7 @@ class SectionManager:
         }
 
     @property
-    def sections(self) -> List[Section]:
+    def sections(self) -> list[Section]:
         """Property that returns the list of sections"""
         return self._sections
 

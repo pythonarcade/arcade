@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Union, List, Tuple
+from typing import Optional, Union
 
 import arcade.gl as gl
 from arcade.experimental.background import Background
@@ -13,8 +13,8 @@ class BackgroundGroup:
     The offset of the BackgroundGroup is the same as each background.
     """
 
-    def __init__(self, backgrounds: Optional[List[Background]] = None):
-        self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
+    def __init__(self, backgrounds: Optional[list[Background]] = None):
+        self._backgrounds: list[Background] = [] if backgrounds is None else backgrounds
 
         self._pos = (0.0, 0.0)
         self._offset = (0.0, 0.0)
@@ -24,7 +24,7 @@ class BackgroundGroup:
         return self._pos
 
     @pos.setter
-    def pos(self, value: Tuple[float, float]):
+    def pos(self, value: tuple[float, float]):
         self._pos = value
 
     @property
@@ -53,7 +53,7 @@ class BackgroundGroup:
         else:
             print("WARNING: Background already in group")
 
-    def extend(self, items: List[Background]):
+    def extend(self, items: list[Background]):
         for item in items:
             self.add(item)
 
@@ -64,15 +64,15 @@ class BackgroundGroup:
     def add_from_file(
         self,
         tex_src: str,
-        pos: Tuple[float, float] = (0.0, 0.0),
-        size: Optional[Tuple[int, int]] = None,
-        offset: Tuple[float, float] = (0.0, 0.0),
+        pos: tuple[float, float] = (0.0, 0.0),
+        size: Optional[tuple[int, int]] = None,
+        offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Optional[Tuple[int, int, int]] = None,
-        color_norm: Optional[Tuple[float, float, float]] = None,
+        color: Optional[tuple[int, int, int]] = None,
+        color_norm: Optional[tuple[float, float, float]] = None,
         shader: Optional[gl.Program] = None,
         geometry: Optional[gl.Geometry] = None,
     ):
@@ -103,11 +103,11 @@ class ParallaxGroup:
 
     def __init__(
         self,
-        backgrounds: Optional[List[Background]] = None,
-        depths: Optional[List[float]] = None,
+        backgrounds: Optional[list[Background]] = None,
+        depths: Optional[list[float]] = None,
     ):
-        self._backgrounds: List[Background] = [] if backgrounds is None else backgrounds
-        self._depths: List[float] = [] if depths is None else depths
+        self._backgrounds: list[Background] = [] if backgrounds is None else backgrounds
+        self._depths: list[float] = [] if depths is None else depths
 
         if len(self._backgrounds) != len(self._depths):
             raise ValueError("The number of backgrounds does not equal the number of depth values")
@@ -116,19 +116,19 @@ class ParallaxGroup:
         self._offset = (0.0, 0.0)
 
     @property
-    def pos(self) -> Tuple[float, float]:
+    def pos(self) -> tuple[float, float]:
         return self._pos
 
     @pos.setter
-    def pos(self, value: Tuple[float, float]):
+    def pos(self, value: tuple[float, float]):
         self._pos = value
 
     @property
-    def offset(self) -> Tuple[float, float]:
+    def offset(self) -> tuple[float, float]:
         return self._offset
 
     @offset.setter
-    def offset(self, value: Tuple[float, float]):
+    def offset(self, value: tuple[float, float]):
         self._offset = value
         for index, background in enumerate(self._backgrounds):
             depth = self._depths[index]
@@ -158,7 +158,7 @@ class ParallaxGroup:
     def change_depth(self, item: Background, new_depth: float):
         self._depths[self._backgrounds.index(item)] = new_depth
 
-    def extend(self, items: List[Background], depths: List[float]):
+    def extend(self, items: list[Background], depths: list[float]):
         for index, item in enumerate(items):
             self.add(item, depths[index])
 
@@ -169,16 +169,16 @@ class ParallaxGroup:
     def add_from_file(
         self,
         tex_src: str,
-        pos: Tuple[float, float] = (0.0, 0.0),
-        size: Optional[Tuple[int, int]] = None,
+        pos: tuple[float, float] = (0.0, 0.0),
+        size: Optional[tuple[int, int]] = None,
         depth: float = 1,
-        offset: Tuple[float, float] = (0.0, 0.0),
+        offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Optional[Tuple[int, int, int]] = None,
-        color_norm: Optional[Tuple[float, float, float]] = None,
+        color: Optional[tuple[int, int, int]] = None,
+        color_norm: Optional[tuple[float, float, float]] = None,
         shader: Optional[gl.Program] = None,
         geometry: Optional[gl.Geometry] = None,
     ):

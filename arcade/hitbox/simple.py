@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Tuple
 from PIL.Image import Image
 from arcade.types import Point, Point2List
 from .base import HitBoxAlgorithm
@@ -57,7 +56,7 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
             # print(f"offset: {offset}")
             return offset
 
-        def _r(point: Tuple[float, float], height: int, width: int) -> Point:
+        def _r(point: tuple[float, float], height: int, width: int) -> Point:
             return point[0] - width / 2, (height - point[1]) - height / 2
 
         top_left_corner_offset = _check_corner_offset(left_border, top_border, 1, 1)

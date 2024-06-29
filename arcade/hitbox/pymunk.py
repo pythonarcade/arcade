@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Optional
 from PIL.Image import Image
 import pymunk
 from pymunk.autogeometry import (
@@ -62,7 +62,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
 
         return self.to_points_list(image, line_set)
 
-    def to_points_list(self, image: Image, line_set: List[Vec2d]) -> Point2List:
+    def to_points_list(self, image: Image, line_set: list[Vec2d]) -> Point2List:
         """
         Convert a line set to a list of points.
 
@@ -148,7 +148,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         # or the line set might just be a hole in the sprite.
         return march_soft(logo_bb, horizontal_samples, vertical_samples, 99, sample_func)
 
-    def select_largest_line_set(self, line_sets: PolylineSet) -> List[Vec2d]:
+    def select_largest_line_set(self, line_sets: PolylineSet) -> list[Vec2d]:
         """
         Given a list of line sets, return the one that covers the most of the image.
 

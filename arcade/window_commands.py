@@ -10,7 +10,7 @@ import os
 
 import pyglet
 
-from typing import Callable, Optional, Tuple, TYPE_CHECKING
+from typing import Callable, Optional, TYPE_CHECKING
 from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:
@@ -35,7 +35,7 @@ __all__ = [
 ]
 
 
-def get_display_size(screen_id: int = 0) -> Tuple[int, int]:
+def get_display_size(screen_id: int = 0) -> tuple[int, int]:
     """
     Return the width and height of a monitor.
 

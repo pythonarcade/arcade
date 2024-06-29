@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Optional, Tuple, Generator
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional, Generator
 from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
 
@@ -69,7 +71,7 @@ class Camera2D:
         self,
         viewport: Optional[Rect] = None,
         position: Optional[Point2] = None,
-        up: Tuple[float, float] = (0.0, 1.0),
+        up: tuple[float, float] = (0.0, 1.0),
         zoom: float = 1.0,
         projection: Optional[Rect] = None,
         near: float = -100.0,
@@ -808,18 +810,22 @@ class Camera2D:
         self.width = self.viewport_width
         self.height = self.viewport_height
 
-    def match_screen(self, and_projection: bool = True) -> None:
+    def match_screen(self, and_projection: bool = True, and_scissor: bool = True) -> None:
         """
         Sets the viewport to the size of the screen.
         Should be called when the screen is resized.
 
         Args:
             and_projection: Flag whether to also equalise the projection to the viewport.
+            and_scissor: Flag whether to also equalise the scissor box to the viewport.
         """
         self.viewport = LBWH(0, 0, self._window.width, self._window.height)
 
         if and_projection:
             self.equalise()
+
+        if and_scissor and self.scissor:
+            self.scissor = self.viewport
 
     def use(self) -> None:
         """
