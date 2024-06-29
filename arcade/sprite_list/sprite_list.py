@@ -95,7 +95,7 @@ class SpriteList(Generic[SpriteType]):
             :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
     :param visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
-    :param blend: Enable or disable blending for the sprite list
+    :param blend: Enable or disable alpha blending for the sprite list
     """
 
     #: The default texture filter used when no other filter is specified.
