@@ -1028,7 +1028,7 @@ class SpriteList(Generic[SpriteType]):
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
         :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
-                          Shortcut for setting filter=GL_NEAREST.
+                          Shortcut for setting filter to GL_NEAREST for a pixelated look.
         :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
                          sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
@@ -1085,6 +1085,7 @@ class SpriteList(Generic[SpriteType]):
             vertices=self._sprite_index_slots,
         )
 
+        # Leave global states to default
         if self._blend:
             self.ctx.disable(self.ctx.BLEND)
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
