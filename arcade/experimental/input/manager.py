@@ -312,7 +312,7 @@ class InputManager:
 
     def register_action_handler(
         self,
-        handler: Union[Callable[[str, ActionState], Any], List[Callable[[str, ActionState], Any]]],
+        handler: Union[Callable[[str, ActionState], Any], list[Callable[[str, ActionState], Any]]],
     ):
         if isinstance(handler, list):
             self.on_action_listeners.extend(handler)

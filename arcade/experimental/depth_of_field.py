@@ -19,6 +19,7 @@ both easier and more performant than more accurate blur approaches.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.experimental.examples.array_backed_grid
 """
+
 from __future__ import annotations
 
 from typing import Optional, cast
