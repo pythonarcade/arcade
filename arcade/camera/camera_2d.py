@@ -265,9 +265,10 @@ class Camera2D:
         return Vec2(self._camera_data.position[0], self._camera_data.position[1])
 
     @position.setter
-    def position(self, _pos: Point2) -> None:
-        x, y = _pos
-        self._camera_data.position = (x, y, self._camera_data.position[2])
+    def position(self, _pos: Point) -> None:
+        x, y, *z = _pos
+        z = self._camera_data.position[2] if not z else z[0]
+        self._camera_data.position = (x, y, z)
 
     # top_left
     @property
