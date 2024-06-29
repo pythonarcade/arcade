@@ -168,6 +168,10 @@ class DefaultTextureAtlas(TextureAtlasBase):
         for tex in textures or []:
             self.add(tex)
 
+        self._textures_added = 0
+        self._textures_removed = 0
+        self._finalizers_created = 0
+
     @property
     def max_width(self) -> int:
         """
@@ -259,31 +263,25 @@ class DefaultTextureAtlas(TextureAtlasBase):
         :return: texture_id, AtlasRegion tuple
         :raises AllocatorException: If there are no room for the texture
         """
-        # Store a reference to the texture instance if we don't already have it
-        # These are any texture instances regardless of content
-        if not self.has_texture(texture):
-            self._textures.add(texture)
-            # Set up finalizer to remove the texture when it's GCed
-            ref = finalize(
-                texture,
-                self._remove_texture_by_identifiers,
-                texture.atlas_name,
-                texture.image_data.hash,
-            )
-            ref.atexit = False  # Don't bother removing texture on program exit
+        return self._add(texture)
 
-            self._unique_texture_ref_count.inc_ref(texture)
-            self._image_ref_count.inc_ref(texture.image_data)
-            # LOG.info("Added texture to _textures[%s]: %s", texture.file_path, texture.atlas_name)
+    def _add(self, texture: "Texture", create_finalizer=True) -> Tuple[int, AtlasRegion]:
+        """
+        Internal add method with additional control. We we rebuild the atlas
+        we don't want to create finalizers for the texture or they will be
+        removed multiple times causing errors.
 
-        # Return existing texture if we already have a texture with the same image hash and vertex order
+        :param texture: The texture to add
+        :param create_finalizer: If a finalizer should be created
+        """
+        # Quickly handle a texture already having a unique texture in the atlas
         if self.has_unique_texture(texture):
+            # Add add references to the duplicate texture
+            if not self.has_texture(texture):
+                self._add_texture_ref(texture, create_finalizer=create_finalizer)
             slot = self._texture_uvs.get_slot_or_raise(texture.atlas_name)
             region = self.get_texture_region_info(texture.atlas_name)
-            # LOG.info("Returning exiting unique texture[%s]: %s", texture.file_path, texture.atlas_name)
             return slot, region
-
-        # LOG.info("Attempting to add texture[%s]: %s", texture.file_path, texture.atlas_name)
 
         # Add the *image* to the atlas if it's not already there
         if not self.has_image(texture.image_data):
@@ -304,7 +302,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
                     self.rebuild()
                     return self.add(texture)
 
-                # Double the size of the atlas (capped my max size)
+                # Double the size of the atlas (capped by max size)
                 width = min(self.width * 2, self.max_width)
                 height = min(self.height * 2, self.max_height)
                 # If the size didn't change we have a problem ..
@@ -315,11 +313,37 @@ class DefaultTextureAtlas(TextureAtlasBase):
                 self.resize((width, height))
 
                 # Recursively try to add the texture again
-                return self.add(texture)
+                return self._add(texture, create_finalizer=create_finalizer)
 
         # Finally we can register the texture
+        self._add_texture_ref(texture, create_finalizer=create_finalizer)
         info = self._allocate_texture(texture)
         return info
+
+    def _add_texture_ref(self, texture: "Texture", create_finalizer=True) -> None:
+        """
+        Add references to the texture and image data.
+        including finalizer to remove the texture when it's no longer used.
+
+        :param texture: The texture
+        :param create_finalizer: If a finalizer should be created
+        """
+        self._textures.add(texture)
+        self._unique_texture_ref_count.inc_ref(texture)
+        self._image_ref_count.inc_ref(texture.image_data)
+
+        if create_finalizer:
+            ref = finalize(
+                texture,
+                self._remove_texture_by_identifiers,
+                texture.atlas_name,
+                texture.image_data.hash,
+            )
+            # Don't bother removing texture on program exit
+            ref.atexit = False
+            self._finalizers_created += 1
+
+        self._textures_added += 1
 
     def remove(self, texture: "Texture") -> None:
         """
@@ -471,36 +495,31 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         # Remove the unique texture if ref counter reaches 0
         if self._unique_texture_ref_count.dec_ref_by_atlas_name(atlas_name) == 0:
-            # We need to remove the texture if manually removed from the atlas.
-            # Otherwise it will be removed by GC and trigger KeyError
+            # May have been removed by GC
             try:
                 del self._unique_textures[atlas_name]
             except KeyError:
                 pass
-            # Reclaim the texture uv slot
-            try:
-                del self._texture_regions[atlas_name]
-            except KeyError:
-                pass
+
+            del self._texture_regions[atlas_name]
 
             # Reclaim the image uv slot
             self._texture_uvs.free_slot_by_name(atlas_name)
 
         # Remove the image if ref counter reaches 0
         if self._image_ref_count.dec_ref_by_hash(hash) == 0:
-            # We need to remove the image if manually removed from the atlas.
-            # Otherwise it will be removed by GC and trigger KeyError
+            # May have been removed by GC
             try:
                 del self._images[hash]
             except KeyError:
                 pass
-            try:
-                del self._image_regions[hash]
-            except KeyError:
-                pass
+
+            del self._image_regions[hash]
 
             # Reclaim the image uv slot
             self._image_uvs.free_slot_by_name(hash)
+
+        self._textures_removed += 1
 
     def update_texture_image(self, texture: "Texture"):
         """
@@ -572,11 +591,14 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         Resize the atlas on the gpu.
 
-        This will copy the pixel data from the old to the
-        new atlas retaining the exact same data.
-        This is useful if the atlas was rendered into directly
-        and we don't have to transfer each texture individually
-        from system memory to graphics memory.
+        This will re-allocate all the images in the atlas to better fit
+        the new size. Pixel data will be copied from the old atlas to the
+        new one on the gpu meaning it will also persist anything that
+        was rendered to the atlas.
+
+        A failed resize will result in an AllocatorException. Unless the
+        atlas is resized again to a working size the atlas will be in an
+        undefined state.
 
         :param size: The new size
         """
@@ -607,10 +629,9 @@ class DefaultTextureAtlas(TextureAtlasBase):
         images = list(self._images.values())
         textures = self.unique_textures
 
-        # Clear the regions and allocator
-        self._image_regions = dict()
-        self._texture_regions = dict()
+        # Clear the regions and allocator.
         self._allocator = Allocator(*self._size)
+        # NOTE: We keep the image_regions and texture_regions in case the resize fails
 
         # Re-allocate the images
         for image in sorted(images, key=lambda x: x.height):
@@ -657,7 +678,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         Rebuild the underlying atlas texture.
 
         This method also tries to organize the textures more efficiently ordering them by size.
-        The texture ids will persist so the sprite list don't need to be rebuilt.
+        The texture ids will persist so the sprite list doesn't need to be rebuilt.
         """
         # LOG.info("Rebuilding atlas")
 
@@ -680,7 +701,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         # Add textures back sorted by height to potentially make more room
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
-            self.add(texture)
+            self._add(texture, create_finalizer=False)
 
     def use_uv_texture(self, unit: int = 0) -> None:
         """

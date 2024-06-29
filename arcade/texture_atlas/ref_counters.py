@@ -42,13 +42,13 @@ class ImageDataRefCounter:
         """
         Decrement the reference count for an image by hash returning the new value.
 
-        Returns -1 if the hash is no longer tracked meaning it doesn't exist
+        Raises RuntimeError if the hash is no longer tracked meaning it doesn't exist
         and/or the reference count is already zero. Otherwise the updated ref counter
         is returned. When 0 is returned we removed the last reference to the image.
         """
         val = self._data.get(hash, 0) - 1
         if val < 0:
-            return -1
+            raise RuntimeError("Reference counter is already zero or the hash doesn't exist.")
 
         if val == 0:
             del self._data[hash]
@@ -126,13 +126,13 @@ class UniqueTextureRefCounter:
         """
         Decrement the reference count for an image by name returning the new value.
 
-        Returns -1 if the atlas name is no longer tracked meaning it doesn't exist
+        Raises RuntimeError if the atlas name is no longer tracked meaning it doesn't exist
         and/or the reference count is already zero. Otherwise the updated ref counter
         is returned. When 0 is returned we removed the last reference to the texture.
         """
         val = self._data.get(atlas_name, 0) - 1
         if val < 0:
-            return -1
+            raise RuntimeError("Reference counter is already zero or the atlas name doesn't exist.")
 
         if val == 0:
             del self._data[atlas_name]

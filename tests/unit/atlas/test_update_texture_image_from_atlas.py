@@ -13,7 +13,7 @@ def _create_image_with_rect(rect) -> Image.Image:
     return im
 
 
-def test_update_texture_image_from_atlas():
+def test_update_texture_image_from_atlas(ctx):
     # Original image
     im = _create_image_with_rect((1, 1, 4, 4))
     im = im.transpose(Image.FLIP_TOP_BOTTOM)

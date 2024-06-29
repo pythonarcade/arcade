@@ -58,16 +58,6 @@ def test_add_overflow(ctx):
         atlas.add(tex_b)
 
 
-def test_clear(ctx, common):
-    """Clear the atlas"""
-    atlas = DefaultTextureAtlas((200, 200))
-    tex_a = load_texture(":resources:onscreen_controls/shaded_dark/a.png")
-    tex_b = load_texture(":resources:onscreen_controls/shaded_dark/b.png")
-    atlas.add(tex_a)
-    atlas.add(tex_b)
-    common.check_internals(atlas, num_images=2, num_textures=2)
-
-
 def test_max_size(ctx):
     """The maximum atlas size should at least be 8192 (2^13)"""
     atlas = DefaultTextureAtlas((100, 100))

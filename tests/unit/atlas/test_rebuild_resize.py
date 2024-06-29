@@ -1,4 +1,4 @@
-import PIL
+import PIL.Image
 import pytest
 from pyglet.image.atlas import AllocatorException
 import arcade
@@ -7,10 +7,11 @@ from arcade import DefaultTextureAtlas, load_texture
 
 def test_rebuild(ctx, common):
     """Build and atlas and rebuild it"""
-    # 36 x 36
+    # 36 x 36 : 6a9c1abbf2719dc59b9ebe2b7c2a6d662432dfe9e3d77f202ee042f98caf3616
     tex_small = load_texture(":resources:images/topdown_tanks/treeGreen_small.png")
-    # 64 x 64
+    # 64 x 64 : b883bf9ece9ab2dc738b24dc6bf664b056bea59503040eac15e7374e4a806b1b
     tex_big = load_texture(":resources:images/topdown_tanks/treeGreen_large.png")
+
     atlas = DefaultTextureAtlas((104, 104), border=1)
     slot_a, region_a = atlas.add(tex_big)
     slot_b, region_b = atlas.add(tex_small)
@@ -39,13 +40,20 @@ def test_rebuild(ctx, common):
 def test_resize(ctx, common):
     """Attempt to resize the atlas"""
     atlas = DefaultTextureAtlas((50, 100), border=1, auto_resize=False)
+    # sha256 0118296e6c16a0113a31e71a64cac301152e44d9623ca2db92bbbfb166dd22fa
     t1 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (255, 0, 0, 255)))
+    # sha256 81776589b8a141ac4ac01cce9cf16ee239fb82564c8ec026473aa185c1d6786e
     t2 = arcade.Texture(image=PIL.Image.new("RGBA", (48, 48), (0, 255, 0, 255)))
+
     atlas.add(t1)
     atlas.add(t2)
     common.check_internals(atlas, num_images=2, num_textures=2)
     atlas.resize((50, 100))
     common.check_internals(atlas, num_images=2, num_textures=2)
+
+    assert atlas._textures_added == 2
+    assert atlas._finalizers_created == 2
+    assert atlas._textures_removed == 0
 
     # Make atlas so small the current textures won't fit
     with pytest.raises(AllocatorException):
