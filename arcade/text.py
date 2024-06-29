@@ -5,7 +5,7 @@ Drawing text with pyglet label
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import pyglet
 
@@ -41,7 +41,7 @@ def load_font(path: Union[str, Path]) -> None:
     pyglet.font.add_file(str(file_path))
 
 
-FontNameOrNames = Union[str, Tuple[str, ...]]
+FontNameOrNames = Union[str, tuple[str, ...]]
 
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
@@ -56,14 +56,14 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     argument for pyglet to attempt to resolve. This is consistent with
     the original behavior of this code before it was encapsulated.
 
-    :param Union[str, Tuple[str, ...]] font_name:
+    :param Union[str, tuple[str, ...]] font_name:
     :return: Either a resolved path or the original tuple
     """
     if font_name:
 
         # ensure
         if isinstance(font_name, str):
-            font_list: Tuple[str, ...] = (font_name,)
+            font_list: tuple[str, ...] = (font_name,)
         elif isinstance(font_name, tuple):
             font_list = font_name
         else:
@@ -130,7 +130,7 @@ class Text:
     :param font_size: Size of the text in points
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bold: Whether to draw the text as bold
     :param italic: Whether to draw the text as italic
     :param anchor_x: How to calculate the anchor point's x coordinate.
@@ -465,7 +465,7 @@ class Text:
         return self._label.bottom
 
     @property
-    def content_size(self) -> Tuple[int, int]:
+    def content_size(self) -> tuple[int, int]:
         """
         Get the pixel width and height of the text contents.
         """
@@ -710,7 +710,7 @@ def draw_text(
     :param font_size: Size of the text in points
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bold: Whether to draw the text as bold
     :param italic: Whether to draw the text as italic
     :param anchor_x: How to calculate the anchor point's x coordinate

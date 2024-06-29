@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ctypes import c_int, string_at
 from contextlib import contextmanager
-from typing import Generator, Optional, Tuple, List, TYPE_CHECKING
+from typing import Generator, Optional, TYPE_CHECKING
 import weakref
 
 
@@ -91,7 +91,7 @@ class Framebuffer:
         # but let's keep this simple with high compatibility.
         self._width, self._height = self._detect_size()
         self._viewport = 0, 0, self._width, self._height
-        self._scissor: Optional[Tuple[int, int, int, int]] = None
+        self._scissor: Optional[tuple[int, int, int, int]] = None
 
         # Attach textures to it
         for i, tex in enumerate(self._color_attachments):
@@ -145,7 +145,7 @@ class Framebuffer:
         """
         return self._glo
 
-    def _get_viewport(self) -> Tuple[int, int, int, int]:
+    def _get_viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the framebuffer's viewport.
         The viewport parameter are ``(x, y, width, height)``.
@@ -162,7 +162,7 @@ class Framebuffer:
         """
         return self._viewport
 
-    def _set_viewport(self, value: Tuple[int, int, int, int]):
+    def _set_viewport(self, value: tuple[int, int, int, int]):
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport should be a 4-component tuple")
 
@@ -179,7 +179,7 @@ class Framebuffer:
 
     viewport = property(_get_viewport, _set_viewport)
 
-    def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
+    def _get_scissor(self) -> Optional[tuple[int, int, int, int]]:
         """
         Get or set the scissor box for this framebuffer.
 
@@ -239,7 +239,7 @@ class Framebuffer:
         return self._height
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         Size as a ``(w, h)`` tuple
 
@@ -257,7 +257,7 @@ class Framebuffer:
         return self._samples
 
     @property
-    def color_attachments(self) -> List[Texture2D]:
+    def color_attachments(self) -> list[Texture2D]:
         """
         A list of color attachments
 
@@ -352,7 +352,7 @@ class Framebuffer:
         color: Optional[RGBOrA255] = None,
         color_normalized: Optional[RGBOrANormalized] = None,
         depth: float = 1.0,
-        viewport: Optional[Tuple[int, int, int, int]] = None,
+        viewport: Optional[tuple[int, int, int, int]] = None,
     ):
         """
         Clears the framebuffer::
@@ -476,7 +476,7 @@ class Framebuffer:
         gl.glDeleteFramebuffers(1, framebuffer_id)
         ctx.stats.decr("framebuffer")
 
-    def _detect_size(self) -> Tuple[int, int]:
+    def _detect_size(self) -> tuple[int, int]:
         """Detect the size of the framebuffer based on the attachments"""
         expected_size = (
             self._color_attachments[0] if self._color_attachments else self._depth_attachment
@@ -572,7 +572,7 @@ class DefaultFrameBuffer(Framebuffer):
         self._depth_attachment = True  # type: ignore
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         Size as a ``(w, h)`` tuple
 
@@ -598,11 +598,11 @@ class DefaultFrameBuffer(Framebuffer):
         """
         return self.size[1]
 
-    def _get_framebuffer_size(self) -> Tuple[int, int]:
+    def _get_framebuffer_size(self) -> tuple[int, int]:
         """Get the framebuffer size of the window"""
         return self._ctx.window.get_framebuffer_size()
 
-    def _get_viewport(self) -> Tuple[int, int, int, int]:
+    def _get_viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the framebuffer's viewport.
         The viewport parameter are ``(x, y, width, height)``.
@@ -625,7 +625,7 @@ class DefaultFrameBuffer(Framebuffer):
             int(self._viewport[3] / ratio),
         )
 
-    def _set_viewport(self, value: Tuple[int, int, int, int]):
+    def _set_viewport(self, value: tuple[int, int, int, int]):
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport should be a 4-component tuple")
 
@@ -649,7 +649,7 @@ class DefaultFrameBuffer(Framebuffer):
 
     viewport = property(_get_viewport, _set_viewport)
 
-    def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
+    def _get_scissor(self) -> Optional[tuple[int, int, int, int]]:
         """
         Get or set the scissor box for this framebuffer.
 

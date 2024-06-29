@@ -10,7 +10,7 @@ import functools
 import platform
 import sys
 import warnings
-from typing import Tuple, Type, TypeVar
+from typing import Type, TypeVar
 from pathlib import Path
 
 
@@ -208,7 +208,7 @@ def is_raspberry_pi() -> bool:
     return get_raspberry_pi_info()[0]
 
 
-def get_raspberry_pi_info() -> Tuple[bool, str, str]:
+def get_raspberry_pi_info() -> tuple[bool, str, str]:
     """
     Determine if the host is a raspberry pi with additional info.
 

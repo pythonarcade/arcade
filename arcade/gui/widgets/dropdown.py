@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Optional, List, Union
+from typing import Optional, Union
 
 from pyglet.event import EVENT_HANDLED
 
@@ -72,7 +72,7 @@ class UIDropdown(UILayout):
         width: float = 100,
         height: float = 20,
         default: Optional[str] = None,
-        options: Optional[List[Union[str, None]]] = None,
+        options: Optional[list[Union[str, None]]] = None,
         style=None,
         **kwargs,
     ):

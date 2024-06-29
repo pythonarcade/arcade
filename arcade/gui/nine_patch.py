@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Tuple
+from typing import Optional
 
 import arcade
 import arcade.gl as gl
@@ -189,7 +189,7 @@ class NinePatchTexture:
         self._top = top
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """The size of texture as a width, height tuple in pixels."""
         return self.texture.size
 
@@ -206,8 +206,8 @@ class NinePatchTexture:
     def draw_sized(
         self,
         *,
-        position: Tuple[float, float] = (0.0, 0.0),
-        size: Tuple[float, float],
+        position: tuple[float, float] = (0.0, 0.0),
+        size: tuple[float, float],
         pixelated: bool = False,
         **kwargs,
     ):

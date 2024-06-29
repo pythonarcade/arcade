@@ -1,6 +1,6 @@
 from PIL import Image
 from pathlib import Path
-from typing import Union, Tuple, Optional, List, Literal, TYPE_CHECKING
+from typing import Union, Optional, Literal, TYPE_CHECKING
 
 # from arcade import Texture
 from arcade.texture import Texture
@@ -72,7 +72,7 @@ class SpriteSheet:
         return self._path
 
     @property
-    def flip_flags(self) -> Tuple[bool, bool]:
+    def flip_flags(self) -> tuple[bool, bool]:
         """
         Query the orientation of the sprite sheet.
         This can be used to determine if the sprite sheet needs to be flipped.
@@ -146,11 +146,11 @@ class SpriteSheet:
 
     def get_image_grid(
         self,
-        size: Tuple[int, int],
+        size: tuple[int, int],
         columns: int,
         count: int,
-        margin: Tuple[int, int, int, int] = (0, 0, 0, 0),
-    ) -> List[Image.Image]:
+        margin: tuple[int, int, int, int] = (0, 0, 0, 0),
+    ) -> list[Image.Image]:
         """
         Slice a grid of textures from the sprite sheet.
 
@@ -176,12 +176,12 @@ class SpriteSheet:
 
     def get_texture_grid(
         self,
-        size: Tuple[int, int],
+        size: tuple[int, int],
         columns: int,
         count: int,
-        margin: Tuple[int, int, int, int] = (0, 0, 0, 0),
+        margin: tuple[int, int, int, int] = (0, 0, 0, 0),
         hit_box_algorithm: Optional["HitBoxAlgorithm"] = None,
-    ) -> List[Texture]:
+    ) -> list[Texture]:
         """
         Slice a grid of textures from the sprite sheet.
 

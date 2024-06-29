@@ -15,12 +15,9 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Deque,
-    Dict,
     Iterable,
     Iterator,
-    List,
     Optional,
-    Tuple,
     Union,
     Generic,
     Callable,
@@ -115,7 +112,7 @@ class SpriteList(Generic[SpriteType]):
         self._lazy = lazy
         self._visible = visible
         self._blend = blend
-        self._color: Tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
+        self._color: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
 
         # The initial capacity of the spritelist buffers (internal)
         self._buf_capacity = abs(capacity) or _DEFAULT_CAPACITY
@@ -129,10 +126,10 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_buffer_free_slots: Deque[int] = deque()
 
         # List of sprites in the sprite list
-        self.sprite_list: List[SpriteType] = []
+        self.sprite_list: list[SpriteType] = []
         # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
-        self.sprite_slot: Dict[SpriteType, int] = dict()
+        self.sprite_slot: dict[SpriteType, int] = dict()
 
         # Python representation of buffer data
         self._sprite_pos_data = array("f", [0] * self._buf_capacity * 3)
@@ -171,7 +168,7 @@ class SpriteList(Generic[SpriteType]):
         if use_spatial_hash:
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
-        self.properties: Optional[Dict[str, Any]] = None
+        self.properties: Optional[dict[str, Any]] = None
 
         # LOG.debug(
         #     "[%s] Creating SpriteList use_spatial_hash=%s capacity=%s",
@@ -776,7 +773,7 @@ class SpriteList(Generic[SpriteType]):
         random.shuffle(pairs)
 
         # Reconstruct the lists again from pairs
-        sprites, indices = cast(Tuple[List[SpriteType], List[int]], zip(*pairs))
+        sprites, indices = cast(tuple[list[SpriteType], list[int]], zip(*pairs))
         self.sprite_list = list(sprites)
         self._sprite_index_data = array("I", indices)
 
@@ -870,7 +867,7 @@ class SpriteList(Generic[SpriteType]):
         for sprite in self.sprite_list:
             sprite.update_animation(delta_time)
 
-    def _get_center(self) -> Tuple[float, float]:
+    def _get_center(self) -> tuple[float, float]:
         """Get the mean center coordinates of all sprites in the list."""
         x = sum((sprite.center_x for sprite in self.sprite_list)) / len(self.sprite_list)
         y = sum((sprite.center_y for sprite in self.sprite_list)) / len(self.sprite_list)

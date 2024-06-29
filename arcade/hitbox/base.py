@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from math import cos, radians, sin
-from typing import Any, Tuple
+from typing import Any
 from typing_extensions import Self
 
 from PIL.Image import Image
@@ -103,7 +103,7 @@ class HitBox:
         self,
         points: Point2List,
         position: Point2 = (0.0, 0.0),
-        scale: Tuple[float, float] = (1.0, 1.0),
+        scale: tuple[float, float] = (1.0, 1.0),
     ):
         self._points = points
         self._position = position
@@ -178,7 +178,7 @@ class HitBox:
         return min(y_points)
 
     @property
-    def scale(self) -> Tuple[float, float]:
+    def scale(self) -> tuple[float, float]:
         """
         The X & Y scaling factors for the points in this hit box.
 
@@ -187,7 +187,7 @@ class HitBox:
         return self._scale
 
     @scale.setter
-    def scale(self, scale: Tuple[float, float]):
+    def scale(self, scale: tuple[float, float]):
         self._scale = scale
         self._adjusted_cache_dirty = True
 
@@ -247,9 +247,9 @@ class RotatableHitBox(HitBox):
         self,
         points: Point2List,
         *,
-        position: Tuple[float, float] = (0.0, 0.0),
+        position: tuple[float, float] = (0.0, 0.0),
         angle: float = 0.0,
-        scale: Tuple[float, float] = (1.0, 1.0),
+        scale: tuple[float, float] = (1.0, 1.0),
     ):
         super().__init__(points, position=position, scale=scale)
         self._angle: float = angle

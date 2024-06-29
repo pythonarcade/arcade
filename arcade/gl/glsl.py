@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional
+from typing import TYPE_CHECKING, Iterable, Optional
 import re
 
 from pyglet import gl
@@ -43,7 +43,7 @@ class ShaderSource:
         self._source = source.strip()
         self._type = source_type
         self._lines = self._source.split("\n") if source else []
-        self._out_attributes = []  # type: List[str]
+        self._out_attributes = []  # type: list[str]
 
         if not self._lines:
             raise ValueError("Shader source is empty")
@@ -75,7 +75,7 @@ class ShaderSource:
         return self._version
 
     @property
-    def out_attributes(self) -> List[str]:
+    def out_attributes(self) -> list[str]:
         """The out attributes for this program"""
         return self._out_attributes
 
@@ -96,7 +96,7 @@ class ShaderSource:
             lines = source.split("\n")
             self._lines = self._lines[:line_number] + lines + self._lines[line_number:]
 
-    def get_source(self, *, defines: Optional[Dict[str, str]] = None) -> str:
+    def get_source(self, *, defines: Optional[dict[str, str]] = None) -> str:
         """Return the shader source
 
         :param defines: Defines to replace in the source.
@@ -126,7 +126,7 @@ class ShaderSource:
         )
 
     @staticmethod
-    def apply_defines(lines: List[str], defines: Dict[str, str]) -> List[str]:
+    def apply_defines(lines: list[str], defines: dict[str, str]) -> list[str]:
         """Locate and apply #define values
 
         :param lines: List of source lines

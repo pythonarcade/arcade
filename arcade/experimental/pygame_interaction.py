@@ -16,7 +16,6 @@ but should work with any recent version of Pygame.
 from __future__ import annotations
 
 import math
-from typing import Tuple
 
 import pygame  # type: ignore
 
@@ -30,7 +29,7 @@ class SurfaceTexture:
     making it simple to synchronize the data.
     """
 
-    def __init__(self, ctx: arcade.ArcadeContext, size: Tuple[int, int]):
+    def __init__(self, ctx: arcade.ArcadeContext, size: tuple[int, int]):
         self._ctx = ctx
         self._size = size
         self._surface = pygame.Surface(size, flags=pygame.SRCALPHA)
@@ -66,7 +65,7 @@ class SurfaceTexture:
         )
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         return self._size
 
     @property

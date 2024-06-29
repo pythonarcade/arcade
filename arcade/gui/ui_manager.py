@@ -12,7 +12,7 @@ The better gui for arcade
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union, Tuple
+from typing import Iterable, Optional, Type, TypeVar, Union
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
@@ -90,8 +90,8 @@ class UIManager(EventDispatcher):
     def __init__(self, window: Optional[arcade.Window] = None):
         super().__init__()
         self.window = window or arcade.get_window()
-        self._surfaces: Dict[int, Surface] = {}
-        self.children: Dict[int, List[UIWidget]] = defaultdict(list)
+        self._surfaces: dict[int, Surface] = {}
+        self.children: dict[int, list[UIWidget]] = defaultdict(list)
         self._requires_render = True
         self.register_event_type("on_event")
 
@@ -336,7 +336,7 @@ class UIManager(EventDispatcher):
             for layer in layers:
                 self._get_surface(layer).draw()
 
-    def adjust_mouse_coordinates(self, x: float, y: float) -> Tuple[float, float]:
+    def adjust_mouse_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
         This method is used, to translate mouse coordinates to coordinates
         respecting the viewport and projection of cameras.

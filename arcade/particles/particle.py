@@ -3,7 +3,7 @@ Particle - Object produced by an Emitter.  Often used in large quantity to produ
 """
 
 from __future__ import annotations
-from typing import Literal, Optional, Tuple
+from typing import Literal, Optional
 
 from arcade.sprite import Sprite
 from arcade.math import lerp, clamp
@@ -16,7 +16,7 @@ class Particle(Sprite):
     def __init__(
         self,
         path_or_texture: Optional[PathOrTexture],
-        change_xy: Tuple[float, float],
+        change_xy: tuple[float, float],
         center_xy: Point = (0.0, 0.0),
         angle: float = 0.0,
         change_angle: float = 0.0,

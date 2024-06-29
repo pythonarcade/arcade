@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from arcade.texture import ImageData
@@ -23,7 +23,7 @@ class ImageDataCache:
     """
 
     def __init__(self):
-        self._entries: Dict[str, "ImageData"] = {}
+        self._entries: dict[str, "ImageData"] = {}
 
     def put(self, name: str, image: "ImageData"):
         """

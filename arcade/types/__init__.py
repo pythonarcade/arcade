@@ -26,7 +26,7 @@ from __future__ import annotations
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import NamedTuple, Optional, Tuple, Union, TYPE_CHECKING, TypeVar
+from typing import NamedTuple, Optional, Union, TYPE_CHECKING, TypeVar
 
 from pytiled_parser import Properties
 
@@ -151,14 +151,14 @@ _T = TypeVar("_T")
 #:       """
 #:       ...  # No function definition
 #:
-Size2D = Tuple[_T, _T]
+Size2D = tuple[_T, _T]
 
 #: Used in :py:class:`~arcade.sprite_list.spatial_hash.SpatialHash`.
-IPoint = Tuple[int, int]
+IPoint = tuple[int, int]
 
 
 # We won't keep this forever. It's a temp stub for particles we'll replace.
-Velocity = Tuple[AsFloat, AsFloat]
+Velocity = tuple[AsFloat, AsFloat]
 
 # --- End potentially obsolete annotations ---
 
@@ -178,7 +178,7 @@ PathOrTexture = PathOr["Texture"]
 
 
 class TiledObject(NamedTuple):
-    shape: Union[Point, PointList, Tuple[int, int, int, int]]
+    shape: Union[Point, PointList, tuple[int, int, int, int]]
     properties: Optional[Properties] = None
     name: Optional[str] = None
     type: Optional[str] = None

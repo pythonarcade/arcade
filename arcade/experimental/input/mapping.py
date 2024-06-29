@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import List, Set, Union
+from typing import Union
 
 from typing_extensions import TypedDict
 
@@ -25,19 +25,19 @@ class RawAxisMapping(TypedDict):
 
 class RawAction(TypedDict):
     name: str
-    mappings: List[RawActionMapping]
+    mappings: list[RawActionMapping]
 
 
 class RawAxis(TypedDict):
     name: str
-    mappings: List[RawAxisMapping]
+    mappings: list[RawAxisMapping]
 
 
 class Action:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self._mappings: Set[ActionMapping] = set()
+        self._mappings: set[ActionMapping] = set()
 
     def add_mapping(self, mapping: ActionMapping) -> None:
         self._mappings.add(mapping)
@@ -53,7 +53,7 @@ class Axis:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self._mappings: Set[AxisMapping] = set()
+        self._mappings: set[AxisMapping] = set()
 
     def add_mapping(self, mapping: AxisMapping) -> None:
         self._mappings.add(mapping)
@@ -103,7 +103,7 @@ class AxisMapping(Mapping):
 
 
 def serialize_action(action: Action) -> RawAction:
-    raw_mappings: List[RawActionMapping] = []
+    raw_mappings: list[RawActionMapping] = []
     for mapping in action._mappings:
         raw_mappings.append(
             {
@@ -135,7 +135,7 @@ def parse_raw_axis(raw_axis: RawAxis) -> Axis:
 
 
 def serialize_axis(axis: Axis) -> RawAxis:
-    raw_mappings: List[RawAxisMapping] = []
+    raw_mappings: list[RawAxisMapping] = []
     for mapping in axis._mappings:
         raw_mappings.append(
             {

@@ -9,7 +9,6 @@ in arcade.
 from __future__ import annotations
 
 import random
-from typing import Tuple
 
 import arcade
 from arcade.gl import geometry
@@ -51,9 +50,9 @@ class Actor:
         map,
         shaders,
         *,
-        position: Tuple[float, float] = (0, 0),
+        position: tuple[float, float] = (0, 0),
         rotation: float = 0.0,
-        area: Tuple[float, float] = (256, 256),
+        area: tuple[float, float] = (256, 256),
         view_distance: float = 120.0,
     ):
         self.ctx = map.ctx
@@ -67,7 +66,7 @@ class Actor:
         self.geometry = geometry.quad_2d_fs()
 
     @property
-    def position(self) -> Tuple[float, float]:
+    def position(self) -> tuple[float, float]:
         """Get or set the position"""
         return self._position
 
@@ -99,7 +98,7 @@ class Map:
     Sprites for out map to keep things less messy
     """
 
-    def __init__(self, ctx, *, size: Tuple[int, int]):
+    def __init__(self, ctx, *, size: tuple[int, int]):
         self.ctx = ctx
         self.size = size
 

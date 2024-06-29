@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ctypes import byref, string_at
 import weakref
-from typing import Optional, Tuple, Union, TYPE_CHECKING
+from typing import Optional, Union, TYPE_CHECKING
 
 from pyglet import gl
 
@@ -114,12 +114,12 @@ class Texture2D:
     def __init__(
         self,
         ctx: "Context",
-        size: Tuple[int, int],
+        size: tuple[int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
         data: Optional[BufferProtocol] = None,
-        filter: Optional[Tuple[PyGLuint, PyGLuint]] = None,
+        filter: Optional[tuple[PyGLuint, PyGLuint]] = None,
         wrap_x: Optional[PyGLuint] = None,
         wrap_y: Optional[PyGLuint] = None,
         target=gl.GL_TEXTURE_2D,
@@ -187,7 +187,7 @@ class Texture2D:
 
         self.ctx.stats.incr("texture")
 
-    def resize(self, size: Tuple[int, int]):
+    def resize(self, size: tuple[int, int]):
         """
         Resize the texture. This will re-allocate the internal
         memory and all pixel data will be lost.
@@ -362,7 +362,7 @@ class Texture2D:
         return self._dtype
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         The size of the texture as a tuple
 
@@ -493,7 +493,7 @@ class Texture2D:
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_A, swizzle_enums[3])
 
     @property
-    def filter(self) -> Tuple[int, int]:
+    def filter(self) -> tuple[int, int]:
         """Get or set the ``(min, mag)`` filter for this texture.
         These are rules for how a texture interpolates.
         The filter is specified for minification and magnification.
@@ -524,7 +524,7 @@ class Texture2D:
         return self._filter
 
     @filter.setter
-    def filter(self, value: Tuple[int, int]):
+    def filter(self, value: tuple[int, int]):
         if not isinstance(value, tuple) or not len(value) == 2:
             raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
 

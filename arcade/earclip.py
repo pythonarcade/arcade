@@ -6,12 +6,11 @@ from: https://github.com/linuxlewis/tripy/blob/master/tripy.py
 from __future__ import annotations
 
 from arcade.types import Point, PointList
-from typing import List, Tuple
 
 
 def earclip(
     polygon: PointList,
-) -> List[Tuple[Tuple[float, float], Tuple[float, float], Tuple[float, float]]]:
+) -> list[tuple[tuple[float, float], tuple[float, float], tuple[float, float]]]:
     """
     Simple earclipping algorithm for a given polygon p.
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon
@@ -72,7 +71,7 @@ def earclip(
     return triangles
 
 
-def _is_clockwise(polygon: List[Point]) -> bool:
+def _is_clockwise(polygon: list[Point]) -> bool:
     s = 0.0
     polygon_count = len(polygon)
     for i in range(polygon_count):
@@ -86,7 +85,7 @@ def _is_convex(prev: Point, point: Point, next_point: Point) -> bool:
     return _triangle_sum(prev[0], prev[1], point[0], point[1], next_point[0], next_point[1]) < 0
 
 
-def _is_ear(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:
+def _is_ear(p1: Point, p2: Point, p3: Point, polygon: list[Point]) -> bool:
     return (
         _contains_no_points(p1, p2, p3, polygon)
         and _is_convex(p1, p2, p3)
@@ -94,7 +93,7 @@ def _is_ear(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:
     )
 
 
-def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: List[Point]) -> bool:
+def _contains_no_points(p1: Point, p2: Point, p3: Point, polygon: list[Point]) -> bool:
     for pn in polygon:
         if pn in (p1, p2, p3):
             continue
