@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List
+from typing import Any
 from .hit_box import HitBoxCache
 from .texture import TextureCache
 from .image_data import ImageDataCache
@@ -22,7 +22,7 @@ def crate_str_from_values(*args, sep: str = "_") -> str:
     return sep.join([str(x) for x in args])
 
 
-def crate_str_from_list(entries: List[Any], sep: str = "_") -> str:
+def crate_str_from_list(entries: list[Any], sep: str = "_") -> str:
     """
     Create a string from a list of parameters.
 

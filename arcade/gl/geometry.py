@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import math
 from array import array
-from typing import Tuple
 
 from arcade.gl import Context, BufferDescription
 from arcade.gl.vertex_array import Geometry
@@ -25,7 +24,7 @@ def quad_2d_fs() -> Geometry:
 
 
 def quad_2d(
-    size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (0.0, 0.0)
+    size: tuple[float, float] = (1.0, 1.0), pos: tuple[float, float] = (0.0, 0.0)
 ) -> Geometry:
     """
     Creates 2D quad Geometry using 2 triangle strip with texture coordinates.
@@ -91,8 +90,8 @@ def screen_rectangle(
 
 
 def cube(
-    size: Tuple[float, float, float] = (1.0, 1.0, 1.0),
-    center: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+    size: tuple[float, float, float] = (1.0, 1.0, 1.0),
+    center: tuple[float, float, float] = (0.0, 0.0, 0.0),
 ) -> Geometry:
     """Creates a cube with normals and texture coordinates.
 

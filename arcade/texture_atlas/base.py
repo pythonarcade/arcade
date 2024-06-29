@@ -26,211 +26,185 @@ instead of increasing the size.
 from __future__ import annotations
 
 import abc
-import logging
+import contextlib
 from typing import (
-    Dict,
     Optional,
+    Tuple,
     TYPE_CHECKING,
 )
-
+import PIL.Image
 import arcade
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.texture import ImageData
+    from arcade.texture_atlas import AtlasRegion
+    from arcade.gl import Framebuffer, Texture2D
 
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
-# It must divide. Must be a power of two number like 64, 256, 512 etx
+# It must be a power of two number like 64, 256, 512 ..
 RESIZE_STEP = 128
 UV_TEXTURE_WIDTH = 4096
-LOG = logging.getLogger(__name__)
-
-
-class ImageDataRefCounter:
-    """
-    Helper class to keep track of how many times an image is used
-    by a texture in the atlas to determine when it's safe to remove it.
-
-    Multiple Texture instances can and will use the same ImageData
-    instance.
-    """
-
-    def __init__(self) -> None:
-        self._data: Dict[str, int] = {}
-        self._num_decref = 0
-
-    def inc_ref(self, image_data: "ImageData") -> None:
-        """Increment the reference count for an image."""
-        self._data[image_data.hash] = self._data.get(image_data.hash, 0) + 1
-
-    def dec_ref(self, image_data: "ImageData") -> int:
-        """
-        Decrement the reference count for an image returning the new value.
-        """
-        return self.dec_ref_by_hash(image_data.hash)
-
-    def dec_ref_by_hash(self, hash: str) -> int:
-        """
-        Decrement the reference count for an image by hash returning the new value.
-        """
-        if hash not in self._data:
-            raise RuntimeError(f"Image {hash} not in ref counter")
-
-        val = self._data[hash] - 1
-        self._data[hash] = val
-
-        if val < 0:
-            raise RuntimeError(f"Image {hash} ref count went below zero")
-        if val == 0:
-            del self._data[hash]
-
-        self._num_decref += 1
-
-        return val
-
-    def get_ref_count(self, image_data: "ImageData") -> int:
-        """
-        Get the reference count for an image.
-
-        Args:
-            image_data (ImageData): The image to get the reference count for
-        """
-        return self._data.get(image_data.hash, 0)
-
-    def count_all_refs(self) -> int:
-        """Helper function to count the total number of references."""
-        return sum(self._data.values())
-
-    def get_total_decref(self, reset=True) -> int:
-        """
-        Get the total number of decrefs.
-
-        Args:
-            reset (bool): Reset the counter after getting the value
-        """
-        num_decref = self._num_decref
-        if reset:
-            self._num_decref = 0
-        return num_decref
-
-    def clear(self) -> None:
-        """Clear the reference counter."""
-        self._data.clear()
-        self._num_decref = 0
-
-    def debug_print(self) -> None:
-        """Debug print the reference counter."""
-        print(f"{self.__class__.__name__}:")
-        for key, val in self._data.items():
-            print(f"  {key}: {val}")
-
-    def __len__(self) -> int:
-        return len(self._data)
-
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} ref_count={self.count_all_refs()} data={self._data}>"
-
-
-class UniqueTextureRefCounter:
-    """
-    Helper class to keep track of how many times a unique texture is used.
-    A "unique texture" is based on the ``atlas_name`` of the texture meaning
-    a texture using the same image and the same vertex order.
-    """
-
-    def __init__(self) -> None:
-        self._data: Dict[str, int] = {}
-        self._num_decref = 0
-
-    def inc_ref(self, image_data: "Texture") -> None:
-        """Increment the reference count for an image."""
-        self._data[image_data.atlas_name] = self._data.get(image_data.atlas_name, 0) + 1
-
-    def dec_ref(self, image_data: "Texture") -> int:
-        """
-        Decrement the reference count for an image returning the new value.
-        """
-        return self.dec_ref_by_atlas_name(image_data.atlas_name)
-
-    def dec_ref_by_atlas_name(self, atlas_name: str) -> int:
-        """
-        Decrement the reference count for an image by name returning the new value.
-        """
-        if atlas_name not in self._data:
-            raise RuntimeError(f"Image {atlas_name} not in ref counter")
-
-        val = self._data[atlas_name] - 1
-        self._data[atlas_name] = val
-
-        if val < 0:
-            raise RuntimeError(f"Image {atlas_name} ref count went below zero")
-        if val == 0:
-            del self._data[atlas_name]
-
-        self._num_decref += 1
-
-        return val
-
-    def get_ref_count(self, image_data: "ImageData") -> int:
-        """
-        Get the reference count for an image.
-
-        Args:
-            image_data (ImageData): The image to get the reference count for
-        """
-        return self._data.get(image_data.hash, 0)
-
-    def count_all_refs(self) -> int:
-        """Helper function to count the total number of references."""
-        return sum(self._data.values())
-
-    def get_total_decref(self, reset=True) -> int:
-        """
-        Get the total number of decrefs.
-
-        Args:
-            reset (bool): Reset the counter after getting the value
-        """
-        num_decref = self._num_decref
-        if reset:
-            self._num_decref = 0
-        return num_decref
-
-    def clear(self) -> None:
-        """Clear the reference counter."""
-        self._data.clear()
-        self._num_decref = 0
-
-    def debug_print(self) -> None:
-        """Debug print the reference counter."""
-        print(f"{self.__class__.__name__}:")
-        for key, val in self._data.items():
-            print(f"  {key}: {val}")
-
-    def __len__(self) -> int:
-        return len(self._data)
-
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} ref_count={self.count_all_refs()} data={self._data}>"
+# Texture coordinates for a texture (4 x vec2)
+TexCoords = Tuple[float, float, float, float, float, float, float, float]
 
 
 class TextureAtlasBase(abc.ABC):
-    """Generic base for texture atlases."""
+    """Abstract base class for texture atlases"""
+
+    _fbo: Framebuffer
+    _texture: Texture2D
 
     def __init__(self, ctx: Optional["ArcadeContext"]):
         self._ctx = ctx or arcade.get_window().ctx
+        self._size: Tuple[int, int] = 0, 0
+        self._layers: int = 1
 
     @property
     def ctx(self) -> "ArcadeContext":
         return self._ctx
 
-    # NOTE: AtlasRegion only makes sense for 2D atlas. Figure it out.
-    # @abc.abstractmethod
-    # def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
-    #     """Add a texture to the atlas."""
-    #     raise NotImplementedError
+    @property
+    def fbo(self) -> Framebuffer:
+        """The framebuffer object for this atlas"""
+        return self._fbo
+
+    @property
+    def texture(self) -> "Texture2D":
+        """
+        The atlas texture.
+        """
+        return self._texture
+
+    @property
+    def width(self) -> int:
+        """Hight of the atlas in pixels."""
+        return self._size[0]
+
+    @property
+    def height(self) -> int:
+        """Width of the atlas in pixels."""
+        return self._size[1]
+
+    @property
+    def layers(self) -> int:
+        """
+        Number of layers in the atlas.
+        Only relevant for texture arrays and 3D textures.
+        """
+        return self._layers
+
+    @property
+    def size(self) -> Tuple[int, int]:
+        """
+        The width and height of the texture atlas in pixels
+        """
+        return self._size
+
+    # --- Core ---
+
+    @abc.abstractmethod
+    def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
+        """Add a texture to the atlas."""
+        ...
 
     @abc.abstractmethod
     def remove(self, texture: "Texture") -> None:
         """Remove a texture from the atlas."""
-        raise NotImplementedError
+        ...
+
+    @abc.abstractmethod
+    def resize(self, *args, **kwargs) -> None:
+        """Resize the atlas."""
+        ...
+
+    @abc.abstractmethod
+    def rebuild(self) -> None:
+        """Rebuild the atlas."""
+        ...
+
+    @abc.abstractmethod
+    def has_image(self, image_data: "ImageData") -> bool:
+        """Check if the atlas has an image."""
+        ...
+
+    @abc.abstractmethod
+    def has_texture(self, texture: "Texture") -> bool:
+        """Check if the atlas has a texture."""
+        ...
+
+    @abc.abstractmethod
+    def has_unique_texture(self, texture: "Texture") -> bool:
+        """Check if the atlas has a unique texture."""
+        ...
+
+    @abc.abstractmethod
+    def get_texture_id(self, texture: "Texture") -> int:
+        """Get the texture ID."""
+        ...
+
+    @abc.abstractmethod
+    def get_texture_region_info(self, atlas_name: str) -> AtlasRegion:
+        """Get the texture region info."""
+        ...
+
+    @abc.abstractmethod
+    def get_image_region_info(self, hash: str) -> AtlasRegion:
+        """Get the image region info."""
+        ...
+
+    @abc.abstractmethod
+    def use_uv_texture(self, unit: int = 0) -> None:
+        """Use the UV texture."""
+        ...
+
+    # --- Utility ---
+
+    @abc.abstractmethod
+    @contextlib.contextmanager
+    def render_into(
+        self,
+        texture: "Texture",
+        projection: Optional[Tuple[float, float, float, float]] = None,
+    ):
+        """Render into the texture's atlas region."""
+        yield self._fbo
+
+    @abc.abstractmethod
+    def write_image(self, image: PIL.Image.Image, x: int, y: int) -> None:
+        """Write an image to the atlas."""
+        ...
+
+    @abc.abstractmethod
+    def read_texture_image_from_atlas(self, texture: "Texture") -> PIL.Image.Image:
+        """Read the texture image from the atlas."""
+        ...
+
+    @abc.abstractmethod
+    def update_texture_image(self, texture: "Texture"):
+        """Update the texture image from the atlas"""
+        ...
+
+    @abc.abstractmethod
+    def update_texture_image_from_atlas(self, texture: "Texture") -> None:
+        """Update the texture image from the atlas."""
+        ...
+
+    # --- Debugging ---
+
+    @abc.abstractmethod
+    def to_image(self) -> PIL.Image.Image:
+        """Convert the atlas to an image."""
+        ...
+
+    @abc.abstractmethod
+    def show(self) -> None:
+        """Show the atlas."""
+        ...
+
+
+__all__ = (
+    "TextureAtlasBase",
+    "RESIZE_STEP",
+    "UV_TEXTURE_WIDTH",
+)

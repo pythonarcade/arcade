@@ -18,6 +18,8 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Easing Example"
 
+# Incase the texture does not face the correct direction
+ANGLE_OFFSET = 90
 
 class Player(arcade.Sprite):
     """ Player class """
@@ -105,13 +107,14 @@ class MyGame(arcade.Window):
         y = self.mouse["y"]
 
         if key == arcade.key.KEY_1:
-            point = x, y
-            self.player_sprite.face_point(point)
+            p1 = self.player_sprite.position
+            p2 = (x, y)
+            self.player_sprite.angle = arcade.math.get_angle_degrees(p1[0], p1[1], p2[0], p2[1]) + ANGLE_OFFSET
             self.text = "Instant angle change"
         if key in [arcade.key.KEY_2, arcade.key.KEY_3, arcade.key.KEY_4, arcade.key.KEY_5]:
             p1 = self.player_sprite.position
             p2 = (x, y)
-            end_angle = -arcade.math.get_angle_degrees(p1[0], p1[1], p2[0], p2[1])
+            end_angle = arcade.math.get_angle_degrees(p1[0], p1[1], p2[0], p2[1]) + ANGLE_OFFSET
             start_angle = self.player_sprite.angle
             if key == arcade.key.KEY_2:
                 ease_function = easing.linear

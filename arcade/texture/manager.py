@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import Dict, Union, Optional, Tuple
+from typing import Union, Optional
 
 import PIL.Image
 import PIL.ImageOps
@@ -26,7 +26,7 @@ class TextureCacheManager:
     """
 
     def __init__(self):
-        self._sprite_sheets: Dict[str, SpriteSheet] = {}
+        self._sprite_sheets: dict[str, SpriteSheet] = {}
         self._hit_box_cache = HitBoxCache()
         self._image_data_cache = ImageDataCache()
         self._texture_cache = TextureCache()
@@ -195,7 +195,7 @@ class TextureCacheManager:
         self,
         file_path: Path,
         hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
-        crop: Tuple[int, int, int, int] = (0, 0, 0, 0),
+        crop: tuple[int, int, int, int] = (0, 0, 0, 0),
         hash: Optional[str] = None,
     ) -> Texture:
         """Load a texture, or return a cached version if it's already loaded."""
@@ -243,7 +243,7 @@ class TextureCacheManager:
         file_path: Path,
         hash: Optional[str] = None,
         mode: str = "RGBA",
-    ) -> Tuple[ImageData, bool]:
+    ) -> tuple[ImageData, bool]:
         """
         Load an image, or return a cached version
 

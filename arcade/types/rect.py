@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 import math
-from typing import NamedTuple, Optional, TypedDict, Tuple
+from typing import NamedTuple, Optional, TypedDict
 
 from pyglet.math import Vec2
 
@@ -11,8 +11,8 @@ from arcade.types.vector_like import AnchorPoint, Point2
 
 from arcade.utils import ReplacementWarning, warning
 
-RectParams = Tuple[AsFloat, AsFloat, AsFloat, AsFloat]
-ViewportParams = Tuple[int, int, int, int]
+RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
+ViewportParams = tuple[int, int, int, int]
 
 
 class RectKwargs(TypedDict):

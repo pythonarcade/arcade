@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import arcade
 from arcade import Texture
@@ -99,7 +99,7 @@ class Sprite(BasicSprite, PymunkMixin):
         self.change_angle: float = 0.0
 
         # Custom sprite properties
-        self._properties: Optional[Dict[str, Any]] = None
+        self._properties: Optional[dict[str, Any]] = None
 
         # Boundaries for moving platforms in tilemaps
         self.boundary_left: Optional[float] = None
@@ -108,9 +108,9 @@ class Sprite(BasicSprite, PymunkMixin):
         self.boundary_bottom: Optional[float] = None
 
         self.cur_texture_index: int = 0
-        self.textures: List[Texture] = _textures
+        self.textures: list[Texture] = _textures
 
-        self.physics_engines: List[Any] = []
+        self.physics_engines: list[Any] = []
 
         self._sprite_list: Optional[SpriteList] = None
         # Debug properties
@@ -246,7 +246,7 @@ class Sprite(BasicSprite, PymunkMixin):
             sprite_list._update_texture(self)
 
     @property
-    def properties(self) -> Dict[str, Any]:
+    def properties(self) -> dict[str, Any]:
         """
         Get or set custom sprite properties.
 
@@ -256,7 +256,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._properties
 
     @properties.setter
-    def properties(self, value: Dict[str, Any]) -> None:
+    def properties(self, value: dict[str, Any]) -> None:
         self._properties = value
 
     # --- Movement methods -----

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Tuple, Union
+from typing import TYPE_CHECKING, Union
 from ctypes import (
     c_char,
     cast,
@@ -29,7 +29,7 @@ class ComputeShader:
     def __init__(self, ctx: "Context", glsl_source: str) -> None:
         self._ctx = ctx
         self._source = glsl_source
-        self._uniforms: Dict[str, Union[UniformBlock, Uniform]] = dict()
+        self._uniforms: dict[str, Union[UniformBlock, Uniform]] = dict()
 
         from arcade.gl import ShaderException
 
@@ -218,7 +218,7 @@ class ComputeShader:
             block = UniformBlock(self._glo, index, size, name)
             self._uniforms[name] = block
 
-    def _query_uniform(self, location: int) -> Tuple[str, int, int]:
+    def _query_uniform(self, location: int) -> tuple[str, int, int]:
         """Retrieve Uniform information at given location.
 
         Returns the name, the type as a GLenum (GL_FLOAT, ...) and the size. Size is
@@ -240,7 +240,7 @@ class ComputeShader:
         )
         return u_name.value.decode(), u_type.value, u_size.value
 
-    def _query_uniform_block(self, location: int) -> Tuple[int, int, str]:
+    def _query_uniform_block(self, location: int) -> tuple[int, int, str]:
         """Query active uniform block by retrieving the name and index and size"""
         # Query name
         u_size = gl.GLint()

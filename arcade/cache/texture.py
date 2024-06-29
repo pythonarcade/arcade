@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Set, TYPE_CHECKING, Union, Tuple
+from typing import Optional, TYPE_CHECKING, Union
 from pathlib import Path
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ class TextureBucket:
     """
 
     def __init__(self):
-        self._entries: Dict[str, "Texture"] = {}
+        self._entries: dict[str, "Texture"] = {}
 
     def put(self, name: str, texture: "Texture") -> None:
         self._entries[name] = texture
@@ -111,7 +111,7 @@ class TextureCache:
     def get_texture_by_filepath(
         self,
         file_path: Union[str, Path],
-        crop: Tuple[int, int, int, int] = (0, 0, 0, 0),
+        crop: tuple[int, int, int, int] = (0, 0, 0, 0),
     ) -> Optional["Texture"]:
         """
         Get a texture from the cache by file path and crop values.
@@ -155,7 +155,7 @@ class TextureCache:
         self._entries.flush()
         self._file_entries.flush()
 
-    def get_all_textures(self) -> Set["Texture"]:
+    def get_all_textures(self) -> set["Texture"]:
         """Get all textures in the cache"""
         return set(self._entries._entries.values())
 

@@ -6,7 +6,7 @@ Contains pre-loaded programs
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Dict, Optional, Union, Sequence, Tuple
+from typing import Any, Iterable, Optional, Union, Sequence
 
 import pyglet
 from pyglet import gl
@@ -21,7 +21,7 @@ from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
 from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
-from arcade.texture_atlas import TextureAtlas
+from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
 from arcade.camera import Projector
 from arcade.camera.default import DefaultProjector
 
@@ -46,7 +46,7 @@ class ArcadeContext(Context):
                         it's not clear what thread will gc the object.
     """
 
-    atlas_size: Tuple[int, int] = 512, 512
+    atlas_size: tuple[int, int] = 512, 512
 
     def __init__(
         self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
@@ -187,10 +187,10 @@ class ArcadeContext(Context):
         )
         self.atlas_geometry: Geometry = self.geometry()
 
-        self._atlas: Optional[TextureAtlas] = None
+        self._atlas: Optional[TextureAtlasBase] = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
-        self.label_cache: Dict[str, arcade.Text] = {}
+        self.label_cache: dict[str, arcade.Text] = {}
 
         # self.active_program = None
         self.point_size = 1.0
@@ -227,20 +227,18 @@ class ArcadeContext(Context):
         )
 
     @property
-    def default_atlas(self) -> TextureAtlas:
+    def default_atlas(self) -> TextureAtlasBase:
         """
         The default texture atlas. This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
         is passed in the :py:class:`arcade.SpriteList` constructor.
-
-        :type: TextureAtlas
         """
         if not self._atlas:
             # Create the default texture atlas
             # 8192 is a safe maximum size for textures in OpenGL 3.3
             # We might want to query the max limit, but this makes it consistent
             # across all OpenGL implementations.
-            self._atlas = TextureAtlas(
+            self._atlas = DefaultTextureAtlas(
                 self.atlas_size,
                 border=2,
                 auto_resize=True,
@@ -250,7 +248,7 @@ class ArcadeContext(Context):
         return self._atlas
 
     @property
-    def viewport(self) -> Tuple[int, int, int, int]:
+    def viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the viewport for the currently active framebuffer.
         The viewport simply describes what pixels of the screen
@@ -269,7 +267,7 @@ class ArcadeContext(Context):
         return self.active_framebuffer.viewport
 
     @viewport.setter
-    def viewport(self, value: Tuple[int, int, int, int]):
+    def viewport(self, value: tuple[int, int, int, int]):
         self.active_framebuffer.viewport = value
         if self._default_camera == self.current_camera:
             self._default_camera.use()
@@ -321,7 +319,7 @@ class ArcadeContext(Context):
         tess_control_shader: Optional[Union[str, Path]] = None,
         tess_evaluation_shader: Optional[Union[str, Path]] = None,
         common: Iterable[Union[str, Path]] = (),
-        defines: Optional[Dict[str, Any]] = None,
+        defines: Optional[dict[str, Any]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:

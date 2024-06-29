@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Tuple
+from typing import TYPE_CHECKING, Iterable, TypeVar, Any
 
 import arcade
 from arcade.types import Point, Point2, Color, RGBA255, RGBOrA255, PointList, Rect, LRBT
@@ -65,7 +65,7 @@ class BasicSprite:
         self._scale = Vec2(scale, scale)
         self._visible = bool(visible)
         self._color: Color = WHITE
-        self.sprite_lists: List["SpriteList"] = []
+        self.sprite_lists: list["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
@@ -349,7 +349,7 @@ class BasicSprite:
             sprite_list._update_color(self)
 
     @property
-    def rgb(self) -> Tuple[int, int, int]:
+    def rgb(self) -> tuple[int, int, int]:
         """Get or set only the sprite's RGB color components.
 
         If a 4-color RGBA tuple is passed:
@@ -678,7 +678,7 @@ class BasicSprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> List[SpriteType]:
+    def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> list[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param sprite_list: SpriteList to check against

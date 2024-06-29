@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional, Dict, Union
+from typing import Optional, Union
 
 import arcade
 from arcade import Texture
@@ -53,7 +53,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
     :param size_hint_max: max width and height in pixel
     """
 
-    _textures: Dict[str, Union[Texture, NinePatchTexture]] = DictProperty()  # type: ignore
+    _textures: dict[str, Union[Texture, NinePatchTexture]] = DictProperty()  # type: ignore
 
     UIStyle = UITextureButtonStyle
 
@@ -93,7 +93,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         text: str = "",
         multiline: bool = False,
         scale: Optional[float] = None,
-        style: Optional[Dict[str, UIStyleBase]] = None,
+        style: Optional[dict[str, UIStyleBase]] = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,

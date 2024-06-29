@@ -5,7 +5,7 @@ Classic A-star algorithm for path finding.
 from __future__ import annotations
 
 import math
-from typing import cast, List, Optional, Set, Tuple, Union, Dict
+from typing import cast, Optional, Union
 
 from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point
 from arcade.math import get_distance, lerp_2d
@@ -62,7 +62,7 @@ class _AStarGraph(object):
 
     def __init__(
         self,
-        barriers: Union[List, Tuple, Set],
+        barriers: Union[list, tuple, set],
         left: int,
         right: int,
         bottom: int,
@@ -89,7 +89,7 @@ class _AStarGraph(object):
         else:
             self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)  # type: ignore
 
-    def get_vertex_neighbours(self, pos: Point) -> List[Tuple[float, float]]:
+    def get_vertex_neighbours(self, pos: Point) -> list[tuple[float, float]]:
         """
         Return neighbors for this point according to ``self.movement_directions``
 
@@ -131,7 +131,7 @@ class _AStarGraph(object):
             return 1.42
 
 
-def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> Optional[List[Point2]]:
+def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> Optional[list[Point2]]:
     """
     Returns a path from start to end using the AStarSearch Algorithm
 
@@ -142,8 +142,8 @@ def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> Optional[Lis
 
     :return: The path from start to end. Returns None if is path is not found
     """
-    G: Dict[Point2, float] = dict()  # Actual movement cost to each position from the start position
-    F: Dict[Point2, float] = (
+    G: dict[Point2, float] = dict()  # Actual movement cost to each position from the start position
+    F: dict[Point2, float] = (
         dict()
     )  # Estimated movement cost of start to end going via this position
 
@@ -290,7 +290,7 @@ def astar_calculate_path(
     end_point: Point,
     astar_barrier_list: AStarBarrierList,
     diagonal_movement: bool = True,
-) -> Optional[List[Point]]:
+) -> Optional[list[Point]]:
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 
@@ -323,7 +323,7 @@ def astar_calculate_path(
     # Currently 'result' is in grid locations. We need to convert them to pixel
     # locations.
     revised_result = [_expand(p, grid_size) for p in result]
-    return cast(List[Point], revised_result)
+    return cast(list[Point], revised_result)
 
 
 def has_line_of_sight(

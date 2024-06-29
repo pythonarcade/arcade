@@ -207,7 +207,7 @@ from .paths import astar_calculate_path
 
 from .context import ArcadeContext
 
-from .texture_atlas import TextureAtlas
+from .texture_atlas import DefaultTextureAtlas
 
 from .perf_info import enable_timings
 from .perf_info import print_timings
@@ -289,7 +289,7 @@ __all__ = [
     "Texture",
     "TextureCacheManager",
     "SpriteSheet",
-    "TextureAtlas",
+    "DefaultTextureAtlas",
     "TileMap",
     "VERSION",
     "Vec2",

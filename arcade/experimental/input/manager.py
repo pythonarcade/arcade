@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Union
+from typing import Any, Callable, Optional, Union
 
 import pyglet
 from pyglet.input.base import Controller
@@ -25,12 +25,12 @@ from .mapping import (
 
 
 class RawInputManager(TypedDict):
-    actions: List[RawAction]
-    axes: List[RawAxis]
+    actions: list[RawAction]
+    axes: list[RawAxis]
     controller_deadzone: float
 
 
-def _set_discard(set: Set, element: Any) -> Set:
+def _set_discard(set: set, element: Any) -> set:
     set.discard(element)
     return set
 
@@ -52,23 +52,23 @@ class InputManager:
         controller: Optional[Controller] = None,
         allow_keyboard: bool = True,
         action_handlers: Union[
-            Callable[[str, ActionState], Any], List[Callable[[str, ActionState], Any]]
+            Callable[[str, ActionState], Any], list[Callable[[str, ActionState], Any]]
         ] = [],
         controller_deadzone: float = 0.1,
     ):
-        self.actions: Dict[str, Action] = {}
-        self.keys_to_actions: Dict[int, Set[str]] = {}
-        self.controller_buttons_to_actions: Dict[str, Set[str]] = {}
-        self.controller_axes_to_actions: Dict[str, Set[str]] = {}
-        self.mouse_buttons_to_actions: Dict[int, Set[str]] = {}
-        self.on_action_listeners: List[Callable[[str, ActionState], Any]] = []
-        self.action_subscribers: Dict[str, Set[Callable[[ActionState], Any]]] = {}
+        self.actions: dict[str, Action] = {}
+        self.keys_to_actions: dict[int, set[str]] = {}
+        self.controller_buttons_to_actions: dict[str, set[str]] = {}
+        self.controller_axes_to_actions: dict[str, set[str]] = {}
+        self.mouse_buttons_to_actions: dict[int, set[str]] = {}
+        self.on_action_listeners: list[Callable[[str, ActionState], Any]] = []
+        self.action_subscribers: dict[str, set[Callable[[ActionState], Any]]] = {}
 
-        self.axes: Dict[str, Axis] = {}
-        self.axes_state: Dict[str, float] = {}
-        self.keys_to_axes: Dict[int, Set[str]] = {}
-        self.controller_buttons_to_axes: Dict[str, Set[str]] = {}
-        self.controller_analog_to_axes: Dict[str, Set[str]] = {}
+        self.axes: dict[str, Axis] = {}
+        self.axes_state: dict[str, float] = {}
+        self.keys_to_axes: dict[int, set[str]] = {}
+        self.controller_buttons_to_axes: dict[str, set[str]] = {}
+        self.controller_analog_to_axes: dict[str, set[str]] = {}
 
         self.window = arcade.get_window()
 
@@ -312,7 +312,7 @@ class InputManager:
 
     def register_action_handler(
         self,
-        handler: Union[Callable[[str, ActionState], Any], List[Callable[[str, ActionState], Any]]],
+        handler: Union[Callable[[str, ActionState], Any], list[Callable[[str, ActionState], Any]]],
     ):
         if isinstance(handler, list):
             self.on_action_listeners.extend(handler)

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from array import array
-from typing import Iterable, Tuple, Sequence, List, Optional
+from typing import Iterable, Sequence, Optional
 
 from arcade import gl
 from arcade.experimental.texture_render_target import RenderTargetTexture
@@ -54,7 +54,7 @@ class Light:
             )
 
     @property
-    def position(self) -> Tuple[float, float]:
+    def position(self) -> tuple[float, float]:
         """Get or set the light position"""
         return self._center_x, self._center_y
 
@@ -88,7 +88,7 @@ class LightLayer(RenderTargetTexture):
         """
         super().__init__(width, height)
 
-        self._lights: List[Light] = []
+        self._lights: list[Light] = []
         self._prev_target = None
         self._rebuild = False
         self._stride = 28
@@ -172,7 +172,7 @@ class LightLayer(RenderTargetTexture):
 
     def draw(
         self,
-        position: Tuple[float, float] = (0, 0),
+        position: tuple[float, float] = (0, 0),
         target=None,
         ambient_color: RGBOrA255 = (64, 64, 64),
     ):
@@ -186,7 +186,7 @@ class LightLayer(RenderTargetTexture):
 
         # Re-build light data if needed
         if self._rebuild and len(self._lights) > 0:
-            data: List[float] = []
+            data: list[float] = []
             for light in self._lights:
                 data.extend(light.position)
                 data.append(light.radius)

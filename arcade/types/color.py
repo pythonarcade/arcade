@@ -21,7 +21,7 @@ named color values, please see the following:
 from __future__ import annotations
 
 import random
-from typing import Tuple, Iterable, Optional, Union, TypeVar
+from typing import Iterable, Optional, Union, TypeVar
 
 from typing_extensions import Self, Final
 
@@ -67,8 +67,8 @@ MASK_RGB_B: Final[int] = 0x0000FF
 ChannelType = TypeVar("ChannelType")
 
 # Generic color aliases
-RGB = Tuple[ChannelType, ChannelType, ChannelType]
-RGBA = Tuple[ChannelType, ChannelType, ChannelType, ChannelType]
+RGB = tuple[ChannelType, ChannelType, ChannelType]
+RGBA = tuple[ChannelType, ChannelType, ChannelType, ChannelType]
 RGBOrA = Union[RGB[ChannelType], RGBA[ChannelType]]
 
 # Specific color aliases
@@ -182,7 +182,7 @@ class Color(RGBA255):
         return self[3]
 
     @property
-    def rgb(self) -> Tuple[int, int, int]:
+    def rgb(self) -> tuple[int, int, int]:
         """Return only a color's RGB components.
 
         This is syntactic sugar for slice indexing as below:
@@ -503,7 +503,7 @@ class Color(RGBA255):
 
         return cls(r, g, b, a)
 
-    def swizzle(self, order: str) -> Tuple[int, ...]:
+    def swizzle(self, order: str) -> tuple[int, ...]:
         """Get a :py:class:`tuple` of channel values in the given ``order``.
 
         .. _GLSL's swizzling: https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Swizzling

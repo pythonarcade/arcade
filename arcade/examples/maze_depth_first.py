@@ -37,7 +37,10 @@ MERGE_SPRITES = True
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
 VIEWPORT_MARGIN = 200
-
+HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
+# If the player moves further than this boundary away from the camera we use a constraint to move the camera
+CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
 
 def _create_grid_with_cells(width, height):
     """ Create a grid with empty cells on odd row/column combinations. """
@@ -102,7 +105,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Camera for scrolling
-        self.cam = None
+        self.camera = None
 
         # Time to process
         self.processing_time = 0
@@ -181,7 +184,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
         # Setup Camera
-        self.cam = arcade.camera.Camera2D()
+        self.camera = arcade.camera.Camera2D()
 
     def on_draw(self):
         """
@@ -202,7 +205,7 @@ class MyGame(arcade.Window):
         sprite_count = len(self.wall_list)
 
         output = f"Sprite Count: {sprite_count}"
-        left, bottom = self.cam.bottom_left
+        left, bottom = self.camera.bottom_left
         arcade.draw_text(output,
                          left + 20,
                          SCREEN_HEIGHT - 20 + bottom,
@@ -252,44 +255,10 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # --- Manage Scrolling ---
-
-        # Keep track of if we changed the boundary. We don't want to
-        # update the camera if we don't need to.
-        changed = False
-
-        pos = self.cam.position
-
-        top_left = self.cam.top_left
-        bottom_right = self.cam.bottom_right
-
-        # Scroll left
-        left_boundary = top_left[0] + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_boundary:
-            changed = True
-            pos = pos[0] + (self.player_sprite.left - left_boundary), pos[1]
-
-        # Scroll up
-        top_boundary = top_left[1] - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            changed = True
-            pos = pos[0], pos[1] + (self.player_sprite.top - top_boundary)
-
-        # Scroll right
-        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_boundary:
-            changed = True
-            pos = pos[0] + (self.player_sprite.right - right_boundary), pos[1]
-
-        # Scroll down
-        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_boundary:
-            changed = True
-            pos = pos[0], pos[1] + (self.player_sprite.bottom - bottom_boundary)
-
-        # If we changed the boundary values, update the view port to match
-        if changed:
-            self.cam.position = pos
-            self.cam.use()
+        self.camera.position = arcade.camera.grips.constrain_boundary_xy(
+            self.camera.view_data, CAMERA_BOUNDARY, self.player_sprite.position
+        )
+        self.camera.use()
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

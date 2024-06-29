@@ -8,7 +8,6 @@ transform the texture coordinates and hit box points.
 
 from __future__ import annotations
 
-from typing import Dict, Tuple
 from enum import Enum
 from arcade.math import rotate_point
 from arcade.types import Point2List
@@ -51,7 +50,7 @@ class Transform:
         return points
 
     @classmethod
-    def transform_vertex_order(cls, order: Tuple[int, int, int, int]) -> Tuple[int, int, int, int]:
+    def transform_vertex_order(cls, order: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
         """
         Transforms and exiting vertex order with this transform.
         This gives us important metadata on how to quickly transform
@@ -67,9 +66,9 @@ class Transform:
     @classmethod
     def transform_texture_coordinates_order(
         cls,
-        texture_coordinates: Tuple[float, float, float, float, float, float, float, float],
-        order: Tuple[int, int, int, int],
-    ) -> Tuple[float, float, float, float, float, float, float, float]:
+        texture_coordinates: tuple[float, float, float, float, float, float, float, float],
+        order: tuple[int, int, int, int],
+    ) -> tuple[float, float, float, float, float, float, float, float]:
         """
         Change texture coordinates order.
 
@@ -230,7 +229,7 @@ class TransverseTransform(Transform):
 # but it's faster to just pre-calculate it.
 # Key is the vertex order
 # Value is the orientation (flip_left_right, flip_top_down, rotation)
-ORIENTATIONS: Dict[Tuple[int, int, int, int], Tuple[int, bool, bool]] = {
+ORIENTATIONS: dict[tuple[int, int, int, int], tuple[int, bool, bool]] = {
     (0, 1, 2, 3): (0, False, False),  # Default
     (2, 0, 3, 1): (90, False, False),  # Rotate 90
     (3, 2, 1, 0): (180, False, False),  # Rotate 180

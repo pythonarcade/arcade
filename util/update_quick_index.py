@@ -52,12 +52,8 @@ MEMBER_SPECIAL_RULES = {
 
 # Module and class members to exclude
 EXCLUDED_MEMBERS = [
-    "ImageData",
-    "FakeImage",
     "load_atlas",
     "save_atlas",
-    "ImageDataRefCounter",
-    "UVData",
 ]
 # Helper callable which returns a bool. Use it with filter
 member_not_excluded = NotExcludedBy(EXCLUDED_MEMBERS)
@@ -151,7 +147,10 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "use_declarations_in": [
             "arcade.texture_atlas",
             "arcade.texture_atlas.base",
-            "arcade.texture_atlas.atlas_2d"
+            "arcade.texture_atlas.atlas_default",
+            "arcade.texture_atlas.region",
+            "arcade.texture_atlas.uv_data",
+            "arcade.texture_atlas.ref_counters",
         ]
     },
     "perf_info.rst": {

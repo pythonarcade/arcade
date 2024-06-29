@@ -1,7 +1,8 @@
 #  type: ignore
+from __future__ import annotations
 
 import random
-from typing import List, Optional
+from typing import Optional
 
 import pyglet
 
@@ -88,7 +89,7 @@ class Game(arcade.Window):
             wall.center_y = 32
             self.wall_list.append(wall)
 
-        self.players: List[Player] = []
+        self.players: list[Player] = []
 
         self.controller_manager = pyglet.input.ControllerManager()
         self.controller_manager.set_handlers(self.on_connect, self.on_disconnect)

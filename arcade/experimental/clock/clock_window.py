@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import Tuple, Optional
+from typing import Optional
 
 import pyglet
 
@@ -93,7 +93,7 @@ class Window(pyglet.window.Window):
         resizable: bool = False,
         update_rate: float = 1 / 60,
         antialiasing: bool = True,
-        gl_version: Tuple[int, int] = (3, 3),
+        gl_version: tuple[int, int] = (3, 3),
         screen: Optional[pyglet.display.Screen] = None,
         style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
         visible: bool = True,
@@ -264,7 +264,7 @@ class Window(pyglet.window.Window):
         self,
         color: Optional[RGBOrA255] = None,
         color_normalized: Optional[RGBOrANormalized] = None,
-        viewport: Optional[Tuple[int, int, int, int]] = None,
+        viewport: Optional[tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
@@ -695,7 +695,7 @@ class Window(pyglet.window.Window):
 
         super().set_size(width, height)
 
-    def get_size(self) -> Tuple[int, int]:
+    def get_size(self) -> tuple[int, int]:
         """
         Get the size of the window.
 
@@ -704,7 +704,7 @@ class Window(pyglet.window.Window):
 
         return super().get_size()
 
-    def get_location(self) -> Tuple[int, int]:
+    def get_location(self) -> tuple[int, int]:
         """
         Return the X/Y coordinates of the window
 
@@ -737,7 +737,7 @@ class Window(pyglet.window.Window):
         set_viewport(left, right, bottom, top)
 
     # noinspection PyMethodMayBeStatic
-    def get_viewport(self) -> Tuple[float, float, float, float]:
+    def get_viewport(self) -> tuple[float, float, float, float]:
         """Get the viewport. (What coordinates we can see.)"""
         return self.ctx.projection_2d
 
@@ -1013,7 +1013,7 @@ class View:
         self,
         color: Optional[RGBOrA255] = None,
         color_normalized: Optional[RGBOrANormalized] = None,
-        viewport: Optional[Tuple[int, int, int, int]] = None,
+        viewport: Optional[tuple[int, int, int, int]] = None,
     ):
         """Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
