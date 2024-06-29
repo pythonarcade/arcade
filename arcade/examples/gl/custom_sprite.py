@@ -25,7 +25,6 @@ python -m arcade.examples.gl.custom_sprite
 
 from random import randint
 from array import array
-from typing import Optional
 
 import arcade
 from arcade.gl.types import BufferDescription
