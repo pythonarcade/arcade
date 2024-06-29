@@ -42,10 +42,10 @@ class Camera2D:
     There are also ease of use methods for matching the viewport and projector to the window size.
 
     Provides many helpful values:
-    * The position and rotation or the camera
-    * 8 positions along the edge of the camera's viewable area
-    * the bounding box of the area the camera sees
-    * Viewport, and Scissor box for controlling where to draw to
+        * The position and rotation or the camera
+        * 8 positions along the edge of the camera's viewable area
+        * the bounding box of the area the camera sees
+        * Viewport, and Scissor box for controlling where to draw to
 
     .. warning:: Do not replace the ``camera_data`` and ``projection_data``
                  instances after initialization!
@@ -67,6 +67,14 @@ class Camera2D:
         show up. The FrameBuffer's internal viewport is ignored.
     :param window: The Arcade Window to bind the camera to.
         Defaults to the currently active window.
+
+    :attributes:
+        * render_target - An optional framebuffer to activate at the same time as the projection data,
+            could be the screen, or an offscreen texture
+        * viewport - A rect which describes how the final projection should be mapped from unit-space.
+            defaults to the size of the render_target or window
+        * scissor - An optional rect which describes what pixels of the active render target should be drawn to
+            when undefined the viewport rect is used.
     """
 
     def __init__(
