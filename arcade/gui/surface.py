@@ -7,7 +7,7 @@ import arcade
 from arcade import Texture
 from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 from arcade.color import TRANSPARENT_BLACK
-from arcade.draw_commands import draw_lbwh_rectangle_textured
+from arcade.draw import draw_lbwh_rectangle_textured
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import RGBA255, Point

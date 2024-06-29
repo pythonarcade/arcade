@@ -75,7 +75,15 @@ API_FILE_TO_TITLE_AND_MODULES = {
     "drawing_primitives.rst": {
         "title": "Drawing - Primitives",
         "use_declarations_in": [
-            "arcade.draw_commands"
+            "arcade.draw.arc",
+            "arcade.draw.circle",
+            "arcade.draw.helpers",
+            "arcade.draw.line",
+            "arcade.draw.parabola",
+            "arcade.draw.point",
+            "arcade.draw.polygon",
+            "arcade.draw.rect",
+            "arcade.draw.triangle",
         ]
     },
     "sprites.rst": {
