@@ -41,12 +41,11 @@ class Camera2D:
 
     There are also ease of use methods for matching the viewport and projector to the window size.
 
-    Provides 4 sets of left, right, bottom, top:
-
-    * View Data, or where the camera is in
-    * Projection without zoom scaling.
-    * Projection with zoom scaling.
-    * Viewport in screen pixels
+    Provides many helpful values:
+    * The position and rotation or the camera
+    * 8 positions along the edge of the camera's viewable area
+    * the bounding box of the area the camera sees
+    * Viewport, and Scissor box for controlling where to draw to
 
     .. warning:: Do not replace the ``camera_data`` and ``projection_data``
                  instances after initialization!
