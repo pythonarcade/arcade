@@ -10,7 +10,6 @@ from typing import (
     Union,
     TYPE_CHECKING,
     List,
-    Set,
 )
 import contextlib
 from weakref import WeakSet, WeakValueDictionary, finalize
