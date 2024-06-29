@@ -21,7 +21,7 @@ SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SPRITE_SCALING
 
 # How many pixels to keep as a maximum between the player and the camera.
-CAMERA_BOUNDARY =  arcade.LRBT(-140, 140,300,300)
+CAMERA_BOUNDARY =  arcade.LRBT(-140, 140,-100,300)
 
 # Physics
 MOVEMENT_SPEED = 5

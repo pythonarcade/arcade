@@ -219,8 +219,8 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width, height):
         """ User resizes the screen. """
-
-        self.camera.viewport = arcade.LBWH(0, 0, width, height)
+        super().on_resize(width, height)
+        self.camera.match_screen()
 
         # --- Light related ---
         # We need to resize the light layer to

@@ -25,6 +25,8 @@ python -m arcade.examples.gl.custom_sprite
 
 from random import randint
 from array import array
+from typing import Optional
+
 import arcade
 from arcade.gl.types import BufferDescription
 
@@ -144,6 +146,10 @@ class GeoSprites(arcade.Window):
         self.geometry = self.ctx.geometry(
             content=[BufferDescription(self.vertex_buffer, "2f 2f", ["in_position", "in_size"])]
         )
+
+    def on_resize(self, width: int, height: int):
+        super().on_resize(width, height)
+        self.camera.match_screen(and_position=True)
 
     def on_draw(self):
         self.clear()
