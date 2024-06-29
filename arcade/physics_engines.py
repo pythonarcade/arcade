@@ -22,12 +22,14 @@ __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 from arcade.utils import copy_dunders_unimplemented
 
 
-def _circular_check(player: Sprite, walls: list[SpriteList]) -> None:
+def _circular_check(moving: Sprite, walls: list[SpriteList]) -> None:
+    """A kludge to 'guess' our way out a collision for a moving sprite.
+
+    :param moving: A sprite to move out of the given list of SpriteLists.
+    :param walls: A list of walls to guess our way out of.
     """
-    This is a horrible kludge to 'guess' our way out of a collision
-    """
-    original_x = player.center_x
-    original_y = player.center_y
+    original_x = moving.center_x
+    original_y = moving.center_y
 
     vary = 1
     while True:
@@ -44,10 +46,10 @@ def _circular_check(player: Sprite, walls: list[SpriteList]) -> None:
 
         for my_item in try_list:
             x, y = my_item
-            player.center_x = x
-            player.center_y = y
-            check_hit_list = check_for_collision_with_lists(player, walls)
-            # print(f"Vary {vary} ({self.player_sprite.center_x} {self.player_sprite.center_y}) "
+            moving.center_x = x
+            moving.center_y = y
+            check_hit_list = check_for_collision_with_lists(moving, walls)
+            # print(f"Vary {vary} ({self.moving_sprite.center_x} {self.moving_sprite.center_y}) "
             #       f"= {len(check_hit_list)}")
             if len(check_hit_list) == 0:
                 return
