@@ -95,6 +95,24 @@ the formatting is correct.
 python make.py format
 ```
 
+### Use pre-commit hooks to automatically run formatting
+
+You can use `pre-commit <https://pre-commit.com/>`_ to automatically run lint, formatting and type checks against 
+your changes before you commit them.
+To install pre-commit, run the following command:
+
+.. code-block:: shell
+
+    pip install pre-commit
+    # or on Mac
+    brew install pre-commit
+
+Then, run the following command to install the pre-commit hooks:
+
+.. code-block:: shell
+
+    pre-commit install
+
 ## Testing
 
 You should test your changes locally before submitting a pull request
