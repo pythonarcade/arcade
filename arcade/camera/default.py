@@ -116,11 +116,16 @@ class DefaultProjector(ViewportProjector):
         """
         Set the window's Projection and View matrices.
 
-        cache's the window viewport to determine the projection matrix.
+        cache's the window's framebuffer size to determine the projection matrix.
         """
 
+        if self._ctx.active_framebuffer.size != (self.viewport[2], self.viewport[3]):
+            self.viewport = (0, 0, self._ctx.active_framebuffer.width, self._ctx.active_framebuffer.height)
+
         if self._ctx.viewport != self.viewport:
-            self.viewport = self._ctx.viewport
+            self._ctx.viewport = self.viewport
+
+        self._ctx.scissor = None
 
         self._ctx.current_camera = self
 
