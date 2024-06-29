@@ -811,7 +811,9 @@ class Camera2D:
         self.width = self.viewport_width
         self.height = self.viewport_height
 
-    def match_screen(self, and_projection: bool = True, and_scissor: bool = True, and_position: bool = False) -> None:
+    def match_screen(
+        self, and_projection: bool = True, and_scissor: bool = True, and_position: bool = False
+    ) -> None:
         """
         Sets the viewport to the size of the screen.
         Should be called when the screen is resized.
