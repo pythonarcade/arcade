@@ -156,7 +156,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # camera for scrolling
-        self.cam = None
+        self.camera = None
 
         # Time to process
         self.processing_time = 0
@@ -236,7 +236,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
         # setup camera
-        self.cam = arcade.camera.Camera2D()
+        self.camera = arcade.camera.Camera2D()
 
     def on_draw(self):
         """ Render the screen. """
@@ -255,7 +255,7 @@ class MyGame(arcade.Window):
         sprite_count = len(self.wall_list)
 
         output = f"Sprite Count: {sprite_count}"
-        left, bottom = self.cam.bottom_left
+        left, bottom = self.camera.bottom_left
         arcade.draw_text(output,
                          left + 20,
                          SCREEN_HEIGHT - 20 + bottom,
@@ -310,10 +310,10 @@ class MyGame(arcade.Window):
         # update the camera if we don't need to.
         changed = False
 
-        pos = self.cam.position
+        pos = self.camera.position
 
-        top_left = self.cam.top_left
-        bottom_right = self.cam.bottom_right
+        top_left = self.camera.top_left
+        bottom_right = self.camera.bottom_right
 
         # Scroll left
         left_boundary = top_left[0] + VIEWPORT_MARGIN
@@ -341,8 +341,8 @@ class MyGame(arcade.Window):
 
         # If we changed the boundary values, update the view port to match
         if changed:
-            self.cam.position = pos
-            self.cam.use()
+            self.camera.position = pos
+            self.camera.use()
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

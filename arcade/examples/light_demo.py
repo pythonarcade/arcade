@@ -49,7 +49,7 @@ class MyGame(arcade.Window):
         """ Create everything """
 
         # Create camera
-        self.cam = arcade.camera.Camera2D()
+        self.camera = arcade.camera.Camera2D()
 
         # Create sprite lists
         self.background_sprite_list = arcade.SpriteList()
@@ -207,7 +207,7 @@ class MyGame(arcade.Window):
         self.light_layer.draw(ambient_color=AMBIENT_COLOR)
 
         # Now draw anything that should NOT be affected by lighting.
-        left, bottom = self.cam.bottom_left
+        left, bottom = self.camera.bottom_left
         arcade.draw_text("Press SPACE to turn character light on/off.",
                          10 + int(left), 10 + int(bottom),
                          arcade.color.WHITE, 20)
@@ -215,7 +215,7 @@ class MyGame(arcade.Window):
     def on_resize(self, width, height):
         """ User resizes the screen. """
 
-        self.cam.viewport = 0, 0, width, height
+        self.camera.viewport = 0, 0, width, height
 
         # --- Light related ---
         # We need to resize the light layer to
@@ -256,10 +256,10 @@ class MyGame(arcade.Window):
         """ Manage Scrolling """
 
         # --- Manage Scrolling ---
-        pos = self.cam.position
+        pos = self.camera.position
 
-        top_left = self.cam.top_left
-        bottom_right = self.cam.bottom_right
+        top_left = self.camera.top_left
+        bottom_right = self.camera.bottom_right
 
         # Scroll left
         left_boundary = top_left[0] + VIEWPORT_MARGIN
@@ -281,16 +281,16 @@ class MyGame(arcade.Window):
         if self.player_sprite.bottom < bottom_boundary:
             pos = pos[0], pos[1] + (self.player_sprite.bottom - bottom_boundary)
 
-        self.cam.position = pos
+        self.camera.position = pos
 
         # Make sure our boundaries are integer values. While the viewport does
         # support floating point numbers, for this application we want every pixel
         # in the view port to map directly onto a pixel on the screen. We don't want
         # any rounding errors.
-        bottom_left = self.cam.bottom_left
-        self.cam.bottom_left = int(bottom_left[0]), int(bottom_left[1])
+        bottom_left = self.camera.bottom_left
+        self.camera.bottom_left = int(bottom_left[0]), int(bottom_left[1])
 
-        self.cam.use()
+        self.camera.use()
 
     def on_update(self, delta_time):
         """ Movement and game logic """

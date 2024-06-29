@@ -63,7 +63,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
         # Camera
-        self.cam = None
+        self.camera = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -140,13 +140,13 @@ class MyGame(arcade.Window):
                                                     playing_field_bottom_boundary,
                                                     playing_field_top_boundary)
 
-        self.cam = camera.Camera2D()
+        self.camera = camera.Camera2D()
 
     def on_draw(self):
         """
         Render the screen.
         """
-        self.cam.use()
+        self.camera.use()
 
         # This command has to happen before we start drawing
         self.clear()
@@ -189,10 +189,10 @@ class MyGame(arcade.Window):
         # print(self.path,"->", self.player.position)
 
         # --- Manage Scrolling ---
-        pos = self.cam.position
+        pos = self.camera.position
 
-        top_left = self.cam.top_left
-        bottom_right = self.cam.bottom_right
+        top_left = self.camera.top_left
+        bottom_right = self.camera.bottom_right
 
         # Scroll left
         left_boundary = top_left[0] + VIEWPORT_MARGIN
@@ -214,7 +214,7 @@ class MyGame(arcade.Window):
         if self.player.bottom < bottom_boundary:
             pos = pos[0], pos[1] + (self.player.bottom - bottom_boundary)
 
-        self.cam.position = pos
+        self.camera.position = pos
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

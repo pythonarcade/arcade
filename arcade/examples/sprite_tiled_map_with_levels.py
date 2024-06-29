@@ -53,7 +53,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         self.physics_engine = None
-        self.cam = None
+        self.camera = None
         self.end_of_map = 0
         self.game_over = False
         self.last_time = None
@@ -109,7 +109,7 @@ class MyGame(arcade.Window):
             self.background_color = self.tile_map.background_color
 
         # Reset cam
-        self.cam = arcade.camera.Camera2D()
+        self.camera = arcade.camera.Camera2D()
 
     def on_draw(self):
         """
@@ -132,8 +132,8 @@ class MyGame(arcade.Window):
         if self.fps_message:
             arcade.draw_text(
                 self.fps_message,
-                self.cam.left + 10,
-                self.cam.bottom + 40,
+                self.camera.left + 10,
+                self.camera.bottom + 40,
                 arcade.color.BLACK,
                 14,
             )
@@ -145,7 +145,7 @@ class MyGame(arcade.Window):
         # Adjust the text position based on the view port so that we don't
         # scroll the text too.
         distance = self.player_sprite.right
-        left, bottom = self.cam.bottom_left
+        left, bottom = self.camera.bottom_left
         output = f"Distance: {distance:.0f}"
         arcade.draw_text(
             output, left + 10, bottom + 20, arcade.color.BLACK, 14
@@ -204,9 +204,9 @@ class MyGame(arcade.Window):
             # update the camera if we don't need to.
             changed = False
 
-            pos = self.cam.position
+            pos = self.camera.position
 
-            top_left = self.cam.top_left
+            top_left = self.camera.top_left
 
             # Scroll left
             left_boundary = top_left[0] + VIEWPORT_MARGIN_LEFT
@@ -220,7 +220,7 @@ class MyGame(arcade.Window):
                 changed = True
                 pos = pos[0], pos[1] + (self.player_sprite.top - top_boundary)
 
-            bottom_right = self.cam.bottom_right
+            bottom_right = self.camera.bottom_right
 
             # Scroll right
             right_boundary = bottom_right[0] - VIEWPORT_MARGIN_RIGHT
@@ -235,15 +235,15 @@ class MyGame(arcade.Window):
 
             # If we changed the boundary values, update the view port to match
             if changed:
-                self.cam.position = pos
+                self.camera.position = pos
                 # Make sure our boundaries are integer values. While the view port does
                 # support floating point numbers, for this application we want every pixel
                 # in the view port to map directly onto a pixel on the screen. We don't want
                 # any rounding errors.
-                bottom_left = self.cam.bottom_left
-                self.cam.bottom_left = int(bottom_left[0]), int(bottom_left[1])
+                bottom_left = self.camera.bottom_left
+                self.camera.bottom_left = int(bottom_left[0]), int(bottom_left[1])
 
-                self.cam.use()
+                self.camera.use()
 
 
 def main():

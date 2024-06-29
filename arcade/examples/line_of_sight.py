@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Camera for scrolling
-        self.cam = None
+        self.camera = None
 
         # Set the background color
         self.background_color = arcade.color.AMAZON
@@ -60,7 +60,7 @@ class MyGame(arcade.Window):
         """ Set up the game and initialize the variables. """
 
         # Camera
-        self.cam = arcade.camera.Camera2D()
+        self.camera = arcade.camera.Camera2D()
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -150,10 +150,10 @@ class MyGame(arcade.Window):
         # update the camera if we don't need to.
         changed = False
 
-        pos = self.cam.position
+        pos = self.camera.position
 
-        top_left = self.cam.top_left
-        bottom_right = self.cam.bottom_right
+        top_left = self.camera.top_left
+        bottom_right = self.camera.bottom_right
 
         # Scroll left
         left_boundary = top_left[0] + VIEWPORT_MARGIN
@@ -181,8 +181,8 @@ class MyGame(arcade.Window):
 
         # If we changed the boundary values, update the view port to match
         if changed:
-            self.cam.position = pos
-            self.cam.use()
+            self.camera.position = pos
+            self.camera.use()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
