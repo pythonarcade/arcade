@@ -6,6 +6,8 @@ from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
+
+from array import array
 from typing import Iterable, Optional, Union
 
 from arcade import (
@@ -28,26 +30,43 @@ def _circular_check(moving: Sprite, walls: list[SpriteList]) -> None:
     :param moving: A sprite to move out of the given list of SpriteLists.
     :param walls: A list of walls to guess our way out of.
     """
-    original_x, original_y = moving.position
+
+    # fmt: off
+    o_x, o_y = moving.position  # Original x & y of the moving object
+    try_list = array('f', (     # Allocate once so we don't recreate or gc
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+    ))
 
     vary = 1
     while True:
-        try_list = [
-            [original_x, original_y + vary],
-            [original_x, original_y - vary],
-            [original_x + vary, original_y],
-            [original_x - vary, original_y],
-            [original_x + vary, original_y + vary],
-            [original_x + vary, original_y - vary],
-            [original_x - vary, original_y + vary],
-            [original_x - vary, original_y - vary],
-        ]
+        # Cache our variant dimensions
+        o_x_plus  = o_x + vary
+        o_y_plus  = o_y + vary
+        o_x_minus = o_x - vary
+        o_y_minus = o_y - vary
 
-        for my_item in try_list:
-            x, y = my_item
+        # Burst setting of no-gc region is cheaper than nested lists
+        try_list[:] = (
+            o_x       , o_y_plus ,
+            o_x       , o_y_minus,
+            o_x_plus  , o_y      ,
+            o_x_minus , o_y      ,
+            o_x_plus  , o_y_plus ,
+            o_x_plus  , o_y_minus,
+            o_x_minus , o_y_plus ,
+            o_x_minus , o_y_minus
+        )
+        # fmt: on
+
+        # Iterate and slice the try_list
+        for strided_index in range(0, 16, 2):
+            x, y = try_list[strided_index:strided_index + 2]
             moving.position = x, y
             check_hit_list = check_for_collision_with_lists(moving, walls)
-            # print(f"Vary {vary} ({self.moving_sprite.center_x} {self.moving_sprite.center_y}) "
+            # print(f"Vary {vary} ({moving.center_x} {moving.center_y}) "
             #       f"= {len(check_hit_list)}")
             if len(check_hit_list) == 0:
                 return
