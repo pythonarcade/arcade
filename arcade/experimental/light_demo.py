@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 import arcade
-from arcade.draw_commands import draw_lbwh_rectangle_textured
+from arcade.draw import draw_lbwh_rectangle_textured
 from arcade.experimental.lights import Light, LightLayer
 
 # Do the math to figure out our screen dimensions
