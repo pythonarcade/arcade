@@ -6,11 +6,16 @@ from contextlib import contextmanager
 
 from typing_extensions import Self
 
-from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.data_types import (
     CameraData,
     OrthographicProjectionData,
     ZeroProjectionDimension,
+)
+from arcade.camera.projection_functions import (
+    generate_view_matrix,
+    generate_orthographic_matrix,
+    project_orthographic,
+    unproject_orthographic,
 )
 from arcade.gl import Framebuffer
 from pyglet.math import Vec2, Vec3
@@ -38,12 +43,11 @@ class Camera2D:
 
     There are also ease of use methods for matching the viewport and projector to the window size.
 
-    Provides 4 sets of left, right, bottom, top:
-
-    * View Data, or where the camera is in
-    * Projection without zoom scaling.
-    * Projection with zoom scaling.
-    * Viewport in screen pixels
+    Provides many helpful values:
+        * The position and rotation or the camera
+        * 8 positions along the edge of the camera's viewable area
+        * the bounding box of the area the camera sees
+        * Viewport, and Scissor box for controlling where to draw to
 
     .. warning:: Do not replace the ``camera_data`` and ``projection_data``
                  instances after initialization!
@@ -65,6 +69,14 @@ class Camera2D:
         show up. The FrameBuffer's internal viewport is ignored.
     :param window: The Arcade Window to bind the camera to.
         Defaults to the currently active window.
+
+    :attributes:
+        * render_target - An optional framebuffer to activate at the same time as the projection data,
+            could be the screen, or an offscreen texture
+        * viewport - A rect which describes how the final projection should be mapped from unit-space.
+            defaults to the size of the render_target or window
+        * scissor - An optional rect which describes what pixels of the active render target should be drawn to
+            when undefined the viewport rect is used.
     """
 
     def __init__(
@@ -124,13 +136,9 @@ class Camera2D:
         self._projection_data: OrthographicProjectionData = OrthographicProjectionData(
             left=left, right=right, top=top, bottom=bottom, near=near, far=far
         )
-        self._ortho_projector: OrthographicProjector = OrthographicProjector(
-            window=self._window,
-            view=self._camera_data,
-            projection=self._projection_data,
-            viewport=viewport,
-            scissor=scissor,
-        )
+
+        self.viewport: Rect = viewport or LRBT(0, 0, width, height)
+        self.scissor: Optional[Rect] = scissor
 
     @classmethod
     def from_camera_data(
@@ -211,18 +219,12 @@ class Camera2D:
         new_camera = cls(
             render_target=render_target, window=window, viewport=viewport, scissor=scissor
         )
+
         if camera_data:
             new_camera._camera_data = camera_data
         if projection_data:
             new_camera._projection_data = projection_data
 
-        new_camera._ortho_projector = OrthographicProjector(
-            window=new_camera._window,
-            view=new_camera._camera_data,
-            projection=new_camera._projection_data,
-            viewport=new_camera.viewport,
-            scissor=new_camera.scissor,
-        )
         return new_camera
 
     @property
@@ -628,38 +630,16 @@ class Camera2D:
         self._projection_data.far = new_far
 
     @property
-    def viewport(self) -> Rect:
-        """Get/set pixels of the ``render_target`` drawn to when active.
-
-        The pixel area is defined as integer pixel coordinates starting
-        from the bottom left of ``self.render_target``. They are ordered
-        as ``(left, bottom, width, height)``.
-        """
-        return self._ortho_projector.viewport
-
-    @viewport.setter
-    def viewport(self, viewport: Rect) -> None:
-        self._ortho_projector.viewport = viewport
-
-    @property
-    def scissor(self) -> Optional[Rect]:
-        return self._ortho_projector.scissor
-
-    @scissor.setter
-    def scissor(self, scissor: Rect):
-        self._ortho_projector.scissor = scissor
-
-    @property
     def viewport_width(self) -> int:
         """
         The width of the viewport.
         Defines the number of pixels drawn too horizontally.
         """
-        return int(self._ortho_projector.viewport.width)
+        return int(self.viewport.width)
 
     @viewport_width.setter
     def viewport_width(self, new_width: int) -> None:
-        self._ortho_projector.viewport.resize(new_width, anchor=Vec2(0.0, 0.0))
+        self.viewport = self.viewport.resize(new_width, anchor=Vec2(0.0, 0.0))
 
     @property
     def viewport_height(self) -> int:
@@ -667,29 +647,29 @@ class Camera2D:
         The height of the viewport.
         Defines the number of pixels drawn too vertically.
         """
-        return int(self._ortho_projector.viewport.height)
+        return int(self.viewport.height)
 
     @viewport_height.setter
     def viewport_height(self, new_height: int) -> None:
-        self._ortho_projector.viewport.resize(height=new_height, anchor=Vec2(0.0, 0.0))
+        self.viewport = self.viewport.resize(height=new_height, anchor=Vec2(0.0, 0.0))
 
     @property
     def viewport_left(self) -> int:
         """
         The left most pixel drawn to on the X axis.
         """
-        return int(self._ortho_projector.viewport.left)
+        return int(self.viewport.left)
 
     @viewport_left.setter
     def viewport_left(self, new_left: int) -> None:
-        self._ortho_projector.viewport = self._ortho_projector.viewport.align_left(new_left)
+        self.viewport = self.viewport.align_left(new_left)
 
     @property
     def viewport_right(self) -> int:
         """
         The right most pixel drawn to on the X axis.
         """
-        return int(self._ortho_projector.viewport.right)
+        return int(self.viewport.right)
 
     @viewport_right.setter
     def viewport_right(self, new_right: int) -> None:
@@ -697,28 +677,28 @@ class Camera2D:
         Set the right most pixel drawn to on the X axis.
         This moves the position of the viewport, not change the size.
         """
-        self._ortho_projector.viewport = self._ortho_projector.viewport.align_right(new_right)
+        self.viewport = self.viewport.align_right(new_right)
 
     @property
     def viewport_bottom(self) -> int:
         """
         The bottom most pixel drawn to on the Y axis.
         """
-        return int(self._ortho_projector.viewport.bottom)
+        return int(self.viewport.bottom)
 
     @viewport_bottom.setter
     def viewport_bottom(self, new_bottom: int) -> None:
         """
         Set the bottom most pixel drawn to on the Y axis.
         """
-        self._ortho_projector.viewport = self._ortho_projector.viewport.align_bottom(new_bottom)
+        self.viewport = self.viewport.align_bottom(new_bottom)
 
     @property
     def viewport_top(self) -> int:
         """
         The top most pixel drawn to on the Y axis.
         """
-        return int(self._ortho_projector.viewport.top)
+        return int(self.viewport.top)
 
     @viewport_top.setter
     def viewport_top(self, new_top: int) -> None:
@@ -726,7 +706,7 @@ class Camera2D:
         Set the top most pixel drawn to on the Y axis.
         This moves the position of the viewport, not change the size.
         """
-        self._ortho_projector.viewport = self._ortho_projector.viewport.align_top(new_top)
+        self.viewport = self.viewport.align_top(new_top)
 
     @property
     def up(self) -> Vec2:
@@ -837,7 +817,15 @@ class Camera2D:
         """
         if self.render_target is not None:
             self.render_target.use()
-        self._ortho_projector.use()
+        self._window.current_camera = self
+
+        _projection = generate_orthographic_matrix(self.projection_data, self.zoom)
+        _view = generate_view_matrix(self.view_data)
+
+        self._window.ctx.viewport = self.viewport.viewport
+        self._window.ctx.scissor = None if not self.scissor else self.scissor.viewport
+        self._window.projection = _projection
+        self._window.view = _view
 
     @contextmanager
     def activate(self) -> Generator[Self, None, None]:
@@ -862,7 +850,15 @@ class Camera2D:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
         """
-        return self._ortho_projector.project(world_coordinate)
+        _projection = generate_orthographic_matrix(self.projection_data, self.zoom)
+        _view = generate_view_matrix(self.view_data)
+
+        return project_orthographic(
+            world_coordinate,
+            self.viewport.viewport,
+            _view,
+            _projection,
+        )
 
     def unproject(self, screen_coordinate: Point) -> Vec3:
         """
@@ -873,13 +869,14 @@ class Camera2D:
         Essentially reverses the effects of the projector.
 
         Args:
-            screen_coordinate: A 2D position in pixels from the bottom left of the screen.
+            screen_coordinate: A 2D or 3D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
-            depth: The depth of the query
         Returns:
             A 3D vector in world space (same as sprites).
             perfect for finding if the mouse overlaps with a sprite or ui element irrespective
             of the camera.
         """
 
-        return self._ortho_projector.unproject(screen_coordinate)
+        _projection = generate_orthographic_matrix(self.projection_data, self.zoom)
+        _view = generate_view_matrix(self.view_data)
+        return unproject_orthographic(screen_coordinate, self.viewport.viewport, _view, _projection)
