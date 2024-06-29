@@ -23,6 +23,7 @@ from typing import (
     Callable,
     cast,
     Sized,
+    ClassVar,
 )
 
 from arcade import (
@@ -96,6 +97,18 @@ class SpriteList(Generic[SpriteType]):
             be drawn. When draw is called, the method will just return without drawing.
     :param blend: Enable or disable blending for the sprite list
     """
+
+    #: The default texture filter used when no other filter is specified.
+    #: This can be used to change the global default for all spritelists
+    #:
+    #: Example::
+    #:
+    #:     from arcade import gl
+    #:     # Set global default to nearest filtering (pixelated)
+    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    #:     # Set global default to linear filtering (smooth). This is the default.
+    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    DEFAULT_TEXTURE_FILTER: ClassVar[tuple[int, int]] = gl.LINEAR, gl.LINEAR
 
     def __init__(
         self,
@@ -304,6 +317,17 @@ class SpriteList(Generic[SpriteType]):
     @visible.setter
     def visible(self, value: bool) -> None:
         self._visible = value
+
+    @property
+    def blend(self) -> bool:
+        """
+        Flag for enabling or disabling alpha blending for the spritelist.
+        """
+        return self._blend
+
+    @blend.setter
+    def blend(self, value: bool) -> None:
+        self._blend = value
 
     @property
     def color(self) -> Color:
@@ -1046,7 +1070,7 @@ class SpriteList(Generic[SpriteType]):
         if pixelated:
             atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
         else:
-            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
+            atlas_texture.filter = self.DEFAULT_TEXTURE_FILTER
 
         if not self.program:
             raise ValueError("Attempting to render without 'program' field being set.")
@@ -1065,6 +1089,7 @@ class SpriteList(Generic[SpriteType]):
 
         if self._blend:
             self.ctx.disable(self.ctx.BLEND)
+            self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
     def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1.0) -> None:
         """Draw all the hit boxes in this list"""
