@@ -71,7 +71,7 @@ This atlas can also be shared between several sprite lists if needed.
 .. code:: python
 
     # Create an empty 256 x 256 texture atlas
-    my_atlas = TextureAtlas((256, 256))
+    my_atlas = DefaultTextureAtlas((256, 256))
     spritelist = SpriteList(atlas=my_atlas)
 
 When new textures are detected (sprite is added to list) the texture is
@@ -86,11 +86,8 @@ adding a large amount of them it can be noticeable.
     # List of arcade.Texture instances
     list_of_textures = ...
 
-    # Create an atlas with a reasonable size for a list of textures
-    atlas = TextureAtlas.create_from_texture_sequence(list_of_textures)
-
     # Create an atlas with a specific size and initial textures
-    atlas = TextureAtlas((256, 256), textures=list_of_textures)
+    atlas = DefaultTextureAtlas((256, 256), textures=list_of_textures)
 
     # We can also pre-add textures at any time using:
     # (can also be done with the default texture atlas)

@@ -13,6 +13,7 @@ import arcade
 from arcade.resources import resolve
 from arcade.types import Color, Point, RGBA255, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
+from arcade.texture_atlas import TextureAtlasBase
 
 __all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
 
@@ -587,7 +588,7 @@ def create_text_sprite(
     italic: bool = False,
     anchor_x: str = "left",
     multiline: bool = False,
-    texture_atlas: Optional[arcade.TextureAtlas] = None,
+    texture_atlas: Optional[TextureAtlasBase] = None,
     background_color: Optional[RGBA255] = None,
 ) -> arcade.Sprite:
     """

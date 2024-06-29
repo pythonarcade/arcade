@@ -76,7 +76,7 @@ class NinePatchTexture:
         top: int,
         texture: arcade.Texture,
         *,
-        atlas: Optional[arcade.TextureAtlas] = None,
+        atlas: Optional[arcade.DefaultTextureAtlas] = None,
     ):
         self._ctx = arcade.get_window().ctx
 
@@ -108,7 +108,7 @@ class NinePatchTexture:
 
     @classmethod
     def from_rect(
-        cls, rect: Rect, texture: arcade.Texture, atlas: Optional[arcade.TextureAtlas] = None
+        cls, rect: Rect, texture: arcade.Texture, atlas: Optional[arcade.DefaultTextureAtlas] = None
     ) -> NinePatchTexture:
         """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
         return cls(
