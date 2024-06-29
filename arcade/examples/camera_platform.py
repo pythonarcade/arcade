@@ -132,7 +132,6 @@ class MyGame(arcade.Window):
         self.scene.add_sprite("Player", self.player_sprite)
 
         self.camera = arcade.camera.Camera2D()
-        self.gui_camera = arcade.camera.Camera2D()
 
         self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera.view_data,
                                                               max_amplitude=12.5,
@@ -171,34 +170,31 @@ class MyGame(arcade.Window):
         self.clear()
 
         self.camera_shake.update_camera()
-        self.camera.use()
-
-        # Draw our Scene
-        self.scene.draw()
-
+        with self.camera.activate():
+            # Draw our Scene
+            self.scene.draw()
         # Readjust the camera so the screen shake doesn't affect
         # the camera following algorithm.
         self.camera_shake.readjust_camera()
 
-        self.gui_camera.use()
+        with self.default_camera.activate():
+            # Update fps text periodically
+            if self.last_time and self.frame_count % 60 == 0:
+                fps = 1.0 / (time.time() - self.last_time) * 60
+                self.text_fps.text = f"FPS: {fps:5.2f}"
 
-        # Update fps text periodically
-        if self.last_time and self.frame_count % 60 == 0:
-            fps = 1.0 / (time.time() - self.last_time) * 60
-            self.text_fps.text = f"FPS: {fps:5.2f}"
+            self.text_fps.draw()
 
-        self.text_fps.draw()
+            if self.frame_count % 60 == 0:
+                self.last_time = time.time()
 
-        if self.frame_count % 60 == 0:
-            self.last_time = time.time()
+            # Draw Score
+            self.text_score.draw()
 
-        # Draw Score
-        self.text_score.draw()
-
-        # Draw game over
-        if self.game_over:
-            arcade.draw_text("Game Over", self.width/2, self.height/2, arcade.color.BLACK,
-                             30)
+            # Draw game over
+            if self.game_over:
+                arcade.draw_text("Game Over", self.width/2, self.height/2, arcade.color.BLACK,
+                                 30)
 
         self.frame_count += 1
 
