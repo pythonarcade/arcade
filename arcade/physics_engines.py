@@ -24,29 +24,39 @@ __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 from arcade.utils import copy_dunders_unimplemented
 
 
-def _circular_check(moving: Sprite, walls: list[SpriteList]) -> None:
-    """A kludge to 'guess' our way out a collision for a moving sprite.
+def _wiggle_until_free(colliding: Sprite, walls: list[SpriteList]) -> None:
+    """Kludge to 'guess' a colliding sprite out of a collision.
 
-    :param moving: A sprite to move out of the given list of SpriteLists.
+    It works by iterating over increasing wiggle sizes of 8 points
+    around the ``colliding`` sprite's original center position. Each
+    time it fails to find a free position. Although the wiggle distance
+    starts at 1, it grows quickly since each failed iteration multiplies
+    wiggle distance by two.
+
+    :param colliding: A sprite to move out of the given list of SpriteLists.
     :param walls: A list of walls to guess our way out of.
     """
 
-    # fmt: off
-    o_x, o_y = moving.position  # Original x & y of the moving object
-    try_list = array('f', (     # Allocate once so we don't recreate or gc
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0,
-    ))
+    # Original x & y of the moving object
+    o_x, o_y = colliding.position
+    # Allocate once so we don't recreate or gc
+    try_list = array(
+        'f', (
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0,
+        )
+    )
+    wiggle_distance = 1
 
-    vary = 1
+    # fmt: off
     while True:
         # Cache our variant dimensions
-        o_x_plus  = o_x + vary
-        o_y_plus  = o_y + vary
-        o_x_minus = o_x - vary
-        o_y_minus = o_y - vary
+        o_x_plus  = o_x + wiggle_distance
+        o_y_plus  = o_y + wiggle_distance
+        o_x_minus = o_x - wiggle_distance
+        o_y_minus = o_y - wiggle_distance
 
         # Burst setting of no-gc region is cheaper than nested lists
         try_list[:] = (
@@ -64,13 +74,13 @@ def _circular_check(moving: Sprite, walls: list[SpriteList]) -> None:
         # Iterate and slice the try_list
         for strided_index in range(0, 16, 2):
             x, y = try_list[strided_index:strided_index + 2]
-            moving.position = x, y
-            check_hit_list = check_for_collision_with_lists(moving, walls)
-            # print(f"Vary {vary} ({moving.center_x} {moving.center_y}) "
+            colliding.position = x, y
+            check_hit_list = check_for_collision_with_lists(colliding, walls)
+            # print(f"Vary {vary} ({trapped.center_x} {trapped.center_y}) "
             #       f"= {len(check_hit_list)}")
             if len(check_hit_list) == 0:
                 return
-        vary *= 2
+        wiggle_distance *= 2
 
 
 def _move_sprite(
@@ -79,7 +89,7 @@ def _move_sprite(
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
-        _circular_check(moving_sprite, walls)
+        _wiggle_until_free(moving_sprite, walls)
 
     original_x = moving_sprite.center_x
     original_y = moving_sprite.center_y
@@ -100,7 +110,7 @@ def _move_sprite(
             max_distance = (moving_sprite.width + moving_sprite.height) / 2
 
             # Resolve any collisions by this weird kludge
-            _circular_check(moving_sprite, walls)
+            _wiggle_until_free(moving_sprite, walls)
             if (
                 get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y)
                 > max_distance
