@@ -28,8 +28,7 @@ def _circular_check(moving: Sprite, walls: list[SpriteList]) -> None:
     :param moving: A sprite to move out of the given list of SpriteLists.
     :param walls: A list of walls to guess our way out of.
     """
-    original_x = moving.center_x
-    original_y = moving.center_y
+    original_x, original_y = moving.position
 
     vary = 1
     while True:
@@ -46,8 +45,7 @@ def _circular_check(moving: Sprite, walls: list[SpriteList]) -> None:
 
         for my_item in try_list:
             x, y = my_item
-            moving.center_x = x
-            moving.center_y = y
+            moving.position = x, y
             check_hit_list = check_for_collision_with_lists(moving, walls)
             # print(f"Vary {vary} ({self.moving_sprite.center_x} {self.moving_sprite.center_y}) "
             #       f"= {len(check_hit_list)}")
