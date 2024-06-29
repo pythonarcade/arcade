@@ -23,13 +23,14 @@ class UVData:
     looked up by a shader to obtain the texture coordinates.
 
     The purpose of this system is to:
-    * Greatly increase the performance of the texture atlas
-    * Greatly simplify the system
-    * Allow images to move freely around the atlas without having to update the vertex buffers.
-      Meaning we can allow re-building and re-sizing. The resize can even
+
+    - Greatly increase the performance of the texture atlas
+    - Greatly simplify the system
+    - Allow images to move freely around the atlas without having to update the vertex buffers. \
+      Meaning we can allow re-building and re-sizing. The resize can even \
       be done in the GPU by rendering the old atlas into the new one.
-    * Avoid spending lots of time packing texture data into buffers
-    * Avoid spending lots of buffer memory
+    - Avoid spending lots of time packing texture data into buffers
+    - Avoid spending lots of buffer memory
 
     :param ctx: The arcade context
     :param capacity: The number of textures the atlas keeps track of.
