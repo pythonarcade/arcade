@@ -90,6 +90,11 @@ from arcade.types.rect import XYWH
 from arcade.types.rect import XYRR
 from arcade.types.rect import Viewport
 
+# Boxes
+from arcade.types.box import Box
+from arcade.types.box import LRBTNF
+from arcade.types.box import XYZWHD
+
 
 __all__ = [
     "AsFloat",
@@ -115,6 +120,9 @@ __all__ = [
     "ViewportParams",
     "RectParams",
     "RectKwargs",
+    "Box",
+    "LRBTNF",
+    "XYZWHD",
     "RGB",
     "RGBA",
     "RGBOrA",

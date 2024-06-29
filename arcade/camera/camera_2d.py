@@ -267,9 +267,10 @@ class Camera2D:
         return Vec2(self._camera_data.position[0], self._camera_data.position[1])
 
     @position.setter
-    def position(self, _pos: Point2) -> None:
-        x, y = _pos
-        self._camera_data.position = (x, y, self._camera_data.position[2])
+    def position(self, _pos: Point) -> None:
+        x, y, *z = _pos
+        z = self._camera_data.position[2] if not z else z[0]
+        self._camera_data.position = (x, y, z)
 
     # top_left
     @property
@@ -790,14 +791,17 @@ class Camera2D:
         self.width = self.viewport_width
         self.height = self.viewport_height
 
-    def match_screen(self, and_projection: bool = True, and_scissor: bool = True) -> None:
+    def match_screen(
+        self, and_projection: bool = True, and_scissor: bool = True, and_position: bool = False
+    ) -> None:
         """
         Sets the viewport to the size of the screen.
         Should be called when the screen is resized.
 
         Args:
-            and_projection: Flag whether to also equalise the projection to the viewport.
-            and_scissor: Flag whether to also equalise the scissor box to the viewport.
+            and_projection: Flag whether to also equalise the projection to the viewport. On by default
+            and_scissor: Flag whether to also equalise the scissor box to the viewport. On by default
+            and_position: Flag whether to also center the camera to the viewport. Off by default
         """
         self.viewport = LBWH(0, 0, self._window.width, self._window.height)
 
@@ -806,6 +810,9 @@ class Camera2D:
 
         if and_scissor and self.scissor:
             self.scissor = self.viewport
+
+        if and_position:
+            self.position = self.viewport.center
 
     def use(self) -> None:
         """

@@ -29,6 +29,7 @@ SCALED_BG_LAYER_HEIGHT_PX = ORIGINAL_BG_LAYER_HEIGHT_PX * PIXEL_SCALE
 
 
 PLAYER_SPEED = 300  # The player's speed in pixels / second
+CAMERA_SPEED = 0.1
 
 
 class MyGame(arcade.Window):
@@ -90,7 +91,7 @@ class MyGame(arcade.Window):
     def pan_camera_to_player(self):
         # Move the camera toward the center of the player's sprite
         target_x = self.player_sprite.center_x
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, self.height//2), 0.1)
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, self.height//2), CAMERA_SPEED)
 
     def on_update(self, delta_time: float):
         # Move the player in our infinite world

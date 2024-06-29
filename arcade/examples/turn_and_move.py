@@ -14,7 +14,7 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Turn and Move Example"
 
 # Image might not be lined up right, set this to offset
-IMAGE_ROTATION = 90
+IMAGE_ROTATION = -90
 
 
 class Player(arcade.Sprite):
@@ -27,11 +27,11 @@ class Player(arcade.Sprite):
         # Destination point is where we are going
         self._destination_point = None
 
-        # Max speed
-        self.speed = 5
+        # Max speed px / s
+        self.speed = 300
 
-        # Max speed we can rotate
-        self.rot_speed = 5
+        # what percent of the angle do we move by each frame
+        self.rot_speed = 0.1
 
     @property
     def destination_point(self):
@@ -40,6 +40,8 @@ class Player(arcade.Sprite):
     @destination_point.setter
     def destination_point(self, destination_point):
         self._destination_point = destination_point
+        self.change_x = 0.0
+        self.change_y = 0.0
 
     def on_update(self, delta_time: float = 1 / 60):
         """ Update the player """
@@ -61,68 +63,32 @@ class Player(arcade.Sprite):
         # Do math to calculate how to get the sprite to the destination.
         # Calculation the angle in radians between the start points
         # and end points. This is the angle the player will travel.
-        x_diff = dest_x - start_x
-        y_diff = dest_y - start_y
-        target_angle_radians = math.atan2(y_diff, x_diff)
-        if target_angle_radians < 0:
-            target_angle_radians += 2 * math.pi
+        target_angle = arcade.math.get_angle_degrees(start_x, start_y, dest_x, dest_y)
+        current_angle = self.angle - IMAGE_ROTATION
 
-        # What angle are we at now in radians?
-        actual_angle_radians = math.radians(self.angle - IMAGE_ROTATION)
+        new_angle = arcade.math.lerp_angle(current_angle, target_angle, self.rot_speed)
 
-        # How fast can we rotate?
-        rot_speed_radians = math.radians(self.rot_speed)
-
-        # What is the difference between what we want, and where we are?
-        angle_diff_radians = target_angle_radians - actual_angle_radians
-
-        # Figure out if we rotate clockwise or counter-clockwise
-        if abs(angle_diff_radians) <= rot_speed_radians:
-            # Close enough, let's set our angle to the target
-            actual_angle_radians = target_angle_radians
-            clockwise = None
-        elif angle_diff_radians > 0 and abs(angle_diff_radians) < math.pi:
-            clockwise = False
-        elif angle_diff_radians > 0 and abs(angle_diff_radians) >= math.pi:
-            clockwise = True
-        elif angle_diff_radians < 0 and abs(angle_diff_radians) < math.pi:
-            clockwise = True
-        else:
-            clockwise = False
-
-        # Rotate the proper direction if needed
-        if actual_angle_radians != target_angle_radians and clockwise:
-            actual_angle_radians -= rot_speed_radians
-        elif actual_angle_radians != target_angle_radians:
-            actual_angle_radians += rot_speed_radians
-
-        # Keep in a range of 0 to 2pi
-        if actual_angle_radians > 2 * math.pi:
-            actual_angle_radians -= 2 * math.pi
-        elif actual_angle_radians < 0:
-            actual_angle_radians += 2 * math.pi
-
-        # Convert back to degrees
-        self.angle = math.degrees(actual_angle_radians) + IMAGE_ROTATION
-
-        # Are we close to the correct angle? If so, move forward.
-        if abs(angle_diff_radians) < math.pi / 4:
-            self.change_x = math.cos(actual_angle_radians) * self.speed
-            self.change_y = math.sin(actual_angle_radians) * self.speed
+        self.angle = new_angle + IMAGE_ROTATION
+        angle_diff = abs(target_angle - new_angle)
+        if  angle_diff < 0.1 or 359.9 < angle_diff:
+            self.angle = target_angle + IMAGE_ROTATION
+            target_radians = math.radians(target_angle)
+            self.change_x = math.cos(-target_radians) * self.speed
+            self.change_y = math.sin(-target_radians) * self.speed
 
         # Fine-tune our change_x/change_y if we are really close to destination
         # point and just need to set to that location.
         traveling = False
-        if abs(self.center_x - dest_x) < abs(self.change_x):
+        if abs(self.center_x - dest_x) < abs(self.change_x * delta_time):
             self.center_x = dest_x
         else:
-            self.center_x += self.change_x
+            self.center_x += self.change_x * delta_time
             traveling = True
 
-        if abs(self.center_y - dest_y) < abs(self.change_y):
+        if abs(self.center_y - dest_y) < abs(self.change_y * delta_time):
             self.center_y = dest_y
         else:
-            self.center_y += self.change_y
+            self.center_y += self.change_y * delta_time
             traveling = True
 
         # If we have arrived, then cancel our destination point

@@ -338,7 +338,7 @@ def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     x_diff = x2 - x1
     y_diff = y2 - y1
-    return math.degrees(math.atan2(x_diff, y_diff))
+    return -math.degrees(math.atan2(y_diff, x_diff))
 
 
 def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
