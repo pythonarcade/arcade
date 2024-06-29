@@ -20,12 +20,8 @@ SCREEN_TITLE = "Sprite Tiled Map with Levels Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SPRITE_SCALING
 
-# How many pixels to keep as a minimum margin between the character
-# and the edge of the screen.
-VIEWPORT_MARGIN_TOP = 60
-VIEWPORT_MARGIN_BOTTOM = 60
-VIEWPORT_MARGIN_RIGHT = 500
-VIEWPORT_MARGIN_LEFT = 500
+# How many pixels to keep as a maximum between the player and the camera.
+CAMERA_BOUNDARY =  arcade.LRBT(-140, 140,300,300)
 
 # Physics
 MOVEMENT_SPEED = 5
@@ -199,51 +195,10 @@ class MyGame(arcade.Window):
             self.physics_engine.update()
 
             # --- Manage Scrolling ---
-
-            # Keep track of if we changed the boundary. We don't want to
-            # update the camera if we don't need to.
-            changed = False
-
-            pos = self.camera.position
-
-            top_left = self.camera.top_left
-
-            # Scroll left
-            left_boundary = top_left[0] + VIEWPORT_MARGIN_LEFT
-            if self.player_sprite.left < left_boundary:
-                changed = True
-                pos = pos[0] + (self.player_sprite.left - left_boundary), pos[1]
-
-            # Scroll up
-            top_boundary = top_left[1] - VIEWPORT_MARGIN_TOP
-            if self.player_sprite.top > top_boundary:
-                changed = True
-                pos = pos[0], pos[1] + (self.player_sprite.top - top_boundary)
-
-            bottom_right = self.camera.bottom_right
-
-            # Scroll right
-            right_boundary = bottom_right[0] - VIEWPORT_MARGIN_RIGHT
-            if self.player_sprite.right > right_boundary:
-                changed = True
-                pos = pos[0] + (self.player_sprite.right - right_boundary), pos[1]
-
-            # Scroll down
-            bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN_BOTTOM
-            if self.player_sprite.bottom < bottom_boundary:
-                pos = pos[0], pos[1] + (self.player_sprite.bottom - bottom_boundary)
-
-            # If we changed the boundary values, update the view port to match
-            if changed:
-                self.camera.position = pos
-                # Make sure our boundaries are integer values. While the view port does
-                # support floating point numbers, for this application we want every pixel
-                # in the view port to map directly onto a pixel on the screen. We don't want
-                # any rounding errors.
-                bottom_left = self.camera.bottom_left
-                self.camera.bottom_left = int(bottom_left[0]), int(bottom_left[1])
-
-                self.camera.use()
+            self.camera.position = arcade.camera.grips.constrain_boundary_xy(
+                self.camera.view_data, CAMERA_BOUNDARY, self.player_sprite.position
+            )
+            self.camera.use()
 
 
 def main():

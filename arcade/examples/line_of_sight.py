@@ -19,6 +19,10 @@ SCREEN_TITLE = "Line of Sight"
 MOVEMENT_SPEED = 5
 
 VIEWPORT_MARGIN = 250
+HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
+# If the player moves further than this boundary away from the camera we use a constraint to move the camera
+CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
 
 
 class MyGame(arcade.Window):
@@ -145,44 +149,10 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
 
         # --- Manage Scrolling ---
-
-        # Keep track of if we changed the boundary. We don't want to
-        # update the camera if we don't need to.
-        changed = False
-
-        pos = self.camera.position
-
-        top_left = self.camera.top_left
-        bottom_right = self.camera.bottom_right
-
-        # Scroll left
-        left_boundary = top_left[0] + VIEWPORT_MARGIN
-        if self.player.left < left_boundary:
-            changed = True
-            pos = pos[0] + (self.player.left - left_boundary), pos[1]
-
-        # Scroll up
-        top_boundary = top_left[1] - VIEWPORT_MARGIN
-        if self.player.top > top_boundary:
-            changed = True
-            pos = pos[0], pos[1] + (self.player.top - top_boundary)
-
-        # Scroll right
-        right_boundary = bottom_right[0] - VIEWPORT_MARGIN
-        if self.player.right > right_boundary:
-            changed = True
-            pos = pos[0] + (self.player.right - right_boundary), pos[1]
-
-        # Scroll down
-        bottom_boundary = bottom_right[1] + VIEWPORT_MARGIN
-        if self.player.bottom < bottom_boundary:
-            changed = True
-            pos = pos[0], pos[1] + (self.player.bottom - bottom_boundary)
-
-        # If we changed the boundary values, update the view port to match
-        if changed:
-            self.camera.position = pos
-            self.camera.use()
+        self.camera.position = arcade.camera.grips.constrain_boundary_xy(
+            self.camera.view_data, CAMERA_BOUNDARY, self.player.position
+        )
+        self.camera.use()
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

@@ -18,6 +18,7 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Scrolling Background Example"
 
 PLAYER_SPEED = 300
+CAMERA_SPEED = 0.5
 
 
 class MyGame(arcade.Window):
@@ -44,7 +45,7 @@ class MyGame(arcade.Window):
         # This will center the camera on the player.
         target_x = self.player_sprite.center_x
         target_y = self.player_sprite.center_y
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), 0.5)
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
 
     def on_update(self, delta_time: float):
         new_position = (

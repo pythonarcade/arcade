@@ -17,6 +17,7 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Stationary Background Example"
 
 PLAYER_SPEED = 300
+CAMERA_SPEED = 0.1
 
 
 class MyGame(arcade.Window):
@@ -56,7 +57,7 @@ class MyGame(arcade.Window):
             target_y = 0.0
         elif target_y > self.background.size[1]:
             target_y = self.background.size[1]
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), 0.1)
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
 
     def on_update(self, delta_time: float):
         new_position = (
