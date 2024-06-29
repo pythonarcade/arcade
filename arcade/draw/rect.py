@@ -267,9 +267,9 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
     # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-    program = ctx.shape_rectangle_filled_unbuffered_program
+    program = ctx.shape_rectangle_filled_unbuffered_program  # type: ignore
     geometry = ctx.shape_rectangle_filled_unbuffered_geometry
-    buffer = ctx.shape_rectangle_filled_unbuffered_buffer
+    buffer = ctx.shape_rectangle_filled_unbuffered_buffer  # type: ignore
 
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized

@@ -56,8 +56,8 @@ def draw_line(
     window = get_window()
     ctx = window.ctx
     program = ctx.shape_line_program
-    geometry = ctx.shape_line_geometry
-    line_pos_buffer = ctx.shape_line_buffer_pos
+    geometry = ctx.shape_line_geometry  # type: ignore
+    line_pos_buffer = ctx.shape_line_buffer_pos  # type: ignore
 
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
@@ -89,8 +89,8 @@ def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1) -> 
     window = get_window()
     ctx = window.ctx
     program = ctx.shape_line_program
-    geometry = ctx.shape_line_geometry
-    line_buffer_pos = ctx.shape_line_buffer_pos
+    geometry = ctx.shape_line_geometry  # type: ignore
+    line_buffer_pos = ctx.shape_line_buffer_pos  # type: ignore
 
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
@@ -101,9 +101,9 @@ def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1) -> 
     # Grow buffer until large enough to hold all our data
     goal_buffer_size = num_points * 3 * 4
     while goal_buffer_size > line_buffer_pos.size:
-        ctx.shape_line_buffer_pos.orphan(line_buffer_pos.size * 2)
+        ctx.shape_line_buffer_pos.orphan(line_buffer_pos.size * 2)  # type: ignore
     else:
-        ctx.shape_line_buffer_pos.orphan()
+        ctx.shape_line_buffer_pos.orphan()  # type: ignore
 
     ctx.enable(ctx.BLEND)
 

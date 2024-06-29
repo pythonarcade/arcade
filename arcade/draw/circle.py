@@ -110,7 +110,7 @@ def draw_ellipse_filled(
 
     program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
-    buffer = ctx.shape_ellipse_unbuffered_buffer
+    buffer = ctx.shape_ellipse_unbuffered_buffer  # type: ignore
 
     # Normalize the color because this shader takes a float uniform
     color_normalized = Color.from_iterable(color).normalized
@@ -158,7 +158,7 @@ def draw_ellipse_outline(
     ctx = window.ctx
     program = ctx.shape_ellipse_outline_unbuffered_program
     geometry = ctx.shape_ellipse_outline_unbuffered_geometry
-    buffer = ctx.shape_ellipse_outline_unbuffered_buffer
+    buffer = ctx.shape_ellipse_outline_unbuffered_buffer  # type: ignore
 
     # Normalize the color because this shader takes a float uniform
     color_normalized = Color.from_iterable(color).normalized

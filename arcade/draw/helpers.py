@@ -57,9 +57,9 @@ def _generic_draw_line_strip(
     # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
     ctx = window.ctx
-    geometry = ctx.generic_draw_line_strip_geometry
-    vertex_buffer = ctx.generic_draw_line_strip_vbo
-    color_buffer = ctx.generic_draw_line_strip_color
+    geometry = ctx.generic_draw_line_strip_geometry  # type: ignore
+    vertex_buffer = ctx.generic_draw_line_strip_vbo  # type: ignore
+    color_buffer = ctx.generic_draw_line_strip_color  # type: ignore
     program = ctx.line_vertex_shader
 
     # Validate and alpha-pad color, then expand to multi-vertex form since
