@@ -1,4 +1,6 @@
-from typing import Optional, Tuple, Generator, TYPE_CHECKING
+from __future__ import annotations
+
+from typing import Optional, Generator, TYPE_CHECKING
 from typing_extensions import Self
 from contextlib import contextmanager
 
@@ -27,7 +29,7 @@ class ViewportProjector:
 
     def __init__(
         self,
-        viewport: Optional[Tuple[int, int, int, int]] = None,
+        viewport: Optional[tuple[int, int, int, int]] = None,
         *,
         context: Optional["ArcadeContext"] = None,
     ):
@@ -38,14 +40,14 @@ class ViewportProjector:
         )
 
     @property
-    def viewport(self) -> Tuple[int, int, int, int]:
+    def viewport(self) -> tuple[int, int, int, int]:
         """
         The viewport use to derive projection and view matrix.
         """
         return self._viewport
 
     @viewport.setter
-    def viewport(self, viewport: Tuple[int, int, int, int]) -> None:
+    def viewport(self, viewport: tuple[int, int, int, int]) -> None:
         self._viewport = viewport
         self._projection_matrix = Mat4.orthogonal_projection(
             0, viewport[2], 0, viewport[3], -100, 100

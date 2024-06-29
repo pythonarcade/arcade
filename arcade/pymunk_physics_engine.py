@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 import math
-from typing import Callable, Dict, List, Optional, Tuple, Union
+from typing import Callable, Optional, Union
 
 import pymunk
 from pyglet.math import Vec2
@@ -59,9 +59,9 @@ class PymunkPhysicsEngine:
         self.space = pymunk.Space()
         self.space.gravity = gravity
         self.space.damping = damping
-        self.collision_types: List[str] = []
-        self.sprites: Dict[Sprite, PymunkPhysicsObject] = {}
-        self.non_static_sprite_list: List = []
+        self.collision_types: list[str] = []
+        self.sprites: dict[Sprite, PymunkPhysicsObject] = {}
+        self.non_static_sprite_list: list = []
         self.maximum_incline_on_ground = maximum_incline_on_ground
 
     def add_sprite(
@@ -73,7 +73,7 @@ class PymunkPhysicsEngine:
         moment_of_inertia: Optional[float] = None,  # correct spelling
         body_type: int = DYNAMIC,
         damping: Optional[float] = None,
-        gravity: Optional[Union[pymunk.Vec2d, Tuple[float, float], Vec2]] = None,
+        gravity: Optional[Union[pymunk.Vec2d, tuple[float, float], Vec2]] = None,
         max_velocity: Optional[int] = None,
         max_horizontal_velocity: Optional[int] = None,
         max_vertical_velocity: Optional[int] = None,
@@ -142,7 +142,7 @@ class PymunkPhysicsEngine:
 
         # Callback used if we need custom gravity, damping, velocity, etc.
         def velocity_callback(
-            my_body: pymunk.Body, my_gravity: Tuple[float, float], my_damping: float, dt: float
+            my_body: pymunk.Body, my_gravity: tuple[float, float], my_damping: float, dt: float
         ):
             """Used for custom damping, gravity, and max_velocity."""
 
@@ -259,7 +259,7 @@ class PymunkPhysicsEngine:
 
     def get_sprites_from_arbiter(
         self, arbiter: pymunk.Arbiter
-    ) -> Tuple[Optional[Sprite], Optional[Sprite]]:
+    ) -> tuple[Optional[Sprite], Optional[Sprite]]:
         """Given a collision arbiter, return the sprites associated with the collision."""
         shape1, shape2 = arbiter.shapes
         sprite1 = self.get_sprite_for_shape(shape1)
@@ -271,7 +271,7 @@ class PymunkPhysicsEngine:
         grounding = self.check_grounding(sprite)
         return grounding["body"] is not None
 
-    def apply_impulse(self, sprite: Sprite, impulse: Tuple[float, float]):
+    def apply_impulse(self, sprite: Sprite, impulse: tuple[float, float]):
         """Apply an impulse force on a sprite"""
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
@@ -280,7 +280,7 @@ class PymunkPhysicsEngine:
             )
         physics_object.body.apply_impulse_at_local_point(impulse)
 
-    def set_position(self, sprite: Sprite, position: Union[pymunk.Vec2d, Tuple[float, float]]):
+    def set_position(self, sprite: Sprite, position: Union[pymunk.Vec2d, tuple[float, float]]):
         """Apply an impulse force on a sprite"""
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
@@ -297,7 +297,7 @@ class PymunkPhysicsEngine:
             )
         physics_object.body.angle = math.radians(rotation)
 
-    def set_velocity(self, sprite: Sprite, velocity: Tuple[float, float]):
+    def set_velocity(self, sprite: Sprite, velocity: tuple[float, float]):
         """Apply an impulse force on a sprite"""
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
@@ -419,7 +419,7 @@ class PymunkPhysicsEngine:
         """Get the shape/body for a sprite."""
         return self.sprites[sprite]
 
-    def apply_force(self, sprite: Sprite, force: Tuple[float, float]):
+    def apply_force(self, sprite: Sprite, force: tuple[float, float]):
         """Apply force to a Sprite."""
         physics_object = self.sprites[sprite]
         if physics_object.body is None:

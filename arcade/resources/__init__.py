@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Union
 from arcade.utils import warning, ReplacementWarning
 
 #: The absolute path to this directory
@@ -9,7 +9,7 @@ RESOURCE_DIR = Path(__file__).parent.resolve()
 SYSTEM_PATH = RESOURCE_DIR / "system"
 ASSET_PATH = RESOURCE_DIR / "assets"
 
-handles: Dict[str, List[Path]] = {
+handles: dict[str, list[Path]] = {
     "resources": [SYSTEM_PATH, ASSET_PATH],
     "assets": [ASSET_PATH],
     "system": [SYSTEM_PATH],
@@ -149,7 +149,7 @@ def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
         paths.append(path)
 
 
-def get_resource_handle_paths(handle: str) -> List[Path]:
+def get_resource_handle_paths(handle: str) -> list[Path]:
     """
     Returns the paths for a resource handle.
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Dict, Optional, Iterable, List, Sequence, Tuple, Union, Set
+from typing import Optional, Iterable, Sequence, Union
 from typing_extensions import TypeAlias
 
 from pyglet import gl
@@ -18,9 +18,9 @@ GLuintLike = Union[gl.GLuint, int]
 PyGLuint = int
 
 
-OpenGlFilter: TypeAlias = Tuple[PyGLenum, PyGLenum]
+OpenGlFilter: TypeAlias = tuple[PyGLenum, PyGLenum]
 BlendFunction: TypeAlias = Union[
-    Tuple[PyGLenum, PyGLenum], Tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
+    tuple[PyGLenum, PyGLenum], tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
 ]
 
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
@@ -211,7 +211,7 @@ class BufferDescription:
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    _formats: Dict[str, Tuple[Optional[PyGLenum], int]] = {
+    _formats: dict[str, tuple[Optional[PyGLenum], int]] = {
         # (gl enum, byte size)
         # Floats
         "f": (gl.GL_FLOAT, 4),
@@ -260,11 +260,11 @@ class BufferDescription:
         #: List of string attributes
         self.attributes = attributes
         #: List of normalized attributes
-        self.normalized: Set[str] = set() if normalized is None else set(normalized)
+        self.normalized: set[str] = set() if normalized is None else set(normalized)
         #: Instanced flag (bool)
         self.instanced: bool = instanced
         #: Formats of each attribute
-        self.formats: List[AttribFormat] = []
+        self.formats: list[AttribFormat] = []
         #: The byte stride of the buffer
         self.stride: int = -1
         #: Number of vertices in the buffer
@@ -288,7 +288,7 @@ class BufferDescription:
                 f"attributes ({len(self.attributes)})"
             )
 
-        def zip_attrs(formats: List[str], attributes: Sequence[str]):
+        def zip_attrs(formats: list[str], attributes: Sequence[str]):
             """Join together formats and attribute names taking padding into account"""
             attr_index = 0
             for f in formats:

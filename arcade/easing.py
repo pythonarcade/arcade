@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from math import pi, sin, cos
 from dataclasses import dataclass
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional
 from .math import get_distance
 
 
@@ -188,7 +188,7 @@ def ease_angle(
     return easing_data
 
 
-def ease_angle_update(easing_data: EasingData, delta_time: float) -> Tuple:
+def ease_angle_update(easing_data: EasingData, delta_time: float) -> tuple[bool, float]:
     """
     Update angle easing.
     """
@@ -237,7 +237,7 @@ def ease_value(
 
 def ease_position(
     start_position, end_position, *, time=None, rate=None, ease_function=linear
-) -> Tuple[EasingData, EasingData]:
+) -> tuple[EasingData, EasingData]:
     """
     Get an easing position
     """
@@ -256,7 +256,7 @@ def ease_position(
     return easing_data_x, easing_data_y
 
 
-def ease_update(easing_data: EasingData, delta_time: float) -> Tuple[bool, float]:
+def ease_update(easing_data: EasingData, delta_time: float) -> tuple[bool, float]:
     """
     Update easing between two values/
     """

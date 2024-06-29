@@ -1,4 +1,6 @@
-from typing import Optional, Set
+from __future__ import annotations
+
+from typing import Optional
 from arcade.experimental.clock.timer import Timer
 
 
@@ -41,8 +43,8 @@ class Clock:
 
         self._parent: Optional[Clock] = parent
 
-        self._children: Set[Clock] = set()
-        self._timers: Set[Timer] = set()
+        self._children: set[Clock] = set()
+        self._timers: set[Timer] = set()
 
         self._delta_time_raw: float = 0.0
 

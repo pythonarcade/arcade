@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Tuple, Union, Optional
+from typing import Union, Optional
 
 import arcade
 from arcade import Texture
@@ -23,8 +23,8 @@ class Surface:
     def __init__(
         self,
         *,
-        size: Tuple[int, int],
-        position: Tuple[int, int] = (0, 0),
+        size: tuple[int, int],
+        position: tuple[int, int] = (0, 0),
         pixel_ratio: float = 1.0,
     ):
         self.ctx = arcade.get_window().ctx
@@ -202,7 +202,7 @@ class Surface:
         # Restore blend function
         self.ctx.blend_func = blend_func
 
-    def resize(self, *, size: Tuple[int, int], pixel_ratio: float) -> None:
+    def resize(self, *, size: tuple[int, int], pixel_ratio: float) -> None:
         """
         Resize the internal texture by re-allocating a new one
 

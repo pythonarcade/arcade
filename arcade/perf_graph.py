@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import random
-from typing import List
 
 import pyglet.clock
 from pyglet.shapes import Line
@@ -87,7 +86,7 @@ class PerfGraph(arcade.Sprite):
 
         # Variables for rendering the data line
         self.graph_data = graph_data
-        self._data_to_graph: List[float] = []
+        self._data_to_graph: list[float] = []
         self._view_max_value = 0.0  # We'll calculate this once we have data
         self._view_y_scale_step = view_y_scale_step
         self._view_height = self._texture.height - self._bottom_y  # type: ignore
@@ -98,9 +97,9 @@ class PerfGraph(arcade.Sprite):
         self._pyglet_batch = Batch()  # Used to draw graph elements
 
         # Convenient storage for iteration during color updates
-        self._vertical_axis_text_objects: List[arcade.Text] = []
-        self._all_text_objects: List[arcade.Text] = []
-        self._grid_lines: List[Line] = []
+        self._vertical_axis_text_objects: list[arcade.Text] = []
+        self._all_text_objects: list[arcade.Text] = []
+        self._grid_lines: list[Line] = []
 
         # Create the bottom label text object
         self._bottom_label = arcade.Text(

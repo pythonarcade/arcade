@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, List, TypeVar, Optional, cast
+from typing import Iterable, TypeVar, Optional, cast
 
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UIWidget, UILayout
@@ -643,7 +643,7 @@ class UIGridLayout(UILayout):
             return
 
         child_sorted_row_wise = cast(
-            List[List[UIWidget]],
+            list[list[UIWidget]],
             [[None for _ in range(self.column_count)] for _ in range(self.row_count)],
         )
 
@@ -701,7 +701,7 @@ class UIGridLayout(UILayout):
             sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
         )
 
-        def ratio(dimensions: List) -> List:
+        def ratio(dimensions: list) -> list:
             """
             Used to calculate ratio of the elements based on the minimum value in the parameter.
             :param dimension: List containing max height or width of the cells.

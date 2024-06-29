@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import array
 import math
-from typing import Optional, Tuple, List
+from typing import Optional
 
 import PIL.Image
 import PIL.ImageOps
@@ -66,7 +66,7 @@ __all__ = [
 
 def get_points_for_thick_line(
     start_x: float, start_y: float, end_x: float, end_y: float, line_width: float
-) -> Tuple[Point2, Point2, Point2, Point2]:
+) -> tuple[Point2, Point2, Point2, Point2]:
     """
     Function used internally for Arcade. OpenGL draws triangles only, so a thick
     line must be two triangles that make up a rectangle. This calculates and returns
@@ -537,7 +537,7 @@ def draw_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.GL_LINE_STRIP)
     else:
-        triangle_point_list: List[Point] = []
+        triangle_point_list: list[Point] = []
         # This needs a lot of improvement
         last_point = None
         for point in point_list:
@@ -1080,7 +1080,7 @@ def draw_rect_filled_kwargs(
 # Get_ functions
 
 
-def get_pixel(x: int, y: int, components: int = 3) -> Tuple[int, ...]:
+def get_pixel(x: int, y: int, components: int = 3) -> tuple[int, ...]:
     """
     Given an x, y, will return a color value of that point.
 

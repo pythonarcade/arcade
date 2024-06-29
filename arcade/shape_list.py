@@ -13,10 +13,6 @@ from collections import OrderedDict
 import itertools
 import math
 from typing import (
-    Dict,
-    Set,
-    List,
-    Tuple,
     Iterable,
     Optional,
     Sequence,
@@ -206,8 +202,8 @@ def create_line_strip(point_list: PointList, color: RGBA255, line_width: float =
     if line_width == 1:
         return create_line_generic(point_list, color, gl.GL_LINE_STRIP)
 
-    triangle_point_list: List[Point] = []
-    new_color_list: List[RGBA255] = []
+    triangle_point_list: list[Point] = []
+    new_color_list: list[RGBA255] = []
     for i in range(1, len(point_list)):
         start_x = point_list[i - 1][0]
         start_y = point_list[i - 1][1]
@@ -272,8 +268,8 @@ def create_lines_with_colors(
     if line_width == 1:
         return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES)
 
-    triangle_point_list: List[Point] = []
-    new_color_list: List[RGBA255] = []
+    triangle_point_list: list[Point] = []
+    new_color_list: list[RGBA255] = []
     for i in range(1, len(point_list), 2):
         start_x = point_list[i - 1][0]
         start_y = point_list[i - 1][1]
@@ -461,8 +457,8 @@ def create_rectangle(
     :param tilt_angle: Angle to tilt the rectangle in degrees
     :param filled: If True, the rectangle is filled. If False, it is an outline.
     """
-    data: List[Point] = cast(
-        List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle)
+    data: list[Point] = cast(
+        list[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle)
     )
 
     if filled:
@@ -506,7 +502,7 @@ def create_rectangle(
         data = [o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt]
 
         if tilt_angle != 0:
-            point_list_2: List[Point] = []
+            point_list_2: list[Point] = []
             for point in data:
                 new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
                 point_list_2.append(new_point)
@@ -552,8 +548,8 @@ def create_rectangles_filled_with_colors(point_list, color_list: Sequence[RGBA25
     as one.
     """
     shape_mode = gl.GL_TRIANGLES
-    new_point_list: List[Point] = []
-    new_color_list: List[RGBA255] = []
+    new_point_list: list[Point] = []
+    new_color_list: list[RGBA255] = []
     for i in range(0, len(point_list), 4):
         new_point_list += [point_list[0 + i], point_list[1 + i], point_list[3 + i]]
         new_point_list += [point_list[1 + i], point_list[3 + i], point_list[2 + i]]
@@ -816,15 +812,15 @@ class ShapeElementList(Generic[TShape]):
         # The context this shape list belongs to
         self.ctx = get_window().ctx
         # List of sprites in the sprite list
-        self.shape_list: List[TShape] = []
+        self.shape_list: list[TShape] = []
         self.change_x = 0.0
         self.change_y = 0.0
         self._center_x = 0.0
         self._center_y = 0.0
         self._angle = 0.0
         self.program = self.ctx.shape_element_list_program
-        self.batches: Dict[int, _Batch] = OrderedDict()
-        self.dirties: Set[_Batch] = set()
+        self.batches: dict[int, _Batch] = OrderedDict()
+        self.dirties: set[_Batch] = set()
 
         self._blend = blend
 
@@ -914,7 +910,7 @@ class ShapeElementList(Generic[TShape]):
         self.center_y += change_y
 
     @property
-    def position(self) -> Tuple[float, float]:
+    def position(self) -> tuple[float, float]:
         """
         Get or set the position of the ShapeElementList.
 
@@ -923,7 +919,7 @@ class ShapeElementList(Generic[TShape]):
         return self._center_x, self._center_y
 
     @position.setter
-    def position(self, value: Tuple[float, float]) -> None:
+    def position(self, value: tuple[float, float]) -> None:
         self._center_x, self._center_y = value
 
     @property
@@ -1003,8 +999,8 @@ class _Batch(Generic[TShape]):
             index_buffer=self.ibo,
         )
 
-        self.items: List[TShape] = []
-        self.new_items: List[TShape] = []
+        self.items: list[TShape] = []
+        self.new_items: list[TShape] = []
         self.vertices = 0  # Total vertices in the batch
         self.elements = 0  # Total elements in the batch
         self.FLAGS = 0  # Flags to indicate changes

@@ -11,13 +11,14 @@ For help, see the following:
 * CONTRIBUTING.md
 * The output of python make.py --help
 """
+from __future__ import annotations
 
 import os
 from contextlib import contextmanager
 from shutil import which, rmtree
 import subprocess
 from pathlib import Path
-from typing import Union, List, Generator, Optional
+from typing import Union, Generator, Optional
 
 PathLike = Union[Path, str, bytes]
 
@@ -137,7 +138,7 @@ def cd_context(directory: PathLike) -> Generator[Path, None, None]:
         os.chdir(_original_dir)
 
 
-def run(args: Union[str, List[str]], cd: Optional[PathLike] = None) -> None:
+def run(args: Union[str, list[str]], cd: Optional[PathLike] = None) -> None:
     """
     Try to run `args` with subprocess, switching into & out of `cd` if provided.
 
@@ -158,7 +159,7 @@ def run(args: Union[str, List[str]], cd: Optional[PathLike] = None) -> None:
         exit(result.returncode)
 
 
-def run_doc(args: Union[str, List[str]]) -> None:
+def run_doc(args: Union[str, list[str]]) -> None:
     run(args, cd=FULL_DOC_DIR)
 
 

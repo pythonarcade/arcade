@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 import random
-from typing import Sequence, Tuple, Union
+from typing import Sequence, Union
 from arcade.types import AsFloat, Point, Point2
 
 
@@ -63,8 +63,8 @@ def clamp(a, low: float, high: float) -> float:
     return high if a > high else max(a, low)
 
 
-V_2D = Union[Tuple[AsFloat, AsFloat], Sequence[AsFloat]]
-V_3D = Union[Tuple[AsFloat, AsFloat, AsFloat], Sequence[AsFloat]]
+V_2D = Union[tuple[AsFloat, AsFloat], Sequence[AsFloat]]
+V_3D = Union[tuple[AsFloat, AsFloat, AsFloat], Sequence[AsFloat]]
 
 
 def lerp(v1: AsFloat, v2: AsFloat, u: float) -> float:
@@ -72,11 +72,11 @@ def lerp(v1: AsFloat, v2: AsFloat, u: float) -> float:
     return v1 + ((v2 - v1) * u)
 
 
-def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> Tuple[float, float]:
+def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> tuple[float, float]:
     return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u))
 
 
-def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> Tuple[float, float, float]:
+def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> tuple[float, float, float]:
     return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
 
 
@@ -356,8 +356,8 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
 
 
 def quaternion_rotation(
-    axis: Tuple[float, float, float], vector: Tuple[float, float, float], angle: float
-) -> Tuple[float, float, float]:
+    axis: tuple[float, float, float], vector: tuple[float, float, float], angle: float
+) -> tuple[float, float, float]:
     """
     Rotate a 3-dimensional vector of any length clockwise around a 3-dimensional unit length vector.
 

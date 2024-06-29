@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Optional, Tuple, Generator
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional, Generator
 from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
 
@@ -69,7 +71,7 @@ class Camera2D:
         self,
         viewport: Optional[Rect] = None,
         position: Optional[Point2] = None,
-        up: Tuple[float, float] = (0.0, 1.0),
+        up: tuple[float, float] = (0.0, 1.0),
         zoom: float = 1.0,
         projection: Optional[Rect] = None,
         near: float = -100.0,

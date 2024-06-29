@@ -19,8 +19,9 @@ both easier and more performant than more accurate blur approaches.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.experimental.examples.array_backed_grid
 """
+from __future__ import annotations
 
-from typing import Tuple, Optional, cast
+from typing import Optional, cast
 from textwrap import dedent
 from math import cos, pi
 from random import uniform, randint
@@ -45,13 +46,13 @@ class DepthOfField:
 
     def __init__(
         self,
-        size: Optional[Tuple[int, int]] = None,
+        size: Optional[tuple[int, int]] = None,
         clear_color: RGBA255 = (155, 155, 155, 255),
     ):
         self._geo = geometry.quad_2d_fs()
         self._win: Window = get_window()
 
-        size = cast(Tuple[int, int], size or self._win.size)
+        size = cast(tuple[int, int], size or self._win.size)
         self._clear_color: Color = Color.from_iterable(clear_color)
 
         self.stale = True

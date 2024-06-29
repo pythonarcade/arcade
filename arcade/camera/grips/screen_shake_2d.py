@@ -2,8 +2,8 @@
 ScreenShakeController2D:
     Provides an easy way to cause a camera to shake.
 """
+from __future__ import annotations
 
-from typing import Tuple
 from math import exp, log, pi, sin, floor
 from random import uniform
 
@@ -68,7 +68,7 @@ class ScreenShake2D:
         self._length_shaking: float = 0.0
 
         self._current_dir: float = 0.0
-        self._last_vector: Tuple[float, float, float] = (0.0, 0.0, 0.0)
+        self._last_vector: tuple[float, float, float] = (0.0, 0.0, 0.0)
         self._last_update_time: float = 0.0
 
     @property
