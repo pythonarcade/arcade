@@ -10,6 +10,7 @@ from typing import (
     Union,
     TYPE_CHECKING,
     List,
+    Set,
 )
 import contextlib
 from weakref import WeakSet, WeakValueDictionary, finalize
@@ -161,8 +162,8 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         # All textures added to the atlas
         self._textures: WeakSet[Texture] = WeakSet()
-        # atlas_name: Texture
-        self._unique_textures: WeakValueDictionary[str, "Texture"] = WeakValueDictionary()
+        # atlas_name: Set of textures with matching atlas name
+        self._unique_textures: Dict[str, WeakSet["Texture"]] = dict()
 
         # Add all the textures
         for tex in textures or []:
@@ -244,7 +245,13 @@ class DefaultTextureAtlas(TextureAtlasBase):
         and the same vertex order. The full list of all textures
         can be found in :py:meth:`textures`.
         """
-        return list(self._unique_textures.values())
+        # Grab the first texture from each set
+        textures: List[Texture] = []
+        for tex_set in self._unique_textures.values():
+            if len(tex_set) == 0:
+                raise RuntimeError("Empty set in unique textures")
+            textures.append(next(iter(tex_set)))
+        return textures
 
     @property
     def images(self) -> List["ImageData"]:
@@ -344,6 +351,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
             self._finalizers_created += 1
 
         self._textures_added += 1
+        # print("Added texture:", texture.atlas_name)
 
     def remove(self, texture: "Texture") -> None:
         """
@@ -380,7 +388,8 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         # Put texture coordinates into uv buffer
         self._texture_uvs.set_slot_data(slot, texture_region.texture_coordinates)
-        self._unique_textures[texture.atlas_name] = texture  # add or update texture
+        # Collect unique textures
+        self._unique_textures.setdefault(texture.atlas_name, WeakSet()).add(texture)
 
         return slot, texture_region
 
@@ -492,18 +501,17 @@ class DefaultTextureAtlas(TextureAtlasBase):
         This should never be called directly.
         """
         # LOG.info("Removing texture: %s", atlas_name)
+        # print("Removing texture:", atlas_name)
 
         # Remove the unique texture if ref counter reaches 0
         if self._unique_texture_ref_count.dec_ref_by_atlas_name(atlas_name) == 0:
-            # May have been removed by GC
-            try:
+            # Remove the unique texture key to signal we don't have any more
+            refs = self._unique_textures[atlas_name]
+            if len(refs) == 0:
                 del self._unique_textures[atlas_name]
-            except KeyError:
-                pass
 
+            # Reclaim region and uv slot
             del self._texture_regions[atlas_name]
-
-            # Reclaim the image uv slot
             self._texture_uvs.free_slot_by_name(atlas_name)
 
         # Remove the image if ref counter reaches 0

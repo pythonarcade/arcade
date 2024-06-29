@@ -142,3 +142,6 @@ class UVData:
         if self._dirty:
             self._texture.write(self._data, 0)
             self._dirty = False
+
+    def __len__(self) -> int:
+        return len(self._slots)

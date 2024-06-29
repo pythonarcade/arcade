@@ -19,7 +19,7 @@ def test_create(ctx, common):
     assert isinstance(atlas.image_uv_texture, Texture2D)
     assert isinstance(atlas.texture_uv_texture, Texture2D)
     assert isinstance(atlas.fbo, Framebuffer)
-    common.check_internals(atlas, num_images=0, num_textures=0)
+    common.check_internals(atlas, images=0, textures=0, unique_textures=0)
 
 
 def test_add(ctx, common):
@@ -31,11 +31,11 @@ def test_add(ctx, common):
     slot_b, region_b = atlas.add(tex_b)
     assert slot_a == 0
     assert slot_b == 1
-    common.check_internals(atlas, num_images=2, num_textures=2)
+    common.check_internals(atlas, images=2, textures=2, unique_textures=2)
     # Add existing textures
     assert slot_a == atlas.add(tex_a)[0]
     assert slot_b == atlas.add(tex_b)[0]
-    common.check_internals(atlas, num_images=2, num_textures=2)
+    common.check_internals(atlas, images=2, textures=2, unique_textures=2)
     atlas.use_uv_texture()
 
 
