@@ -7,7 +7,6 @@ from __future__ import annotations
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
 
-from array import array
 from typing import Iterable, Optional, Union
 
 from arcade import (
