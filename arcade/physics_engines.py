@@ -39,18 +39,16 @@ def _wiggle_until_free(colliding: Sprite, walls: list[SpriteList]) -> None:
 
     # Original x & y of the moving object
     o_x, o_y = colliding.position
-    # fmt: off
-    # Allocate once so we don't recreate or gc
-    try_list = array(
-        'f', (
-            0.0, 0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0, 0.0,
-            0.0, 0.0, 0.0, 0.0,
-        )
-    )
-    wiggle_distance = 1
 
+    # fmt: off
+    try_list = [  # Allocate once so we don't recreate or gc
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0,
+    ]
+
+    wiggle_distance = 1
     while True:
         # Cache our variant dimensions
         o_x_plus  = o_x + wiggle_distance
