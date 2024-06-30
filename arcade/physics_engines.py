@@ -292,13 +292,13 @@ class PhysicsEngineSimple:
     @walls.setter
     def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
         if walls:
-            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+            _add_to_list(self._walls, walls)
         else:
-            self._walls = []
+            self._walls.clear()
 
     @walls.deleter
     def walls(self):
-        self._walls = []
+        self._walls.clear()
 
     def update(self):
         """
@@ -365,13 +365,13 @@ class PhysicsEnginePlatformer:
     @ladders.setter
     def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
         if ladders:
-            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+            _add_to_list(self._ladders, ladders)
         else:
-            self._ladders = []
+            self._ladders.clear()
 
     @ladders.deleter
     def ladders(self):
-        self._ladders = []
+        self._ladders.clear()
 
     @property
     def platforms(self):
@@ -381,9 +381,9 @@ class PhysicsEnginePlatformer:
     @platforms.setter
     def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
         if platforms:
-            self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
+            _add_to_list(self._platforms, platforms)
         else:
-            self._platforms = []
+            self._platforms.clear()
 
     @platforms.deleter
     def platforms(self):
@@ -397,13 +397,13 @@ class PhysicsEnginePlatformer:
     @walls.setter
     def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
         if walls:
-            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+            _add_to_list(self._walls, walls)
         else:
-            self._walls = []
+            self._walls.clear()
 
     @walls.deleter
     def walls(self):
-        self._walls = []
+        self._walls.clear()
 
     def is_on_ladder(self) -> bool:
         """Return 'true' if the player is in contact with a sprite in the ladder list."""
