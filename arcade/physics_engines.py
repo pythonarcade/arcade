@@ -431,8 +431,14 @@ class PhysicsEnginePlatformer:
         self._walls.clear()
 
     def is_on_ladder(self) -> bool:
-        """Return 'true' if the player is in contact with a sprite in the ladder list."""
-        # Check for touching a ladder
+        """Check if the :py:attr:`.player` touches any :py:attr:`.ladders`.
+
+        .. warning:: This runs collisions **every** time it is called!
+
+        Returns:
+            ``True`` if the :py:attr:`.player` sprite overlaps any
+             :py:class:`Sprite` in :py:attr:`.ladders`.
+        """
         if self.ladders:
             hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
             if len(hit_list) > 0:
