@@ -9,7 +9,6 @@ from arcade import Texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.texture import get_default_texture
 from arcade.types import PathOrTexture, Point2
-from arcade.gl.types import OpenGlFilter, BlendFunction
 
 from .base import BasicSprite
 from .mixins import PymunkMixin
@@ -58,7 +57,6 @@ class Sprite(BasicSprite, PymunkMixin):
         "cur_texture_index",
         "_hit_box",
         "physics_engines",
-        "_sprite_list",
         "guid",
         "force",
     )
@@ -311,41 +309,6 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         self.velocity = 0, 0
         self.change_angle = 0
-
-    # ---- Draw Methods ----
-
-    def draw(
-        self,
-        *,
-        filter: Optional[OpenGlFilter] = None,
-        pixelated: Optional[bool] = None,
-        blend_function: Optional[BlendFunction] = None,
-    ) -> None:
-        """
-        A debug method which draws the sprite into the current OpenGL context.
-
-        .. warning:: You are probably looking for :py:meth:`SpriteList.draw() <arcade.SpriteList.draw>`!
-
-                     Drawing individual sprites is slow compared to using :py:class:`~arcade.SpriteList`.
-                     See :ref:`pg_spritelists_why` for more information.
-
-        This method should not be relied on. It may be removed one day.
-
-        :param filter: Optional parameter to set OpenGL filter, such as
-                       `gl.GL_NEAREST` to avoid smoothing.
-        :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
-                          Shortcut for setting filter=GL_NEAREST.
-        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the sprite list,
-                               such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
-        """
-        if self._sprite_list is None:
-            from arcade import SpriteList
-
-            self._sprite_list = SpriteList(capacity=1)
-
-        self._sprite_list.append(self)
-        self._sprite_list.draw(filter=filter, pixelated=pixelated, blend_function=blend_function)
-        self._sprite_list.remove(self)
 
     # ----Update Methods ----
 

@@ -671,7 +671,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         with self._fbo.activate():
             # Ensure no context flags are enabled
             with self._ctx.enabled_only():
-                self._ctx.atlas_geometry.render(
+                self._ctx.geometry_empty.render(
                     self._ctx.atlas_resize_program,
                     mode=self._ctx.POINTS,
                     vertices=self.max_width,

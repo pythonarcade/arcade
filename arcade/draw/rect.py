@@ -2,11 +2,99 @@ import array
 
 from arcade import gl
 from arcade.math import rotate_point
-from arcade.types import RGBA255, PointList, AsFloat, Rect, LRBT, LBWH, Color
+from arcade.types import RGBA255, PointList, AsFloat, Rect, LRBT, LBWH, XYWH, Color
 from arcade.texture import Texture
+from arcade.sprite import BasicSprite
 from arcade.window_commands import get_window
 from .helpers import _generic_draw_line_strip
 from arcade.color import WHITE
+
+
+def draw_texture_rect(
+    texture: Texture,
+    rect: Rect,
+    *,
+    color: Color = WHITE,
+    angle=0.0,
+    blend=True,
+    alpha=1.0,
+    pixelated=False,
+) -> None:
+    """
+    Draw a texture on a rectangle.
+
+    :param texture: identifier of texture returned from load_texture() call
+    :param rect: Rectangle to draw the texture on.
+    :param color: Color of the texture. Defaults to white.
+    :param angle: Rotation of the texture in degrees. Defaults to zero.
+    :param blend: If True, enable alpha blending. Defaults to True.
+    :param alpha: Transparency of image. 0.0 is fully transparent, 1.0 (default) is visible.
+    """
+    ctx = get_window().ctx
+    if blend:
+        ctx.enable(ctx.BLEND)
+
+    atlas = ctx.default_atlas
+
+    texture_id, _ = ctx.default_atlas.add(texture)
+    if pixelated:
+        atlas.texture.filter = gl.NEAREST, gl.NEAREST
+    else:
+        atlas.texture.filter = gl.LINEAR, gl.LINEAR
+
+    atlas.texture.use(unit=0)
+    atlas.use_uv_texture(unit=1)
+
+    geometry = ctx.geometry_empty
+    program = ctx.sprite_program_single
+    program["pos"] = rect.center_x, rect.center_y, 0
+    program["color"] = color.normalized
+    program["size"] = rect.width, rect.height
+    program["angle"] = angle
+    program["texture_id"] = float(texture_id)
+    program["spritelist_color"] = 1.0, 1.0, 1.0, alpha
+    print(alpha)
+
+    geometry.render(program, mode=gl.POINTS, vertices=1)
+
+    # if blend:
+    #     ctx.disable(ctx.BLEND)
+
+
+def draw_sprite(sprite: BasicSprite, *, blend: bool = True, alpha=1.0, pixelated=False) -> None:
+    """
+    Draw a sprite.
+
+    :param sprite: The sprite to draw.
+    """
+    draw_texture_rect(
+        sprite.texture,
+        rect=XYWH(sprite.center_x, sprite.center_y, sprite.width, sprite.height),
+        color=sprite.color,
+        angle=sprite._angle,
+        blend=blend,
+        alpha=alpha,
+        pixelated=pixelated,
+    )
+
+
+def draw_sprite_rect(
+    sprite: BasicSprite, rect: Rect, *, blend: bool = True, alpha=1.0, pixelated=False
+) -> None:
+    """
+    Draw a sprite.
+
+    :param sprite: The sprite to draw.
+    """
+    draw_texture_rect(
+        sprite.texture,
+        rect=rect,
+        color=sprite.color,
+        angle=sprite._angle,
+        blend=blend,
+        alpha=alpha,
+        pixelated=pixelated,
+    )
 
 
 def draw_lrbt_rectangle_outline(
@@ -100,119 +188,6 @@ def draw_lbwh_rectangle_filled(
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     """
     draw_rect_filled(LBWH(left, bottom, width, height), color)
-
-
-def draw_scaled_texture_rectangle(
-    center_x: float,
-    center_y: float,
-    texture: Texture,
-    scale: float = 1.0,
-    angle: float = 0,
-    alpha: int = 255,
-) -> None:
-    """
-    Draw a textured rectangle on-screen.
-
-    .. warning:: This method can be slow!
-
-                 Most users should consider using
-                 :py:class:`arcade.Sprite` with
-                 :py:class:`arcade.SpriteList` instead of this
-                 function.
-
-    OpenGL accelerates drawing by using batches to draw multiple things
-    at once. This method doesn't do that.
-
-    If you need finer control or less overhead than arcade allows,
-    consider `pyglet's batching features
-    <https://pyglet.readthedocs.io/en/master/modules/graphics/index.html#batches-and-groups>`_.
-
-    :param center_x: x coordinate of rectangle center.
-    :param center_y: y coordinate of rectangle center.
-    :param texture: identifier of texture returned from
-                        load_texture() call
-    :param scale: scale of texture
-    :param angle: rotation of the rectangle (clockwise). Defaults to zero.
-    :param alpha: Transparency of image. 0 is fully transparent,
-                        255 (default) is fully visible
-    """
-    texture.draw_scaled(center_x, center_y, scale, angle, alpha)
-
-
-def draw_texture_rectangle(
-    center_x: float,
-    center_y: float,
-    width: float,
-    height: float,
-    texture: Texture,
-    angle: float = 0,
-    alpha: int = 255,
-) -> None:
-    """
-    Draw a textured rectangle on-screen.
-
-    :param center_x: x coordinate of rectangle center.
-    :param center_y: y coordinate of rectangle center.
-    :param width: width of texture
-    :param height: height of texture
-    :param texture: identifier of texture returned from load_texture() call
-    :param angle: rotation of the rectangle. Defaults to zero (clockwise).
-    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-    """
-    texture.draw_sized(center_x, center_y, width, height, angle, alpha)
-
-
-# def draw_texture_rect(texture: Texture, rect: Rect, blend=True) -> None:
-#     """
-#     Draw a texture on a rectangle.
-
-#     :param texture: identifier of texture returned from load_texture() call
-#     :param rect: Rectangle to draw the texture on.
-#     """
-#     ctx = get_window().ctx
-#     if blend:
-#         ctx.enable(ctx.BLEND)
-
-#     texture_id, region = ctx.default_atlas.add(texture)
-
-#     ctx.default_atlas.use_uv_texture(unit=0)
-#     program = None  # texture program
-#     # program["texture"] = 0
-#     # program["alpha"] = 1.0
-#     geometry = None  # texture geometry
-#     # geometry.render(program, mode=gl.GL_TRIANGLE_STRIP, vertices=4)
-
-#     if blend:
-#         ctx.disable(ctx.BLEND)
-
-
-def draw_lbwh_rectangle_textured(
-    left: float,
-    bottom: float,
-    width: float,
-    height: float,
-    texture: Texture,
-    angle: float = 0,
-    alpha: int = 255,
-) -> None:
-    """
-    Draw a texture extending from bottom left to top right.
-
-    :param left: The x coordinate of the left edge of the rectangle.
-    :param bottom: The y coordinate of the bottom of the rectangle.
-    :param width: The width of the rectangle.
-    :param height: The height of the rectangle.
-    :param texture: identifier of texture returned from load_texture() call
-    :param angle: rotation of the rectangle. Defaults to zero (clockwise).
-    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is visible
-    """
-
-    center_x = left + (width / 2)
-    center_y = bottom + (height / 2)
-    texture.draw_sized(center_x, center_y, width, height, angle=angle, alpha=alpha)
-
-
-# Reference implementations: drawing of new Rect
 
 
 def draw_rect_outline(

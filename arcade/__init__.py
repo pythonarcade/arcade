@@ -122,7 +122,6 @@ from .draw import draw_line_strip
 from .draw import draw_lines
 from .draw import draw_lrbt_rectangle_filled
 from .draw import draw_lrbt_rectangle_outline
-from .draw import draw_lbwh_rectangle_textured
 from .draw import draw_parabola_filled
 from .draw import draw_parabola_outline
 from .draw import draw_point
@@ -131,8 +130,9 @@ from .draw import draw_polygon_filled
 from .draw import draw_polygon_outline
 from .draw import draw_rect_filled
 from .draw import draw_rect_outline
-from .draw import draw_scaled_texture_rectangle
-from .draw import draw_texture_rectangle
+from .draw import draw_texture_rect
+from .draw import draw_sprite
+from .draw import draw_sprite_rect
 from .draw import draw_triangle_filled
 from .draw import draw_triangle_outline
 from .draw import draw_lbwh_rectangle_filled
@@ -312,7 +312,6 @@ __all__ = [
     "draw_line",
     "draw_line_strip",
     "draw_lines",
-    "draw_lbwh_rectangle_textured",
     "draw_lrbt_rectangle_filled",
     "draw_lrbt_rectangle_filled",
     "draw_lrbt_rectangle_outline",
@@ -325,9 +324,10 @@ __all__ = [
     "draw_polygon_outline",
     "draw_rect_filled",
     "draw_rect_outline",
-    "draw_scaled_texture_rectangle",
     "draw_text",
-    "draw_texture_rectangle",
+    "draw_texture_rect",
+    "draw_sprite",
+    "draw_sprite_rect",
     "draw_triangle_filled",
     "draw_triangle_outline",
     "draw_lbwh_rectangle_filled",
