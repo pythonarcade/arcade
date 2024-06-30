@@ -84,6 +84,27 @@ def _move_sprite(
         can_collide: Iterable[SpriteList[SpriteType]],
         ramp_up: bool
 ) -> list[SpriteType]:
+    """Update a sprite's angle and position, returning a list of collisions.
+
+    The steps covered are:
+
+    #. Rotation
+    #. Move in the y direction
+    #. Move in the x direction
+
+    Args:
+        moving_sprite:
+            The sprite to move.
+        can_collide:
+            An iterable source of SpriteList objects which can be
+            collided with.
+        ramp_up:
+            Whether to enable platformer-like ramp support for x
+            direction movement.
+    Returns:
+        A list of other individual sprites the ``moving_sprite``
+        collided with.
+    """
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
