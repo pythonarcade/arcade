@@ -6,7 +6,6 @@ from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from itertools import chain
 
 from typing import Iterable, Optional, Union
 

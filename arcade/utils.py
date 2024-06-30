@@ -11,10 +11,9 @@ import platform
 import sys
 import warnings
 from itertools import chain
-from typing import Type, TypeVar, Sequence, Generator
+from typing import Type, TypeVar, Generator, Generic
 from pathlib import Path
 
-from typing_extensions import Generic
 
 _CT = TypeVar('_CT')  # Comparable type, ie supports the <= operator
 
