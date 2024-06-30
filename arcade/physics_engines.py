@@ -530,9 +530,7 @@ class PhysicsEnginePlatformer:
 
                     platform.center_y += platform.change_y
 
-        complete_hit_list = _move_sprite(
-            self.player_sprite, self._all_obstacles, ramp_up=True
-        )
+        complete_hit_list = _move_sprite(self.player_sprite, self._all_obstacles, ramp_up=True)
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites
