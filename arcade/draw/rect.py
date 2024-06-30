@@ -56,8 +56,8 @@ def draw_texture_rect(
 
     geometry.render(program, mode=gl.POINTS, vertices=1)
 
-    # if blend:
-    #     ctx.disable(ctx.BLEND)
+    if blend:
+        ctx.disable(ctx.BLEND)
 
 
 def draw_sprite(sprite: BasicSprite, *, blend: bool = True, alpha=1.0, pixelated=False) -> None:
