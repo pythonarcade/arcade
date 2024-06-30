@@ -400,7 +400,28 @@ class PhysicsEnginePlatformer:
 
     @property
     def platforms(self) -> list[SpriteList]:
-        """The moving platform list registered with the physics engine."""
+        """Controls which sprites are used as moving platforms.
+
+        .. tip:: For best performance, put non-moving terrain in
+                 :py:attr:`.walls` instead.
+
+        This is a :py:class:`list` of
+        :py:class:`~arcade.sprite_list.sprite_list.SpriteList` instances.
+
+        Motion is controlled by the presence of the following
+        attribute pairs on a :py:class:`~arcade.sprite.sprite.Sprite`:
+
+        * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_left` and
+          :py:attr:`~arcade.sprite.sprite.Sprite.boundary_right`
+        * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_bottom` and
+          :py:attr:`~arcade.sprite.sprite.Sprite.boundary_top`
+
+        * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_left` and
+          :py:attr:`~arcade.sprite.sprite.Sprite.boundary_right`
+        * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_bottom` and
+          :py:attr:`~arcade.sprite.sprite.Sprite.boundary_top`
+
+        """
         return self._platforms
 
     @platforms.setter
