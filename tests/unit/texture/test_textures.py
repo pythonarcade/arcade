@@ -36,7 +36,6 @@ def test_load_texture():
     assert tex.height == 128
     assert tex.size == (128, 128)
     assert tex.hit_box_points is not None
-    assert tex._sprite_list is None
 
     with pytest.raises(FileNotFoundError):
         arcade.load_texture("moo")

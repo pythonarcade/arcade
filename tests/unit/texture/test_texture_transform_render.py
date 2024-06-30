@@ -49,7 +49,7 @@ def test_rotate90_transform(ctx: arcade.ArcadeContext, image, transform, pil_tra
     with fbo.activate():
         fbo.clear()
         ctx.projection_matrix = Mat4.orthogonal_projection(0, image.width, 0, image.height, -100, 100)
-        sprite.draw(pixelated=True)
+        arcade.draw_sprite(sprite, pixelated=True)
 
     expected_image = image.transpose(pil_transform)
     fbo_data = fbo.read(components=4)

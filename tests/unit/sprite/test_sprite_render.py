@@ -94,7 +94,7 @@ def test_render_with_movement(window: arcade.Window):
         assert arcade.get_pixel(150, 50) == (191, 121, 88)
 
         assert arcade.get_pixel(230, 230) == (59, 122, 87)
-        individual_coin.draw()
+        arcade.draw_sprite(individual_coin)
         assert arcade.get_pixel(230, 230) == (255, 204, 0)
 
         # Test for coin scaling
