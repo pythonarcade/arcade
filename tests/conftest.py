@@ -61,7 +61,7 @@ def prepare_window(window: arcade.Window):
     window.default_camera.use()
     ctx.gc_mode = "context_gc"
     ctx.gc()
-    gc.collect()
+    # gc.collect(1)
 
     # Ensure no old functions are lingering
     window.on_draw = lambda: None
