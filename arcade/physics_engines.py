@@ -298,7 +298,7 @@ class PhysicsEngineSimple:
     def walls(self) -> None:
         self._walls.clear()
 
-    def update(self):
+    def update(self) -> list[SpriteType]:
         """
         Move everything and resolve collisions.
 
