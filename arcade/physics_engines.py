@@ -80,12 +80,14 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
 
 
 def _move_sprite(
-    moving_sprite: Sprite, walls: Iterable[SpriteList[SpriteType]], ramp_up: bool
+        moving_sprite: Sprite,
+        can_collide: Iterable[SpriteList[SpriteType]],
+        ramp_up: bool
 ) -> list[SpriteType]:
 
     # See if we are starting this turn with a sprite already colliding with us.
-    if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
-        _wiggle_until_free(moving_sprite, walls)
+    if len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
+        _wiggle_until_free(moving_sprite, can_collide)
 
     original_x, original_y = moving_sprite.position
     original_angle = moving_sprite.angle
@@ -98,14 +100,14 @@ def _move_sprite(
         moving_sprite.angle += moving_sprite.change_angle
 
         # Resolve collisions caused by rotating
-        rotating_hit_list = check_for_collision_with_lists(moving_sprite, walls)
+        rotating_hit_list = check_for_collision_with_lists(moving_sprite, can_collide)
 
         if len(rotating_hit_list) > 0:
 
             max_distance = (moving_sprite.width + moving_sprite.height) / 2
 
             # Resolve any collisions by this weird kludge
-            _wiggle_until_free(moving_sprite, walls)
+            _wiggle_until_free(moving_sprite, can_collide)
             if (
                 get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y)
                 > max_distance
@@ -118,14 +120,14 @@ def _move_sprite(
     moving_sprite.center_y += moving_sprite.change_y
 
     # Check for wall hit
-    hit_list_x = check_for_collision_with_lists(moving_sprite, walls)
+    hit_list_x = check_for_collision_with_lists(moving_sprite, can_collide)
     # print(f"Post-y move {hit_list_x}")
     complete_hit_list = hit_list_x
 
     # If we hit a wall, move so the edges are at the same point
     if len(hit_list_x) > 0:
         if moving_sprite.change_y > 0:
-            while len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
+            while len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
                 moving_sprite.center_y -= 1
             # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})"
             #       f" {self.player_sprite.change_y}")
@@ -183,7 +185,7 @@ def _move_sprite(
 
             # Move sprite and check for collisions
             moving_sprite.center_x = original_x + cur_x_change * direction
-            collision_check = check_for_collision_with_lists(moving_sprite, walls)
+            collision_check = check_for_collision_with_lists(moving_sprite, can_collide)
 
             # Update collision list
             for sprite in collision_check:
@@ -197,7 +199,7 @@ def _move_sprite(
                     cur_y_change = cur_x_change
                     moving_sprite.center_y = original_y + cur_y_change
 
-                    collision_check = check_for_collision_with_lists(moving_sprite, walls)
+                    collision_check = check_for_collision_with_lists(moving_sprite, can_collide)
                     if len(collision_check) > 0:
                         cur_y_change -= cur_x_change
                     else:
@@ -205,7 +207,7 @@ def _move_sprite(
                             # print("Ramp up check")
                             cur_y_change -= 1
                             moving_sprite.center_y = almost_original_y + cur_y_change
-                            collision_check = check_for_collision_with_lists(moving_sprite, walls)
+                            collision_check = check_for_collision_with_lists(moving_sprite, can_collide)
                         cur_y_change += 1
                         collision_check = []
 
