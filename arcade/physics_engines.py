@@ -446,22 +446,37 @@ class PhysicsEnginePlatformer:
         return False
 
     def can_jump(self, y_distance: float = 5) -> bool:
-        """
-        Method that looks to see if there is a floor under
-        the player_sprite. If there is a floor, the player can jump
-        and we return a True.
+        """Update jump state and return ``True`` if the player can jump.
 
-        :returns: True if there is a platform below us
+        .. warning:: This runs collisions **every** time it is called!
+
+        The player can jump when at least one of the following are true:
+
+        .. list-table::
+           :heading-rows: 0
+
+           * - The player is "touching" the ground
+             - :py:attr:`.player`'s :py:attr:`~arcade.BasicSprite.center_y`
+               is within ``y_distance`` of any sprite in :py:attr:`.walls`
+               or :py:attr:`.platforms`
+           * - :py:attr:`.allow_multi_jump` is ``True`` and the player
+               hasn't jumped more than :py:attr:`.allowed_jumps` times
+
+        Args:
+            y_distance: The distance to temporarily move the
+            :py:attr:`.player` downward before checking for a collision
+            with either :py:attr:`.walls` or :py:attr:`platforms`.
+
+        Returns:
+             ``True`` if the player can jump.
         """
 
-        # Move down to see if we are on a platform
+        # Temporarily move the player down to collide floor-like sprites
         self.player_sprite.center_y -= y_distance
-
-        # Check for wall hit
         hit_list = check_for_collision_with_lists(self.player_sprite, self._all_obstacles)
-
         self.player_sprite.center_y += y_distance
 
+        # Reset the number jumps if the player touched a floor-like sprite
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
 
