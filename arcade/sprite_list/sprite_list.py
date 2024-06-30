@@ -1036,10 +1036,9 @@ class SpriteList(Generic[SpriteType]):
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return
 
+        self._init_deferred()
         if not self.program:
             raise ValueError("Attempting to render without shader program.")
-
-        self._init_deferred()
         self._write_sprite_buffers_to_gpu()
 
         if self._blend:
