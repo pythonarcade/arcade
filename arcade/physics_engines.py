@@ -20,10 +20,10 @@ from arcade.math import get_distance
 
 __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 
-from arcade.utils import copy_dunders_unimplemented
+from arcade.utils import copy_dunders_unimplemented, Chain
 
 
-def _wiggle_until_free(colliding: Sprite, walls: list[SpriteList]) -> None:
+def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
     """Kludge to 'guess' a colliding sprite out of a collision.
 
     It works by iterating over increasing wiggle sizes of 8 points
@@ -81,15 +81,14 @@ def _wiggle_until_free(colliding: Sprite, walls: list[SpriteList]) -> None:
 
 
 def _move_sprite(
-    moving_sprite: Sprite, walls: list[SpriteList[SpriteType]], ramp_up: bool
+    moving_sprite: Sprite, walls: Iterable[SpriteList[SpriteType]], ramp_up: bool
 ) -> list[SpriteType]:
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
         _wiggle_until_free(moving_sprite, walls)
 
-    original_x = moving_sprite.center_x
-    original_y = moving_sprite.center_y
+    original_x, original_y = moving_sprite.position
     original_angle = moving_sprite.angle
 
     # --- Rotate
@@ -113,8 +112,7 @@ def _move_sprite(
                 > max_distance
             ):
                 # Ok, glitched trying to rotate. Reset.
-                moving_sprite.center_x = original_x
-                moving_sprite.center_y = original_y
+                moving_sprite.position = original_x, original_y
                 moving_sprite.angle = original_angle
 
     # --- Move in the y direction
@@ -238,8 +236,9 @@ def _move_sprite(
                     ) % 2
 
         # print(cur_x_change * direction, cur_y_change)
-        moving_sprite.center_x = original_x + cur_x_change * direction
-        moving_sprite.center_y = almost_original_y + cur_y_change
+        moved_x = original_x + cur_x_change * direction
+        moved_y = almost_original_y + cur_y_change
+        moving_sprite.position = moved_x, moved_y
         # print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
 
     # Add in rotating hit list
@@ -251,6 +250,15 @@ def _move_sprite(
     # print(f"Move 2 - {end_time - start_time:7.4f} {loop_count}")
 
     return complete_hit_list
+
+
+def _add_to_list(dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]):
+    if source is None:
+        return
+    elif isinstance(source, SpriteList):
+        dest.append(source)
+    else:
+        dest.extend(source)
 
 
 @copy_dunders_unimplemented
@@ -271,12 +279,10 @@ class PhysicsEngineSimple:
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
     ) -> None:
         self.player_sprite: Sprite = player_sprite
-        self._walls: list[SpriteList]
+        self._walls: list[SpriteList] = []
 
         if walls:
-            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
-        else:
-            self._walls = []
+            _add_to_list(self._walls, walls)
 
     @property
     def walls(self):
@@ -285,13 +291,13 @@ class PhysicsEngineSimple:
     @walls.setter
     def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
         if walls:
-            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+            _add_to_list(self._walls, walls)
         else:
-            self._walls = []
+            self._walls.clear()
 
     @walls.deleter
     def walls(self):
-        self._walls = []
+        self._walls.clear()
 
     def update(self):
         """
@@ -334,24 +340,15 @@ class PhysicsEnginePlatformer:
         ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
     ) -> None:
-        self._ladders: Optional[list[SpriteList]]
-        self._platforms: list[SpriteList]
-        self._walls: list[SpriteList]
 
-        if ladders:
-            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
-        else:
-            self._ladders = []
+        self._ladders: list[SpriteList] = []
+        self._platforms: list[SpriteList] = []
+        self._walls: list[SpriteList] = []
+        self._all_obstacles = Chain(self._walls, self._platforms)
 
-        if platforms:
-            self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
-        else:
-            self._platforms = []
-
-        if walls:
-            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
-        else:
-            self._walls = []
+        _add_to_list(self._ladders, ladders)
+        _add_to_list(self._platforms, platforms)
+        _add_to_list(self._walls, walls)
 
         self.player_sprite: Sprite = player_sprite
         self.gravity_constant: float = gravity_constant
@@ -368,13 +365,13 @@ class PhysicsEnginePlatformer:
     @ladders.setter
     def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
         if ladders:
-            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
+            _add_to_list(self._ladders, ladders)
         else:
-            self._ladders = []
+            self._ladders.clear()
 
     @ladders.deleter
     def ladders(self):
-        self._ladders = []
+        self._ladders.clear()
 
     @property
     def platforms(self):
@@ -384,9 +381,9 @@ class PhysicsEnginePlatformer:
     @platforms.setter
     def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
         if platforms:
-            self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
+            _add_to_list(self._platforms, platforms)
         else:
-            self._platforms = []
+            self._platforms.clear()
 
     @platforms.deleter
     def platforms(self):
@@ -400,13 +397,13 @@ class PhysicsEnginePlatformer:
     @walls.setter
     def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
         if walls:
-            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
+            _add_to_list(self._walls, walls)
         else:
-            self._walls = []
+            self._walls.clear()
 
     @walls.deleter
     def walls(self):
-        self._walls = []
+        self._walls.clear()
 
     def is_on_ladder(self) -> bool:
         """Return 'true' if the player is in contact with a sprite in the ladder list."""
@@ -430,7 +427,7 @@ class PhysicsEnginePlatformer:
         self.player_sprite.center_y -= y_distance
 
         # Check for wall hit
-        hit_list = check_for_collision_with_lists(self.player_sprite, self.walls + self.platforms)
+        hit_list = check_for_collision_with_lists(self.player_sprite, self._all_obstacles)
 
         self.player_sprite.center_y += y_distance
 
@@ -533,9 +530,7 @@ class PhysicsEnginePlatformer:
 
                     platform.center_y += platform.change_y
 
-        complete_hit_list = _move_sprite(
-            self.player_sprite, self.walls + self.platforms, ramp_up=True
-        )
+        complete_hit_list = _move_sprite(self.player_sprite, self._all_obstacles, ramp_up=True)
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites

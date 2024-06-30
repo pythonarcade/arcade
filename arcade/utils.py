@@ -10,7 +10,8 @@ import functools
 import platform
 import sys
 import warnings
-from typing import Type, TypeVar
+from itertools import chain
+from typing import Type, TypeVar, Generator, Generic, Sequence
 from pathlib import Path
 
 
@@ -112,7 +113,32 @@ class NormalizedRangeError(FloatOutsideRangeError):
         super().__init__(var_name, value, 0.0, 1.0)
 
 
+# Since this module forbids importing from the rest of
+# Arcade, we make our own local type variables.
+_T = TypeVar('_T')
 _TType = TypeVar('_TType', bound=Type)
+
+
+class Chain(Generic[_T]):
+    """A reusable OOP version of :py:class:`itertools.chain`.
+
+    In some cases (physics engines), we need to iterate over multiple
+    sequences of objects repeatedly. This class provides a way to do so
+    which:
+
+    * Is non-exhausting
+    * Avoids copying all items into one joined list
+
+    Arguments:
+        components: The sequences of items to join.
+    """
+    def __init__(self, *components: Sequence[_T]):
+        self.components: list[Sequence[_T]] = list(components)
+
+    def __iter__(self) -> Generator[_T, None, None]:
+        for item in chain.from_iterable(self.components):
+            yield item
+
 
 def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
     """Decorator stubs dunders raising :py:class:`NotImplementedError`.
@@ -160,6 +186,7 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
     decorated_type.__deepcopy__ = __deepcopy__
 
     return decorated_type
+
 
 class PerformanceWarning(Warning):
     """Use this for issuing performance warnings."""
