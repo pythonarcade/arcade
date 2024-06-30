@@ -284,18 +284,18 @@ class PhysicsEngineSimple:
             _add_to_list(self._walls, walls)
 
     @property
-    def walls(self):
+    def walls(self) -> list[SpriteList]:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:
             self._walls.clear()
 
     @walls.deleter
-    def walls(self):
+    def walls(self) -> None:
         self._walls.clear()
 
     def update(self):
@@ -357,35 +357,35 @@ class PhysicsEnginePlatformer:
 
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
     @property
-    def ladders(self):
+    def ladders(self) -> list[SpriteList]:
         """The ladder list registered with the physics engine."""
         return self._ladders
 
     @ladders.setter
-    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
         if ladders:
             _add_to_list(self._ladders, ladders)
         else:
             self._ladders.clear()
 
     @ladders.deleter
-    def ladders(self):
+    def ladders(self) -> None:
         self._ladders.clear()
 
     @property
-    def platforms(self):
+    def platforms(self) -> list[SpriteList]:
         """The moving platform list registered with the physics engine."""
         return self._platforms
 
     @platforms.setter
-    def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
         if platforms:
             _add_to_list(self._platforms, platforms)
         else:
             self._platforms.clear()
 
     @platforms.deleter
-    def platforms(self):
+    def platforms(self) -> None:
         self._platforms.clear()
 
     @property
@@ -394,14 +394,14 @@ class PhysicsEnginePlatformer:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:
             self._walls.clear()
 
     @walls.deleter
-    def walls(self):
+    def walls(self) -> None:
         self._walls.clear()
 
     def is_on_ladder(self) -> bool:
