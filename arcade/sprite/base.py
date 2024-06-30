@@ -187,6 +187,7 @@ class BasicSprite:
             self._height = new_value[1]
 
             self.update_spatial_hash()
+
             for sprite_list in self.sprite_lists:
                 sprite_list._update_size(self)
 
@@ -251,7 +252,7 @@ class BasicSprite:
     @scale.setter
     def scale(self, new_value: Point | AsFloat):
         if isinstance(new_value, (float, int)):
-            new_value_scale: Point = (new_value, new_value)
+            new_value_scale = new_value, new_value
 
         else:  # Treat it as some sort of iterable or sequence
             x, y, *_ = new_value  # type / length implicit check
