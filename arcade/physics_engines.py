@@ -387,7 +387,7 @@ class PhysicsEnginePlatformer:
 
     @platforms.deleter
     def platforms(self):
-        self._platforms = []
+        self._platforms.clear()
 
     @property
     def walls(self):
