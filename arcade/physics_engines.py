@@ -20,7 +20,7 @@ from arcade.math import get_distance
 
 __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 
-from arcade.utils import copy_dunders_unimplemented, ListChain
+from arcade.utils import copy_dunders_unimplemented, Chain
 
 
 def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
@@ -344,7 +344,7 @@ class PhysicsEnginePlatformer:
         self._ladders: list[SpriteList] = []
         self._platforms: list[SpriteList] = []
         self._walls: list[SpriteList] = []
-        self._all_obstacles = ListChain(self._walls, self._platforms)
+        self._all_obstacles = Chain(self._walls, self._platforms)
 
         _add_to_list(self._ladders, ladders)
         _add_to_list(self._platforms, platforms)

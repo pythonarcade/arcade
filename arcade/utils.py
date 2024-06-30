@@ -11,7 +11,7 @@ import platform
 import sys
 import warnings
 from itertools import chain
-from typing import Type, TypeVar, Generator, Generic
+from typing import Type, TypeVar, Generator, Generic, Sequence
 from pathlib import Path
 
 
@@ -119,18 +119,21 @@ _T = TypeVar('_T')
 _TType = TypeVar('_TType', bound=Type)
 
 
-class ListChain(Generic[_T]):
+class Chain(Generic[_T]):
     """A reusable OOP version of :py:class:`itertools.chain`.
 
     In some cases (physics engines), we need to iterate over multiple
-    lists repeatedly. This class provides a way to do so without copying
-    all of them into a joined list.
+    sequences of objects repeatedly. This class provides a way to do so
+    which:
+
+    * Is non-exhausting
+    * Avoids copying all items into one joined list
 
     Arguments:
-        components: The lists of items to join.
+        components: The sequences of items to join.
     """
-    def __init__(self, *components: list[_T]):
-        self.components: list[list[_T]] = list(components)
+    def __init__(self, *components: Sequence[_T]):
+        self.components: list[Sequence[_T]] = list(components)
 
     def __iter__(self) -> Generator[_T, None, None]:
         for item in chain.from_iterable(self.components):
