@@ -453,22 +453,25 @@ class PhysicsEnginePlatformer:
         The player can jump when at least one of the following are true:
 
         .. list-table::
-           :heading-rows: 0
+           :header-rows: 0
 
            * - The player is "touching" the ground
              - :py:attr:`.player`'s :py:attr:`~arcade.BasicSprite.center_y`
                is within ``y_distance`` of any sprite in :py:attr:`.walls`
                or :py:attr:`.platforms`
-           * - :py:attr:`.allow_multi_jump` is ``True`` and the player
+           * - The player can air-jump
+             - :py:attr:`.allow_multi_jump` is ``True`` and the player
                hasn't jumped more than :py:attr:`.allowed_jumps` times
 
         Args:
             y_distance: The distance to temporarily move the
             :py:attr:`.player` downward before checking for a collision
-            with either :py:attr:`.walls` or :py:attr:`platforms`.
+            with either :py:attr:`.walls` or :py:attr:`.platforms`.
+
 
         Returns:
              ``True`` if the player can jump.
+
         """
 
         # Temporarily move the player down to collide floor-like sprites
