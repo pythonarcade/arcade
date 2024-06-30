@@ -253,6 +253,15 @@ def _move_sprite(
     return complete_hit_list
 
 
+def _add_to_list(dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]):
+    if source is None:
+        return
+    elif isinstance(source, SpriteList):
+        dest.append(source)
+    else:
+        dest.extend(source)
+
+
 @copy_dunders_unimplemented
 class PhysicsEngineSimple:
     """
@@ -271,12 +280,10 @@ class PhysicsEngineSimple:
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
     ) -> None:
         self.player_sprite: Sprite = player_sprite
-        self._walls: list[SpriteList]
+        self._walls: list[SpriteList] = []
 
         if walls:
-            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
-        else:
-            self._walls = []
+            _add_to_list(self._walls, walls)
 
     @property
     def walls(self):
@@ -334,24 +341,14 @@ class PhysicsEnginePlatformer:
         ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
     ) -> None:
-        self._ladders: Optional[list[SpriteList]]
-        self._platforms: list[SpriteList]
-        self._walls: list[SpriteList]
 
-        if ladders:
-            self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
-        else:
-            self._ladders = []
+        self._ladders: list[SpriteList] = []
+        self._platforms: list[SpriteList] = []
+        self._walls: list[SpriteList] = []
 
-        if platforms:
-            self._platforms = [platforms] if isinstance(platforms, SpriteList) else list(platforms)
-        else:
-            self._platforms = []
-
-        if walls:
-            self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
-        else:
-            self._walls = []
+        _add_to_list(self._ladders, ladders)
+        _add_to_list(self._platforms, platforms)
+        _add_to_list(self._walls, walls)
 
         self.player_sprite: Sprite = player_sprite
         self.gravity_constant: float = gravity_constant
