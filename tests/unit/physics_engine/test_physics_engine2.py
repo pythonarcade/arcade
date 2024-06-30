@@ -8,6 +8,37 @@ import arcade
 OUT_OF_THE_WAY = (250, 250)
 
 
+def check_spritelists_prop_clears_instead_of_overwrites(engine, prop_name: str):
+    """Certain properties are lists which shouldn't be recreated.
+
+    This saves on GC thrash and makes certain collision checking
+    operations easier (see arcade.utils.Chain).
+     """
+    def _get_current():
+        return getattr(engine, f'_{prop_name}')
+
+    original_list = _get_current()
+
+    # Make sure we don't replace it when adding
+    setattr(engine, prop_name, [arcade.SpriteList()])
+    assert _get_current() is original_list
+
+    # Ensure None-setting deletion works
+    setattr(engine, prop_name, None)
+    assert _get_current() is original_list
+
+    # Ensure empty iterables don't clobber
+    setattr(engine, prop_name, [])
+    assert _get_current() is original_list
+    setattr(engine, prop_name, ())
+    assert _get_current() is original_list
+    setattr(engine, prop_name, (arcade.SpriteList() for _ in range(0)))
+
+    # We support the del keyword for some reason, so make sure it works
+    delattr(engine, prop_name)
+    assert _get_current() is original_list
+
+
 def basic_tests(moving_sprite, wall_list, physics_engine):
     """Run basic tests that can be done by both engines."""
     wall_sprite_1 = wall_list[0]
@@ -221,6 +252,7 @@ def simple_engine_tests(moving_sprite, wall_list, physics_engine):
         else:
             assert len(collisions) == 1
 
+    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, 'walls')
 
 def platformer_tests(moving_sprite, wall_list, physics_engine):
     wall_sprite_1 = wall_list[0]
@@ -288,6 +320,9 @@ def platformer_tests(moving_sprite, wall_list, physics_engine):
     assert moving_sprite.position == (2, -3)
     collisions = physics_engine.update()
     assert moving_sprite.position == (3, -6)
+
+    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, 'platforms')
+    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, 'ladders')
 
 
 # Temp fix for https://github.com/pythonarcade/arcade/issues/2074
