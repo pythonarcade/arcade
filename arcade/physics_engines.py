@@ -21,7 +21,7 @@ from arcade.math import get_distance
 
 __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 
-from arcade.utils import copy_dunders_unimplemented
+from arcade.utils import copy_dunders_unimplemented, ListChain
 
 
 def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
@@ -431,7 +431,7 @@ class PhysicsEnginePlatformer:
 
         # Check for wall hit
         hit_list = check_for_collision_with_lists(
-            self.player_sprite, chain(self.walls, self.platforms))
+            self.player_sprite, ListChain(self._walls, self._platforms))
 
         self.player_sprite.center_y += y_distance
 
@@ -535,7 +535,7 @@ class PhysicsEnginePlatformer:
                     platform.center_y += platform.change_y
 
         complete_hit_list = _move_sprite(
-            self.player_sprite, chain(self.walls, self.platforms), ramp_up=True
+            self.player_sprite, ListChain(self._walls, self._platforms), ramp_up=True
         )
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
