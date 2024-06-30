@@ -9,10 +9,14 @@ OUT_OF_THE_WAY = (250, 250)
 
 
 def check_spritelists_prop_clears_instead_of_overwrites(engine, prop_name: str):
-    """Certain properties are lists which shouldn't be recreated.
+    """Some properties are backed by lists which shouldn't be recreated.
 
-    This saves on GC thrash and makes certain collision checking
-    operations easier (see arcade.utils.Chain).
+    Implementing them this way is helpful for cases when a user has lots
+    of different SpriteLists added to the physics engine's lists. It
+    helps by avoiding:
+
+    * extra allocations from copying lists (see arcade.utils.Chain)
+    * Avoid GC thrash from creating & deleting items
      """
     def _get_current():
         return getattr(engine, f'_{prop_name}')
@@ -23,7 +27,7 @@ def check_spritelists_prop_clears_instead_of_overwrites(engine, prop_name: str):
     setattr(engine, prop_name, [arcade.SpriteList()])
     assert _get_current() is original_list
 
-    # Ensure None-setting deletion works
+    # Ensure setting a property to None doesn't kill it
     setattr(engine, prop_name, None)
     assert _get_current() is original_list
 
@@ -34,7 +38,9 @@ def check_spritelists_prop_clears_instead_of_overwrites(engine, prop_name: str):
     assert _get_current() is original_list
     setattr(engine, prop_name, (arcade.SpriteList() for _ in range(0)))
 
-    # We support the del keyword for some reason, so make sure it works
+    # We support the del keyword on these properties for some reason,
+    # but it should only clear the internal list instead of deleting the
+    # property.
     delattr(engine, prop_name)
     assert _get_current() is original_list
 
