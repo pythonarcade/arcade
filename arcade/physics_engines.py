@@ -6,6 +6,7 @@ from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
+from itertools import chain
 
 from typing import Iterable, Optional, Union
 
@@ -23,7 +24,7 @@ __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 from arcade.utils import copy_dunders_unimplemented
 
 
-def _wiggle_until_free(colliding: Sprite, walls: list[SpriteList]) -> None:
+def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
     """Kludge to 'guess' a colliding sprite out of a collision.
 
     It works by iterating over increasing wiggle sizes of 8 points
@@ -81,7 +82,7 @@ def _wiggle_until_free(colliding: Sprite, walls: list[SpriteList]) -> None:
 
 
 def _move_sprite(
-    moving_sprite: Sprite, walls: list[SpriteList[SpriteType]], ramp_up: bool
+    moving_sprite: Sprite, walls: Iterable[SpriteList[SpriteType]], ramp_up: bool
 ) -> list[SpriteType]:
 
     # See if we are starting this turn with a sprite already colliding with us.
@@ -429,7 +430,8 @@ class PhysicsEnginePlatformer:
         self.player_sprite.center_y -= y_distance
 
         # Check for wall hit
-        hit_list = check_for_collision_with_lists(self.player_sprite, self.walls + self.platforms)
+        hit_list = check_for_collision_with_lists(
+            self.player_sprite, chain(self.walls, self.platforms))
 
         self.player_sprite.center_y += y_distance
 
@@ -533,7 +535,7 @@ class PhysicsEnginePlatformer:
                     platform.center_y += platform.change_y
 
         complete_hit_list = _move_sprite(
-            self.player_sprite, self.walls + self.platforms, ramp_up=True
+            self.player_sprite, chain(self.walls, self.platforms), ramp_up=True
         )
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
