@@ -23,6 +23,7 @@ from typing import (
     Callable,
     cast,
     Sized,
+    ClassVar,
 )
 
 from arcade import (
@@ -94,8 +95,19 @@ class SpriteList(Generic[SpriteType]):
             :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
     :param visible: Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
-    :param blend: Enable or disable blending for the sprite list
     """
+
+    #: The default texture filter used when no other filter is specified.
+    #: This can be used to change the global default for all spritelists
+    #:
+    #: Example::
+    #:
+    #:     from arcade import gl
+    #:     # Set global default to nearest filtering (pixelated)
+    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    #:     # Set global default to linear filtering (smooth). This is the default.
+    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    DEFAULT_TEXTURE_FILTER: ClassVar[tuple[int, int]] = gl.LINEAR, gl.LINEAR
 
     def __init__(
         self,
@@ -105,14 +117,13 @@ class SpriteList(Generic[SpriteType]):
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
-        blend: bool = True,
     ) -> None:
         self.program: Optional[Program] = None
         self._atlas: Optional[TextureAtlasBase] = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
-        self._blend = blend
+        self._blend = True
         self._color: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
 
         # The initial capacity of the spritelist buffers (internal)
@@ -304,6 +315,17 @@ class SpriteList(Generic[SpriteType]):
     @visible.setter
     def visible(self, value: bool) -> None:
         self._visible = value
+
+    @property
+    def blend(self) -> bool:
+        """
+        Flag for enabling or disabling alpha blending for the spritelist.
+        """
+        return self._blend
+
+    @blend.setter
+    def blend(self, value: bool) -> None:
+        self._blend = value
 
     @property
     def color(self) -> Color:
@@ -1006,12 +1028,16 @@ class SpriteList(Generic[SpriteType]):
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
         :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
-                          Shortcut for setting filter=GL_NEAREST.
+                          Shortcut for setting filter to GL_NEAREST for a pixelated look.
+                          The filter parameter have precedence over this.
         :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
                          sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return
+
+        if not self.program:
+            raise ValueError("Attempting to render without shader program.")
 
         self._init_deferred()
         self._write_sprite_buffers_to_gpu()
@@ -1040,16 +1066,11 @@ class SpriteList(Generic[SpriteType]):
             else:  # assume it's an int
                 atlas_texture.filter = cast(OpenGlFilter, (filter, filter))
         else:
-            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
-
-        # Handle the pixelated shortcut
-        if pixelated:
-            atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
-        else:
-            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
-
-        if not self.program:
-            raise ValueError("Attempting to render without 'program' field being set.")
+            # Handle the pixelated shortcut if filter is not set
+            if pixelated:
+                atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            else:
+                atlas_texture.filter = self.DEFAULT_TEXTURE_FILTER
 
         self.program["spritelist_color"] = self._color
 
@@ -1063,8 +1084,10 @@ class SpriteList(Generic[SpriteType]):
             vertices=self._sprite_index_slots,
         )
 
+        # Leave global states to default
         if self._blend:
             self.ctx.disable(self.ctx.BLEND)
+            self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
     def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1.0) -> None:
         """Draw all the hit boxes in this list"""
