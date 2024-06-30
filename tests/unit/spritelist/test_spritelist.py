@@ -2,6 +2,7 @@ from array import array
 import struct
 import pytest
 import arcade
+from arcade import gl
 
 
 def make_named_sprites(amount):
@@ -16,6 +17,28 @@ def make_named_sprites(amount):
 
     spritelist.extend(sprites)
     return spritelist
+
+
+def test_filter(window):
+    atlas = arcade.DefaultTextureAtlas((256, 256))
+    spritelist = arcade.SpriteList(atlas=atlas)
+    spritelist.append(arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE))
+
+    assert atlas.texture.filter == (gl.LINEAR, gl.LINEAR)
+    spritelist.draw(filter=(gl.NEAREST, gl.NEAREST))
+    assert atlas.texture.filter == (gl.NEAREST, gl.NEAREST)
+    spritelist.draw()
+    assert atlas.texture.filter == (gl.LINEAR, gl.LINEAR)
+    spritelist.draw(pixelated=True)
+    assert atlas.texture.filter == (gl.NEAREST, gl.NEAREST)
+
+
+def test_default_texture_filter(window):
+    arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    spritelist = arcade.SpriteList()
+    spritelist.append(arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE))
+    spritelist.draw()
+    assert spritelist.atlas.texture.filter == (gl.NEAREST, gl.NEAREST)
 
 
 # Temp fix for  https://github.com/pythonarcade/arcade/issues/2074

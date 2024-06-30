@@ -1029,11 +1029,15 @@ class SpriteList(Generic[SpriteType]):
                        `gl.GL_NEAREST` to avoid smoothing.
         :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
                           Shortcut for setting filter to GL_NEAREST for a pixelated look.
+                          The filter parameter have precedence over this.
         :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
                          sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return
+
+        if not self.program:
+            raise ValueError("Attempting to render without shader program.")
 
         self._init_deferred()
         self._write_sprite_buffers_to_gpu()
@@ -1062,16 +1066,11 @@ class SpriteList(Generic[SpriteType]):
             else:  # assume it's an int
                 atlas_texture.filter = cast(OpenGlFilter, (filter, filter))
         else:
-            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
-
-        # Handle the pixelated shortcut
-        if pixelated:
-            atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
-        else:
-            atlas_texture.filter = self.DEFAULT_TEXTURE_FILTER
-
-        if not self.program:
-            raise ValueError("Attempting to render without 'program' field being set.")
+            # Handle the pixelated shortcut if filter is not set
+            if pixelated:
+                atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            else:
+                atlas_texture.filter = self.DEFAULT_TEXTURE_FILTER
 
         self.program["spritelist_color"] = self._color
 
