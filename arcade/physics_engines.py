@@ -31,8 +31,11 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
     starts at 1, it grows quickly since each failed iteration multiplies
     wiggle distance by two.
 
-    :param colliding: A sprite to move out of the given list of SpriteLists.
-    :param walls: A list of walls to guess our way out of.
+    Args:
+        colliding:
+            A sprite to move out of the given list of SpriteLists.
+        walls:
+            A list of walls to guess our way out of.
     """
 
     # Original x & y of the moving object
