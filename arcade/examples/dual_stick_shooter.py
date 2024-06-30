@@ -323,7 +323,7 @@ class MyGame(arcade.Window):
         # draw game items
         self.bullet_list.draw()
         self.enemy_list.draw()
-        self.player.draw()
+        arcade.draw_sprite(self.player)
 
         # Put the score on the screen.
         output = f"Score: {self.score}"

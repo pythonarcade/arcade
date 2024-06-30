@@ -95,6 +95,15 @@ class ArcadeContext(Context):
         self.sprite_list_program_cull["sprite_texture"] = 0
         self.sprite_list_program_cull["uv_texture"] = 1
 
+        self.sprite_program_single = self.load_program(
+            vertex_shader=":system:shaders/sprites/sprite_single_vs.glsl",
+            geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
+            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+        )
+        self.sprite_program_single["sprite_texture"] = 0
+        self.sprite_program_single["uv_texture"] = 1
+        self.sprite_program_single["spritelist_color"] = 1.0, 1.0, 1.0, 1.0
+
         # Shapes
         self.shape_line_program: Program = self.load_program(
             vertex_shader=":system:shaders/shapes/line/unbuffered_vs.glsl",
@@ -185,7 +194,7 @@ class ArcadeContext(Context):
         self.shape_rectangle_filled_unbuffered_geometry: Geometry = self.geometry(
             [BufferDescription(self.shape_rectangle_filled_unbuffered_buffer, "2f", ["in_vert"])]
         )
-        self.atlas_geometry: Geometry = self.geometry()
+        self.geometry_empty: Geometry = self.geometry()
 
         self._atlas: Optional[TextureAtlasBase] = None
         # Global labels we modify in `arcade.draw_text`.

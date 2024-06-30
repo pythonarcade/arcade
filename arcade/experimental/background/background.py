@@ -212,13 +212,9 @@ class Background:
                 "Attempting to set uniform 'pos' when the shader does not have a uniform with that name."
             )
 
-        if self.blend < 1.0:
-            self._ctx.enable(self._ctx.BLEND)
-
         self.texture.use(0)
-        self.geometry.render(self.shader)
-
-        self._ctx.disable(self._ctx.BLEND)
+        with self._ctx.enabled(self._ctx.BLEND):
+            self.geometry.render(self.shader)
 
     def blend_layer(self, other, percent: float):
         self.blend = 1 - percent

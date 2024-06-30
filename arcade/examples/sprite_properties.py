@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
         # Set up the player
         # Character image from kenney.nl
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING_PLAYER)
+                                           scale=0.75)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 150
         self.player_list.append(self.player_sprite)
@@ -71,7 +71,7 @@ class MyGame(arcade.Window):
         """ Draw everything """
         self.clear()
         self.coin_list.draw()
-        self.trigger_sprite.draw()
+        arcade.draw_sprite(self.trigger_sprite)
         self.player_list.draw()
 
         # Put the instructions on the screen.

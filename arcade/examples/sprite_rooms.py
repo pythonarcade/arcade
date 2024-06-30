@@ -172,9 +172,10 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw the background texture
-        arcade.draw_lbwh_rectangle_textured(0, 0,
-                                            SCREEN_WIDTH, SCREEN_HEIGHT,
-                                            self.rooms[self.current_room].background)
+        arcade.draw_texture_rect(
+            self.rooms[self.current_room].background,
+            rect=arcade.LBWH(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+        )
 
         # Draw all the walls in this room
         self.rooms[self.current_room].wall_list.draw()

@@ -33,7 +33,7 @@ class Animated(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.sprite.draw(pixelated=True)
+        arcade.draw_sprite(self.sprite, pixelated=True)
 
     def on_update(self, delta_time: float):
         self.sprite.update_animation(delta_time)

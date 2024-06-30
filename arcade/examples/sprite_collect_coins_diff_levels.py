@@ -59,13 +59,16 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Variables that will hold sprite lists
-        self.player_list = None
-        self.coin_list = None
+        self.player_list = arcade.SpriteList()
+        self.coin_list = arcade.SpriteList()
 
         # Set up the player info
-        self.player_sprite = None
-        self.score = 0
+        # Set up the player
+        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
+                                           scale=SPRITE_SCALING)
+        self.player_list.append(self.player_sprite)
 
+        self.score = 0
         self.level = 1
 
         # Don't show the mouse cursor
@@ -113,22 +116,17 @@ class MyGame(arcade.Window):
             # Add the coin to the lists
             self.coin_list.append(coin)
 
-    def setup(self):
+    def reset(self):
         """ Set up the game and initialize the variables. """
 
         self.score = 0
         self.level = 1
 
         # Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
+        self.coin_list.clear()
 
-        # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
-        self.player_list.append(self.player_sprite)
 
         self.level_1()
 
@@ -141,7 +139,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw all the sprites.
-        self.player_sprite.draw()
+        arcade.draw_sprite(self.player_sprite)
         self.coin_list.draw()
 
         # Put the text on the screen.
@@ -186,7 +184,7 @@ class MyGame(arcade.Window):
 def main():
     """ Main function """
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    window.reset()
     arcade.run()
 
 

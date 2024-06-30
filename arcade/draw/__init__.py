@@ -28,10 +28,9 @@ from .rect import (
     draw_rect_filled,
     draw_rect_outline_kwargs,
     draw_rect_filled_kwargs,
-    draw_scaled_texture_rectangle,
-    draw_texture_rectangle,
-    # draw_texture_rect
-    draw_lbwh_rectangle_textured,
+    draw_texture_rect,
+    draw_sprite,
+    draw_sprite_rect,
 )
 from .helpers import get_points_for_thick_line
 from .screenshot import get_pixel, get_image
@@ -70,10 +69,9 @@ __all__ = [
     "draw_rect_filled",
     "draw_rect_outline_kwargs",
     "draw_rect_filled_kwargs",
-    "draw_scaled_texture_rectangle",
-    "draw_texture_rectangle",
-    # draw_texture_rect
-    "draw_lbwh_rectangle_textured",
+    "draw_texture_rect",
+    "draw_sprite",
+    "draw_sprite_rect",
     # helpers
     "get_points_for_thick_line",
     # screenshot

@@ -97,8 +97,11 @@ class MyGame(arcade.Window):
 
         self.camera.use()
 
+        self.ctx.enable(self.ctx.BLEND)
         self.backgrounds.draw()
-        self.player_sprite.draw()
+        self.ctx.disable(self.ctx.BLEND)
+
+        arcade.draw_sprite(self.player_sprite)
 
     def on_key_press(self, symbol: int, modifiers: int):
         # Support arrow keys and ASWD

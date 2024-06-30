@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from typing import Any, Optional, Type, Union, TYPE_CHECKING
+from typing import Any, Optional, Type, Union
 from pathlib import Path
 
 import PIL.Image
@@ -25,10 +25,8 @@ from arcade.texture.transforms import (
 )
 
 from arcade.types import RGBA255, Point2List
-from arcade.types.rect import Rect
 
-if TYPE_CHECKING:
-    from arcade.sprite_list import SpriteList
+# from arcade.types.rect import Rect
 
 __all__ = ["ImageData", "Texture"]
 
@@ -133,7 +131,6 @@ class Texture:
         "_size",
         "_vertex_order",
         "_transforms",
-        "_sprite_list",
         "_hit_box_algorithm",
         "_hit_box_points",
         "_hash",
@@ -172,9 +169,6 @@ class Texture:
         # to a sprite/quad. This order is changed when the
         # texture is flipped or rotated.
         self._vertex_order = 0, 1, 2, 3
-
-        # Internal spritelist for drawing
-        self._sprite_list: Optional[SpriteList] = None
 
         self._hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
         if not isinstance(self._hit_box_algorithm, HitBoxAlgorithm):
@@ -720,109 +714,3 @@ class Texture:
         or when the hit box points are requested the first time.
         """
         return self._hit_box_algorithm.calculate(self.image)
-
-    # ----- Drawing functions -----
-
-    def _create_cached_spritelist(self) -> "SpriteList":
-        """Create or return the cached sprite list."""
-        from arcade.sprite_list import SpriteList
-
-        if self._sprite_list is None:
-            self._sprite_list = SpriteList(capacity=1)
-        return self._sprite_list
-
-    def draw_sized(
-        self,
-        center_x: float,
-        center_y: float,
-        width: float,
-        height: float,
-        angle: float = 0.0,
-        alpha: int = 255,
-    ):
-        """
-        Draw a texture with a specific width and height.
-
-        .. warning:: This is a very slow method of drawing a texture,
-                     and should be used sparingly. The method simply
-                     creates a sprite internally and draws it.
-
-        :param center_x: X position to draw texture
-        :param center_y: Y position to draw texture
-        :param width: Width to draw texture
-        :param height: Height to draw texture
-        :param angle: Angle to draw texture
-        :param alpha: Alpha value to draw texture
-        """
-        from arcade import Sprite
-
-        spritelist = self._create_cached_spritelist()
-        sprite = Sprite(
-            self,
-            center_x=center_x,
-            center_y=center_y,
-            angle=angle,
-        )
-        # sprite.size = (width, height)
-        sprite.width = width
-        sprite.height = height
-
-        sprite.alpha = alpha
-        # Due to circular references we can't keep the sprite around
-        spritelist.append(sprite)
-        spritelist.draw()
-        spritelist.remove(sprite)
-
-    def draw_scaled(
-        self,
-        center_x: float,
-        center_y: float,
-        scale: float = 1.0,
-        angle: float = 0.0,
-        alpha: int = 255,
-    ):
-        """
-        Draw the texture.
-
-        .. warning:: This is a very slow method of drawing a texture,
-                     and should be used sparingly. The method simply
-                     creates a sprite internally and draws it.
-
-        :param center_x: X location of where to draw the texture.
-        :param center_y: Y location of where to draw the texture.
-        :param scale: Scale to draw rectangle. Defaults to 1.
-        :param angle: Angle to rotate the texture by.
-        :param alpha: The transparency of the texture ``(0-255)``.
-        """
-        from arcade import Sprite
-
-        spritelist = self._create_cached_spritelist()
-        sprite = Sprite(
-            self,
-            center_x=center_x,
-            center_y=center_y,
-            angle=angle,
-            scale=scale,
-        )
-        sprite.alpha = alpha
-        # Due to circular references we can't keep the sprite around
-        spritelist.append(sprite)
-        spritelist.draw()
-        spritelist.remove(sprite)
-
-    def draw_rect(self, rect: Rect, alpha: int = 255):
-        """
-        Draw the texture.
-
-        .. warning:: This is a very slow method of drawing a texture,
-                     and should be used sparingly. The method simply
-                     creates a sprite internally and draws it.
-
-        :param rect: A Rect to draw this texture to.
-        :param alpha: The transparency of the texture ``(0-255)``.
-        """
-        self.draw_sized(rect.x, rect.y, rect.width, rect.height, alpha=alpha)
-
-    def __repr__(self) -> str:
-        cache_name = getattr(self, "cache_name", None)
-        return f"<Texture cache_name={cache_name}>"

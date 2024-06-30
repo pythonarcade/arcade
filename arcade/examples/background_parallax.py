@@ -114,8 +114,9 @@ class MyGame(arcade.Window):
         bg.pos = self.camera.bottom_left  # Follow the car to fake infinity
 
         # Draw the background & the player's car
+        self.ctx.enable(self.ctx.BLEND)
         bg.draw()
-        self.player_sprite.draw(pixelated=True)
+        arcade.draw_sprite(self.player_sprite, pixelated=True)
 
     def update_car_direction(self):
         """

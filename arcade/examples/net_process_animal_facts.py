@@ -73,9 +73,9 @@ class AnimalFacts(arcade.View):
 
         # Draw a background image fading between two images if needed
         fade = clamp(time.time() - self.bg_updated_time, 0.0, 1.0)
-        self.draw_background(self.bg_texture_1, int(80 * fade))
+        self.draw_background(self.bg_texture_1, fade * 0.35)
         if fade < 1.0:
-            self.draw_background(self.bg_texture_2, int(80 * (1.0 - fade)))
+            self.draw_background(self.bg_texture_2,  0.35 * (1.0 - fade))
 
         # Draw the fact text
         self.text_fact.draw()
@@ -105,13 +105,12 @@ class AnimalFacts(arcade.View):
         if texture is None:
             return
 
-        # Get the higest ratio of width or height to fill the window
+        # Get the highest ratio of width or height to fill the window
         scale = max(self.window.width / texture.width, self.window.height / texture.height)
-        texture.draw_sized(
-            center_x=self.window.width / 2,
-            center_y=self.window.height / 2,
-            width=texture.width * scale,
-            height=texture.height * scale,
+        arcade.draw_texture_rect(
+            texture,
+            arcade.XYWH(self.window.width / 2, self.window.height / 2, texture.width * scale, texture.height * scale),
+            blend=True,
             alpha=alpha,
         )
 
