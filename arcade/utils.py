@@ -1,5 +1,5 @@
 """
-Various utility functions.
+# Various utility functions.
 
 IMPORTANT:
 These  should be standalone and not rely on any arcade imports
@@ -125,6 +125,9 @@ class ListChain(Generic[_T]):
     In some cases (physics engines), we need to iterate over multiple
     lists repeatedly. This class provides a way to do so without copying
     all of them into a joined list.
+
+    Arguments:
+        components: The lists of items to join.
     """
     def __init__(self, *components: list[_T]):
         self.components: list[list[_T]] = list(components)
