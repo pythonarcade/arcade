@@ -56,12 +56,12 @@ class MyGame(arcade.Window):
         self.camera.use()
         self.camera.position = 0, 0
         # Draw some boxes on the bottom so we can see how they change
-        for count in range(100):
+        for count in range(20):
             x = count * 128
             y = count * 128
             width = 128
             height = 128
-            arcade.draw_texture_rectangle(x, y, width, height, self.example_image)
+            arcade.draw_texture_rect(self.example_image, arcade.XYWH(x, y, width, height))
 
         arcade.draw_rect_outline(LRBT(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT), arcade.color.WHITE, 5)
 
@@ -94,6 +94,9 @@ class MyGame(arcade.Window):
             # do a bit of math for that.
             self.camera.projection = LRBT(left=0, right=SCREEN_WIDTH, bottom=0, top=SCREEN_HEIGHT)
             self.camera.viewport = LRBT(left=0, right=self.width, bottom=0, top=self.height)
+
+        if key == arcade.key.ESCAPE:
+            self.close()
 
 
 def main():
