@@ -114,7 +114,7 @@ class MyGame(arcade.Window):
             coin.remove_from_sprite_lists()
             self.score += 1
 
-    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+    def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.R:
             self.reset()
         elif symbol == arcade.key.ESCAPE:
