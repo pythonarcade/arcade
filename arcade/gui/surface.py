@@ -7,7 +7,6 @@ import arcade
 from arcade import Texture
 from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
 from arcade.color import TRANSPARENT_BLACK
-from arcade.draw import draw_lbwh_rectangle_textured
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import RGBA255, Point
@@ -121,15 +120,7 @@ class Surface:
 
             tex.draw_sized(size=(width, height))
         else:
-            draw_lbwh_rectangle_textured(
-                left=x,
-                bottom=y,
-                width=width,
-                height=height,
-                texture=tex,
-                angle=angle,
-                alpha=alpha,
-            )
+            arcade.draw_texture_rect(tex, LBWH(x, y, width, height), angle=angle, alpha=alpha)
 
     def draw_sprite(self, x, y, width, height, sprite):
         """Draw a sprite to the surface"""
