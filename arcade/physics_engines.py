@@ -251,7 +251,7 @@ def _move_sprite(
     return complete_hit_list
 
 
-def _add_to_list(dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]):
+def _add_to_list(dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]) -> None:
     if source is None:
         return
     elif isinstance(source, SpriteList):
