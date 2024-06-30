@@ -88,8 +88,7 @@ def _move_sprite(
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
         _wiggle_until_free(moving_sprite, walls)
 
-    original_x = moving_sprite.center_x
-    original_y = moving_sprite.center_y
+    original_x, original_y = moving_sprite.position
     original_angle = moving_sprite.angle
 
     # --- Rotate
@@ -113,8 +112,7 @@ def _move_sprite(
                 > max_distance
             ):
                 # Ok, glitched trying to rotate. Reset.
-                moving_sprite.center_x = original_x
-                moving_sprite.center_y = original_y
+                moving_sprite.position = original_x, original_y
                 moving_sprite.angle = original_angle
 
     # --- Move in the y direction
@@ -238,8 +236,9 @@ def _move_sprite(
                     ) % 2
 
         # print(cur_x_change * direction, cur_y_change)
-        moving_sprite.center_x = original_x + cur_x_change * direction
-        moving_sprite.center_y = almost_original_y + cur_y_change
+        moved_x = original_x + cur_x_change * direction
+        moved_y = almost_original_y + cur_y_change
+        moving_sprite.position = moved_x, moved_y
         # print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
 
     # Add in rotating hit list
