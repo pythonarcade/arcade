@@ -53,7 +53,6 @@ def draw_texture_rect(
     program["angle"] = angle
     program["texture_id"] = float(texture_id)
     program["spritelist_color"] = 1.0, 1.0, 1.0, alpha
-    print(alpha)
 
     geometry.render(program, mode=gl.POINTS, vertices=1)
 
