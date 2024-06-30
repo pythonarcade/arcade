@@ -345,6 +345,7 @@ class PhysicsEnginePlatformer:
         self._ladders: list[SpriteList] = []
         self._platforms: list[SpriteList] = []
         self._walls: list[SpriteList] = []
+        self._all_obstacles = ListChain(self._walls, self._platforms)
 
         _add_to_list(self._ladders, ladders)
         _add_to_list(self._platforms, platforms)
@@ -427,8 +428,7 @@ class PhysicsEnginePlatformer:
         self.player_sprite.center_y -= y_distance
 
         # Check for wall hit
-        hit_list = check_for_collision_with_lists(
-            self.player_sprite, ListChain(self._walls, self._platforms))
+        hit_list = check_for_collision_with_lists(self.player_sprite, self._all_obstacles)
 
         self.player_sprite.center_y += y_distance
 
@@ -532,7 +532,7 @@ class PhysicsEnginePlatformer:
                     platform.center_y += platform.change_y
 
         complete_hit_list = _move_sprite(
-            self.player_sprite, ListChain(self._walls, self._platforms), ramp_up=True
+            self.player_sprite, self._all_obstacles, ramp_up=True
         )
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
