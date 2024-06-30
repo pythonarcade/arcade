@@ -751,7 +751,7 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.obj.draw()
+        arcade.draw_sprite(self.obj)
         if self.label:
             arcade.draw_text("#{} {}".format(self.emitter_factory_id, self.label),
                              SCREEN_WIDTH / 2, SCREEN_HEIGHT - 25,
