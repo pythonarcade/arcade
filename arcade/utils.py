@@ -1,5 +1,5 @@
 """
-# Various utility functions.
+Various utility functions.
 
 IMPORTANT:
 These  should be standalone and not rely on any arcade imports
