@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import gc
 import os
-import sys
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -13,7 +12,8 @@ if os.environ.get("ARCADE_PYTEST_USE_RUST"):
 import pytest
 
 import arcade
-from arcade.texture import default_texture_cache
+from arcade import gl
+# from arcade.texture import default_texture_cache
 
 PROJECT_ROOT = (Path(__file__).parent.parent).resolve()
 FIXTURE_ROOT = PROJECT_ROOT / "tests" / "fixtures"
@@ -43,8 +43,9 @@ def prepare_window(window: arcade.Window):
         window.set_size(800, 600)
 
     ctx = window.ctx
-    ctx._atlas = None  # Clear the global atlas
-    default_texture_cache.flush()  # Clear the global/default texture cache
+    # ctx._atlas = None  # Clear the global atlas
+    # default_texture_cache.flush()  # Clear the global/default texture cache
+    arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.LINEAR, gl.LINEAR
     window.hide_view()  # Disable views if any is active
     window.dispatch_pending_events()
     try:
