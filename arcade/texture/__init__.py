@@ -4,8 +4,7 @@ from .texture import Texture, ImageData
 from .spritesheet import SpriteSheet
 from .loading import (
     load_texture,
-    load_textures,
-    load_texture_pair,
+    load_image,
     load_spritesheet,
 )
 from .generate import (
@@ -14,25 +13,26 @@ from .generate import (
     make_soft_square_texture,
 )
 from .tools import (
-    cleanup_texture_cache,
     get_default_texture,
     get_default_image,
 )
-from .manager import TextureManager
+from .manager import TextureCacheManager
+
+default_texture_cache = TextureCacheManager()
+
 
 __all__ = [
     "Texture",
     "ImageData",
     "load_texture",
-    "load_textures",
-    "load_texture_pair",
+    "load_image",
     "load_spritesheet",
     "make_circle_texture",
     "make_soft_circle_texture",
     "make_soft_square_texture",
-    "cleanup_texture_cache",
     "get_default_texture",
     "get_default_image",
-    "TextureManager",
+    "TextureCacheManager",
     "SpriteSheet",
+    "default_texture_cache",
 ]

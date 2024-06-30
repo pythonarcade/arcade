@@ -12,30 +12,21 @@ class ExampleStyleDict(UIStyleBase):
 
 
 def test_read_dict():
-    sd = ExampleStyleDict(
-        some_color=arcade.color.BLACK,
-        some_int=42
-    )
+    sd = ExampleStyleDict(some_color=arcade.color.BLACK, some_int=42)
 
     assert sd["some_color"] == arcade.color.BLACK
     assert sd["some_int"] == 42
 
 
 def test_read_attrs():
-    sd = ExampleStyleDict(
-        some_color=arcade.color.BLACK,
-        some_int=42
-    )
+    sd = ExampleStyleDict(some_color=arcade.color.BLACK, some_int=42)
 
     assert sd.some_color == arcade.color.BLACK
     assert sd.some_int == 42
 
 
 def test_write_dict():
-    sd = ExampleStyleDict(
-        some_color=arcade.color.BLACK,
-        some_int=42
-    )
+    sd = ExampleStyleDict(some_color=arcade.color.BLACK, some_int=42)
 
     sd["some_color"] = arcade.color.RED
 
@@ -43,10 +34,7 @@ def test_write_dict():
 
 
 def test_write_attrs():
-    sd = ExampleStyleDict(
-        some_color=arcade.color.BLACK,
-        some_int=42
-    )
+    sd = ExampleStyleDict(some_color=arcade.color.BLACK, some_int=42)
 
     sd.some_color = arcade.color.RED
 
@@ -65,9 +53,7 @@ def test_defaults_behavior_using_inheritance():
         some_str: str = "Arcade"
         some_other_str: str = "is cool!"
 
-    subject = DefaultStyleSubclass(
-        some_other_str="is awesome!"
-    )
+    subject = DefaultStyleSubclass(some_other_str="is awesome!")
 
     assert subject.some_int == 42
     assert subject.some_color == arcade.color.GREEN

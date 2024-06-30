@@ -1,4 +1,7 @@
 """ Physics engine tests. """
+import copy
+
+import pytest
 
 import arcade
 
@@ -287,6 +290,14 @@ def platformer_tests(moving_sprite, wall_list, physics_engine):
     assert moving_sprite.position == (3, -6)
 
 
+# Temp fix for https://github.com/pythonarcade/arcade/issues/2074
+def nocopy_tests(physics_engine):
+    with pytest.raises(NotImplementedError):
+        _ = copy.copy(physics_engine)
+    with pytest.raises(NotImplementedError):
+        _ = copy.deepcopy(physics_engine)
+
+
 def test_main(window: arcade.Window):
     character_list = arcade.SpriteList()
     wall_list = arcade.SpriteList()
@@ -303,9 +314,11 @@ def test_main(window: arcade.Window):
     physics_engine = arcade.PhysicsEngineSimple(moving_sprite, wall_list)
     basic_tests(moving_sprite, wall_list, physics_engine)
     simple_engine_tests(moving_sprite, wall_list, physics_engine)
+    nocopy_tests(physics_engine)
 
     physics_engine = arcade.PhysicsEnginePlatformer(
         moving_sprite, wall_list, gravity_constant=0.0
     )
     basic_tests(moving_sprite, wall_list, physics_engine)
     platformer_tests(moving_sprite, wall_list, physics_engine)
+    nocopy_tests(physics_engine)

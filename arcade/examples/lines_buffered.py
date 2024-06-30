@@ -14,8 +14,8 @@ from inspect import getmembers
 from arcade.types import Color
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Vertex Buffer Object With Lines Example"
 
 

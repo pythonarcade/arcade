@@ -10,7 +10,7 @@ import functools
 import platform
 import sys
 import warnings
-from typing import Tuple, Type, TypeVar
+from typing import Type, TypeVar
 from pathlib import Path
 
 
@@ -24,6 +24,7 @@ __all__ = [
     "NormalizedRangeError",
     "PerformanceWarning",
     "ReplacementWarning",
+    "copy_dunders_unimplemented",
     "warning",
     "generate_uuid_from_kwargs",
     "is_raspberry_pi",
@@ -45,7 +46,7 @@ class OutsideRangeError(ValueError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
-    def __init__(self, var_name: str, value: _CT, lower: _CT, upper: _CT):
+    def __init__(self, var_name: str, value: _CT, lower: _CT, upper: _CT) -> None:
         super().__init__(f"{var_name} must be between {lower} and {upper}, inclusive, not {value}")
         self.var_name = var_name
         self.value = value
@@ -65,7 +66,7 @@ class IntOutsideRangeError(OutsideRangeError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
-    def __init__(self, var_name: str, value: int, lower: int, upper: int):
+    def __init__(self, var_name: str, value: int, lower: int, upper: int) -> None:
         super().__init__(var_name, value, lower, upper)
 
 
@@ -78,7 +79,7 @@ class FloatOutsideRangeError(OutsideRangeError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
-    def __init__(self, var_name: str, value: float, lower: float, upper: float):
+    def __init__(self, var_name: str, value: float, lower: float, upper: float) -> None:
         super().__init__(var_name, value, lower, upper)
 
 
@@ -89,7 +90,7 @@ class ByteRangeError(IntOutsideRangeError):
     :param var_name: the name of the variable or argument
     :param value: the value to fall outside the expected range
     """
-    def __init__(self, var_name: str, value: int):
+    def __init__(self, var_name: str, value: int) -> None:
         super().__init__(var_name, value, 0, 255)
 
 
@@ -107,9 +108,58 @@ class NormalizedRangeError(FloatOutsideRangeError):
     :param var_name: the name of the variable or argument
     :param value: the value to fall outside the expected range
     """
-    def __init__(self, var_name: str, value: float):
+    def __init__(self, var_name: str, value: float) -> None:
         super().__init__(var_name, value, 0.0, 1.0)
 
+
+_TType = TypeVar('_TType', bound=Type)
+
+def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
+    """Decorator stubs dunders raising :py:class:`NotImplementedError`.
+
+    Temp fixes https://github.com/pythonarcade/arcade/issues/2074 by
+    stubbing the following instance methods:
+
+    * :py:meth:`object.__copy__` (used by :py:func:`copy.copy`)
+    * :py:meth:`object.__deepcopy__` (used by :py:func:`copy.deepcopy`)
+
+    Example usage:
+
+    .. code-block:: python
+
+       import copy
+       from arcade,utils import copy_dunders_unimplemented
+       from arcade.hypothetical_module import HypotheticalNasty
+
+       # Example usage
+       @copy_dunders_unimplemented
+       class CantCopy:
+            def __init__(self, nasty_state: HypotheticalNasty):
+                self.nasty_state = nasty_state
+
+       instance = CantCopy(HypotheticalNasty())
+
+       # These raise NotImplementedError
+       this_line_raises = copy.deepcopy(instance)
+       this_line_also_raises = copy.copy(instance)
+
+
+    """
+    def __copy__(self):  # noqa
+       raise NotImplementedError(
+           f"{self.__class__.__name__} does not implement __copy__, but"
+           f"you may implement it on a custom subclass."
+       )
+    decorated_type.__copy__ =  __copy__
+
+    def __deepcopy__(self, memo):  # noqa
+       raise NotImplementedError(
+           f"{self.__class__.__name__} does not implement __deepcopy__,"
+           f" but you may implement it on a custom subclass."
+       )
+    decorated_type.__deepcopy__ = __deepcopy__
+
+    return decorated_type
 
 class PerformanceWarning(Warning):
     """Use this for issuing performance warnings."""
@@ -126,11 +176,13 @@ def warning(warning_type: Type[Warning], message: str = "", **kwargs):
         nonlocal message
         if warning_type == ReplacementWarning and not message:
             message = f"{func.__name__} is deprecated. Use {kwargs.get('new_name', '')} instead."
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             warnings.warn(message, warning_type)
             return func(*args, **kwargs)
         return wrapper
+
     return actual_warning_decorator
 
 
@@ -156,10 +208,9 @@ def is_raspberry_pi() -> bool:
     return get_raspberry_pi_info()[0]
 
 
-def get_raspberry_pi_info() -> Tuple[bool, str, str]:
+def get_raspberry_pi_info() -> tuple[bool, str, str]:
     """
-    Determine if the host is a raspberry pi
-    with additional info.
+    Determine if the host is a raspberry pi with additional info.
 
     :returns: 3 component tuple.
               bool (is host a raspi)

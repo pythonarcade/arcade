@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ctypes import c_int, string_at
 from contextlib import contextmanager
-from typing import Generator, Optional, Tuple, List, TYPE_CHECKING
+from typing import Generator, Optional, TYPE_CHECKING
 import weakref
 
 
@@ -63,7 +63,11 @@ class Framebuffer:
     )
 
     def __init__(
-        self, ctx: "Context", *, color_attachments=None, depth_attachment: Optional[Texture2D] = None
+        self,
+        ctx: "Context",
+        *,
+        color_attachments=None,
+        depth_attachment: Optional[Texture2D] = None,
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
@@ -71,9 +75,7 @@ class Framebuffer:
             raise ValueError("Framebuffer must at least have one color attachment")
 
         self._color_attachments = (
-            color_attachments
-            if isinstance(color_attachments, list)
-            else [color_attachments]
+            color_attachments if isinstance(color_attachments, list) else [color_attachments]
         )
         self._depth_attachment: Optional[Texture2D] = depth_attachment
         self._samples = 0  # Leaving this at 0 for future sample support
@@ -89,7 +91,7 @@ class Framebuffer:
         # but let's keep this simple with high compatibility.
         self._width, self._height = self._detect_size()
         self._viewport = 0, 0, self._width, self._height
-        self._scissor: Optional[Tuple[int, int, int, int]] = None
+        self._scissor: Optional[tuple[int, int, int, int]] = None
 
         # Attach textures to it
         for i, tex in enumerate(self._color_attachments):
@@ -117,9 +119,7 @@ class Framebuffer:
 
         # Set up draw buffers. This is simply a prepared list of attachments enums
         # we use in the use() method to activate the different color attachment layers
-        layers = [
-            gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)
-        ]
+        layers = [gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)]
         # pyglet wants this as a ctypes thingy, so let's prepare it
         self._draw_buffers = (gl.GLuint * len(layers))(*layers)
 
@@ -145,7 +145,7 @@ class Framebuffer:
         """
         return self._glo
 
-    def _get_viewport(self) -> Tuple[int, int, int, int]:
+    def _get_viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the framebuffer's viewport.
         The viewport parameter are ``(x, y, width, height)``.
@@ -162,7 +162,7 @@ class Framebuffer:
         """
         return self._viewport
 
-    def _set_viewport(self, value: Tuple[int, int, int, int]):
+    def _set_viewport(self, value: tuple[int, int, int, int]):
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport should be a 4-component tuple")
 
@@ -179,7 +179,7 @@ class Framebuffer:
 
     viewport = property(_get_viewport, _set_viewport)
 
-    def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
+    def _get_scissor(self) -> Optional[tuple[int, int, int, int]]:
         """
         Get or set the scissor box for this framebuffer.
 
@@ -239,7 +239,7 @@ class Framebuffer:
         return self._height
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         Size as a ``(w, h)`` tuple
 
@@ -257,7 +257,7 @@ class Framebuffer:
         return self._samples
 
     @property
-    def color_attachments(self) -> List[Texture2D]:
+    def color_attachments(self) -> list[Texture2D]:
         """
         A list of color attachments
 
@@ -352,7 +352,7 @@ class Framebuffer:
         color: Optional[RGBOrA255] = None,
         color_normalized: Optional[RGBOrANormalized] = None,
         depth: float = 1.0,
-        viewport: Optional[Tuple[int, int, int, int]] = None,
+        viewport: Optional[tuple[int, int, int, int]] = None,
     ):
         """
         Clears the framebuffer::
@@ -406,9 +406,7 @@ class Framebuffer:
 
             self.scissor = scissor_values
 
-    def read(
-        self, *, viewport=None, components=3, attachment=0, dtype="f1"
-    ) -> bytes:
+    def read(self, *, viewport=None, components=3, attachment=0, dtype="f1") -> bytes:
         """
         Read framebuffer pixels
 
@@ -478,18 +476,14 @@ class Framebuffer:
         gl.glDeleteFramebuffers(1, framebuffer_id)
         ctx.stats.decr("framebuffer")
 
-    def _detect_size(self) -> Tuple[int, int]:
+    def _detect_size(self) -> tuple[int, int]:
         """Detect the size of the framebuffer based on the attachments"""
         expected_size = (
-            self._color_attachments[0]
-            if self._color_attachments
-            else self._depth_attachment
+            self._color_attachments[0] if self._color_attachments else self._depth_attachment
         ).size
         for layer in [*self._color_attachments, self._depth_attachment]:
             if layer and layer.size != expected_size:
-                raise ValueError(
-                    "All framebuffer attachments should have the same size"
-                )
+                raise ValueError("All framebuffer attachments should have the same size")
         return expected_size
 
     @staticmethod
@@ -513,9 +507,7 @@ class Framebuffer:
         status = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER)
         if status != gl.GL_FRAMEBUFFER_COMPLETE:
             raise ValueError(
-                "Framebuffer is incomplete. {}".format(
-                    states.get(status, "Unknown error")
-                )
+                "Framebuffer is incomplete. {}".format(states.get(status, "Unknown error"))
             )
 
     def __repr__(self):
@@ -580,7 +572,7 @@ class DefaultFrameBuffer(Framebuffer):
         self._depth_attachment = True  # type: ignore
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         Size as a ``(w, h)`` tuple
 
@@ -606,11 +598,11 @@ class DefaultFrameBuffer(Framebuffer):
         """
         return self.size[1]
 
-    def _get_framebuffer_size(self) -> Tuple[int, int]:
+    def _get_framebuffer_size(self) -> tuple[int, int]:
         """Get the framebuffer size of the window"""
         return self._ctx.window.get_framebuffer_size()
 
-    def _get_viewport(self) -> Tuple[int, int, int, int]:
+    def _get_viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the framebuffer's viewport.
         The viewport parameter are ``(x, y, width, height)``.
@@ -633,7 +625,7 @@ class DefaultFrameBuffer(Framebuffer):
             int(self._viewport[3] / ratio),
         )
 
-    def _set_viewport(self, value: Tuple[int, int, int, int]):
+    def _set_viewport(self, value: tuple[int, int, int, int]):
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport should be a 4-component tuple")
 
@@ -657,7 +649,7 @@ class DefaultFrameBuffer(Framebuffer):
 
     viewport = property(_get_viewport, _set_viewport)
 
-    def _get_scissor(self) -> Optional[Tuple[int, int, int, int]]:
+    def _get_scissor(self) -> Optional[tuple[int, int, int, int]]:
         """
         Get or set the scissor box for this framebuffer.
 

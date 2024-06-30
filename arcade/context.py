@@ -2,11 +2,11 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
+
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Dict, Optional, Union, Sequence, Tuple
-from contextlib import contextmanager
+from typing import Any, Iterable, Optional, Union, Sequence
 
 import pyglet
 from pyglet import gl
@@ -21,7 +21,9 @@ from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
 from arcade.gl.framebuffer import Framebuffer
 from pyglet.math import Mat4
-from arcade.texture_atlas import TextureAtlas
+from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
+from arcade.camera import Projector
+from arcade.camera.default import DefaultProjector
 
 __all__ = ["ArcadeContext"]
 
@@ -44,27 +46,23 @@ class ArcadeContext(Context):
                         it's not clear what thread will gc the object.
     """
 
-    atlas_size: Tuple[int, int] = 512, 512
+    atlas_size: tuple[int, int] = 512, 512
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
-
+    def __init__(
+        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
+    ) -> None:
         super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
-
-        # Enabled blending by default
-        self.enable(self.BLEND)
-        self.blend_func = self.BLEND_DEFAULT
 
         # Set up a default orthogonal projection for sprites and shapes
         self._window_block: UniformBufferObject = window.ubo
         self.bind_window_block()
-        self.viewport = (
-            0,
-            0,
-            self.screen.width,
-            self.screen.height,
-        )
-        self.projection_matrix = Mat4.orthogonal_projection(0, self.screen.width, 0, self.screen.height,
-                                                            -1, 1)
+
+        self.blend_func = self.BLEND_DEFAULT
+
+        self._default_camera: DefaultProjector = DefaultProjector(context=self)
+        self.current_camera: Projector = self._default_camera
+
+        self.viewport = (0, 0, window.width, window.height)
 
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -180,27 +178,19 @@ class ArcadeContext(Context):
         # ellipse/circle outline
         self.shape_ellipse_outline_unbuffered_buffer = self.buffer(reserve=8)
         self.shape_ellipse_outline_unbuffered_geometry: Geometry = self.geometry(
-            [
-                BufferDescription(
-                    self.shape_ellipse_outline_unbuffered_buffer, "2f", ["in_vert"]
-                )
-            ]
+            [BufferDescription(self.shape_ellipse_outline_unbuffered_buffer, "2f", ["in_vert"])]
         )
         # rectangle filled
         self.shape_rectangle_filled_unbuffered_buffer = self.buffer(reserve=8)
         self.shape_rectangle_filled_unbuffered_geometry: Geometry = self.geometry(
-            [
-                BufferDescription(
-                    self.shape_rectangle_filled_unbuffered_buffer, "2f", ["in_vert"]
-                )
-            ]
+            [BufferDescription(self.shape_rectangle_filled_unbuffered_buffer, "2f", ["in_vert"])]
         )
         self.atlas_geometry: Geometry = self.geometry()
 
-        self._atlas: Optional[TextureAtlas] = None
+        self._atlas: Optional[TextureAtlasBase] = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
-        self.label_cache: Dict[str, arcade.Text] = {}
+        self.label_cache: dict[str, arcade.Text] = {}
 
         # self.active_program = None
         self.point_size = 1.0
@@ -215,7 +205,9 @@ class ArcadeContext(Context):
         # self.active_program = None
         self.viewport = 0, 0, self.window.width, self.window.height
         self.view_matrix = Mat4()
-        self.projection_matrix = Mat4.orthogonal_projection(0, self.window.width, 0, self.window.height, -100, 100)
+        self.projection_matrix = Mat4.orthogonal_projection(
+            0, self.window.width, 0, self.window.height, -100, 100
+        )
         self.enable_only(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
         self.point_size = 1.0
@@ -235,24 +227,50 @@ class ArcadeContext(Context):
         )
 
     @property
-    def default_atlas(self) -> TextureAtlas:
+    def default_atlas(self) -> TextureAtlasBase:
         """
         The default texture atlas. This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
         is passed in the :py:class:`arcade.SpriteList` constructor.
-
-        :type: TextureAtlas
         """
         if not self._atlas:
             # Create the default texture atlas
             # 8192 is a safe maximum size for textures in OpenGL 3.3
             # We might want to query the max limit, but this makes it consistent
             # across all OpenGL implementations.
-            self._atlas = TextureAtlas(
-                self.atlas_size, border=2, auto_resize=True, ctx=self,
+            self._atlas = DefaultTextureAtlas(
+                self.atlas_size,
+                border=2,
+                auto_resize=True,
+                ctx=self,
             )
 
         return self._atlas
+
+    @property
+    def viewport(self) -> tuple[int, int, int, int]:
+        """
+        Get or set the viewport for the currently active framebuffer.
+        The viewport simply describes what pixels of the screen
+        OpenGL should render to. Normally it would be the size of
+        the window's framebuffer::
+
+            # 4:3 screen
+            ctx.viewport = 0, 0, 800, 600
+            # 1080p
+            ctx.viewport = 0, 0, 1920, 1080
+            # Using the current framebuffer size
+            ctx.viewport = 0, 0, *ctx.screen.size
+
+        :type: tuple (x, y, width, height)
+        """
+        return self.active_framebuffer.viewport
+
+    @viewport.setter
+    def viewport(self, value: tuple[int, int, int, int]):
+        self.active_framebuffer.viewport = value
+        if self._default_camera == self.current_camera:
+            self._default_camera.use()
 
     @property
     def projection_matrix(self) -> Mat4:
@@ -292,20 +310,6 @@ class ArcadeContext(Context):
 
         self.window.view = value
 
-    @contextmanager
-    def pyglet_rendering(self):
-        """
-        Context manager for doing rendering with pyglet
-        ensuring context states are reverted. This
-        affects things like blending.
-        """
-        blend_enabled = self.is_enabled(self.BLEND)
-        try:
-            yield
-        finally:
-            if blend_enabled:
-                self.enable(self.BLEND)
-
     def load_program(
         self,
         *,
@@ -315,7 +319,7 @@ class ArcadeContext(Context):
         tess_control_shader: Optional[Union[str, Path]] = None,
         tess_evaluation_shader: Optional[Union[str, Path]] = None,
         common: Iterable[Union[str, Path]] = (),
-        defines: Optional[Dict[str, Any]] = None,
+        defines: Optional[dict[str, Any]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
@@ -372,9 +376,7 @@ class ArcadeContext(Context):
 
         if tess_control_shader and tess_evaluation_shader:
             tess_control_src = resolve(tess_control_shader).read_text()
-            tess_evaluation_src = resolve(
-                tess_evaluation_shader
-            ).read_text()
+            tess_evaluation_src = resolve(tess_evaluation_shader).read_text()
             tess_control_src = self.shader_inc(tess_control_src)
             tess_evaluation_src = self.shader_inc(tess_evaluation_src)
 
@@ -387,10 +389,12 @@ class ArcadeContext(Context):
             common=common_src,
             defines=defines,
             varyings=varyings,
-            varyings_capture_mode=varyings_capture_mode
+            varyings_capture_mode=varyings_capture_mode,
         )
 
-    def load_compute_shader(self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()) -> ComputeShader:
+    def load_compute_shader(
+        self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()
+    ) -> ComputeShader:
         """
         Loads a compute shader from file. This methods supports
         resource handles.
@@ -403,6 +407,7 @@ class ArcadeContext(Context):
         :param common: Common source injected into compute shader
         """
         from arcade.resources import resolve
+
         path = resolve(path)
         common_src = [resolve(c).read_text() for c in common]
         return self.compute_shader(
@@ -484,6 +489,7 @@ class ArcadeContext(Context):
         :param source: Shader
         """
         from arcade.resources import resolve
+
         lines = source.splitlines()
         for i, line in enumerate(lines):
             line = line.strip()

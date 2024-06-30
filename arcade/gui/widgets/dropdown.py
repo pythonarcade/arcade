@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Optional, List, Union
+from typing import Optional, Union
 
 from pyglet.event import EVENT_HANDLED
 
@@ -33,7 +33,7 @@ class _UIDropdownOverlay(UIBoxLayout):
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMousePressEvent):
             # Click outside of dropdown options
-            if not self.rect.collide_with_point(event.x, event.y):
+            if not self.rect.point_in_rect((event.x, event.y)):
                 self.hide()
                 return EVENT_HANDLED
         return super().on_event(event)
@@ -70,9 +70,9 @@ class UIDropdown(UILayout):
         x: float = 0,
         y: float = 0,
         width: float = 100,
-        height: float = 100,
+        height: float = 20,
         default: Optional[str] = None,
-        options: Optional[List[Union[str, None]]] = None,
+        options: Optional[list[Union[str, None]]] = None,
         style=None,
         **kwargs,
     ):
@@ -131,9 +131,7 @@ class UIDropdown(UILayout):
         for option in self._options:
             if option is None:  # None = UIDropdown.DIVIDER, required by pyright
                 self._overlay.add(
-                    UIWidget(width=self.width, height=2).with_background(
-                        color=arcade.color.GRAY
-                    )
+                    UIWidget(width=self.width, height=2).with_background(color=arcade.color.GRAY)
                 )
                 continue
             else:
@@ -142,9 +140,7 @@ class UIDropdown(UILayout):
                         text=option,
                         width=self.width,
                         height=self.height,
-                        style=active_style
-                        if self.value == option
-                        else UIFlatButton.DEFAULT_STYLE,
+                        style=active_style if self.value == option else UIFlatButton.DEFAULT_STYLE,
                     )
                 )
             button.on_click = self._on_option_click
@@ -153,6 +149,7 @@ class UIDropdown(UILayout):
         # search tree for UIManager
         parent = self.parent
         while isinstance(parent, UIWidget):
+            #
             parent = parent.parent
 
         return parent if isinstance(parent, UIManager) else None
@@ -181,11 +178,7 @@ class UIDropdown(UILayout):
         if overlay.size_hint_min is not None:
             rect = rect.resize(*overlay.size_hint_min)
 
-        self._overlay.rect = (
-            rect
-            .align_top(self.bottom - 2)
-            .align_left(self._default_button.left)
-        )
+        self._overlay.rect = rect.align_top(self.bottom - 2).align_left(self._default_button.left)
 
     def on_change(self, event: UIOnChangeEvent):
         """To be implemented by the user, triggered when the current selected value is changed to a different option."""

@@ -1,7 +1,9 @@
 from _pytest.python_api import approx
 
+from arcade import LBWH
 from arcade.gui import UIBoxLayout, UIManager
-from arcade.gui.widgets import UIDummy, Rect
+from arcade.gui.widgets import UIDummy
+from pyglet.math import Vec2
 
 
 # Vertical
@@ -11,7 +13,7 @@ def test_do_layout_vertical_with_initial_children(window):
     element_2 = UIDummy()
 
     group = UIBoxLayout(vertical=True, children=[element_1, element_2])
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
 
     group._do_layout()
 
@@ -33,7 +35,7 @@ def test_do_layout_vertical_add_children(window):
     group.add(element_1)
     group.add(element_2)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.top == 400
@@ -54,7 +56,7 @@ def test_do_layout_vertical_add_child_with_initial_children(window):
 
     group.add(element_3)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.top == 500
@@ -76,7 +78,7 @@ def test_do_layout_vertical_align_left(window):
 
     group = UIBoxLayout(align="left", vertical=True, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -94,7 +96,7 @@ def test_do_layout_vertical_align_right(window):
 
     group = UIBoxLayout(align="right", vertical=True, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -110,11 +112,9 @@ def test_do_layout_vertical_space_between(window):
     element_1 = UIDummy()
     element_2 = UIDummy()
 
-    group = UIBoxLayout(
-        space_between=10, vertical=True, children=[element_1, element_2]
-    )
+    group = UIBoxLayout(space_between=10, vertical=True, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -134,7 +134,7 @@ def test_do_layout_horizontal_with_initial_children(window):
 
     group = UIBoxLayout(vertical=False, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.left == 100
@@ -155,7 +155,7 @@ def test_do_layout_horizontal_add_children(window):
     group.add(element_1)
     group.add(element_2)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.left == 100
@@ -175,7 +175,7 @@ def test_do_layout_horizontal_add_child_with_initial_children(window):
     group = UIBoxLayout(vertical=False, children=[element_1, element_2])
     group.add(element_3)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert element_1.left == 100
@@ -199,7 +199,7 @@ def test_horizontal_group_keep_left_alignment_while_adding_children(window):
     group = UIBoxLayout(vertical=False, children=[element_1, element_2])
     group.add(element_3)
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -213,7 +213,7 @@ def test_do_layout_horizontal_align_top(window):
     element_2 = UIDummy(height=100)
     group = UIBoxLayout(align="top", vertical=False, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -230,7 +230,7 @@ def test_do_layout_horizontal_align_bottom(window):
     element_2 = UIDummy(height=100)
     group = UIBoxLayout(align="bottom", vertical=False, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -245,11 +245,9 @@ def test_do_layout_horizontal_align_bottom(window):
 def test_do_layout_horizontal_space_between(window):
     element_1 = UIDummy()
     element_2 = UIDummy()
-    group = UIBoxLayout(
-        space_between=10, vertical=False, children=[element_1, element_2]
-    )
+    group = UIBoxLayout(space_between=10, vertical=False, children=[element_1, element_2])
 
-    group.rect = Rect(100, 200, *group.size_hint_min)
+    group.rect = LBWH(100, 200, *group.size_hint_min)
     group.do_layout()
 
     assert group.left == 100
@@ -295,8 +293,8 @@ def test_vertical_resize_child_according_size_hint_full(window):
 
     box._do_layout()
 
-    assert box.size == (200, 200)
-    assert dummy_1.size == (200, 200)
+    assert box.size == Vec2(200, 200)
+    assert dummy_1.size == Vec2(200, 200)
 
 
 def test_vertical_resize_child_according_size_hint_half(window):
@@ -305,8 +303,8 @@ def test_vertical_resize_child_according_size_hint_half(window):
 
     box._do_layout()
 
-    assert box.size == (200, 200)
-    assert dummy_1.size == (100, 100)
+    assert box.size == Vec2(200, 200)
+    assert dummy_1.size == Vec2(100, 100)
 
 
 def test_vertical_resize_children_according_size_hint(window):
@@ -316,9 +314,9 @@ def test_vertical_resize_children_according_size_hint(window):
 
     box._do_layout()
 
-    assert box.size == (300, 400)
-    assert dummy_1.size == (300, approx(100 + 200 / 3 * 2))
-    assert dummy_2.size == (150, approx(100 + 200 / 3 * 1))
+    assert box.size == Vec2(300, 400)
+    assert dummy_1.size == Vec2(300, approx(100 + 200 / 3 * 2))
+    assert dummy_2.size == Vec2(150, approx(100 + 200 / 3 * 1))
 
 
 def test_vertical_ignores_size_hint_none(window):
@@ -328,9 +326,9 @@ def test_vertical_ignores_size_hint_none(window):
 
     box._do_layout()
 
-    assert box.size == (300, 400)
-    assert dummy_1.size == (300, 100)
-    assert dummy_2.size == (100, 300)
+    assert box.size == Vec2(300, 400)
+    assert dummy_1.size == Vec2(300, 100)
+    assert dummy_2.size == Vec2(100, 300)
 
 
 def test_vertical_fit_content(window):
@@ -340,7 +338,7 @@ def test_vertical_fit_content(window):
 
     box.fit_content()
 
-    assert box.size == (100, 150)
+    assert box.size == Vec2(100, 150)
 
 
 def test_horizontal_resize_child_according_size_hint_full(window):
@@ -349,8 +347,8 @@ def test_horizontal_resize_child_according_size_hint_full(window):
 
     box._do_layout()
 
-    assert box.size == (200, 200)
-    assert dummy_1.size == (200, 200)
+    assert box.size == Vec2(200, 200)
+    assert dummy_1.size == Vec2(200, 200)
 
 
 def test_horizontal_resize_child_according_size_hint_half(window):
@@ -359,8 +357,8 @@ def test_horizontal_resize_child_according_size_hint_half(window):
 
     box._do_layout()
 
-    assert box.size == (200, 200)
-    assert dummy_1.size == (100, 100)
+    assert box.size == Vec2(200, 200)
+    assert dummy_1.size == Vec2(100, 100)
 
 
 def test_horizontal_resize_children_according_size_hint(window):
@@ -370,9 +368,9 @@ def test_horizontal_resize_children_according_size_hint(window):
 
     box._do_layout()
 
-    assert box.size == (300, 400)
-    assert dummy_1.size == (approx(100 + 100 / 3 * 2), 400)
-    assert dummy_2.size == (approx(100 + 100 / 3 * 1), 200)
+    assert box.size == Vec2(300, 400)
+    assert dummy_1.size == Vec2(approx(100 + 100 / 3 * 2), 400)
+    assert dummy_2.size == Vec2(approx(100 + 100 / 3 * 1), 200)
 
 
 def test_horizontal_ignores_size_hint_none(window):
@@ -382,9 +380,9 @@ def test_horizontal_ignores_size_hint_none(window):
 
     box._do_layout()
 
-    assert box.size == (300, 400)
-    assert dummy_1.size == (200, 100)
-    assert dummy_2.size == (100, 400)
+    assert box.size == Vec2(300, 400)
+    assert dummy_1.size == Vec2(200, 100)
+    assert dummy_2.size == Vec2(100, 400)
 
 
 def test_horizontal_fit_content(window):
@@ -394,7 +392,7 @@ def test_horizontal_fit_content(window):
 
     box.fit_content()
 
-    assert box.size == (120, 100)
+    assert box.size == Vec2(120, 100)
 
 
 def test_nested_layouts(window):
@@ -411,10 +409,10 @@ def test_nested_layouts(window):
 
     ui.execute_layout()
 
-    assert box1.size == (100, 100)
-    assert box2.size == (100, 100)
-    assert box3.size == (100, 100)
-    assert dummy.size == (100, 100)
+    assert box1.size == Vec2(100, 100)
+    assert box2.size == Vec2(100, 100)
+    assert box3.size == Vec2(100, 100)
+    assert dummy.size == Vec2(100, 100)
 
 
 def test_children_change_size_hint_min(window):
@@ -429,8 +427,8 @@ def test_children_change_size_hint_min(window):
 
     ui.execute_layout()
 
-    assert box1.size == (150, 150)
-    assert dummy.size == (150, 150)
+    assert box1.size == Vec2(150, 150)
+    assert dummy.size == Vec2(150, 150)
 
 
 # TODO test size hint < 1 (do not take full width)

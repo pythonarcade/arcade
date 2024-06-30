@@ -14,12 +14,13 @@ uniform samplerXX iChannel0..3;          // input channel. XX = 2D/Cube
 uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 """
+
 from __future__ import annotations
 
 import string
 from datetime import datetime
 from pathlib import Path
-from typing import List, Tuple, Optional, Union
+from typing import Optional, Union
 
 from arcade import get_window
 import arcade
@@ -53,7 +54,8 @@ class ShadertoyBase:
     :param size: screen/area size
     :param source: The mainImage shader source
     """
-    def __init__(self, size: Tuple[int, int], source: str):
+
+    def __init__(self, size: tuple[int, int], source: str):
         self._ctx = get_window().ctx
         self._size = size
         self._source = source
@@ -76,7 +78,7 @@ class ShadertoyBase:
         self._quad = geometry.quad_2d_fs()
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         Get or set the size in pixels.
 
@@ -155,7 +157,7 @@ class ShadertoyBase:
         self._frame_rate = value
 
     @property
-    def mouse_position(self) -> Tuple[float, float]:
+    def mouse_position(self) -> tuple[float, float]:
         """
         Get or set the current mouse position.
 
@@ -168,7 +170,7 @@ class ShadertoyBase:
         self._mouse_pos = value
 
     @property
-    def mouse_buttons(self) -> Tuple[float, float]:
+    def mouse_buttons(self) -> tuple[float, float]:
         """
         Get or set the mouse button states.
         Depending on the use case these can contain
@@ -180,11 +182,11 @@ class ShadertoyBase:
         return self._mouse_buttons
 
     @mouse_buttons.setter
-    def mouse_buttons(self, value: Tuple[float, float]):
+    def mouse_buttons(self, value: tuple[float, float]):
         self._mouse_buttons = value
 
     @property
-    def channel_time(self) -> List[float]:
+    def channel_time(self) -> list[float]:
         return self._channel_time
 
     @property
@@ -245,7 +247,7 @@ class ShadertoyBase:
         """The context"""
         return self._ctx
 
-    def resize(self, size: Tuple[int, int]) -> None:
+    def resize(self, size: tuple[int, int]) -> None:
         """Resize of this shadertoy or buffer"""
         raise NotImplementedError
 
@@ -254,8 +256,8 @@ class ShadertoyBase:
         *,
         time: Optional[float] = None,
         time_delta: Optional[float] = None,
-        mouse_position: Optional[Tuple[float, float]] = None,
-        size: Optional[Tuple[int, int]] = None,
+        mouse_position: Optional[tuple[float, float]] = None,
+        size: Optional[tuple[int, int]] = None,
         frame: Optional[int] = None,
         frame_rate: Optional[float] = None,
     ):
@@ -300,17 +302,17 @@ class ShadertoyBase:
 
     def _set_uniforms(self):
         """Attempt to set all supported uniforms"""
-        self._program.set_uniform_safe('iTime', self._time)
-        self._program.set_uniform_array_safe('iChannelTime', self._channel_time)
-        self._program.set_uniform_safe('iTimeDelta', self._time_delta)
-        self._program.set_uniform_safe('iMouse', (*self._mouse_pos, *self._mouse_buttons))
-        self._program.set_uniform_safe('iResolution', (*self._size, 1.0))
-        self._program.set_uniform_array_safe('iChannelResolution', self._channel_resolution)
-        self._program.set_uniform_safe('iFrame', self._frame)
-        self._program.set_uniform_safe('iFrameRate', self._frame_rate)
-        self._program.set_uniform_safe('iDate', self._get_date())
+        self._program.set_uniform_safe("iTime", self._time)
+        self._program.set_uniform_array_safe("iChannelTime", self._channel_time)
+        self._program.set_uniform_safe("iTimeDelta", self._time_delta)
+        self._program.set_uniform_safe("iMouse", (*self._mouse_pos, *self._mouse_buttons))
+        self._program.set_uniform_safe("iResolution", (*self._size, 1.0))
+        self._program.set_uniform_array_safe("iChannelResolution", self._channel_resolution)
+        self._program.set_uniform_safe("iFrame", self._frame)
+        self._program.set_uniform_safe("iFrameRate", self._frame_rate)
+        self._program.set_uniform_safe("iDate", self._get_date())
 
-    def _get_date(self) -> Tuple[float, float, float, float]:
+    def _get_date(self) -> tuple[float, float, float, float]:
         """Create year, month, day, seconds data for iDate"""
         now = datetime.now()
         seconds = now.hour * 60 * 60 + now.minute * 60 + now.second + now.microsecond / 1_000_000
@@ -352,7 +354,8 @@ class ShadertoyBuffer(ShadertoyBase):
     :param source: mainImage shader source
     :param repeat: Repeat/wrap mode for the underlying texture
     """
-    def __init__(self, size: Tuple[int, int], source: str, repeat: bool = False):
+
+    def __init__(self, size: tuple[int, int], source: str, repeat: bool = False):
         super().__init__(size, source)
         self._texture = self.ctx.texture(self._size, components=4)
         self._fbo = self.ctx.framebuffer(color_attachments=[self._texture])
@@ -402,7 +405,7 @@ class ShadertoyBuffer(ShadertoyBase):
         with self._fbo.activate():
             self._quad.render(self._program)
 
-    def resize(self, size: Tuple[int, int]):
+    def resize(self, size: tuple[int, int]):
         """
         Change the internal buffer size.
 
@@ -426,7 +429,8 @@ class Shadertoy(ShadertoyBase):
             fragColor = vec4(fragCoord, 0.0, 1.0);
         }
     """
-    def __init__(self, size: Tuple[int, int], main_source: str):
+
+    def __init__(self, size: tuple[int, int], main_source: str):
         """
         :param [int, int] size: pixel size if the output
         :param main_source: The main glsl source with mainImage function
@@ -475,7 +479,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_d = value
 
     @classmethod
-    def create_from_file(cls, size: Tuple[int, int], path: Union[str, Path]) -> "Shadertoy":
+    def create_from_file(cls, size: tuple[int, int], path: Union[str, Path]) -> "Shadertoy":
         """
         Create a Shadertoy from a mainImage shader file.
 
@@ -508,7 +512,7 @@ class Shadertoy(ShadertoyBase):
             source = fd.read()
         return ShadertoyBuffer(self._size, source)
 
-    def resize(self, size: Tuple[int, int]):
+    def resize(self, size: tuple[int, int]):
         """
         Resize the internal buffers
 

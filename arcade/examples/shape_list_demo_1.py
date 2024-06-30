@@ -46,9 +46,8 @@ class MyGame(arcade.Window):
         # --- Draw all the rectangles
         for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
             for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
-                arcade.draw_rectangle_filled(x, y,
-                                             SQUARE_WIDTH, SQUARE_HEIGHT,
-                                             arcade.color.DARK_BLUE)
+                arcade.draw_rect_filled(arcade.rect.XYWH(x, y, SQUARE_WIDTH, SQUARE_HEIGHT),
+                                        arcade.color.DARK_BLUE)
 
         # Print the timing
         output = f"Drawing time: {self.draw_time:.3f} seconds per frame."

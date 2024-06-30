@@ -2,7 +2,9 @@
 ScreenShakeController2D:
     Provides an easy way to cause a camera to shake.
 """
-from typing import Tuple
+
+from __future__ import annotations
+
 from math import exp, log, pi, sin, floor
 from random import uniform
 
@@ -10,9 +12,7 @@ from arcade.camera.data_types import CameraData
 from arcade.math import quaternion_rotation
 
 
-__all__ = (
-    "ScreenShake2D",
-)
+__all__ = ("ScreenShake2D",)
 
 
 class ScreenShake2D:
@@ -49,11 +49,15 @@ class ScreenShake2D:
                             (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
     """
 
-    def __init__(self, camera_data: CameraData, *,
-                 max_amplitude: float = 1.0,
-                 falloff_time: float = 1.0,
-                 acceleration_duration: float = 1.0,
-                 shake_frequency: float = 15.0):
+    def __init__(
+        self,
+        camera_data: CameraData,
+        *,
+        max_amplitude: float = 1.0,
+        falloff_time: float = 1.0,
+        acceleration_duration: float = 1.0,
+        shake_frequency: float = 15.0,
+    ):
         self._data: CameraData = camera_data
 
         self.max_amplitude: float = max_amplitude
@@ -65,7 +69,7 @@ class ScreenShake2D:
         self._length_shaking: float = 0.0
 
         self._current_dir: float = 0.0
-        self._last_vector: Tuple[float, float, float] = (0.0, 0.0, 0.0)
+        self._last_vector: tuple[float, float, float] = (0.0, 0.0, 0.0)
         self._last_update_time: float = 0.0
 
     @property
@@ -168,7 +172,7 @@ class ScreenShake2D:
 
         :param _t: The scaled time. Should be between 0.0 and 1.0
         """
-        return 1.0001 - 1.0001*exp(log(0.0001/1.0001) * _t)
+        return 1.0001 - 1.0001 * exp(log(0.0001 / 1.0001) * _t)
 
     def _falloff_amp(self, _t: float) -> float:
         """
@@ -226,7 +230,7 @@ class ScreenShake2D:
         self._data.position = (
             self._data.position[0] - self._last_vector[0],
             self._data.position[1] - self._last_vector[1],
-            self._data.position[2] - self._last_vector[2]
+            self._data.position[2] - self._last_vector[2],
         )
 
         self.reset()
@@ -259,9 +263,10 @@ class ScreenShake2D:
         if not self._shaking:
             return
 
-        if (floor(self._last_update_time * 2 * self.shake_frequency) <
-                floor(self._length_shaking * 2.0 * self.shake_frequency))\
-                or self._last_update_time == 0.0:
+        if (
+            floor(self._last_update_time * 2 * self.shake_frequency)
+            < floor(self._length_shaking * 2.0 * self.shake_frequency)
+        ) or self._last_update_time == 0.0:
             self._current_dir = uniform(-180, 180)
 
         _amp = self._calc_amplitude() * self.max_amplitude
@@ -273,14 +278,10 @@ class ScreenShake2D:
         self._data.position = (
             _pos[0] - _last[0] + _vec[0] * _amp,
             _pos[1] - _last[1] + _vec[1] * _amp,
-            _pos[2] - _last[2] + _vec[2] * _amp
+            _pos[2] - _last[2] + _vec[2] * _amp,
         )
 
-        self._last_vector = (
-            _vec[0] * _amp,
-            _vec[1] * _amp,
-            _vec[2] * _amp
-        )
+        self._last_vector = (_vec[0] * _amp, _vec[1] * _amp, _vec[2] * _amp)
         self._last_update_time = self._length_shaking
 
     def readjust_camera(self) -> None:
@@ -293,6 +294,6 @@ class ScreenShake2D:
         self._data.position = (
             self._data.position[0] - self._last_vector[0],
             self._data.position[1] - self._last_vector[1],
-            self._data.position[2] - self._last_vector[2]
+            self._data.position[2] - self._last_vector[2],
         )
         self._last_vector = (0.0, 0.0, 0.0)

@@ -14,8 +14,8 @@ from typing import cast
 
 import arcade
 
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 768
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Dual-stick Shooter Example"
 MOVEMENT_SPEED = 4
 BULLET_SPEED = 10
@@ -263,6 +263,9 @@ class MyGame(arcade.Window):
             self.player.shoot_down_pressed = True
         elif key == arcade.key.ESCAPE:
             self.player.start_pressed = True
+        # close the window if the user hits the escape key
+        elif key == arcade.key.ESCAPE:
+            self.close()
 
         rad = math.atan2(self.player.change_y, self.player.change_x)
         self.player.angle = math.degrees(rad) + ROTATE_OFFSET

@@ -1,16 +1,16 @@
 """
 Utility functions to keep performance information
 """
+
 from __future__ import annotations
 
 import collections
-from typing import Dict
 
 import pyglet
 import time
 
 # Evil globals
-_timings: Dict = {}
+_timings: dict = {}
 _pyglets_dispatch_event = None
 _frame_times: collections.deque = collections.deque()
 _max_history: int = 100
@@ -22,11 +22,11 @@ __all__ = [
     "enable_timings",
     "disable_timings",
     "get_fps",
-    "timings_enabled"
+    "timings_enabled",
 ]
 
 
-def _dispatch_event(self, *args):
+def _dispatch_event(self, *args) -> None:
     """
     This function will be monkey-patched over Pyglet's dispatch event function.
     """
@@ -35,7 +35,7 @@ def _dispatch_event(self, *args):
 
     # Start the clock, and keep the time if this is on_draw for FPS calcs.
     start_time = time.perf_counter()
-    if name == 'on_draw':
+    if name == "on_draw":
         _frame_times.append(start_time)
 
     # Call Pyglet's dispatch event function
@@ -61,7 +61,7 @@ def _dispatch_event(self, *args):
         data.popleft()
 
 
-def print_timings():
+def print_timings() -> None:
     """
     Print event handler statistics to stdout as a table.
 
@@ -114,7 +114,7 @@ def clear_timings() -> None:
     _timings = {}
 
 
-def get_timings() -> Dict:
+def get_timings() -> dict:
     """
     Get a dict of the current dispatch event timings.
 

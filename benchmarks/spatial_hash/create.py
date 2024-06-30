@@ -12,19 +12,18 @@ for y in range(100):
         sprites.append(sprite)
 
 
-def create(cell_size = CELL_SIZE):
+def create(cell_size=CELL_SIZE):
     sh = SpatialHash(cell_size)
     for sprite in sprites:
         sh.insert_object_for_box(sprite)
 
 
-def create_destroy(cell_size = CELL_SIZE):
+def create_destroy(cell_size=CELL_SIZE):
     sh = SpatialHash(cell_size)
     for sprite in sprites:
         sh.insert_object_for_box(sprite)
     for sprite in sprites:
         sh.remove_object(sprite)
-
 
 
 res = timeit.timeit(create, number=100, globals=globals())

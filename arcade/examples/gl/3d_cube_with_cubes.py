@@ -4,6 +4,7 @@
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.3d_cube_with_cubes
 """
+
 from pyglet.math import Mat4
 
 import arcade
@@ -118,9 +119,9 @@ class MyGame(arcade.Window):
         modelview = translate @ rx @ ry
 
         if self.frame > 0:
-            self.program['use_texture'] = 1
+            self.program["use_texture"] = 1
             self.fbo2.color_attachments[0].use()
-        self.program['modelview'] = modelview
+        self.program["modelview"] = modelview
         self.cube.render(self.program)
 
         self.ctx.disable(self.ctx.DEPTH_TEST)
@@ -141,7 +142,7 @@ class MyGame(arcade.Window):
     def on_resize(self, width, height):
         """Set up viewport and projection"""
         self.ctx.viewport = 0, 0, width, height
-        self.program['projection'] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=60)
+        self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=60)
 
 
 if __name__ == "__main__":

@@ -16,12 +16,12 @@ python -m arcade.examples.slime_invaders
 import random
 import arcade
 
-SPRITE_SCALING_PLAYER = 0.5
-SPRITE_SCALING_enemy = 0.5
-SPRITE_SCALING_LASER = 0.8
+SPRITE_SCALING_PLAYER = 0.75
+SPRITE_SCALING_enemy = 0.75
+SPRITE_SCALING_LASER = 1.0
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Slime Invaders"
 
 BULLET_SPEED = 5
@@ -52,20 +52,22 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Variables that will hold sprite lists
-        self.player_list = None
-        self.enemy_list = None
-        self.player_bullet_list = None
-        self.enemy_bullet_list = None
-        self.shield_list = None
-
-        # Textures for the enemy
-        self.enemy_textures = None
+        self.player_list = arcade.SpriteList()
+        self.enemy_list = arcade.SpriteList()
+        self.player_bullet_list = arcade.SpriteList()
+        self.enemy_bullet_list = arcade.SpriteList()
+        self.shield_list = arcade.SpriteList()
 
         # State of the game
         self.game_state = PLAY_GAME
 
         # Set up the player info
-        self.player_sprite = None
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER,
+        )
+        self.player_list.append(self.player_sprite)
+
         self.score = 0
 
         # Enemy movement
@@ -77,28 +79,32 @@ class MyGame(arcade.Window):
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
         self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
+        self.texture_enemy_left = arcade.load_texture(":resources:images/enemies/slimeBlue.png")
+        self.texture_enemy_right = self.texture_enemy_left.flip_left_right()
+        # The laser points right so we rotate it 270 clockwise to point up
+        self.texture_blue_laser = arcade.load_texture(":resources:images/space_shooter/laserBlue01.png").rotate_270()
 
         self.background_color = arcade.color.AMAZON
-
-        # arcade.configure_logging()
+        self.score_text = arcade.Text("Score: 0", 10, 20, arcade.color.WHITE, 14)
+        self.game_over_text = arcade.Text(
+            "GAME OVER", self.width / 2, self.height / 2, arcade.color.WHITE, 60, anchor_x="center",
+        )
 
     def setup_level_one(self):
         # Load the textures for the enemies, one facing left, one right
-        self.enemy_textures = arcade.load_texture_pair(":resources:images/enemies/slimeBlue.png")
-
         # Create rows and columns of enemies
         x_count = 7
         x_start = 380
-        x_spacing = 60
+        x_spacing = 80
         y_count = 5
-        y_start = 420
-        y_spacing = 40
+        y_start = 470
+        y_spacing = 60
         for x in range(x_start, x_spacing * x_count + x_start, x_spacing):
             for y in range(y_start, y_spacing * y_count + y_start, y_spacing):
                 # Create the enemy instance
                 # enemy image from kenney.nl
                 enemy = arcade.Sprite(
-                    self.enemy_textures[1],
+                    self.texture_enemy_right,
                     scale=SPRITE_SCALING_enemy,
                     center_x=x,
                     center_y=y
@@ -111,8 +117,8 @@ class MyGame(arcade.Window):
         Make a shield, which is just a 2D grid of solid color sprites
         stuck together with no margin so you can't tell them apart.
         """
-        shield_block_width = 5
-        shield_block_height = 10
+        shield_block_width = 10
+        shield_block_height = 20
         shield_width_count = 20
         shield_height_count = 5
         y_start = 150
@@ -129,34 +135,32 @@ class MyGame(arcade.Window):
                 shield_sprite.center_y = y
                 self.shield_list.append(shield_sprite)
 
-    def setup(self):
+    def reset(self):
         """
-        Set up the game and initialize the variables.
-        Call this method if you implement a 'play again' feature.
+        Reset the game so it can be played again.
+        This is not a standard arcade method. It's simply an example of how
+        you might reset the game.
         """
-
         self.game_state = PLAY_GAME
 
-        # Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.enemy_list = arcade.SpriteList()
-        self.player_bullet_list = arcade.SpriteList()
-        self.enemy_bullet_list = arcade.SpriteList()
-        self.shield_list = arcade.SpriteList()
+        # Clear the sprite lists
+        self.enemy_list.clear()
+        self.player_bullet_list.clear()
+        self.enemy_bullet_list.clear()
+        self.shield_list.clear()
 
         # Set up the player
         self.score = 0
 
-        # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(
-            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=SPRITE_SCALING_PLAYER)
+        # Set default position for player
         self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 40
-        self.player_list.append(self.player_sprite)
+        self.player_sprite.center_y = 70
 
         # Make each of the shields
-        for x in range(75, 800, 190):
+        step = self.width // 4 - 50
+        print("make_shield", step)
+        for x in [step, step * 2, step * 3]:
+            print(x)
             self.make_shield(x)
 
         # Set the background color
@@ -165,31 +169,34 @@ class MyGame(arcade.Window):
         self.setup_level_one()
 
     def on_draw(self):
-        """ Render the screen. """
-
-        # This command has to happen before we start drawing
+        """Render the screen."""
+        # Clear the window / screen with the configured background color
         self.clear()
 
         # Draw all the sprites.
         self.enemy_list.draw()
         self.player_bullet_list.draw()
         self.enemy_bullet_list.draw()
-        self.shield_list.draw()
+        self.shield_list.draw(pixelated=True)
         self.player_list.draw()
 
-        # Render the text
-        arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
+        # Update and draw the score
+        self.score_text.text = f"Score: {self.score}"
+        self.score_text.draw()
 
         # Draw game over if the game state is such
         if self.game_state == GAME_OVER:
-            arcade.draw_text("GAME OVER", 250, 300, arcade.color.WHITE, 55)
+            self.game_over_text.draw()
             self.set_mouse_visible(True)
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.ESCAPE:
+            self.close()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
         Called whenever the mouse moves.
         """
-
         # Don't move the player if the game is over
         if self.game_state == GAME_OVER:
             return
@@ -200,20 +207,14 @@ class MyGame(arcade.Window):
         """
         Called whenever the mouse button is clicked.
         """
-
         # Only allow the user so many bullets on screen at a time to prevent
         # them from spamming bullets.
         if len(self.player_bullet_list) < MAX_PLAYER_BULLETS:
-
             # Gunshot sound
-            arcade.play_sound(self.gun_sound)
+            # arcade.play_sound(self.gun_sound)
 
             # Create a bullet
-            bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
-
-            # The image points to the right, and we want it to point up. So
-            # rotate it.
-            bullet.angle = 90
+            bullet = arcade.Sprite(self.texture_blue_laser, scale=SPRITE_SCALING_LASER)
 
             # Give the bullet a speed
             bullet.change_y = BULLET_SPEED
@@ -226,7 +227,6 @@ class MyGame(arcade.Window):
             self.player_bullet_list.append(bullet)
 
     def update_enemies(self):
-
         # Move the enemy vertically
         for enemy in self.enemy_list:
             enemy.center_x += self.enemy_change_x
@@ -250,9 +250,9 @@ class MyGame(arcade.Window):
                 enemy.center_y -= ENEMY_MOVE_DOWN_AMOUNT
                 # Flip texture on enemy so it faces the other way
                 if self.enemy_change_x > 0:
-                    enemy.texture = self.enemy_textures[0]
+                    enemy.texture = self.texture_enemy_left
                 else:
-                    enemy.texture = self.enemy_textures[1]
+                    enemy.texture = self.texture_enemy_right
 
     def allow_enemies_to_fire(self):
         """
@@ -291,7 +291,6 @@ class MyGame(arcade.Window):
             x_spawn.append(enemy.center_x)
 
     def process_enemy_bullets(self):
-
         # Move the bullets
         self.enemy_bullet_list.update()
 
@@ -316,7 +315,6 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
 
     def process_player_bullets(self):
-
         # Move the bullets
         self.player_bullet_list.update()
 
@@ -353,7 +351,6 @@ class MyGame(arcade.Window):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-
         if self.game_state == GAME_OVER:
             return
 
@@ -368,7 +365,7 @@ class MyGame(arcade.Window):
 
 def main():
     window = MyGame()
-    window.setup()
+    window.reset()
     arcade.run()
 
 

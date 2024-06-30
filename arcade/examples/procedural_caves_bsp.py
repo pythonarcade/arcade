@@ -43,6 +43,8 @@ WINDOW_TITLE = "Procedural Caves BSP Example"
 
 MERGE_SPRITES = False
 
+# How fast the camera pans to the player. 1.0 is instant.
+CAMERA_SPEED = 0.1
 
 class Room:
     """ A room """
@@ -198,7 +200,7 @@ class RLDungeonGenerator:
 
         shortest_distance = 99999
         start = None
-        start_group = None
+        start_group = []
         nearest = None
 
         for group in groups:
@@ -214,7 +216,7 @@ class RLDungeonGenerator:
         self.carve_corridor_between_rooms(start, nearest)
 
         # Merge the groups
-        other_group = None
+        other_group = []
         for group in groups:
             if nearest[0] in group:
                 other_group = group
@@ -270,11 +272,19 @@ class MyGame(arcade.Window):
         self.wall_list = None
         self.player_list = None
         self.player_sprite = None
-        self.cam = None
         self.physics_engine = None
 
         self.processing_time = 0
         self.draw_time = 0
+
+        self.sprite_count_text = None
+        self.draw_time_text = None
+        self.processing_time_text = None
+
+        # Create the cameras. One for the GUI, one for the sprites.
+        # We scroll the 'sprite world' but not the GUI.
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
         self.background_color = arcade.color.BLACK
 
@@ -289,39 +299,15 @@ class MyGame(arcade.Window):
 
         # Create sprites based on 2D grid
         texture = arcade.load_texture(":resources:images/tiles/grassCenter.png")
-        if not MERGE_SPRITES:
-            # This is the simple-to-understand method. Each grid location
-            # is a sprite.
-            for row in range(dg.height):
-                for column in range(dg.width):
-                    value = dg.dungeon[row][column]
-                    if value == '#':
-                        wall = arcade.BasicSprite(texture, scale=WALL_SPRITE_SCALING)
-                        wall.center_x = column * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
-                        wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
-                        self.wall_list.append(wall)
-        else:
-            # This uses new Arcade 1.3.1 features, that allow me to create a
-            # larger sprite with a repeating texture. So if there are multiple
-            # cells in a row with a wall, we merge them into one sprite, with a
-            # repeating texture for each cell. This reduces our sprite count.
-            for row in range(dg.height):
-                column = 0
-                while column < dg.width:
-                    while column < dg.width and dg.dungeon[row][column] != '#':
-                        column += 1
-                    start_column = column
-                    while column < dg.width and dg.dungeon[row][column] == '#':
-                        column += 1
-                    end_column = column - 1
 
-                    column_count = end_column - start_column + 1
-                    column_mid = (start_column + end_column) / 2
-
+        # Each grid location is a sprite.
+        for row in range(dg.height):
+            for column in range(dg.width):
+                value = dg.dungeon[row][column]
+                if value == '#':
                     wall = arcade.BasicSprite(texture, scale=WALL_SPRITE_SCALING)
-                    wall.center_x = column_mid * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
+                    wall.center_x = column * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
                     wall.center_y = row * WALL_SPRITE_SIZE + WALL_SPRITE_SIZE / 2
-                    wall.width = WALL_SPRITE_SIZE * column_count
                     self.wall_list.append(wall)
 
         # Set up the player
@@ -344,10 +330,30 @@ class MyGame(arcade.Window):
                 # Not in a wall! Success!
                 placed = True
 
+        # Draw info on the screen
+        sprite_count = len(self.wall_list)
+        output = f"Sprite Count: {sprite_count:,}"
+        self.sprite_count_text = arcade.Text(output,
+                                             20,
+                                             self.height - 20,
+                                             arcade.color.WHITE, 16)
+
+        output = "Drawing time:"
+        self.draw_time_text = arcade.Text(output,
+                                          20,
+                                          self.height - 40,
+                                          arcade.color.WHITE, 16)
+
+        output = "Processing time:"
+        self.processing_time_text = arcade.Text(output,
+                                                20,
+                                                self.height - 60,
+                                                arcade.color.WHITE, 16)
+
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
                                                          self.wall_list)
 
-        self.cam = arcade.camera.Camera2D()
+        self.scroll_to_player(camera_speed=1.0)
 
     def on_draw(self):
         """ Render the screen. """
@@ -359,31 +365,25 @@ class MyGame(arcade.Window):
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
 
+        # Select the scrolling camera
+        self.camera_sprites.use()
+
         # Draw the sprites
         self.wall_list.draw()
         self.player_list.draw()
 
+        # Use the non-scrolling camera
+        self.camera_gui.use()
+
         # Draw info on the screen
-        sprite_count = len(self.wall_list)
-
-        output = f"Sprite Count: {sprite_count}"
-        arcade.draw_text(output,
-                         self.cam.left + 20,
-                         WINDOW_HEIGHT - 20 + self.cam.bottom,
-                         arcade.color.WHITE, 16)
-
+        self.sprite_count_text.draw()
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output,
-                         self.cam.left + 20,
-                         WINDOW_HEIGHT - 40 + self.cam.bottom,
-                         arcade.color.WHITE, 16)
+        self.draw_time_text.text = output
+        self.draw_time_text.draw()
 
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output,
-                         self.cam.left + 20,
-                         WINDOW_HEIGHT - 60 + self.cam.bottom,
-                         arcade.color.WHITE, 16)
-
+        self.processing_time_text.text = output
+        self.processing_time_text.draw()
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_key_press(self, key, modifiers):
@@ -406,6 +406,18 @@ class MyGame(arcade.Window):
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.player_sprite.change_x = 0
 
+    def scroll_to_player(self, camera_speed):
+        """
+        Scroll the window to the player.
+
+        if CAMERA_SPEED is 1, the camera will immediately move to the desired position.
+        Anything between 0 and 1 will have the camera move to the location with a smoother
+        pan.
+        """
+
+        position = (self.player_sprite.center_x, self.player_sprite.center_y)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, camera_speed)
+
     def on_update(self, delta_time):
         """ Movement and game logic """
 
@@ -414,38 +426,8 @@ class MyGame(arcade.Window):
         # Move the player
         self.physics_engine.update()
 
-        # --- Manage Scrolling ---
-
-        # Track if we need to change the viewport
-
-        changed = False
-
-        # Scroll left
-        left_bndry = self.cam.left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_bndry:
-            self.cam.left -= left_bndry - self.player_sprite.left
-            changed = True
-
-        # Scroll right
-        right_bndry = self.cam.right - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_bndry:
-            self.cam.left += self.player_sprite.right - right_bndry
-            changed = True
-
-        # Scroll up
-        top_bndry = self.cam.top - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_bndry:
-            self.cam.bottom += self.player_sprite.top - top_bndry
-            changed = True
-
-        # Scroll down
-        bottom_bndry = self.cam.bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_bndry:
-            self.cam.bottom -= bottom_bndry - self.player_sprite.bottom
-            changed = True
-
-        if changed:
-            self.cam.use()
+        # Scroll the screen to the player
+        self.scroll_to_player(camera_speed=CAMERA_SPEED)
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time

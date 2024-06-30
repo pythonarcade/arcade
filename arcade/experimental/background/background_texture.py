@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, List, Tuple
+from typing import Optional
 
 from PIL import Image
 
@@ -22,7 +22,7 @@ class BackgroundTexture:
     def __init__(
         self,
         texture: gl.Texture2D,
-        offset: Tuple[float, float] = (0.0, 0.0),
+        offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
     ):
@@ -60,11 +60,11 @@ class BackgroundTexture:
         self._angle_transform = Mat3().rotate(value)
 
     @property
-    def offset(self) -> Tuple[float, float]:
+    def offset(self) -> tuple[float, float]:
         return self._offset
 
     @offset.setter
-    def offset(self, value: Tuple[float, float]):
+    def offset(self, value: tuple[float, float]):
         self._offset = value
         self._offset_transform = Mat3().translate(-value[0], value[1])
 
@@ -125,7 +125,7 @@ class BackgroundTexture:
     def render_target(
         self,
         context: ArcadeContext,
-        color_attachments: Optional[List[gl.Texture2D]] = None,
+        color_attachments: Optional[list[gl.Texture2D]] = None,
         depth_attachment: Optional[gl.Texture2D] = None,
     ) -> gl.Framebuffer:
         if color_attachments is None:
@@ -138,7 +138,7 @@ class BackgroundTexture:
     @staticmethod
     def from_file(
         tex_src: str,
-        offset: Tuple[float, float] = (0.0, 0.0),
+        offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         filters=(gl.NEAREST, gl.NEAREST),

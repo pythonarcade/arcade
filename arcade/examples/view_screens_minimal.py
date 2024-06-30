@@ -20,8 +20,8 @@ python -m arcade.examples.view_screens_minimal
 import arcade
 
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 1280
+HEIGHT = 720
 
 
 class MenuView(arcade.View):

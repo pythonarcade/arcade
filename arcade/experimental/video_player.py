@@ -4,10 +4,11 @@ Experimental video player using pyglet.
 This requires that you have ffmpeg installed
 and you might need to tell pyglet where it's located.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Tuple, Union
+from typing import Optional, Union
 
 # import sys
 import pyglet
@@ -33,7 +34,7 @@ class VideoPlayer:
         self._width = arcade.get_window().width
         self._height = arcade.get_window().height
 
-    def draw(self, left: int = 0, bottom: int = 0, size: Optional[Tuple[int, int]] = None) -> None:
+    def draw(self, left: int = 0, bottom: int = 0, size: Optional[tuple[int, int]] = None) -> None:
         """
         Call this in `on_draw`.
 
@@ -43,16 +44,15 @@ class VideoPlayer:
             self._width = size[0] or self.width
             self._height = size[1] or self.height
 
-        with self.ctx.pyglet_rendering():
-            self.ctx.disable(self.ctx.BLEND)
-            video_texture = self.player.texture
-            if video_texture:
-                video_texture.blit(
-                    left,
-                    bottom,
-                    width=self.width,
-                    height=self.height,
-                )
+        self.ctx.disable(self.ctx.BLEND)
+        video_texture = self.player.texture
+        if video_texture:
+            video_texture.blit(
+                left,
+                bottom,
+                width=self.width,
+                height=self.height,
+            )
 
     @property
     def width(self) -> int:
@@ -64,7 +64,7 @@ class VideoPlayer:
         """Video height."""
         return self._height
 
-    def get_video_size(self) -> Tuple[int, int]:
+    def get_video_size(self) -> tuple[int, int]:
         if not self.player.source or not self.player.source.video_format:
             return 0, 0
         video_format = self.player.source.video_format
@@ -87,7 +87,7 @@ class VideoPlayerView(arcade.View):
         self.video_player.draw()
 
 
-if __name__ == '__main__':
-    window = arcade.Window(800, 600, "Video Player")
+if __name__ == "__main__":
+    window = arcade.Window(1280, 720, "Video Player")
     window.show_view(VideoPlayerView(":resources:video/earth.mp4"))
     window.run()

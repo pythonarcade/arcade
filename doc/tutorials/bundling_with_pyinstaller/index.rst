@@ -51,9 +51,9 @@ Create a file called ``main.py`` that contains the following:
 
     import arcade
 
-    arcade.open_window(400, 400, "My Game")
+    window = arcade.open_window(400, 400, "My Game")
 
-    self.clear()
+    window.clear()
     arcade.draw_circle_filled(200, 200, 100, arcade.color.BLUE)
     arcade.finish_render()
 
@@ -229,6 +229,11 @@ game into a one-folder bundle with an executable inside it. This allows you to i
 the contents of the folder and make sure all of the files are where you expect them
 to be. The one-file bundle produced by ``--onefile`` is simply a
 self-uncompressing archive of this one-folder bundle.
+
+Specifying Your Own Resource Handler in ``--onefile`` mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See: :ref:`resource_handlers_one_file_builds`.
 
 PyInstaller Not Bundling a Needed Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

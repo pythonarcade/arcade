@@ -69,7 +69,7 @@ class VideoRecorderCV2(arcade.Window):
     def get_image(self):
         image_buffer = (gl.GLubyte * (3 * self.width * self.height))(0)
         gl.glReadPixels(0, 0, self.width, self.height, gl.GL_BGR, gl.GL_UNSIGNED_BYTE, image_buffer)
-        return numpy.frombuffer(image_buffer, dtype='uint8').reshape(self.height, self.width, 3)  # type: ignore
+        return numpy.frombuffer(image_buffer, dtype="uint8").reshape(self.height, self.width, 3)  # type: ignore
 
 
 def main():

@@ -131,9 +131,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
 
-        viewport = (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.camera = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
-        self.gui_camera = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
+        self.camera = arcade.camera.Camera2D()
 
         self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera.view_data,
                                                               max_amplitude=12.5,
@@ -164,42 +162,39 @@ class MyGame(arcade.Window):
 
     def on_resize(self, width, height):
         """Resize window"""
-        self.camera.projection = self.gui_camera.projection = (-width/2, width/2, -height/2, height/2)
-        self.camera.viewport = self.gui_camera.viewport = (0, 0, width, height)
+        super().on_resize(width, height)
+        self.camera.match_screen(and_projection=True)
 
     def on_draw(self):
         """Render the screen."""
         self.clear()
 
         self.camera_shake.update_camera()
-        self.camera.use()
-
-        # Draw our Scene
-        self.scene.draw()
-
+        with self.camera.activate():
+            # Draw our Scene
+            self.scene.draw()
         # Readjust the camera so the screen shake doesn't affect
         # the camera following algorithm.
         self.camera_shake.readjust_camera()
 
-        self.gui_camera.use()
+        with self.default_camera.activate():
+            # Update fps text periodically
+            if self.last_time and self.frame_count % 60 == 0:
+                fps = 1.0 / (time.time() - self.last_time) * 60
+                self.text_fps.text = f"FPS: {fps:5.2f}"
 
-        # Update fps text periodically
-        if self.last_time and self.frame_count % 60 == 0:
-            fps = 1.0 / (time.time() - self.last_time) * 60
-            self.text_fps.text = f"FPS: {fps:5.2f}"
+            self.text_fps.draw()
 
-        self.text_fps.draw()
+            if self.frame_count % 60 == 0:
+                self.last_time = time.time()
 
-        if self.frame_count % 60 == 0:
-            self.last_time = time.time()
+            # Draw Score
+            self.text_score.draw()
 
-        # Draw Score
-        self.text_score.draw()
-
-        # Draw game over
-        if self.game_over:
-            arcade.draw_text("Game Over", self.width/2, self.height/2, arcade.color.BLACK,
-                             30)
+            # Draw game over
+            if self.game_over:
+                arcade.draw_text("Game Over", self.width/2, self.height/2, arcade.color.BLACK,
+                                 30)
 
         self.frame_count += 1
 

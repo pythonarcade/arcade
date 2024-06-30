@@ -11,12 +11,13 @@ python -m arcade.examples.background_stationary
 import arcade
 import arcade.experimental.background as background
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 
 SCREEN_TITLE = "Stationary Background Example"
 
 PLAYER_SPEED = 300
+CAMERA_SPEED = 0.1
 
 
 class MyGame(arcade.Window):
@@ -30,6 +31,7 @@ class MyGame(arcade.Window):
         self.background = background.Background.from_file(
             ":resources:/images/backgrounds/abstract_1.jpg"
         )
+        self.background.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
         # Create the player sprite.
         self.player_sprite = arcade.SpriteSolidColor(20, 30, color=arcade.color.PURPLE)
@@ -55,7 +57,7 @@ class MyGame(arcade.Window):
             target_y = 0.0
         elif target_y > self.background.size[1]:
             target_y = self.background.size[1]
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), 0.1)
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
 
     def on_update(self, delta_time: float):
         new_position = (
@@ -75,23 +77,26 @@ class MyGame(arcade.Window):
         self.player_sprite.draw()
 
     def on_key_press(self, symbol: int, modifiers: int):
-        if symbol == arcade.key.LEFT:
+        if symbol in (arcade.key.LEFT, arcade.key.A):
             self.x_direction -= PLAYER_SPEED
-        elif symbol == arcade.key.RIGHT:
+        elif symbol in (arcade.key.RIGHT, arcade.key.D):
             self.x_direction += PLAYER_SPEED
-        elif symbol == arcade.key.DOWN:
+        elif symbol in (arcade.key.DOWN, arcade.key.S):
             self.y_direction -= PLAYER_SPEED
-        elif symbol == arcade.key.UP:
+        elif symbol in (arcade.key.UP, arcade.key.W):
             self.y_direction += PLAYER_SPEED
+        # Close the window if the user presses the escape key
+        elif symbol == arcade.key.ESCAPE:
+            self.close()
 
     def on_key_release(self, symbol: int, modifiers: int):
-        if symbol == arcade.key.LEFT:
+        if symbol in (arcade.key.LEFT, arcade.key.A):
             self.x_direction += PLAYER_SPEED
-        elif symbol == arcade.key.RIGHT:
+        elif symbol in (arcade.key.RIGHT, arcade.key.D):
             self.x_direction -= PLAYER_SPEED
-        elif symbol == arcade.key.DOWN:
+        elif symbol in (arcade.key.DOWN, arcade.key.S):
             self.y_direction += PLAYER_SPEED
-        elif symbol == arcade.key.UP:
+        elif symbol in (arcade.key.UP, arcade.key.W):
             self.y_direction -= PLAYER_SPEED
 
     def on_resize(self, width: int, height: int):

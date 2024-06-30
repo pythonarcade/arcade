@@ -69,16 +69,20 @@ class PlayerSprite(arcade.Sprite):
         # main_path = ":resources:images/animated_characters/zombie/zombie"
         # main_path = ":resources:images/animated_characters/robot/robot"
 
+        idle_texture = arcade.load_texture(f"{main_path}_idle.png")
+        jump_texture = arcade.load_texture(f"{main_path}_jump.png")
+        fall_texture = arcade.load_texture(f"{main_path}_fall.png")
+
         # Load textures for idle standing
-        self.idle_texture_pair = arcade.load_texture_pair(f"{main_path}_idle.png")
-        self.jump_texture_pair = arcade.load_texture_pair(f"{main_path}_jump.png")
-        self.fall_texture_pair = arcade.load_texture_pair(f"{main_path}_fall.png")
+        self.idle_texture_pair = idle_texture, idle_texture.flip_left_right()
+        self.jump_texture_pair = jump_texture, jump_texture.flip_left_right()
+        self.fall_texture_pair = fall_texture, fall_texture.flip_left_right()
 
         # Load textures for walking
         self.walk_textures = []
         for i in range(8):
-            texture = arcade.load_texture_pair(f"{main_path}_walk{i}.png")
-            self.walk_textures.append(texture)
+            texture = arcade.load_texture(f"{main_path}_walk{i}.png")
+            self.walk_textures.append((texture, texture.flip_left_right()))
 
         # Load textures for climbing
         self.climbing_textures = []
@@ -338,11 +342,11 @@ class GameWindow(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.LEFT:
+        if key in (arcade.key.LEFT, arcade.key.A):
             self.left_pressed = True
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = True
-        elif key == arcade.key.UP:
+        elif key in (arcade.key.UP, arcade.key.W):
             # find out if player is standing on ground
             if self.physics_engine.is_on_ground(self.player_sprite):
                 # She is! Go ahead and jump
@@ -352,13 +356,13 @@ class GameWindow(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP:
+        if key in (arcade.key.UP, arcade.key.W):
             self.up_pressed = False
-        elif key == arcade.key.DOWN:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.down_pressed = False
-        elif key == arcade.key.LEFT:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.left_pressed = False
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = False
 
     def on_update(self, delta_time):

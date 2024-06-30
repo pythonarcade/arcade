@@ -12,11 +12,11 @@ import arcade
 import random
 
 # Set up the constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Shapes!"
 
-NUMBER_OF_SHAPES = 250
+NUMBER_OF_SHAPES = 200
 
 
 class Shape:
@@ -57,8 +57,8 @@ class Ellipse(Shape):
 class Rectangle(Shape):
 
     def draw(self):
-        arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height,
-                                     self.color, self.angle)
+        arcade.draw_rect_filled(arcade.rect.XYWH(self.x, self.y, self.width, self.height),
+                                self.color, self.angle)
 
 
 class Line(Shape):
@@ -126,8 +126,6 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         """ Render the screen. """
-
-        # Clear teh screen
         self.clear()
 
         # Draw the shapes

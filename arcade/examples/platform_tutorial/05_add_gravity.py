@@ -69,8 +69,8 @@ class MyGame(arcade.Window):
             wall.position = coordinate
             self.wall_list.append(wall)
 
-        # Create a Platformer Physics Engine. 
-        # This will handle moving our player as well as collisions between 
+        # Create a Platformer Physics Engine.
+        # This will handle moving our player as well as collisions between
         # the player sprite and whatever SpriteList we specify for the walls.
         # It is important to supply static platforms to the walls parameter. There is a
         # platforms parameter that is intended for moving platforms.

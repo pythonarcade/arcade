@@ -2,6 +2,7 @@ from array import array
 import struct
 import pytest
 import arcade
+from arcade import gl
 
 
 def make_named_sprites(amount):
@@ -16,6 +17,40 @@ def make_named_sprites(amount):
 
     spritelist.extend(sprites)
     return spritelist
+
+
+def test_filter(window):
+    atlas = arcade.DefaultTextureAtlas((256, 256))
+    spritelist = arcade.SpriteList(atlas=atlas)
+    spritelist.append(arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE))
+
+    assert atlas.texture.filter == (gl.LINEAR, gl.LINEAR)
+    spritelist.draw(filter=(gl.NEAREST, gl.NEAREST))
+    assert atlas.texture.filter == (gl.NEAREST, gl.NEAREST)
+    spritelist.draw()
+    assert atlas.texture.filter == (gl.LINEAR, gl.LINEAR)
+    spritelist.draw(pixelated=True)
+    assert atlas.texture.filter == (gl.NEAREST, gl.NEAREST)
+
+
+def test_default_texture_filter(window):
+    arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    spritelist = arcade.SpriteList()
+    spritelist.append(arcade.SpriteSolidColor(10, 10, color=arcade.color.WHITE))
+    spritelist.draw()
+    assert spritelist.atlas.texture.filter == (gl.NEAREST, gl.NEAREST)
+
+
+# Temp fix for  https://github.com/pythonarcade/arcade/issues/2074
+def test_copy_dunder_stubs_raise_notimplementederror():
+    spritelist = arcade.SpriteList()
+    import copy
+
+    with pytest.raises(NotImplementedError):
+       _ = copy.copy(spritelist)
+
+    with pytest.raises(NotImplementedError):
+       _ = copy.deepcopy(spritelist)
 
 
 def test_it_can_extend_a_spritelist_from_a_list():
@@ -99,6 +134,22 @@ def test_it_can_pop_at_a_given_index():
     assert [s.name for s in spritelist] == [0, 2]
     # Indices will not change internally
     assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 2]
+
+
+def test_it_raises_indexerror_when_popping_from_empty_spritelist():
+    spritelist = make_named_sprites(0)
+
+    # With default index
+    with pytest.raises(IndexError):
+        spritelist.pop()
+
+    # With positional argument
+    with pytest.raises(IndexError):
+        spritelist.pop(0)
+
+    # With keyword argument
+    with pytest.raises(IndexError):
+        spritelist.pop(index=1)
 
 
 def test_setitem(ctx):
@@ -203,7 +254,14 @@ def test_color():
     sp.alpha = 172
     assert sp.alpha == 172
     assert sp.alpha_normalized == pytest.approx(172/255, rel=0.01)
-    sp.alpha_normalized == 1.0
+
+    # Setting float RGBA works
+    sp.color_normalized = 0.1, 0.2, 0.3, 0.4
+    assert sp.color_normalized == pytest.approx((0.1, 0.2, 0.3, 0.4), rel=0.1)
+
+    # Setting float RGB works
+    sp.color_normalized = 0.5, 0.6, 0.7
+    assert sp.color_normalized == pytest.approx((0.5, 0.6, 0.7, 1.0), rel=0.1)
 
     # Alpha Normalized
     sp.alpha_normalized = 0.5
@@ -223,3 +281,28 @@ def test_color():
     # sp.alpha_normalized = -1000
     # assert sp.alpha == 0
     # assert sp.alpha_normalized == 0.0
+
+
+def test_swap(window):
+    """Test swapping sprites including drawing order"""
+    window.clear()
+
+    sprites = [
+        arcade.SpriteSolidColor(10, 10, color=arcade.color.RED),
+        arcade.SpriteSolidColor(10, 10, color=arcade.color.GREEN)
+    ]
+    sl = arcade.SpriteList()
+    sl.extend(sprites)
+
+    # Green sprite is last in list and drawn last
+    sl.draw()
+    assert arcade.get_pixel(x=0, y=0, components=4) == arcade.color.GREEN
+    assert sl.sprite_list == sprites
+
+    # Swap the order
+    sl.swap(0, 1)
+
+    # Red sprite is last in list and drawn last
+    sl.draw()
+    assert arcade.get_pixel(x=0, y=0, components=4) == arcade.color.RED
+    assert sl.sprite_list == sprites[::-1]

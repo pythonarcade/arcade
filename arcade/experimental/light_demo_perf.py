@@ -6,8 +6,8 @@ import arcade
 from arcade.experimental.lights import Light, LightLayer
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Lighting Demo (Experimental)"
 
 
@@ -31,8 +31,12 @@ class MyGame(arcade.Window):
                     random.randrange(0, SCREEN_WIDTH),
                     random.randrange(0, SCREEN_HEIGHT),
                     radius=50,
-                    mode='soft',
-                    color=(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+                    mode="soft",
+                    color=(
+                        random.randint(0, 255),
+                        random.randint(0, 255),
+                        random.randint(0, 255),
+                    ),
                 ),
             )
 

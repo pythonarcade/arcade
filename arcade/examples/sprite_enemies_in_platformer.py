@@ -14,8 +14,8 @@ SPRITE_SCALING = 0.5
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Enemies in a Platformer Example"
 
 # How many pixels to keep as a minimum margin between the character

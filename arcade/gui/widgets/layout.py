@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, List, TypeVar, Optional, cast
+from typing import Iterable, TypeVar, Optional, cast
 
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UIWidget, UILayout
@@ -325,12 +325,7 @@ class UIBoxLayout(UILayout):
             # Determine if some space is available for children to grow
             available_height = max(0, self.height - self.size_hint_min[1])
             total_size_hint_height = (
-                sum(
-                    child.size_hint[1] or 0
-                    for child in self.children
-                    if child.size_hint
-                )
-                or 1
+                sum(child.size_hint[1] or 0 for child in self.children if child.size_hint) or 1
             )  # Prevent division by zero
 
             for child in self.children:
@@ -361,9 +356,7 @@ class UIBoxLayout(UILayout):
 
                 # Apply x-axis
                 if sh_w is not None:
-                    new_rect = new_rect.resize(
-                        width=max(available_width * sh_w, shmn_w or 0)
-                    )
+                    new_rect = new_rect.resize(width=max(available_width * sh_w, shmn_w or 0))
 
                     if shmn_w is not None:
                         new_rect = new_rect.min_size(width=shmn_w)
@@ -377,7 +370,7 @@ class UIBoxLayout(UILayout):
                     new_rect = new_rect.align_right(start_x + self.content_width)
                 else:
                     center_x = start_x + self.content_width // 2
-                    new_rect = new_rect.align_center_x(center_x)
+                    new_rect = new_rect.align_x(center_x)
 
                 new_rect = new_rect.align_top(start_y)
                 child.rect = new_rect
@@ -392,15 +385,9 @@ class UIBoxLayout(UILayout):
             # Calculate if some space is available for children to grow.
             available_width = max(0, self.width - self.size_hint_min[0])
             total_size_hint_width = (
-                sum(
-                    child.size_hint[0] or 0
-                    for child in self.children
-                    if child.size_hint
-                )
-                or 1
+                sum(child.size_hint[0] or 0 for child in self.children if child.size_hint) or 1
             )  # Prevent division by zero
 
-            # TODO Fix layout algorithm, handle size hints per dimension!
             # 0. check if any hint given, if not, continue with step 4.
             #   1. change size to minimal
             #   2. grow using size_hint
@@ -438,9 +425,7 @@ class UIBoxLayout(UILayout):
 
                 # Apply vertical axis
                 if sh_h is not None:
-                    new_rect = new_rect.resize(
-                        height=max(available_height * sh_h, shmn_h or 0)
-                    )
+                    new_rect = new_rect.resize(height=max(available_height * sh_h, shmn_h or 0))
 
                     if shmn_h is not None:
                         new_rect = new_rect.min_size(height=shmn_h)
@@ -454,7 +439,7 @@ class UIBoxLayout(UILayout):
                 elif self.align == "bottom":
                     new_rect = new_rect.align_bottom(start_y - self.content_height)
                 else:
-                    new_rect = new_rect.align_center_y(center_y)
+                    new_rect = new_rect.align_y(center_y)
 
                 new_rect = new_rect.align_left(start_x)
                 child.rect = new_rect
@@ -635,24 +620,17 @@ class UIGridLayout(UILayout):
         principal_height_ratio_list = []
 
         for row in max_height_per_row:
-            principal_height_ratio_list.append(
-                max(height / (span or 1) for height, span in row)
-            )
+            principal_height_ratio_list.append(max(height / (span or 1) for height, span in row))
 
         for col in max_width_per_column:
-            principal_width_ratio_list.append(
-                max(width / (span or 1) for width, span in col)
-            )
+            principal_width_ratio_list.append(max(width / (span or 1) for width, span in col))
 
         base_width = self._padding_left + self._padding_right + 2 * self._border_width
         base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
 
-        content_height = (
-            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
-        )
+        content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
         content_width = (
-            sum(principal_width_ratio_list)
-            + self.column_count * self._horizontal_spacing
+            sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
         )
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
@@ -665,7 +643,7 @@ class UIGridLayout(UILayout):
             return
 
         child_sorted_row_wise = cast(
-            List[List[UIWidget]],
+            list[list[UIWidget]],
             [[None for _ in range(self.column_count)] for _ in range(self.row_count)],
         )
 
@@ -692,9 +670,7 @@ class UIGridLayout(UILayout):
 
             max_height_per_row[row_num][col_num] = (child.height, row_span)
 
-            for row in child_sorted_row_wise[
-                row_num : row_num + row_span  # noqa: E203
-            ]:
+            for row in child_sorted_row_wise[row_num : row_num + row_span]:  # noqa: E203
                 row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
 
         principal_height_ratio_list = []
@@ -707,9 +683,7 @@ class UIGridLayout(UILayout):
             )
             principal_height_ratio_list.append(principal_height_ratio)
             for i, (height, span) in enumerate(row):
-                if (height + self._vertical_spacing) / (
-                    span or 1
-                ) < principal_height_ratio:
+                if (height + self._vertical_spacing) / (span or 1) < principal_height_ratio:
                     row[i] = (principal_height_ratio * span, span)
 
         # Making cell width same for each column.
@@ -719,20 +693,15 @@ class UIGridLayout(UILayout):
             )
             principal_width_ratio_list.append(principal_width_ratio)
             for i, (width, span) in enumerate(col):
-                if (width + self._horizontal_spacing) / (
-                    span or 1
-                ) < principal_width_ratio:
+                if (width + self._horizontal_spacing) / (span or 1) < principal_width_ratio:
                     col[i] = (principal_width_ratio * span, span)
 
-        content_height = (
-            sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
-        )
+        content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
         content_width = (
-            sum(principal_width_ratio_list)
-            + self.column_count * self._horizontal_spacing
+            sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
         )
 
-        def ratio(dimensions: List) -> List:
+        def ratio(dimensions: list) -> list:
             """
             Used to calculate ratio of the elements based on the minimum value in the parameter.
             :param dimension: List containing max height or width of the cells.
@@ -743,12 +712,8 @@ class UIGridLayout(UILayout):
         expandable_height_ratio = ratio(principal_width_ratio_list)
         expandable_width_ratio = ratio(principal_height_ratio_list)
 
-        total_available_height = (
-            self.content_rect.top - content_height - self.content_rect.bottom
-        )
-        total_available_width = (
-            self.content_rect.right - content_width - self.content_rect.left
-        )
+        total_available_height = self.content_rect.top - content_height - self.content_rect.bottom
+        total_available_width = self.content_rect.right - content_width - self.content_rect.left
 
         # Row wise rendering children
         for row_num, row in enumerate(child_sorted_row_wise):
@@ -758,30 +723,22 @@ class UIGridLayout(UILayout):
             for col_num, child in enumerate(row):
                 constant_height = max_height_per_row[row_num][col_num][0]
                 height_expand_ratio = expandable_height_ratio[col_num]
-                available_height = (
-                    constant_height + total_available_height * height_expand_ratio
-                )
+                available_height = constant_height + total_available_height * height_expand_ratio
 
                 constant_width = max_width_per_column[col_num][row_num][0]
                 width_expand_ratio = expandable_width_ratio[row_num]
-                available_width = (
-                    constant_width + total_available_width * width_expand_ratio
-                )
+                available_width = constant_width + total_available_width * width_expand_ratio
 
                 if child is not None and constant_width != 0 and constant_height != 0:
                     new_rect = child.rect
                     sh_w, sh_h = 0, 0
 
                     if child.size_hint:
-                        sh_w, sh_h = (child.size_hint[0] or 0), (
-                            child.size_hint[1] or 0
-                        )
+                        sh_w, sh_h = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
                     shmn_w, shmn_h = child.size_hint_min or (None, None)
                     shmx_w, shmx_h = child.size_hint_max or (None, None)
 
-                    new_height = max(
-                        shmn_h or 0, sh_h * available_height or child.height
-                    )
+                    new_height = max(shmn_h or 0, sh_h * available_height or child.height)
                     if shmx_h:
                         new_height = min(shmx_h, new_height)
 
@@ -804,14 +761,14 @@ class UIGridLayout(UILayout):
                     elif self.align_vertical == "bottom":
                         new_rect = new_rect.align_bottom(start_y - cell_height)
                     else:
-                        new_rect = new_rect.align_center_y(center_y)
+                        new_rect = new_rect.align_y(center_y)
 
                     if self.align_horizontal == "left":
                         new_rect = new_rect.align_left(start_x - cell_width)
                     elif self.align_horizontal == "right":
                         new_rect = new_rect.align_right(start_x)
                     else:
-                        new_rect = new_rect.align_center_x(center_x)
+                        new_rect = new_rect.align_x(center_x)
 
                     child.rect = new_rect
 

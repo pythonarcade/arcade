@@ -12,11 +12,9 @@ import arcade
 class WhiteSpriteCircleExample(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600, "White SpriteCircle Example")
+        super().__init__(1280, 720, "White SpriteCircle Example")
         self.sprites = None
-        self.setup()
 
-    def setup(self):
         # 1. Create the SpriteList
         self.sprites = arcade.SpriteList()
 
@@ -26,7 +24,10 @@ class WhiteSpriteCircleExample(arcade.Window):
         self.sprites.append(self.circle)  # Append the instance to the SpriteList
 
     def on_draw(self):
-        # 3. Call draw() on the SpriteList inside an on_draw() method
+        # 3. Clear the screen
+        self.clear()
+
+        # 4. Call draw() on the SpriteList inside an on_draw() method
         self.sprites.draw()
 
 

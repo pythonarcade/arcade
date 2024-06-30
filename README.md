@@ -42,6 +42,9 @@ See: https://api.arcade.academy/en/latest/sample_games.html
     }
 ```
 
-## Contact the Maintainer
+## Contact the Maintainers
+
+The best way to contact and chat with the maintainers is on the
+[Python Arcade Discord channel](https://discord.gg/ZjGDqMp).
 
 paul@cravenfamily.com

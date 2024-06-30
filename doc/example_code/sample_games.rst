@@ -13,6 +13,44 @@ You also might want to check out sample Arcade games from:
 * :ref:`concept_games`
 * :ref:`platformer_tutorial`
 
+Brazier
+~~~~~~~
+
+.. image:: https://img.itch.zone/aW1nLzE2NDkzMDIyLnBuZw==/315x250%23c/2l4Uej.png
+   :width: 400px
+
+- [Itch page](https://dragonmoffon.itch.io/brazier)
+- [GitHub page](https://github.com/DragonMoffon/MiniJam160-Light)
+
+PhotoShip
+~~~~~~~~~
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjc2NDUxOC8xNjQ5MjYwOC5wbmc=/794x1000/aPyjik.png
+   :width: 400px
+
+- [Itch page](https://clodon.itch.io/photoship)
+- [GitHub page](https://github.com/clodon2/PhotoShip)
+
+
+Space Station Builder
+~~~~~~~~~~~~~~~~~~~~~
+
+Build your own space station!
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjY5NTk3NC8xNjA3MTA2Ni5naWY=/794x1000/ONUlqh.gif
+   :width: 500px
+
+Download at [Kosmolonia on itch.io](https://aliskda.itch.io/kosmolonia).
+
+Notepad Doodles
+~~~~~~~~~~~~~~~
+
+Survive waves of monsters!
+
+.. image:: https://img.itch.zone/aW1hZ2UvMjYxOTIxOS8xNjE5MTMxMi5wbmc=/original/dGbRh5.png
+   :width: 400px
+
+Download at [Notepad Doodles on itch.io](https://arkturdev.itch.io/notepad-doodles).
 
 BoxHead Survivor
 ~~~~~~~~~~~~~~~~

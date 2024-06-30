@@ -1,12 +1,23 @@
-from typing import Optional, Tuple, Iterator, TYPE_CHECKING
+from __future__ import annotations
+
+from typing import Optional, Generator, TYPE_CHECKING
+from typing_extensions import Self
 from contextlib import contextmanager
 
 from math import tan, radians
-from pyglet.math import Mat4, Vec3, Vec4
+from pyglet.math import Mat4, Vec3, Vec2
 
 from arcade.camera.data_types import Projector, CameraData, PerspectiveProjectionData
+from arcade.camera.projection_functions import (
+    generate_view_matrix,
+    generate_perspective_matrix,
+    project_perspective,
+    unproject_perspective,
+)
 
+from arcade.types import Point, Rect, LBWH
 from arcade.window_commands import get_window
+
 if TYPE_CHECKING:
     from arcade import Window
 
@@ -14,7 +25,7 @@ if TYPE_CHECKING:
 __all__ = ("PerspectiveProjector",)
 
 
-class PerspectiveProjector:
+class PerspectiveProjector(Projector):
     """
     The simplest from of a perspective camera.
     Using ViewData and PerspectiveProjectionData PoDs (Pack of Data)
@@ -39,90 +50,84 @@ class PerspectiveProjector:
                 contains the field of view, aspect ratio, and then near and far planes.
     """
 
-    def __init__(self, *,
-                 window: Optional["Window"] = None,
-                 view: Optional[CameraData] = None,
-                 projection: Optional[PerspectiveProjectionData] = None):
+    def __init__(
+        self,
+        *,
+        window: Optional["Window"] = None,
+        view: Optional[CameraData] = None,
+        projection: Optional[PerspectiveProjectionData] = None,
+        viewport: Optional[Rect] = None,
+        scissor: Optional[Rect] = None,
+    ):
         self._window: "Window" = window or get_window()
+
+        self.viewport: Rect = viewport or LBWH(0, 0, self._window.width, self._window.height)
+        self.scissor: Optional[Rect] = scissor
 
         self._view = view or CameraData(  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position
             (0.0, 1.0, 0.0),  # Up
             (0.0, 0.0, -1.0),  # Forward
-            1.0  # Zoom
+            1.0,  # Zoom
         )
 
         self._projection = projection or PerspectiveProjectionData(
             self._window.width / self._window.height,  # Aspect
             60,  # Field of View,
-            0.01, 100.0,  # near, # far
-            (0, 0, self._window.width, self._window.height)  # Viewport
+            0.01,
+            100.0,  # near, # far
         )
 
     @property
     def view(self) -> CameraData:
-        """
+        """Get the internal :py:class:`~arcade.camera.data_types.CameraData`.
+
+        This is a read-only property.
         The CameraData. Is a read only property.
         """
         return self._view
 
     @property
     def projection(self) -> PerspectiveProjectionData:
-        """
-        The OrthographicProjectionData. Is a read only property.
+        """Get the :py:class:`~arcade.camera.data_types.PerspectiveProjectionData`.
+
+        This is a read-only property.
         """
         return self._projection
 
-    def _generate_projection_matrix(self) -> Mat4:
+    def generate_projection_matrix(self) -> Mat4:
+        """Generates a projection matrix.
+
+        This is an alias of
+        :py:class:`arcade.camera.get_perspective_matrix`.
         """
-        Using the OrthographicProjectionData a projection matrix is generated where the size of the
-        objects is not affected by depth.
+        return generate_perspective_matrix(self._projection, self._view.zoom)
 
-        Generally keep the scale value to integers or negative powers of integers (2^-1, 3^-1, 2^-2, etc.) to keep
-        the pixels uniform in size. Avoid a zoom of 0.0.
+    def generate_view_matrix(self) -> Mat4:
+        """Generates a view matrix.
+
+        This is an alias of=
+        :py:class:`arcade.camera.get_view_matrix`.
         """
-        _proj = self._projection
-
-        return Mat4.perspective_projection(_proj.aspect, _proj.near, _proj.far, _proj.fov / self._view.zoom)
-
-    def _generate_view_matrix(self) -> Mat4:
-        """
-        Using the ViewData it generates a view matrix from the pyglet Mat4 look at function
-        """
-        # Even if forward and up are normalised floating point error means every vector must be normalised.
-        fo = Vec3(*self._view.forward).normalize()  # Forward Vector
-        up = Vec3(*self._view.up)  # Initial Up Vector (Not necessarily perpendicular to forward vector)
-        ri = fo.cross(up).normalize()  # Right Vector
-        up = ri.cross(fo).normalize()  # Up Vector
-        po = Vec3(*self._view.position)
-        return Mat4((
-            ri.x,  up.x,  -fo.x,  0,
-            ri.y,  up.y,  -fo.y,  0,
-            ri.z,  up.z,  -fo.z,  0,
-            -ri.dot(po), -up.dot(po), fo.dot(po), 1
-        ))
-
-    def use(self) -> None:
-        """
-        Sets the active camera to this object.
-        Then generates the view and projection matrices.
-        Finally, the gl context viewport is set, as well as the projection and view matrices.
-        """
-
-        self._window.current_camera = self
-
-        _projection = self._generate_projection_matrix()
-        _view = self._generate_view_matrix()
-
-        self._window.ctx.viewport = self._projection.viewport
-        self._window.projection = _projection
-        self._window.view = _view
+        return generate_view_matrix(self._view)
 
     @contextmanager
-    def activate(self) -> Iterator[Projector]:
-        """
-        A context manager version of OrthographicProjector.use() which allows for the use of
-        `with` blocks. For example, `with camera.activate() as cam: ...`.
+    def activate(self) -> Generator[Self, None, None]:
+        """Set this camera as the current one, then undo it after.
+
+        This method is a :external:ref:`context manager <context-managers>`
+        you can use inside ``with`` blocks. Using it this way guarantees
+        that the old camera and its settings will be restored, even if an
+        exception occurs:
+
+        .. code-block:: python
+
+           # Despite an Exception, the previous camera and its settings
+           # will be restored at the end of the with block below:
+           with projector_instance.activate():
+                sprite_list.draw()
+                _ = 1 / 0  # Guaranteed ZeroDivisionError
+
         """
         previous_projector = self._window.current_camera
         try:
@@ -131,39 +136,88 @@ class PerspectiveProjector:
         finally:
             previous_projector.use()
 
-    def map_screen_to_world_coordinate(
-            self,
-            screen_coordinate: Tuple[float, float],
-            depth: Optional[float] = None
-    ) -> Tuple[float, float, float]:
-        """
-        Take in a pixel coordinate from within
-        the range of the window size and returns
-        the world space coordinates.
+    def use(self) -> None:
+        """Set the active camera to this object and apply other config.
 
-        Essentially reverses the effects of the projector.
+        This includes the following steps:
+
+        #. Set the window's current camera to this one
+        #. Generate appropriate view and projection matrices
+        #. Set the GL context's viewport and scissorbox values
+        #. Apply the relevant matrices to Arcade's
+           :py:class:`~arcade.Window` object
+        """
+
+        self._window.current_camera = self
+
+        _projection = generate_perspective_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
+
+        self._window.ctx.viewport = self.viewport.viewport
+        self._window.ctx.scissor = None if not self.scissor else self.scissor.viewport
+        self._window.projection = _projection
+        self._window.view = _view
+
+    def project(self, world_coordinate: Point) -> Vec2:
+        """Convert world coordinates to pixel screen coordinates.
+
+        If a 2D :py:class:`Vec2` is provided instead of a 3D
+        :py:class:`Vec3`, then one will be calculated to the best of the
+        method's ability.
 
         Args:
-            screen_coordinate: A 2D position in pixels from the bottom left of the screen.
-                               This should ALWAYS be in the range of 0.0 - screen size.
-            depth: The depth of the query
+            world_coordinate:
+                A :py:class:`Vec2` or :py:class:`Vec3` as world
+                coordinates.
+
         Returns:
-            A 3D vector in world space.
+            A 2D screen pixel coordinate.
         """
-        depth = depth or (0.5 * self._projection.viewport[3] / tan(
-            radians(0.5 * self._projection.fov / self._view.zoom)))
+        x, y, *z = world_coordinate
+        z = (
+            (
+                0.5
+                * self.viewport.height
+                / tan(radians(0.5 * self._projection.fov / self._view.zoom))
+            )
+            if not z
+            else z[0]
+        )
 
-        screen_x = 2.0 * (screen_coordinate[0] - self._projection.viewport[0]) / self._projection.viewport[2] - 1
-        screen_y = 2.0 * (screen_coordinate[1] - self._projection.viewport[1]) / self._projection.viewport[3] - 1
+        _projection = generate_perspective_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
 
-        screen_x *= depth
-        screen_y *= depth
+        pos = project_perspective(Vec3(x, y, z), self.viewport.viewport, _view, _projection)
 
-        projected_position = Vec4(screen_x, screen_y, 1.0, 1.0)
+        return pos
 
-        _projection = ~self._generate_projection_matrix()
-        view_position = _projection @ projected_position
-        _view = ~self._generate_view_matrix()
-        world_position = _view @ Vec4(view_position.x, view_position.y, depth, 1.0)
+    # TODO: update args
+    def unproject(self, screen_coordinate: Point) -> Vec3:
+        """Convert a pixel coordinate into world space.
 
-        return world_position.x, world_position.y, world_position.z
+        This reverses the effects of :py:meth:`.project`.
+
+        Args:
+            screen_coordinate:
+                A 2D position in pixels from the bottom left of the screen.
+                This should ALWAYS be in the range of 0.0 - screen size.
+
+        Returns: A 3D vector in world space.
+
+        """
+        x, y, *z = screen_coordinate
+        z = (
+            (
+                0.5
+                * self.viewport.height
+                / tan(radians(0.5 * self._projection.fov / self._view.zoom))
+            )
+            if not z
+            else z[0]
+        )
+
+        _projection = generate_perspective_matrix(self._projection, self._view.zoom)
+        _view = generate_view_matrix(self._view)
+
+        pos = unproject_perspective(Vec3(x, y, z), self.viewport.viewport, _view, _projection)
+        return pos

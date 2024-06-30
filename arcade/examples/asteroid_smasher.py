@@ -24,8 +24,8 @@ STARTING_ASTEROID_COUNT = 3
 SCALE = 0.5
 
 # Screen dimensions and limits
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 OFFSCREEN_SPACE = 300
 LEFT_LIMIT = -OFFSCREEN_SPACE
 RIGHT_LIMIT = SCREEN_WIDTH + OFFSCREEN_SPACE
@@ -35,6 +35,12 @@ TOP_LIMIT = SCREEN_HEIGHT + OFFSCREEN_SPACE
 # Control player speed
 TURN_SPEED = 3
 THRUST_AMOUNT = 0.2
+
+# Asteroid types
+ASTERIOD_TYPE_BIG = 4
+ASTERIOD_TYPE_MEDIUM = 3
+ASTERIOD_TYPE_SMALL = 2
+ASTERIOD_TYPE_TINY = 1
 
 
 class TurningSprite(arcade.Sprite):
@@ -133,11 +139,11 @@ class ShipSprite(arcade.Sprite):
 
 
 class AsteroidSprite(arcade.Sprite):
-    """ Sprite that represents an asteroid. """
+    """Sprite that represents an asteroid."""
 
-    def __init__(self, image_file_name, scale):
+    def __init__(self, image_file_name, scale, type):
         super().__init__(image_file_name, scale=scale)
-        self.size = 0
+        self.type = type
 
     def update(self):
         """ Move the asteroid around. """
@@ -229,7 +235,7 @@ class MyGame(arcade.Window):
             # Pick one of four random rock images
             image_no = random.randrange(4)
 
-            enemy_sprite = AsteroidSprite(image_list[image_no], scale=SCALE)
+            enemy_sprite = AsteroidSprite(image_list[image_no], scale=SCALE, type=ASTERIOD_TYPE_BIG)
 
             # Set position
             enemy_sprite.center_y = random.randrange(BOTTOM_LIMIT, TOP_LIMIT)
@@ -240,7 +246,6 @@ class MyGame(arcade.Window):
             enemy_sprite.change_y = random.random() * 2 - 1
             enemy_sprite.change_angle = (random.random() - 0.5) * 2
 
-            enemy_sprite.size = 4
             self.asteroid_list.append(enemy_sprite)
 
         self.text_score.text = f"Score: {self.score}"
@@ -296,6 +301,12 @@ class MyGame(arcade.Window):
             self.player_sprite.thrust = THRUST_AMOUNT
         elif symbol == arcade.key.DOWN:
             self.player_sprite.thrust = -THRUST_AMOUNT
+        # Restart the game if the player hits 'R'
+        elif symbol == arcade.key.R:
+            self.start_new_game()
+        # Quit if the player hits escape
+        elif symbol == arcade.key.ESCAPE:
+            self.close()
 
     def on_key_release(self, symbol, modifiers):
         """ Called whenever a key is released. """
@@ -314,14 +325,16 @@ class MyGame(arcade.Window):
         y = asteroid.center_y
         self.score += 1
 
-        if asteroid.size == 4:
+        if asteroid.type == ASTERIOD_TYPE_BIG:
+            # Split large asteroid into 2 medium ones
             for i in range(3):
                 image_no = random.randrange(2)
                 image_list = [":resources:images/space_shooter/meteorGrey_med1.png",
                               ":resources:images/space_shooter/meteorGrey_med2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              scale=SCALE * 1.5)
+                                              scale=SCALE * 1.5,
+                                              type=ASTERIOD_TYPE_MEDIUM)
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
@@ -330,19 +343,20 @@ class MyGame(arcade.Window):
                 enemy_sprite.change_y = random.random() * 2.5 - 1.25
 
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
-                enemy_sprite.size = 3
 
                 self.asteroid_list.append(enemy_sprite)
                 self.hit_sound1.play()
 
-        elif asteroid.size == 3:
+        elif asteroid.type == ASTERIOD_TYPE_MEDIUM:
+            # Split medium asteroid into 2 small ones
             for i in range(3):
                 image_no = random.randrange(2)
                 image_list = [":resources:images/space_shooter/meteorGrey_small1.png",
                               ":resources:images/space_shooter/meteorGrey_small2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              scale=SCALE * 1.5)
+                                              scale=SCALE * 1.5,
+                                              type=ASTERIOD_TYPE_SMALL)
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
@@ -351,19 +365,20 @@ class MyGame(arcade.Window):
                 enemy_sprite.change_y = random.random() * 3 - 1.5
 
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
-                enemy_sprite.size = 2
 
                 self.asteroid_list.append(enemy_sprite)
                 self.hit_sound2.play()
 
-        elif asteroid.size == 2:
+        elif asteroid.type == ASTERIOD_TYPE_SMALL:
+            # Split small asteroid into 2 tiny ones
             for i in range(3):
                 image_no = random.randrange(2)
                 image_list = [":resources:images/space_shooter/meteorGrey_tiny1.png",
                               ":resources:images/space_shooter/meteorGrey_tiny2.png"]
 
                 enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              scale=SCALE * 1.5)
+                                              scale=SCALE * 1.5,
+                                              type=ASTERIOD_TYPE_TINY)
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
@@ -372,12 +387,12 @@ class MyGame(arcade.Window):
                 enemy_sprite.change_y = random.random() * 3.5 - 1.75
 
                 enemy_sprite.change_angle = (random.random() - 0.5) * 2
-                enemy_sprite.size = 1
 
                 self.asteroid_list.append(enemy_sprite)
                 self.hit_sound3.play()
 
-        elif asteroid.size == 1:
+        elif asteroid.type == ASTERIOD_TYPE_TINY:
+            # Do nothing. The tiny asteroid just goes away.
             self.hit_sound4.play()
 
     def on_update(self, x):

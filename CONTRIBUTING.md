@@ -79,6 +79,40 @@ pip install --upgrade pip
 Mac & Linux users can improve their development experience further by following the optional
 steps at the end of this document.
 
+## Formatting
+
+Arcade uses [Black](https://black.readthedocs.io/en/stable) for autoformatting our code.
+
+This can be run both with our `make.py` script, as well as setup for your editor to run it automatically.
+See [this link](https://black.readthedocs.io/en/stable/integrations/editors.html) for more information on
+Black integration for your specific editor.
+
+The following command will run black for you if you do not want to configure your editor to do it. It can be
+a good idea to run this command when you are finished working anyways, as our CI will use this to check that
+the formatting is correct.
+
+```bash
+python make.py format
+```
+
+### Use pre-commit hooks to automatically run formatting
+
+You can use `pre-commit <https://pre-commit.com/>`_ to automatically run lint, formatting and type checks against 
+your changes before you commit them.
+To install pre-commit, run the following command:
+
+.. code-block:: shell
+
+    pip install pre-commit
+    # or on Mac
+    brew install pre-commit
+
+Then, run the following command to install the pre-commit hooks:
+
+.. code-block:: shell
+
+    pre-commit install
+
 ## Testing
 
 You should test your changes locally before submitting a pull request

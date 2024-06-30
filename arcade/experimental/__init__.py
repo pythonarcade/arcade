@@ -1,6 +1,7 @@
 """
 Experimental stuff. API may change.
 """
+
 from __future__ import annotations
 
 from .video_player import VideoPlayer, VideoPlayerView
@@ -14,7 +15,7 @@ from .background import (
     ParallaxGroup,
     BackgroundTexture,
     texture_from_file,
-    background_from_file
+    background_from_file,
 )
 
 
@@ -32,7 +33,7 @@ __all__ = [
     "ParallaxGroup",
     "BackgroundTexture",
     "texture_from_file",
-    "background_from_file"
+    "background_from_file",
 ]
 
 
@@ -40,10 +41,12 @@ __all__ = [
 try:
     from .video_cv2 import CV2PlayerView, VideoPlayerCV2  # noqa: F401
 
-    __all__.extend([
-        "VideoPlayerCV2",
-        "CV2PlayerView",
-    ])
+    __all__.extend(
+        [
+            "VideoPlayerCV2",
+            "CV2PlayerView",
+        ]
+    )
 
 except ImportError:
     pass

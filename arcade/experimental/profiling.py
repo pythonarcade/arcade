@@ -1,6 +1,7 @@
 """
 Simple experimental profiler. This api is not stable.
 """
+
 from __future__ import annotations
 
 import cProfile
@@ -34,6 +35,7 @@ class Profiler:
 
     :param sort_by: function sort order
     """
+
     def __init__(self, sort_by="tottime"):
         self._sort_by = sort_by
         self._profiler = cProfile.Profile()

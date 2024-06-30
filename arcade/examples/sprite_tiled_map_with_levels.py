@@ -14,18 +14,14 @@ import arcade
 TILE_SPRITE_SCALING = 0.5
 PLAYER_SCALING = 0.6
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Tiled Map with Levels Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SPRITE_SCALING
 
-# How many pixels to keep as a minimum margin between the character
-# and the edge of the screen.
-VIEWPORT_MARGIN_TOP = 60
-VIEWPORT_MARGIN_BOTTOM = 60
-VIEWPORT_MARGIN_RIGHT = 270
-VIEWPORT_MARGIN_LEFT = 270
+# How many pixels to keep as a maximum between the player and the camera.
+CAMERA_BOUNDARY =  arcade.LRBT(-140, 140,-100,300)
 
 # Physics
 MOVEMENT_SPEED = 5
@@ -53,7 +49,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
         self.physics_engine = None
-        self.cam = None
+        self.camera = None
         self.end_of_map = 0
         self.game_over = False
         self.last_time = None
@@ -109,7 +105,7 @@ class MyGame(arcade.Window):
             self.background_color = self.tile_map.background_color
 
         # Reset cam
-        self.cam = arcade.camera.Camera2D()
+        self.camera = arcade.camera.Camera2D()
 
     def on_draw(self):
         """
@@ -132,8 +128,8 @@ class MyGame(arcade.Window):
         if self.fps_message:
             arcade.draw_text(
                 self.fps_message,
-                self.cam.left + 10,
-                self.cam.bottom + 40,
+                self.camera.left + 10,
+                self.camera.bottom + 40,
                 arcade.color.BLACK,
                 14,
             )
@@ -145,16 +141,17 @@ class MyGame(arcade.Window):
         # Adjust the text position based on the view port so that we don't
         # scroll the text too.
         distance = self.player_sprite.right
+        left, bottom = self.camera.bottom_left
         output = f"Distance: {distance:.0f}"
         arcade.draw_text(
-            output, self.cam.left + 10, self.cam.bottom + 20, arcade.color.BLACK, 14
+            output, left + 10, bottom + 20, arcade.color.BLACK, 14
         )
 
         if self.game_over:
             arcade.draw_text(
                 "Game Over",
-                self.cam.left + 200,
-                self.cam.bottom + 200,
+                left + 200,
+                bottom + 200,
                 arcade.color.BLACK,
                 30,
             )
@@ -197,38 +194,11 @@ class MyGame(arcade.Window):
         if not self.game_over:
             self.physics_engine.update()
 
-        # --- Manage Scrolling ---
-
-        # Track if we need to change the viewport
-
-        changed = False
-
-        # Scroll left
-        left_bndry = self.cam.left + VIEWPORT_MARGIN_LEFT
-        if self.player_sprite.left < left_bndry:
-            self.cam.left -= left_bndry - self.player_sprite.left
-            changed = True
-
-        # Scroll right
-        right_bndry = self.cam.right - VIEWPORT_MARGIN_RIGHT
-        if self.player_sprite.right > right_bndry:
-            self.cam.left += self.player_sprite.right - right_bndry
-            changed = True
-
-        # Scroll up
-        top_bndry = self.cam.top - VIEWPORT_MARGIN_TOP
-        if self.player_sprite.top > top_bndry:
-            self.cam.bottom += self.player_sprite.top - top_bndry
-            changed = True
-
-        # Scroll down
-        bottom_bndry = self.cam.bottom + VIEWPORT_MARGIN_BOTTOM
-        if self.player_sprite.bottom < bottom_bndry:
-            self.cam.bottom -= bottom_bndry - self.player_sprite.bottom
-            changed = True
-
-        if changed:
-            self.cam.use()
+            # --- Manage Scrolling ---
+            self.camera.position = arcade.camera.grips.constrain_boundary_xy(
+                self.camera.view_data, CAMERA_BOUNDARY, self.player_sprite.position
+            )
+            self.camera.use()
 
 
 def main():

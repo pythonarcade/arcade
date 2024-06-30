@@ -12,6 +12,7 @@ in a separate buffer with separate capture mode.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.transform_multi
 """
+
 import struct
 import arcade
 
@@ -19,7 +20,7 @@ import arcade
 class App(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600)
+        super().__init__(1280, 720)
         self.num_invocations = 20
 
         # Simple transform program outputting the vertex id

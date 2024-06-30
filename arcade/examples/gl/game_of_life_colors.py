@@ -16,6 +16,7 @@ the constants at the top of the file after the imports.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.game_of_life_colors
 """
+
 import random
 from array import array
 
@@ -45,11 +46,7 @@ class GameOfLife(arcade.Window):
             components=3,
             filter=(self.ctx.NEAREST, self.ctx.NEAREST),
         )
-        self.texture_2 = self.ctx.texture(
-            self.texture_size,
-            components=3,
-            filter=(self.ctx.NEAREST, self.ctx.NEAREST)
-        )
+        self.texture_2 = self.ctx.texture(self.texture_size, components=3, filter=(self.ctx.NEAREST, self.ctx.NEAREST))
         self.write_initial_state()
 
         # Add the textures to framebuffers so we can render to them
@@ -183,7 +180,7 @@ class GameOfLife(arcade.Window):
     def write_initial_state(self):
         """Write initial data to the source texture."""
         size = self.texture_size
-        self.texture_1.write(array('B', self.gen_initial_data(size[0] * size[1] * 3)))
+        self.texture_1.write(array("B", self.gen_initial_data(size[0] * size[1] * 3)))
 
     def on_draw(self):
         self.clear()

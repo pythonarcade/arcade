@@ -2,15 +2,13 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from typing import Any, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
+from typing import Any, Optional, Type, Union, TYPE_CHECKING
 from pathlib import Path
-from weakref import WeakSet
 
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageOps
 
-from arcade import cache as _cache
 from arcade import hitbox
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox.base import HitBoxAlgorithm
@@ -26,10 +24,10 @@ from arcade.texture.transforms import (
     TransverseTransform,
 )
 
-from arcade.types import RGBA255, PointList
+from arcade.types import RGBA255, Point2List
+from arcade.types.rect import Rect
 
 if TYPE_CHECKING:
-    from arcade import TextureAtlas
     from arcade.sprite_list import SpriteList
 
 __all__ = ["ImageData", "Texture"]
@@ -56,7 +54,7 @@ class ImageData:
     __slots__ = ("image", "hash", "__weakref__")
     hash_func = "sha256"
 
-    def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None):
+    def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None, **kwargs):
         self.image = image
         self.hash = hash or self.calculate_hash(image)
 
@@ -86,7 +84,7 @@ class ImageData:
         return self.image.height
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         The size of the image
         """
@@ -121,7 +119,6 @@ class Texture:
     """
     An arcade.Texture is simply a wrapper for image data as a Pillow image
     and the hit box data for this image used in collision detection.
-    Usually created by the :class:`load_texture` or :class:`load_textures` commands.
 
     :param image: The image or ImageData for this texture
     :param hit_box_algorithm: The algorithm to use for calculating the hit box.
@@ -145,7 +142,6 @@ class Texture:
         "_file_path",
         "_crop_values",
         "_properties",
-        "_atlas_refs",
         "__weakref__",
     )
 
@@ -154,7 +150,7 @@ class Texture:
         image: Union[PIL.Image.Image, ImageData],
         *,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        hit_box_points: Optional[PointList] = None,
+        hit_box_points: Optional[Point2List] = None,
         hash: Optional[str] = None,
         **kwargs,
     ):
@@ -167,8 +163,7 @@ class Texture:
             self._image_data = image
         else:
             raise TypeError(
-                "image must be an instance of PIL.Image.Image or ImageData, "
-                f"not {type(image)}"
+                "image must be an instance of PIL.Image.Image or ImageData, " f"not {type(image)}"
             )
 
         # Set the size of the texture since this is immutable
@@ -191,20 +186,15 @@ class Texture:
         self._cache_name: str = ""
         self._atlas_name: str = ""
         self._update_cache_names()
-        self._hit_box_points: PointList = (
-            hit_box_points or self._calculate_hit_box_points()
-        )
-
-        # Track what atlases the image is in
-        self._atlas_refs: Optional[WeakSet["TextureAtlas"]] = None
+        self._hit_box_points: Point2List = hit_box_points or self._calculate_hit_box_points()
 
         # Optional filename for debugging
         self._file_path: Optional[Path] = None
-        self._crop_values: Optional[Tuple[int, int, int, int]] = None
-        self._properties: Dict[str, Any] = {}
+        self._crop_values: Optional[tuple[int, int, int, int]] = None
+        self._properties: dict[str, Any] = {}
 
     @property
-    def properties(self) -> Dict[str, Any]:
+    def properties(self) -> dict[str, Any]:
         """
         A dictionary of properties for this texture.
         This can be used to store any data you want.
@@ -222,13 +212,27 @@ class Texture:
         """
         return self._cache_name
 
+    @property
+    def image_cache_name(self) -> Optional[str]:
+        """
+        Get the image cache name for this texture.
+        Returns None if file_path is not set.
+        """
+        if self.file_path is None:
+            return None
+
+        return self.create_image_cache_name(
+            self.file_path,
+            self.crop_values or (0, 0, 0, 0),
+        )
+
     @classmethod
     def create_cache_name(
         cls,
         *,
         hash: str,
         hit_box_algorithm: HitBoxAlgorithm,
-        vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3),
+        vertex_order: tuple[int, int, int, int] = (0, 1, 2, 3),
     ) -> str:
         """
         Create a cache name for the texture.
@@ -247,9 +251,7 @@ class Texture:
         return f"{hash}|{vertex_order}|{hit_box_algorithm.cache_name}|"
 
     @classmethod
-    def create_atlas_name(
-        cls, hash: str, vertex_order: Tuple[int, int, int, int] = (0, 1, 2, 3)
-    ):
+    def create_atlas_name(cls, hash: str, vertex_order: tuple[int, int, int, int] = (0, 1, 2, 3)):
         return f"{hash}|{vertex_order}"
 
     def _update_cache_names(self):
@@ -268,7 +270,7 @@ class Texture:
 
     @classmethod
     def create_image_cache_name(
-        cls, path: Union[str, Path], crop: Tuple[int, int, int, int] = (0, 0, 0, 0)
+        cls, path: Union[str, Path], crop: tuple[int, int, int, int] = (0, 0, 0, 0)
     ):
         return f"{str(path)}|{crop}"
 
@@ -295,7 +297,7 @@ class Texture:
         self._file_path = path
 
     @property
-    def crop_values(self) -> Optional[Tuple[int, int, int, int]]:
+    def crop_values(self) -> Optional[tuple[int, int, int, int]]:
         """
         The crop values used to create this texture in the referenced file
 
@@ -304,7 +306,7 @@ class Texture:
         return self._crop_values
 
     @crop_values.setter
-    def crop_values(self, crop: Optional[Tuple[int, int, int, int]]):
+    def crop_values(self, crop: Optional[tuple[int, int, int, int]]):
         self._crop_values = crop
 
     @property
@@ -376,7 +378,7 @@ class Texture:
         self._size = (self._size[0], value)
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """
         The virtual size of the texture in pixels.
 
@@ -388,11 +390,11 @@ class Texture:
         return self._size
 
     @size.setter
-    def size(self, value: Tuple[int, int]):
+    def size(self, value: tuple[int, int]):
         self._size = value
 
     @property
-    def hit_box_points(self) -> PointList:
+    def hit_box_points(self) -> Point2List:
         """
         Get the hit box points for this texture.
 
@@ -411,7 +413,7 @@ class Texture:
         return self._hit_box_algorithm
 
     @classmethod
-    def create_filled(cls, name: str, size: Tuple[int, int], color: RGBA255) -> "Texture":
+    def create_filled(cls, name: str, size: tuple[int, int], color: RGBA255) -> "Texture":
         """
         Create a filled texture. This is an alias for :py:meth:`create_empty`.
 
@@ -426,7 +428,7 @@ class Texture:
     def create_empty(
         cls,
         name: str,
-        size: Tuple[int, int],
+        size: tuple[int, int],
         color: RGBA255 = TRANSPARENT_BLACK,
     ) -> "Texture":
         """
@@ -674,12 +676,7 @@ class Texture:
         :return: Texture
         """
         # Return self if the crop is the same size as the original image
-        if (
-            width == self.image.width
-            and height == self.image.height
-            and x == 0
-            and y == 0
-        ):
+        if width == self.image.width and height == self.image.height and x == 0 and y == 0:
             return self
 
         # Return self width and height is 0
@@ -698,52 +695,15 @@ class Texture:
         texture.crop_values = (x, y, width, height)
         return texture
 
-    # ------ Atlas functions ------
-
-    def remove_from_atlases(self) -> None:
-        """
-        Remove this texture from all atlases.
-        """
-        for atlas in self._atlas_refs or ():
-            atlas.remove(self)
-
-    def add_atlas_ref(self, atlas: "TextureAtlas") -> None:
-        """
-        Add a reference to an atlas that this texture is in.
-        """
-        if self._atlas_refs is None:
-            self._atlas_refs = WeakSet()
-        self._atlas_refs.add(atlas)
-
-    def remove_atlas_ref(self, atlas: "TextureAtlas") -> None:
-        """
-        Remove a reference to an atlas that this texture is in.
-        """
-        if self._atlas_refs is not None:
-            self._atlas_refs.remove(atlas)
-
     # ----- Utility functions -----
 
-    def remove_from_cache(self, ignore_error: bool = True) -> None:
-        """
-        Remove this texture from the cache.
-
-        :param ignore_error: If True, ignore errors if the texture is not in the cache
-        :return: None
-        """
-        _cache.texture_cache.delete(self)
-
     @staticmethod
-    def validate_crop(
-        image: PIL.Image.Image, x: int, y: int, width: int, height: int
-    ) -> None:
+    def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
         """
         Validate the crop values for a given image.
         """
         if x < 0 or y < 0 or width < 0 or height < 0:
-            raise ValueError(
-                f"crop values must be positive: {x}, {y}, {width}, {height}"
-            )
+            raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")
         if x >= image.width:
             raise ValueError(f"x position is outside of texture: {x}")
         if y >= image.height:
@@ -753,23 +713,13 @@ class Texture:
         if y + height - 1 >= image.height:
             raise ValueError(f"height is outside of texture: {height + y}")
 
-    def _calculate_hit_box_points(self) -> PointList:
+    def _calculate_hit_box_points(self) -> Point2List:
         """
         Calculate the hit box points for this texture based on the configured
         hit box algorithm. This is usually done on texture creation
         or when the hit box points are requested the first time.
         """
-        # Check if we have cached points
-        points = _cache.hit_box_cache.get(self.cache_name)
-        if points:
-            return points
-
-        # Calculate points with the selected algorithm
-        points = self._hit_box_algorithm.calculate(self.image)
-        if self._hit_box_algorithm.cache:
-            _cache.hit_box_cache.put(self.cache_name, points)
-
-        return points
+        return self._hit_box_algorithm.calculate(self.image)
 
     # ----- Drawing functions -----
 
@@ -842,7 +792,7 @@ class Texture:
         :param center_y: Y location of where to draw the texture.
         :param scale: Scale to draw rectangle. Defaults to 1.
         :param angle: Angle to rotate the texture by.
-        :param alpha: The transparency of the texture `(0-255)`.
+        :param alpha: The transparency of the texture ``(0-255)``.
         """
         from arcade import Sprite
 
@@ -860,32 +810,19 @@ class Texture:
         spritelist.draw()
         spritelist.remove(sprite)
 
-    # ------------------------------------------------------------
-    # Comparison and hash functions so textures can work with sets
-    # A texture's uniqueness is simply based on the name
-    # ------------------------------------------------------------
-    # def __hash__(self) -> int:
-    #     return hash(self.cache_name)
+    def draw_rect(self, rect: Rect, alpha: int = 255):
+        """
+        Draw the texture.
 
-    # def __eq__(self, other) -> bool:
-    #     if other is None:
-    #         return False
-    #     if not isinstance(other, self.__class__):
-    #         return False
-    #     return self.cache_name == other.cache_name
+        .. warning:: This is a very slow method of drawing a texture,
+                     and should be used sparingly. The method simply
+                     creates a sprite internally and draws it.
 
-    # def __ne__(self, other) -> bool:
-    #     if other is None:
-    #         return True
-    #     if not isinstance(other, self.__class__):
-    #         return True
-    #     return self.cache_name != other.cache_name
+        :param rect: A Rect to draw this texture to.
+        :param alpha: The transparency of the texture ``(0-255)``.
+        """
+        self.draw_sized(rect.x, rect.y, rect.width, rect.height, alpha=alpha)
 
     def __repr__(self) -> str:
         cache_name = getattr(self, "cache_name", None)
         return f"<Texture cache_name={cache_name}>"
-
-    def __del__(self):
-        if getattr(self, "_atlas_refs", None) is not None:
-            for atlas in self._atlas_refs:
-                atlas.remove(self)

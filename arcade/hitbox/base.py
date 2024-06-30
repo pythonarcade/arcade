@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from __future__ import annotations
-
 from math import cos, radians, sin
-from typing import Any, Sequence, Tuple
+from typing import Any
 from typing_extensions import Self
 
 from PIL.Image import Image
 
-from arcade.types import Point, PointList, EMPTY_POINT_LIST
+from arcade.types import Point2, Point2List, EMPTY_POINT_LIST
 
 __all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
 
@@ -41,7 +39,7 @@ class HitBoxAlgorithm:
         """
         return self._cache_name
 
-    def calculate(self, image: Image, **kwargs) -> PointList:
+    def calculate(self, image: Image, **kwargs) -> Point2List:
         """
         Calculate hit box points for a given image.
 
@@ -67,7 +65,7 @@ class HitBoxAlgorithm:
         """
         return self.__class__(*args, **kwds)  # type: ignore
 
-    def create_bounding_box(self, image: Image) -> PointList:
+    def create_bounding_box(self, image: Image) -> Point2List:
         """
         Create points for a simple bounding box around an image.
         This is often used as a fallback if a hit box algorithm
@@ -100,11 +98,12 @@ class HitBox:
     :param scale: The X and Y scaling factors to use when offsetting the
         points
     """
+
     def __init__(
         self,
-        points: PointList,
-        position: Point = (0.0, 0.0),
-        scale: Tuple[float, float] = (1.0, 1.0),
+        points: Point2List,
+        position: Point2 = (0.0, 0.0),
+        scale: tuple[float, float] = (1.0, 1.0),
     ):
         self._points = points
         self._position = position
@@ -112,11 +111,11 @@ class HitBox:
 
         # This empty tuple will be replaced the first time
         # get_adjusted_points is called
-        self._adjusted_points: PointList = EMPTY_POINT_LIST
+        self._adjusted_points: Point2List = EMPTY_POINT_LIST
         self._adjusted_cache_dirty = True
 
     @property
-    def points(self) -> PointList:
+    def points(self) -> Point2List:
         """
         The raw, unadjusted points of this hit box.
 
@@ -126,7 +125,7 @@ class HitBox:
         return self._points
 
     @property
-    def position(self) -> Point:
+    def position(self) -> Point2:
         """
         The center point used to offset the final adjusted positions.
         :return:
@@ -134,7 +133,7 @@ class HitBox:
         return self._position
 
     @position.setter
-    def position(self, position: Point):
+    def position(self, position: Point2):
         self._position = position
         self._adjusted_cache_dirty = True
 
@@ -179,7 +178,7 @@ class HitBox:
         return min(y_points)
 
     @property
-    def scale(self) -> Tuple[float, float]:
+    def scale(self) -> tuple[float, float]:
         """
         The X & Y scaling factors for the points in this hit box.
 
@@ -188,7 +187,7 @@ class HitBox:
         return self._scale
 
     @scale.setter
-    def scale(self, scale: Tuple[float, float]):
+    def scale(self, scale: tuple[float, float]):
         self._scale = scale
         self._adjusted_cache_dirty = True
 
@@ -210,7 +209,7 @@ class HitBox:
             self._points, position=self._position, scale=self._scale, angle=angle
         )
 
-    def get_adjusted_points(self) -> Sequence[Point]:
+    def get_adjusted_points(self) -> Point2List:
         """
         Return the positions of points, scaled and offset from the center.
 
@@ -223,7 +222,7 @@ class HitBox:
         if not self._adjusted_cache_dirty:
             return self._adjusted_points  # type: ignore
 
-        def _adjust_point(point) -> Point:
+        def _adjust_point(point) -> Point2:
             x, y = point
 
             x *= self.scale[0]
@@ -243,13 +242,14 @@ class RotatableHitBox(HitBox):
     Rotation is separated from the basic hitbox because it is much
     slower than offsetting and scaling.
     """
+
     def __init__(
         self,
-        points: PointList,
+        points: Point2List,
         *,
-        position: Tuple[float, float] = (0.0, 0.0),
+        position: tuple[float, float] = (0.0, 0.0),
         angle: float = 0.0,
-        scale: Tuple[float, float] = (1.0, 1.0),
+        scale: tuple[float, float] = (1.0, 1.0),
     ):
         super().__init__(points, position=position, scale=scale)
         self._angle: float = angle
@@ -266,7 +266,7 @@ class RotatableHitBox(HitBox):
         self._angle = angle
         self._adjusted_cache_dirty = True
 
-    def get_adjusted_points(self) -> PointList:
+    def get_adjusted_points(self) -> Point2List:
         """
         Return the offset, scaled, & rotated points of this hitbox.
 
@@ -281,7 +281,7 @@ class RotatableHitBox(HitBox):
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 
-        def _adjust_point(point) -> Point:
+        def _adjust_point(point) -> Point2:
             x, y = point
 
             x *= self.scale[0]

@@ -45,7 +45,11 @@ class Buffer:
     }
 
     def __init__(
-        self, ctx: "Context", data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"
+        self,
+        ctx: "Context",
+        data: Optional[BufferProtocol] = None,
+        reserve: int = 0,
+        usage: str = "static",
     ):
 
         self._ctx = ctx

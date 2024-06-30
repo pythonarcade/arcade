@@ -20,6 +20,7 @@ SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Background Group Example"
 
 PLAYER_SPEED = 300
+CAMERA_SPEED = 0.5
 
 
 class MyGame(arcade.Window):
@@ -80,7 +81,7 @@ class MyGame(arcade.Window):
         elif target_y > 2.0 * self.camera.viewport_height:
             target_y = 2.0 * self.camera.viewport_height
 
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), 0.5)
+        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
 
     def on_update(self, delta_time: float):
         new_position = (
@@ -100,23 +101,27 @@ class MyGame(arcade.Window):
         self.player_sprite.draw()
 
     def on_key_press(self, symbol: int, modifiers: int):
-        if symbol == arcade.key.LEFT:
+        # Support arrow keys and ASWD
+        if symbol in (arcade.key.LEFT, arcade.key.A):
             self.x_direction -= PLAYER_SPEED
-        elif symbol == arcade.key.RIGHT:
+        elif symbol in (arcade.key.RIGHT, arcade.key.D):
             self.x_direction += PLAYER_SPEED
-        elif symbol == arcade.key.DOWN:
+        elif symbol in (arcade.key.DOWN, arcade.key.S):
             self.y_direction -= PLAYER_SPEED
-        elif symbol == arcade.key.UP:
+        elif symbol in (arcade.key.UP, arcade.key.W):
             self.y_direction += PLAYER_SPEED
+        # Close the window if the user presses escape
+        elif symbol == arcade.key.ESCAPE:
+            self.close()
 
     def on_key_release(self, symbol: int, modifiers: int):
-        if symbol == arcade.key.LEFT:
+        if symbol in (arcade.key.LEFT, arcade.key.A):
             self.x_direction += PLAYER_SPEED
-        elif symbol == arcade.key.RIGHT:
+        elif symbol in (arcade.key.RIGHT, arcade.key.D):
             self.x_direction -= PLAYER_SPEED
-        elif symbol == arcade.key.DOWN:
+        elif symbol in (arcade.key.DOWN, arcade.key.S):
             self.y_direction += PLAYER_SPEED
-        elif symbol == arcade.key.UP:
+        elif symbol in (arcade.key.UP, arcade.key.W):
             self.y_direction -= PLAYER_SPEED
 
     def on_resize(self, width: int, height: int):

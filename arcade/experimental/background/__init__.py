@@ -53,7 +53,7 @@ def background_from_file(
     color: Optional[Tuple[int, int, int]] = None,
     color_norm: Optional[Tuple[float, float, float]] = None,
     shader: Optional[gl.Program] = None,
-    geometry: Optional[gl.Geometry] = None
+    geometry: Optional[gl.Geometry] = None,
 ) -> Background:
 
     texture = BackgroundTexture.from_file(tex_src, offset, scale, angle, filters)

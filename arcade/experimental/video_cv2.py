@@ -8,6 +8,7 @@ a texture.
 Dependencies:
     pip install opencv-python
 """
+
 from __future__ import annotations
 
 from math import floor
@@ -62,7 +63,7 @@ class VideoPlayerCV2:
         # Configure videoFrame sampler to read from texture channel 0
         self.program["videoFrame"] = 0
 
-        self.video = cv2.VideoCapture(str(arcade.resources.resolve_resource_path(path)))
+        self.video = cv2.VideoCapture(str(arcade.resources.resolve(path)))
 
         # Query video size
         self._width, self._height = (
@@ -131,6 +132,7 @@ class CV2PlayerView(arcade.View):
     :param path: Path of the video that is to be played.
     :param resize: Change the window size to the video size
     """
+
     def __init__(self, path: Union[str, Path], loop: bool = False, resize: bool = False):
         super().__init__()
 
@@ -147,7 +149,7 @@ class CV2PlayerView(arcade.View):
         self.video_player.update(delta_time)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "Video Player")
     window.show_view(CV2PlayerView(":resources:video/earth.mp4", loop=True, resize=False))
     window.run()

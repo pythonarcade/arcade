@@ -14,8 +14,8 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-DEFAULT_SCREEN_WIDTH = 800
-DEFAULT_SCREEN_HEIGHT = 600
+DEFAULT_SCREEN_WIDTH = 1280
+DEFAULT_SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Minimap Example"
 
 # How many pixels to keep as a minimum margin between the character
@@ -61,9 +61,8 @@ class MyGame(arcade.Window):
         self.physics_engine = None
 
         # Camera for sprites, and one for our GUI
-        viewport = (0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_sprites = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
-        self.camera_gui = arcade.camera.Camera2D.from_raw_data(viewport=viewport)
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -139,7 +138,7 @@ class MyGame(arcade.Window):
         self.minimap_sprite_list.draw()
 
         # Draw the GUI
-        arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
+        arcade.draw_rect_filled(arcade.rect.XYWH(self.width // 2, 20, self.width, 40), arcade.color.ALMOND)
         text = f"Scroll value: {self.camera_sprites.position[0]:4.1f}, {self.camera_sprites.position[1]:4.1f}"
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 

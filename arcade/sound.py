@@ -21,12 +21,7 @@ else:
 
 import pyglet.media as media
 
-__all__ = [
-    "Sound",
-    "load_sound",
-    "play_sound",
-    "stop_sound"
-]
+__all__ = ["Sound", "load_sound", "play_sound", "stop_sound"]
 
 
 class Sound:
@@ -37,9 +32,7 @@ class Sound:
         file_name = resolve(file_name)
 
         if not Path(file_name).is_file():
-            raise FileNotFoundError(
-                f"The sound file '{file_name}' is not a file or can't be read."
-            )
+            raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
         self.source: Union[media.StaticSource, media.StreamingSource] = media.load(
@@ -47,7 +40,9 @@ class Sound:
         )
 
         if self.source.duration is None:
-            raise ValueError("Audio duration must be known when loaded, but this audio source returned `None`")
+            raise ValueError(
+                "Audio duration must be known when loaded, but this audio source returned `None`"
+            )
 
         self.min_distance = (
             100000000  # setting the players to this allows for 2D panning with 3D audio
@@ -68,10 +63,7 @@ class Sound:
         :param loop: Loop, false to play once, true to loop continuously
         :param speed: Change the speed of the sound which also changes pitch, default 1.0
         """
-        if (
-            isinstance(self.source, media.StreamingSource)
-            and self.source.is_player_source
-        ):
+        if isinstance(self.source, media.StreamingSource) and self.source.is_player_source:
             raise RuntimeError(
                 "Tried to play a streaming source more than once."
                 " Streaming sources should only be played in one instance."
@@ -96,7 +88,12 @@ class Sound:
         media.Source._players.append(player)
 
         def _on_player_eos():
-            media.Source._players.remove(player)
+            # Some race condition within Pyglet can cause the player to be removed from this list before
+            # we get to it, so we try and catch the ValueError raised by the removal if it's already been removed.
+            try:
+                media.Source._players.remove(player)
+            except ValueError:
+                pass
             # There is a closure on player. To get the refcount to 0,
             # we need to delete this function.
             player.on_player_eos = None  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
@@ -162,7 +159,7 @@ class Sound:
         return player.time
 
 
-def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Sound]:
+def load_sound(path: Union[str, Path], streaming: bool = False) -> Sound:
     """
     Load a sound.
 
@@ -210,8 +207,9 @@ def play_sound(
     elif not isinstance(sound, Sound):
         raise TypeError(
             f"Error, got {sound!r} instead of an arcade.Sound."
-            if not isinstance(sound, (str, Path, bytes)) else\
-            " Make sure to use load_sound first, then play the result with play_sound.")
+            if not isinstance(sound, (str, Path, bytes))
+            else " Make sure to use load_sound first, then play the result with play_sound."
+        )
 
     try:
         return sound.play(volume, pan, loop, speed)
@@ -230,7 +228,10 @@ def stop_sound(player: media.Player):
     if not isinstance(player, media.Player):
         raise TypeError(
             "stop_sound takes a media player object returned from the play_sound() command, not a "
-            "loaded Sound object." if isinstance(player, Sound) else f"{player!r}")
+            "loaded Sound object."
+            if isinstance(player, Sound)
+            else f"{player!r}"
+        )
 
     player.pause()
     player.delete()

@@ -1,6 +1,7 @@
 """
 Render into a sub-section of a texture atlas
 """
+
 from __future__ import annotations
 
 import math
@@ -10,7 +11,7 @@ import arcade
 class AtlasRenderDemo(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600, "Atlas Render Demo")
+        super().__init__(1280, 720, "Atlas Render Demo")
         self.atlas = arcade.TextureAtlas((600, 600))
 
         self.texture_1 = arcade.Texture.create_empty("render_area_1", size=(256, 256))
@@ -33,7 +34,11 @@ class AtlasRenderDemo(arcade.Window):
         # Render shape into texture atlas in the first sprite texture's space
         with self.spritelist.atlas.render_into(self.texture_1) as fbo:
             fbo.clear(color=(255, 0, 0, 255))
-            arcade.draw_rectangle_filled(128, 128, 160, 160, arcade.color.WHITE, self.elapsed_time * 100)
+            arcade.draw_rect_filled(
+                arcade.rect.XYWH(128, 128, 160, 160),
+                arcade.color.WHITE,
+                self.elapsed_time * 100,
+            )
 
         # Render a shape into the second texture in the atlas
         with self.spritelist.atlas.render_into(self.texture_2) as fbo:

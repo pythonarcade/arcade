@@ -7,6 +7,7 @@ to match the theme of your game.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.toggle
 """
+
 from __future__ import annotations
 
 import arcade
@@ -45,7 +46,7 @@ class MyView(View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

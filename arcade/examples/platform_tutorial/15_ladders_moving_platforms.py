@@ -80,7 +80,7 @@ class MyGame(arcade.Window):
         }
 
         # Load our TileMap
-        self.tile_map = arcade.load_tilemap(f":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
+        self.tile_map = arcade.load_tilemap(":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
 
         # Create our Scene Based on the TileMap
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -178,7 +178,7 @@ class MyGame(arcade.Window):
             elif self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 arcade.play_sound(self.jump_sound)
-        
+
         if key == arcade.key.DOWN or key == arcade.key.S:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED

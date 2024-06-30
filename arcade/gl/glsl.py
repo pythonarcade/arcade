@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional
+from typing import TYPE_CHECKING, Iterable, Optional
 import re
 
 from pyglet import gl
+
 if TYPE_CHECKING:
     from .context import Context as ArcadeGlContext
 
@@ -30,9 +31,10 @@ class ShaderSource:
     :param source_type: The shader type
     :param depth_attachment: A depth attachment (optional)
     """
+
     def __init__(
         self,
-        ctx: 'ArcadeGlContext',
+        ctx: "ArcadeGlContext",
         source: str,
         common: Optional[Iterable[str]],
         source_type: PyGLenum,
@@ -41,7 +43,7 @@ class ShaderSource:
         self._source = source.strip()
         self._type = source_type
         self._lines = self._source.split("\n") if source else []
-        self._out_attributes = []  # type: List[str]
+        self._out_attributes = []  # type: list[str]
 
         if not self._lines:
             raise ValueError("Shader source is empty")
@@ -73,7 +75,7 @@ class ShaderSource:
         return self._version
 
     @property
-    def out_attributes(self) -> List[str]:
+    def out_attributes(self) -> list[str]:
         """The out attributes for this program"""
         return self._out_attributes
 
@@ -94,7 +96,7 @@ class ShaderSource:
             lines = source.split("\n")
             self._lines = self._lines[:line_number] + lines + self._lines[line_number:]
 
-    def get_source(self, *, defines: Optional[Dict[str, str]] = None) -> str:
+    def get_source(self, *, defines: Optional[dict[str, str]] = None) -> str:
         """Return the shader source
 
         :param defines: Defines to replace in the source.
@@ -112,9 +114,7 @@ class ShaderSource:
             except Exception:
                 pass
 
-        source = "\n".join(
-            f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines)
-        )
+        source = "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines))
 
         raise ShaderException(
             (
@@ -126,7 +126,7 @@ class ShaderSource:
         )
 
     @staticmethod
-    def apply_defines(lines: List[str], defines: Dict[str, str]) -> List[str]:
+    def apply_defines(lines: list[str], defines: dict[str, str]) -> list[str]:
         """Locate and apply #define values
 
         :param lines: List of source lines
@@ -150,8 +150,6 @@ class ShaderSource:
     def _parse_out_attributes(self):
         """Locates out attributes so we don't have to manually supply them"""
         for line in self._lines:
-            res = re.match(
-                r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip()
-            )
+            res = re.match(r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip())
             if res:
                 self._out_attributes.append(res.groups()[-1])

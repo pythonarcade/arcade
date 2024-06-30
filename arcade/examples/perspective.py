@@ -25,7 +25,7 @@ from arcade.gl import BufferDescription
 class Perspective(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600, "Perspective", resizable=True)
+        super().__init__(1280, 720, "Perspective", resizable=True)
         # Simple texture shader for the plane.
         # It support projection and model matrix
         # and a scroll value for texture coordinates
@@ -106,10 +106,10 @@ class Perspective(arcade.Window):
                 ) 
         self.time = 0
 
-        self.offscreen_cam = arcade.camera.Camera2D.from_raw_data(
+        self.offscreen_cam = arcade.camera.Camera2D(
             position=(0.0, 0.0),
-            viewport=(0, 0, self.fbo.width, self.fbo.height),
-            projection=(0, self.fbo.width, 0, self.fbo.height)
+            viewport=arcade.LBWH(0, 0, self.fbo.width, self.fbo.height),
+            projection=arcade.LRBT(0, self.fbo.width, 0, self.fbo.height)
         )
 
     def on_draw(self):

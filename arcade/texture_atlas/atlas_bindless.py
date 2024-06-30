@@ -1,6 +1,7 @@
 """
 THIS IS WORK IN PROGRESS. DO NOT USE.
 """
+
 from typing import TYPE_CHECKING
 
 from .base import TextureAtlasBase
@@ -23,5 +24,6 @@ class BindlessTextureAtlas(TextureAtlasBase):
     feature and some igpus AMD igpus from 2019 and later + Intel Xe if
     latest drivers are installed.
     """
+
     def __init__(self, ctx: ArcadeContext):
         super().__init__(ctx)

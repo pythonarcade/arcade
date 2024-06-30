@@ -1,7 +1,9 @@
 """
 Sprite Explosion
 
-Simple program to show creating explosions with particles
+Simple program to show creating explosions with sprites.
+There are more performant ways to do this, but for simple games this
+is a good way to get started.
 
 Artwork from https://kenney.nl
 
@@ -15,10 +17,10 @@ import arcade
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.3
 SPRITE_SCALING_LASER = 0.8
-COIN_COUNT = 50
+ENEMY_COUNT = 50
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Explosion Example"
 
 BULLET_SPEED = 5
@@ -69,14 +71,14 @@ SMOKE_CHANCE = 0.25
 
 
 class Smoke(arcade.SpriteCircle):
-    """ This represents a puff of smoke """
+    """Particle with smoke like behavior."""
     def __init__(self, size):
         super().__init__(size, arcade.color.LIGHT_GRAY, soft=True)
         self.change_y = SMOKE_RISE_RATE
         self.scale = SMOKE_START_SCALE
 
     def update(self):
-        """ Update this particle """
+        """Update this particle"""
         if self.alpha <= PARTICLE_FADE_RATE:
             # Remove faded out particles
             self.remove_from_sprite_lists()
@@ -89,19 +91,13 @@ class Smoke(arcade.SpriteCircle):
 
 
 class Particle(arcade.SpriteCircle):
-    """ Explosion particle """
-    def __init__(self, my_list):
-        # Choose a random color
-        color = random.choice(PARTICLE_COLORS)
-
+    """ Explosion particle"""
+    def __init__(self):
+        """
+        Simple particle sprite based on circle sprite.
+        """
         # Make the particle
-        super().__init__(PARTICLE_RADIUS, color)
-
-        # Track normal particle texture, so we can 'flip' when we sparkle.
-        self.normal_texture = self.texture
-
-        # Keep track of the list we are in, so we can add a smoke trail
-        self.my_list = my_list
+        super().__init__(PARTICLE_RADIUS, random.choice(PARTICLE_COLORS))
 
         # Set direction/speed
         speed = random.random() * PARTICLE_SPEED_RANGE + PARTICLE_MIN_SPEED
@@ -109,22 +105,15 @@ class Particle(arcade.SpriteCircle):
         self.change_x = math.sin(math.radians(direction)) * speed
         self.change_y = math.cos(math.radians(direction)) * speed
 
-        # Track original alpha. Used as part of 'sparkle' where we temp set the
-        # alpha back to 255
-        self.my_alpha = 255
-
-        # What list do we add smoke particles to?
-        self.my_list = my_list
-
     def update(self):
         """ Update the particle """
-        if self.my_alpha <= PARTICLE_FADE_RATE:
+        if self.alpha == 0:
             # Faded out, remove
             self.remove_from_sprite_lists()
         else:
-            # Update
-            self.my_alpha -= PARTICLE_FADE_RATE
-            self.alpha = self.my_alpha
+            # Gradually fade out the particle. Don't go below 0
+            self.alpha = max(0, self.alpha - PARTICLE_FADE_RATE)
+            # Move the particle
             self.center_x += self.change_x
             self.center_y += self.change_y
             self.change_y -= PARTICLE_GRAVITY
@@ -132,16 +121,14 @@ class Particle(arcade.SpriteCircle):
             # Should we sparkle this?
             if random.random() <= PARTICLE_SPARKLE_CHANCE:
                 self.alpha = 255
-                self.texture = arcade.make_circle_texture(int(self.width),
-                                                          arcade.color.WHITE)
-            else:
-                self.texture = self.normal_texture
+                self.color = arcade.color.WHITE
 
             # Leave a smoke particle?
             if random.random() <= SMOKE_CHANCE:
                 smoke = Smoke(5)
                 smoke.position = self.position
-                self.my_list.append(smoke)
+                # Add a smoke particle to the spritelist this sprite is in
+                self.sprite_lists[0].append(smoke)
 
 
 class MyGame(arcade.Window):
@@ -153,13 +140,18 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Variables that will hold sprite lists
-        self.player_list = None
-        self.coin_list = None
-        self.bullet_list = None
-        self.explosions_list = None
+        self.player_list = arcade.SpriteList()
+        self.enemy_list = arcade.SpriteList()
+        self.bullet_list = arcade.SpriteList()
+        self.explosions_list = arcade.SpriteList()
 
-        # Set up the player info
-        self.player_sprite = None
+        # Set up the player info. Image from kenney.nl
+        self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png",
+                                           scale=SPRITE_SCALING_PLAYER)
+        self.player_sprite.center_x = 50
+        self.player_sprite.center_y = 70
+        self.player_list.append(self.player_sprite)
+
         self.score = 0
 
         # Don't show the mouse cursor
@@ -170,59 +162,51 @@ class MyGame(arcade.Window):
         self.hit_sound = arcade.sound.load_sound(":resources:sounds/explosion2.wav")
 
         self.background_color = arcade.color.BLACK
+        self.score_display = arcade.Text("", 10, 20, arcade.color.WHITE, 14)
 
-    def setup(self):
+        self.spawn_enemies()
 
-        """ Set up the game and initialize the variables. """
-
-        # Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
-        self.bullet_list = arcade.SpriteList()
-        self.explosions_list = arcade.SpriteList()
-
-        # Set up the player
+    def reset(self):
+        """Restart the game"""
+        # Reset score
         self.score = 0
 
-        # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png",
-                                           scale=SPRITE_SCALING_PLAYER)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 70
-        self.player_list.append(self.player_sprite)
+        self.enemy_list.clear()
+        self.bullet_list.clear()
+        self.explosions_list.clear()
 
-        # Create the coins
-        for coin_index in range(COIN_COUNT):
+        self.spawn_enemies()
 
-            # Create the coin instance
-            # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png",
-                                 scale=SPRITE_SCALING_COIN)
-            coin.angle = 180
-
-            # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(150, SCREEN_HEIGHT)
-
-            # Add the coin to the lists
-            self.coin_list.append(coin)
+    def spawn_enemies(self):
+        # Spawn enemies
+        for index in range(ENEMY_COUNT):
+            # Create the coin instance. Image from kenney.nl
+            enemy = arcade.Sprite(
+                ":resources:images/space_shooter/playerShip1_green.png",
+                scale=SPRITE_SCALING_COIN,
+                angle=180,
+                center_x=random.randrange(25, SCREEN_WIDTH - 25),
+                center_y=random.randrange(150, SCREEN_HEIGHT)
+            )
+            # Add the ship to the lists
+            self.enemy_list.append(enemy)
 
     def on_draw(self):
         """
         Render the screen.
         """
-
         # This command has to happen before we start drawing
         self.clear()
 
         # Draw all the sprites.
-        self.coin_list.draw()
+        self.enemy_list.draw()
         self.bullet_list.draw()
         self.player_list.draw()
         self.explosions_list.draw()
 
         # Render the text
-        arcade.draw_text(f"Score: {self.score}", 10, 20, arcade.color.WHITE, 14)
+        self.score_display.text = f"Score: {self.score}"
+        self.score_display.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
@@ -234,7 +218,6 @@ class MyGame(arcade.Window):
         """
         Called whenever the mouse button is clicked.
         """
-
         # Gunshot sound
         arcade.sound.play_sound(self.gun_sound)
 
@@ -255,6 +238,13 @@ class MyGame(arcade.Window):
         # Add the bullet to the appropriate lists
         self.bullet_list.append(bullet)
 
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.R:
+            self.reset()
+        # Close the window
+        elif symbol == arcade.key.ESCAPE:
+            self.close()
+
     def on_update(self, delta_time):
         """ Movement and game logic """
 
@@ -266,7 +256,7 @@ class MyGame(arcade.Window):
         for bullet in self.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
 
             # If it did...
             if len(hit_list) > 0:
@@ -278,7 +268,7 @@ class MyGame(arcade.Window):
             for coin in hit_list:
                 # Make an explosion
                 for i in range(PARTICLE_COUNT):
-                    particle = Particle(self.explosions_list)
+                    particle = Particle()
                     particle.position = coin.position
                     self.explosions_list.append(particle)
 
@@ -298,10 +288,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    window.center_window()
-    window.setup()
-    arcade.run()
+    MyGame().run()
 
 
 if __name__ == "__main__":

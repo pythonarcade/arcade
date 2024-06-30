@@ -1,24 +1,21 @@
 """
 Drawing text with pyglet label
 """
+
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
 import pyglet
 
 import arcade
 from arcade.resources import resolve
-from arcade.types import Color, Point, RGBA255, Point3, RGBOrA255
+from arcade.types import Color, Point, RGBA255, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
+from arcade.texture_atlas import TextureAtlasBase
 
-__all__ = [
-    "load_font",
-    "Text",
-    "create_text_sprite",
-    "draw_text"
-]
+__all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
 
 
 def load_font(path: Union[str, Path]) -> None:
@@ -45,7 +42,7 @@ def load_font(path: Union[str, Path]) -> None:
     pyglet.font.add_file(str(file_path))
 
 
-FontNameOrNames = Union[str, Tuple[str, ...]]
+FontNameOrNames = Union[str, tuple[str, ...]]
 
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
@@ -60,18 +57,20 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     argument for pyglet to attempt to resolve. This is consistent with
     the original behavior of this code before it was encapsulated.
 
-    :param Union[str, Tuple[str, ...]] font_name:
+    :param Union[str, tuple[str, ...]] font_name:
     :return: Either a resolved path or the original tuple
     """
     if font_name:
 
         # ensure
         if isinstance(font_name, str):
-            font_list: Tuple[str, ...] = (font_name,)
+            font_list: tuple[str, ...] = (font_name,)
         elif isinstance(font_name, tuple):
             font_list = font_name
         else:
-            raise TypeError("font_name parameter must be a string, or a tuple of strings that specify a font name.")
+            raise TypeError(
+                "font_name parameter must be a string, or a tuple of strings that specify a font name."
+            )
 
         for font in font_list:
             try:
@@ -99,11 +98,7 @@ def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     :param label: a pyglet label to wrap and draw
     """
     assert isinstance(label, pyglet.text.Label)
-    window = arcade.get_window()
-
-    # window.ctx.reset()
-    with window.ctx.pyglet_rendering():
-        label.draw()
+    label.draw()
 
 
 class Text:
@@ -136,7 +131,7 @@ class Text:
     :param font_size: Size of the text in points
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bold: Whether to draw the text as bold
     :param italic: Whether to draw the text as italic
     :param anchor_x: How to calculate the anchor point's x coordinate.
@@ -194,7 +189,7 @@ class Text:
         rotation: float = 0,
         batch: Optional[pyglet.graphics.Batch] = None,
         group: Optional[pyglet.graphics.Group] = None,
-        z: int = 0
+        z: int = 0,
     ):
         # Raises a RuntimeError if no window for better user feedback
         arcade.get_window()
@@ -224,7 +219,7 @@ class Text:
             multiline=multiline,
             rotation=rotation,  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
             batch=batch,
-            group=group
+            group=group,
         )
 
     def __enter__(self):
@@ -471,7 +466,7 @@ class Text:
         return self._label.bottom
 
     @property
-    def content_size(self) -> Tuple[int, int]:
+    def content_size(self) -> tuple[int, int]:
         """
         Get the pixel width and height of the text contents.
         """
@@ -572,12 +567,14 @@ class Text:
         return self._label.x, self._label.y
 
     @position.setter
-    def position(self, point: Union[Point, Point3]):
+    def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
-        if len(point) == 3:
-            self._label.position = point
+        x, y, *z = point
+
+        if z:
+            self._label.position = x, y, z[0]
         else:
-            self._label.position = *point, self._label.z
+            self._label.position = x, y, self._label.z
 
 
 def create_text_sprite(
@@ -591,7 +588,7 @@ def create_text_sprite(
     italic: bool = False,
     anchor_x: str = "left",
     multiline: bool = False,
-    texture_atlas: Optional[arcade.TextureAtlas] = None,
+    texture_atlas: Optional[TextureAtlasBase] = None,
     background_color: Optional[RGBA255] = None,
 ) -> arcade.Sprite:
     """
@@ -681,7 +678,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
-    z: int = 0
+    z: int = 0,
 ):
     """
     A simple way for beginners to draw text.
@@ -714,7 +711,7 @@ def draw_text(
     :param font_size: Size of the text in points
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, Tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
     :param bold: Whether to draw the text as bold
     :param italic: Whether to draw the text as italic
     :param anchor_x: How to calculate the anchor point's x coordinate
@@ -871,7 +868,7 @@ def draw_text(
             bold=bold,
             italic=italic,
             multiline=multiline,
-            rotation=rotation
+            rotation=rotation,
         )
         ctx.label_cache[key] = label
 

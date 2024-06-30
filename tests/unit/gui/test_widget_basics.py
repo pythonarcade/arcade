@@ -1,4 +1,6 @@
+from arcade import LBWH
 from arcade.gui import UIWidget
+from arcade.types import AnchorPoint
 
 
 def test_widget_scale_down():
@@ -6,13 +8,13 @@ def test_widget_scale_down():
     widget = UIWidget(width=100, height=100)
 
     # WHEN
-    widget.scale(0.5)
+    widget.scale(0.5, anchor=AnchorPoint.BOTTOM_LEFT)
 
     # THEN
     assert widget.width == 50
     assert widget.height == 50
-    assert widget.x == 0
-    assert widget.y == 0
+    assert widget.left == 0
+    assert widget.bottom == 0
 
 
 def test_widget_scale_up():
@@ -20,13 +22,13 @@ def test_widget_scale_up():
     widget = UIWidget(width=100, height=100)
 
     # WHEN
-    widget.scale(2)
+    widget.scale(2, anchor=AnchorPoint.BOTTOM_LEFT)
 
     # THEN
     assert widget.width == 200
     assert widget.height == 200
-    assert widget.x == 0
-    assert widget.y == 0
+    assert widget.left == 0
+    assert widget.bottom == 0
 
 
 def test_widget_move():
@@ -37,8 +39,8 @@ def test_widget_move():
     widget.move(10, 20)
 
     # THEN
-    assert widget.x == 110
-    assert widget.y == 220
+    assert widget.left == 110
+    assert widget.bottom == 220
 
 
 def test_widget_set_padding_with_1_parameters():
@@ -94,8 +96,8 @@ def test_widget_content_rect_affected_by_padding():
     widget.padding = 20
 
     # THEN
-    assert widget.rect == (0, 0, 100, 100)
-    assert widget.content_rect == (20, 20, 60, 60)
+    assert widget.rect == LBWH(0, 0, 100, 100)
+    assert widget.content_rect == LBWH(20, 20, 60, 60)
 
 
 def test_widget_content_rect_affected_by_border_width():
@@ -106,8 +108,8 @@ def test_widget_content_rect_affected_by_border_width():
     widget._border_width = 10
 
     # THEN
-    assert widget.rect == (0, 0, 100, 100)
-    assert widget.content_rect == (10, 10, 80, 80)
+    assert widget.rect == LBWH(0, 0, 100, 100)
+    assert widget.content_rect == LBWH(10, 10, 80, 80)
 
 
 def test_widget_resize():
@@ -116,8 +118,8 @@ def test_widget_resize():
     widget.with_border(width=10)
 
     # WHEN
-    widget.resize(width=50, height=50)
+    widget.resize(width=50, height=50, anchor=AnchorPoint.BOTTOM_LEFT)
 
     # THEN
-    assert widget.rect == (0, 0, 50, 50)
-    assert widget.content_rect == (10, 10, 30, 30)
+    assert widget.rect == LBWH(0, 0, 50, 50)
+    assert widget.content_rect == LBWH(10, 10, 30, 30)

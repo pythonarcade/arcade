@@ -1,11 +1,11 @@
 """
 A module providing commonly used geometry
 """
+
 from __future__ import annotations
 
 import math
 from array import array
-from typing import Tuple
 
 from arcade.gl import Context, BufferDescription
 from arcade.gl.vertex_array import Geometry
@@ -23,7 +23,9 @@ def quad_2d_fs() -> Geometry:
     return quad_2d(size=(2.0, 2.0))
 
 
-def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (0.0, 0.0)) -> Geometry:
+def quad_2d(
+    size: tuple[float, float] = (1.0, 1.0), pos: tuple[float, float] = (0.0, 0.0)
+) -> Geometry:
     """
     Creates 2D quad Geometry using 2 triangle strip with texture coordinates.
 
@@ -34,21 +36,30 @@ def quad_2d(size: Tuple[float, float] = (1.0, 1.0), pos: Tuple[float, float] = (
     width, height = size
     x_pos, y_pos = pos
 
+    # fmt: off
     data = array('f', [
         x_pos - width / 2.0, y_pos + height / 2.0, 0.0, 1.0,
         x_pos - width / 2.0, y_pos - height / 2.0, 0.0, 0.0,
         x_pos + width / 2.0, y_pos + height / 2.0, 1.0, 1.0,
         x_pos + width / 2.0, y_pos - height / 2.0, 1.0, 0.0,
     ])
+    # fmt: on
 
-    return ctx.geometry([BufferDescription(
-        ctx.buffer(data=data),
-        '2f 2f',
-        ['in_vert', 'in_uv'],
-    )], mode=ctx.TRIANGLE_STRIP)
+    return ctx.geometry(
+        [
+            BufferDescription(
+                ctx.buffer(data=data),
+                "2f 2f",
+                ["in_vert", "in_uv"],
+            )
+        ],
+        mode=ctx.TRIANGLE_STRIP,
+    )
 
 
-def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, height: float) -> Geometry:
+def screen_rectangle(
+    bottom_left_x: float, bottom_left_y: float, width: float, height: float
+) -> Geometry:
     """
     Creates screen rectangle using 2 triangle strip with texture coordinates.
 
@@ -58,22 +69,29 @@ def screen_rectangle(bottom_left_x: float, bottom_left_y: float, width: float, h
     :param height: Height of the rectangle
     """
     ctx = _get_active_context()
+    # fmt: off
     data = array('f', [
         bottom_left_x, bottom_left_y + height, 0.0, 1.0,
         bottom_left_x, bottom_left_y, 0.0, 0.0,
         bottom_left_x + width, bottom_left_y + height, 1.0, 1.0,
         bottom_left_x + width, bottom_left_y, 1.0, 0.0,
     ])
-    return ctx.geometry([BufferDescription(
-        ctx.buffer(data=data),
-        '2f 2f',
-        ['in_vert', 'in_uv'],
-    )], mode=ctx.TRIANGLE_STRIP)
+    # fmt: on
+    return ctx.geometry(
+        [
+            BufferDescription(
+                ctx.buffer(data=data),
+                "2f 2f",
+                ["in_vert", "in_uv"],
+            )
+        ],
+        mode=ctx.TRIANGLE_STRIP,
+    )
 
 
 def cube(
-    size: Tuple[float, float, float] = (1.0, 1.0, 1.0),
-    center: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+    size: tuple[float, float, float] = (1.0, 1.0, 1.0),
+    center: tuple[float, float, float] = (0.0, 0.0, 0.0),
 ) -> Geometry:
     """Creates a cube with normals and texture coordinates.
 
@@ -85,6 +103,7 @@ def cube(
     width, height, depth = size
     width, height, depth = width / 2.0, height / 2.0, depth / 2.0
 
+    # fmt: off
     pos = array('f', [
         center[0] + width, center[1] - height, center[2] + depth,
         center[0] + width, center[1] + height, center[2] + depth,
@@ -123,7 +142,6 @@ def cube(
         center[0] - width, center[1] + height, center[2] + depth,
         center[0] + width, center[1] + height, center[2] + depth,
     ])
-
     normal = array('f', [
         -0, 0, 1,
         -0, 0, 1,
@@ -201,12 +219,15 @@ def cube(
         0, 0,
         1, 0
     ])
+    # fmt: on
 
-    return ctx.geometry([
-        BufferDescription(ctx.buffer(data=pos), '3f', ['in_position']),
-        BufferDescription(ctx.buffer(data=normal), '3f', ['in_normal']),
-        BufferDescription(ctx.buffer(data=uv), '2f', ['in_uv']),
-    ])
+    return ctx.geometry(
+        [
+            BufferDescription(ctx.buffer(data=pos), "3f", ["in_position"]),
+            BufferDescription(ctx.buffer(data=normal), "3f", ["in_normal"]),
+            BufferDescription(ctx.buffer(data=uv), "2f", ["in_uv"]),
+        ]
+    )
 
 
 def sphere(
@@ -271,15 +292,15 @@ def sphere(
             i += 6
 
     content = [
-        BufferDescription(ctx.buffer(data=array('f', vertices)), "3f", ["in_position"]),
+        BufferDescription(ctx.buffer(data=array("f", vertices)), "3f", ["in_position"]),
     ]
     if normals:
-        content.append(BufferDescription(ctx.buffer(data=array('f', normals)), "3f", ["in_normal"]))
+        content.append(BufferDescription(ctx.buffer(data=array("f", normals)), "3f", ["in_normal"]))
     if uvs:
-        content.append(BufferDescription(ctx.buffer(data=array('f', uvs)), "2f", ["in_uv"]))
+        content.append(BufferDescription(ctx.buffer(data=array("f", uvs)), "2f", ["in_uv"]))
 
     return ctx.geometry(
         content,
-        index_buffer=ctx.buffer(data=array('I', indices)),
+        index_buffer=ctx.buffer(data=array("I", indices)),
         mode=ctx.TRIANGLES,
     )

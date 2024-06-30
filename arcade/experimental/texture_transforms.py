@@ -48,7 +48,7 @@ class App(arcade.Window):
     def on_key_press(self, symbol: int, modifiers: int):
         for sprite in self.spritelist:
             sprite.texture = sprite.texture.transform(random.choice(TRANSFORMS))
-            sprite._hit_box_points = None
+            sprite.sync_hit_box_to_texture()
 
 
 App().run()

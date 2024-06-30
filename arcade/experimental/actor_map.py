@@ -5,10 +5,10 @@ then view that map form different actor viewpoints.
 This example is using the lower level rendering API
 in arcade.
 """
+
 from __future__ import annotations
 
 import random
-from typing import Tuple
 
 import arcade
 from arcade.gl import geometry
@@ -28,7 +28,9 @@ class ActorMap(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.projection_matrix = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
+        self.ctx.projection_matrix = Mat4.orthogonal_projection(
+            0, self.width, 0, self.height, -100, 100
+        )
         self.actor.draw(self.time)
 
     def on_update(self, delta_time: float):
@@ -42,14 +44,15 @@ class Actor:
     It should support translation and rotations
     and possibly zoom.
     """
+
     def __init__(
         self,
         map,
         shaders,
         *,
-        position: Tuple[float, float] = (0, 0),
+        position: tuple[float, float] = (0, 0),
         rotation: float = 0.0,
-        area: Tuple[float, float] = (256, 256),
+        area: tuple[float, float] = (256, 256),
         view_distance: float = 120.0,
     ):
         self.ctx = map.ctx
@@ -63,7 +66,7 @@ class Actor:
         self.geometry = geometry.quad_2d_fs()
 
     @property
-    def position(self) -> Tuple[float, float]:
+    def position(self) -> tuple[float, float]:
         """Get or set the position"""
         return self._position
 
@@ -95,7 +98,7 @@ class Map:
     Sprites for out map to keep things less messy
     """
 
-    def __init__(self, ctx, *, size: Tuple[int, int]):
+    def __init__(self, ctx, *, size: tuple[int, int]):
         self.ctx = ctx
         self.size = size
 
@@ -167,7 +170,9 @@ class Map:
         with self.fbo.activate() as fbo:
             fbo.clear()
             # Change projection to match the contents
-            self.ctx.projection = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
+            self.ctx.projection = Mat4.orthogonal_projection(
+                0, self.width, 0, self.height, -100, 100
+            )
             self.sprites.draw()
 
 
@@ -176,6 +181,7 @@ class Shaders:
     Quick and dirty contains for all the shaders we're using.
     We don't want to compile a program/shader multiple times.
     """
+
     def __init__(self, ctx):
         self.ctx = ctx
         self.actor_view = self.ctx.program(

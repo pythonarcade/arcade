@@ -17,7 +17,7 @@ def test_textured_rects(window: arcade.Window):
             texture.image.height * scale,
             texture, angle=45,
         )
-        arcade.draw_lrwh_rectangle_textured(10, 400, 64, 64, texture)
+        arcade.draw_lbwh_rectangle_textured(10, 400, 64, 64, texture)
 
         for i in range(15):
             arcade.draw_scaled_texture_rectangle(

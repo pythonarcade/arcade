@@ -16,6 +16,7 @@ Increase the window resolution to get more points.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.transform_point_grid
 """
+
 import random
 import time
 from array import array
@@ -55,25 +56,29 @@ class MyGame(arcade.Window):
         self.size = self.width, self.height
 
         # Two buffers on the gpu with positions
-        self.buffer1 = self.ctx.buffer(data=array('f', gen_initial_data(self, *self.size)))
+        self.buffer1 = self.ctx.buffer(data=array("f", gen_initial_data(self, *self.size)))
         self.buffer2 = self.ctx.buffer(reserve=self.buffer1.size)
         # Buffer with color for each point
-        self.colors = self.ctx.buffer(data=array('f', gen_colors(*self.size)))
+        self.colors = self.ctx.buffer(data=array("f", gen_colors(*self.size)))
 
         # Geometry for drawing the two buffer variants.
         # We pad away the desired position and add the color data.
-        self.geometry1 = self.ctx.geometry([
-            gl.BufferDescription(self.buffer1, '2f 2x4', ['in_pos']),
-            gl.BufferDescription(self.colors, '3f', ['in_color']),
-        ])
-        self.geometry2 = self.ctx.geometry([
-            gl.BufferDescription(self.buffer2, '2f 2x4', ['in_pos']),
-            gl.BufferDescription(self.colors, '3f', ['in_color']),
-        ])
+        self.geometry1 = self.ctx.geometry(
+            [
+                gl.BufferDescription(self.buffer1, "2f 2x4", ["in_pos"]),
+                gl.BufferDescription(self.colors, "3f", ["in_color"]),
+            ]
+        )
+        self.geometry2 = self.ctx.geometry(
+            [
+                gl.BufferDescription(self.buffer2, "2f 2x4", ["in_pos"]),
+                gl.BufferDescription(self.colors, "3f", ["in_color"]),
+            ]
+        )
 
         # Transform geometry for the two buffers. This is used to move the points with a transform shader
-        self.transform1 = self.ctx.geometry([gl.BufferDescription(self.buffer1, '2f 2f', ['in_pos', 'in_dest'])])
-        self.transform2 = self.ctx.geometry([gl.BufferDescription(self.buffer2, '2f 2f', ['in_pos', 'in_dest'])])
+        self.transform1 = self.ctx.geometry([gl.BufferDescription(self.buffer1, "2f 2f", ["in_pos", "in_dest"])])
+        self.transform2 = self.ctx.geometry([gl.BufferDescription(self.buffer2, "2f 2f", ["in_pos", "in_dest"])])
 
         # Let's make the coordinate system match the viewport
         projection = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)
@@ -105,7 +110,7 @@ class MyGame(arcade.Window):
             """,
         )
         # Write the projection matrix to the program uniform
-        self.points_program['projection'] = projection
+        self.points_program["projection"] = projection
 
         # Program altering the point location.
         # We constantly try to move the point to its desired location.
@@ -156,8 +161,8 @@ class MyGame(arcade.Window):
         self.last_time = now
 
         # Move points with transform
-        self.transform_program['dt'] = self.frame_time
-        self.transform_program['mouse_pos'] = self.mouse_pos
+        self.transform_program["dt"] = self.frame_time
+        self.transform_program["mouse_pos"] = self.mouse_pos
         self.transform1.transform(self.transform_program, self.buffer2)
 
         # Swap variables around (ping-pong rendering)

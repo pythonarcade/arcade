@@ -375,6 +375,11 @@ class MyGame(arcade.Window):
         self.rotating_text.rotation = self.text_angle
         self.rotating_text.draw()
 
+    def on_key_press(self, symbol: int, modifiers: int):
+        """ Handle key press events """
+        if symbol == arcade.key.ESCAPE:
+            self.close()
+
 
 def main():
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)

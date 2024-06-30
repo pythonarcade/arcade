@@ -24,6 +24,7 @@ handles or handles that are not resident can cause crashes.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.bindless_texture
 """
+
 from array import array
 from typing import List
 from itertools import cycle
@@ -36,9 +37,11 @@ class BindlessTexture(arcade.Window):
 
     def __init__(self):
         super().__init__(
-            1280, 720,
+            1280,
+            720,
             "Bindless Texture Example",
-            resizable=True, gl_version=(4, 3),
+            resizable=True,
+            gl_version=(4, 3),
         )
 
         # Custom sprite shader program using bindless textures
@@ -144,8 +147,8 @@ class BindlessTexture(arcade.Window):
         self.textures: List[Texture2D] = []
         # Make a cycle iterator from arcade's resources (images)
         resources = [
-            getattr(arcade.resources, resource)
-            for resource in dir(arcade.resources) if resource.startswith('image_')]
+            getattr(arcade.resources, resource) for resource in dir(arcade.resources) if resource.startswith("image_")
+        ]
         resource_cycle = cycle(resources)
 
         # Load enough textures to cover for each point/sprite
@@ -159,7 +162,7 @@ class BindlessTexture(arcade.Window):
             self.handles.append(texture.get_handle(resident=True))
 
         # Create the shader storage buffer with the texture handles
-        self.texture_ssbo = self.ctx.buffer(data=array('Q', self.handles))
+        self.texture_ssbo = self.ctx.buffer(data=array("Q", self.handles))
 
         # Generate some points/positions for our sprites
         pos = []
@@ -168,10 +171,10 @@ class BindlessTexture(arcade.Window):
                 pos.extend([x * 80 + 40, y * 80 + 40])
 
         # Create a buffer with the positions
-        self.buffer_pos = self.ctx.buffer(data=array('f', pos))
+        self.buffer_pos = self.ctx.buffer(data=array("f", pos))
         # Create a geometry object with the positions
         self.geometry = self.ctx.geometry(
-            [BufferDescription(self.buffer_pos, '2f', ['in_position'])],
+            [BufferDescription(self.buffer_pos, "2f", ["in_position"])],
             mode=self.ctx.POINTS,
         )
 

@@ -26,7 +26,9 @@ class MyGame(arcade.Window):
         # Just grab all the image resources we can find
         resources = [
             getattr(arcade.resources, resource)
-            for resource in dir(arcade.resources) if resource.startswith('image_')]
+            for resource in dir(arcade.resources)
+            if resource.startswith("image_")
+        ]
         resource_cycle = cycle(resources)
         # We only care about sprites of this size
         sprite_size = 128
@@ -36,7 +38,7 @@ class MyGame(arcade.Window):
                 # Just cycle until we get a sprite of the right size. This is terrible, but works!
                 while True:
                     resource = next(resource_cycle)
-                    print('sprite', resource)
+                    print("sprite", resource)
                     sprite = arcade.Sprite(
                         resource,
                         center_x=x + sprite_size // 2,

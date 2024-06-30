@@ -1,11 +1,11 @@
-from typing import Tuple
+from __future__ import annotations
 
 from pyglet.math import Vec3
 
 from arcade.camera.data_types import CameraData
 
 
-def strafe(data: CameraData, direction: Tuple[float, float]) -> Tuple[float, float, float]:
+def strafe(data: CameraData, direction: tuple[float, float]) -> tuple[float, float, float]:
     """
     Move the CameraData in a 2D direction aligned to the up-right plane of the view.
     A value of [1, 0] will move the camera sideways while a value of [0, 1]
@@ -18,8 +18,10 @@ def strafe(data: CameraData, direction: Tuple[float, float]) -> Tuple[float, flo
     _pos = data.position
 
     offset = _right * direction[0] + _up * direction[1]
+    # fmt: off
     return (
-        _pos[0] + offset[0],
-        _pos[1] + offset[1],
-        _pos[2] + offset[2]
-    )
+            _pos[0] + offset[0],
+            _pos[1] + offset[1],
+            _pos[2] + offset[2]
+        )
+    # fmt: on

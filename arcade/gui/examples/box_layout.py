@@ -8,6 +8,7 @@ a horizontal line.
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.box_layout
 """
+
 from __future__ import annotations
 
 import arcade
@@ -23,17 +24,14 @@ class MyView(arcade.View):
 
         anchor = self.ui.add(UIAnchorLayout())
 
-        self.v_box = (
-            UIBoxLayout(
-                children=[
-                    UIDummy(width=200, color=arcade.color.RED),
-                    UIDummy(width=200, color=arcade.color.YELLOW),
-                    UIDummy(width=200, color=arcade.color.GREEN),
-                ],
-                space_between=20,
-            )
-            .with_border()
-        )
+        self.v_box = UIBoxLayout(
+            children=[
+                UIDummy(width=200, color=arcade.color.RED),
+                UIDummy(width=200, color=arcade.color.YELLOW),
+                UIDummy(width=200, color=arcade.color.GREEN),
+            ],
+            space_between=20,
+        ).with_border()
         anchor.add(
             align_x=200,
             anchor_x="center_x",
@@ -71,7 +69,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

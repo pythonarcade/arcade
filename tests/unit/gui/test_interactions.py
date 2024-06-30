@@ -1,6 +1,7 @@
 from typing import List
 from unittest.mock import Mock
 
+import arcade
 from arcade.gui.events import UIEvent, UIOnClickEvent, UIMousePressEvent, UIMouseReleaseEvent
 from arcade.gui.widgets import UIDummy
 from . import record_ui_events
@@ -33,7 +34,7 @@ def test_overlapping_hover_on_widget(uimanager):
     assert widget2.hovered is True
 
 
-def test_click_on_widget(uimanager):
+def test_left_click_on_widget(uimanager):
     # GIVEN
     widget1 = UIDummy()
     widget1.on_click = Mock()
@@ -41,7 +42,7 @@ def test_click_on_widget(uimanager):
 
     # WHEN
     with record_ui_events(widget1, "on_event", "on_click") as records:
-        uimanager.click(widget1.center_x, widget1.center_y)
+        uimanager.click(widget1.center_x, widget1.center_y, button=arcade.MOUSE_BUTTON_LEFT)
 
     # THEN
     records: List[UIEvent]
@@ -54,8 +55,28 @@ def test_click_on_widget(uimanager):
     assert click_event.source == widget1
     assert click_event.x == widget1.center_x
     assert click_event.y == widget1.center_y
+    assert click_event.button == arcade.MOUSE_BUTTON_LEFT
+    assert click_event.modifiers == 0
 
     assert widget1.on_click.called
+
+
+def test_ignores_right_click_on_widget(uimanager):
+    # GIVEN
+    widget1 = UIDummy()
+    widget1.on_click = Mock()
+    uimanager.add(widget1)
+
+    # WHEN
+    with record_ui_events(widget1, "on_event", "on_click") as records:
+        uimanager.click(widget1.center_x, widget1.center_y, button=arcade.MOUSE_BUTTON_RIGHT)
+
+    # THEN
+    records: List[UIEvent]
+    assert len(records) == 2
+    assert isinstance(records[0], UIMousePressEvent)
+    assert isinstance(records[1], UIMouseReleaseEvent)
+    assert not widget1.on_click.called
 
 
 def test_click_on_widget_if_disabled(uimanager):

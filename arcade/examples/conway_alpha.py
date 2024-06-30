@@ -105,11 +105,22 @@ class MyGame(arcade.Window):
         self.cur_layer = 0
         randomize_grid(self.layers_grid_sprites_one_dim[0])
 
+    def reset(self):
+        """ Reset the grid """
+        randomize_grid(self.layers_grid_sprites_one_dim[0])
+
     def on_draw(self):
         """ Render the screen. """
         # Clear all pixels in the window
         self.clear()
         self.layers_grid_sprites_one_dim[0].draw()
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        """ Handle key press events """
+        if symbol == arcade.key.SPACE:
+            self.reset()
+        elif symbol == arcade.key.ESCAPE:
+            self.close()
 
     def on_update(self, delta_time: float):
         """ Update the grid """

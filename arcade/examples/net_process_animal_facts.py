@@ -82,9 +82,8 @@ class AnimalFacts(arcade.View):
 
         # Draw a spinning circle while we wait for a fact
         if self.loading:
-            arcade.draw_rectangle_filled(
-                center_x=self.window.width - 50, center_y=self.window.height - 50,
-                width=50, height=50,
+            arcade.draw_rect_filled(
+                arcade.XYWH(self.window.width - 50, self.window.height - 50, 50, 50),
                 color=arcade.color.ORANGE,
                 tilt_angle=self.angle,
             )

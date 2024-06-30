@@ -1,12 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, List, TypeVar, Any, Tuple
+from typing import TYPE_CHECKING, Iterable, TypeVar, Any
 
 import arcade
-from arcade.types import AsFloat, Point, Color, RGBA255, RGBOrA255, PointList
+from arcade.types import AsFloat, Point, Color, Point2, RGBA255, RGBOrA255, PointList, Rect, LRBT
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
+from arcade.utils import copy_dunders_unimplemented
+
+from pyglet.math import Vec2
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
@@ -15,6 +18,7 @@ if TYPE_CHECKING:
 SpriteType = TypeVar("SpriteType", bound="BasicSprite")
 
 
+@copy_dunders_unimplemented  # See https://github.com/pythonarcade/arcade/issues/2074
 class BasicSprite:
     """
     The absolute minimum needed for a sprite.
@@ -58,22 +62,20 @@ class BasicSprite:
         self._texture = texture
         self._width = texture.width * scale
         self._height = texture.height * scale
-        self._scale = scale, scale
+        self._scale = Vec2(scale, scale)
         self._visible = bool(visible)
         self._color: Color = WHITE
-        self.sprite_lists: List["SpriteList"] = []
+        self.sprite_lists: list["SpriteList"] = []
 
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
 
-        self._hit_box = HitBox(
-            self._texture.hit_box_points, self._position, self._scale
-        )
+        self._hit_box = HitBox(self._texture.hit_box_points, self._position, self._scale)
 
     # --- Core Properties ---
 
     @property
-    def position(self) -> Point:
+    def position(self) -> Point2:
         """
         Get or set the center x and y position of the sprite.
 
@@ -83,7 +85,7 @@ class BasicSprite:
         return self._position
 
     @position.setter
-    def position(self, new_value: Point):
+    def position(self, new_value: Point2):
         if new_value == self._position:
             return
 
@@ -168,21 +170,25 @@ class BasicSprite:
             for sprite_list in self.sprite_lists:
                 sprite_list._update_height(self)
 
-    # @property
-    # def size(self) -> Point:
-    #     """Get or set the size of the sprite as a pair of values."""
-    #     return self._width, self._height
+    @property
+    def size(self) -> Point:
+        """
+        Get or set the size of the sprite as a pair of values.
 
-    # @size.setter
-    # def size(self, new_value: Point):
-    #     if new_value[0] != self._width or new_value[1] != self._height:
-    #         self._scale = new_value[0] / self._texture.width, new_value[1] / self._texture.height
-    #         self._width = new_value[0]
-    #         self._height = new_value[1]
+        This is faster than getting or setting width and height separately.
+        """
+        return self._width, self._height
 
-    #         self.update_spatial_hash()
-    #         for sprite_list in self.sprite_lists:
-    #             sprite_list._update_size(self)
+    @size.setter
+    def size(self, new_value: Point):
+        if new_value[0] != self._width or new_value[1] != self._height:
+            self._scale = Vec2(new_value[0] / self._texture.width, new_value[1] / self._texture.height)
+            self._width = new_value[0]
+            self._height = new_value[1]
+
+            self.update_spatial_hash()
+            for sprite_list in self.sprite_lists:
+                sprite_list._update_size(self)
 
     @property
     def scale_x(self) -> float:
@@ -199,7 +205,7 @@ class BasicSprite:
         if new_value == self._scale[0]:
             return
 
-        self._scale = new_value, self._scale[1]
+        self._scale = Vec2(new_value, self._scale[1])
         self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
@@ -224,7 +230,7 @@ class BasicSprite:
         if new_value == self._scale[1]:
             return
 
-        self._scale = self._scale[0], new_value
+        self._scale = Vec2(self._scale[0], new_value)
         self._hit_box.scale = self._scale
         if self._texture:
             self._width = self._texture.width * self._scale[0]
@@ -330,6 +336,10 @@ class BasicSprite:
         self.center_y -= diff
 
     @property
+    def rect(self) -> Rect:
+        return LRBT(self.left, self.right, self.bottom, self.top)
+
+    @property
     def visible(self) -> bool:
         """Get or set the visibility of this sprite.
 
@@ -373,7 +383,7 @@ class BasicSprite:
             sprite_list._update_color(self)
 
     @property
-    def rgb(self) -> Tuple[int, int, int]:
+    def rgb(self) -> tuple[int, int, int]:
         """Get or set only the sprite's RGB color components.
 
         If a 4-color RGBA tuple is passed:
@@ -393,10 +403,13 @@ class BasicSprite:
             if len(_a) > 1:  # Alpha's only used to validate here
                 raise ValueError()
 
-        except ValueError as _:  # It's always a length issue
-            raise ValueError((
-                f"{self.__class__.__name__},rgb takes 3 or 4 channel"
-                f" colors, but got {len(color)} channels"))
+        except ValueError:  # It's always a length issue
+            raise ValueError(
+                (
+                    f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                    f" colors, but got {len(color)} channels"
+                )
+            )
 
         # Unpack to avoid index / . overhead & prep for repack
         current_r, current_b, current_g, a = self._color
@@ -572,9 +585,7 @@ class BasicSprite:
             if position_changed:
                 sprite_list._update_position(self)
 
-    def rescale_xy_relative_to_point(
-        self, point: Point, factors_xy: Iterable[float]
-    ) -> None:
+    def rescale_xy_relative_to_point(self, point: Point, factors_xy: Iterable[float]) -> None:
         """
         Rescale the sprite and its distance from the passed point.
 
@@ -605,7 +616,7 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self.scale = self._scale[0] * factor_x, self._scale[1] * factor_y
+        self.scale = Vec2(self._scale[0] * factor_x, self._scale[1] * factor_y)
         if self._texture:
             self._width = self._texture.width * self._scale[0]
             self._height = self._texture.height * self._scale[1]
@@ -679,7 +690,7 @@ class BasicSprite:
         """
         self.remove_from_sprite_lists()
 
-    def collides_with_point(self, point: Point) -> bool:
+    def collides_with_point(self, point: Point2) -> bool:
         """
         Check if point is within the current sprite.
 
@@ -701,9 +712,7 @@ class BasicSprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(
-        self: SpriteType, sprite_list: "SpriteList"
-    ) -> List[SpriteType]:
+    def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> list[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
         :param sprite_list: SpriteList to check against

@@ -1,15 +1,17 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Tuple, Union, Optional
+from typing import Union, Optional
 
 import arcade
 from arcade import Texture
-from arcade.color import TRANSPARENT_BLACK
 from arcade.camera import OrthographicProjector, OrthographicProjectionData, CameraData
+from arcade.color import TRANSPARENT_BLACK
+from arcade.draw import draw_lbwh_rectangle_textured
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import RGBA255, FloatRect, Point
+from arcade.types import RGBA255, Point
+from arcade.types.rect import Rect, LBWH
 
 
 class Surface:
@@ -21,8 +23,8 @@ class Surface:
     def __init__(
         self,
         *,
-        size: Tuple[int, int],
-        position: Tuple[int, int] = (0, 0),
+        size: tuple[int, int],
+        position: tuple[int, int] = (0, 0),
         pixel_ratio: float = 1.0,
     ):
         self.ctx = arcade.get_window().ctx
@@ -54,12 +56,8 @@ class Surface:
 
         self._cam = OrthographicProjector(
             view=CameraData(),
-            projection=OrthographicProjectionData(
-                0.0, self.width,
-                0.0, self.height,
-                -100, 100,
-                (0, 0, self.width, self.height)
-            )
+            projection=OrthographicProjectionData(0.0, self.width, 0.0, self.height, -100, 100),
+            viewport=LBWH(0, 0, self.width, self.height),
         )
 
     @property
@@ -112,16 +110,20 @@ class Surface:
     ):
         if isinstance(tex, NinePatchTexture):
             if angle != 0.0:
-                raise NotImplementedError(f"Ninepatch does not support an angle != 0 yet, but got {angle}")
+                raise NotImplementedError(
+                    f"Ninepatch does not support an angle != 0 yet, but got {angle}"
+                )
 
             if alpha != 255:
-                raise NotImplementedError(f"Ninepatch does not support an alpha != 255 yet, but got {alpha}")
+                raise NotImplementedError(
+                    f"Ninepatch does not support an alpha != 255 yet, but got {alpha}"
+                )
 
             tex.draw_sized(size=(width, height))
         else:
-            arcade.draw_lrwh_rectangle_textured(
-                bottom_left_x=x,
-                bottom_left_y=y,
+            draw_lbwh_rectangle_textured(
+                left=x,
+                bottom=y,
                 width=width,
                 height=height,
                 texture=tex,
@@ -143,7 +145,7 @@ class Surface:
         Also resets the limit of the surface (viewport).
         """
         # Set viewport and projection
-        self.limit(0, 0, *self.size)
+        self.limit(LBWH(0, 0, *self.size))
         # Set blend function
         blend_func = self.ctx.blend_func
 
@@ -155,28 +157,29 @@ class Surface:
             # Restore blend function.
             self.ctx.blend_func = blend_func
 
-    def limit(self, x, y, width, height):
+    def limit(self, rect: Rect):  # TODO track limit usage
         """Reduces the draw area to the given rect"""
 
-        viewport = (
-            int(x * self._pixel_ratio),
-            int(y * self._pixel_ratio),
-            int(width * self._pixel_ratio),
-            int(height * self._pixel_ratio),
-        )
-        self.fbo.viewport = viewport
+        l, b, w, h = rect.lbwh
+        w = max(w, 1)
+        h = max(h, 1)
 
-        width = max(width, 1)
-        height = max(height, 1)
-        _p = self._cam.projection
-        _p.left, _p.right, _p.bottom, _p.top = 0, width, 0, height
-        self._cam.projection.viewport = viewport
+        viewport_rect = LBWH(
+            int(l * self._pixel_ratio),
+            int(b * self._pixel_ratio),
+            int(w * self._pixel_ratio),
+            int(h * self._pixel_ratio),
+        )
+        self.fbo.viewport = viewport_rect.viewport
+
+        self._cam.projection.rect = LBWH(0, 0, w, h)
+        self._cam.viewport = viewport_rect
 
         self._cam.use()
 
     def draw(
         self,
-        area: Optional[FloatRect] = None,
+        area: Optional[Rect] = None,
     ) -> None:
         """
         Draws the contents of the surface.
@@ -184,7 +187,7 @@ class Surface:
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
-        :param area: Limit the area in the surface we're drawing (x, y, w, h)
+        :param area: Limit the area in the surface we're drawing (l, b, w, h)
         """
         # Set blend function
         blend_func = self.ctx.blend_func
@@ -193,13 +196,13 @@ class Surface:
         self.texture.use(0)
         self._program["pos"] = self._pos
         self._program["size"] = self._size
-        self._program["area"] = area or (0, 0, *self._size)
+        self._program["area"] = (0, 0, *self._size) if not area else area.lbwh
         self._geometry.render(self._program, vertices=1)
 
         # Restore blend function
         self.ctx.blend_func = blend_func
 
-    def resize(self, *, size: Tuple[int, int], pixel_ratio: float) -> None:
+    def resize(self, *, size: tuple[int, int], pixel_ratio: float) -> None:
         """
         Resize the internal texture by re-allocating a new one
 
@@ -215,4 +218,3 @@ class Surface:
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
-

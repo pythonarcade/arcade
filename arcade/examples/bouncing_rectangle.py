@@ -58,11 +58,8 @@ class Item:
 
     def draw(self):
         # Draw the rectangle
-        arcade.draw_rectangle_filled(self.center_x,
-                                     self.center_y,
-                                     RECT_WIDTH,
-                                     RECT_HEIGHT,
-                                     RECT_COLOR)
+        arcade.draw_rect_filled(
+            arcade.rect.XYWH(self.center_x, self.center_y, RECT_WIDTH, RECT_HEIGHT), RECT_COLOR)
 
 
 class MyGame(arcade.Window):

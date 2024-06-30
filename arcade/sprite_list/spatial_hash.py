@@ -1,15 +1,11 @@
 from __future__ import annotations
 
 from math import trunc
-from typing import (
-    List,
-    Set,
-    Dict,
-    Generic,
-)
+from typing import Generic
 from arcade.sprite.base import BasicSprite
-from arcade.types import Point, IPoint, Rect
+from arcade.types import Point, IPoint
 from arcade.sprite import SpriteType
+from arcade.types.rect import Rect
 
 
 class SpatialHash(Generic[SpriteType]):
@@ -20,6 +16,7 @@ class SpatialHash(Generic[SpriteType]):
 
     :param cell_size: Size (width and height) of the cells in the spatial hash
     """
+
     def __init__(self, cell_size: int) -> None:
         # Sanity check the cell size
         if cell_size <= 0:
@@ -29,10 +26,10 @@ class SpatialHash(Generic[SpriteType]):
 
         self.cell_size = cell_size
         # Buckets of sprites per cell
-        self.contents: Dict[IPoint, Set[SpriteType]] = {}
+        self.contents: dict[IPoint, set[SpriteType]] = {}
         # All the buckets a sprite is in.
         # This is used to remove a sprite from the spatial hash.
-        self.buckets_for_sprite: Dict[SpriteType, List[Set[SpriteType]]] = {}
+        self.buckets_for_sprite: dict[SpriteType, list[set[SpriteType]]] = {}
 
     def hash(self, point: IPoint) -> IPoint:
         """Convert world coordinates to cell coordinates"""
@@ -59,7 +56,7 @@ class SpatialHash(Generic[SpriteType]):
 
         # hash the minimum and maximum points
         min_point, max_point = self.hash(min_point), self.hash(max_point)
-        buckets: List[Set[SpriteType]] = []
+        buckets: list[set[SpriteType]] = []
 
         # Iterate over the rectangular region adding the sprite to each cell
         for i in range(min_point[0], max_point[0] + 1):
@@ -95,7 +92,7 @@ class SpatialHash(Generic[SpriteType]):
         # Delete the sprite from the bucket tracker
         del self.buckets_for_sprite[sprite]
 
-    def get_sprites_near_sprite(self, sprite: BasicSprite) -> Set[SpriteType]:
+    def get_sprites_near_sprite(self, sprite: BasicSprite) -> set[SpriteType]:
         """
         Get all the sprites that are in the same buckets as the given sprite.
 
@@ -107,7 +104,7 @@ class SpatialHash(Generic[SpriteType]):
 
         # hash the minimum and maximum points
         min_point, max_point = self.hash(min_point), self.hash(max_point)
-        close_by_sprites: Set[SpriteType] = set()
+        close_by_sprites: set[SpriteType] = set()
 
         # Iterate over the all the covered cells and collect the sprites
         for i in range(min_point[0], max_point[0] + 1):
@@ -117,7 +114,7 @@ class SpatialHash(Generic[SpriteType]):
 
         return close_by_sprites
 
-    def get_sprites_near_point(self, point: Point) -> Set[SpriteType]:
+    def get_sprites_near_point(self, point: Point) -> set[SpriteType]:
         """
         Return sprites in the same bucket as the given point.
 
@@ -129,20 +126,20 @@ class SpatialHash(Generic[SpriteType]):
         # Return a copy of the set.
         return set(self.contents.setdefault(hash_point, set()))
 
-    def get_sprites_near_rect(self, rect: Rect) -> Set[SpriteType]:
+    def get_sprites_near_rect(self, rect: Rect) -> set[SpriteType]:
         """
         Return sprites in the same buckets as the given rectangle.
 
         :param rect: The rectangle to check (left, right, bottom, top)
         :return: A set of sprites in the rectangle
         """
-        left, right, bottom, top = rect
+        left, right, bottom, top = rect.lrbt
         min_point = trunc(left), trunc(bottom)
         max_point = trunc(right), trunc(top)
 
         # hash the minimum and maximum points
         min_point, max_point = self.hash(min_point), self.hash(max_point)
-        close_by_sprites: Set[SpriteType] = set()
+        close_by_sprites: set[SpriteType] = set()
 
         # Iterate over the all the covered cells and collect the sprites
         for i in range(min_point[0], max_point[0] + 1):

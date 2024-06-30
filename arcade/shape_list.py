@@ -5,6 +5,7 @@ This module contains commands for basic graphics drawing commands,
 but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
+
 from __future__ import annotations
 
 from array import array
@@ -12,9 +13,6 @@ from collections import OrderedDict
 import itertools
 import math
 from typing import (
-    Dict,
-    List,
-    Tuple,
     Iterable,
     Optional,
     Sequence,
@@ -26,8 +24,10 @@ from typing import (
 import pyglet.gl as gl
 
 from arcade.types import Color, Point, PointList, RGBA255
+
+from arcade.utils import copy_dunders_unimplemented
 from arcade import get_window, get_points_for_thick_line
-from arcade.gl import BufferDescription
+from arcade.gl import Buffer, Geometry, BufferDescription
 from arcade.gl import Program
 from arcade import ArcadeContext
 from arcade.math import rotate_point
@@ -59,6 +59,7 @@ __all__ = [
 ]
 
 
+@copy_dunders_unimplemented  # Temp fix for https://github.com/pythonarcade/arcade/issues/2074
 class Shape:
     """
     A container for arbitrary geometry representing a shape.
@@ -71,6 +72,7 @@ class Shape:
     :param mode: The OpenGL drawing mode. Defaults to GL_TRIANGLES.
     :param program: The program to use when drawing this shape (Shape.draw() only)
     """
+
     def __init__(
         self,
         points: PointList,
@@ -79,7 +81,7 @@ class Shape:
         # vbo: Buffer,
         mode: int = gl.GL_TRIANGLES,
         program: Optional[Program] = None,
-    ):
+    ) -> None:
         self.ctx = get_window().ctx
         self.program = program or self.ctx.line_generic_with_colors_program
         self.mode = mode
@@ -94,10 +96,10 @@ class Shape:
         self.data = array("f", [c for a in zip(self.points, self.colors) for b in a for c in b])
         self.vertices = len(points)
 
-        self.geometry = None
-        self.buffer = None
+        self.geometry: Optional[Geometry] = None
+        self.buffer: Optional[Buffer] = None
 
-    def _init_geometry(self):
+    def _init_geometry(self) -> None:
         # NOTE: When drawing a single shape we're not using an index buffer
         self.buffer = self.program.ctx.buffer(data=self.data)
         self.geometry = self.ctx.geometry(
@@ -110,7 +112,7 @@ class Shape:
             ]
         )
 
-    def draw(self):
+    def draw(self) -> None:
         """
         Draw this shape. Drawing this way isn't as fast as drawing multiple
         shapes batched together in a ShapeElementList.
@@ -118,7 +120,8 @@ class Shape:
         if self.geometry is None:
             self._init_geometry()
 
-        self.geometry.render(self.program, mode=self.mode)  # pyright: ignore [reportOptionalMemberAccess]
+        if self.geometry is not None:
+            self.geometry.render(self.program, mode=self.mode)
 
 
 def create_line(
@@ -185,11 +188,7 @@ def create_line_generic(
     return create_line_generic_with_colors(point_list, colors, shape_mode)
 
 
-def create_line_strip(
-    point_list: PointList,
-    color: RGBA255,
-    line_width: float = 1
-) -> Shape:
+def create_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1) -> Shape:
     """
     Create a multi-point line to be rendered later. This works faster than draw_line because
     the vertexes are only loaded to the graphics card once, rather than each frame.
@@ -203,8 +202,8 @@ def create_line_strip(
     if line_width == 1:
         return create_line_generic(point_list, color, gl.GL_LINE_STRIP)
 
-    triangle_point_list: List[Point] = []
-    new_color_list: List[RGBA255] = []
+    triangle_point_list: list[Point] = []
+    new_color_list: list[RGBA255] = []
     for i in range(1, len(point_list)):
         start_x = point_list[i - 1][0]
         start_y = point_list[i - 1][1]
@@ -269,8 +268,8 @@ def create_lines_with_colors(
     if line_width == 1:
         return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES)
 
-    triangle_point_list: List[Point] = []
-    new_color_list: List[RGBA255] = []
+    triangle_point_list: list[Point] = []
+    new_color_list: list[RGBA255] = []
     for i in range(1, len(point_list), 2):
         start_x = point_list[i - 1][0]
         start_y = point_list[i - 1][1]
@@ -318,7 +317,8 @@ def create_rectangle_filled(
     center_x: float,
     center_y: float,
     width: float,
-    height: float, color: RGBA255,
+    height: float,
+    color: RGBA255,
     tilt_angle: float = 0,
 ) -> Shape:
     """
@@ -340,8 +340,10 @@ def create_rectangle_filled(
     :param tilt_angle: Angle to tilt the rectangle in degrees
     """
     return create_rectangle(
-        center_x, center_y,
-        width, height,
+        center_x,
+        center_y,
+        width,
+        height,
         color,
         tilt_angle=tilt_angle,
     )
@@ -376,8 +378,10 @@ def create_rectangle_outline(
     :param tilt_angle: Angle to tilt the rectangle in degrees
     """
     return create_rectangle(
-        center_x, center_y,
-        width, height,
+        center_x,
+        center_y,
+        width,
+        height,
         color,
         border_width,
         tilt_angle,
@@ -453,26 +457,52 @@ def create_rectangle(
     :param tilt_angle: Angle to tilt the rectangle in degrees
     :param filled: If True, the rectangle is filled. If False, it is an outline.
     """
-    data: List[Point] = cast(List[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle))
+    data: list[Point] = cast(
+        list[Point], get_rectangle_points(center_x, center_y, width, height, tilt_angle)
+    )
 
     if filled:
         data[-2:] = reversed(data[-2:])
     else:
 
-        i_lb = center_x - width / 2 + border_width / 2, center_y - height / 2 + border_width / 2
-        i_rb = center_x + width / 2 - border_width / 2, center_y - height / 2 + border_width / 2
-        i_rt = center_x + width / 2 - border_width / 2, center_y + height / 2 - border_width / 2
-        i_lt = center_x - width / 2 + border_width / 2, center_y + height / 2 - border_width / 2
+        i_lb = (
+            center_x - width / 2 + border_width / 2,
+            center_y - height / 2 + border_width / 2,
+        )
+        i_rb = (
+            center_x + width / 2 - border_width / 2,
+            center_y - height / 2 + border_width / 2,
+        )
+        i_rt = (
+            center_x + width / 2 - border_width / 2,
+            center_y + height / 2 - border_width / 2,
+        )
+        i_lt = (
+            center_x - width / 2 + border_width / 2,
+            center_y + height / 2 - border_width / 2,
+        )
 
-        o_lb = center_x - width / 2 - border_width / 2, center_y - height / 2 - border_width / 2
-        o_rb = center_x + width / 2 + border_width / 2, center_y - height / 2 - border_width / 2
-        o_rt = center_x + width / 2 + border_width / 2, center_y + height / 2 + border_width / 2
-        o_lt = center_x - width / 2 - border_width / 2, center_y + height / 2 + border_width / 2
+        o_lb = (
+            center_x - width / 2 - border_width / 2,
+            center_y - height / 2 - border_width / 2,
+        )
+        o_rb = (
+            center_x + width / 2 + border_width / 2,
+            center_y - height / 2 - border_width / 2,
+        )
+        o_rt = (
+            center_x + width / 2 + border_width / 2,
+            center_y + height / 2 + border_width / 2,
+        )
+        o_lt = (
+            center_x - width / 2 - border_width / 2,
+            center_y + height / 2 + border_width / 2,
+        )
 
         data = [o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt]
 
         if tilt_angle != 0:
-            point_list_2: List[Point] = []
+            point_list_2: list[Point] = []
             for point in data:
                 new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
                 point_list_2.append(new_point)
@@ -518,8 +548,8 @@ def create_rectangles_filled_with_colors(point_list, color_list: Sequence[RGBA25
     as one.
     """
     shape_mode = gl.GL_TRIANGLES
-    new_point_list: List[Point] = []
-    new_color_list: List[RGBA255] = []
+    new_point_list: list[Point] = []
+    new_color_list: list[RGBA255] = []
     for i in range(0, len(point_list), 4):
         new_point_list += [point_list[0 + i], point_list[1 + i], point_list[3 + i]]
         new_point_list += [point_list[1 + i], point_list[3 + i], point_list[2 + i]]
@@ -605,8 +635,17 @@ def create_ellipse_filled(
     as one.
     """
     border_width = 1
-    return create_ellipse(center_x, center_y, width, height, color,
-                          border_width, tilt_angle, num_segments, filled=True)
+    return create_ellipse(
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        border_width,
+        tilt_angle,
+        num_segments,
+        filled=True,
+    )
 
 
 def create_ellipse_outline(
@@ -630,8 +669,17 @@ def create_ellipse_outline(
     draw that list. This allows nearly unlimited shapes to be drawn just as fast
     as one.
     """
-    return create_ellipse(center_x, center_y, width, height, color,
-                          border_width, tilt_angle, num_segments, filled=False)
+    return create_ellipse(
+        center_x,
+        center_y,
+        width,
+        height,
+        color,
+        border_width,
+        tilt_angle,
+        num_segments,
+        filled=False,
+    )
 
 
 def create_ellipse(
@@ -744,9 +792,10 @@ def create_ellipse_filled_with_colors(
     return create_line_generic_with_colors(point_list, color_list, gl.GL_TRIANGLE_FAN)
 
 
-TShape = TypeVar('TShape', bound=Shape)
+TShape = TypeVar("TShape", bound=Shape)
 
 
+@copy_dunders_unimplemented
 class ShapeElementList(Generic[TShape]):
     """
     A ShapeElementList is a list of shapes that can be drawn together
@@ -755,22 +804,27 @@ class ShapeElementList(Generic[TShape]):
     move a lot of shapes it's better to use pyglet's shape system.
 
     Adding new shapes is fast, but removing them is slow.
+
+    :param blend: If True, shapes will be drawn with blending enabled.
     """
-    def __init__(self):
+
+    def __init__(self, blend: bool = True) -> None:
         # The context this shape list belongs to
         self.ctx = get_window().ctx
         # List of sprites in the sprite list
-        self.shape_list = []
-        self.change_x = 0
-        self.change_y = 0
-        self._center_x = 0
-        self._center_y = 0
-        self._angle = 0
+        self.shape_list: list[TShape] = []
+        self.change_x = 0.0
+        self.change_y = 0.0
+        self._center_x = 0.0
+        self._center_y = 0.0
+        self._angle = 0.0
         self.program = self.ctx.shape_element_list_program
-        self.batches: Dict[int, _Batch] = OrderedDict()
-        self.dirties = set()
+        self.batches: dict[int, _Batch] = OrderedDict()
+        self.dirties: set[_Batch] = set()
 
-    def append(self, item: TShape):
+        self._blend = blend
+
+    def append(self, item: TShape) -> None:
         """
         Add a new shape to the list.
         """
@@ -789,7 +843,7 @@ class ShapeElementList(Generic[TShape]):
         # Mark the group as dirty
         self.dirties.add(batch)
 
-    def remove(self, item: TShape):
+    def remove(self, item: TShape) -> None:
         """
         Remove a specific shape from the list.
         """
@@ -813,16 +867,21 @@ class ShapeElementList(Generic[TShape]):
         """
         Draw all the shapes.
         """
-        self.program['Position'] = self._center_x, self._center_y
-        self.program['Angle'] = -self._angle
+        self.program["Position"] = self._center_x, self._center_y
+        self.program["Angle"] = -self._angle
 
         self.update()
-
         self.dirties.clear()
+
+        if self._blend:
+            self.ctx.enable_only(self.ctx.BLEND)
 
         # Draw the batches
         for batch in self.batches.values():
             batch.draw()
+
+        if self._blend:
+            self.ctx.disable(self.ctx.BLEND)
 
     def clear(self, position: bool = True, angle: bool = True) -> None:
         """
@@ -840,7 +899,7 @@ class ShapeElementList(Generic[TShape]):
         if angle:
             self.angle = 0
 
-    def move(self, change_x: float, change_y: float):
+    def move(self, change_x: float, change_y: float) -> None:
         """
         Change the center_x/y of the shape list relative to the current position.
 
@@ -851,7 +910,7 @@ class ShapeElementList(Generic[TShape]):
         self.center_y += change_y
 
     @property
-    def position(self) -> Tuple[float, float]:
+    def position(self) -> tuple[float, float]:
         """
         Get or set the position of the ShapeElementList.
 
@@ -860,7 +919,7 @@ class ShapeElementList(Generic[TShape]):
         return self._center_x, self._center_y
 
     @position.setter
-    def position(self, value: Tuple[float, float]):
+    def position(self, value: tuple[float, float]) -> None:
         self._center_x, self._center_y = value
 
     @property
@@ -869,7 +928,7 @@ class ShapeElementList(Generic[TShape]):
         return self._center_x
 
     @center_x.setter
-    def center_x(self, value: float):
+    def center_x(self, value: float) -> None:
         self._center_x = value
 
     @property
@@ -878,7 +937,7 @@ class ShapeElementList(Generic[TShape]):
         return self._center_y
 
     @center_y.setter
-    def center_y(self, value: float):
+    def center_y(self, value: float) -> None:
         self._center_y = value
 
     @property
@@ -887,15 +946,15 @@ class ShapeElementList(Generic[TShape]):
         return self._angle
 
     @angle.setter
-    def angle(self, value: float):
+    def angle(self, value: float) -> None:
         self._angle = value
 
     def __len__(self) -> int:
-        """ Return the length of the sprite list. """
+        """Return the length of the sprite list."""
         return len(self.shape_list)
 
     def __iter__(self) -> Iterable[TShape]:
-        """ Return an iterable object of sprites. """
+        """Return an iterable object of sprites."""
         return iter(self.shape_list)
 
     def __getitem__(self, i):
@@ -908,19 +967,20 @@ class _Batch(Generic[TShape]):
 
     The group uniqueness is based on the primitive mode
     """
+
     # Flags for keeping track of changes
     ADD = 1
     REMOVE = 3
     # The byte size of a vertex
     VERTEX_SIZE = 4 * 6  # 24 bytes (2 floats for position, 4 floats for color)
-    RESET_IDX = 2 ** 32 - 1
+    RESET_IDX = 2**32 - 1
 
     def __init__(
         self,
         ctx: ArcadeContext,
         program: Program,
         mode: int,
-    ):
+    ) -> None:
         self.ctx = ctx
         self.program = program
         self.mode = mode
@@ -932,43 +992,43 @@ class _Batch(Generic[TShape]):
             content=[
                 BufferDescription(
                     self.vbo,
-                    '2f 4f',
-                    ('in_vert', 'in_color'),
+                    "2f 4f",
+                    ("in_vert", "in_color"),
                 )
             ],
             index_buffer=self.ibo,
         )
 
-        self.items: List[TShape] = []
-        self.new_items: List[TShape] = []
+        self.items: list[TShape] = []
+        self.new_items: list[TShape] = []
         self.vertices = 0  # Total vertices in the batch
         self.elements = 0  # Total elements in the batch
         self.FLAGS = 0  # Flags to indicate changes
 
-    def draw(self):
+    def draw(self) -> None:
         """Draw the batch."""
         if self.elements == 0:
             return
 
         self.geometry.render(self.program, vertices=self.elements, mode=self.mode)
 
-    def append(self, item: TShape):
+    def append(self, item: TShape) -> None:
         self.new_items.append(item)
         self.FLAGS |= self.ADD
 
-    def remove(self, item: TShape):
+    def remove(self, item: TShape) -> None:
         self.items.remove(item)
         self.FLAGS |= self.REMOVE
 
-    def update(self):
+    def update(self) -> None:
         """Update the internals of the batch."""
         if self.FLAGS == 0:
             return
 
         # If only add flag is set we simply copy in the new data
         if self.FLAGS == self.ADD:
-            new_data = array('f')
-            new_ibo = array('I')
+            new_data = array("f")
+            new_ibo = array("I")
             counter = itertools.count(self.vertices)
             new_vertices = 0
 
@@ -1026,8 +1086,8 @@ class _Batch(Generic[TShape]):
             self.items.extend(self.new_items)
             self.new_items.clear()
 
-            data = array('f')
-            ibo = array('I')
+            data = array("f")
+            ibo = array("I")
             counter = itertools.count()
             self.vertices = 0
             self.elements = 0

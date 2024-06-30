@@ -3,7 +3,7 @@ from arcade.texture import (
     ImageData,
     get_default_texture,
     get_default_image,
-    cleanup_texture_cache,
+    default_texture_cache
 )
 
 
@@ -14,7 +14,7 @@ def test_default_image():
 
     # Ensure we get cached version
     assert id(get_default_image()) == id(image)
-    cleanup_texture_cache()
+    default_texture_cache.flush()
     assert id(get_default_image()) != id(image)
 
 

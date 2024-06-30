@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from ctypes import c_void_p, byref
-from typing import Dict, List, Optional, Sequence, TYPE_CHECKING, Union
+from typing import Optional, Sequence, TYPE_CHECKING, Union
 import weakref
 
 from pyglet import gl
@@ -10,7 +10,7 @@ from .buffer import Buffer
 from .types import BufferDescription, GLenumLike, GLuintLike, gl_name
 from .program import Program
 
-if TYPE_CHECKING:  # handle import cycle caused by type hinting
+if TYPE_CHECKING:
     from arcade.gl import Context
 
 # Index buffer types based on index element size
@@ -19,7 +19,7 @@ index_types = [
     gl.GL_UNSIGNED_BYTE,  # 1 ubyte8
     gl.GL_UNSIGNED_SHORT,  # 2 ubyte16
     None,  # 3 (not supported)
-    gl.GL_UNSIGNED_INT  # 4 ubyte32
+    gl.GL_UNSIGNED_INT,  # 4 ubyte32
 ]
 
 
@@ -32,6 +32,7 @@ class VertexArray:
     automatically. There is a lot of complex interaction between programs
     and vertex arrays that will be done for you automatically.
     """
+
     __slots__ = (
         "_ctx",
         "glo",
@@ -51,7 +52,7 @@ class VertexArray:
         content: Sequence[BufferDescription],
         index_buffer: Optional[Buffer] = None,
         index_element_size: int = 4,
-    ):
+    ) -> None:
         self._ctx = ctx
         self._program = program
         self._content = content
@@ -69,10 +70,10 @@ class VertexArray:
 
         self.ctx.stats.incr("vertex_array")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<VertexArray {self.glo.value}>"
 
-    def __del__(self):
+    def __del__(self) -> None:
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and self.glo.value > 0:
             self._ctx.objects.append(self)
@@ -113,7 +114,7 @@ class VertexArray:
         """
         return self._num_vertices
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Destroy the underlying OpenGL resource.
         Don't use this unless you know exactly what you are doing.
@@ -122,7 +123,7 @@ class VertexArray:
         self.glo.value = 0
 
     @staticmethod
-    def delete_glo(ctx: "Context", glo: gl.GLuint):
+    def delete_glo(ctx: "Context", glo: gl.GLuint) -> None:
         """
         Delete this object.
         This is automatically called when this object is garbage collected.
@@ -138,8 +139,8 @@ class VertexArray:
         ctx.stats.decr("vertex_array")
 
     def _build(
-        self, program: Program, content: Sequence[BufferDescription], index_buffer
-    ):
+        self, program: Program, content: Sequence[BufferDescription], index_buffer: Optional[Buffer]
+    ) -> None:
         """Build a vertex array compatible with the program passed in"""
         gl.glGenVertexArrays(1, byref(self.glo))
         gl.glBindVertexArray(self.glo)
@@ -148,9 +149,7 @@ class VertexArray:
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, index_buffer.glo)
 
         # Lookup dict for BufferDescription attrib names
-        descr_attribs = {
-            attr.name: (descr, attr) for descr in content for attr in descr.formats
-        }
+        descr_attribs = {attr.name: (descr, attr) for descr in content for attr in descr.formats}
 
         # Build the vao according to the shader's attribute specifications
         for _, prog_attr in enumerate(program.attributes):
@@ -180,17 +179,18 @@ class VertexArray:
             gl.glBindBuffer(gl.GL_ARRAY_BUFFER, buff_descr.buffer.glo)
 
             # TODO: Detect normalization
-            normalized = (
-                gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
-            )
+            normalized = gl.GL_TRUE if attr_descr.name in buff_descr.normalized else gl.GL_FALSE
 
             # Map attributes groups
             float_types = (gl.GL_FLOAT, gl.GL_HALF_FLOAT)
             double_types = (gl.GL_DOUBLE,)
             int_types = (
-                gl.GL_INT, gl.GL_UNSIGNED_INT,
-                gl.GL_SHORT, gl.GL_UNSIGNED_SHORT,
-                gl.GL_BYTE, gl.GL_UNSIGNED_BYTE,
+                gl.GL_INT,
+                gl.GL_UNSIGNED_INT,
+                gl.GL_SHORT,
+                gl.GL_UNSIGNED_SHORT,
+                gl.GL_BYTE,
+                gl.GL_UNSIGNED_BYTE,
             )
             attrib_type = attr_descr.gl_type
             # Normalized integers must be mapped as floats
@@ -249,7 +249,7 @@ class VertexArray:
 
     def render(
         self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1
-    ):
+    ) -> None:
         """Render the VertexArray to the currently active framebuffer.
 
         :param mode: Primitive type to render. TRIANGLES, LINES etc.
@@ -262,13 +262,16 @@ class VertexArray:
             # # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
             gl.glDrawElementsInstanced(
-                mode, vertices, self._index_element_type,
-                first * self._index_element_size, instances
+                mode,
+                vertices,
+                self._index_element_type,
+                first * self._index_element_size,
+                instances,
             )
         else:
             gl.glDrawArraysInstanced(mode, first, vertices, instances)
 
-    def render_indirect(self, buffer: Buffer, mode: GLuintLike, count, first, stride):
+    def render_indirect(self, buffer: Buffer, mode: GLuintLike, count, first, stride) -> None:
         """
         Render the VertexArray to the framebuffer using indirect rendering.
 
@@ -302,7 +305,9 @@ class VertexArray:
         gl.glBindVertexArray(self.glo)
         gl.glBindBuffer(gl.GL_DRAW_INDIRECT_BUFFER, buffer._glo)
         if self._ibo:
-            gl.glMultiDrawElementsIndirect(mode, self._index_element_type, first * stride, count, stride)
+            gl.glMultiDrawElementsIndirect(
+                mode, self._index_element_type, first * stride, count, stride
+            )
         else:
             gl.glMultiDrawArraysIndirect(mode, first * stride, count, stride)
 
@@ -315,7 +320,7 @@ class VertexArray:
         vertices: int = 0,
         instances: int = 1,
         buffer_offset=0,
-    ):
+    ) -> None:
         """Run a transform feedback.
 
         :param buffer: The buffer to write the output
@@ -344,9 +349,7 @@ class VertexArray:
                 buffer.size - buffer_offset,
             )
         else:
-            gl.glBindBufferBase(
-                gl.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo
-            )
+            gl.glBindBufferBase(gl.GL_TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo)
 
         gl.glBeginTransformFeedback(output_mode)
 
@@ -363,14 +366,14 @@ class VertexArray:
 
     def transform_separate(
         self,
-        buffers: List[Buffer],
+        buffers: list[Buffer],
         mode: GLenumLike,
         output_mode: GLenumLike,
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,
         buffer_offset=0,
-    ):
+    ) -> None:
         """
         Run a transform feedback writing to separate buffers.
 
@@ -404,9 +407,7 @@ class VertexArray:
                 )
         else:
             for index, buffer in enumerate(buffers):
-                gl.glBindBufferBase(
-                    gl.GL_TRANSFORM_FEEDBACK_BUFFER, index, buffer.glo
-                )
+                gl.glBindBufferBase(gl.GL_TRANSFORM_FEEDBACK_BUFFER, index, buffer.glo)
 
         gl.glBeginTransformFeedback(output_mode)
 
@@ -454,13 +455,13 @@ class Geometry:
         index_buffer: Optional[Buffer] = None,
         mode: Optional[int] = None,
         index_element_size: int = 4,
-    ):
+    ) -> None:
         self._ctx = ctx
         self._content = list(content or [])
         self._index_buffer = index_buffer
         self._index_element_size = index_element_size
         self._mode = mode if mode is not None else ctx.TRIANGLES
-        self._vao_cache: Dict[str, VertexArray] = {}
+        self._vao_cache: dict[str, VertexArray] = {}
         self._num_vertices: int = -1
         """
         :param ctx: The context this object belongs to
@@ -528,8 +529,10 @@ class Geometry:
         """
         for other_descr in self._content:
             if other_descr == descr:
-                raise ValueError(f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
-                                 f"Found a conflict in {descr} and {other_descr}")
+                raise ValueError(
+                    f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
+                    f"Found a conflict in {descr} and {other_descr}"
+                )
         self._content.append(descr)
 
     def instance(self, program: Program) -> VertexArray:
@@ -574,21 +577,34 @@ class Geometry:
             if program.geometry_input == self._ctx.POINTS:
                 mode = program.geometry_input
             if program.geometry_input == self._ctx.LINES:
-                if mode not in [self._ctx.LINES, self._ctx.LINE_STRIP, self._ctx.LINE_LOOP, self._ctx.LINES_ADJACENCY]:
+                if mode not in [
+                    self._ctx.LINES,
+                    self._ctx.LINE_STRIP,
+                    self._ctx.LINE_LOOP,
+                    self._ctx.LINES_ADJACENCY,
+                ]:
                     raise ValueError(
-                        "Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input")
+                        "Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input"
+                    )
             if program.geometry_input == self._ctx.LINES_ADJACENCY:
                 if mode not in [self._ctx.LINES_ADJACENCY, self._ctx.LINE_STRIP_ADJACENCY]:
                     raise ValueError(
-                        "Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input")
+                        "Geometry shader expects LINES_ADJACENCY or LINE_STRIP_ADJACENCY as input"
+                    )
             if program.geometry_input == self._ctx.TRIANGLES:
-                if mode not in [self._ctx.TRIANGLES, self._ctx.TRIANGLE_STRIP, self._ctx.TRIANGLE_FAN]:
+                if mode not in [
+                    self._ctx.TRIANGLES,
+                    self._ctx.TRIANGLE_STRIP,
+                    self._ctx.TRIANGLE_FAN,
+                ]:
                     raise ValueError(
-                        "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input")
+                        "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input"
+                    )
             if program.geometry_input == self._ctx.TRIANGLES_ADJACENCY:
                 if mode not in [self._ctx.TRIANGLES_ADJACENCY, self._ctx.TRIANGLE_STRIP_ADJACENCY]:
                     raise ValueError(
-                        "Geometry shader expects GL_TRIANGLES_ADJACENCY or GL_TRIANGLE_STRIP_ADJACENCY as input")
+                        "Geometry shader expects GL_TRIANGLES_ADJACENCY or GL_TRIANGLE_STRIP_ADJACENCY as input"
+                    )
 
         vao.render(
             mode=mode,
@@ -606,7 +622,7 @@ class Geometry:
         count: int = -1,
         first: int = 0,
         stride: int = 0,
-    ):
+    ) -> None:
         """
         Render the VertexArray to the framebuffer using indirect rendering.
 
@@ -653,7 +669,7 @@ class Geometry:
     def transform(
         self,
         program: Program,
-        buffer: Union[Buffer, List[Buffer]],
+        buffer: Union[Buffer, list[Buffer]],
         *,
         first: int = 0,
         vertices: Optional[int] = None,
@@ -668,7 +684,7 @@ class Geometry:
         :param program: The Program to render with
         :param Union[Buffer, Sequence[Buffer]] buffer: The buffer(s) we transform into.
             This depends on the programs ``varyings_capture_mode``. We can transform
-            into one buffer interlaved or transform each attribute into separate buffers.
+            into one buffer interleaved or transform each attribute into separate buffers.
         :param first: Offset start vertex
         :param vertices: Number of vertices to render
         :param instances: Number of instances to render
@@ -738,6 +754,6 @@ class Geometry:
         return vao
 
     @staticmethod
-    def _release(ctx):
+    def _release(ctx) -> None:
         """Mainly here to count destroyed instances"""
         ctx.stats.decr("geometry")

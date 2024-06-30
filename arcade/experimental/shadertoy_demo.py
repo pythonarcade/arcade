@@ -10,8 +10,7 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.shadertoy = Shadertoy.create_from_file(
-            self.get_framebuffer_size(),
-            Path(__file__).parent / "star_nest.glsl"
+            self.get_framebuffer_size(), Path(__file__).parent / "star_nest.glsl"
         )
 
     def on_draw(self):
@@ -31,5 +30,5 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    MyGame(800, 600, "Shadertoy Demo")
+    MyGame(1280, 720, "Shadertoy Demo")
     arcade.run()

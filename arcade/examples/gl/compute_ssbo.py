@@ -23,6 +23,7 @@ The compute shader in this example works in one dimension for simplicity.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.compute_ssbo
 """
+
 import random
 import math
 from array import array
@@ -128,7 +129,7 @@ class App(arcade.Window):
 
     def __init__(self, *args, **kwargs):
         # We need to specify OpenGL 4.3 when using Compute Shaders
-        super().__init__(720, 720, "Compute Shader", gl_version=(4, 3), resizable=True, vsync=True)
+        super().__init__(1280, 720, "Compute Shader", gl_version=(4, 3), resizable=True, vsync=True)
         # Keep track of time
         self.time = 0
         self.frame_time = 0
@@ -149,7 +150,7 @@ class App(arcade.Window):
         # neatly aligned for the compute shader. There are strict rules for this
         # for a compute shader to be able to parallelize the work over potentially
         # thousands of threads.
-        self.ssbo_1 = self.ctx.buffer(data=array('f', self.gen_initial_data(self.num_balls)))
+        self.ssbo_1 = self.ctx.buffer(data=array("f", self.gen_initial_data(self.num_balls)))
         # Create a second buffer with the exact same byte size
         self.ssbo_2 = self.ctx.buffer(reserve=self.ssbo_1.size)
 

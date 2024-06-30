@@ -1,65 +1,92 @@
 """
 Physics engines for top-down or platformers.
 """
+
 from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from typing import Iterable, List, Optional, Union
+
+from typing import Iterable, Optional, Union
 
 from arcade import (
     Sprite,
     SpriteList,
     SpriteType,
     check_for_collision,
-    check_for_collision_with_lists
+    check_for_collision_with_lists,
 )
 from arcade.math import get_distance
 
-__all__ = [
-    "PhysicsEngineSimple",
-    "PhysicsEnginePlatformer"
-]
+__all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
+
+from arcade.utils import copy_dunders_unimplemented
 
 
-def _circular_check(player: Sprite, walls: List[SpriteList]):
+def _wiggle_until_free(colliding: Sprite, walls: list[SpriteList]) -> None:
+    """Kludge to 'guess' a colliding sprite out of a collision.
+
+    It works by iterating over increasing wiggle sizes of 8 points
+    around the ``colliding`` sprite's original center position. Each
+    time it fails to find a free position. Although the wiggle distance
+    starts at 1, it grows quickly since each failed iteration multiplies
+    wiggle distance by two.
+
+    :param colliding: A sprite to move out of the given list of SpriteLists.
+    :param walls: A list of walls to guess our way out of.
     """
-    This is a horrible kludge to 'guess' our way out of a collision
-    Returns:
 
-    """
-    original_x = player.center_x
-    original_y = player.center_y
+    # Original x & y of the moving object
+    o_x, o_y = colliding.position
 
-    vary = 1
+    # fmt: off
+    try_list = [  # Allocate once so we don't recreate or gc
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, 0.0,
+    ]
+
+    wiggle_distance = 1
     while True:
-        try_list = [[original_x, original_y + vary],
-                    [original_x, original_y - vary],
-                    [original_x + vary, original_y],
-                    [original_x - vary, original_y],
-                    [original_x + vary, original_y + vary],
-                    [original_x + vary, original_y - vary],
-                    [original_x - vary, original_y + vary],
-                    [original_x - vary, original_y - vary]
-                    ]
+        # Cache our variant dimensions
+        o_x_plus  = o_x + wiggle_distance
+        o_y_plus  = o_y + wiggle_distance
+        o_x_minus = o_x - wiggle_distance
+        o_y_minus = o_y - wiggle_distance
 
-        for my_item in try_list:
-            x, y = my_item
-            player.center_x = x
-            player.center_y = y
-            check_hit_list = check_for_collision_with_lists(player, walls)
-            # print(f"Vary {vary} ({self.player_sprite.center_x} {self.player_sprite.center_y}) "
+        # Burst setting of no-gc region is cheaper than nested lists
+        try_list[:] = (
+            o_x       , o_y_plus ,
+            o_x       , o_y_minus,
+            o_x_plus  , o_y      ,
+            o_x_minus , o_y      ,
+            o_x_plus  , o_y_plus ,
+            o_x_plus  , o_y_minus,
+            o_x_minus , o_y_plus ,
+            o_x_minus , o_y_minus
+        )
+        # fmt: on
+
+        # Iterate and slice the try_list
+        for strided_index in range(0, 16, 2):
+            x, y = try_list[strided_index:strided_index + 2]
+            colliding.position = x, y
+            check_hit_list = check_for_collision_with_lists(colliding, walls)
+            # print(f"Vary {vary} ({trapped.center_x} {trapped.center_y}) "
             #       f"= {len(check_hit_list)}")
             if len(check_hit_list) == 0:
                 return
-        vary *= 2
+        wiggle_distance *= 2
 
 
-def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ramp_up: bool) -> List[SpriteType]:
+def _move_sprite(
+    moving_sprite: Sprite, walls: list[SpriteList[SpriteType]], ramp_up: bool
+) -> list[SpriteType]:
 
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, walls)) > 0:
-        _circular_check(moving_sprite, walls)
+        _wiggle_until_free(moving_sprite, walls)
 
     original_x = moving_sprite.center_x
     original_y = moving_sprite.center_y
@@ -80,8 +107,11 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
             max_distance = (moving_sprite.width + moving_sprite.height) / 2
 
             # Resolve any collisions by this weird kludge
-            _circular_check(moving_sprite, walls)
-            if get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y) > max_distance:
+            _wiggle_until_free(moving_sprite, walls)
+            if (
+                get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y)
+                > max_distance
+            ):
                 # Ok, glitched trying to rotate. Reset.
                 moving_sprite.center_x = original_x
                 moving_sprite.center_y = original_y
@@ -124,7 +154,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
             #     self.player_sprite.bottom = item.top
             # else:
             #     self.player_sprite.top = item.bottom
-        moving_sprite.change_y = min(0.0, getattr(hit_list_x[0], 'change_y', 0.0))
+        moving_sprite.change_y = min(0.0, getattr(hit_list_x[0], "change_y", 0.0))
 
     # print(f"Spot D ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
     moving_sprite.center_y = round(moving_sprite.center_y, 2)
@@ -203,7 +233,9 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
                     exit_loop = True
                 else:
                     # print(f"No @ {cur_x_change}")
-                    cur_x_change = (upper_bound + lower_bound) // 2 + (upper_bound + lower_bound) % 2
+                    cur_x_change = (upper_bound + lower_bound) // 2 + (
+                        upper_bound + lower_bound
+                    ) % 2
 
         # print(cur_x_change * direction, cur_y_change)
         moving_sprite.center_x = original_x + cur_x_change * direction
@@ -221,6 +253,7 @@ def _move_sprite(moving_sprite: Sprite, walls: List[SpriteList[SpriteType]], ram
     return complete_hit_list
 
 
+@copy_dunders_unimplemented
 class PhysicsEngineSimple:
     """
     Simplistic physics engine for use in games without gravity, such as top-down
@@ -232,9 +265,13 @@ class PhysicsEngineSimple:
         This can be one or multiple spritelists.
     """
 
-    def __init__(self, player_sprite: Sprite, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None):
+    def __init__(
+        self,
+        player_sprite: Sprite,
+        walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+    ) -> None:
         self.player_sprite: Sprite = player_sprite
-        self._walls: List[SpriteList]
+        self._walls: list[SpriteList]
 
         if walls:
             self._walls = [walls] if isinstance(walls, SpriteList) else list(walls)
@@ -266,6 +303,7 @@ class PhysicsEngineSimple:
         return _move_sprite(self.player_sprite, self.walls, ramp_up=False)
 
 
+@copy_dunders_unimplemented
 class PhysicsEnginePlatformer:
     """
     Simplistic physics engine for use in a platformer. It is easier to get
@@ -288,16 +326,17 @@ class PhysicsEnginePlatformer:
         This value should only be used for static Sprites. Moving sprites should be sent to the ``platforms`` parameter.
     """
 
-    def __init__(self,
-                 player_sprite: Sprite,
-                 platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
-                 gravity_constant: float = 0.5,
-                 ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
-                 walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
-                 ):
-        self._ladders: Optional[List[SpriteList]]
-        self._platforms: List[SpriteList]
-        self._walls: List[SpriteList]
+    def __init__(
+        self,
+        player_sprite: Sprite,
+        platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+        gravity_constant: float = 0.5,
+        ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+        walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+    ) -> None:
+        self._ladders: Optional[list[SpriteList]]
+        self._platforms: list[SpriteList]
+        self._walls: list[SpriteList]
 
         if ladders:
             self._ladders = [ladders] if isinstance(ladders, SpriteList) else list(ladders)
@@ -323,7 +362,7 @@ class PhysicsEnginePlatformer:
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
     @property
     def ladders(self):
-        """ The ladder list registered with the physics engine."""
+        """The ladder list registered with the physics engine."""
         return self._ladders
 
     @ladders.setter
@@ -339,7 +378,7 @@ class PhysicsEnginePlatformer:
 
     @property
     def platforms(self):
-        """ The moving platform list registered with the physics engine."""
+        """The moving platform list registered with the physics engine."""
         return self._platforms
 
     @platforms.setter
@@ -355,7 +394,7 @@ class PhysicsEnginePlatformer:
 
     @property
     def walls(self):
-        """ The wall list registered with the physics engine."""
+        """The wall list registered with the physics engine."""
         return self._walls
 
     @walls.setter
@@ -369,8 +408,8 @@ class PhysicsEnginePlatformer:
     def walls(self):
         self._walls = []
 
-    def is_on_ladder(self):
-        """ Return 'true' if the player is in contact with a sprite in the ladder list. """
+    def is_on_ladder(self) -> bool:
+        """Return 'true' if the player is in contact with a sprite in the ladder list."""
         # Check for touching a ladder
         if self.ladders:
             hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
@@ -398,12 +437,16 @@ class PhysicsEnginePlatformer:
         if len(hit_list) > 0:
             self.jumps_since_ground = 0
 
-        if len(hit_list) > 0 or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
+        if (
+            len(hit_list) > 0
+            or self.allow_multi_jump
+            and self.jumps_since_ground < self.allowed_jumps
+        ):
             return True
         else:
             return False
 
-    def enable_multi_jump(self, allowed_jumps: int):
+    def enable_multi_jump(self, allowed_jumps: int) -> None:
         """
         Enables multi-jump.
         allowed_jumps should include the initial jump.
@@ -417,7 +460,7 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
 
-    def disable_multi_jump(self):
+    def disable_multi_jump(self) -> None:
         """
         Disables multi-jump.
 
@@ -429,11 +472,11 @@ class PhysicsEnginePlatformer:
         self.jumps_since_ground = 0
 
     def jump(self, velocity: int):
-        """ Have the character jump. """
+        """Have the character jump."""
         self.player_sprite.change_y = velocity
         self.increment_jump_counter()
 
-    def increment_jump_counter(self):
+    def increment_jump_counter(self) -> None:
         """
         Updates the jump counter for multi-jump tracking
         """
@@ -475,21 +518,24 @@ class PhysicsEnginePlatformer:
                     platform.center_x += platform.change_x
 
                     # Check y boundaries and move the platform in y direction
-                    if platform.boundary_top is not None \
-                            and platform.top >= platform.boundary_top:
+                    if platform.boundary_top is not None and platform.top >= platform.boundary_top:
                         platform.top = platform.boundary_top
                         if platform.change_y > 0:
                             platform.change_y *= -1
 
-                    if platform.boundary_bottom is not None \
-                            and platform.bottom <= platform.boundary_bottom:
+                    if (
+                        platform.boundary_bottom is not None
+                        and platform.bottom <= platform.boundary_bottom
+                    ):
                         platform.bottom = platform.boundary_bottom
                         if platform.change_y < 0:
                             platform.change_y *= -1
 
                     platform.center_y += platform.change_y
 
-        complete_hit_list = _move_sprite(self.player_sprite, self.walls + self.platforms, ramp_up=True)
+        complete_hit_list = _move_sprite(
+            self.player_sprite, self.walls + self.platforms, ramp_up=True
+        )
 
         # print(f"Spot Z ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         # Return list of encountered sprites

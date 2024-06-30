@@ -17,6 +17,7 @@ So this will delete that last period and flip around the dash.
 ALSO note that this bumps the version AFTER the deploy.
 So if we are at version 2.7.3.dev5 that's the version deploy. Bump will bump it to dev6.
 """
+
 from __future__ import annotations
 
 import os
@@ -28,15 +29,15 @@ def _rreplace(s, old, new, occurrence):
 
 
 def _get_version():
-    dirname = os.path.dirname(__file__) or '.'
+    dirname = os.path.dirname(__file__) or "."
     my_path = f"{dirname}/VERSION"
 
     try:
         text_file = open(my_path, "r")
         data = text_file.read().strip()
         text_file.close()
-        data = _rreplace(data, '.', '', 1)
-        data = _rreplace(data, '-', '.', 1)
+        data = _rreplace(data, ".", "", 1)
+        data = _rreplace(data, "-", ".", 1)
     except Exception:
         print(f"ERROR: Unable to load version number via '{my_path}'.")
         data = "0.0.0"

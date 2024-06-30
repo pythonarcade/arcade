@@ -15,16 +15,15 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Deque,
-    Dict,
     Iterable,
     Iterator,
-    List,
     Optional,
-    Tuple,
     Union,
     Generic,
     Callable,
-    cast, Sized,
+    cast,
+    Sized,
+    ClassVar,
 )
 
 from arcade import (
@@ -34,13 +33,15 @@ from arcade import (
     gl,
 )
 from arcade.gl import Texture2D, Program
-from arcade.types import Color, RGBA255
+from arcade.types import Color, RGBA255, RGBOrANormalized, RGBANormalized
 from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
 from arcade.gl.buffer import Buffer
 from arcade.gl.vertex_array import Geometry
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
-    from arcade import Texture, TextureAtlas
+    from arcade import Texture, DefaultTextureAtlas
+    from arcade.texture_atlas import TextureAtlasBase
 
 LOG = logging.getLogger(__name__)
 
@@ -53,6 +54,7 @@ _SPRITE_SLOT_INVISIBLE = 2000000000
 _DEFAULT_CAPACITY = 100
 
 
+@copy_dunders_unimplemented  # Temp fixes https://github.com/pythonarcade/arcade/issues/2074
 class SpriteList(Generic[SpriteType]):
     """
     The purpose of the spriteList is to batch draw a list of sprites.
@@ -95,21 +97,34 @@ class SpriteList(Generic[SpriteType]):
             be drawn. When draw is called, the method will just return without drawing.
     """
 
+    #: The default texture filter used when no other filter is specified.
+    #: This can be used to change the global default for all spritelists
+    #:
+    #: Example::
+    #:
+    #:     from arcade import gl
+    #:     # Set global default to nearest filtering (pixelated)
+    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    #:     # Set global default to linear filtering (smooth). This is the default.
+    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    DEFAULT_TEXTURE_FILTER: ClassVar[tuple[int, int]] = gl.LINEAR, gl.LINEAR
+
     def __init__(
         self,
         use_spatial_hash: bool = False,
         spatial_hash_cell_size: int = 128,
-        atlas: Optional["TextureAtlas"] = None,
+        atlas: Optional[TextureAtlasBase] = None,
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
-    ):
+    ) -> None:
         self.program: Optional[Program] = None
-        self._atlas: Optional[TextureAtlas] = atlas
+        self._atlas: Optional[TextureAtlasBase] = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
-        self._color: Tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
+        self._blend = True
+        self._color: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
 
         # The initial capacity of the spritelist buffers (internal)
         self._buf_capacity = abs(capacity) or _DEFAULT_CAPACITY
@@ -123,10 +138,10 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_buffer_free_slots: Deque[int] = deque()
 
         # List of sprites in the sprite list
-        self.sprite_list: List[SpriteType] = []
+        self.sprite_list: list[SpriteType] = []
         # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
-        self.sprite_slot: Dict[SpriteType, int] = dict()
+        self.sprite_slot: dict[SpriteType, int] = dict()
 
         # Python representation of buffer data
         self._sprite_pos_data = array("f", [0] * self._buf_capacity * 3)
@@ -165,14 +180,14 @@ class SpriteList(Generic[SpriteType]):
         if use_spatial_hash:
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
-        self.properties: Optional[Dict[str, Any]] = None
+        self.properties: Optional[dict[str, Any]] = None
 
-        LOG.debug(
-            "[%s] Creating SpriteList use_spatial_hash=%s capacity=%s",
-            id(self),
-            use_spatial_hash,
-            self._buf_capacity,
-        )
+        # LOG.debug(
+        #     "[%s] Creating SpriteList use_spatial_hash=%s capacity=%s",
+        #     id(self),
+        #     use_spatial_hash,
+        #     self._buf_capacity,
+        # )
 
         # Check if the window/context is available
         try:
@@ -202,7 +217,9 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 4 x bytes colors
         self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit int
         # Index buffer
-        self._sprite_index_buf = self.ctx.buffer(reserve=self._idx_capacity * 4)  # 32 bit unsigned integers
+        self._sprite_index_buf = self.ctx.buffer(
+            reserve=self._idx_capacity * 4
+        )  # 32 bit unsigned integers
 
         contents = [
             gl.BufferDescription(self._sprite_pos_buf, "3f", ["in_pos"]),
@@ -210,7 +227,9 @@ class SpriteList(Generic[SpriteType]):
             gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
             gl.BufferDescription(self._sprite_texture_buf, "1f", ["in_texture"]),
             gl.BufferDescription(
-                self._sprite_color_buf, "4f1", ["in_color"],
+                self._sprite_color_buf,
+                "4f1",
+                ["in_color"],
             ),
         ]
         self._geometry = self.ctx.geometry(
@@ -252,7 +271,7 @@ class SpriteList(Generic[SpriteType]):
         """Return an iterable object of sprites."""
         return iter(self.sprite_list)
 
-    def __getitem__(self, i):
+    def __getitem__(self, i: int) -> SpriteType:
         return self.sprite_list[i]
 
     def __setitem__(self, index: int, sprite: SpriteType) -> None:
@@ -294,8 +313,19 @@ class SpriteList(Generic[SpriteType]):
         return self._visible
 
     @visible.setter
-    def visible(self, value: bool):
+    def visible(self, value: bool) -> None:
         self._visible = value
+
+    @property
+    def blend(self) -> bool:
+        """
+        Flag for enabling or disabling alpha blending for the spritelist.
+        """
+        return self._blend
+
+    @blend.setter
+    def blend(self, value: bool) -> None:
+        self._blend = value
 
     @property
     def color(self) -> Color:
@@ -325,11 +355,11 @@ class SpriteList(Generic[SpriteType]):
         return Color.from_normalized(self._color)
 
     @color.setter
-    def color(self, color: RGBA255):
+    def color(self, color: RGBA255) -> None:
         self._color = Color.from_iterable(color).normalized
 
     @property
-    def color_normalized(self) -> Tuple[float, float, float, float]:
+    def color_normalized(self) -> RGBANormalized:
         """
         Get or set the spritelist color in normalized form (0.0 -> 1.0 floats).
         This property works the same as :py:attr:`~arcade.SpriteList.color`.
@@ -337,8 +367,14 @@ class SpriteList(Generic[SpriteType]):
         return self._color
 
     @color_normalized.setter
-    def color_normalized(self, value):
-        self._color = value
+    def color_normalized(self, value: RGBOrANormalized) -> None:
+        try:
+            r, g, b, *_a = value
+            assert len(_a) <= 1
+        except (ValueError, AssertionError) as e:
+            raise ValueError("color_normalized must unpack as 3 or 4 float values") from e
+
+        self._color = r, g, b, _a[0] if _a else 1.0
 
     @property
     def alpha(self) -> int:
@@ -350,7 +386,7 @@ class SpriteList(Generic[SpriteType]):
         return int(self._color[3] * 255)
 
     @alpha.setter
-    def alpha(self, value: int):
+    def alpha(self, value: int) -> None:
         # value = clamp(value, 0, 255)
         self._color = self._color[0], self._color[1], self._color[2], value / 255
 
@@ -367,12 +403,12 @@ class SpriteList(Generic[SpriteType]):
         return self._color[3]
 
     @alpha_normalized.setter
-    def alpha_normalized(self, value: float):
+    def alpha_normalized(self, value: float) -> None:
         # value = clamp(value, 0.0, 1.0)
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> Optional["TextureAtlas"]:
+    def atlas(self) -> Optional[TextureAtlasBase]:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
@@ -466,7 +502,7 @@ class SpriteList(Generic[SpriteType]):
         a texture ID. This ID references a texture in the texture
         atlas assigned to this spritelist. The ID is used to look up
         texture coordinates in a 32bit floating point texture the
-        texter atlas provides. This system makes sure we can resize
+        texture atlas provides. This system makes sure we can resize
         and rebuild a texture atlas without having to rebuild every
         single spritelist.
 
@@ -579,13 +615,20 @@ class SpriteList(Generic[SpriteType]):
             self._init_deferred()
 
     def pop(self, index: int = -1) -> SpriteType:
-        """
-        Pop off the last sprite, or the given index, from the list
+        """Attempt to pop a sprite from the list.
 
-        :param index: Index of sprite to remove, defaults to -1 for the last item.
+        This works like :external:ref:`popping from <tut-morelists>` a
+        standard Python :py:class:`list`:
+
+        #. If the list is empty, raise an :py:class:`IndexError`
+        #. If no ``index`` is passed, try to pop the last
+           :py:class:`Sprite` in the list
+
+        :param index: Index of sprite to remove (defaults to ``-1`` for
+            the last item)
         """
         if len(self.sprite_list) == 0:
-            raise (ValueError("pop from empty list"))
+            raise IndexError("pop from empty list")
 
         sprite = self.sprite_list[index]
         self.remove(sprite)
@@ -633,19 +676,21 @@ class SpriteList(Generic[SpriteType]):
         :param index_1: Item index to swap
         :param index_2: Item index to swap
         """
-        # Swap order in spritelist
+        # Swap order in python spritelist
         sprite_1 = self.sprite_list[index_1]
         sprite_2 = self.sprite_list[index_2]
         self.sprite_list[index_1] = sprite_2
         self.sprite_list[index_2] = sprite_1
 
-        # Swap order in index buffer
+        # Swap order in index buffer to change rendering order
         slot_1 = self.sprite_slot[sprite_1]
         slot_2 = self.sprite_slot[sprite_2]
         i1 = self._sprite_index_data.index(slot_1)
         i2 = self._sprite_index_data.index(slot_2)
         self._sprite_index_data[i1] = slot_2
         self._sprite_index_data[i2] = slot_1
+
+        self._sprite_index_changed = True
 
     def remove(self, sprite: SpriteType) -> None:
         """
@@ -729,9 +774,9 @@ class SpriteList(Generic[SpriteType]):
         # Reverse the sprites and index buffer
         self.sprite_list.reverse()
         # This seems to be the reasonable way to reverse a subset of an array
-        reverse_data = self._sprite_index_data[0:len(self.sprite_list)]
+        reverse_data = self._sprite_index_data[0 : len(self.sprite_list)]
         reverse_data.reverse()
-        self._sprite_index_data[0:len(self.sprite_list)] = reverse_data
+        self._sprite_index_data[0 : len(self.sprite_list)] = reverse_data
 
         self._sprite_index_changed = True
 
@@ -751,7 +796,7 @@ class SpriteList(Generic[SpriteType]):
         random.shuffle(pairs)
 
         # Reconstruct the lists again from pairs
-        sprites, indices = cast(Tuple[List[SpriteType], List[int]], zip(*pairs))
+        sprites, indices = cast(tuple[list[SpriteType], list[int]], zip(*pairs))
         self.sprite_list = list(sprites)
         self._sprite_index_data = array("I", indices)
 
@@ -805,16 +850,18 @@ class SpriteList(Generic[SpriteType]):
     def enable_spatial_hashing(self, spatial_hash_cell_size: int = 128) -> None:
         """Turn on spatial hashing."""
         if self.spatial_hash is None or self.spatial_hash.cell_size != spatial_hash_cell_size:
-            LOG.debug("Enabled spatial hashing with cell size %s", spatial_hash_cell_size)
+            # LOG.debug("Enabled spatial hashing with cell size %s", spatial_hash_cell_size)
             from .spatial_hash import SpatialHash
+
             self.spatial_hash = SpatialHash(cell_size=spatial_hash_cell_size)
             self._recalculate_spatial_hashes()
-        else:
-            LOG.debug("Spatial hashing is already enabled with size %s", spatial_hash_cell_size)
+        # else:
+        #     LOG.debug("Spatial hashing is already enabled with size %s", spatial_hash_cell_size)
 
     def _recalculate_spatial_hashes(self) -> None:
         if self.spatial_hash is None:
             from .spatial_hash import SpatialHash
+
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         self.spatial_hash.reset()
@@ -843,14 +890,10 @@ class SpriteList(Generic[SpriteType]):
         for sprite in self.sprite_list:
             sprite.update_animation(delta_time)
 
-    def _get_center(self) -> Tuple[float, float]:
+    def _get_center(self) -> tuple[float, float]:
         """Get the mean center coordinates of all sprites in the list."""
-        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(
-            self.sprite_list
-        )
-        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(
-            self.sprite_list
-        )
+        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(self.sprite_list)
+        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(self.sprite_list)
         return x, y
 
     center = property(_get_center)
@@ -885,8 +928,7 @@ class SpriteList(Generic[SpriteType]):
 
         for texture in texture_list:
             # Ugly spacing is a fast workaround for None type checking issues
-            self._atlas.add(  # type: ignore
-                texture)
+            self._atlas.add(texture)  # type: ignore
 
     def write_sprite_buffers_to_gpu(self) -> None:
         """
@@ -906,16 +948,16 @@ class SpriteList(Generic[SpriteType]):
         self._write_sprite_buffers_to_gpu()
 
     def _write_sprite_buffers_to_gpu(self) -> None:
-        LOG.debug(
-            "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
-            id(self),
-            self._sprite_pos_changed,
-            self._sprite_size_changed,
-            self._sprite_angle_changed,
-            self._sprite_color_changed,
-            self._sprite_texture_changed,
-            self._sprite_index_changed,
-        )
+        # LOG.debug(
+        #     "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
+        #     id(self),
+        #     self._sprite_pos_changed,
+        #     self._sprite_size_changed,
+        #     self._sprite_angle_changed,
+        #     self._sprite_color_changed,
+        #     self._sprite_texture_changed,
+        #     self._sprite_index_changed,
+        # )
 
         if self._sprite_pos_changed and self._sprite_pos_buf:
             self._sprite_pos_buf.orphan()
@@ -964,11 +1006,11 @@ class SpriteList(Generic[SpriteType]):
         self._init_deferred()
 
     def draw(
-            self,
-            *,
-            filter: Optional[Union[PyGLenum, OpenGlFilter]] = None,
-            pixelated: Optional[bool] = None,
-            blend_function: Optional[BlendFunction] = None
+        self,
+        *,
+        filter: Optional[Union[PyGLenum, OpenGlFilter]] = None,
+        pixelated: Optional[bool] = None,
+        blend_function: Optional[BlendFunction] = None,
     ) -> None:
         """
         Draw this list of sprites.
@@ -986,46 +1028,49 @@ class SpriteList(Generic[SpriteType]):
         :param filter: Optional parameter to set OpenGL filter, such as
                        `gl.GL_NEAREST` to avoid smoothing.
         :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
-                          Shortcut for setting filter=GL_NEAREST.
+                          Shortcut for setting filter to GL_NEAREST for a pixelated look.
+                          The filter parameter have precedence over this.
         :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
                          sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
         """
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return
 
+        if not self.program:
+            raise ValueError("Attempting to render without shader program.")
+
         self._init_deferred()
         self._write_sprite_buffers_to_gpu()
 
-        self.ctx.enable(self.ctx.BLEND)
-        # Set custom blend function or revert to default
-        if blend_function is not None:
-            self.ctx.blend_func = blend_function
-        else:
-            self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+        if self._blend:
+            self.ctx.enable(self.ctx.BLEND)
+            # Set custom blend function or revert to default
+            if blend_function is not None:
+                self.ctx.blend_func = blend_function
+            else:
+                self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         # Workarounds for Optional[TextureAtlas] + slow . lookup speed
-        atlas: TextureAtlas = self.atlas  # type: ignore
+        atlas: DefaultTextureAtlas = self.atlas  # type: ignore
         atlas_texture: Texture2D = atlas.texture
 
         # Set custom filter or reset to default
         if filter:
-            if hasattr(filter, '__len__', ):  # assume it's a collection
+            if hasattr(
+                filter,
+                "__len__",
+            ):  # assume it's a collection
                 if len(cast(Sized, filter)) != 2:
                     raise ValueError("Can't use sequence of length != 2")
                 atlas_texture.filter = tuple(filter)  # type: ignore
             else:  # assume it's an int
                 atlas_texture.filter = cast(OpenGlFilter, (filter, filter))
         else:
-            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
-
-        # Handle the pixelated shortcut
-        if pixelated:
-            atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
-        else:
-            atlas_texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
-
-        if not self.program:
-            raise ValueError("Attempting to render without 'program' field being set.")
+            # Handle the pixelated shortcut if filter is not set
+            if pixelated:
+                atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            else:
+                atlas_texture.filter = self.DEFAULT_TEXTURE_FILTER
 
         self.program["spritelist_color"] = self._color
 
@@ -1039,7 +1084,12 @@ class SpriteList(Generic[SpriteType]):
             vertices=self._sprite_index_slots,
         )
 
-    def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1):
+        # Leave global states to default
+        if self._blend:
+            self.ctx.disable(self.ctx.BLEND)
+            self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+
+    def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1.0) -> None:
         """Draw all the hit boxes in this list"""
         # NOTE: Find a way to efficiently draw this
         for sprite in self.sprite_list:
@@ -1074,12 +1124,12 @@ class SpriteList(Generic[SpriteType]):
         extend_by = self._buf_capacity
         self._buf_capacity = self._buf_capacity * 2
 
-        LOG.debug(
-            "(%s) Increasing buffer capacity from %s to %s",
-            self._sprite_buffer_slots,
-            extend_by,
-            self._buf_capacity,
-        )
+        # LOG.debug(
+        #     "(%s) Increasing buffer capacity from %s to %s",
+        #     self._sprite_buffer_slots,
+        #     extend_by,
+        #     self._buf_capacity,
+        # )
 
         # Extend the buffers so we don't lose the old data
         self._sprite_pos_data.extend([0] * extend_by * 3)
@@ -1110,19 +1160,19 @@ class SpriteList(Generic[SpriteType]):
         extend_by = self._idx_capacity
         self._idx_capacity = self._idx_capacity * 2
 
-        LOG.debug(
-            "Buffers: index_slots=%s sprite_slots=%s over-allocation-ratio=%s",
-            self._sprite_index_slots,
-            self._sprite_buffer_slots,
-            self._sprite_index_slots / self._sprite_buffer_slots,
-        )
+        # LOG.debug(
+        #     "Buffers: index_slots=%s sprite_slots=%s over-allocation-ratio=%s",
+        #     self._sprite_index_slots,
+        #     self._sprite_buffer_slots,
+        #     self._sprite_index_slots / self._sprite_buffer_slots,
+        # )
 
-        LOG.debug(
-            "(%s) Increasing index capacity from %s to %s",
-            self._sprite_index_slots,
-            extend_by,
-            self._idx_capacity,
-        )
+        # LOG.debug(
+        #     "(%s) Increasing index capacity from %s to %s",
+        #     self._sprite_index_slots,
+        #     extend_by,
+        #     self._idx_capacity,
+        # )
 
         self._sprite_index_data.extend([0] * extend_by)
         if self._initialized and self._sprite_index_buf:
@@ -1164,8 +1214,7 @@ class SpriteList(Generic[SpriteType]):
             return
 
         # Ugly syntax makes type checking pass without perf hit from cast
-        tex_slot: int = self._atlas.add(  # type: ignore
-            sprite._texture)[0]
+        tex_slot: int = self._atlas.add(sprite._texture)[0]  # type: ignore
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot
@@ -1183,8 +1232,7 @@ class SpriteList(Generic[SpriteType]):
             return
         atlas = self._atlas
         # Ugly spacing makes type checking work with specificity
-        tex_slot: int = atlas.add(  # type: ignore
-            sprite._texture)[0]
+        tex_slot: int = atlas.add(sprite._texture)[0]  # type: ignore
         slot = self.sprite_slot[sprite]
 
         self._sprite_texture_data[slot] = tex_slot

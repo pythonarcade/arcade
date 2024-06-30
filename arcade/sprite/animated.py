@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import bisect
 import math
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from .sprite import Sprite
 from arcade import Texture
@@ -22,14 +22,10 @@ class TextureKeyframe:
     :param duration: Duration in milliseconds to display this keyframe.
     :param tile_id: Tile ID for this keyframe (only used for tiled maps)
     """
+
     __slots__ = ("texture", "duration", "tile_id")
-    def __init__(
-        self,
-        texture: Texture,
-        duration: int = 100,
-        tile_id: Optional[int] = 0,
-        **kwargs
-    ):
+
+    def __init__(self, texture: Texture, duration: int = 100, tile_id: Optional[int] = 0, **kwargs):
         #: The texture to display for this keyframe.
         self.texture = texture
         #: Duration in milliseconds to display this keyframe.
@@ -47,15 +43,16 @@ class TextureAnimation:
     :param keyframes: List of keyframes for the animation.
     :param loop: If the animation should loop.
     """
+
     __slots__ = ("_keyframes", "_duration_ms", "_timeline")
 
-    def __init__(self, keyframes: List[TextureKeyframe]):
+    def __init__(self, keyframes: list[TextureKeyframe]):
         self._keyframes = keyframes
         self._duration_ms = 0
-        self._timeline: List[int] = self._create_timeline(self._keyframes)
+        self._timeline: list[int] = self._create_timeline(self._keyframes)
 
     @property
-    def keyframes(self) -> Tuple[TextureKeyframe, ...]:
+    def keyframes(self) -> tuple[TextureKeyframe, ...]:
         """
         A tuple of keyframes in the animation.
         Keyframes should not be modified directly.
@@ -83,12 +80,12 @@ class TextureAnimation:
         """
         return len(self._keyframes)
 
-    def _create_timeline(self, keyframes: List[TextureKeyframe]) -> List[int]:
+    def _create_timeline(self, keyframes: list[TextureKeyframe]) -> list[int]:
         """
         Create a timeline of the animation.
         This is a list of timestamps for each frame in seconds.
         """
-        timeline: List[int] = []
+        timeline: list[int] = []
         current_time_ms = 0
         for frame in keyframes:
             timeline.append(current_time_ms)
@@ -97,7 +94,7 @@ class TextureAnimation:
         self._duration_ms = current_time_ms
         return timeline
 
-    def get_keyframe(self, time: float, loop: bool = True) -> Tuple[int, TextureKeyframe]:
+    def get_keyframe(self, time: float, loop: bool = True) -> tuple[int, TextureKeyframe]:
         """
         Get the frame at a given time.
 
@@ -130,6 +127,7 @@ class TextureAnimationSprite(Sprite):
     :param center_y: Initial y position of the sprite.
     :param scale: Initial scale of the sprite.
     """
+
     def __init__(
         self,
         center_x: float = 0.0,
@@ -213,6 +211,7 @@ class AnimatedWalkingSprite(Sprite):
     :param center_x: Initial x position of the sprite.
     :param center_y: Initial y position of the sprite.
     """
+
     def __init__(
         self,
         scale: float = 1.0,
@@ -227,12 +226,12 @@ class AnimatedWalkingSprite(Sprite):
             center_y=center_y,
         )
         self.state = FACE_RIGHT
-        self.stand_right_textures: List[Texture] = []
-        self.stand_left_textures: List[Texture] = []
-        self.walk_left_textures: List[Texture] = []
-        self.walk_right_textures: List[Texture] = []
-        self.walk_up_textures: List[Texture] = []
-        self.walk_down_textures: List[Texture] = []
+        self.stand_right_textures: list[Texture] = []
+        self.stand_left_textures: list[Texture] = []
+        self.walk_left_textures: list[Texture] = []
+        self.walk_right_textures: list[Texture] = []
+        self.walk_up_textures: list[Texture] = []
+        self.walk_down_textures: list[Texture] = []
         self.cur_texture_index = 0
         self.texture_change_distance = 20
         self.last_texture_change_center_x: float = 0.0
@@ -249,7 +248,7 @@ class AnimatedWalkingSprite(Sprite):
         y1 = self.center_y
         y2 = self.last_texture_change_center_y
         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        texture_list: List[Texture] = []
+        texture_list: list[Texture] = []
 
         change_direction = False
         if (

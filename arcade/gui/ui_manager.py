@@ -8,24 +8,33 @@ The better gui for arcade
 - Texts are now rendered with pyglet, open easier support for text areas with scrolling
 - TextArea with scroll support
 """
+
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union, Tuple
+from typing import Iterable, Optional, Type, TypeVar, Union
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
 
 import arcade
-from arcade.gui.events import (UIKeyPressEvent, UIKeyReleaseEvent,
-                               UIMouseDragEvent, UIMouseMovementEvent,
-                               UIMousePressEvent, UIMouseReleaseEvent,
-                               UIMouseScrollEvent, UIOnUpdateEvent,
-                               UITextEvent, UITextMotionEvent,
-                               UITextMotionSelectEvent)
+from arcade import LBWH, Rect
+from arcade.gui.events import (
+    UIKeyPressEvent,
+    UIKeyReleaseEvent,
+    UIMouseDragEvent,
+    UIMouseMovementEvent,
+    UIMousePressEvent,
+    UIMouseReleaseEvent,
+    UIMouseScrollEvent,
+    UIOnUpdateEvent,
+    UITextEvent,
+    UITextMotionEvent,
+    UITextMotionSelectEvent,
+)
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import Rect, UIWidget
-from arcade.types import Point
+from arcade.gui.widgets import UIWidget
+from arcade.types import AnchorPoint, Point2
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -81,8 +90,8 @@ class UIManager(EventDispatcher):
     def __init__(self, window: Optional[arcade.Window] = None):
         super().__init__()
         self.window = window or arcade.get_window()
-        self._surfaces: Dict[int, Surface] = {}
-        self.children: Dict[int, List[UIWidget]] = defaultdict(list)
+        self._surfaces: dict[int, Surface] = {}
+        self.children: dict[int, list[UIWidget]] = defaultdict(list)
         self._requires_render = True
         self.register_event_type("on_event")
 
@@ -122,9 +131,7 @@ class UIManager(EventDispatcher):
                 child.parent = None
                 self.trigger_render()
 
-    def walk_widgets(
-        self, *, root: Optional[UIWidget] = None, layer=0
-    ) -> Iterable[UIWidget]:
+    def walk_widgets(self, *, root: Optional[UIWidget] = None, layer=0) -> Iterable[UIWidget]:
         """
         walks through widget tree, in reverse draw order (most top drawn widget first)
 
@@ -150,9 +157,7 @@ class UIManager(EventDispatcher):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(
-        self, pos: Point, cls: Type[W] = UIWidget, layer=0
-    ) -> Iterable[W]:
+    def get_widgets_at(self, pos: Point2, cls: Type[W] = UIWidget, layer=0) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
 
@@ -166,7 +171,7 @@ class UIManager(EventDispatcher):
             return isinstance(widget, cls)
 
         for widget in self.walk_widgets(layer=layer):
-            if check_type(widget) and widget.rect.collide_with_point(*pos):
+            if check_type(widget) and widget.rect.point_in_rect(pos):
                 yield widget
 
     def _get_surface(self, layer: int) -> Surface:
@@ -212,16 +217,18 @@ class UIManager(EventDispatcher):
                     sh_x, sh_y = child.size_hint
                     nw = surface_width * sh_x if sh_x else None
                     nh = surface_height * sh_y if sh_y else None
-                    child.rect = child.rect.resize(nw, nh)
+                    child.rect = child.rect.resize(nw, nh, anchor=AnchorPoint.BOTTOM_LEFT)
 
                 if child.size_hint_min:
                     shm_w, shm_h = child.size_hint_min
-                    child.rect = child.rect.min_size(shm_w or 0, shm_h or 0)
+                    child.rect = child.rect.min_size(
+                        shm_w or 0, shm_h or 0, anchor=AnchorPoint.BOTTOM_LEFT
+                    )
 
                 if child.size_hint_max:
                     shm_w, shm_h = child.size_hint_max
                     child.rect = child.rect.max_size(
-                        shm_w or child.width, shm_h or child.height
+                        shm_w or child.width, shm_h or child.height, anchor=AnchorPoint.BOTTOM_LEFT
                     )
 
                 # continue layout process down the tree
@@ -329,7 +336,7 @@ class UIManager(EventDispatcher):
             for layer in layers:
                 self._get_surface(layer).draw()
 
-    def adjust_mouse_coordinates(self, x: float, y: float) -> Tuple[float, float]:
+    def adjust_mouse_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
         This method is used, to translate mouse coordinates to coordinates
         respecting the viewport and projection of cameras.
@@ -337,7 +344,7 @@ class UIManager(EventDispatcher):
         It uses the internal camera's map_coordinate methods, and should work with
         all transformations possible with the basic orthographic camera.
         """
-        x_, y_, *c = self.window.current_camera.map_screen_to_world_coordinate((x, y))
+        x_, y_, *c = self.window.current_camera.unproject((x, y))
         return x_, y_
 
     def on_event(self, event) -> Union[bool, None]:
@@ -354,26 +361,30 @@ class UIManager(EventDispatcher):
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseMovementEvent(self, int(x_), int(y), dx, dy))
+        return self.dispatch_ui_event(UIMouseMovementEvent(self, round(x_), round(y), dx, dy))
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMousePressEvent(self, int(x_), int(y_), button, modifiers))
+        return self.dispatch_ui_event(
+            UIMousePressEvent(self, round(x_), round(y_), button, modifiers)
+        )
 
-    def on_mouse_drag(
-        self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
-    ):
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseDragEvent(self, int(x_), int(y_), dx, dy, buttons, modifiers))
+        return self.dispatch_ui_event(
+            UIMouseDragEvent(self, round(x_), round(y_), dx, dy, buttons, modifiers)
+        )
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseReleaseEvent(self, int(x_), int(y_), button, modifiers))
+        return self.dispatch_ui_event(
+            UIMouseReleaseEvent(self, round(x_), round(y_), button, modifiers)
+        )
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(
-            UIMouseScrollEvent(self, int(x_), int(y_), scroll_x, scroll_y)
+            UIMouseScrollEvent(self, round(x_), round(y_), scroll_x, scroll_y)
         )
 
     def on_key_press(self, symbol: int, modifiers: int):
@@ -400,7 +411,7 @@ class UIManager(EventDispatcher):
 
     @property
     def rect(self) -> Rect:  # type: ignore
-        return Rect(0, 0, *self.window.get_size())
+        return LBWH(0, 0, *self.window.get_size())
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out the rect"""

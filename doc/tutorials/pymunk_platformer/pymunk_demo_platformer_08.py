@@ -83,16 +83,20 @@ class PlayerSprite(arcade.Sprite):
         # main_path = ":resources:images/animated_characters/zombie/zombie"
         # main_path = ":resources:images/animated_characters/robot/robot"
 
-        # Load textures for idle standing
-        self.idle_texture_pair = arcade.load_texture_pair(f"{main_path}_idle.png")
-        self.jump_texture_pair = arcade.load_texture_pair(f"{main_path}_jump.png")
-        self.fall_texture_pair = arcade.load_texture_pair(f"{main_path}_fall.png")
+        # Load textures for idle, jump, and fall states
+        idle_texture = arcade.load_texture(f"{main_path}_idle.png")
+        jump_texture = arcade.load_texture(f"{main_path}_jump.png")
+        fall_texture = arcade.load_texture(f"{main_path}_fall.png") 
+        # Make pairs of textures facing left and right
+        self.idle_texture_pair = idle_texture, idle_texture.flip_left_right()
+        self.jump_texture_pair = jump_texture, jump_texture.flip_left_right()
+        self.fall_texture_pair = fall_texture, fall_texture.flip_left_right()
 
-        # Load textures for walking
+        # Load textures for walking and make pairs of textures facing left and right
         self.walk_textures = []
         for i in range(8):
-            texture = arcade.load_texture_pair(f"{main_path}_walk{i}.png")
-            self.walk_textures.append(texture)
+            texture = arcade.load_texture(f"{main_path}_walk{i}.png")
+            self.walk_textures.append((texture, texture.flip_left_right()))
 
         # Set the initial texture
         self.texture = self.idle_texture_pair[0]

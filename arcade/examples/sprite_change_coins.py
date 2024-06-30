@@ -12,10 +12,10 @@ python -m arcade.examples.sprite_change_coins
 import random
 import arcade
 
-SPRITE_SCALING = 1
+SPRITE_SCALING = 0.4
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Change Coins"
 
 
@@ -43,6 +43,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         self.player_sprite = None
+        self.bumper_texture = arcade.load_texture(":resources:images/pinball/bumper.png")
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -54,7 +55,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", scale=0.5)
+                                           "femalePerson_idle.png", scale=0.75)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -62,8 +63,6 @@ class MyGame(arcade.Window):
         for i in range(50):
             # Create the coin instance
             coin = Collectable(":resources:images/items/coinGold.png", scale=SPRITE_SCALING)
-            coin.width = 30
-            coin.height = 30
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -117,8 +116,7 @@ class MyGame(arcade.Window):
             # Have we collected this?
             if not coin.changed:
                 # No? Then do so
-                coin.append_texture(arcade.load_texture(":resources:images/pinball/bumper.png"))
-                coin.set_texture(1)
+                coin.texture = self.bumper_texture
                 coin.changed = True
                 coin.width = 30
                 coin.height = 30

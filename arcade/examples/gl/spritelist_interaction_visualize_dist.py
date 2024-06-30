@@ -7,11 +7,12 @@ and nearby sprites when they are within a certain distance.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.spritelist_interaction_visualize_dist
 """
+
 import random
 import arcade
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 NUM_COINS = 1000
 INTERACTION_RADIUS = 250
 
@@ -105,7 +106,7 @@ class SpriteListInteraction(arcade.Window):
                 // All the pixels in the line should just be white
                 fragColor = vec4(1.0, 1.0, 1.0, 1.0);
             }
-            """
+            """,
         )
         # Configure program with maximum distance
         self.program_visualize_dist["maxDistance"] = INTERACTION_RADIUS

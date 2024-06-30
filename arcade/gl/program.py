@@ -11,7 +11,7 @@ from ctypes import (
     byref,
     create_string_buffer,
 )
-from typing import Any, Dict, Iterable, Tuple, List, TYPE_CHECKING, Union, Optional
+from typing import Any, Iterable, TYPE_CHECKING, Union, Optional
 import typing
 import weakref
 
@@ -77,7 +77,7 @@ class Program:
         geometry_shader: Optional[str] = None,
         tess_control_shader: Optional[str] = None,
         tess_evaluation_shader: Optional[str] = None,
-        varyings: Optional[List[str]] = None,
+        varyings: Optional[list[str]] = None,
         varyings_capture_mode: str = "interleaved",
     ):
         self._ctx = ctx
@@ -85,10 +85,10 @@ class Program:
         self._varyings = varyings or []
         self._varyings_capture_mode = varyings_capture_mode.strip().lower()
         self._geometry_info = (0, 0, 0)
-        self._attributes = []  # type: List[AttribFormat]
+        self._attributes = []  # type: list[AttribFormat]
         #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
-        self._uniforms: Dict[str, Union[Uniform, UniformBlock]] = {}
+        self._uniforms: dict[str, Union[Uniform, UniformBlock]] = {}
 
         if self._varyings_capture_mode not in self._valid_capture_modes:
             raise ValueError(
@@ -96,7 +96,7 @@ class Program:
                 f"Valid modes are: {self._valid_capture_modes}."
             )
 
-        shaders: List[Tuple[str, int]] = [(vertex_shader, gl.GL_VERTEX_SHADER)]
+        shaders: list[tuple[str, int]] = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
             shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
         if geometry_shader:
@@ -187,7 +187,7 @@ class Program:
         return self._attributes
 
     @property
-    def varyings(self) -> List[str]:
+    def varyings(self) -> list[str]:
         """
         Out attributes names used in transform feedback
 
@@ -196,7 +196,7 @@ class Program:
         return self._varyings
 
     @property
-    def out_attributes(self) -> List[str]:
+    def out_attributes(self) -> list[str]:
         """
         Out attributes names used in transform feedback.
 
@@ -307,7 +307,7 @@ class Program:
         except KeyError:
             pass
 
-    def set_uniform_array_safe(self, name: str, value: List[Any]):
+    def set_uniform_array_safe(self, name: str, value: list[Any]):
         """
         Safely set a uniform array. Arrays can be shortened
         by the glsl compiler not all elements are determined
@@ -352,14 +352,15 @@ class Program:
         ptr = cast(c_array, POINTER(POINTER(c_char)))
 
         # Are we capturing in interlaved or separate buffers?
-        mode = gl.GL_INTERLEAVED_ATTRIBS if self._varyings_capture_mode == "interleaved" \
+        mode = (
+            gl.GL_INTERLEAVED_ATTRIBS
+            if self._varyings_capture_mode == "interleaved"
             else gl.GL_SEPARATE_ATTRIBS
+        )
 
         gl.glTransformFeedbackVaryings(
             self._glo,  # program
-            len(
-                self._varyings
-            ),  # number of varying variables used for transform feedback
+            len(self._varyings),  # number of varying variables used for transform feedback
             ptr,  # zero-terminated strings specifying the names of the varying variables
             mode,
         )
@@ -405,8 +406,7 @@ class Program:
 
         # The attribute key is used to cache VertexArrays
         self.attribute_key = ":".join(
-            f"{attr.name}[{attr.gl_type}/{attr.components}]"
-            for attr in self._attributes
+            f"{attr.name}[{attr.gl_type}/{attr.components}]" for attr in self._attributes
         )
 
     def _introspect_uniforms(self):
@@ -434,9 +434,7 @@ class Program:
 
     def _introspect_uniform_blocks(self):
         active_uniform_blocks = gl.GLint(0)
-        gl.glGetProgramiv(
-            self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks)
-        )
+        gl.glGetProgramiv(self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks))
         # print('GL_ACTIVE_UNIFORM_BLOCKS', active_uniform_blocks)
 
         for loc in range(active_uniform_blocks.value):
@@ -444,7 +442,7 @@ class Program:
             block = UniformBlock(self._glo, index, size, name)
             self._uniforms[name] = block
 
-    def _query_uniform(self, location: int) -> Tuple[str, int, int]:
+    def _query_uniform(self, location: int) -> tuple[str, int, int]:
         """Retrieve Uniform information at given location.
 
         Returns the name, the type as a GLenum (GL_FLOAT, ...) and the size. Size is
@@ -466,7 +464,7 @@ class Program:
         )
         return u_name.value.decode(), u_type.value, u_size.value
 
-    def _query_uniform_block(self, location: int) -> Tuple[int, int, str]:
+    def _query_uniform_block(self, location: int) -> tuple[int, int, str]:
         """Query active uniform block by retrieving the name and index and size"""
         # Query name
         u_size = gl.GLint()
@@ -483,9 +481,7 @@ class Program:
         index = gl.glGetUniformBlockIndex(self._glo, u_name)
         # Query size
         b_size = gl.GLint()
-        gl.glGetActiveUniformBlockiv(
-            self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size
-        )
+        gl.glGetActiveUniformBlockiv(self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size)
         return index, b_size.value, u_name.value.decode()
 
     @staticmethod
@@ -517,8 +513,7 @@ class Program:
                     f"---- [{SHADER_TYPE_NAMES[shader_type]}] ---\n"
                 )
                 + "\n".join(
-                    f"{str(i + 1).zfill(3)}: {line} "
-                    for i, line in enumerate(source.split("\n"))
+                    f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(source.split("\n"))
                 )
             )
         return shader
