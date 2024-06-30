@@ -97,7 +97,7 @@ class MyGame(arcade.Window):
 
         self.background_1.draw()
         self.background_2.draw()
-        self.player_sprite.draw()
+        arcade.draw_sprite(self.player_sprite)
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol in (arcade.key.LEFT, arcade.key.A):
