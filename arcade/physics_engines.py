@@ -374,8 +374,49 @@ class PhysicsEnginePlatformer:
         _add_to_list(self._ladders, ladders)
         _add_to_list(self._platforms, platforms)
         _add_to_list(self._walls, walls)
-
+        #: The sprite controlled by the player.
+        #:
+        #: .. important:: This **must** be a
+        #:                :py:class:`~arcade.sprite.sprite.Sprite`!
+        #:
+        #: You cannot use a :py:class:`~arcade.sprite.base.BasicSprite`
+        #: because it does not have a
+        #: :py:attr:`~arcade.sprite.sprite.Sprite.change_y`
+        #: attribute. If you try anyway, the engine will raise an
+        #::py:class:`AttributeError` on access.
         self.player_sprite: Sprite = player_sprite
+        #: The player's default downward acceleration.
+        #:
+        #: The engine's :py:meth:`update` method subtracts this value
+        #: from the :py:attr:`player_sprite`'s
+        #: :py:attr:`~arcade.sprite.sprite.Sprite.change_y` when the player
+        #: is not touching a sprite in
+        #: :py:attr:`ladders` or :py:attr:`walls`.
+        #:
+        #: You can change the value of gravity after engine creation through
+        #: this attribute. In addition to responding to GUI events, you can
+        #: also change gravity in response to game events such as touching
+        #: power-ups.
+        #:
+        #: Values for ``gravity_constant`` work as follows:
+        #:
+        #: .. list-table::
+        #:    :header-rows: 1
+        #:
+        #:    * - ``gravity_constant``
+        #:      - Effect
+        #:    * - Greater than zero
+        #:      - Gravity points downward as expected
+        #:    * - Less than zero
+        #:      - Player falls upward (Consider adding a ceiling)
+        #:    * - Zero
+        #:      - No gravity
+        #:
+        #: To learn more, please see the following parts of the
+        #: :ref:`platformer_tutorial`:
+        #:
+        #: * :ref:`platformer_part_five`
+        #: * :ref:`platformer_part_twelve`
         self.gravity_constant: float = gravity_constant
         self.jumps_since_ground: int = 0
         self.allowed_jumps: int = 1
