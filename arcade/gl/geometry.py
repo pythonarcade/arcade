@@ -7,7 +7,7 @@ from __future__ import annotations
 import math
 from array import array
 
-from arcade.gl import Context, BufferDescription
+from arcade.gl import BufferDescription, Context
 from arcade.gl.vertex_array import Geometry
 
 

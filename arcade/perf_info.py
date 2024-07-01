@@ -5,9 +5,9 @@ Utility functions to keep performance information
 from __future__ import annotations
 
 import collections
+import time
 
 import pyglet
-import time
 
 # Evil globals
 _timings: dict = {}

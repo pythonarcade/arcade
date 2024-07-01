@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from array import array
-from typing import Any
 from ctypes import c_byte
+from typing import Any
 
 
 def data_to_ctypes(data: Any) -> tuple[int, Any]:

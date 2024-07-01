@@ -7,10 +7,10 @@ from __future__ import annotations
 
 import gc
 import os
+from typing import TYPE_CHECKING, Callable, Optional
 
 import pyglet
 
-from typing import Callable, Optional, TYPE_CHECKING
 from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:

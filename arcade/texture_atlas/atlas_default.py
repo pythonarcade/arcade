@@ -1,17 +1,17 @@
+import contextlib
 import copy
-import time
 import logging
+import time
 from pathlib import Path
 from typing import (
-    Dict,
-    Optional,
-    Tuple,
-    Sequence,
-    Union,
     TYPE_CHECKING,
+    Dict,
     List,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
 )
-import contextlib
 from weakref import WeakSet, WeakValueDictionary, finalize
 
 import PIL.Image
@@ -22,17 +22,17 @@ from pyglet.image.atlas import (
 )
 from pyglet.math import Mat4
 
-from arcade.window_commands import get_window
-from arcade.texture.transforms import Transform
 from arcade.camera.static import static_from_raw_orthographic
+from arcade.texture.transforms import Transform
+from arcade.window_commands import get_window
 
+from .base import TextureAtlasBase
 from .ref_counters import (
     ImageDataRefCounter,
     UniqueTextureRefCounter,
 )
-from .base import TextureAtlasBase
-from .uv_data import UVData
 from .region import AtlasRegion
+from .uv_data import UVData
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture

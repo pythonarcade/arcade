@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import re
-from typing import Optional, Iterable, Sequence, Union
-from typing_extensions import TypeAlias
+from typing import Iterable, Optional, Sequence, Union
 
 from pyglet import gl
+from typing_extensions import TypeAlias
 
-from .buffer import Buffer
 from arcade.types import BufferProtocol
 
+from .buffer import Buffer
 
 BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 

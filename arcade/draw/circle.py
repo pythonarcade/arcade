@@ -1,8 +1,7 @@
 import array
 
 from arcade import gl
-
-from arcade.types import Color, RGBA255
+from arcade.types import RGBA255, Color
 from arcade.window_commands import get_window
 
 

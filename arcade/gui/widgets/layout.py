@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Iterable, TypeVar, Optional, cast
+from typing import Iterable, Optional, TypeVar, cast
 
 from arcade.gui.property import bind, unbind
-from arcade.gui.widgets import UIWidget, UILayout
+from arcade.gui.widgets import UILayout, UIWidget
 
 __all__ = ["UILayout", "UIAnchorLayout", "UIBoxLayout", "UIGridLayout"]
 

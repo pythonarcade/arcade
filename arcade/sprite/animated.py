@@ -4,14 +4,15 @@ import bisect
 import math
 from typing import Optional
 
-from .sprite import Sprite
 from arcade import Texture
+
 from .enums import (
+    FACE_DOWN,
     FACE_LEFT,
     FACE_RIGHT,
     FACE_UP,
-    FACE_DOWN,
 )
+from .sprite import Sprite
 
 
 class TextureKeyframe:

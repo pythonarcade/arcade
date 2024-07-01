@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional, Union
 from pathlib import Path
+from typing import Optional, Union
 
 import PIL.Image
 
-from arcade.resources import resolve
 from arcade.hitbox import HitBoxAlgorithm
-from .texture import Texture, ImageData
+from arcade.resources import resolve
+
 from .spritesheet import SpriteSheet
+from .texture import ImageData, Texture
 
 LOG = logging.getLogger(__name__)
 

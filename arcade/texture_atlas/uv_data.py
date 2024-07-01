@@ -2,9 +2,9 @@
 A helper class to keep track of texture coordinates stored in a texture.
 """
 
-from typing import TYPE_CHECKING, Dict
 from array import array
 from collections import deque
+from typing import TYPE_CHECKING, Dict
 
 from .base import (
     UV_TEXTURE_WIDTH,

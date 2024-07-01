@@ -9,8 +9,9 @@ import os
 from pathlib import Path
 from typing import Optional, Union
 
-from arcade.resources import resolve
 import pyglet
+
+from arcade.resources import resolve
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
     pyglet.options["audio"] = tuple(

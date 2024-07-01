@@ -22,20 +22,19 @@ python -m arcade.experimental.examples.array_backed_grid
 
 from __future__ import annotations
 
-from typing import Optional, cast
-from textwrap import dedent
-from math import cos, pi
-from random import uniform, randint
 from contextlib import contextmanager
+from math import cos, pi
+from random import randint, uniform
+from textwrap import dedent
+from typing import Optional, cast
 
 from pyglet.graphics import Batch
 
-from arcade import get_window, Window, SpriteSolidColor, SpriteList, Text
+from arcade import SpriteList, SpriteSolidColor, Text, Window, get_window
 from arcade.color import RED
-from arcade.types import Color, RGBA255
-
-from arcade.gl import geometry, NEAREST, Program, Texture2D
 from arcade.experimental.postprocessing import GaussianBlur
+from arcade.gl import NEAREST, Program, Texture2D, geometry
+from arcade.types import RGBA255, Color
 
 
 class DepthOfField:

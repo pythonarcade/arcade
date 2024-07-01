@@ -3,9 +3,9 @@ THIS IS WORK IN PROGRESS. DO NOT USE.
 """
 
 from typing import (
-    Tuple,
     TYPE_CHECKING,
     Optional,
+    Tuple,
 )
 
 from .base import TextureAtlasBase

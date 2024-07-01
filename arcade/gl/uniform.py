@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from ctypes import cast, POINTER
+from ctypes import POINTER, cast
+
 from pyglet import gl
 
 from .exceptions import ShaderException

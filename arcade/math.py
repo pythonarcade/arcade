@@ -3,11 +3,12 @@ from __future__ import annotations
 import math
 import random
 from typing import Sequence, Union
+
+from pyglet.math import Vec2
+
 from arcade.types import AsFloat, Point, Point2
 from arcade.types.rect import Rect
-from pyglet.math import Vec2
 from arcade.types.vector_like import Point3
-
 
 _PRECISION = 2
 

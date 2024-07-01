@@ -21,12 +21,11 @@ named color values, please see the following:
 from __future__ import annotations
 
 import random
-from typing import Iterable, Optional, Union, TypeVar
+from typing import Iterable, Optional, TypeVar, Union
 
-from typing_extensions import Self, Final
+from typing_extensions import Final, Self
 
 from arcade.utils import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
-
 
 __all__ = (
     "Color",

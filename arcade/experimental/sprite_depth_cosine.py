@@ -17,9 +17,10 @@ python -m arcade.experimental.sprite_depth_cosine
 from __future__ import annotations
 
 import math
-import arcade
+
 from pyglet.graphics import Batch
 
+import arcade
 
 # All constants are in pixels
 WIDTH, HEIGHT = 1280, 720

@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import Optional, Union
 
-from arcade.window_commands import get_window
 import arcade.gl as gl
-
 from arcade.experimental.background import BackgroundTexture
+from arcade.window_commands import get_window
 
 
 class Background:

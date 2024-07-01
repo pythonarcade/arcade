@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import Callable, Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable, Optional
 
 if TYPE_CHECKING:
     from arcade.experimental.clock.clock import Clock

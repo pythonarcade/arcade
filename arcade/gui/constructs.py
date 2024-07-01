@@ -11,7 +11,7 @@ from arcade.gui.events import UIOnActionEvent, UIOnClickEvent
 from arcade.gui.mixins import UIMouseFilterMixin
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.widgets.buttons import UIFlatButton
-from arcade.gui.widgets.layout import UIBoxLayout, UIAnchorLayout
+from arcade.gui.widgets.layout import UIAnchorLayout, UIBoxLayout
 from arcade.gui.widgets.text import UITextArea
 
 

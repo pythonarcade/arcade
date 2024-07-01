@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Optional, Generator, TYPE_CHECKING
-from typing_extensions import Self
 from contextlib import contextmanager
+from typing import TYPE_CHECKING, Generator, Optional
 
 from pyglet.math import Mat4, Vec2, Vec3
+from typing_extensions import Self
 
 from arcade.types import Point
 from arcade.window_commands import get_window

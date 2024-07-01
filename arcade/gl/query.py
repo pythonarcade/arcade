@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
 import weakref
+from typing import TYPE_CHECKING
 
 from pyglet import gl
 

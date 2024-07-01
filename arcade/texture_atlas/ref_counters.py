@@ -8,11 +8,10 @@ Reference counters for tracking textures and images in an atlas
   simply a texture using the same image and the same vertex order.
 """
 
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 if TYPE_CHECKING:
-    from arcade.texture import Texture
-    from arcade.texture import ImageData
+    from arcade.texture import ImageData, Texture
 
 
 class ImageDataRefCounter:
