@@ -8,7 +8,7 @@ from __future__ import annotations
 import arcade
 from .particle import Particle
 from typing import Optional, Callable, cast
-from arcade.math import _Vec2
+from arcade import Vec2
 from arcade.types import Point, Velocity
 
 
@@ -142,7 +142,7 @@ class Emitter:
         p.center_y += self.center_y
 
         # given the velocity, rotate it by emitter's current angle
-        vel = _Vec2(p.change_x, p.change_y).rotated(self.angle)
+        vel = Vec2(p.change_x, p.change_y).rotate(self.angle)
 
         p.change_x = vel.x
         p.change_y = vel.y
