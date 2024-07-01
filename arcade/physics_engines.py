@@ -436,7 +436,7 @@ class PhysicsEnginePlatformer:
         self._platforms.clear()
 
     @property
-    def walls(self):
+    def walls(self) -> list[SpriteList]:
         """The wall list registered with the physics engine."""
         return self._walls
 
@@ -538,7 +538,7 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
 
-    def jump(self, velocity: int):
+    def jump(self, velocity: int) -> None:
         """Have the character jump."""
         self.player_sprite.change_y = velocity
         self.increment_jump_counter()
