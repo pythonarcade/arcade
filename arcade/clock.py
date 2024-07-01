@@ -103,7 +103,7 @@ class FixedClock(Clock):
 
     @property
     def accumulated(self):
-        return self._elapsed_time - self._sibling_clock.time
+        return self._sibling_clock.time - self._elapsed_time
 
     @property
     def fraction(self):

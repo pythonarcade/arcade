@@ -415,7 +415,7 @@ class Window(pyglet.window.Window):
         """
         self._global_clock.tick(delta_time)
         fixed_count = 0
-        while self._fixed_clock.accumulated < 0.0 and (
+        while self._fixed_clock.accumulated >= self._fixed_rate and (
             self._fixed_frame_cap is None or fixed_count <= self._fixed_frame_cap
         ):
             self._fixed_clock.tick(self._fixed_rate)
@@ -1145,6 +1145,10 @@ class View:
         self.window.clear(color=color, color_normalized=color_normalized, viewport=viewport)
 
     def on_update(self, delta_time: float) -> Optional[bool]:
+        """To be overridden"""
+        pass
+
+    def on_fixed_update(self, delta_time: float):
         """To be overridden"""
         pass
 
