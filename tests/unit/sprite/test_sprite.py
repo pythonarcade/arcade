@@ -51,14 +51,14 @@ def test_set_size():
     assert sprite.size == (96, 128)
     assert sprite.width == 96
     assert sprite.height == 128
-    assert sprite.scale == 1.0, 1.0
+    assert sprite.scale == (1.0, 1.0)
 
     # Reduce to half width and height
     sprite.size = 48, 64
     assert sprite.size == (48, 64)
     assert sprite.width == 48
     assert sprite.height == 64
-    assert sprite.scale == 0.5, 0.5
+    assert sprite.scale == (0.5, 0.5)
 
 
 @pytest.mark.parametrize('not_a_texture', [

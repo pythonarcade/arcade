@@ -242,12 +242,12 @@ class BasicSprite:
             sprite_list._update_size(self)
 
     @property
-    def scale(self) -> Point2:
+    def scale(self) -> Vec2:
         """Get or set the x & y scale of the sprite as a pair of values.
 
         .. note:: Negative values are supported. They will flip &
                   mirror the sprite."""
-        return self._scale
+        return Vec2(*self._scale)
 
     @scale.setter
     def scale(self, new_value: Point | AsFloat):
