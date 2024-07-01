@@ -365,6 +365,8 @@ class PhysicsEnginePlatformer:
         ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
     ) -> None:
+        if not isinstance(player_sprite, Sprite):
+            raise TypeError("player_sprite must be a Sprite, not a basic_sprite!")
 
         self._ladders: list[SpriteList] = []
         self._platforms: list[SpriteList] = []
@@ -376,22 +378,19 @@ class PhysicsEnginePlatformer:
         _add_to_list(self._walls, walls)
         #: The sprite controlled by the player.
         #:
-        #: .. important:: This **must** be a
-        #:                :py:class:`~arcade.sprite.sprite.Sprite`!
+        #: .. important:: This **must** be a :py:class:`.Sprite` or a
+        #:                subclass of it!
         #:
-        #: You cannot use a :py:class:`~arcade.sprite.base.BasicSprite`
-        #: because it does not have a
-        #: :py:attr:`~arcade.sprite.sprite.Sprite.change_y`
-        #: attribute. If you try anyway, the engine will raise an
-        #::py:class:`AttributeError` on access.
+        #:                :py:class:`.BasicSprite` lacks the required
+        #:                :py:attr:`~.Sprite.change_y` property.
+        #:
         self.player_sprite: Sprite = player_sprite
         #: The player's default downward acceleration.
         #:
         #: The engine's :py:meth:`update` method subtracts this value
-        #: from the :py:attr:`player_sprite`'s
-        #: :py:attr:`~arcade.sprite.sprite.Sprite.change_y` when the player
-        #: is not touching a sprite in
-        #: :py:attr:`ladders` or :py:attr:`walls`.
+        #: from the :py:attr:`player_sprite`'s :py:attr:`~.Sprite.change_y`
+        #: when the player is not touching a sprite in :py:attr:`ladders` or
+        #: :py:attr:`walls`.
         #:
         #: You can change the value of gravity after engine creation through
         #: this attribute. In addition to responding to GUI events, you can
