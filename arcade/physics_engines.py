@@ -538,7 +538,7 @@ class PhysicsEnginePlatformer:
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
 
-    def jump(self, velocity: int) -> None:
+    def jump(self, velocity: float) -> None:
         """Have the character jump."""
         self.player_sprite.change_y = velocity
         self.increment_jump_counter()
