@@ -64,6 +64,7 @@ if pyglet.version == "2.1.dev2":
     # overly-specific __eq__ behavior. Later pyglet commits restore
     # equality with same-valued tuples by deleting the __eq__ methods.
     from pyglet import math as _pyglet_math
+
     del _pyglet_math.Vec2.__eq__
     del _pyglet_math.Vec3.__eq__
     del _pyglet_math.Vec4.__eq__

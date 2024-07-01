@@ -182,7 +182,9 @@ class BasicSprite:
     @size.setter
     def size(self, new_value: Point):
         if new_value[0] != self._width or new_value[1] != self._height:
-            self._scale = Vec2(new_value[0] / self._texture.width, new_value[1] / self._texture.height)
+            self._scale = Vec2(
+                new_value[0] / self._texture.width, new_value[1] / self._texture.height
+            )
             self._width = new_value[0]
             self._height = new_value[1]
 
