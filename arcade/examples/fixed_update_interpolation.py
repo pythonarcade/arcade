@@ -22,7 +22,7 @@ SCREEN_TITLE = "Sprite Follow Path Simple Example"
 class Game(arcade.Window):
 
     def __init__(self):
-        super().__init__(fixed_rate=1/15.0)
+        super().__init__(fixed_rate=1/120.0)
         self.unfixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.RADICAL_RED)
         self.interpolated_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.ORANGE)
         self.fixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.GOLD)

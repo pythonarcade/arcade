@@ -231,6 +231,47 @@ class WindowProxy:
     def run(self):
         self.window.run()
 
+    # --- CLOCK ALIASES ---
+    @property
+    def time(self):
+        return self.window._global_clock.time
+
+    @property
+    def current_tick(self):
+        return self.window._global_clock.frame
+
+    @property
+    def delta_time(self):
+        return self.window._global_clock.delta_time
+
+    @property
+    def global_clock(self):
+        return self.window._global_clock
+
+    @property
+    def fixed_time(self):
+        return self.window._fixed_clock.time
+
+    @property
+    def fixed_delta_time(self) -> float:
+        return self.window._fixed_rate
+
+    @property
+    def current_fixed_tick(self) -> int:
+        return self.window._fixed_clock.frame
+
+    @property
+    def accumulated_time(self) -> float:
+        return self.window._fixed_clock.accumulated
+
+    @property
+    def accumulated_fraction(self) -> float:
+        return self.window._fixed_clock.fraction
+
+    @property
+    def global_fixed_clock(self):
+        return self.window._fixed_clock
+
 
 @pytest.fixture(scope="function")
 def window_proxy():

@@ -35,7 +35,6 @@ class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
-        self.time = 0
 
         # Program to visualize the points
         self.points_program = self.ctx.program(
@@ -113,7 +112,7 @@ class MyGame(arcade.Window):
         self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])])
 
         self.ctx.enable_only()  # Ensure no context flags are set
-        self.time = time.time()
+
 
     def gen_initial_data(self, count):
         for _ in range(count):
@@ -122,17 +121,13 @@ class MyGame(arcade.Window):
             yield random.uniform(-.3, .3)  # velocity x
             yield random.uniform(-.3, .3)  # velocity y
 
+
     def on_draw(self):
         self.clear()
         self.ctx.point_size = 2 * self.get_pixel_ratio()
 
-        # Calculate the actual delta time and current time
-        t = time.time()
-        frame_time = t - self.time
-        self.time = t
-
         # Set uniforms in the program
-        self.gravity_program['dt'] = frame_time
+        self.gravity_program['dt'] = self.delta_time
         self.gravity_program['force'] = 0.25
         self.gravity_program['gravity_pos'] = math.sin(self.time * 0.77) * 0.25, math.cos(self.time) * 0.25
 

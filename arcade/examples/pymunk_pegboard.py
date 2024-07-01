@@ -46,7 +46,6 @@ class MyGame(arcade.Window):
 
         self.draw_time = 0
         self.processing_time = 0
-        self.time = 0
 
         # -- Pymunk
         self.space = pymunk.Space()
@@ -158,8 +157,6 @@ class MyGame(arcade.Window):
             ball.center_y = ball.pymunk_shape.body.position.y
             # Reverse angle because pymunk rotates ccw
             ball.angle = math.degrees(-ball.pymunk_shape.body.angle)
-
-        self.time = timeit.default_timer() - start_time
 
 
 def main():

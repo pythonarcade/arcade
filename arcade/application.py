@@ -1017,8 +1017,8 @@ class Window(pyglet.window.Window):
         return self._global_clock.time
 
     @property
-    def current_frame(self) -> int:
-        return self._global_clock.frame
+    def current_tick(self) -> int:
+        return self._global_clock.ticks
 
     @property
     def delta_time(self) -> float:

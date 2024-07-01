@@ -45,7 +45,7 @@ class Clock:
         """
         The amount of time that elapsed during the last tick
         """
-        return self.delta_time
+        return self._tick_delta_time
 
     @property
     def dt(self):
@@ -65,7 +65,7 @@ class Clock:
         return self._tick_speed
 
     @property
-    def frame(self):
+    def ticks(self):
         """
         The number of ticks that have occurred for this clock
         """
