@@ -13,8 +13,8 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-DEFAULT_SCREEN_WIDTH = 800
-DEFAULT_SCREEN_HEIGHT = 600
+DEFAULT_SCREEN_WIDTH = 1280
+DEFAULT_SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Minimap Example"
 
 # How many pixels to keep as a minimum margin between the character
@@ -153,11 +153,14 @@ class MyGame(arcade.Window):
             if (self.selected_camera.zoom - 0.1) > 0:
                 self.selected_camera.zoom -= 0.1
         elif key == arcade.key.I:
-            l, b, w, h = self.camera_minimap.viewport
-            self.camera_minimap.viewport = l + 100, b + 100, w - 100, h - 100
+            viewport = self.camera_minimap.viewport
+            self.camera_minimap.viewport = arcade.LBWH(viewport.left + 100, viewport.bottom + 100,
+                                                viewport.width - 100, viewport.height - 100)
         elif key == arcade.key.K:
-            l, b, w, h = self.camera_minimap.viewport
-            self.camera_minimap.viewport = l - 100, b - 100, w + 100, h + 100
+            viewport = self.camera_minimap.viewport
+            self.camera_minimap.viewport = arcade.LBWH(viewport.left - 100, viewport.bottom - 100,
+                                                viewport.width + 100, viewport.height + 100)
+
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
