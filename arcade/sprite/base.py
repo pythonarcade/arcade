@@ -583,19 +583,26 @@ class BasicSprite:
             return
 
         # set the scale and, if this sprite has a texture, the size data
-        self.scale = self._scale[0] * factor, self._scale[1] * factor
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
+        old_scale_x, old_scale_y = self._scale
+        new_scale_x = old_scale_x * factor
+        new_scale_y = old_scale_y * factor
+        self.scale = new_scale_x, new_scale_y
 
-        # detect the edge case where distance to multiply is zero
-        position_changed = point != self._position
+        tex_width, tex_height = self._texture.size
+        self._width = tex_width * new_scale_x
+        self._height = tex_height * new_scale_y
+
+        # If the scaling point is the sprite's center, it doesn't move
+        old_position = self._position
+        position_changed = point != old_position  # Stored to use below
 
         # be lazy about math; only do it if we have to
         if position_changed:
+            point_x, point_y = point
+            old_x, old_y = old_position
             self.position = (
-                (self._position[0] - point[0]) * factor + point[0],
-                (self._position[1] - point[1]) * factor + point[1],
+                (old_x - point_x) * factor + point_x,
+                (old_y - point_y) * factor + point_y,
             )
 
         # rebuild all spatial metadata
