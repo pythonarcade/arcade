@@ -446,10 +446,10 @@ class PhysicsEnginePlatformer:
 
     @property
     def platforms(self) -> list[SpriteList]:
-        """:py:class:`SpriteList` instances containing platforms.
+        """:py:class:`~arcade.sprite_list.sprite_list.SpriteList` instances containing platforms.
 
-        .. tip:: For best performance, put non-moving terrain in
-                 :py:attr:`.walls` instead.
+        .. important:: For best performance, put non-moving terrain in
+                       :py:attr:`.walls` instead.
 
         Platforms are intended to support automatic movement by setting
         the appropriate attributes.
@@ -529,24 +529,41 @@ class PhysicsEnginePlatformer:
 
         .. warning:: This runs collisions **every** time it is called!
 
+                     To keep your game performant, try saving the result
+                     in a variable if you don't need to re-calculate it
+                     after updating state:
+
+                     .. code-block:: python
+
+                        can_jump = self.engine.can_jump()
+                        if can_jump:
+                            do_something()
+
+                        calculated_in_between = do_another_thing()
+
+                        if can_jump:
+                            do_a_third_thing(calculated_in_between)
+                        always_called(calculated_in_between)
+
         The player can jump when at least one of the following are true:
 
         .. list-table::
            :header-rows: 0
 
            * - The player is "touching" the ground
-             - :py:attr:`.player`'s :py:attr:`~arcade.BasicSprite.center_y`
-               is within ``y_distance`` of any sprite in :py:attr:`.walls`
-               or :py:attr:`.platforms`
+             - :py:attr:`player_sprite` :py:attr:`~arcade.BasicSprite.center_y`
+               is within ``y_distance`` of any sprite in :py:attr:`walls`
+               or :py:attr:`platforms`
+
            * - The player can air-jump
-             - :py:attr:`.allow_multi_jump` is ``True`` and the player
-               hasn't jumped more than :py:attr:`.allowed_jumps` times
+             - :py:attr:`allow_multi_jump` is ``True`` and the player
+               hasn't jumped more than :py:attr:`allowed_jumps` times
 
         Args:
-            y_distance: The distance to temporarily move the
-            :py:attr:`.player` downward before checking for a collision
-            with either :py:attr:`.walls` or :py:attr:`.platforms`.
-
+            y_distance:
+                The distance to temporarily move the :py:attr:`player_sprite`
+                downward before checking for a collision with either
+                :py:attr:`walls` or :py:attr:`platforms`.
 
         Returns:
              ``True`` if the player can jump.
