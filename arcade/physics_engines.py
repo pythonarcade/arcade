@@ -567,7 +567,7 @@ class PhysicsEnginePlatformer:
            :header-rows: 0
 
            * - The player is "touching" the ground
-             - :py:attr:`player_sprite` :py:attr:`~arcade.BasicSprite.center_y`
+             - :py:attr:`player_sprite` :py:attr:`.BasicSprite.center_y`
                is within ``y_distance`` of any sprite in :py:attr:`walls`
                or :py:attr:`platforms`
 
