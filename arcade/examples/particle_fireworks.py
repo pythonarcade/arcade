@@ -23,6 +23,7 @@ from arcade.particles import (
     EmitMaintainCount,
     EmitBurst,
 )
+from arcade import LBWH
 
 
 SCREEN_WIDTH = 800
@@ -196,7 +197,7 @@ class FireworksApp(arcade.Window):
                 mid_alpha=128,
                 duration2=random.uniform(2.0, 6.0),
                 end_alpha=0,
-                center_xy=rand_in_rect((0.0, 0.0), SCREEN_WIDTH, SCREEN_HEIGHT)
+                center_xy=rand_in_rect(LBWH(0.0, 0.0, SCREEN_WIDTH, SCREEN_HEIGHT))
             )
         )
         self.emitters.append(stars)
