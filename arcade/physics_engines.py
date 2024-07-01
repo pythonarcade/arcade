@@ -446,27 +446,32 @@ class PhysicsEnginePlatformer:
 
     @property
     def platforms(self) -> list[SpriteList]:
-        """Controls which sprites are used as moving platforms.
+        """:py:class:`SpriteList` instances containing platforms.
 
         .. tip:: For best performance, put non-moving terrain in
                  :py:attr:`.walls` instead.
 
-        This is a :py:class:`list` of
-        :py:class:`~arcade.sprite_list.sprite_list.SpriteList` instances.
+        Platforms are intended to support automatic movement by setting
+        the appropriate attributes.
 
-        Motion is controlled by the presence of the following
+        You can enable automatic motion by setting one of the following
         attribute pairs on a :py:class:`~arcade.sprite.sprite.Sprite`:
 
-        * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_left` and
-          :py:attr:`~arcade.sprite.sprite.Sprite.boundary_right`
-        * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_bottom` and
-          :py:attr:`~arcade.sprite.sprite.Sprite.boundary_top`
+        .. list-table::
+           :header-rows: 1
 
-        * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_left` and
-          :py:attr:`~arcade.sprite.sprite.Sprite.boundary_right`
-        * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_bottom` and
-          :py:attr:`~arcade.sprite.sprite.Sprite.boundary_top`
+           * - Movement Axis
+             - :py:class:`~arcade.sprite.sprite.Sprite` Attributes to Set
+           * - X (side to side)
+             - * :py:attr:`~arcade.sprite.sprite.Sprite.change_x`
+               * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_left`
+               * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_right`
+           * - Y (up and down)
+             - * :py:attr:`~arcade.sprite.sprite.Sprite.change_y`
+               * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_bottom`
+               * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_top`
 
+        For a working example, please see :ref:`sprite_moving_platforms`.
         """
         return self._platforms
 
