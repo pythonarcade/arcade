@@ -568,7 +568,7 @@ class BasicSprite:
 
     # --- Scale methods -----
 
-    def rescale_relative_to_point(self, point: Point, scale_by: AsFloat | Point2) -> None:
+    def rescale_relative_to_point(self, point: Point2, scale_by: AsFloat | Point2) -> None:
         """Rescale the sprite and its distance from the passed point.
 
         This function does two things:
