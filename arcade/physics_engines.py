@@ -441,7 +441,7 @@ class PhysicsEnginePlatformer:
         list, the following are true:
 
         * The :py:attr:`gravity_constant` is not subtracted from
-          :py:attr:`player_sprite`.:py:attr:`.Sprite.change_y`
+          :py:attr:`player_sprite`\'s :py:attr:`~.Sprite.change_y`
           during :py:meth:`update` calls
         * The player may otherwise move as freely as you allow
 
