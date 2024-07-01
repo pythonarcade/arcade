@@ -384,7 +384,12 @@ class PhysicsEnginePlatformer:
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
     @property
     def ladders(self) -> list[SpriteList]:
-        """The ladder list registered with the physics engine."""
+        """The ladders registered with the physics engine.
+
+        When the :py:attr:`~player_sprite` is touching a sprite in one
+        of the ladder :py:class:`SpriteList` instances, gravity will not
+        be applied.
+        """
         return self._ladders
 
     @ladders.setter
@@ -437,7 +442,14 @@ class PhysicsEnginePlatformer:
 
     @property
     def walls(self) -> list[SpriteList]:
-        """The wall list registered with the physics engine."""
+        """Exposes the :py:class:`SpriteList` instances used as terrain.
+
+        .. important:: For best performance, only add non-moving sprites!
+
+                       Put any moving platforms into :py:attr:`~platforms`
+                       instead.
+
+        """
         return self._walls
 
     @walls.setter
