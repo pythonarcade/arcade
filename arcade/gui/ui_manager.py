@@ -88,10 +88,15 @@ class UIManager(EventDispatcher):
 
     def __init__(self, window: Optional[arcade.Window] = None):
         super().__init__()
+
         self.window = window or arcade.get_window()
         self._surfaces: dict[int, Surface] = {}
         self.children: dict[int, list[UIWidget]] = defaultdict(list)
         self._requires_render = True
+        self.camera = arcade.Camera2D()
+        self._render_to_surface_camera = arcade.Camera2D()
+        # this camera is used for rendering the UI and should not be changed by the user
+
         self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
@@ -305,7 +310,6 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self) -> None:
-        current_cam = self.window.current_camera
         """
         Will draw all widgets to the window.
 
@@ -323,17 +327,16 @@ class UIManager(EventDispatcher):
         self.execute_layout()
 
         ctx = self.window.ctx
-        with ctx.enabled(ctx.BLEND):
+        with ctx.enabled(ctx.BLEND), self._render_to_surface_camera.activate():
             self._do_render()
 
         # Correct that the ui changes the currently active camera.
-        current_cam.use()
-
-        # Draw layers
-        with ctx.enabled(ctx.BLEND):
-            layers = sorted(self.children.keys())
-            for layer in layers:
-                self._get_surface(layer).draw()
+        with self.camera.activate():
+            # Draw layers
+            with ctx.enabled(ctx.BLEND):
+                layers = sorted(self.children.keys())
+                for layer in layers:
+                    self._get_surface(layer).draw()
 
     def adjust_mouse_coordinates(self, x: float, y: float) -> tuple[float, float]:
         """
@@ -343,7 +346,7 @@ class UIManager(EventDispatcher):
         It uses the internal camera's map_coordinate methods, and should work with
         all transformations possible with the basic orthographic camera.
         """
-        x_, y_, *c = self.window.current_camera.unproject((x, y))
+        x_, y_, *c = self.camera.project((x, y))  # convert screen to ui coordinates
         return x_, y_
 
     def on_event(self, event) -> Union[bool, None]:
@@ -402,6 +405,16 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UITextMotionSelectEvent(self, motion))
 
     def on_resize(self, width, height):
+        # resize ui camera
+        bottom_left = self.camera.bottom_left
+        self.camera.match_screen()
+        self.camera.bottom_left = bottom_left
+
+        # resize render to surface camera
+        bottom_left = self._render_to_surface_camera.bottom_left
+        self._render_to_surface_camera.match_screen()
+        self._render_to_surface_camera.bottom_left = bottom_left
+
         scale = self.window.get_pixel_ratio()
         for surface in self._surfaces.values():
             surface.resize(size=(width, height), pixel_ratio=scale)

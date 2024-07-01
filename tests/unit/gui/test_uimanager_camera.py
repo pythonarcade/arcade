@@ -1,43 +1,45 @@
-import pytest
-
 import arcade
-from arcade.gui import UIMouseReleaseEvent
-from pyglet.math import Vec2
+from arcade import LBWH
+from arcade.gui import UIFlatButton
 
 
-@pytest.mark.xfail
-def test_ui_manager_respects_camera_viewport(uimanager, window):
+def test_ui_manager_respects_window_camera(uimanager, window):
     # GIVEN
-    uimanager.use_super_mouse_adjustment = True
-    camera = arcade.camera.Camera2D(
-        position=(0.0, 0.0), projection=arcade.LRBT(0.0, window.width, 0.0, window.height), window=window
+    in_game_cam = arcade.Camera2D(
+        viewport=LBWH(100, 100, window.width, window.height)
     )
+    clicked = False
+
+    button = uimanager.add(UIFlatButton(text="BottomLeftButton", width=100, height=100))
+
+    @button.event("on_click")
+    def on_click(event):
+        nonlocal clicked
+        clicked = True
+    
+    # WHEN
+    in_game_cam.use()
+    uimanager.click(150, 150)
+    
+    # THEN
+    assert clicked
+
+
+def test_ui_manager_use_rotated_camera(uimanager, window):
+    # GIVEN
+    clicked = False
+
+    button = uimanager.add(UIFlatButton(text="BottomLeftButton", width=100, height=100))
+
+    @button.event("on_click")
+    def on_click(event):
+        nonlocal clicked
+        clicked = True
+        
 
     # WHEN
-    camera.viewport = arcade.LBWH(0, 0, 400, 200)
-    camera.use()
-
-    uimanager.click(100, 100)
+    uimanager.camera.angle = 90
+    uimanager.click(150, 150)
 
     # THEN
-    assert isinstance(uimanager.last_event, UIMouseReleaseEvent)
-    assert uimanager.last_event.pos == (pytest.approx(200), pytest.approx(300))
-
-
-@pytest.mark.xfail
-def test_ui_manager_respects_camera_pos(uimanager, window):
-    # GIVEN
-    uimanager.use_super_mouse_adjustment = True
-    camera = arcade.camera.Camera2D(
-        position=(0.0, 0.0), projection=arcade.LRBT(0.0, window.width, 0.0, window.height), window=window
-    )
-
-    # WHEN
-    camera.position = (100, 100)
-    camera.use()
-
-    uimanager.click(100, 100)
-
-    # THEN
-    assert isinstance(uimanager.last_event, UIMouseReleaseEvent)
-    assert uimanager.last_event.pos == (pytest.approx(200), pytest.approx(200))
+    assert clicked
