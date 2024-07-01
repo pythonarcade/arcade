@@ -262,8 +262,45 @@ class BasicSprite:
     def scale(self) -> Vec2:
         """Get or set the x & y scale of the sprite as a pair of values.
 
-        .. note:: Negative values are supported. They will flip &
-                  mirror the sprite."""
+        You may set it to either a single value or a pair of values:
+
+        .. list-table::
+           :header-rows: 0
+
+           * - Single value
+             - ``sprite.scale = 2.0``
+
+           * - Tuple or :py:class:`~pyglet,math.Vec2`
+             - ``sprite.scale = (1.0, 3.0)``
+
+        The two-channel version is useful for making health bars and
+        other indicators.
+
+        .. note:: Returns a :py:class:`pyglet.math.Vec2` for
+                  compatibility.
+
+        Arcade versions lower than 3,0 used one or both of the following
+        for scale:
+
+        * A single :py:class:`float` on versions <= 2.6
+        * A ``scale_xy`` property and exposing only the x component
+          on some intermediate dev releases
+
+        Although scale is internally stored as a :py:class:`tuple`, we
+        return a :py:class:`pyglet.math.Vec2` to allow the in-place
+        operators to work in addition to setting values directly:
+
+        * Old-style (``sprite.scale *= 2.0``)
+        * New-style (``sprite.scale *= 2.0, 2.0``)
+
+        .. note:: Negative scale values are supported.
+
+                  This applies to both single-axis and dual-axis.
+                  Negatives will flip & mirror the sprite, but the
+                  with will use :py:func:`abs` to report total width
+                  and height instead of negatives.
+
+        """
         return Vec2(*self._scale)
 
     @scale.setter
