@@ -8,8 +8,6 @@ the fixed update should be kept close to the nominal update rate, or even faster
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.fixed_update_interpolation.py
 """
-from typing import Optional
-
 import arcade
 
 # --- Constants ---
@@ -71,7 +69,9 @@ class Game(arcade.Window):
         # Move the sprite based on its velocity
         self.unfixed_sprite.center_y += self.unfixed_sprite.change_y * delta_time
 
-        self.interpolated_sprite.center_y = arcade.math.lerp(self.last_position, self.fixed_sprite.center_y, self.accumulated_fraction)
+        self.interpolated_sprite.center_y = arcade.math.lerp(
+            self.last_position, self.fixed_sprite.center_y, self.accumulated_fraction
+        )
 
     def on_draw(self):
         self.clear()
