@@ -239,15 +239,17 @@ class BasicSprite:
         return self._scale[1]
 
     @scale_y.setter
-    def scale_y(self, new_value: AsFloat):
-        if new_value == self._scale[1]:
+    def scale_y(self, new_scale_y: AsFloat):
+        old_scale_x, old_scale_y = self._scale
+        if new_scale_y == old_scale_y:
             return
 
-        self._scale = Vec2(self._scale[0], new_value)
-        self._hit_box.scale = self._scale
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
+        new_scale = (old_scale_x, new_scale_y)
+
+        # Apply scale to hitbox first to raise any exceptions quickly
+        self._hit_box.scale = new_scale
+        self._scale = new_scale
+        self._height = self._texture.height * new_scale_y
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
