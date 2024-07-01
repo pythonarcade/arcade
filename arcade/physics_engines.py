@@ -13,7 +13,7 @@ from arcade import (
     SpriteList,
     SpriteType,
     check_for_collision,
-    check_for_collision_with_lists,
+    check_for_collision_with_lists, BasicSprite,
 )
 from arcade.math import get_distance
 
@@ -550,11 +550,21 @@ class PhysicsEnginePlatformer:
         if self.allow_multi_jump:
             self.jumps_since_ground += 1
 
-    def update(self):
-        """
-        Move everything and resolve collisions.
+    def update(self) -> list[BasicSprite]:
+        """Move the player and platforms, then return colliding sprites.
 
-        :Returns: SpriteList with all sprites contacted. Empty list if no sprites.
+        The returned sprites will in a :py:class:`list` of individual
+        sprites taken from all :py:class:`arcade.SpriteList` instances
+        in the following:
+
+        * :attr:`~platforms`
+        * :attr:`~walls`
+
+        The :py:attr:`~ladders` are not included.
+
+        Returns:
+            A list of all sprites the player collided with. If there
+            were no collisions, the list will be empty.
         """
         # start_time = time.time()
         # print(f"Spot A ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
