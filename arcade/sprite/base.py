@@ -183,9 +183,8 @@ class BasicSprite:
     @size.setter
     def size(self, new_value: Point2):
         try:
-            width, height, *bad = new_value
-            assert not bad
-        except (AssertionError, ValueError):
+            width, height = new_value
+        except ValueError:
             raise ValueError("size must be a tuple-like object which unpacks to exactly 2 coordinates")
         except TypeError:
             raise TypeError("size must be a tuple-like object which unpacks to exactly 2 coordinates")
