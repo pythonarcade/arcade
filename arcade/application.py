@@ -24,6 +24,7 @@ from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.types import Color, RGBOrA255, RGBANormalized
 from arcade import SectionManager
+from arcade.clock import Clock, FixedClock
 from arcade.types.rect import LBWH, Rect
 from arcade.utils import is_raspberry_pi
 
@@ -82,6 +83,10 @@ class Window(pyglet.window.Window):
     :param resizable: Can the user resize the window?
     :param update_rate: How frequently to run the on_update event.
     :param draw_rate: How frequently to run the on_draw event. (this is the FPS limit)
+    :param fixed_rate: How frequently should the fixed_updates run, fixed updates will always run at this rate.
+    :param fixed_frame_cap: The maximum number of fixed updates that can occur in one update loop.
+                                defaults to infinite. If large lag spikes cause your game to freeze, try setting
+                                this to a smaller number. This may cause your physics to lag behind temporarily
     :param antialiasing: Should OpenGL's anti-aliasing be enabled?
     :param gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
                                        and can be overridden when using more advanced OpenGL features.
@@ -122,6 +127,8 @@ class Window(pyglet.window.Window):
         enable_polling: bool = True,
         gl_api: str = "gl",
         draw_rate: float = 1 / 60,
+        fixed_rate: float = 1.0 / 60.0,
+        fixed_frame_cap: Optional[int] = None,
     ) -> None:
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -189,6 +196,7 @@ class Window(pyglet.window.Window):
             )
             self.register_event_type("on_update")
             self.register_event_type("on_action")
+            self.register_event_type("on_fixed_update")
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException(
                 "Unable to create an OpenGL 3.3+ context. "
@@ -200,11 +208,19 @@ class Window(pyglet.window.Window):
             except pyglet.gl.GLException:
                 LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
+        self._global_clock: Clock = Clock()
+        self._fixed_clock: FixedClock = FixedClock(self._global_clock, fixed_rate)
+
         # We don't call the set_draw_rate function here because unlike the updates, the draw scheduling
         # is initially set in the call to pyglet.app.run() that is done by the run() function.
         # run() will pull this draw rate from the Window and use it. Calls to set_draw_rate only need
         # to be done if changing it after the application has been started.
         self._draw_rate = draw_rate
+
+        # Fixed rate cannot be changed post initialisation as this throws off physics sims.
+        # If more time resolution is needed in fixed updates, devs can do 'sub-stepping'.
+        self._fixed_rate = fixed_rate
+        self._fixed_frame_cap = fixed_frame_cap
         self.set_update_rate(update_rate)
 
         self.set_vsync(vsync)
@@ -384,11 +400,27 @@ class Window(pyglet.window.Window):
         """
         pass
 
+    def on_fixed_update(self, delta_time: float):
+        """
+        Move everything. Perform collision checks. Always
+
+        """
+        pass
+
     def _dispatch_updates(self, delta_time: float) -> None:
         """
         Internal function that is scheduled with Pyglet's clock, this function gets run by the clock, and
         dispatches the on_update events.
+        It also accumulates time and runs fixed updates until the Fixed Clock catches up to the global clock
         """
+        self._global_clock.tick(delta_time)
+        fixed_count = 0
+        while self._fixed_clock.accumulated < 0.0 and (
+            self._fixed_frame_cap is None or fixed_count <= self._fixed_frame_cap
+        ):
+            self._fixed_clock.tick(self._fixed_rate)
+            self.dispatch_event("on_fixed_update", self._fixed_rate)
+            fixed_count += 1
         self.dispatch_event("on_update", delta_time)
 
     def set_update_rate(self, rate: float) -> None:
@@ -978,6 +1010,47 @@ class Window(pyglet.window.Window):
     def center_y(self) -> float:
         """Returns the Y-coordinate of the center of the window."""
         return self.height / 2
+
+    # --- CLOCK ALIASES ---
+    @property
+    def time(self) -> float:
+        return self._global_clock.time
+
+    @property
+    def current_frame(self) -> int:
+        return self._global_clock.frame
+
+    @property
+    def delta_time(self) -> float:
+        return self._global_clock.delta_time
+
+    @property
+    def global_clock(self) -> Clock:
+        return self._global_clock
+
+    @property
+    def fixed_time(self) -> float:
+        return self._fixed_clock.time
+
+    @property
+    def fixed_delta_time(self) -> float:
+        return self._fixed_rate
+
+    @property
+    def current_fixed_frame(self) -> int:
+        return self._fixed_clock.frame
+
+    @property
+    def accumulated_time(self) -> float:
+        return self._fixed_clock.accumulated
+
+    @property
+    def accumulated_fraction(self) -> float:
+        return self._fixed_clock.fraction
+
+    @property
+    def global_fixed_clock(self) -> FixedClock:
+        return self._fixed_clock
 
 
 def open_window(
