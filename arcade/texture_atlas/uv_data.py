@@ -20,7 +20,8 @@ class UVData:
     """
     A container for float32 texture coordinates stored in a texture.
     Each texture coordinate has a slot/index in the texture and is
-    looked up by a shader to obtain the texture coordinates.
+    looked up by a shader to obtain the texture coordinates. The
+    shader would look up texture coordinates by the id of the texture.
 
     The purpose of this system is to:
 
@@ -59,12 +60,17 @@ class UVData:
 
     def clone_with_slots(self) -> "UVData":
         """
-        Clone the UVData with the same texture and slots only.
-        We can't lose the global slots when re-building or resizing the atlas.
+        Clone the UVData with the current slot data. The UV data itself
+        and the opengl texture is not cloned.
+
+        This is useful when we are re-building the atlas since we can't
+        lost the slot data since the indices in the uv texture must not
+        change. If they change the entire spritelist must be updated.
         """
         clone = UVData(self._ctx, self._capacity)
         clone._slots = self._slots
         clone._slots_free = self._slots_free
+        clone._dirty = True
         return clone
 
     @property
@@ -79,7 +85,7 @@ class UVData:
 
     @property
     def texture(self) -> "Texture2D":
-        """The texture containing the texture coordinates"""
+        """The opengl texture containing the texture coordinates"""
         return self._texture
 
     def get_slot_or_raise(self, name: str) -> int:
@@ -97,7 +103,9 @@ class UVData:
 
     def get_existing_or_free_slot(self, name: str) -> int:
         """
-        Get the slot for a texture by name or a free slot-
+        Get the slot for a texture by name or a free slot.
+        Getting existing slots is useful when the resize or re-build
+        the atlas.
 
         :param name: The name of the texture
         :return: The slot or a free slot
@@ -139,7 +147,7 @@ class UVData:
         self._dirty = True
 
     def write_to_texture(self) -> None:
-        """Write the texture coordinates to the texture if dirty"""
+        """Write the texture coordinates to the opengl texture if dirty"""
         if self._dirty:
             self._texture.write(self._data, 0)
             self._dirty = False

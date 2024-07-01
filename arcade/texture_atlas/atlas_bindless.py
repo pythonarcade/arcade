@@ -21,7 +21,7 @@ class BindlessTextureAtlas(TextureAtlasBase):
     needed to store the handles.
 
     The max capacity is only limited by memory. Discrete GPUs support this
-    feature and some igpus AMD igpus from 2019 and later + Intel Xe if
+    feature and some iGPUs from 2019 and later. AMD + Intel Xe if
     latest drivers are installed.
     """
 
