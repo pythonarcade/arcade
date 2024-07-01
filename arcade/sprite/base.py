@@ -60,9 +60,10 @@ class BasicSprite:
         self._position = (center_x, center_y)
         self._depth = 0.0
         self._texture = texture
-        self._width = texture.width * scale
-        self._height = texture.height * scale
-        self._scale = Vec2(scale, scale)
+        width, height = texture.size
+        self._width = width * scale
+        self._height = height * scale
+        self._scale = (scale, scale)
         self._visible = bool(visible)
         self._color: Color = WHITE
         self.sprite_lists: list["SpriteList"] = []
@@ -180,13 +181,20 @@ class BasicSprite:
         return self._width, self._height
 
     @size.setter
-    def size(self, new_value: Point):
-        if new_value[0] != self._width or new_value[1] != self._height:
-            self._scale = Vec2(
-                new_value[0] / self._texture.width, new_value[1] / self._texture.height
-            )
-            self._width = new_value[0]
-            self._height = new_value[1]
+    def size(self, new_value: Point2):
+        try:
+            width, height, *bad = new_value
+            assert not bad
+        except (AssertionError, ValueError):
+            raise ValueError("size must be a tuple-like object which unpacks to exactly 2 coordinates")
+        except TypeError:
+            raise TypeError("size must be a tuple-like object which unpacks to exactly 2 coordinates")
+
+        if width != self._width or height != self._height:
+            texture_width, texture_height = self._texture.size
+            self._scale = width / texture_width, height / texture_height
+            self._width = width
+            self._height = height
 
             self.update_spatial_hash()
 

@@ -60,6 +60,14 @@ def test_set_size():
     assert sprite.height == 64
     assert sprite.scale == (0.5, 0.5)
 
+    # Validate size data
+    with pytest.raises(ValueError):
+        sprite.size = (1,)
+    with pytest.raises(ValueError):
+        sprite.size = (0, 1, 2)
+    with pytest.raises(TypeError):
+        sprite.size = 1
+
 
 @pytest.mark.parametrize('not_a_texture', [
     1, "not_a_texture", (1, 2, 3)
