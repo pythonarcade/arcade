@@ -268,8 +268,7 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
     return math.atan2(x_diff, y_diff)
 
 
-def quaternion_rotation(
-    axis: Point3, vector: Point3, angle: float) -> tuple[float, float, float]:
+def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[float, float, float]:
     """
     Rotate a 3-dimensional vector of any length clockwise around a 3-dimensional unit length vector.
 
