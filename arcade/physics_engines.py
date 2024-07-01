@@ -420,6 +420,14 @@ class PhysicsEnginePlatformer:
         self.gravity_constant: float = gravity_constant
         self.jumps_since_ground: int = 0
         self.allowed_jumps: int = 1
+        #: Whether multi-jump is enabled.
+        #:
+        #: For ease of use in simple games, you may want to use the
+        #: following methods instead of setting this directly:
+        #:
+        #: * :py:meth:`enable_multi_jump`
+        #: * :py:meth:`disable_multi_jump`
+        #:
         self.allow_multi_jump: bool = False
 
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
@@ -597,38 +605,73 @@ class PhysicsEnginePlatformer:
             return False
 
     def enable_multi_jump(self, allowed_jumps: int) -> None:
-        """
-        Enables multi-jump.
-        allowed_jumps should include the initial jump.
-        (1 allows only a single jump, 2 enables double-jump, etc)
+        """Enable multi-jump.
 
-        If you enable multi-jump, you MUST call increment_jump_counter()
-        every time the player jumps. Otherwise they can jump infinitely.
+        The ``allowed_jumps`` argument is the total number of jumps.
+        This includes the first one from the ground or one of the
+        :py:attr:`platforms`.
 
-        :param allowed_jumps:
+        For example:
+
+        .. list-table::
+           :header-rows: 1
+
+           * - Number of air jumps
+             - ``allowed_jumps``
+           * - 0
+             - 1
+           * - 1
+             - 2
+           * - 5
+             - 6
+
+        .. important:: The engine should call :py:meth:`increment_jump_counter`
+                       inside :py:meth:`jump`!
+
+                       If it does not, the player may be able to jump forever.
+
+        Args:
+            allowed_jumps:
+                How many jumps the player should be capable of,
+                including the first.
+
         """
         self.allowed_jumps = allowed_jumps
         self.allow_multi_jump = True
 
     def disable_multi_jump(self) -> None:
-        """
-        Disables multi-jump.
+        """Disable multi-jump.
 
-        Calling this function also removes the requirement to
-        call increment_jump_counter() every time the player jumps.
+        Calling this function removes the requirement for :py:meth:`jump`
+        to call :py:meth:`increment_jump_counter` with each jump to
+        prevent infinite jumping.
         """
         self.allow_multi_jump = False
         self.allowed_jumps = 1
         self.jumps_since_ground = 0
 
     def jump(self, velocity: float) -> None:
-        """Have the character jump."""
+        """Jump with an initial upward velocity.
+
+        This works as follows:
+
+        #. Set the :py:attr:`player_sprite`\'s :py:attr:`.Sprite.change_y`
+           to ``velocity``
+        #. Call :py:meth:`increment_jump_counter`
+
+        Args:
+            velocity:
+                A positive value to set the player's y velocity to.
+        """
         self.player_sprite.change_y = velocity
         self.increment_jump_counter()
 
     def increment_jump_counter(self) -> None:
-        """
-        Updates the jump counter for multi-jump tracking
+        """Update jump tracking if multi-jump is enabled.
+
+        If :py:attr:`allow_multi_jumps` is ``True``, calling this adds
+        ``1`` to :py:attr:`jumps_since_ground`. Otherwise, it does
+        nothing.
         """
         if self.allow_multi_jump:
             self.jumps_since_ground += 1
