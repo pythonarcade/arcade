@@ -573,7 +573,7 @@ class BasicSprite:
 
         This function does two things:
 
-        1. Multiply both values in the sprite's :py:attr:`~scale`
+        1. Multiply both values in the sprite's :py:attr:`.scale`
            value by the values in ``scale_by``:
 
            * If ``scale_by`` is an :py:class:`int` or :py:class:`float`,
@@ -585,7 +585,7 @@ class BasicSprite:
         2. Scale the distance between the sprite and ``point`` by
            ``factor``.
 
-        .. note:: If ``point`` equals the sprite's :py:attr:`~position`,
+        .. note:: If ``point`` equals the sprite's :py:attr:`.position`
                   the distance will be zero and the sprite won't move.
 
         Args:
@@ -594,7 +594,7 @@ class BasicSprite:
             scale_by:
                 A multiplier for both the sprite scale and its distance
                 from the point. Note that although factor may be negative,
-                it may have unexpected effects. See :py:`
+                it may have unexpected effects.
 
         """
         # abort if the multiplier wouldn't do anything
