@@ -654,8 +654,8 @@ class PhysicsEnginePlatformer:
 
         This works as follows:
 
-        #. Set the :py:attr:`player_sprite`\'s :py:attr:`.Sprite.change_y`
-           to ``velocity``
+        #. Set the :py:attr:`player_sprite`\'s :py:attr:`~.Sprite.change_y`
+           to the passed ``velocity``
         #. Call :py:meth:`increment_jump_counter`
 
         Args:
