@@ -561,12 +561,11 @@ class BasicSprite:
     # --- Scale methods -----
 
     def rescale_relative_to_point(self, point: Point, factor: float) -> None:
-        """
-        Rescale the sprite and its distance from the passed point.
+        """Rescale the sprite and its distance from the passed point.
 
         This function does two things:
 
-        1. Multiply both values in the sprite's :py:attr:`~scale_xy`
+        1. Multiply both values in the sprite's :py:attr:`~scale`
            value by ``factor``.
         2. Scale the distance between the sprite and ``point`` by
            ``factor``.
@@ -574,9 +573,14 @@ class BasicSprite:
         If ``point`` equals the sprite's :py:attr:`~position`,
         the distance will be zero and the sprite will not move.
 
-        :param point: The reference point for rescaling.
-        :param factor: Multiplier for sprite scale & distance to point.
-        :return:
+        Args:
+            point:
+                The point to scale relative to.
+            factor:
+                A multiplier for both the sprite scale and its distance
+                from the point. Note that although factor may be negative,
+                it may have unexpected effects. See :py:`
+
         """
         # abort if the multiplier wouldn't do anything
         if factor == 1.0:
