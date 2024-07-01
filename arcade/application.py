@@ -1037,8 +1037,8 @@ class Window(pyglet.window.Window):
         return self._fixed_rate
 
     @property
-    def current_fixed_frame(self) -> int:
-        return self._fixed_clock.frame
+    def current_fixed_tick(self) -> int:
+        return self._fixed_clock.ticks
 
     @property
     def accumulated_time(self) -> float:

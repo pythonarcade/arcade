@@ -117,8 +117,6 @@ class MyGame(arcade.Window):
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_update(self, delta_time):
-        start_time = timeit.default_timer()
-
         self.ticks_to_next_ball -= 1
         if self.ticks_to_next_ball <= 0:
             self.ticks_to_next_ball = 20

@@ -238,7 +238,7 @@ class WindowProxy:
 
     @property
     def current_tick(self):
-        return self.window._global_clock.frame
+        return self.window._global_clock.ticks
 
     @property
     def delta_time(self):
@@ -258,7 +258,7 @@ class WindowProxy:
 
     @property
     def current_fixed_tick(self) -> int:
-        return self.window._fixed_clock.frame
+        return self.window._fixed_clock.ticks
 
     @property
     def accumulated_time(self) -> float:
