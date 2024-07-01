@@ -264,25 +264,31 @@ class BasicSprite:
         return Vec2(*self._scale)
 
     @scale.setter
-    def scale(self, new_value: Point | AsFloat):
-        if isinstance(new_value, (float, int)):
-            new_value_scale = new_value, new_value
+    def scale(self, new_scale: Point2 | AsFloat):
+        if isinstance(new_scale, (float, int)):
+            scale_x = new_scale
+            scale_y = new_scale
 
         else:  # Treat it as some sort of iterable or sequence
-            x, y, *_ = new_value  # type / length implicit check
-            new_value_scale = x, y
+            # Don't abstract this. Keep it here since it's a hot code path
+            try:
+                scale_x, scale_y = new_scale  # type / length implicit check
+            except ValueError:
+                raise ValueError("scale must be a tuple-like object which unpacks to exactly 2 coordinates")
+            except TypeError:
+                raise TypeError("scale must be a tuple-like object which unpacks to exactly 2 coordinates")
 
-        if new_value_scale == self._scale:
+        new_scale = scale_x, scale_y
+        if new_scale == self._scale:
             return
 
-        self._scale = new_value_scale
-        self._hit_box.scale = new_value_scale
-        if self._texture:
-            self._width = self._texture.width * new_value_scale[0]
-            self._height = self._texture.height * new_value_scale[1]
+        self._hit_box.scale = new_scale
+        tex_width, tex_height = self._texture.size
+        self._scale = new_scale
+        self._width = tex_width * scale_x
+        self._height = tex_height * scale_y
 
         self.update_spatial_hash()
-
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
 
