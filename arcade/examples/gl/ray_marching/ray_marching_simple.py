@@ -23,13 +23,11 @@ class RayMarcherSimple(arcade.Window):
         )
         self.quad_fs = geometry.quad_2d_fs()
         self.set_aspect_ratio(*self.get_size())
-        self.time = 0
 
     def on_draw(self):
         self.quad_fs.render(self.program)
 
     def on_update(self, delta_time: float):
-        self.time += delta_time
         self.program["iTime"] = self.time
 
     def on_resize(self, width: int, height: int):

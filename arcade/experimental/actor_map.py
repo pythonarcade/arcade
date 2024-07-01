@@ -24,7 +24,6 @@ class ActorMap(arcade.Window):
         self.map = Map(self.ctx, size=(4096, 4096))
         self.map.draw()
         self.actor = Actor(self.map, self.shaders)
-        self.time = 0
 
     def on_draw(self):
         self.clear()
@@ -32,9 +31,6 @@ class ActorMap(arcade.Window):
             0, self.width, 0, self.height, -100, 100
         )
         self.actor.draw(self.time)
-
-    def on_update(self, delta_time: float):
-        self.time += delta_time
 
 
 class Actor:
