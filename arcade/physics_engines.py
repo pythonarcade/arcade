@@ -423,13 +423,21 @@ class PhysicsEnginePlatformer:
         self.allow_multi_jump: bool = False
 
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
+    # TODO: figure out what do do with 15_ladders_moving_platforms.py
+    # It's no longer used by any exampple or tutorial file
     @property
     def ladders(self) -> list[SpriteList]:
-        """The ladders registered with the physics engine.
+        """Ladders turn off gravity while touched by the player.
 
-        When the :py:attr:`~player_sprite` is touching a sprite in one
-        of the ladder :py:class:`SpriteList` instances, gravity will not
-        be applied.
+        This means that whenever the :py:attr:`player_sprite` collides
+        with any any :py:class:`.Sprite` or :py:class:`.BasicSprite` in this
+        list, the following are true:
+
+        * The :py:attr:`gravity_constant` is not subtracted from
+          :py:attr:`player_sprite`.:py:attr:`.Sprite.change_y`
+          during :py:meth:`update` calls
+        * The player may otherwise move as freely as you allow
+
         """
         return self._ladders
 
