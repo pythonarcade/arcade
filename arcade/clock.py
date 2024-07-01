@@ -18,6 +18,12 @@ class Clock:
         self._elapsed_time += self._tick_delta_time
         self._frame += 1
 
+    def time_since(self, time: float):
+        return self._elapsed_time - time
+    
+    def frames_since(self, frame: int):
+        return self._frame - frame
+
     @property
     def time(self):
         """
