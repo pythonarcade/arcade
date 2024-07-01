@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Iterable, TypeVar, Any
 
 import arcade
-from arcade.types import Point, Point2, Color, RGBA255, RGBOrA255, PointList, Rect, LRBT
+from arcade.types import AsFloat, Point, Color, Point2, RGBA255, RGBOrA255, PointList, Rect, LRBT
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.utils import copy_dunders_unimplemented
+from arcade.utils import copy_dunders_unimplemented, ReplacementWarning, warning
 
 from pyglet.math import Vec2
 
@@ -60,9 +60,10 @@ class BasicSprite:
         self._position = (center_x, center_y)
         self._depth = 0.0
         self._texture = texture
-        self._width = texture.width * scale
-        self._height = texture.height * scale
-        self._scale = Vec2(scale, scale)
+        width, height = texture.size
+        self._width = width * scale
+        self._height = height * scale
+        self._scale = (scale, scale)
         self._visible = bool(visible)
         self._color: Color = WHITE
         self.sprite_lists: list["SpriteList"] = []
@@ -180,60 +181,158 @@ class BasicSprite:
         return self._width, self._height
 
     @size.setter
-    def size(self, new_value: Point):
-        if new_value[0] != self._width or new_value[1] != self._height:
-            self._scale = new_value[0] / self._texture.width, new_value[1] / self._texture.height
-            self._width = new_value[0]
-            self._height = new_value[1]
+    def size(self, new_value: Point2):
+        try:
+            width, height = new_value
+        except ValueError:
+            raise ValueError(
+                "size must be a tuple-like object which unpacks to exactly 2 coordinates"
+            )
+        except TypeError:
+            raise TypeError(
+                "size must be a tuple-like object which unpacks to exactly 2 coordinates"
+            )
+
+        if width != self._width or height != self._height:
+            texture_width, texture_height = self._texture.size
+            self._scale = width / texture_width, height / texture_height
+            self._width = width
+            self._height = height
 
             self.update_spatial_hash()
+
             for sprite_list in self.sprite_lists:
                 sprite_list._update_size(self)
 
     @property
-    def scale(self) -> float:
+    def scale_x(self) -> float:
         """
-        Get or set the sprite's x scale value or set both x & y scale to the same value.
+        Get or set the sprite's x scale value.
 
         .. note:: Negative values are supported. They will flip &
                   mirror the sprite.
         """
         return self._scale[0]
 
-    @scale.setter
-    def scale(self, new_value: float):
-        if new_value == self._scale[0] and new_value == self._scale[1]:
+    @scale_x.setter
+    def scale_x(self, new_scale_x: AsFloat):
+        old_scale_x, old_scale_y = self._scale
+        if new_scale_x == old_scale_x:
             return
 
-        self._scale = Vec2(new_value, new_value)
-        self._hit_box.scale = self._scale
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
+        new_scale = (new_scale_x, old_scale_y)
+
+        # Apply scale to hitbox first to raise any exceptions quickly
+        self._hit_box.scale = new_scale
+        self._scale = new_scale
+        self._width = self._texture.width * new_scale_x
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
 
     @property
-    def scale_xy(self) -> Point2:
-        """Get or set the x & y scale of the sprite as a pair of values."""
-        return self._scale
+    def scale_y(self) -> float:
+        """
+        Get or set the sprite's y scale value.
 
-    @scale_xy.setter
-    def scale_xy(self, new_value: Point2):
-        if new_value[0] == self._scale[0] and new_value[1] == self._scale[1]:
+        .. note:: Negative values are supported. They will flip &
+                  mirror the sprite.
+        """
+        return self._scale[1]
+
+    @scale_y.setter
+    def scale_y(self, new_scale_y: AsFloat):
+        old_scale_x, old_scale_y = self._scale
+        if new_scale_y == old_scale_y:
             return
 
-        x, y = new_value
-        self._scale = Vec2(x, y)
-        self._hit_box.scale = self._scale
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
+        new_scale = (old_scale_x, new_scale_y)
+
+        # Apply scale to hitbox first to raise any exceptions quickly
+        self._hit_box.scale = new_scale
+        self._scale = new_scale
+        self._height = self._texture.height * new_scale_y
 
         self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
 
+    @property
+    def scale(self) -> Vec2:
+        """Get or set the x & y scale of the sprite as a pair of values.
+
+        You may set it to either a single value or a pair of values:
+
+        .. list-table::
+           :header-rows: 0
+
+           * - Single value
+             - ``sprite.scale = 2.0``
+
+           * - Tuple or :py:class:`~pyglet,math.Vec2`
+             - ``sprite.scale = (1.0, 3.0)``
+
+        The two-channel version is useful for making health bars and
+        other indicators.
+
+        .. note:: Returns a :py:class:`pyglet.math.Vec2` for
+                  compatibility.
+
+        Arcade versions lower than 3,0 used one or both of the following
+        for scale:
+
+        * A single :py:class:`float` on versions <= 2.6
+        * A ``scale_xy`` property and exposing only the x component
+          on some intermediate dev releases
+
+        Although scale is internally stored as a :py:class:`tuple`, we
+        return a :py:class:`pyglet.math.Vec2` to allow the in-place
+        operators to work in addition to setting values directly:
+
+        * Old-style (``sprite.scale *= 2.0``)
+        * New-style (``sprite.scale *= 2.0, 2.0``)
+
+        .. note:: Negative scale values are supported.
+
+                  This applies to both single-axis and dual-axis.
+                  Negatives will flip & mirror the sprite, but the
+                  with will use :py:func:`abs` to report total width
+                  and height instead of negatives.
+
+        """
+        return Vec2(*self._scale)
+
+    @scale.setter
+    def scale(self, new_scale: Point2 | AsFloat):
+        if isinstance(new_scale, (float, int)):
+            scale_x = new_scale
+            scale_y = new_scale
+
+        else:  # Treat it as some sort of iterable or sequence
+            # Don't abstract this. Keep it here since it's a hot code path
+            try:
+                scale_x, scale_y = new_scale  # type / length implicit check
+            except ValueError:
+                raise ValueError(
+                    "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
+                )
+            except TypeError:
+                raise TypeError(
+                    "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
+                )
+
+        new_scale = scale_x, scale_y
+        if new_scale == self._scale:
+            return
+
+        self._hit_box.scale = new_scale
+        tex_width, tex_height = self._texture.size
+        self._scale = new_scale
+        self._width = tex_width * scale_x
+        self._height = tex_height * scale_y
+
+        self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
 
@@ -506,42 +605,76 @@ class BasicSprite:
 
     # --- Scale methods -----
 
-    def rescale_relative_to_point(self, point: Point, factor: float) -> None:
-        """
-        Rescale the sprite and its distance from the passed point.
+    def rescale_relative_to_point(self, point: Point2, scale_by: AsFloat | Point2) -> None:
+        """Rescale the sprite and its distance from the passed point.
 
         This function does two things:
 
-        1. Multiply both values in the sprite's :py:attr:`~scale_xy`
-           value by ``factor``.
+        1. Multiply both values in the sprite's :py:attr:`.scale`
+           value by the values in ``scale_by``:
+
+           * If ``scale_by`` is an :py:class:`int` or :py:class:`float`,
+             use it for both the x and y axes
+           * If ``scale_by`` is a tuple-like object which unpacks to
+             two numbers, then use
+           * Otherwise, raise an exception
+
         2. Scale the distance between the sprite and ``point`` by
            ``factor``.
 
-        If ``point`` equals the sprite's :py:attr:`~position`,
-        the distance will be zero and the sprite will not move.
+        .. note:: If ``point`` equals the sprite's :py:attr:`.position`
+                  the distance will be zero and the sprite won't move.
 
-        :param point: The reference point for rescaling.
-        :param factor: Multiplier for sprite scale & distance to point.
-        :return:
+        Args:
+            point:
+                The point to scale relative to.
+            scale_by:
+                A multiplier for both the sprite scale and its distance
+                from the point. Note that although factor may be negative,
+                it may have unexpected effects.
+
         """
         # abort if the multiplier wouldn't do anything
-        if factor == 1.0:
-            return
+        if isinstance(scale_by, (float, int)):
+            if scale_by == 1.0:
+                return
+            factor_x = scale_by
+            factor_y = scale_by
+        else:
+            try:
+                factor_x, factor_y = scale_by
+                if factor_x == 1.0 and factor_y == 1.0:
+                    return
+            except ValueError:
+                raise ValueError(
+                    "factor must be a float, int, or tuple-like which unpacks as two float-like values"
+                )
+            except TypeError:
+                raise TypeError(
+                    "factor must be a float, int, or tuple-like unpacks as two float-like values"
+                )
 
         # set the scale and, if this sprite has a texture, the size data
-        self.scale_xy = self._scale[0] * factor, self._scale[1] * factor
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
+        old_scale_x, old_scale_y = self._scale
+        new_scale_x = old_scale_x * factor_x
+        new_scale_y = old_scale_y * factor_y
+        self._scale = new_scale_x, new_scale_y
 
-        # detect the edge case where distance to multiply is zero
-        position_changed = point != self._position
+        tex_width, tex_height = self._texture.size
+        self._width = tex_width * new_scale_x
+        self._height = tex_height * new_scale_y
+
+        # If the scaling point is the sprite's center, it doesn't move
+        old_position = self._position
+        position_changed = point != old_position  # Stored to use below
 
         # be lazy about math; only do it if we have to
         if position_changed:
+            point_x, point_y = point
+            old_x, old_y = old_position
             self.position = (
-                (self._position[0] - point[0]) * factor + point[0],
-                (self._position[1] - point[1]) * factor + point[1],
+                (old_x - point_x) * factor_x + point_x,
+                (old_y - point_y) * factor_y + point_y,
             )
 
         # rebuild all spatial metadata
@@ -551,9 +684,15 @@ class BasicSprite:
             if position_changed:
                 sprite_list._update_position(self)
 
+    @warning(warning_type=ReplacementWarning, new_name="rescale_relative_to_point")
     def rescale_xy_relative_to_point(self, point: Point, factors_xy: Iterable[float]) -> None:
-        """
-        Rescale the sprite and its distance from the passed point.
+        """Rescale the sprite and its distance from the passed point.
+
+        .. deprecated:: 3.0
+           Use :py:meth:`.rescale_relative_to_point` instead.
+
+           This was added during the 3.0 development cycle before scale was
+           made into a vector quantitity.
 
         This method can scale by different amounts on each axis. To
         scale along only one axis, set the other axis to ``1.0`` in
@@ -576,33 +715,7 @@ class BasicSprite:
                            ``point``.
         :return:
         """
-        # exit early if nothing would change
-        factor_x, factor_y = factors_xy
-        if factor_x == 1.0 and factor_y == 1.0:
-            return
-
-        # set the scale and, if this sprite has a texture, the size data
-        self.scale_xy = Vec2(self._scale[0] * factor_x, self._scale[1] * factor_y)
-        if self._texture:
-            self._width = self._texture.width * self._scale[0]
-            self._height = self._texture.height * self._scale[1]
-
-        # detect the edge case where the distance to multiply is 0
-        position_changed = point != self._position
-
-        # be lazy about math; only do it if we have to
-        if position_changed:
-            self.position = (
-                (self._position[0] - point[0]) * factor_x + point[0],
-                (self._position[1] - point[1]) * factor_y + point[1],
-            )
-
-        # rebuild all spatial metadata
-        self.update_spatial_hash()
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_size(self)
-            if position_changed:
-                sprite_list._update_position(self)
+        self.rescale_relative_to_point(point, factors_xy)  # type: ignore
 
     # ---- Utility Methods ----
 

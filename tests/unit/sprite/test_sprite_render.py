@@ -211,20 +211,20 @@ def test_render_scaled(window):
 
     # ensure normal scaling works correctly
     gold_1 = arcade.Sprite(":resources:/images/items/gold_1.png")
-    assert gold_1.scale == 1.0
+    assert gold_1.scale == (1.0, 1.0)
     assert gold_1.width, gold_1.height == (64, 64)
 
     gold_1.scale = 2.0
-    assert gold_1.scale == 2.0
+    assert gold_1.scale == (2.0, 2.0)
     assert gold_1.width, gold_1.height == (128, 128)
 
     gold_1.scale *= 0.25
-    assert gold_1.scale == 0.5
+    assert gold_1.scale == (0.5, 0.5)
     assert gold_1.width, gold_1.height == (32, 32)
 
     # edge case: negative scale values are supported
     gold_1.scale *= -1.0
-    assert gold_1.scale == - 0.5
+    assert gold_1.scale == (-0.5, -0.5)
     assert gold_1.width, gold_1.height == (-32, -32)
 
     # visual spot check
