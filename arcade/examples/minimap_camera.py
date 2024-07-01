@@ -10,12 +10,11 @@ python -m arcade.examples.minimap_camera
 import random
 
 import arcade
-from arcade import LBWH
 
 SPRITE_SCALING = 0.5
 
-DEFAULT_SCREEN_WIDTH = 800
-DEFAULT_SCREEN_HEIGHT = 600
+DEFAULT_SCREEN_WIDTH = 1280
+DEFAULT_SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Minimap Example"
 
 # How many pixels to keep as a minimum margin between the character
@@ -155,11 +154,11 @@ class MyGame(arcade.Window):
                 self.selected_camera.zoom -= 0.1
         elif key == arcade.key.I:
             viewport = self.camera_minimap.viewport
-            self.camera_minimap.viewport = LBWH(viewport.left + 100, viewport.bottom + 100,
+            self.camera_minimap.viewport = arcade.LBWH(viewport.left + 100, viewport.bottom + 100,
                                                 viewport.width - 100, viewport.height - 100)
         elif key == arcade.key.K:
             viewport = self.camera_minimap.viewport
-            self.camera_minimap.viewport = LBWH(viewport.left - 100, viewport.bottom - 100,
+            self.camera_minimap.viewport = arcade.LBWH(viewport.left - 100, viewport.bottom - 100,
                                                 viewport.width + 100, viewport.height + 100)
 
 
