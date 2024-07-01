@@ -7,6 +7,15 @@ SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(":resources:images/anima
 SPRITE_TEXTURE_GOLD_COIN = arcade.load_texture(":resources:images/items/coinGold.png")
 
 
+def test_draw_lazy_spritelist(window: arcade.Window):
+    """Test that a lazy sprite list is drawn correctly"""
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN)
+    sprite_list = arcade.SpriteList(lazy=True)
+    sprite_list.append(sprite)
+    # Should not crash
+    sprite_list.draw()
+
+
 def test_render_simple(window):
     """Simple sprite rendering test"""
     window.background_color = arcade.color.AMAZON
