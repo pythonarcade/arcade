@@ -242,7 +242,7 @@ class BasicSprite:
             sprite_list._update_size(self)
 
     @property
-    def scale(self) -> Point:
+    def scale(self) -> Point2:
         """Get or set the x & y scale of the sprite as a pair of values.
 
         .. note:: Negative values are supported. They will flip &

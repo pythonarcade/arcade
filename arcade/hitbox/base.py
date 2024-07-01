@@ -103,7 +103,7 @@ class HitBox:
         self,
         points: Point2List,
         position: Point2 = (0.0, 0.0),
-        scale: tuple[float, float] = (1.0, 1.0),
+        scale: Point2 = (1.0, 1.0),
     ):
         self._points = points
         self._position = position
@@ -249,7 +249,7 @@ class RotatableHitBox(HitBox):
         *,
         position: tuple[float, float] = (0.0, 0.0),
         angle: float = 0.0,
-        scale: tuple[float, float] = (1.0, 1.0),
+        scale: Point2 = (1.0, 1.0),
     ):
         super().__init__(points, position=position, scale=scale)
         self._angle: float = angle
