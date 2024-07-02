@@ -108,7 +108,7 @@ class AtlasRegion:
         at any point causing an atlas update to fail.
         """
         if image_data.size != (self.width, self.height):
-            raise ValueError(
+            raise RuntimeError(
                 (
                     f"ImageData '{image_data.hash}' change their internal image "
                     f"size from {self.width}x{self.height} to "
