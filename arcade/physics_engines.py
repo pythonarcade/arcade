@@ -562,9 +562,22 @@ class PhysicsEnginePlatformer:
 
         .. important:: For best performance, only add non-moving sprites!
 
-                       Put any moving platforms into :py:attr:`~platforms`
-                       instead.
+        The walls lists make a tradeoff through **spatial hashing**:
 
+        * Collision checking against sprites in the list becomes
+          very fast
+        * Moving sprites or adding new ones becomes very slow
+
+        This is worth the tradeoff for non-moving terrain, but it means
+        you have to be careful. If you move too many sprites in the walls
+        lists every frame, your game may slow down. For moving sprites
+        the player can stand and jump on, see the :py:attr:`platforms`
+        feature.
+
+        To learn more about spatial hashing, please see the following:
+
+        * :ref:`collision_detection_performance`
+        * :py:class:`~arcade.sprite_list.spatial_hash.SpatialHash`
         """
         return self._walls
 
