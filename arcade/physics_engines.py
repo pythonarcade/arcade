@@ -503,7 +503,7 @@ class PhysicsEnginePlatformer:
 
     @property
     def walls(self) -> list[SpriteList]:
-        """Exposes the :py:class:`SpriteList` instances used as terrain.
+        """Exposes the :py:class:`SpriteList` instances use as terrain.
 
         .. important:: For best performance, only add non-moving sprites!
 
