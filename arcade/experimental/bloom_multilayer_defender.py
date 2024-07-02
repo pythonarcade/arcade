@@ -11,13 +11,13 @@ python -m arcade.examples.defender
 
 from __future__ import annotations
 
-import arcade
 import os
 import random
 
+import arcade
+
 # --- Bloom related ---
 from arcade.experimental import postprocessing
-
 
 # Size/title of the window
 SCREEN_WIDTH = 1280

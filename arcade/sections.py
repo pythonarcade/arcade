@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Iterable, Union, Generator
 import math
+from typing import TYPE_CHECKING, Generator, Iterable, Optional, Union
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -10,8 +10,8 @@ from arcade.camera.default import DefaultProjector
 from arcade.types.rect import LRBT, Rect
 
 if TYPE_CHECKING:
-    from arcade.camera import Projector
     from arcade import View
+    from arcade.camera import Projector
 
 __all__ = ["Section", "SectionManager"]
 

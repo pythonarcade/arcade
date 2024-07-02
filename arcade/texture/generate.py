@@ -4,15 +4,16 @@ import logging
 from typing import Optional
 
 import PIL.Image
-import PIL.ImageOps
 import PIL.ImageDraw
+import PIL.ImageOps
 
-from arcade.types import RGBA255
-from arcade.math import lerp
+from arcade import cache
 from arcade.color import TRANSPARENT_BLACK
 from arcade.hitbox import HitBoxAlgorithm
-from arcade import cache
-from .texture import Texture, ImageData
+from arcade.math import lerp
+from arcade.types import RGBA255
+
+from .texture import ImageData, Texture
 
 LOG = logging.getLogger(__name__)
 

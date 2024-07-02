@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from arcade import get_window
-from arcade.types import RGBA255
+from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import geometry
 from arcade.gl.texture import Texture2D
-from arcade.color import TRANSPARENT_BLACK
+from arcade.types import RGBA255
 
 
 class RenderTargetTexture:

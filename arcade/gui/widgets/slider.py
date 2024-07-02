@@ -2,24 +2,24 @@ from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
-from typing import Optional, Union, Mapping
+from typing import Mapping, Optional, Union
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
 import arcade
 from arcade import Texture
 from arcade.gui import (
+    NinePatchTexture,
     Surface,
     UIEvent,
-    UIMouseDragEvent,
     UIInteractiveWidget,
-    NinePatchTexture,
+    UIMouseDragEvent,
     UIOnClickEvent,
 )
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
-from arcade.types import Color, RGBA255
+from arcade.types import RGBA255, Color
 
 
 class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):

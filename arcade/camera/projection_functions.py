@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from math import tan, pi
+from math import pi, tan
 
-from pyglet.math import Vec2, Vec3, Vec4, Mat4
+from pyglet.math import Mat4, Vec2, Vec3, Vec4
+
 from arcade.camera.data_types import (
     CameraData,
-    PerspectiveProjectionData,
     OrthographicProjectionData,
+    PerspectiveProjectionData,
 )
 from arcade.types import Point
 

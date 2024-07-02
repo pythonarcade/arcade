@@ -20,16 +20,16 @@ import pytiled_parser
 import pytiled_parser.tiled_object
 from pytiled_parser import Color
 
+import arcade
 from arcade import (
-    TextureAnimationSprite,
-    TextureKeyframe,
-    TextureAnimation,
     Sprite,
     SpriteList,
+    TextureAnimation,
+    TextureAnimationSprite,
+    TextureKeyframe,
     get_window,
 )
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
-import arcade
 
 if TYPE_CHECKING:
     from arcade import DefaultTextureAtlas, Texture

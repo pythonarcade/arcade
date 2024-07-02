@@ -8,9 +8,9 @@ python -m arcade.examples.shape_list_skylines
 from __future__ import annotations
 
 import random
-import arcade
 import time
 
+import arcade
 from arcade.gl import geometry
 
 SCREEN_WIDTH = 1280

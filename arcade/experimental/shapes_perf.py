@@ -4,12 +4,13 @@ This is for testing geometry shader shapes. Please keep.
 
 from __future__ import annotations
 
-import time
 import math
 import random
+import time
+
+from pyglet.math import Mat4
 
 import arcade
-from pyglet.math import Mat4
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600

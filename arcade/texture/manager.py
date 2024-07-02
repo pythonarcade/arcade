@@ -1,20 +1,21 @@
 import logging
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 import PIL.Image
-import PIL.ImageOps
 import PIL.ImageDraw
+import PIL.ImageOps
 
 import arcade
 from arcade import hitbox
-from arcade.texture import ImageData, SpriteSheet
-from .texture import Texture
 from arcade.cache import (
-    TextureCache,
-    ImageDataCache,
     HitBoxCache,
+    ImageDataCache,
+    TextureCache,
 )
+from arcade.texture import ImageData, SpriteSheet
+
+from .texture import Texture
 
 LOG = logging.getLogger(__name__)
 

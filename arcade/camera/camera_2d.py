@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Generator
-from math import degrees, radians, atan2, cos, sin
 from contextlib import contextmanager
+from math import atan2, cos, degrees, radians, sin
+from typing import TYPE_CHECKING, Generator, Optional
 
+from pyglet.math import Vec2, Vec3
 from typing_extensions import Self
 
 from arcade.camera.data_types import (
@@ -12,15 +13,13 @@ from arcade.camera.data_types import (
     ZeroProjectionDimension,
 )
 from arcade.camera.projection_functions import (
-    generate_view_matrix,
     generate_orthographic_matrix,
+    generate_view_matrix,
     project_orthographic,
     unproject_orthographic,
 )
 from arcade.gl import Framebuffer
-from pyglet.math import Vec2, Vec3
-
-from arcade.types import Point, Rect, LBWH, LRBT
+from arcade.types import LBWH, LRBT, Point, Rect
 from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from itertools import cycle
+
 import arcade
 from arcade import gl
 

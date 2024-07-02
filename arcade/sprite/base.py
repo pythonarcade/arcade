@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, TypeVar, Any
+from typing import TYPE_CHECKING, Any, Iterable, TypeVar
+
+from pyglet.math import Vec2
 
 import arcade
-from arcade.types import AsFloat, Point, Color, Point2, RGBA255, RGBOrA255, PointList, Rect, LRBT
 from arcade.color import BLACK, WHITE
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.utils import copy_dunders_unimplemented, ReplacementWarning, warning
-
-from pyglet.math import Vec2
+from arcade.types import LRBT, RGBA255, AsFloat, Color, Point, Point2, PointList, Rect, RGBOrA255
+from arcade.utils import ReplacementWarning, copy_dunders_unimplemented, warning
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList

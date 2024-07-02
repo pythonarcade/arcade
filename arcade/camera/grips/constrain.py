@@ -5,9 +5,9 @@ can have large impacts on the behaviour of the camera, so try and keep the numbe
 The methods don't update the camera data directly incase you want to smoothly interpolate towards the target position
 """
 
-from arcade.types import Rect, Point2, Box, Point3
-from arcade.math import clamp
 from arcade.camera.data_types import CameraData
+from arcade.math import clamp
+from arcade.types import Box, Point2, Point3, Rect
 
 
 def constrain_x(data: CameraData, minimum: float, maximum: float) -> Point3:

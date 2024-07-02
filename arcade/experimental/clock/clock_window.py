@@ -13,28 +13,22 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import Optional
+from typing import Optional, Union
 
 import pyglet
-
 import pyglet.gl as gl
 import pyglet.window.mouse
 from pyglet.display.base import ScreenMode
 
 import arcade
-from arcade import get_display_size
-from arcade import set_viewport
-from arcade import set_window
-from arcade import NoOpenGLException
+from arcade import NoOpenGLException, SectionManager, get_display_size, set_viewport, set_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color, RGBOrA255, RGBOrANormalized
-from arcade import SectionManager
-from arcade.utils import is_raspberry_pi
 
 # NEW IMPORTS
 from arcade.experimental.clock.clock import Clock
-from typing import Union
+from arcade.types import Color, RGBOrA255, RGBOrANormalized
+from arcade.utils import is_raspberry_pi
 
 LOG = logging.getLogger(__name__)
 

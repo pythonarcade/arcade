@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+
 import arcade
 from arcade.texture import transforms
 

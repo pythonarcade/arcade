@@ -6,7 +6,7 @@ from typing import Optional, Union
 import arcade
 from arcade import Texture
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.gui.property import bind, DictProperty
+from arcade.gui.property import DictProperty, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIInteractiveWidget

@@ -12,14 +12,13 @@ It allows you to do the following:
 
 from __future__ import annotations
 
-from typing import Optional, Union, Iterable
+from typing import Iterable, Optional, Union
+from warnings import warn
 
 from arcade import Sprite, SpriteList
-from arcade.types import Color, RGBA255
-from arcade.gl.types import OpenGlFilter, BlendFunction
+from arcade.gl.types import BlendFunction, OpenGlFilter
 from arcade.tilemap import TileMap
-
-from warnings import warn
+from arcade.types import RGBA255, Color
 
 __all__ = ["Scene", "SceneKeyError"]
 

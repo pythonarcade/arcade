@@ -8,30 +8,26 @@ the graphics card for much faster render times.
 
 from __future__ import annotations
 
-from array import array
-from collections import OrderedDict
 import itertools
 import math
+from array import array
+from collections import OrderedDict
 from typing import (
+    Generic,
     Iterable,
     Optional,
     Sequence,
     TypeVar,
-    Generic,
     cast,
 )
 
 import pyglet.gl as gl
 
-from arcade.types import Color, Point, PointList, RGBA255
-
-from arcade.utils import copy_dunders_unimplemented
-from arcade import get_window, get_points_for_thick_line
-from arcade.gl import Buffer, Geometry, BufferDescription
-from arcade.gl import Program
-from arcade import ArcadeContext
+from arcade import ArcadeContext, get_points_for_thick_line, get_window
+from arcade.gl import Buffer, BufferDescription, Geometry, Program
 from arcade.math import rotate_point
-
+from arcade.types import RGBA255, Color, Point, PointList
+from arcade.utils import copy_dunders_unimplemented
 
 __all__ = [
     "Shape",

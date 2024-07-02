@@ -6,24 +6,24 @@ Contains pre-loaded programs
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Optional, Union, Sequence
+from typing import Any, Iterable, Optional, Sequence, Union
 
 import pyglet
+from PIL import Image
 from pyglet import gl
 from pyglet.graphics.shader import UniformBufferObject
-from PIL import Image
+from pyglet.math import Mat4
 
 import arcade
+from arcade.camera import Projector
+from arcade.camera.default import DefaultProjector
 from arcade.gl import BufferDescription, Context
 from arcade.gl.compute_shader import ComputeShader
+from arcade.gl.framebuffer import Framebuffer
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
-from arcade.gl.framebuffer import Framebuffer
-from pyglet.math import Mat4
 from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
-from arcade.camera import Projector
-from arcade.camera.default import DefaultProjector
 
 __all__ = ["ArcadeContext"]
 

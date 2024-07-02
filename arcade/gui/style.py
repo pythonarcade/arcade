@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Mapping, TypeVar, Generic, overload, Any
+from typing import Any, Generic, Mapping, TypeVar, overload
 
 from arcade.gui.property import DictProperty
 from arcade.gui.widgets import UIWidget

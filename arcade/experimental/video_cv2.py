@@ -15,9 +15,10 @@ from math import floor
 from pathlib import Path
 from typing import Union
 
+import cv2  # type: ignore
+
 import arcade
 from arcade.gl.geometry import quad_2d_fs
-import cv2  # type: ignore
 
 
 class VideoPlayerCV2:

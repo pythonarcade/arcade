@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import Optional
 from weakref import WeakValueDictionary
 
@@ -13,7 +14,7 @@ from arcade.texture import (
     make_circle_texture,
     make_soft_circle_texture,
 )
-from arcade.types import Color, RGBA255
+from arcade.types import RGBA255, Color
 from arcade.types.rect import Rect
 
 from .sprite import Sprite

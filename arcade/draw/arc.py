@@ -1,8 +1,9 @@
 import math
 
 from arcade import gl
-from arcade.types import RGBA255
 from arcade.math import rotate_point
+from arcade.types import RGBA255
+
 from .helpers import _generic_draw_line_strip
 
 

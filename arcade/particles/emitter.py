@@ -5,11 +5,13 @@ over their lifetime
 
 from __future__ import annotations
 
+from typing import Callable, Optional, cast
+
 import arcade
-from .particle import Particle
-from typing import Optional, Callable, cast
 from arcade import Vec2
 from arcade.types import Point, Velocity
+
+from .particle import Particle
 
 
 class EmitController:

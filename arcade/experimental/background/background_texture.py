@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import Optional
 
 from PIL import Image
+from pyglet.math import Mat3
 
 import arcade.gl as gl
+from arcade import ArcadeContext
 from arcade.resources import resolve
 from arcade.window_commands import get_window
-from pyglet.math import Mat3
-from arcade import ArcadeContext
 
 
 class BackgroundTexture:
