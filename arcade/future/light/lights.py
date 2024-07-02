@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from array import array
-from typing import Iterable, Optional, Sequence
+from typing import Iterator, Optional, Sequence
 
 from arcade import gl
 from arcade.color import WHITE
-from arcade.experimental.texture_render_target import RenderTargetTexture
+from arcade.future.texture_render_target import RenderTargetTexture
 from arcade.types import RGBOrA255
 
 
@@ -154,7 +154,7 @@ class LightLayer(RenderTargetTexture):
         """Number of lights"""
         return len(self._lights)
 
-    def __iter__(self) -> Iterable[Light]:
+    def __iter__(self) -> Iterator[Light]:
         """Return an iterable object of lights"""
         return iter(self._lights)
 

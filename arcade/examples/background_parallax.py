@@ -14,7 +14,7 @@ python -m arcade.examples.background_parallax
 """
 
 import arcade
-import arcade.experimental.background as background
+import arcade.future.background as background
 
 
 SCREEN_TITLE = "Background Group Example"

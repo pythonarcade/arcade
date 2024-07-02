@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional, Union
 
 import arcade.gl as gl
-from arcade.experimental.background import Background
+from arcade.future.background import Background
 
 
 class BackgroundGroup:
@@ -138,7 +138,7 @@ class ParallaxGroup:
         return self._backgrounds[item], self._depths[item]
 
     def __setitem__(self, key: int, value: Union[Background, float]):
-        if isinstance(value, float):
+        if isinstance(value, (float, int)):
             self._depths[key] = value
         else:
             self._backgrounds[key] = value
