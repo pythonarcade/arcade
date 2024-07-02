@@ -28,6 +28,7 @@ from arcade import (
     SpriteList,
     get_window,
 )
+from arcade.types import Color as ArcadeColor
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
 import arcade
 
@@ -53,6 +54,10 @@ prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> tuple[int, int, int, int]:
     image_x = 0
     image_y = 0
+
+    if not tile.tileset:
+        raise ValueError("Tileset was None. This should not happen")
+
     if tile.tileset.image is not None:
         margin = tile.tileset.margin or 0
         spacing = tile.tileset.spacing or 0
@@ -80,7 +85,7 @@ def _get_image_source(
     image_file = None
     if tile.image:
         image_file = tile.image
-    elif tile.tileset.image:
+    elif tile.tileset is not None:
         image_file = tile.tileset.image
 
     if not image_file:
@@ -312,8 +317,9 @@ class TileMap:
             processed = self._process_image_layer(layer, **options)
             self.sprite_lists[layer.name] = processed
         elif isinstance(layer, pytiled_parser.LayerGroup):
-            for sub_layer in layer.layers:
-                self._process_layer(sub_layer, global_options, layer_options)
+            if layer.layers:
+                for sub_layer in layer.layers:
+                    self._process_layer(sub_layer, global_options, layer_options)
 
     def get_cartesian(
         self,
@@ -356,6 +362,8 @@ class TileMap:
         return layer
 
     def _get_tile_by_gid(self, tile_gid: int) -> Optional[pytiled_parser.Tile]:
+        tile_ref: Optional[pytiled_parser.Tile]
+
         flipped_diagonally = False
         flipped_horizontally = False
         flipped_vertically = False
@@ -418,9 +426,10 @@ class TileMap:
     ) -> Optional[pytiled_parser.Tile]:
         for tileset_key, cur_tileset in self.tiled_map.tilesets.items():
             if cur_tileset is tileset:
-                for tile_key, tile in cur_tileset.tiles.items():
-                    if tile_id == tile.id:
-                        return tile
+                if cur_tileset.tiles:
+                    for tile_key, tile in cur_tileset.tiles.items():
+                        if tile_id == tile.id:
+                            return tile
 
         return None
 
@@ -581,11 +590,11 @@ class TileMap:
         if tile.animation:
             key_frame_list = []
             for frame in tile.animation:
-                frame_tile = self._get_tile_by_gid(tile.tileset.firstgid + frame.tile_id)
+                frame_tile = self._get_tile_by_gid(tile.tileset.firstgid + frame.tile_id)  # type: ignore
                 if frame_tile:
                     image_file = _get_image_source(frame_tile, map_directory)
 
-                    if not frame_tile.tileset.image and image_file:
+                    if not frame_tile.tileset.image and image_file:  # type: ignore
                         texture = self.texture_cache_manager.load_or_get_texture(
                             image_file, hit_box_algorithm=hit_box_algorithm
                         )
@@ -689,7 +698,7 @@ class TileMap:
             "hit_box_algorithm": hit_box_algorithm,
         }
 
-        my_sprite = custom_class(**custom_class_args, **args)
+        my_sprite = custom_class(**custom_class_args, **args)  #  type: ignore
 
         if layer.properties:
             sprite_list.properties = layer.properties
@@ -697,7 +706,7 @@ class TileMap:
                 my_sprite.properties[key] = value
 
         if layer.tint_color:
-            my_sprite.color = layer.tint_color
+            my_sprite.color = ArcadeColor.from_iterable(layer.tint_color)
 
         if layer.opacity:
             my_sprite.alpha = int(layer.opacity * 255)
@@ -773,7 +782,7 @@ class TileMap:
 
                     # Tint
                     if layer.tint_color:
-                        my_sprite.color = layer.tint_color
+                        my_sprite.color = ArcadeColor.from_iterable(layer.tint_color)
 
                     # Opacity
                     opacity = layer.opacity
@@ -855,7 +864,7 @@ class TileMap:
                 my_sprite.angle = angle_degrees
 
                 if layer.tint_color:
-                    my_sprite.color = layer.tint_color
+                    my_sprite.color = ArcadeColor.from_iterable(layer.tint_color)
 
                 opacity = layer.opacity
                 if opacity:
@@ -940,7 +949,7 @@ class TileMap:
                 for point in cur_object.points:
                     x = point.x + cur_object.coordinates.x
                     y = (self.height * self.tile_height) - (point.y + cur_object.coordinates.y)
-                    point = (x + offset[0], y + offset[1])
+                    point = (x + offset[0], y + offset[1])  # type: ignore
                     points.append(point)
 
                 # If shape is a polyline, and it is closed, we need to remove the duplicate end point
@@ -959,7 +968,7 @@ class TileMap:
                 for angle in angles:
                     x = hw * math.cos(angle) + cx
                     y = -(hh * math.sin(angle) + cy)
-                    point = (x + offset[0], y + offset[1])
+                    point = (x + offset[0], y + offset[1])  # type: ignore
                     points.append(point)
             elif isinstance(cur_object, pytiled_parser.tiled_object.Text):
                 pass
