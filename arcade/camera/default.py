@@ -119,8 +119,17 @@ class DefaultProjector(ViewportProjector):
         cache's the window viewport to determine the projection matrix.
         """
 
-        if self._ctx.viewport != self.viewport:
+        # If the viewport is correct and the default camera is in use,
+        # then don't waste time resetting the view and projection matrices
+        if self._ctx.viewport == self.viewport and self._ctx.current_camera == self:
+            return
+
+        # If the viewport has changed while the default camera is active then the default needs to update itself.
+        # If it was another camera's viewport being used the default camera should not update.
+        if self._ctx.viewport != self.viewport and self._ctx.current_camera == self:
             self.viewport = self._ctx.viewport
+        else:
+            self._ctx.viewport = self.viewport
 
         self._ctx.current_camera = self
 
