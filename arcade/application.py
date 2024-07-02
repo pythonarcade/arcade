@@ -291,7 +291,7 @@ class Window(pyglet.window.Window):
         if enable_polling:
             self.keyboard = pyglet.window.key.KeyStateHandler()
 
-            if pyglet.options["headless"]:
+            if pyglet.options.headless:
                 self.push_handlers(self.keyboard)
 
             else:
