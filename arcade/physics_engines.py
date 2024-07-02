@@ -349,7 +349,7 @@ class PhysicsEnginePlatformer:
     .. important:: For best performance, you must put your sprites
                    in the right group!
 
-    Be sure to add each :py:class:`.Sprite` and :py:clas:`.SpriteList`
+    Be sure to add each :py:class:`.Sprite` and :py:class:`.SpriteList`
     to the right group, regardless of whether you do so via arguments
     or properties:
 
@@ -364,7 +364,7 @@ class PhysicsEnginePlatformer:
          - Non-moving sprites the player can stand on.
          - :py:attr:`walls`
 
-       * ``platforms``
+       * - ``platforms``
          - Sprites the player can stand on, but which can still move.
          - :py:attr:`platforms`
 
