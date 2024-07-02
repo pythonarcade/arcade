@@ -142,7 +142,7 @@ class Window(pyglet.window.Window):
             gl_api = "gles"
 
         #: Whether this is a headless window
-        self.headless: bool = pyglet.options.get("headless") is True
+        self.headless: bool = pyglet.options.headless is True
 
         config = None
         # Attempt to make window with antialiasing
@@ -248,7 +248,7 @@ class Window(pyglet.window.Window):
         if enable_polling:
             self.keyboard = pyglet.window.key.KeyStateHandler()
 
-            if pyglet.options["headless"]:
+            if pyglet.options.headless:
                 self.push_handlers(self.keyboard)
 
             else:
