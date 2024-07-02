@@ -141,7 +141,7 @@ class TextureAtlasBase(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def resize(self, *args, **kwargs) -> None:
+    def resize(self, size: tuple[int, int], force=False) -> None:
         """
         Resize the atlas.
 
@@ -155,6 +155,7 @@ class TextureAtlasBase(abc.ABC):
         undefined state.
 
         :param size: The new size
+        :param force: Force a resize even if the size is the same
         """
         ...
 
