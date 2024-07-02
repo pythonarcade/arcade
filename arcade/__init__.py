@@ -401,6 +401,7 @@ if not getattr(sys, "is_pyglet_doc_run", False):
             import pyglet.input.controller
 
             mappings_file = resources.resolve(":system:gamecontrollerdb.txt")
-            pyglet.input.controller.add_mappings_from_file(mappings_file)
+            # TODO: remove string conversion once fixed upstream
+            pyglet.input.controller.add_mappings_from_file(str(mappings_file))
         except AssertionError:
             pass
