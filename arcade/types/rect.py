@@ -1,6 +1,7 @@
 """Rects all act the same, but take four of the possible eight attributes and calculate the rest."""
 
 from __future__ import annotations
+
 import math
 from typing import NamedTuple, Optional, TypedDict
 
@@ -8,8 +9,6 @@ from pyglet.math import Vec2
 
 from arcade.types.numbers import AsFloat
 from arcade.types.vector_like import AnchorPoint, Point2
-
-from arcade.utils import ReplacementWarning, warning
 
 RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
 ViewportParams = tuple[int, int, int, int]
@@ -270,10 +269,6 @@ class Rect(NamedTuple):
         """Returns a new :py:class:`Rect`, which is aligned to the x at `value`."""
         return XYWH(value, self.y, self.width, self.height)
 
-    @warning(
-        ReplacementWarning,
-        message=".align_center_x() is deprecated. Please use .align_x() instead.",
-    )
     def align_center_x(self, value: AsFloat) -> Rect:
         """Backwards-compatible alias for `Rect.x`."""
         return self.align_x(value)
@@ -282,10 +277,6 @@ class Rect(NamedTuple):
         """Get a new :py:class:`Rect`, which is aligned to the y at `value`."""
         return XYWH(self.x, value, self.width, self.height)
 
-    @warning(
-        ReplacementWarning,
-        message=".align_center_y() is deprecated. Please use .align_y() instead.",
-    )
     def align_center_y(self, value: AsFloat) -> Rect:
         """Backwards-compatible alias for `Rect.x`."""
         return self.align_y(value)

@@ -14,16 +14,16 @@ from collections import deque
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
+    ClassVar,
     Deque,
+    Generic,
     Iterable,
     Iterator,
     Optional,
-    Union,
-    Generic,
-    Callable,
-    cast,
     Sized,
-    ClassVar,
+    Union,
+    cast,
 )
 
 from arcade import (
@@ -32,15 +32,15 @@ from arcade import (
     get_window,
     gl,
 )
-from arcade.gl import Texture2D, Program
-from arcade.types import Color, RGBA255, RGBOrANormalized, RGBANormalized
-from arcade.gl.types import OpenGlFilter, BlendFunction, PyGLenum
+from arcade.gl import Program, Texture2D
 from arcade.gl.buffer import Buffer
+from arcade.gl.types import BlendFunction, OpenGlFilter, PyGLenum
 from arcade.gl.vertex_array import Geometry
+from arcade.types import RGBA255, Color, RGBANormalized, RGBOrANormalized
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
-    from arcade import Texture, DefaultTextureAtlas
+    from arcade import DefaultTextureAtlas, Texture
     from arcade.texture_atlas import TextureAtlasBase
 
 LOG = logging.getLogger(__name__)

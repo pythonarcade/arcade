@@ -7,6 +7,15 @@ SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(":resources:images/anima
 SPRITE_TEXTURE_GOLD_COIN = arcade.load_texture(":resources:images/items/coinGold.png")
 
 
+def test_draw_lazy_spritelist(window: arcade.Window):
+    """Test that a lazy sprite list is drawn correctly"""
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN)
+    sprite_list = arcade.SpriteList(lazy=True)
+    sprite_list.append(sprite)
+    # Should not crash
+    sprite_list.draw()
+
+
 def test_render_simple(window):
     """Simple sprite rendering test"""
     window.background_color = arcade.color.AMAZON
@@ -202,20 +211,20 @@ def test_render_scaled(window):
 
     # ensure normal scaling works correctly
     gold_1 = arcade.Sprite(":resources:/images/items/gold_1.png")
-    assert gold_1.scale == 1.0
+    assert gold_1.scale == (1.0, 1.0)
     assert gold_1.width, gold_1.height == (64, 64)
 
     gold_1.scale = 2.0
-    assert gold_1.scale == 2.0
+    assert gold_1.scale == (2.0, 2.0)
     assert gold_1.width, gold_1.height == (128, 128)
 
     gold_1.scale *= 0.25
-    assert gold_1.scale == 0.5
+    assert gold_1.scale == (0.5, 0.5)
     assert gold_1.width, gold_1.height == (32, 32)
 
     # edge case: negative scale values are supported
     gold_1.scale *= -1.0
-    assert gold_1.scale == - 0.5
+    assert gold_1.scale == (-0.5, -0.5)
     assert gold_1.width, gold_1.height == (-32, -32)
 
     # visual spot check

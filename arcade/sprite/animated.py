@@ -4,14 +4,15 @@ import bisect
 import math
 from typing import Optional
 
-from .sprite import Sprite
 from arcade import Texture
+
 from .enums import (
+    FACE_DOWN,
     FACE_LEFT,
     FACE_RIGHT,
     FACE_UP,
-    FACE_DOWN,
 )
+from .sprite import Sprite
 
 
 class TextureKeyframe:
@@ -335,5 +336,5 @@ class AnimatedWalkingSprite(Sprite):
         if self._texture is None:
             print("Error, no texture set")
         else:
-            self.width = self._texture.width * self.scale
-            self.height = self._texture.height * self.scale
+            self.width = self._texture.width * self.scale_x
+            self.height = self._texture.height * self.scale_x

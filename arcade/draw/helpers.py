@@ -2,7 +2,7 @@ import array
 import math
 
 from arcade import gl
-from arcade.types import Point2, PointList, RGBA255, Color
+from arcade.types import RGBA255, Color, Point2, PointList
 from arcade.window_commands import get_window
 
 

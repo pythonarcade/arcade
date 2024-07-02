@@ -13,12 +13,12 @@ from __future__ import annotations
 
 import gzip
 import json
-from pathlib import Path
-from typing import Optional, Union, TYPE_CHECKING
 from collections import OrderedDict
+from pathlib import Path
+from typing import TYPE_CHECKING, Optional, Union
 
-from arcade.types import Point2List
 from arcade.resources import resolve
+from arcade.types import Point2List
 
 if TYPE_CHECKING:
     from arcade import Texture

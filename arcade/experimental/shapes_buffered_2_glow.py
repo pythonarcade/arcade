@@ -10,9 +10,11 @@ python -m arcade.examples.shapes_buffered
 from __future__ import annotations
 
 import random
+
+from pyglet import gl
+
 import arcade
 from arcade.experimental import postprocessing
-from pyglet import gl
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 1280

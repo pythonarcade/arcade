@@ -8,10 +8,11 @@ Simply run the program and move draw the sprites around using the mouse.
 
 from __future__ import annotations
 
-from arcade.sprite import Sprite
-from pyglet.math import Mat4
 import PIL
+from pyglet.math import Mat4
+
 import arcade
+from arcade.sprite import Sprite
 
 
 class GeoCullingTest(arcade.Window):

@@ -6,8 +6,8 @@ python -m arcade.examples.platform_tutorial.02_draw_sprites
 import arcade
 
 # Constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Platformer"
 
 
@@ -42,7 +42,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw our sprites
-        self.player_sprite.draw()
+        arcade.draw_sprite(self.player_sprite)
 
 
 def main():

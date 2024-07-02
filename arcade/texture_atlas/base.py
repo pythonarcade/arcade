@@ -28,18 +28,20 @@ from __future__ import annotations
 import abc
 import contextlib
 from typing import (
+    TYPE_CHECKING,
     Optional,
     Tuple,
-    TYPE_CHECKING,
 )
+
 import PIL.Image
+
 import arcade
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
+    from arcade.gl import Framebuffer, Texture2D
     from arcade.texture import ImageData
     from arcade.texture_atlas import AtlasRegion
-    from arcade.gl import Framebuffer, Texture2D
 
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must be a power of two number like 64, 256, 512 ..
@@ -50,7 +52,13 @@ TexCoords = Tuple[float, float, float, float, float, float, float, float]
 
 
 class TextureAtlasBase(abc.ABC):
-    """Abstract base class for texture atlases"""
+    """
+    Abstract base class for texture atlases.
+
+    A texture atlas is a large texture containing several textures
+    so OpenGL can easily batch draw thousands or hundreds of thousands
+    of sprites on one draw operation.
+    """
 
     _fbo: Framebuffer
     _texture: Texture2D
@@ -62,17 +70,23 @@ class TextureAtlasBase(abc.ABC):
 
     @property
     def ctx(self) -> "ArcadeContext":
+        """The global arcade OpenGL context."""
         return self._ctx
 
     @property
     def fbo(self) -> Framebuffer:
-        """The framebuffer object for this atlas"""
+        """
+        The framebuffer object for this atlas.
+
+        This framebuffer has the atlas texture attached to it so
+        we can render directly into the atlas texture.
+        """
         return self._fbo
 
     @property
     def texture(self) -> "Texture2D":
         """
-        The atlas texture.
+        The OpenGL texture for this atlas.
         """
         return self._texture
 
@@ -90,72 +104,128 @@ class TextureAtlasBase(abc.ABC):
     def layers(self) -> int:
         """
         Number of layers in the atlas.
-        Only relevant for texture arrays and 3D textures.
+        Only relevant for atlases using texture arrays.
         """
         return self._layers
 
     @property
     def size(self) -> Tuple[int, int]:
-        """
-        The width and height of the texture atlas in pixels
-        """
+        """The width and height of the texture atlas in pixels"""
         return self._size
 
     # --- Core ---
 
     @abc.abstractmethod
     def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
-        """Add a texture to the atlas."""
+        """
+        Add a texture to the atlas.
+
+        :param texture: The texture to add
+        :return: texture_id, AtlasRegion tuple
+        :raises AllocatorException: If there are no room for the texture
+        """
         ...
 
     @abc.abstractmethod
     def remove(self, texture: "Texture") -> None:
-        """Remove a texture from the atlas."""
+        """
+        Remove a texture from the atlas.
+
+        This is only supported by static atlases. Dynamic atlases with
+        garbage collection will remove texture using python's garbage
+        collector.
+
+        :param texture: The texture to remove
+        """
         ...
 
     @abc.abstractmethod
     def resize(self, *args, **kwargs) -> None:
-        """Resize the atlas."""
+        """
+        Resize the atlas.
+
+        This will re-allocate all the images in the atlas to better fit
+        the new size. Pixel data will be copied from the old atlas to the
+        new one on the gpu meaning it will also persist anything that
+        was rendered to the atlas.
+
+        A failed resize will result in an AllocatorException. Unless the
+        atlas is resized again to a working size the atlas will be in an
+        undefined state.
+
+        :param size: The new size
+        """
         ...
 
     @abc.abstractmethod
     def rebuild(self) -> None:
-        """Rebuild the atlas."""
+        """
+        Rebuild the underlying atlas texture.
+
+        This method also tries to organize the textures more efficiently ordering them by size.
+        The texture ids will persist so the sprite list doesn't need to be rebuilt.
+        """
         ...
 
     @abc.abstractmethod
     def has_image(self, image_data: "ImageData") -> bool:
-        """Check if the atlas has an image."""
+        """Check if an image is already in the atlas"""
         ...
 
     @abc.abstractmethod
     def has_texture(self, texture: "Texture") -> bool:
-        """Check if the atlas has a texture."""
+        """Check if a texture is already in the atlas"""
         ...
 
     @abc.abstractmethod
     def has_unique_texture(self, texture: "Texture") -> bool:
-        """Check if the atlas has a unique texture."""
+        """
+        Check if the atlas already have a texture with the
+        same image data and vertex order
+        """
         ...
 
     @abc.abstractmethod
     def get_texture_id(self, texture: "Texture") -> int:
-        """Get the texture ID."""
+        """
+        Get the internal id for a Texture in the atlas
+
+        :param atlas_name: The name of the texture in the atlas
+        :return: The texture id for the given texture name
+        :raises Exception: If the texture is not in the atlas
+        """
         ...
 
     @abc.abstractmethod
     def get_texture_region_info(self, atlas_name: str) -> AtlasRegion:
-        """Get the texture region info."""
+        """
+        Get the region info for a texture by atlas name
+
+        :return: The AtlasRegion for the given texture name
+        """
         ...
 
     @abc.abstractmethod
     def get_image_region_info(self, hash: str) -> AtlasRegion:
-        """Get the image region info."""
+        """
+        Get the region info for and image by has
+
+        :param hash: The hash of the image
+        :return: The AtlasRegion for the given texture name
+        """
         ...
 
     @abc.abstractmethod
     def use_uv_texture(self, unit: int = 0) -> None:
-        """Use the UV texture."""
+        """
+        Bind the texture coordinate texture to a channel.
+        In addition this method writes the texture
+        coordinate to the texture if the data is stale.
+        This is to avoid a full update every time a texture
+        is added to the atlas.
+
+        :param unit: The texture unit to bind the uv texture
+        """
         ...
 
     # --- Utility ---
@@ -167,39 +237,113 @@ class TextureAtlasBase(abc.ABC):
         texture: "Texture",
         projection: Optional[Tuple[float, float, float, float]] = None,
     ):
-        """Render into the texture's atlas region."""
+        """
+        Render directly into a sub-section of the atlas.
+        The sub-section is defined by the already allocated space
+        of the texture supplied in this method.
+
+        By default the projection will be set to match the texture area size
+        were `0, 0` is the lower left corner and `width, height` (of texture)
+        is the upper right corner.
+
+        This method should should be used with the ``with`` statement::
+
+            with atlas.render_into(texture):
+                # Draw commands here
+
+            # Specify projection
+            with atlas.render_into(texture, projection=(0, 100, 0, 100))
+                # Draw geometry
+
+        :param texture: The texture area to render into
+        :param projection: The ortho projection to render with.
+            This parameter can be left blank if no projection changes are needed.
+            The tuple values are: (left, right, button, top)
+        """
         yield self._fbo
 
     @abc.abstractmethod
     def write_image(self, image: PIL.Image.Image, x: int, y: int) -> None:
-        """Write an image to the atlas."""
+        """
+        Write a PIL image to the atlas in a specific region.
+
+        :param image: The pillow image
+        :param x: The x position to write the texture
+        :param y: The y position to write the texture
+        """
         ...
 
     @abc.abstractmethod
     def read_texture_image_from_atlas(self, texture: "Texture") -> PIL.Image.Image:
-        """Read the texture image from the atlas."""
+        """
+        Read the pixel data for a texture directly from the atlas texture on the GPU.
+        The contents of this image can be altered by rendering into the atlas and
+        is useful in situations were you need the updated pixel data on the python side.
+
+        :param texture: The texture to get the image for
+        :return: A pillow image containing the pixel data in the atlas
+        """
         ...
 
     @abc.abstractmethod
     def update_texture_image(self, texture: "Texture"):
-        """Update the texture image from the atlas"""
+        """
+        Updates the internal image of a texture in the atlas texture.
+        The new image needs to be the exact same size as the original
+        one meaning the texture already need to exist in the atlas.
+
+        This can be used in cases were the image is manipulated in some way
+        and we need a quick way to sync these changes to graphics memory.
+        This operation is fairly expensive, but still orders of magnitude
+        faster than removing the old texture, adding the new one and
+        re-building the entire atlas.
+
+        :param texture: The texture to update
+        """
         ...
 
     @abc.abstractmethod
     def update_texture_image_from_atlas(self, texture: "Texture") -> None:
-        """Update the texture image from the atlas."""
+        """
+        Update the arcade Texture's internal image with the pixel data content
+        from the atlas texture on the GPU. This can be useful if you render
+        into the atlas and need to update the texture with the new pixel data.
+
+        :param texture: The texture to update
+        """
         ...
 
     # --- Debugging ---
 
     @abc.abstractmethod
     def to_image(self) -> PIL.Image.Image:
-        """Convert the atlas to an image."""
+        """
+        Convert the atlas to a Pillow image.
+
+        Borders can also be drawn into the image to visualize the
+        regions of the atlas.
+
+        :param flip: Flip the image horizontally
+        :param components: Number of components. (3 = RGB, 4 = RGBA)
+        :param draw_borders: Draw region borders into image
+        :param color: RGB color of the borders
+        :return: A pillow image containing the atlas texture
+        """
         ...
 
     @abc.abstractmethod
     def show(self) -> None:
-        """Show the atlas."""
+        """
+        Show the texture atlas using Pillow.
+
+        Borders can also be drawn into the image to visualize the
+        regions of the atlas.
+
+        :param flip: Flip the image horizontally
+        :param components: Number of components. (3 = RGB, 4 = RGBA)
+        :param draw_borders: Draw region borders into image
+        :param color: RGB color of the borders
+        """
         ...
 
 

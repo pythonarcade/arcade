@@ -11,9 +11,10 @@ python -m arcade.examples.sprite_collect_coins
 
 from __future__ import annotations
 
-import random
-import arcade
 import os
+import random
+
+import arcade
 from arcade.gl import geometry
 
 # --- Constants ---

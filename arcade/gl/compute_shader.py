@@ -1,20 +1,21 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union
-from ctypes import (
-    c_char,
-    cast,
-    byref,
-    POINTER,
-    c_char_p,
-    pointer,
-    c_int,
-    create_string_buffer,
-    c_buffer,
-)
 import weakref
+from ctypes import (
+    POINTER,
+    byref,
+    c_buffer,
+    c_char,
+    c_char_p,
+    c_int,
+    cast,
+    create_string_buffer,
+    pointer,
+)
+from typing import TYPE_CHECKING, Union
 
 from pyglet import gl
+
 from .uniform import Uniform, UniformBlock
 
 if TYPE_CHECKING:

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from arcade.experimental import Shadertoy
 from pyglet.math import Vec2
+
+from arcade.experimental import Shadertoy
 
 
 class CRTFilter:

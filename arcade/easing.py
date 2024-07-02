@@ -4,9 +4,10 @@ Functions used to support easing
 
 from __future__ import annotations
 
-from math import pi, sin, cos
 from dataclasses import dataclass
+from math import cos, pi, sin
 from typing import Callable, Optional
+
 from .math import get_distance
 
 

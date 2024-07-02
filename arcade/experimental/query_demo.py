@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import time
+
 import arcade
 
 # Do the math to figure out our screen dimensions

@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from pyglet.math import Vec3
 
-from arcade.math import quaternion_rotation
 from arcade.camera.data_types import CameraData
-
+from arcade.math import quaternion_rotation
 
 __all__ = ("rotate_around_forward", "rotate_around_up", "rotate_around_right")
 

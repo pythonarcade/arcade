@@ -95,6 +95,10 @@ the formatting is correct.
 python make.py format
 ```
 
+In addition to Black, this will sort the imports using [Ruff](https://docs.astral.sh/ruff/). If you want to setup
+your editor to run this, please see [this link](https://docs.astral.sh/ruff/integrations/) for more information on
+Ruff integration for your specific editor.
+
 ### Use pre-commit hooks to automatically run formatting
 
 You can use `pre-commit <https://pre-commit.com/>`_ to automatically run lint, formatting and type checks against 

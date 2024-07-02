@@ -22,7 +22,7 @@ dependencies = [
     "pyglet == 2.1dev2",
     "pillow~=10.2.0",
     "pymunk~=6.6.0",
-    "pytiled-parser~=2.2.3",
+    "pytiled-parser~=2.2.5",
 ]
 dynamic = ["version"]
 
@@ -108,6 +108,13 @@ lint.select = [
     "W",
 ]
 
+# This ignores __init__.py files and examples for import sorting
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["I"]
+"arcade/examples/*" = ["I"]
+"arcade/gui/examples/*" = ["I"]
+"util/*" = ["I"]
+"benchmarks/*" = ["I"]
 
 [tool.mypy]
 disable_error_code = "annotation-unchecked"

@@ -3,11 +3,11 @@ from __future__ import annotations
 import random
 
 import pyglet.clock
-from pyglet.shapes import Line
 from pyglet.graphics import Batch
+from pyglet.shapes import Line
 
 import arcade
-from arcade.types import Color, RGBA255
+from arcade.types import RGBA255, Color
 
 __all__ = ["PerfGraph"]
 

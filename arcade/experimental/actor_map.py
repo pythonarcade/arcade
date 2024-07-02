@@ -10,10 +10,11 @@ from __future__ import annotations
 
 import random
 
-import arcade
-from arcade.gl import geometry
-from arcade import hitbox
 from pyglet.math import Mat4
+
+import arcade
+from arcade import hitbox
+from arcade.gl import geometry
 
 
 class ActorMap(arcade.Window):

@@ -1,25 +1,25 @@
 from __future__ import annotations
 
-from ctypes import (
-    c_char,
-    c_int,
-    c_buffer,
-    c_char_p,
-    cast,
-    POINTER,
-    pointer,
-    byref,
-    create_string_buffer,
-)
-from typing import Any, Iterable, TYPE_CHECKING, Union, Optional
 import typing
 import weakref
+from ctypes import (
+    POINTER,
+    byref,
+    c_buffer,
+    c_char,
+    c_char_p,
+    c_int,
+    cast,
+    create_string_buffer,
+    pointer,
+)
+from typing import TYPE_CHECKING, Any, Iterable, Optional, Union
 
 from pyglet import gl
 
-from .uniform import Uniform, UniformBlock
-from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES, PyGLenum
 from .exceptions import ShaderException
+from .types import SHADER_TYPE_NAMES, AttribFormat, GLTypes, PyGLenum
+from .uniform import Uniform, UniformBlock
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context

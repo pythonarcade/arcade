@@ -51,14 +51,22 @@ def test_set_size():
     assert sprite.size == (96, 128)
     assert sprite.width == 96
     assert sprite.height == 128
-    assert sprite.scale == 1.0
+    assert sprite.scale == (1.0, 1.0)
 
     # Reduce to half width and height
     sprite.size = 48, 64
     assert sprite.size == (48, 64)
     assert sprite.width == 48
     assert sprite.height == 64
-    assert sprite.scale == 0.5
+    assert sprite.scale == (0.5, 0.5)
+
+    # Validate size data
+    with pytest.raises(ValueError):
+        sprite.size = (1,)
+    with pytest.raises(ValueError):
+        sprite.size = (0, 1, 2)
+    with pytest.raises(TypeError):
+        sprite.size = 1
 
 
 @pytest.mark.parametrize('not_a_texture', [
@@ -123,44 +131,46 @@ def test_sprite_scale_xy(window):
 
     # setting vector equivalent of previous scale doesn't change values
     sprite.scale = 1.0
-    sprite.scale_xy = (1.0, 1.0)
-    assert sprite.scale == 1.0
-    assert sprite.scale_xy == Vec2(1.0, 1.0)
+    sprite.scale = (1.0, 1.0)
+    assert sprite.scale == (1.0, 1.0)
     assert sprite.width, sprite.height == (20, 20)
 
     # setting scale_xy to identical values in each channel works
-    sprite.scale_xy = 2.0, 2.0
-    assert sprite.scale == 2.0
-    assert sprite.scale_xy == Vec2(2.0, 2.0)
+    sprite.scale = 2.0, 2.0
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width, sprite.height == (40, 40)
 
     # setting scale_xy with x < y scale works correctly
-    sprite.scale_xy = 1.0, 4.0
-    assert sprite.scale_xy == Vec2(1.0, 4.0)
-    assert sprite.scale == 1.0
+    sprite.scale = 1.0, 4.0
+    assert sprite.scale == (1.0, 4.0)
+    assert sprite.scale_x == 1.0
+    assert sprite.scale_y == 4.0
     assert sprite.width, sprite.height == (20, 80)
 
     # setting scale_xy with x > y scale works correctly
-    sprite.scale_xy = 5.0, 3.0
-    assert sprite.scale_xy == Vec2(5.0, 3.0)
-    assert sprite.scale == 5.0
+    sprite.scale = 5.0, 3.0
+    assert sprite.scale == (5.0, 3.0)
+    assert sprite.scale_x == 5.0
+    assert sprite.scale_y == 3.0
     assert sprite.width, sprite.height == (100, 60)
 
     # edge case: setting scale_xy with x < 0 works correctly
-    sprite.scale_xy = (-1.0, 1.0)
-    assert sprite.scale == -1.0
+    sprite.scale = -1.0, 1.0
+    assert sprite.scale == (-1.0, 1.0)
     assert sprite.width == -20
     assert sprite.height == 20
 
     # edge case: setting scale_xy with y < 0 works correctly
-    sprite.scale_xy = (1.0, -1.0)
-    assert sprite.scale == 1.0
+    sprite.scale = (1.0, -1.0)
+    assert sprite.scale_x == 1.0
+    assert sprite.scale_y == -1.0
     assert sprite.width == 20
     assert sprite.height == -20
 
     # edge case: setting scale_xy with x < 0, y < 0 works correctly
-    sprite.scale_xy = (-1.0, -1.0)
-    assert sprite.scale == -1.0
+    sprite.scale = (-1.0, -1.0)
+    assert sprite.scale_x == -1.0
+    assert sprite.scale_y == -1.0
     assert sprite.width == -20
     assert sprite.width == -20
 
@@ -169,55 +179,54 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
     sprite = arcade.SpriteSolidColor(20, 20, color=arcade.color.WHITE)
 
     # check if x dimension is properly reset
-    sprite.scale_xy = 3.0, 2.0
+    sprite.scale = 3.0, 2.0
     sprite.scale = 2.0
-    assert sprite.scale == 2.0
-    assert sprite.scale_xy == Vec2(2.0, 2.0)
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # check if y dimension is properly reset
-    sprite.scale_xy = 5.0, 3.0
+    sprite.scale = 5.0, 3.0
     sprite.scale = 5.0
-    assert sprite.scale == 5.0
-    assert sprite.scale_xy == Vec2(5.0, 5.0)
+    assert sprite.scale_x == 5.0
+    assert sprite.scale == (5.0, 5.0)
     assert sprite.width == 100
     assert sprite.height == 100
 
     # check if both dimensions properly reset
-    sprite.scale_xy = 0.5, 4.0
+    sprite.scale = 0.5, 4.0
     sprite.scale = 1.0
-    assert sprite.scale == 1.0
-    assert sprite.scale_xy == Vec2(1.0, 1.0)
+    assert sprite.scale_x == 1.0
+    assert sprite.scale == (1.0, 1.0)
     assert sprite.width == 20
     assert sprite.height == 20
 
     # edge case: setting negative values works
-    sprite.scale_xy = 0.5, 4.0
+    sprite.scale = 0.5, 4.0
     sprite.scale = -1.0
-    assert sprite.scale == -1.0
-    assert sprite.scale_xy == Vec2(-1.0, -1.0)
+    assert sprite.scale_x == -1.0
+    assert sprite.scale == (-1.0, -1.0)
     assert sprite.width == -20
     assert sprite.height == -20
 
     # edge case: x scale < 0 is reset to positive
-    sprite.scale_xy = -1.0, 1.0
+    sprite.scale = -1.0, 1.0
     sprite.scale = 2.0
-    assert sprite.scale_xy == Vec2(2.0, 2.0)
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # edge case: y scale < 0 is reset to positive
-    sprite.scale_xy = 1.0, -1.0
+    sprite.scale = 1.0, -1.0
     sprite.scale = 2.0
-    assert sprite.scale_xy == Vec2(2.0, 2.0)
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # edge case: x < 0, y < 0 is reset to positive
-    sprite.scale_xy = -1.0, -1.0
+    sprite.scale = -1.0, -1.0
     sprite.scale = 2.0
-    assert sprite.scale_xy == Vec2(2.0, 2.0)
+    assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
@@ -271,7 +280,7 @@ def test_rescale_relative_to_point(window):
         window_center_y - 50
     )
     sprite_1.rescale_relative_to_point((0, 0), 3.31)
-    assert sprite_1.scale == 3.31
+    assert sprite_1.scale == (3.31, 3.31)
     assert sprite_1.center_x == (window_center_x + 50) * 3.31
     assert sprite_1.center_y == (window_center_y - 50) * 3.31
     assert sprite_1.width == 64 * 3.31
@@ -288,10 +297,9 @@ def test_rescale_relative_to_point(window):
         window_center_x + 10,
         window_center_y + 10
     )
-    sprite_2.scale_xy = 2.0, 1.0
+    sprite_2.scale = (2.0, 1.0)
     sprite_2.rescale_relative_to_point(window_center, 2.0)
-    assert sprite_2.scale == 4.0
-    assert sprite_2.scale_xy == Vec2(4.0, 2.0)
+    assert sprite_2.scale == (4.0, 2.0)
     assert sprite_2.center_x == window_center_x + 20
     assert sprite_2.center_y == window_center_y + 20
     assert sprite_2.width == 256
@@ -308,9 +316,9 @@ def test_rescale_relative_to_point(window):
         window_center_x - 10,
         window_center_y - 10
     )
-    sprite_3.scale_xy = 0.5, 1.5
+    sprite_3.scale = (0.5, 1.5)
     sprite_3.rescale_relative_to_point(window_center, 3.0)
-    assert sprite_3.scale_xy == Vec2(1.5, 4.5)
+    assert sprite_3.scale == (1.5, 4.5)
     assert sprite_3.center_x == window_center_x - 30
     assert sprite_3.center_y == window_center_y - 30
     assert sprite_3.width == 96
@@ -320,8 +328,7 @@ def test_rescale_relative_to_point(window):
     # expected: sprite does not move, but scale and dimensions change
     sprite_4 = sprite_64x64_at_position(*window_center)
     sprite_4.rescale_relative_to_point(sprite_4.position, 2.0)
-    assert sprite_4.scale == 2.0
-    assert sprite_4.scale_xy == Vec2(2.0, 2.0)
+    assert sprite_4.scale == (2.0, 2.0)
     assert sprite_4.center_x == window_center_x
     assert sprite_4.center_y == window_center_y
     assert sprite_4.width == 128
@@ -331,8 +338,7 @@ def test_rescale_relative_to_point(window):
     # expected : sprite doesn't move, but scale data doubled & negative
     sprite_5 = sprite_64x64_at_position(*window_center)
     sprite_5.rescale_relative_to_point(sprite_5.position, -2.0)
-    assert sprite_5.scale == -2.0
-    assert sprite_5.scale_xy == Vec2(-2.0, -2.0)
+    assert sprite_5.scale == (-2.0, -2.0)
     assert sprite_5.center_x == window_center_x
     assert sprite_5.center_y == window_center_y
     assert sprite_5.width == -128
@@ -345,7 +351,7 @@ def test_rescale_relative_to_point(window):
         window_center_y + 81
     )
     sprite_6.rescale_relative_to_point((50, 40), 1.0)
-    assert sprite_6.scale == 1.0
+    assert sprite_6.scale == (1.0, 1.0)
     assert sprite_6.center_x == window_center_x - 81
     assert sprite_6.center_y == window_center_y + 81
     assert sprite_6.width == 64
@@ -358,7 +364,7 @@ def test_rescale_relative_to_point(window):
         window_center_y + 81
     )
     sprite_7.rescale_relative_to_point((50, 40), 1.0)
-    assert sprite_7.scale == 1.0
+    assert sprite_7.scale == (1.0, 1.0)
     assert sprite_7.center_x == window_center_x - 81
     assert sprite_7.center_y == window_center_y + 81
     assert sprite_7.width == 64
@@ -373,14 +379,14 @@ def test_rescale_relative_to_point(window):
         window_center_y + 81
     )
     sprite_8.rescale_relative_to_point(window_center, -1.0)
-    assert sprite_8.scale == -1.0
+    assert sprite_8.scale == (-1.0, -1.0)
     assert sprite_8.center_x == window_center_x + 81
     assert sprite_8.center_y == window_center_y - 81
     assert sprite_8.width == -64
     assert sprite_8.height == -64
 
 
-def test_rescale_xy_relative_to_point(window):
+def test_rescale_relative_to_point_with_vec_quants(window):
     window_center = window.width // 2, window.height // 2
     window_center_x, window_center_y = window_center
 
@@ -395,9 +401,8 @@ def test_rescale_xy_relative_to_point(window):
         window_center_x + 50,
         window_center_y - 50
     )
-    sprite_1.rescale_xy_relative_to_point((0, 0), (3.31, 3.31))
-    assert sprite_1.scale == 3.31
-    assert sprite_1.scale_xy == Vec2(3.31, 3.31)
+    sprite_1.rescale_relative_to_point((0, 0), (3.31, 3.31))
+    assert sprite_1.scale == (3.31, 3.31)
     assert sprite_1.center_x == (window_center_x + 50) * 3.31
     assert sprite_1.center_y == (window_center_y - 50) * 3.31
     assert sprite_1.width == 64 * 3.31
@@ -408,10 +413,9 @@ def test_rescale_xy_relative_to_point(window):
         window_center_x + 10,
         window_center_y + 10
     )
-    sprite_2.scale_xy = 2.0, 1.0
-    sprite_2.rescale_xy_relative_to_point(window_center, (2.0, 2.0))
-    assert sprite_2.scale == 4.0
-    assert sprite_2.scale_xy == Vec2(4.0, 2.0)
+    sprite_2.scale = (2.0, 1.0)
+    sprite_2.rescale_relative_to_point(window_center, (2.0, 2.0))
+    assert sprite_2.scale == (4.0, 2.0)
     assert sprite_2.center_x == window_center_x + 20
     assert sprite_2.center_y == window_center_y + 20
     assert sprite_2.width == 256
@@ -422,10 +426,9 @@ def test_rescale_xy_relative_to_point(window):
         window_center_x - 10,
         window_center_y - 10
     )
-    sprite_3.scale_xy = 0.5, 1.5
-    sprite_3.rescale_xy_relative_to_point(window_center, (3.0, 3.0))
-    assert sprite_3.scale == 1.5
-    assert sprite_3.scale_xy == Vec2(1.5, 4.5)
+    sprite_3.scale = (0.5, 1.5)
+    sprite_3.rescale_relative_to_point(window_center, (3.0, 3.0))
+    assert sprite_3.scale == (1.5, 4.5)
     assert sprite_3.center_x == window_center_x - 30
     assert sprite_3.center_y == window_center_y - 30
     assert sprite_3.width == 96
@@ -434,8 +437,8 @@ def test_rescale_xy_relative_to_point(window):
     # edge case: point == sprite center, factor > 1
     # expected: sprite does not move, but scale and dimensions change
     sprite_4 = sprite_64x64_at_position(*window_center)
-    sprite_4.rescale_xy_relative_to_point(sprite_4.position, (2.0, 2.0))
-    assert sprite_4.scale == 2.0
+    sprite_4.rescale_relative_to_point(sprite_4.position, (2.0, 2.0))
+    assert sprite_4.scale == (2.0, 2.0)
     assert sprite_4.center_x == window_center_x
     assert sprite_4.center_y == window_center_y
     assert sprite_4.width == 128
@@ -447,8 +450,8 @@ def test_rescale_xy_relative_to_point(window):
         window_center_x - 81,
         window_center_y + 81
     )
-    sprite_5.rescale_xy_relative_to_point((50, 40), (1.0, 1.0))
-    assert sprite_5.scale == 1.0
+    sprite_5.rescale_relative_to_point((50, 40), (1.0, 1.0))
+    assert sprite_5.scale == (1.0, 1.0)
     assert sprite_5.center_x == window_center_x - 81
     assert sprite_5.center_y == window_center_y + 81
     assert sprite_5.width == 64
@@ -457,9 +460,8 @@ def test_rescale_xy_relative_to_point(window):
     # edge case: point == sprite center, negative factor
     # expected : sprite doesn't move, but scale, width, & height < 0
     sprite_6 = sprite_64x64_at_position(*window_center)
-    sprite_6.rescale_xy_relative_to_point(sprite_6.position, (-2.0, -2.0))
-    assert sprite_6.scale == -2.0
-    assert sprite_6.scale_xy == Vec2(-2.0, -2.0)
+    sprite_6.rescale_relative_to_point(sprite_6.position, (-2.0, -2.0))
+    assert sprite_6.scale == (-2.0, -2.0)
     assert sprite_6.center_x == window_center_x
     assert sprite_6.center_y == window_center_y
     assert sprite_6.width == -128
@@ -471,8 +473,8 @@ def test_rescale_xy_relative_to_point(window):
         window_center_x - 81,
         window_center_y + 81
     )
-    sprite_7.rescale_xy_relative_to_point((50, 40), (1.0, 1.0))
-    assert sprite_7.scale == 1.0
+    sprite_7.rescale_relative_to_point((50, 40), (1.0, 1.0))
+    assert sprite_7.scale == (1.0, 1.0)
     assert sprite_7.center_x == window_center_x - 81
     assert sprite_7.center_y == window_center_y + 81
     assert sprite_7.width == 64

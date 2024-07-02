@@ -14,11 +14,11 @@ For help, see the following:
 from __future__ import annotations
 
 import os
-from contextlib import contextmanager
-from shutil import which, rmtree
 import subprocess
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Union, Generator, Optional
+from shutil import rmtree, which
+from typing import Generator, Optional, Union
 
 PathLike = Union[Path, str, bytes]
 
@@ -47,13 +47,16 @@ FULL_BUILD_DIR = PROJECT_ROOT / FULL_BUILD_PREFIX
 
 # Linting
 RUFF = "ruff"
-RUFFOPTS = ["check", "arcade"]
+RUFFOPTS = ["check"]
+RUFFOPTS_ISORT = ["check", "--select", "I"]
+RUFFOPTS_PACKAGE = "arcade"
 MYPY = "mypy"
 MYPYOPTS = ["arcade"]
 PYRIGHT = "pyright"
 PYRIGHTOPTS = []
 BLACK = "black"
 BLACKOPTS = ["arcade"]
+ISORTOPTS = ["check", "--select", "I"]
 
 # Testing
 PYTEST = "pytest"
@@ -467,7 +470,7 @@ def lint():
 
 @app.command(rich_help_panel="Code Quality")
 def ruff():
-    run([RUFF, *RUFFOPTS])
+    run([RUFF, *RUFFOPTS, RUFFOPTS_PACKAGE])
     print("Ruff Finished.")
 
 
@@ -489,7 +492,16 @@ def pyright():
 def format(check: bool = False):
     "Format code using black"
     black(check)
+    isort(check)
     print("Formatting Complete.")
+
+
+@app.command(rich_help_panel="Code Quality")
+def isort(check: bool = False):
+    "Format code using isort(actually ruff)"
+    if not check:
+        RUFFOPTS_ISORT.append("--fix")
+    run([RUFF, *RUFFOPTS_ISORT, RUFFOPTS_PACKAGE])
 
 
 @app.command(rich_help_panel="Code Quality")

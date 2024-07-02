@@ -1,17 +1,17 @@
+import contextlib
 import copy
-import time
 import logging
+import time
 from pathlib import Path
 from typing import (
-    Dict,
-    Optional,
-    Tuple,
-    Sequence,
-    Union,
     TYPE_CHECKING,
+    Dict,
     List,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
 )
-import contextlib
 from weakref import WeakSet, WeakValueDictionary, finalize
 
 import PIL.Image
@@ -22,17 +22,17 @@ from pyglet.image.atlas import (
 )
 from pyglet.math import Mat4
 
-from arcade.window_commands import get_window
-from arcade.texture.transforms import Transform
 from arcade.camera.static import static_from_raw_orthographic
+from arcade.texture.transforms import Transform
+from arcade.window_commands import get_window
 
+from .base import TextureAtlasBase
 from .ref_counters import (
     ImageDataRefCounter,
     UniqueTextureRefCounter,
 )
-from .base import TextureAtlasBase
-from .uv_data import UVData
 from .region import AtlasRegion
+from .uv_data import UVData
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
@@ -304,9 +304,8 @@ class DefaultTextureAtlas(TextureAtlasBase):
                 # If we have lost regions/images we can try to rebuild the atlas
                 removed_image_count = self._image_ref_count.get_total_decref()
                 if removed_image_count > 0:
-                    # LOG.info("[%s] Rebuilding atlas due to %s lost images", id(self), removed_image_count)
                     self.rebuild()
-                    return self.add(texture)
+                    return self._add(texture, create_finalizer=create_finalizer)
 
                 # Double the size of the atlas (capped by max size)
                 width = min(self.width * 2, self.max_width)
@@ -356,9 +355,9 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         Remove a texture from the atlas.
 
-        This will remove the texture from the atlas and the
-        texture coordinates buffer. The image will remain in the
-        atlas until the atlas is rebuilt.
+        This is only supported by static atlases. Dynamic atlases with
+        garbage collection will remove texture using python's garbage
+        collector.
 
         :param texture: The texture to remove
         """
@@ -591,12 +590,12 @@ class DefaultTextureAtlas(TextureAtlasBase):
         return texture.atlas_name in self._unique_textures
 
     def has_image(self, image_data: "ImageData") -> bool:
-        """Check if a image is already in the atlas"""
+        """Check if an image is already in the atlas"""
         return image_data.hash in self._images
 
     def resize(self, size: Tuple[int, int]) -> None:
         """
-        Resize the atlas on the gpu.
+        Resize the atlas.
 
         This will re-allocate all the images in the atlas to better fit
         the new size. Pixel data will be copied from the old atlas to the

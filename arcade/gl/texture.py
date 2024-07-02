@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from ctypes import byref, string_at
 import weakref
-from typing import Optional, Union, TYPE_CHECKING
+from ctypes import byref, string_at
+from typing import TYPE_CHECKING, Optional, Union
 
 from pyglet import gl
 
-from .buffer import Buffer
-from .utils import data_to_ctypes
-from .types import PyGLuint, pixel_formats, BufferOrBufferProtocol
 from ..types import BufferProtocol
+from .buffer import Buffer
+from .types import BufferOrBufferProtocol, PyGLuint, pixel_formats
+from .utils import data_to_ctypes
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context

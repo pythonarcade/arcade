@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from ctypes import c_int, string_at
-from contextlib import contextmanager
-from typing import Generator, Optional, TYPE_CHECKING
 import weakref
-
+from contextlib import contextmanager
+from ctypes import c_int, string_at
+from typing import TYPE_CHECKING, Generator, Optional
 
 from pyglet import gl
 

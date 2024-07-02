@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from arcade.gui import UIInputText, UIEvent, UITextEvent, Surface
+from arcade.gui import Surface, UIEvent, UIInputText, UITextEvent
 
 
 class UIPasswordInput(UIInputText):

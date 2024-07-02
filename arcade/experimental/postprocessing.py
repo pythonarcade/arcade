@@ -4,11 +4,11 @@ Post-processing shaders.
 
 from __future__ import annotations
 
-from arcade.context import ArcadeContext
-from arcade.gl.texture import Texture2D
 from arcade import get_window
-from arcade.gl import geometry
+from arcade.context import ArcadeContext
 from arcade.experimental.gaussian_kernel import gaussian_kernel
+from arcade.gl import geometry
+from arcade.gl.texture import Texture2D
 
 
 class PostProcessing:
