@@ -417,6 +417,11 @@ class PhysicsEnginePlatformer:
         #: * :ref:`platformer_part_five`
         #: * :ref:`platformer_part_twelve`
         self.gravity_constant: float = gravity_constant
+        #: How many times the player has jumped since touching any
+        #: sprite in :py:attr:`walls`.
+        #:
+        #: This is used throughout the engine's logic, including
+        #: the :py:meth:`jump` and :py:meth:`can_jump` methods.
         self.jumps_since_ground: int = 0
         self.allowed_jumps: int = 1
         #: Whether multi-jump is enabled.
