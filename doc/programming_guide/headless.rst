@@ -32,7 +32,11 @@ This can be done in the following ways:
     import os
     os.environ["ARCADE_HEADLESS"] = "True"
 
-This means you can configure headless externally.
+    # The above is a shortcut for
+    import pyglet
+    pyglet.options.headless = True
+
+This of course also means you can configure headless externally.
 
 .. code:: bash
 
@@ -178,10 +182,10 @@ to a physical device (graphics card) or a virtual card/device.
 .. code:: py
 
     # Default setting
-    pyglet.options['headless_device'] = 0
+    pyglet.options.headless_device = 0
 
     # Use the second gpu/device
-    pyglet.options['headless_device'] = 1
+    pyglet.options.headless_device = 1
 
 Issues?
 -------
