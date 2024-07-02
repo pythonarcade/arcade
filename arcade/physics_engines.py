@@ -624,10 +624,10 @@ class PhysicsEnginePlatformer:
            * - 5
              - 6
 
-        .. important:: The engine should call :py:meth:`increment_jump_counter`
-                       inside :py:meth:`jump`!
+        .. important:: If you override :py:meth:`jump`, be sure to call
+                       :py:meth:`increment_jump_counter` inside it!
 
-                       If it does not, the player may be able to jump forever.
+                       Otherwise, the player may be able to jump forever.
 
         Args:
             allowed_jumps:
