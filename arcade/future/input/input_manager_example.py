@@ -7,7 +7,8 @@ from typing import Optional
 import pyglet
 
 import arcade
-from . import ActionState, InputManager, Keys, ControllerAxes, ControllerButtons
+
+from . import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600

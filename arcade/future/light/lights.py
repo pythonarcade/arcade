@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from array import array
-from typing import Iterator, Sequence, Optional
+from typing import Iterator, Optional, Sequence
 
 from arcade import gl
+from arcade.color import WHITE
 from arcade.future.texture_render_target import RenderTargetTexture
 from arcade.types import RGBOrA255
-from arcade.color import WHITE
 
 
 class Light:
