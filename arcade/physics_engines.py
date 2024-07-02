@@ -336,25 +336,75 @@ class PhysicsEngineSimple:
 
 @copy_dunders_unimplemented
 class PhysicsEnginePlatformer:
-    """
-    Simplistic physics engine for use in a platformer. It is easier to get
-    started with this engine than more sophisticated engines like PyMunk.
+    """A single-player engine with gravity and moving platform support.
 
-    **Note:** Sending static sprites to the ``walls`` parameter and moving sprites to the
-    ``platforms`` parameter will have very extreme benefits to performance.
+    .. _Super Mario Bros.: https://en.wikipedia.org/wiki/Super_Mario_Bros.
+    .. _Rayman: https://en.wikipedia.org/wiki/Rayman_(video_game)
 
-    **Note:** This engine will automatically move any Sprites sent to the ``platforms``
-    parameter between a ``boundary_top`` and ``boundary_bottom`` or a ``boundary_left``
-    and ``boundary_right`` attribute of the Sprite. You need only set an initial
-    ``change_x`` or ``change_y`` on it.
+    This engine is best for simple versions of platformer games like
+    the `Super Mario Bros.`_ (the first Mario game) and `Rayman`_. It
+    is more important to pay attention to the performance tips with
+    this engine than with  :py:class:`PhysicsEngineSimple`.
 
-    :param player_sprite: The moving sprite
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] platforms: Sprites the player can't move through.
-        This value should only be used for moving Sprites. Static sprites should be sent to the ``walls`` parameter.
-    :param gravity_constant: Downward acceleration per frame
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] ladders: Ladders the user can climb on
-    :param Optional[Union[SpriteList, Iterable[SpriteList]]] walls: Sprites the player can't move through.
-        This value should only be used for static Sprites. Moving sprites should be sent to the ``platforms`` parameter.
+    .. important:: For best performance, you must put your sprites
+                   in the right group!
+
+     However,
+    if you
+    be sure to add each :py:class:`.Sprite` and :py:clas:`.SpriteList`
+    into the right group, regardless of whether you do so via arguments
+    or properties:
+
+    .. list-table::
+       :header-rows: 1
+
+       * - Creation argument
+         - Purpose
+         - :py:class:`list` property
+
+       * - ``walls``
+         - Non-moving sprites the player can stand on.
+         - :py:attr:`walls`
+
+       * ``platforms``
+         - Sprites the player can stand on, but which can still move.
+         - :py:attr:`platforms`
+
+       * - ``ladders``
+         - Ladders which allow gravity-free movement while touched by
+           the :py:attr:`player_sprite`.
+         - :py:attr:`ladders`
+
+    To learn about the automatic moving platform feature, please see
+    :py:attr:`platforms`.
+
+    Not that if you use the :py:class:`list` properties above, you can
+    add or remove :py:attr:`platforms` in response to game events. It
+    is also possible to add new sprites such as terrain in response to
+    gameplay events, but there may be performance implications due to
+    the way :py:class:`SpriteList` handles spatial hashing. To learn
+    more, see :py:attr:`walls`.
+
+    Args:
+        player_sprite:
+            The player character's sprite. It will be stored on the engine
+            as :py:attr:`player_sprite`.
+        platforms:
+            The initial list of :py:attr:`platforms`, sprites which can move
+            freely.
+        gravity_constant:
+            A constant to subtract from the :py:attr:`player_sprite`'s
+            velocity (:py:attr:`.Sprite.change_y`) each :py:meth:`update`
+            when in the air. See :py:attr:`gravity_constant` to learn
+            more.
+        ladders:
+            :py:class:`.Sprite` instances the player can climb without
+            being affected by gravity.
+        walls:
+            :py:class:`Sprite` instances which are static and never move.
+            **Do not put moving sprites into this!** See :py:attr:`walls`
+            to learn more.
+
     """
 
     def __init__(
