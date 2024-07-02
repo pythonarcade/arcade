@@ -146,7 +146,7 @@ class MyGame(arcade.Window):
             arcade.play_sound(self.collect_coin_sound)
 
         # Center our camera on the player
-        self.camera.center(self.player_sprite.position)
+        self.camera.position = self.player_sprite.position
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
