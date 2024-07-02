@@ -58,17 +58,6 @@ else:
 # noinspection PyPep8
 import pyglet
 
-# TODO: Remove ASAP after pyglet >= 2.1dev2 is out
-if pyglet.version == "2.1.dev2":
-    # Temporary monkeypatch via deletion since dev2 still includes
-    # overly-specific __eq__ behavior. Later pyglet commits restore
-    # equality with same-valued tuples by deleting the __eq__ methods.
-    from pyglet import math as _pyglet_math
-
-    del _pyglet_math.Vec2.__eq__
-    del _pyglet_math.Vec3.__eq__
-    del _pyglet_math.Vec4.__eq__
-
 # Env variable shortcut for headless mode
 if os.environ.get("ARCADE_HEADLESS"):
     pyglet.options["headless"] = True
