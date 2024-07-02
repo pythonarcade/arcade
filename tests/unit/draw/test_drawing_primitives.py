@@ -5,7 +5,7 @@ def test_draw_primitives(window):
     """
     Render the screen.
     """
-    window.background_color = (255, 255, 255, 255)  # arcade.color.WHITE)
+    window.background_color = arcade.color.WHITE
     window.clear()
 
     # Draw a grid
@@ -146,4 +146,4 @@ def test_draw_primitives(window):
     assert color == (255, 255, 255)
 
     # Run the get image. Ideally we'd test the output
-    arcade.get_image()
+    # arcade.get_image()

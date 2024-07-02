@@ -1,15 +1,7 @@
 import arcade
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
 
-
-def test_drawing_dims(window):
-    window.background_color = arcade.color.WHITE
-
-    # Start the render process. This must be done before any drawing commands.
-    arcade.start_render()
-
+def test_drawing_dims():
     radius = 50
     width = radius * 2
     x = 200
