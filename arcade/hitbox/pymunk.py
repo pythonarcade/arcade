@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 from typing import Optional
-from PIL.Image import Image
+
 import pymunk
+from PIL.Image import Image
+from pymunk import Vec2d
 from pymunk.autogeometry import (
     PolylineSet,
     march_soft,
     simplify_curves,
 )
-from pymunk import Vec2d
+
 from arcade.types import Point2, Point2List
+
 from .base import HitBoxAlgorithm
 
 

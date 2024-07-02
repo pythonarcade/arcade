@@ -3,7 +3,8 @@ Metadata about where an image is located in the atlas.
 """
 
 from typing import TYPE_CHECKING, Optional
-from .base import TextureAtlasBase, TexCoords
+
+from .base import TexCoords, TextureAtlasBase
 
 if TYPE_CHECKING:
     from arcade.texture import ImageData

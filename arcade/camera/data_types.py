@@ -5,13 +5,14 @@ wide usage throughout Arcade's camera code.
 """
 
 from __future__ import annotations
+
 from contextlib import contextmanager
-from typing import Protocol, Generator
+from typing import Generator, Protocol
 
-from typing_extensions import Self
 from pyglet.math import Vec2, Vec3
+from typing_extensions import Self
 
-from arcade.types import AsFloat, Point, Point3, Rect, LRBT
+from arcade.types import LRBT, AsFloat, Point, Point3, Rect
 
 __all__ = [
     "CameraData",

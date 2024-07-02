@@ -11,19 +11,16 @@ import time
 from typing import Optional
 
 import pyglet
-
 import pyglet.gl as gl
 import pyglet.window.mouse
 from pyglet.display.base import ScreenMode
 from pyglet.window import MouseCursor
 
 import arcade
-from arcade import get_display_size
-from arcade import set_window
+from arcade import SectionManager, get_display_size, set_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color, RGBOrA255, RGBANormalized
-from arcade import SectionManager
+from arcade.types import Color, RGBANormalized, RGBOrA255
 from arcade.types.rect import LBWH, Rect
 from arcade.utils import is_raspberry_pi
 

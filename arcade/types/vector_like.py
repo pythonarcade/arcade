@@ -9,7 +9,7 @@ This is a submodule of :py:mod:`arcade.types` to avoid issues with:
 
 from __future__ import annotations
 
-from typing import Union, Sequence
+from typing import Sequence, Union
 
 from pyglet.math import Vec2, Vec3
 

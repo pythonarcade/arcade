@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, Optional
 import re
+from typing import TYPE_CHECKING, Iterable, Optional
 
 from pyglet import gl
 

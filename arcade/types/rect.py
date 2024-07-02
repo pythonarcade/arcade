@@ -1,6 +1,7 @@
 """Rects all act the same, but take four of the possible eight attributes and calculate the rest."""
 
 from __future__ import annotations
+
 import math
 from typing import NamedTuple, Optional, TypedDict
 

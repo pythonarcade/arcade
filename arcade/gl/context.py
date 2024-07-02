@@ -11,13 +11,13 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Literal,
     Optional,
     Sequence,
     Set,
     Tuple,
     Union,
     overload,
-    Literal,
 )
 
 import pyglet
@@ -25,6 +25,7 @@ import pyglet.gl.lib
 from pyglet import gl
 from pyglet.window import Window
 
+from ..types import BufferProtocol
 from .buffer import Buffer
 from .compute_shader import ComputeShader
 from .framebuffer import DefaultFrameBuffer, Framebuffer
@@ -34,7 +35,6 @@ from .query import Query
 from .texture import Texture2D
 from .types import BufferDescription, GLenumLike, PyGLenum
 from .vertex_array import Geometry
-from ..types import BufferProtocol
 
 LOG = logging.getLogger(__name__)
 

@@ -4,8 +4,8 @@ from typing import Optional
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
-from arcade.gui.widgets import UIWidget, UILayout
 from arcade.gui.events import UIMouseDragEvent, UIMouseEvent
+from arcade.gui.widgets import UILayout, UIWidget
 
 
 class UIDraggableMixin(UILayout):

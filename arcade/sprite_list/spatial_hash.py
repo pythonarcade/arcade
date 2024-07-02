@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from math import trunc
 from typing import Generic
-from arcade.sprite.base import BasicSprite
-from arcade.types import Point, IPoint
+
 from arcade.sprite import SpriteType
+from arcade.sprite.base import BasicSprite
+from arcade.types import IPoint, Point
 from arcade.types.rect import Rect
 
 

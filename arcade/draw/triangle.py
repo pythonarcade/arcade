@@ -1,7 +1,8 @@
 from arcade import gl
 from arcade.types import RGBA255
-from .polygon import draw_polygon_outline
+
 from .helpers import _generic_draw_line_strip
+from .polygon import draw_polygon_outline
 
 
 def draw_triangle_filled(

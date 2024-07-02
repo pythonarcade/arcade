@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import logging
-from typing import Any, Optional, Type, Union
 from pathlib import Path
+from typing import Any, Optional, Type, Union
 
 import PIL.Image
 import PIL.ImageDraw
@@ -23,7 +23,6 @@ from arcade.texture.transforms import (
     TransposeTransform,
     TransverseTransform,
 )
-
 from arcade.types import RGBA255, Point2List
 
 # from arcade.types.rect import Rect

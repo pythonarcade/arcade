@@ -1,21 +1,20 @@
 from __future__ import annotations
 
-from typing import Optional, Generator, TYPE_CHECKING
-from typing_extensions import Self
 from contextlib import contextmanager
+from math import radians, tan
+from typing import TYPE_CHECKING, Generator, Optional
 
-from math import tan, radians
-from pyglet.math import Mat4, Vec3, Vec2
+from pyglet.math import Mat4, Vec2, Vec3
+from typing_extensions import Self
 
-from arcade.camera.data_types import Projector, CameraData, PerspectiveProjectionData
+from arcade.camera.data_types import CameraData, PerspectiveProjectionData, Projector
 from arcade.camera.projection_functions import (
-    generate_view_matrix,
     generate_perspective_matrix,
+    generate_view_matrix,
     project_perspective,
     unproject_perspective,
 )
-
-from arcade.types import Point, Rect, LBWH
+from arcade.types import LBWH, Point, Rect
 from arcade.window_commands import get_window
 
 if TYPE_CHECKING:

@@ -14,9 +14,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import arcade
 import pymunk
 from PyInstaller.compat import is_darwin, is_unix, is_win
+
+import arcade
 
 pymunk_path = Path(pymunk.__file__).parent
 arcade_path = Path(arcade.__file__).parent

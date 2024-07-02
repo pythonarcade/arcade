@@ -5,7 +5,7 @@ Classic A-star algorithm for path finding.
 from __future__ import annotations
 
 import math
-from typing import cast, Optional, Union
+from typing import Optional, Union, cast
 
 from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point
 from arcade.math import get_distance, lerp_2d

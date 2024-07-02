@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import Optional, TYPE_CHECKING, Union
 from pathlib import Path
+from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from arcade import Texture

@@ -14,8 +14,8 @@ from typing import Optional
 
 from pathlib import Path
 
-if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 7):
-    sys.exit("The Arcade Library requires Python 3.7 or higher.")
+if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 9):
+    sys.exit("The Arcade Library requires Python 3.9 or higher.")
 
 
 def configure_logging(level: Optional[int] = None):

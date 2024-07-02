@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from ctypes import c_void_p, byref
-from typing import Optional, Sequence, TYPE_CHECKING, Union
 import weakref
+from ctypes import byref, c_void_p
+from typing import TYPE_CHECKING, Optional, Sequence, Union
 
 from pyglet import gl
 
 from .buffer import Buffer
-from .types import BufferDescription, GLenumLike, GLuintLike, gl_name
 from .program import Program
+from .types import BufferDescription, GLenumLike, GLuintLike, gl_name
 
 if TYPE_CHECKING:
     from arcade.gl import Context

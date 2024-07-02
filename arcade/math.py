@@ -3,14 +3,17 @@ from __future__ import annotations
 import math
 import random
 from typing import Sequence, Union
-from arcade.types import AsFloat, Point, Point2
 
+from pyglet.math import Vec2
+
+from arcade.types import AsFloat, Point, Point2
+from arcade.types.rect import Rect
+from arcade.types.vector_like import Point3
 
 _PRECISION = 2
 
 
 __all__ = [
-    "round_fast",
     "clamp",
     "lerp",
     "lerp_2d",
@@ -30,32 +33,6 @@ __all__ = [
     "get_angle_radians",
     "quaternion_rotation",
 ]
-
-
-def round_fast(value: float, precision: int) -> float:
-    """
-    A high performance version of python's built-in round() function.
-
-    .. note:: This function is not as accurate as the built-in round() function.
-              But is sufficient in some cases.
-
-    Example::
-
-        >>> round(3.5662457892, 1)
-        3.6
-        >>> round(3.5662457892, 2)
-        3.57
-        >>> round(3.5662457892, 3)
-        3.566
-        >>> round(3.5662457892, 4)
-        3.5662
-
-    :param value: The value to round
-    :param precision: The number of decimal places to round to
-    :return: The rounded value
-    """
-    precision = 10**precision
-    return math.trunc(value * precision) / precision
 
 
 def clamp(a, low: float, high: float) -> float:
@@ -102,18 +79,16 @@ def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:
     return lerp(start_angle, end_angle, u) % 360
 
 
-def rand_in_rect(bottom_left: Point2, width: float, height: float) -> Point:
+def rand_in_rect(rect: Rect) -> Point2:
     """
     Calculate a random point in a rectangle.
 
-    :param bottom_left: The bottom left corner of the rectangle
-    :param width: The width of the rectangle
-    :param height: The height of the rectangle
+    :param rect: The Rect to bound the point in.
     :return: A random point in the rectangle
     """
     return (
-        random.uniform(bottom_left[0], bottom_left[0] + width),
-        random.uniform(bottom_left[1], bottom_left[1] + height),
+        random.uniform(rect.left, rect.right),
+        random.uniform(rect.bottom, rect.top),
     )
 
 
@@ -197,8 +172,8 @@ def rand_vec_spread_deg(
     :return: A random vector
     """
     a = rand_angle_spread_deg(angle, half_angle_spread)
-    vel = _Vec2.from_polar(a, length)
-    return vel.as_tuple()
+    vel = Vec2.from_polar(a, length)
+    return vel.x, vel.y
 
 
 def rand_vec_magnitude(
@@ -215,69 +190,8 @@ def rand_vec_magnitude(
     :return: A random vector
     """
     mag = random.uniform(lo_magnitude, hi_magnitude)
-    vel = _Vec2.from_polar(angle, mag)
-    return vel.as_tuple()
-
-
-class _Vec2:
-    """
-    2D vector used to do operate points and vectors
-
-    Note: intended to be used for internal implementations only.
-    Should not be part of public interfaces
-    (ex: function parameters or return values).
-    """
-
-    __slots__ = ["x", "y"]
-
-    def __init__(self, x: float, y: float) -> None:
-        # see if first argument is an iterable with two items
-        self.x: float = x
-        self.y: float = y
-
-    @staticmethod
-    def from_polar(angle, radius) -> _Vec2:
-        rads = math.radians(angle)
-        return _Vec2(radius * math.cos(rads), radius * math.sin(rads))
-
-    def __add__(self, other) -> _Vec2:
-        return _Vec2(self.x + other.x, self.y + other.y)
-
-    def __sub__(self, other) -> _Vec2:
-        return _Vec2(self.x - other.x, self.y - other.y)
-
-    def __mul__(self, other) -> _Vec2:
-        return _Vec2(self.x * other.x, self.y * other.y)
-
-    def __truediv__(self, other) -> _Vec2:
-        return _Vec2(self.x / other.x, self.y / other.y)
-
-    def __iter__(self):
-        yield self.x
-        yield self.y
-
-    def length(self) -> float:
-        """return the length (magnitude) of the vector"""
-        return math.sqrt(self.x**2 + self.y**2)
-
-    def dot(self, other) -> float:
-        return self.x * other.x + self.y * other.y
-
-    def __repr__(self) -> str:
-        return f"Vec2({self.x},{self.y})"
-
-    def rotated(self, angle: float) -> _Vec2:
-        """
-        Returns the new vector resulting when this vector is
-        rotated by the given angle in degrees
-        """
-        rads = math.radians(angle)
-        cosine = math.cos(rads)
-        sine = math.sin(rads)
-        return _Vec2((self.x * cosine) - (self.y * sine), (self.y * cosine) + (self.x * sine))
-
-    def as_tuple(self) -> Point2:
-        return self.x, self.y
+    vel = Vec2.from_polar(angle, mag)
+    return vel.x, vel.y
 
 
 def get_distance(x1: float, y1: float, x2: float, y2: float) -> float:
@@ -355,9 +269,7 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
     return math.atan2(x_diff, y_diff)
 
 
-def quaternion_rotation(
-    axis: tuple[float, float, float], vector: tuple[float, float, float], angle: float
-) -> tuple[float, float, float]:
+def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[float, float, float]:
     """
     Rotate a 3-dimensional vector of any length clockwise around a 3-dimensional unit length vector.
 
@@ -372,9 +284,10 @@ def quaternion_rotation(
     """
     _rotation_rads = -math.radians(angle)
     p1, p2, p3 = vector
+    a1, a2, a3 = axis
     _c2, _s2 = math.cos(_rotation_rads / 2.0), math.sin(_rotation_rads / 2.0)
 
-    q0, q1, q2, q3 = _c2, _s2 * axis[0], _s2 * axis[1], _s2 * axis[2]
+    q0, q1, q2, q3 = _c2, _s2 * a1, _s2 * a2, _s2 * a3
     q0_2, q1_2, q2_2, q3_2 = q0**2, q1**2, q2**2, q3**2
     q01, q02, q03, q12, q13, q23 = q0 * q1, q0 * q2, q0 * q3, q1 * q2, q1 * q3, q2 * q3
 

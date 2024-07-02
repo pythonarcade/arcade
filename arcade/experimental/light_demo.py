@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+
 import arcade
 from arcade.experimental.lights import Light, LightLayer
 

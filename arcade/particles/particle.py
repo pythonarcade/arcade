@@ -3,11 +3,12 @@ Particle - Object produced by an Emitter.  Often used in large quantity to produ
 """
 
 from __future__ import annotations
+
 from typing import Literal, Optional
 
+from arcade.math import clamp, lerp
 from arcade.sprite import Sprite
-from arcade.math import lerp, clamp
-from arcade.types import Point, PathOrTexture, Velocity
+from arcade.types import PathOrTexture, Point, Velocity
 
 
 class Particle(Sprite):

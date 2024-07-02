@@ -68,7 +68,7 @@ Now we can draw the sprite by adding this to our ``on_draw`` function:
 
 .. code-block::
 
-    self.player_sprite.draw()
+    arcade.draw_sprite(self.player_sprite)
 
 We're now drawing a Sprite to the screen! In the next chapter, we will introduce techniques to draw many(even hundreds of thousands) sprites at once.
 

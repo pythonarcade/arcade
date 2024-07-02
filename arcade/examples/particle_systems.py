@@ -22,7 +22,7 @@ from arcade.math import (
     rand_vec_magnitude,
     rand_vec_spread_deg,
 )
-from arcade import particles
+from arcade import particles, LBWH
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -148,7 +148,7 @@ def emitter_5():
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=rand_in_rect(centering_offset, width, height),
+            center_xy=rand_in_rect(LBWH(*centering_offset, width, height)),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -196,7 +196,7 @@ def emitter_8():
         emit_controller=particles.EmitBurst(BURST_PARTICLE_COUNT),
         particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=rand_in_rect((-2.0, -2.0), 4.0, 4.0),
+            change_xy=rand_in_rect(LBWH(-2.0, -2.0, 4.0, 4.0)),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
@@ -361,7 +361,7 @@ def emitter_18():
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=rand_in_rect(centering_offset, width, height),
+            center_xy=rand_in_rect(LBWH(*centering_offset, width, height)),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -409,7 +409,7 @@ def emitter_21():
         emit_controller=particles.EmitterIntervalWithTime(DEFAULT_EMIT_INTERVAL, DEFAULT_EMIT_DURATION),
         particle_factory=lambda emitter: particles.LifetimeParticle(
             filename_or_texture=TEXTURE,
-            change_xy=rand_in_rect((-2.0, -2.0), 4.0, 4.0),
+            change_xy=rand_in_rect(LBWH(-2.0, -2.0, 4.0, 4.0)),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA

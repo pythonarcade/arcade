@@ -28,18 +28,20 @@ from __future__ import annotations
 import abc
 import contextlib
 from typing import (
+    TYPE_CHECKING,
     Optional,
     Tuple,
-    TYPE_CHECKING,
 )
+
 import PIL.Image
+
 import arcade
 
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
+    from arcade.gl import Framebuffer, Texture2D
     from arcade.texture import ImageData
     from arcade.texture_atlas import AtlasRegion
-    from arcade.gl import Framebuffer, Texture2D
 
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must be a power of two number like 64, 256, 512 ..

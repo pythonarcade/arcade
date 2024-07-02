@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pyglet import gl
 
-
 # Texture min/mag filters
 NEAREST = 0x2600
 LINEAR = 0x2601

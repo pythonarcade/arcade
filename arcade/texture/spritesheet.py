@@ -1,6 +1,7 @@
-from PIL import Image
 from pathlib import Path
-from typing import Union, Optional, Literal, TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, Optional, Union
+
+from PIL import Image
 
 # from arcade import Texture
 from arcade.texture import Texture

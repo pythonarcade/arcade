@@ -16,8 +16,8 @@ from arcade.types import Color
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Easing Example"
 
 BACKGROUND_COLOR = "#F5D167"
@@ -27,8 +27,8 @@ LINE_COLOR = "#45E6D0"
 LINE_WIDTH = 3
 
 X_START = 40
-X_END = 760
-Y_INTERVAL = 50
+X_END = 1200
+Y_INTERVAL = 60
 BALL_RADIUS = 13
 TIME = 3.0
 
@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
             return line
 
         def create_text(text_string):
-            text = arcade.Text(text_string, X_START, y - BALL_RADIUS, color=text_color, font_size=14)
+            text = arcade.Text(text_string, X_START, y - BALL_RADIUS, color=text_color, font_size=24)
             return text
 
         def add_item(item_y, ease_function, text):

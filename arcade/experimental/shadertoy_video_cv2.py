@@ -8,9 +8,10 @@ Dependencies:
 
 from __future__ import annotations
 
+import cv2  # type: ignore
+
 import arcade
 from arcade.experimental.shadertoy import Shadertoy
-import cv2  # type: ignore
 
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 300

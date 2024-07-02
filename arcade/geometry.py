@@ -8,8 +8,9 @@ Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-g
 
 from __future__ import annotations
 
-from arcade.types import Point, PointList
 from sys import maxsize as sys_int_maxsize
+
+from arcade.types import Point, PointList
 
 
 def are_polygons_intersecting(poly_a: PointList, poly_b: PointList) -> bool:

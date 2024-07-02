@@ -6,7 +6,6 @@ from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-
 from typing import Iterable, Optional, Union
 
 from arcade import (
@@ -20,7 +19,7 @@ from arcade.math import get_distance
 
 __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 
-from arcade.utils import copy_dunders_unimplemented, Chain
+from arcade.utils import Chain, copy_dunders_unimplemented
 
 
 def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:

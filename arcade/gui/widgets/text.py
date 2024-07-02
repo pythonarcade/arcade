@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 import pyglet
-from pyglet.event import EVENT_UNHANDLED, EVENT_HANDLED
+from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 
@@ -11,13 +11,13 @@ import arcade
 from arcade import LBWH
 from arcade.gui.events import (
     UIEvent,
+    UIMouseDragEvent,
+    UIMouseEvent,
     UIMousePressEvent,
+    UIMouseScrollEvent,
     UITextEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,
-    UIMouseEvent,
-    UIMouseDragEvent,
-    UIMouseScrollEvent,
 )
 from arcade.gui.property import bind
 from arcade.gui.surface import Surface

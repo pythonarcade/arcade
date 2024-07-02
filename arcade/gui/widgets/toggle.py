@@ -5,7 +5,7 @@ from typing import Optional
 from PIL import ImageEnhance
 
 from arcade import Texture
-from arcade.gui.events import UIOnClickEvent, UIOnChangeEvent
+from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIInteractiveWidget

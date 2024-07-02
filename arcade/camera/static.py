@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Generator, Callable, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Generator, Optional
+
+from pyglet.math import Mat4, Vec2, Vec3
 
 from arcade.camera.data_types import (
     CameraData,
@@ -9,19 +11,16 @@ from arcade.camera.data_types import (
     PerspectiveProjectionData,
 )
 from arcade.camera.projection_functions import (
-    generate_view_matrix,
     generate_orthographic_matrix,
     generate_perspective_matrix,
+    generate_view_matrix,
     project_orthographic,
     project_perspective,
     unproject_orthographic,
     unproject_perspective,
 )
-
 from arcade.types import Point, Point3
 from arcade.window_commands import get_window
-
-from pyglet.math import Mat4, Vec3, Vec2
 
 if TYPE_CHECKING:
     from arcade.application import Window

@@ -7,12 +7,13 @@ These trade away some flexibility in favor of simplicity to allow beginners to s
 from __future__ import annotations
 
 import random
-
 from typing import Sequence, Type
-from arcade.types import Point, PathOrTexture
+
 from arcade.math import rand_in_circle, rand_on_circle
-from .particle import LifetimeParticle, FadeParticle
-from .emitter import Emitter, EmitBurst, EmitterIntervalWithTime
+from arcade.types import PathOrTexture, Point
+
+from .emitter import EmitBurst, Emitter, EmitterIntervalWithTime
+from .particle import FadeParticle, LifetimeParticle
 
 
 def make_burst_emitter(

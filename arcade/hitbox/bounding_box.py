@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from PIL.Image import Image
+
 from arcade.types import Point2List
+
 from .base import HitBoxAlgorithm
 
 

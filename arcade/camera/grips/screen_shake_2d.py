@@ -5,12 +5,11 @@ ScreenShakeController2D:
 
 from __future__ import annotations
 
-from math import exp, log, pi, sin, floor
+from math import exp, floor, log, pi, sin
 from random import uniform
 
 from arcade.camera.data_types import CameraData
 from arcade.math import quaternion_rotation
-
 
 __all__ = ("ScreenShake2D",)
 

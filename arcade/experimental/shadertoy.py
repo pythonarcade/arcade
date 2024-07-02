@@ -22,12 +22,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional, Union
 
-from arcade import get_window
 import arcade
+from arcade import get_window
 from arcade.context import ArcadeContext
-from arcade.gl import geometry, Texture2D
-from arcade.gl.program import Program
+from arcade.gl import Texture2D, geometry
 from arcade.gl.framebuffer import Framebuffer
+from arcade.gl.program import Program
 
 
 class ShadertoyBase:
