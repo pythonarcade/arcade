@@ -349,10 +349,8 @@ class PhysicsEnginePlatformer:
     .. important:: For best performance, you must put your sprites
                    in the right group!
 
-     However,
-    if you
-    be sure to add each :py:class:`.Sprite` and :py:clas:`.SpriteList`
-    into the right group, regardless of whether you do so via arguments
+    Be sure to add each :py:class:`.Sprite` and :py:clas:`.SpriteList`
+    to the right group, regardless of whether you do so via arguments
     or properties:
 
     .. list-table::
@@ -593,13 +591,13 @@ class PhysicsEnginePlatformer:
         self._walls.clear()
 
     def is_on_ladder(self) -> bool:
-        """Check if the :py:attr:`.player` touches any :py:attr:`.ladders`.
+        """Check if the :py:attr:`player_sprite` touches any :py:attr:`ladders`.
 
         .. warning:: This runs collisions **every** time it is called!
 
         Returns:
-            ``True`` if the :py:attr:`.player` sprite overlaps any
-             :py:class:`Sprite` in :py:attr:`.ladders`.
+            ``True`` if the :py:attr:`player_sprite` touches any
+            :py:attr:`ladders`.
         """
         if self.ladders:
             hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
@@ -612,29 +610,17 @@ class PhysicsEnginePlatformer:
 
         .. warning:: This runs collisions **every** time it is called!
 
-                     To keep your game performant, try saving the result
-                     in a variable if you don't need to re-calculate it
-                     after updating state:
-
-                     .. code-block:: python
-
-                        can_jump = self.engine.can_jump()
-                        if can_jump:
-                            do_something()
-
-                        calculated_in_between = do_another_thing()
-
-                        if can_jump:
-                            do_a_third_thing(calculated_in_between)
-                        always_called(calculated_in_between)
+        If you are thinking of calling this repeatedly, first double-check
+        whether you can store the returne value to a local variable instead.
 
         The player can jump when at least one of the following are true:
+        after updating state:
 
         .. list-table::
            :header-rows: 0
 
            * - The player is "touching" the ground
-             - :py:attr:`player_sprite` :py:attr:`.BasicSprite.center_y`
+             - :py:attr:`player_sprite`\'s :py:attr:`.BasicSprite.center_y`
                is within ``y_distance`` of any sprite in :py:attr:`walls`
                or :py:attr:`platforms`
 
