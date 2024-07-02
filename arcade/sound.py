@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 import pyglet
+from pyglet.media import Source
 
 from arcade.resources import resolve
 
@@ -37,7 +38,7 @@ class Sound:
             raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
-        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(
+        self.source: Source = media.load(
             self.file_name, streaming=streaming
         )
 
