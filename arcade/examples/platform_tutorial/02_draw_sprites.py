@@ -42,7 +42,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw our sprites
-        self.player_sprite.draw()
+        arcade.draw_sprite(self.player_sprite)
 
 
 def main():
