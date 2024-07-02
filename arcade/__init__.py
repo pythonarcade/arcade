@@ -60,13 +60,13 @@ import pyglet
 
 # Env variable shortcut for headless mode
 if os.environ.get("ARCADE_HEADLESS"):
-    pyglet.options["headless"] = True
+    pyglet.options.headless = True
 
 from arcade import utils
 
 # Disable shadow window on macs and in headless mode.
 if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_raspberry_pi():
-    pyglet.options["shadow_window"] = False
+    pyglet.options.shadow_window = False
 
 # Use the old gdi fonts on windows until directwrite is fast/stable
 # pyglet.options['win32_gdi_font'] = True
@@ -141,7 +141,7 @@ from .screenshot import get_image
 from .screenshot import get_pixel
 
 # We don't have joysticks game controllers in headless mode
-if not pyglet.options["headless"]:
+if not pyglet.options.headless:
     from .joysticks import get_game_controllers
     from .joysticks import get_joysticks
     from .controller import ControllerManager
@@ -396,7 +396,7 @@ __version__ = VERSION
 # Piggyback on pyglet's doc run detection
 if not getattr(sys, "is_pyglet_doc_run", False):
     # Load additional game controller mappings to Pyglet
-    if not pyglet.options["headless"]:
+    if not pyglet.options.headless:
         try:
             import pyglet.input.controller
 
