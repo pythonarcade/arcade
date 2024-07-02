@@ -5,11 +5,8 @@ import time
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    Dict,
-    List,
     Optional,
     Sequence,
-    Tuple,
     Union,
 )
 from weakref import WeakSet, WeakValueDictionary, finalize
@@ -94,7 +91,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
     def __init__(
         self,
-        size: Tuple[int, int],
+        size: tuple[int, int],
         *,
         border: int = 1,
         textures: Optional[Sequence["Texture"]] = None,
@@ -104,7 +101,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
     ):
         self._ctx = ctx or get_window().ctx
         self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
-        self._size: Tuple[int, int] = size
+        self._size: tuple[int, int] = size
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
         self._capacity = capacity
@@ -143,8 +140,8 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # The texture regions are clones of the image regions with transforms applied
         # in order to map the same image using different orders or texture coordinates.
         # The key is the cache name for a texture
-        self._image_regions: Dict[str, AtlasRegion] = dict()
-        self._texture_regions: Dict[str, AtlasRegion] = dict()
+        self._image_regions: dict[str, AtlasRegion] = dict()
+        self._texture_regions: dict[str, AtlasRegion] = dict()
 
         # Ref counter for images and textures. Per atlas we need to keep
         # track of ho many times an image is used in textures to determine
@@ -162,7 +159,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # All textures added to the atlas
         self._textures: WeakSet[Texture] = WeakSet()
         # atlas_name: Set of textures with matching atlas name
-        self._unique_textures: Dict[str, WeakSet["Texture"]] = dict()
+        self._unique_textures: dict[str, WeakSet["Texture"]] = dict()
 
         # Add all the textures
         for tex in textures or []:
@@ -187,7 +184,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         return self._max_size[1]
 
     @property
-    def max_size(self) -> Tuple[int, int]:
+    def max_size(self) -> tuple[int, int]:
         """
         The maximum size of the atlas in pixels (x, y)
         """
@@ -227,7 +224,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         return self._texture_uvs.texture
 
     @property
-    def textures(self) -> List["Texture"]:
+    def textures(self) -> list["Texture"]:
         """
         All textures instance added to the atlas regardless
         of their internal state. See :py:meth:`unique_textures``
@@ -236,7 +233,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         return list(self._textures)
 
     @property
-    def unique_textures(self) -> List["Texture"]:
+    def unique_textures(self) -> list["Texture"]:
         """
         All unique textures in the atlas.
 
@@ -245,7 +242,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         can be found in :py:meth:`textures`.
         """
         # Grab the first texture from each set
-        textures: List[Texture] = []
+        textures: list[Texture] = []
         for tex_set in self._unique_textures.values():
             if len(tex_set) == 0:
                 raise RuntimeError("Empty set in unique textures")
@@ -253,7 +250,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         return textures
 
     @property
-    def images(self) -> List["ImageData"]:
+    def images(self) -> list["ImageData"]:
         """
         Return a list of all the images in the atlas.
 
@@ -261,7 +258,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         return list(self._images.values())
 
-    def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
+    def add(self, texture: "Texture") -> tuple[int, AtlasRegion]:
         """
         Add a texture to the atlas.
 
@@ -271,7 +268,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         return self._add(texture)
 
-    def _add(self, texture: "Texture", create_finalizer=True) -> Tuple[int, AtlasRegion]:
+    def _add(self, texture: "Texture", create_finalizer=True) -> tuple[int, AtlasRegion]:
         """
         Internal add method with additional control. We we rebuild the atlas
         we don't want to create finalizers for the texture or they will be
@@ -367,7 +364,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
             "and let the python garbage collector handle the removal."
         )
 
-    def _allocate_texture(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
+    def _allocate_texture(self, texture: "Texture") -> tuple[int, AtlasRegion]:
         """
         Add or update a unique texture in the atlas.
         This is mainly responsible for updating the texture coordinates
@@ -391,7 +388,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         return slot, texture_region
 
-    def _allocate_image(self, image_data: "ImageData") -> Tuple[int, int, int, AtlasRegion]:
+    def _allocate_image(self, image_data: "ImageData") -> tuple[int, int, int, AtlasRegion]:
         """
         Attempts to allocate space for an image in the atlas or
         update the existing space for the image.
@@ -593,7 +590,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """Check if an image is already in the atlas"""
         return image_data.hash in self._images
 
-    def resize(self, size: Tuple[int, int], force=False) -> None:
+    def resize(self, size: tuple[int, int], force=False) -> None:
         """
         Resize the atlas.
 
@@ -731,7 +728,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
     def render_into(
         self,
         texture: "Texture",
-        projection: Optional[Tuple[float, float, float, float]] = None,
+        projection: Optional[tuple[float, float, float, float]] = None,
     ):
         """
         Render directly into a sub-section of the atlas.
@@ -814,7 +811,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         flip: bool = False,
         components: int = 4,
         draw_borders: bool = False,
-        border_color: Tuple[int, int, int] = (255, 0, 0),
+        border_color: tuple[int, int, int] = (255, 0, 0),
     ) -> Image.Image:
         """
         Convert the atlas to a Pillow image.
@@ -856,7 +853,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         flip: bool = False,
         components: int = 4,
         draw_borders: bool = False,
-        border_color: Tuple[int, int, int] = (255, 0, 0),
+        border_color: tuple[int, int, int] = (255, 0, 0),
     ) -> None:
         """
         Show the texture atlas using Pillow.
@@ -882,7 +879,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         flip: bool = False,
         components: int = 4,
         draw_borders: bool = False,
-        border_color: Tuple[int, int, int] = (255, 0, 0),
+        border_color: tuple[int, int, int] = (255, 0, 0),
     ) -> None:
         """
         Save the texture atlas to a png.
@@ -903,7 +900,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
             border_color=border_color,
         ).save(path, format="png")
 
-    def _check_size(self, size: Tuple[int, int]) -> None:
+    def _check_size(self, size: tuple[int, int]) -> None:
         """Check it the atlas exceeds the hardware limitations"""
         if size[0] > self._max_size[0] or size[1] > self._max_size[1]:
             raise Exception(
