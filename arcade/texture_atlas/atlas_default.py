@@ -593,7 +593,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """Check if an image is already in the atlas"""
         return image_data.hash in self._images
 
-    def resize(self, size: Tuple[int, int]) -> None:
+    def resize(self, size: Tuple[int, int], force=False) -> None:
         """
         Resize the atlas.
 
@@ -607,12 +607,13 @@ class DefaultTextureAtlas(TextureAtlasBase):
         undefined state.
 
         :param size: The new size
+        :param force: Force a resize even if the size is the same
         """
         LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
         # print("Resizing atlas from", self._size, "to", size)
 
         # Only resize if the size actually changed
-        if size == self._size:
+        if size == self._size and not force:
             return
 
         self._check_size(size)
@@ -620,6 +621,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         # Keep a reference to the old atlas texture so we can copy it into the new one
         atlas_texture_old = self._texture
+        atlas_texture_old.filter = self._ctx.NEAREST, self._ctx.NEAREST
         self._size = size
 
         # Create new image uv data temporarily keeping the old one
