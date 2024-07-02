@@ -15,9 +15,7 @@ import pyglet
 from arcade.resources import resolve
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
-    pyglet.options.audio = tuple(
-        v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(",")
-    )
+    pyglet.options.audio = tuple(v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(","))
 else:
     pyglet.options.audio = ("openal", "xaudio2", "directsound", "pulse", "silent")
 
