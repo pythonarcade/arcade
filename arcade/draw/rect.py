@@ -60,7 +60,7 @@ def draw_texture_rect(
 
     geometry = ctx.geometry_empty
     program = ctx.sprite_program_single
-    program["pos"] = rect.center_x, rect.center_y, 0
+    program["pos"] = rect.x, rect.y, 0
     program["color"] = color.normalized
     program["size"] = rect.width, rect.height
     program["angle"] = angle
