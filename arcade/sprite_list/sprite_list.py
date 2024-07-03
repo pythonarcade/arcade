@@ -1048,6 +1048,8 @@ class SpriteList(Generic[SpriteType]):
                 self.ctx.blend_func = blend_function
             else:
                 self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+        else:
+            self.ctx.disable(self.ctx.BLEND)
 
         # Workarounds for Optional[TextureAtlas] + slow . lookup speed
         atlas: DefaultTextureAtlas = self.atlas  # type: ignore
