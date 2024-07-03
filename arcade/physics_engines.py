@@ -424,64 +424,72 @@ class PhysicsEnginePlatformer:
         _add_to_list(self._ladders, ladders)
         _add_to_list(self._platforms, platforms)
         _add_to_list(self._walls, walls)
-        #: The sprite controlled by the player.
-        #:
-        #: .. important:: This **must** be a :py:class:`.Sprite` or a
-        #:                subclass of it!
-        #:
-        #:                :py:class:`.BasicSprite` lacks the required
-        #:                :py:attr:`~.Sprite.change_y` property.
-        #:
-        self.player_sprite: Sprite = player_sprite
-        #: The player's default downward acceleration.
-        #:
-        #: The engine's :py:meth:`update` method subtracts this value
-        #: from the :py:attr:`player_sprite`'s :py:attr:`~.Sprite.change_y`
-        #: when the player is not touching a sprite in :py:attr:`ladders` or
-        #: :py:attr:`walls`.
-        #:
-        #: You can change the value of gravity after engine creation through
-        #: this attribute. In addition to responding to GUI events, you can
-        #: also change gravity in response to game events such as touching
-        #: power-ups.
-        #:
-        #: Values for ``gravity_constant`` work as follows:
-        #:
-        #: .. list-table::
-        #:    :header-rows: 1
-        #:
-        #:    * - ``gravity_constant``
-        #:      - Effect
-        #:    * - Greater than zero
-        #:      - Gravity points downward as expected
-        #:    * - Less than zero
-        #:      - Player falls upward (Consider adding a ceiling)
-        #:    * - Zero
-        #:      - No gravity
-        #:
-        #: To learn more, please see the following parts of the
-        #: :ref:`platformer_tutorial`:
-        #:
-        #: * :ref:`platformer_part_five`
-        #: * :ref:`platformer_part_twelve`
-        self.gravity_constant: float = gravity_constant
-        #: How many times the player has jumped since touching any
-        #: sprite in :py:attr:`walls`.
-        #:
-        #: This is used throughout the engine's logic, including
-        #: the :py:meth:`jump` and :py:meth:`can_jump` methods.
-        self.jumps_since_ground: int = 0
-        self.allowed_jumps: int = 1
-        #: Whether multi-jump is enabled.
-        #:
-        #: For ease of use in simple games, you may want to use the
-        #: following methods instead of setting this directly:
-        #:
-        #: * :py:meth:`enable_multi_jump`
-        #: * :py:meth:`disable_multi_jump`
-        #:
-        self.allow_multi_jump: bool = False
 
+        self.player_sprite: Sprite = player_sprite
+        """ The sprite controlled by the player.
+
+        .. important:: This **must** be a :py:class:`.Sprite` or a
+                       subclass of it!
+
+        You can't use :py:class:`.BasicSprite` since it lacks
+        required :py:attr:`~.Sprite.change_y` property.
+        """
+        self.gravity_constant: float = gravity_constant
+        """The player's default downward acceleration.
+
+        The engine's :py:meth:`update` method subtracts this value
+        from the :py:attr:`player_sprite`'s :py:attr:`~.Sprite.change_y`
+        when the player is not touching a sprite in :py:attr:`ladders` or
+        :py:attr:`walls`.
+
+        You can change the value of gravity after engine creation through
+        this attribute. In addition to responding to GUI events, you can
+        also change gravity in response to game events such as touching
+        power-ups.
+
+        Values for ``gravity_constant`` work as follows:
+
+        .. list-table::
+           :header-rows: 1
+
+           * - ``gravity_constant``
+             - Effect
+           * - Greater than zero
+             - Gravity points downward as expected
+           * - Less than zero
+             - Player falls upward (Consider adding a ceiling)
+           * - Zero
+             - No gravity
+
+        To learn more, please see the following parts of the
+        :ref:`platformer_tutorial`:
+
+        * :ref:`platformer_part_five`
+        * :ref:`platformer_part_twelve`
+        """
+        self.jumps_since_ground: int = 0
+        """How many times the player has jumped since touching a
+        sprite in :py:attr:`walls`.
+
+        This is used throughout the engine's logic, including
+        the :py:meth:`jump` and :py:meth:`can_jump` methods.
+        """
+        self.allowed_jumps: int = 1
+        """Total number of jumps the player should be capable of.
+
+        This includes the first jump. To enable multi-jump, see
+        :py:meth:`enable_multi_jump` instead.
+        """
+
+        self.allow_multi_jump: bool = False
+        """Whether multi-jump is enabled.
+
+        For ease of use in simple games, you may want to use the
+        following methods instead of setting this directly:
+
+        * :py:meth:`enable_multi_jump`
+        * :py:meth:`disable_multi_jump`
+        """
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
     # TODO: figure out what do do with 15_ladders_moving_platforms.py
     # It's no longer used by any exampple or tutorial file
@@ -660,23 +668,10 @@ class PhysicsEnginePlatformer:
     def enable_multi_jump(self, allowed_jumps: int) -> None:
         """Enable multi-jump.
 
-        The ``allowed_jumps`` argument is the total number of jumps.
-        This includes the first one from the ground or one of the
-        :py:attr:`platforms`.
-
-        For example:
-
-        .. list-table::
-           :header-rows: 1
-
-           * - Number of air jumps
-             - ``allowed_jumps``
-           * - 0
-             - 1
-           * - 1
-             - 2
-           * - 5
-             - 6
+        The ``allowed_jumps`` argument is the total number of jumps
+        the player should be able to make, including the first from
+        solid ground in :py:attr:`walls` or any :py:attr:`platforms`.
+        It will be stored as :py:attr:`allowed_jumps`.
 
         .. important:: If you override :py:meth:`jump`, be sure to call
                        :py:meth:`increment_jump_counter` inside it!
@@ -685,7 +680,7 @@ class PhysicsEnginePlatformer:
 
         Args:
             allowed_jumps:
-                How many jumps the player should be capable of,
+                Total number of jumps the player should be capable of,
                 including the first.
 
         """
