@@ -291,7 +291,7 @@ def _add_to_list(
 
 @copy_dunders_unimplemented
 class PhysicsEngineSimple:
-    """A basic single-player physics engine best for top-down games.
+    """A basic physics engine best for single-player top-down games.
 
     This is the easiest engine to get started with. It's best when:
 
@@ -326,10 +326,12 @@ class PhysicsEngineSimple:
 
     @property
     def walls(self) -> list[SpriteList]:
-        """Get or adjust which :py:class:`.SpriteList`s to use as terrain.
+        """Which :py:class:`.SpriteList` instances block player movement.
 
-        These should not move. For platformer physics, consider using the
-        :py:class:`PhysicsEnginePlatformer` instead.
+        Any sprite in these should not move. Doing so incurs performance
+        issues. See :py:class:`PhysicsEnginePlatformer.walls` for further
+        information. For platformer physics such as moving platforms and
+        gravity, consider using the :py:class:`PhysicsEnginePlatformer`.
         """
         return self._walls
 
