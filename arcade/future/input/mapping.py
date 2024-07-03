@@ -6,7 +6,7 @@ from typing import Union
 
 from typing_extensions import TypedDict
 
-from arcade.experimental.input import inputs
+from arcade.future.input import inputs
 
 
 class RawActionMapping(TypedDict):

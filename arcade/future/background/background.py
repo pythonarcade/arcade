@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional, Union
 
 import arcade.gl as gl
-from arcade.experimental.background import BackgroundTexture
+from arcade.future.background import BackgroundTexture
 from arcade.window_commands import get_window
 
 

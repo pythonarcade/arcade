@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 
 import arcade
-from arcade.experimental.lights import Light, LightLayer
+from arcade.future.light import Light, LightLayer
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 1280

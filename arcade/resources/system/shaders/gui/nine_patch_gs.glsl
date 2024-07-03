@@ -65,20 +65,28 @@ void main() {
     //     )
     // Get texture coordinates
     vec2 uv0, uv1, uv2, uv3;
-    getSpriteUVs(uv_texture, int(texture_id), uv0, uv1, uv2, uv3);
     vec2 atlas_size = vec2(textureSize(sprite_texture, 0));
-    // Corner offsets (upper left, upper, right, lower left, lower right)
-    // This is the global texture coordiante offset in the entire atlas
+    getSpriteUVs(uv_texture, int(texture_id), uv0, uv1, uv2, uv3);
+    // TODO: Do center pixel interpolation. Revert by 0.5 pixels for now
+    vec2 half_px = 0.5 / atlas_size;
+    uv0 -= half_px;
+    uv1 += vec2(half_px.x, -half_px.y);
+    uv2 += vec2(-half_px.x, half_px.y);
+    uv3 += half_px;
+
+    // Local corner offsets in pixels
     float left = start.x;
     float right = t_size.x - end.x;
     float top = t_size.y - end.y;
     float bottom = start.y;
+    // UV offsets to the inner rectangle in the patch
+    // This is the global texture coordiante offset in the entire atlas
+    vec2 c1 = vec2(left, top) / atlas_size;      // Upper left corner
+    vec2 c2 = vec2(right, top) / atlas_size;     // Upper right corner
+    vec2 c3 = vec2(left, bottom) / atlas_size;   // Lower left corner
+    vec2 c4 = vec2(right, bottom) / atlas_size;  // Lower right corner
 
-    vec2 c1 = vec2(left, top) / atlas_size;
-    vec2 c2 = vec2(right, top) / atlas_size;
-    vec2 c3 = vec2(left, bottom) / atlas_size;
-    vec2 c4 = vec2(right, bottom) / atlas_size;
-
+    // Texture coordinates for all the points in the patch
     vec2 t1 = uv0;
     vec2 t2 = uv0 + vec2(c1.x, 0.0);
     vec2 t3 = uv1 - vec2(c2.x, 0.0);
@@ -100,9 +108,8 @@ void main() {
     vec2 t16 = uv3;
 
     mat4 mvp = window.projection * window.view;
-    // First row - two fixed corners + strechy middle - 8 vertices
-    // NOTE: This should ideally be done with 3 strips
-    // Upper left corner
+    // First row - two fixed corners + strechy middle
+    // Upper left corner. Fixed size.
     gl_Position = mvp * vec4(p1, 0.0, 1.0);
     uv = t1;
     EmitVertex();
@@ -117,7 +124,7 @@ void main() {
     EmitVertex();
     EndPrimitive();
 
-    // Upper middle part
+    // Upper middle part streches on x axis
     gl_Position = mvp * vec4(p2, 0.0, 1.0);
     uv = t2;
     EmitVertex();
@@ -132,7 +139,7 @@ void main() {
     EmitVertex();
     EndPrimitive();
 
-    // Upper right corner
+    // Upper right corner. Fixed size
     gl_Position = mvp * vec4(p3, 0.0, 1.0);
     uv = t3;
     EmitVertex();
@@ -147,8 +154,8 @@ void main() {
     EmitVertex();
     EndPrimitive();
 
-    // middle row - three strechy parts - 8 vertices
-    // left border
+    // Middle row: Two strechy sides + strechy middle
+    // left border steching on y axis
     gl_Position = mvp * vec4(p5, 0.0, 1.0);
     uv = t5;
     EmitVertex();
@@ -163,7 +170,7 @@ void main() {
     EmitVertex();
     EndPrimitive();
   
-    // Center area
+    // Center strechy area
     gl_Position = mvp * vec4(p6, 0.0, 1.0);
     uv = t6;
     EmitVertex();
@@ -178,7 +185,7 @@ void main() {
     EmitVertex();
     EndPrimitive();
 
-    // Right border
+    // Right border. Steches on y axis
     gl_Position = mvp * vec4(p7, 0.0, 1.0);
     uv = t7;
     EmitVertex();
@@ -193,8 +200,8 @@ void main() {
     EmitVertex();
     EndPrimitive();
 
-    // last row - two fixed corners + strechy middle - 8 vertices
-    // Lower left corner
+    // Bottom row: two fixed corners + strechy middle
+    // Lower left corner. Fixed size
     gl_Position = mvp * vec4(p9, 0.0, 1.0);
     uv = t9;
     EmitVertex();
@@ -209,7 +216,7 @@ void main() {
     EmitVertex();
     EndPrimitive();
 
-    // Lower middle part
+    // Lower middle part. Streches on x axis
     gl_Position = mvp * vec4(p10, 0.0, 1.0);
     uv = t10;
     EmitVertex();
@@ -224,7 +231,7 @@ void main() {
     EmitVertex();
     EndPrimitive();
 
-    // Lower right corner
+    // Lower right corner. Fixed size
     gl_Position = mvp * vec4(p11, 0.0, 1.0);
     uv = t11;
     EmitVertex();

@@ -10,7 +10,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.background_scrolling
 """
 import arcade
-import arcade.experimental.background as background
+import arcade.future.background as background
 
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720

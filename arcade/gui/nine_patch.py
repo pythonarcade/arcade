@@ -4,7 +4,6 @@ from typing import Optional
 
 import arcade
 import arcade.gl as gl
-from arcade.types.rect import Rect
 
 
 class NinePatchTexture:
@@ -96,7 +95,7 @@ class NinePatchTexture:
         # References for the texture
         self._atlas = atlas or self.ctx.default_atlas
         self._texture = texture
-        self._set_texture(texture)
+        self._add_to_atlas(texture)
 
         # pixel texture co-ordinate start and end of central box.
         self._left = left
@@ -105,15 +104,6 @@ class NinePatchTexture:
         self._top = top
 
         self._check_sizes()
-
-    @classmethod
-    def from_rect(
-        cls, rect: Rect, texture: arcade.Texture, atlas: Optional[arcade.DefaultTextureAtlas] = None
-    ) -> NinePatchTexture:
-        """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
-        return cls(
-            int(rect.left), int(rect.right), int(rect.bottom), int(rect.top), texture, atlas=atlas
-        )
 
     @property
     def ctx(self) -> arcade.ArcadeContext:
@@ -127,7 +117,8 @@ class NinePatchTexture:
 
     @texture.setter
     def texture(self, texture: arcade.Texture):
-        self._set_texture(texture)
+        self._texture = texture
+        self._add_to_atlas(texture)
 
     @property
     def program(self) -> gl.program.Program:
@@ -142,7 +133,7 @@ class NinePatchTexture:
     def program(self, program: gl.program.Program):
         self._program = program
 
-    def _set_texture(self, texture: arcade.Texture):
+    def _add_to_atlas(self, texture: arcade.Texture):
         """
         Internal method for setting the texture.
 
@@ -150,7 +141,6 @@ class NinePatchTexture:
         """
         if not self._atlas.has_texture(texture):
             self._atlas.add(texture)
-        self._texture = texture
 
     @property
     def left(self) -> int:
