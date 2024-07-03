@@ -1,5 +1,4 @@
 import itertools
-from typing import Tuple
 import pytest
 import arcade
 from pyglet.math import Mat4
@@ -15,13 +14,13 @@ PATCH_SIZE = 100, 100
 
 
 def create_ninepatch(
-    texture_size: Tuple[int, int],
-    patch_size: Tuple[int, int],
+    texture_size: tuple[int, int],
+    patch_size: tuple[int, int],
     left: int,
     right: int,
     bottom: int,
     top: int,
-) -> Tuple[Image.Image, NinePatchTexture]:
+) -> tuple[NinePatchTexture, Image.Image,]:
     """Create a ninepatch texture with the given borders."""
     # Manually create a ninepatch texture.
     # We make it white by default and draw a red rectangle in the middle.
@@ -31,6 +30,7 @@ def create_ninepatch(
     draw = ImageDraw.Draw(patch_image)
     draw.rectangle((left, top, texture_size[0] - right - 1, texture_size[1] - bottom - 1), fill=(255, 0, 0, 255))
     texture = arcade.Texture(patch_image)
+    # patch_image.show()
 
     # Create the expected image
     expected_image = Image.new("RGBA", patch_size, (255, 255, 255, 255))
@@ -72,6 +72,8 @@ def test_draw(ctx, fbo, left, right, bottom, top):
         )
 
     fbo_image = ctx.get_framebuffer_image(fbo)
+    # fbo_image.show()
+    # expected_image.show()
 
     # Temp dump images
     # expected_image.save(f"_expected-{left}-{right}-{bottom}-{top}.png")
