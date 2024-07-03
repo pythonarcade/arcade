@@ -1,8 +1,16 @@
-import pytest
+from PIL import Image, ImageDraw
+
 import arcade
 from arcade import LBWH
 
-TEXTURE = arcade.load_texture(":resources:images/items/coinGold.png")
+IMAGE = Image.new("RGBA", (2, 2), (0, 0, 0, 0))
+draw = ImageDraw.Draw(IMAGE)
+draw.point((0, 0), fill=(255, 0, 0, 255))
+draw.point((1, 1), fill=(0, 255, 0, 255))
+draw.point((0, 1), fill=(0, 0, 255, 255))
+draw.point((1, 0), fill=(255, 255, 255, 255))
+
+TEXTURE = arcade.Texture(IMAGE)
 
 
 def test_draw_texture_rect(offscreen):
@@ -17,7 +25,7 @@ def test_draw_texture_rect(offscreen):
 
 def test_draw_sprite(offscreen):
     """Draw a sprite and compare it to the expected image."""
-    sprite = arcade.Sprite(TEXTURE, center_x=64, center_y=64)
+    sprite = arcade.Sprite(TEXTURE, center_x=1, center_y=1)
     region = LBWH(0, 0, *TEXTURE.size)
 
     arcade.draw_sprite(sprite, blend=False, pixelated=True)
