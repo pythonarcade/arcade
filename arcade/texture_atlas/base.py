@@ -27,12 +27,12 @@ from __future__ import annotations
 
 import abc
 import contextlib
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Optional,
     Union,
 )
-from pathlib import Path
 
 import PIL.Image
 
