@@ -80,7 +80,7 @@ class VideoPlayerCV2:
         self.time: float = 0.0
 
         # Get the number of frames in the video
-        self.frames: int = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.frames: int = self.video.get(cv2.CAP_PROP_FRAME_COUNT)  # type: ignore
 
         # Create and configure the OpenGL texture for the video
         self.texture = self.ctx.texture((self._width, self._height), components=3)
