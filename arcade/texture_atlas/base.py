@@ -27,10 +27,11 @@ from __future__ import annotations
 
 import abc
 import contextlib
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Optional,
-    Tuple,
+    Union,
 )
 
 import PIL.Image
@@ -40,15 +41,15 @@ import arcade
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.gl import Framebuffer, Texture2D
-    from arcade.texture import ImageData
-    from arcade.texture_atlas import AtlasRegion
+    from arcade.texture.texture import ImageData
+    from arcade.texture_atlas.region import AtlasRegion
 
 # The amount of pixels we increase the atlas when scanning for a reasonable size.
 # It must be a power of two number like 64, 256, 512 ..
 RESIZE_STEP = 128
 UV_TEXTURE_WIDTH = 4096
 # Texture coordinates for a texture (4 x vec2)
-TexCoords = Tuple[float, float, float, float, float, float, float, float]
+TexCoords = tuple[float, float, float, float, float, float, float, float]
 
 
 class TextureAtlasBase(abc.ABC):
@@ -65,7 +66,7 @@ class TextureAtlasBase(abc.ABC):
 
     def __init__(self, ctx: Optional["ArcadeContext"]):
         self._ctx = ctx or arcade.get_window().ctx
-        self._size: Tuple[int, int] = 0, 0
+        self._size: tuple[int, int] = 0, 0
         self._layers: int = 1
 
     @property
@@ -109,14 +110,14 @@ class TextureAtlasBase(abc.ABC):
         return self._layers
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """The width and height of the texture atlas in pixels"""
         return self._size
 
     # --- Core ---
 
     @abc.abstractmethod
-    def add(self, texture: "Texture") -> Tuple[int, AtlasRegion]:
+    def add(self, texture: "Texture") -> tuple[int, AtlasRegion]:
         """
         Add a texture to the atlas.
 
@@ -140,7 +141,7 @@ class TextureAtlasBase(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def resize(self, *args, **kwargs) -> None:
+    def resize(self, size: tuple[int, int], force=False) -> None:
         """
         Resize the atlas.
 
@@ -154,6 +155,7 @@ class TextureAtlasBase(abc.ABC):
         undefined state.
 
         :param size: The new size
+        :param force: Force a resize even if the size is the same
         """
         ...
 
@@ -235,7 +237,7 @@ class TextureAtlasBase(abc.ABC):
     def render_into(
         self,
         texture: "Texture",
-        projection: Optional[Tuple[float, float, float, float]] = None,
+        projection: Optional[tuple[float, float, float, float]] = None,
     ):
         """
         Render directly into a sub-section of the atlas.
@@ -316,7 +318,13 @@ class TextureAtlasBase(abc.ABC):
     # --- Debugging ---
 
     @abc.abstractmethod
-    def to_image(self) -> PIL.Image.Image:
+    def to_image(
+        self,
+        flip: bool = False,
+        components: int = 4,
+        draw_borders: bool = False,
+        border_color: tuple[int, int, int] = (255, 0, 0),
+    ) -> PIL.Image.Image:
         """
         Convert the atlas to a Pillow image.
 
@@ -332,7 +340,13 @@ class TextureAtlasBase(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def show(self) -> None:
+    def show(
+        self,
+        flip: bool = False,
+        components: int = 4,
+        draw_borders: bool = False,
+        border_color: tuple[int, int, int] = (255, 0, 0),
+    ) -> None:
         """
         Show the texture atlas using Pillow.
 
@@ -344,7 +358,35 @@ class TextureAtlasBase(abc.ABC):
         :param draw_borders: Draw region borders into image
         :param color: RGB color of the borders
         """
+        self.to_image(
+            flip=flip,
+            components=components,
+            draw_borders=draw_borders,
+            border_color=border_color,
+        ).show()
         ...
+
+    @abc.abstractmethod
+    def save(
+        self,
+        path: Union[str, Path],
+        flip: bool = False,
+        components: int = 4,
+        draw_borders: bool = False,
+        border_color: tuple[int, int, int] = (255, 0, 0),
+    ) -> None:
+        """
+        Save the texture atlas to a png.
+
+        Borders can also be drawn into the image to visualize the
+        regions of the atlas.
+
+        :param path: The path to save the atlas on disk
+        :param flip: Flip the image horizontally
+        :param components: Number of components. (3 = RGB, 4 = RGBA)
+        :param color: RGB color of the borders
+        :return: A pillow image containing the atlas texture
+        """
 
 
 __all__ = (
