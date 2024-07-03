@@ -223,7 +223,7 @@ class MyCoinGame(UIView):
         self.coin_counter.text = f"Collected coins {self._coins_collected}"
 
         # inform player if they are out of the game area
-        if not self.game_area.collides_with_sprite(self.player):
+        if not self.player.collides_with_sprite(self.game_area):
             self.out_of_game_area.visible = True
         else:
             self.out_of_game_area.visible = False

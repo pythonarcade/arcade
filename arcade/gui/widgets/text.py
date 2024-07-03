@@ -150,7 +150,7 @@ class UILabel(UIWidget):
         """
         Manually set the width and height of the label to contain the whole text.
         """
-        min_width, min_height = self.size_hint_min
+        min_width, min_height = self.size_hint_min or (0, 0)
         self.rect = self.rect.resize(
             width=min_width,
             height=min_height,

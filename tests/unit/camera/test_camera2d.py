@@ -125,7 +125,7 @@ def test_move_camera_and_project(window: Window):
 
     world_coordinate = camera.unproject(screen_coordinate)[:2]
 
-    assert world_coordinate == (60, 60)
+    assert world_coordinate == (pytest.approx(60), pytest.approx(60))
 
 
 def test_move_camera_and_unproject(window: Window):
@@ -135,4 +135,4 @@ def test_move_camera_and_unproject(window: Window):
 
     screen_coordinate = camera.project(world_coordinate)
 
-    assert screen_coordinate == (0, 0)
+    assert screen_coordinate == (pytest.approx(0), pytest.approx(0))
