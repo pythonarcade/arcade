@@ -1,9 +1,9 @@
 from _pytest.python_api import approx
+from pyglet.math import Vec2
 
-from arcade import LBWH
 from arcade.gui import UIBoxLayout, UIManager
 from arcade.gui.widgets import UIDummy
-from pyglet.math import Vec2
+from arcade.types import LBWH
 
 
 # Vertical

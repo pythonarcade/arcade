@@ -20,8 +20,8 @@ repos:
     rev: 'v1.10.1'
     hooks:
       - id: mypy
-        args: [ arcade, --explicit-package-bases ]
+        args: [ --explicit-package-bases ]
   - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.369
+    rev: v1.1.370
     hooks:
       - id: pyright

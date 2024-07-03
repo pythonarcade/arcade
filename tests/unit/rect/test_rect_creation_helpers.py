@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 import pytest
 
 from arcade.types.rect import LBWH, LRBT, XYWH, XYRR, Rect
@@ -139,4 +138,3 @@ def test_kwargtangle_none_args():
 
     with pytest.raises(ValueError):
         _ = Rect.from_kwargs(x=0, y=None, width=0, height=0)
-

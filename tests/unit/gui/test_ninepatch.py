@@ -1,7 +1,10 @@
 import pytest
-from arcade.gui import NinePatchTexture
-import arcade
 from pyglet.math import Vec2
+
+import arcade
+from arcade import LBWH
+from arcade.gui import NinePatchTexture
+
 
 # ":resources:gui_basic_assets/button_square_blue_pressed.png"
 # ":resources:gui_basic_assets/button_square_blue.png"
@@ -58,17 +61,17 @@ def test_swap_texture(ctx, texture):
     new_texture = arcade.load_texture(
         ":resources:gui_basic_assets/red_button_normal.png",
     )
-    patch.draw_sized(size=(200, 200))
+    patch.draw_rect(rect=LBWH(0, 0, 200, 200))
     patch.texture = new_texture
     assert patch.texture == new_texture
-    patch.draw_sized(size=(200, 200))
+    patch.draw_rect(rect=LBWH(0, 0, 200, 200))
 
 
 def test_draw_position(ctx, texture):
     patch = NinePatchTexture(texture=texture, left=7, right=8, bottom=9, top=10)
-    patch.draw_sized(size=(200, 200), position=(0, 0))
-    patch.draw_sized(size=(200, 200), position=(200, 200))
-    patch.draw_sized(size=(200, 200), position=(400, 400))
+    patch.draw_rect(rect=LBWH(0, 0, 200, 200))
+    patch.draw_rect(rect=LBWH(200, 200, 200, 200))
+    patch.draw_rect(rect=LBWH(400, 400, 200, 200))
     # arcade.get_image().save("test_draw_position.png")
 
 

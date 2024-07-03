@@ -21,8 +21,7 @@ from arcade import SectionManager, get_display_size, set_window
 from arcade.clock import Clock, FixedClock
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color, RGBANormalized, RGBOrA255
-from arcade.types.rect import LBWH, Rect
+from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
 from arcade.utils import is_raspberry_pi
 
 LOG = logging.getLogger(__name__)
@@ -244,7 +243,6 @@ class Window(pyglet.window.Window):
             self.center_window()
 
         if enable_polling:
-
             self.keyboard = pyglet.window.key.KeyStateHandler()
 
             if pyglet.options["headless"]:

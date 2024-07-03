@@ -9,8 +9,7 @@ from arcade.camera import CameraData, OrthographicProjectionData, OrthographicPr
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import RGBA255, Point
-from arcade.types.rect import LBWH, Rect
+from arcade.types import LBWH, RGBA255, Point, Rect
 
 
 class Surface:
@@ -118,7 +117,7 @@ class Surface:
                     f"Ninepatch does not support an alpha != 255 yet, but got {alpha}"
                 )
 
-            tex.draw_sized(size=(width, height))
+            tex.draw_rect(rect=LBWH(0, 0, width, height))
         else:
             arcade.draw_texture_rect(tex, LBWH(x, y, width, height), angle=angle, alpha=alpha)
 

@@ -8,7 +8,6 @@ from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 
 import arcade
-from arcade import LBWH
 from arcade.gui.events import (
     UIEvent,
     UIMouseDragEvent,
@@ -23,7 +22,7 @@ from arcade.gui.property import bind
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBA255, Color, RGBOrA255
+from arcade.types import LBWH, RGBA255, Color, RGBOrA255
 
 
 class UILabel(UIWidget):
