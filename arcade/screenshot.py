@@ -1,8 +1,13 @@
+"""
+Original screenshot utilities from arcade 2.
+
+These functions are flawed because they only read from the screen.
+"""
+
 from typing import Optional
 
 import PIL.Image
 import PIL.ImageOps
-from pyglet import gl
 
 from arcade.window_commands import get_window
 
@@ -22,34 +27,43 @@ def get_pixel(x: int, y: int, components: int = 3) -> tuple[int, ...]:
     # The window may be 'scaled' on hi-res displays. Particularly Macs. OpenGL
     # won't account for this, so we need to.
     window = get_window()
+    ctx = window.ctx
 
     pixel_ratio = window.get_pixel_ratio()
     x = int(pixel_ratio * x)
     y = int(pixel_ratio * y)
 
-    a = (gl.GLubyte * 4)(0)
-    gl.glReadPixels(x, y, 1, 1, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, a)
-    return tuple(int(i) for i in a[:components])
+    data = ctx.screen.read(viewport=(x, y, 1, 1), components=components)
+    return tuple(data)  # bytes gets converted to ints in the tuple creation
 
 
 def get_image(
-    x: int = 0, y: int = 0, width: Optional[int] = None, height: Optional[int] = None
+    x: int = 0,
+    y: int = 0,
+    width: Optional[int] = None,
+    height: Optional[int] = None,
+    components: int = 4,
 ) -> PIL.Image.Image:
     """
     Get an image from the screen.
 
     Example::
 
-        image = get_image()
-        image.save('screenshot.png', 'PNG')
+        # Create and image of the entire screen and save it to a file
+        image = arcade.get_image()
+        image.save('screenshot.png')
 
     :param x: Start (left) x location
-    :param y: Start (top) y location
+    :param y: Start (bottom) y location
     :param width: Width of image. Leave blank for grabbing the 'rest' of the image
     :param height: Height of image. Leave blank for grabbing the 'rest' of the image
-    :returns: A Pillow Image
+    :param components: Number of components to fetch. By default we fetch 4 (4=RGBA, 3=RGB)
     """
     window = get_window()
+    ctx = window.ctx
+
+    if components not in (3, 4):
+        raise ValueError("components must be 3 or 4")
 
     pixel_ratio = window.get_pixel_ratio()
     x = int(pixel_ratio * x)
@@ -63,12 +77,6 @@ def get_image(
     width = int(pixel_ratio * width)
     height = int(pixel_ratio * height)
 
-    # Create an image buffer
-    # noinspection PyTypeChecker
-    image_buffer = (gl.GLubyte * (4 * width * height))(0)
-
-    gl.glReadPixels(x, y, width, height, gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, image_buffer)
-    image = PIL.Image.frombytes("RGBA", (width, height), image_buffer)
-    image = PIL.ImageOps.flip(image)
-
-    return image
+    data = ctx.screen.read(viewport=(x, y, width, height), components=components)
+    image = PIL.Image.frombytes("RGBA" if components == 4 else "RGB", (width, height), data)
+    return PIL.ImageOps.flip(image)

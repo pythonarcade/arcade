@@ -150,8 +150,8 @@ from .draw import draw_lbwh_rectangle_filled
 from .draw import draw_lbwh_rectangle_outline
 from .draw import draw_rect_filled_kwargs
 from .draw import draw_rect_outline_kwargs
-from .draw import get_image
-from .draw import get_pixel
+from .screenshot import get_image
+from .screenshot import get_pixel
 
 # We don't have joysticks game controllers in headless mode
 if not pyglet.options["headless"]:
