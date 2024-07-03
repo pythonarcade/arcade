@@ -8,6 +8,9 @@ class UIView(View):
     This is a convenience class, which adds the UIManager to the view under `self.ui`.
     The UIManager is enabled when the view is shown and disabled when the view is hidden.
 
+    This class provides two draw callbacks: on_draw_before_ui and on_draw_after_ui.
+    Use these to draw custom elements before or after the UI elements are drawn.
+
     If you override ``on_show_view`` or ``on_show_view``,
     don't forget to call super().on_show_view() or super().on_hide_view().
 
@@ -24,5 +27,16 @@ class UIView(View):
         self.ui.disable()
 
     def on_draw(self):
-        """In case of subclassing super().on_draw() should be called last."""
+        """To subclass UIView and add custom drawing, override on_draw_before_ui and on_draw_after_ui."""
+        self.clear()
+        self.on_draw_before_ui()
         self.ui.draw()
+        self.on_draw_after_ui()
+
+    def on_draw_before_ui(self):
+        """Use this method to draw custom elements before the UI elements are drawn."""
+        pass
+
+    def on_draw_after_ui(self):
+        """Use this method to draw custom elements after the UI elements are drawn."""
+        pass

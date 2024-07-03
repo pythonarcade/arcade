@@ -10,7 +10,9 @@ from arcade.types import Color, LBWH
 def test_uilabel_inits_with_text_size(window):
     label = UILabel(text="Example")
 
-    assert label.rect.width == pytest.approx(63, abs=6)  # on windows the width differs about 6 pixel
+    assert label.rect.width == pytest.approx(
+        63, abs=6
+    )  # on windows the width differs about 6 pixel
     assert label.rect.height == pytest.approx(19, abs=1)
 
 
@@ -101,6 +103,24 @@ def test_change_text_does_normal_render_with_background(window):
     label.parent.trigger_render.assert_not_called()
 
 
+def test_size_hint_contains_border_and_updated(window):
+    label = UILabel(text="Example")
+
+    size_hint_min = label.size_hint_min
+
+    label.with_border(width=2)
+    assert label.size_hint_min == (size_hint_min[0] + 4, size_hint_min[1] + 4)
+
+
+def test_size_hint_contains_padding_and_updated(window):
+    label = UILabel(text="Example")
+
+    size_hint_min = label.size_hint_min
+
+    label.with_padding(all=3)
+    assert label.size_hint_min == (size_hint_min[0] + 6, size_hint_min[1] + 6)
+
+    
 def test_uilabel_automatically_fit_content(uimanager):
     label = UILabel(text="First Text")
     uimanager.add(label)
@@ -110,3 +130,4 @@ def test_uilabel_automatically_fit_content(uimanager):
     uimanager.execute_layout()
 
     assert label.rect.width > start_width
+

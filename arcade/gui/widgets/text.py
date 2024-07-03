@@ -136,18 +136,24 @@ class UILabel(UIWidget):
             self.label.height = int(height)
 
         bind(self, "rect", self._update_layout)
+
+        # update size hint when border or padding changes
+        bind(self, "_border_width", self._update_size_hint_min)
+        bind(self, "_padding_left", self._update_size_hint_min)
+        bind(self, "_padding_right", self._update_size_hint_min)
+        bind(self, "_padding_top", self._update_size_hint_min)
+        bind(self, "_padding_bottom", self._update_size_hint_min)
+
         self._update_size_hint_min()
 
     def fit_content(self):
         """
-        Set the width and height of the label to contain the whole text.
+        Manually set the width and height of the label to contain the whole text.
         """
-        base_width = self._padding_left + self._padding_right + 2 * self._border_width
-        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
-
+        min_width, min_height = self.size_hint_min or (0, 0)
         self.rect = self.rect.resize(
-            self.label.content_width + base_width + 1,
-            self.label.content_height + base_height + 1,
+            width=min_width,
+            height=min_height,
         )
 
     @property
@@ -183,7 +189,13 @@ class UILabel(UIWidget):
             layout.height = int(self.content_height)
 
     def _update_size_hint_min(self):
-        self.size_hint_min = self.label.content_width, self.label.content_height
+        min_width = self.label.content_width + 1  # +1 required to prevent line wrap
+        min_width += self._padding_left + self._padding_right + 2 * self._border_width
+
+        min_height = self.label.content_height
+        min_height += self._padding_top + self._padding_bottom + 2 * self._border_width
+
+        self.size_hint_min = (min_width, min_height)
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
