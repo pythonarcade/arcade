@@ -1014,40 +1014,38 @@ class Window(pyglet.window.Window):
         return self._global_clock.time
 
     @property
-    def current_tick(self) -> int:
-        return self._global_clock.ticks
+    def fixed_time(self) -> float:
+        return self._fixed_clock.time
 
     @property
     def delta_time(self) -> float:
         return self._global_clock.delta_time
 
     @property
-    def global_clock(self) -> Clock:
-        return self._global_clock
-
-    @property
-    def fixed_time(self) -> float:
-        return self._fixed_clock.time
-
-    @property
     def fixed_delta_time(self) -> float:
         return self._fixed_rate
 
     @property
-    def current_fixed_tick(self) -> int:
-        return self._fixed_clock.ticks
-
-    @property
-    def accumulated_time(self) -> float:
-        return self._fixed_clock.accumulated
-
-    @property
-    def accumulated_fraction(self) -> float:
-        return self._fixed_clock.fraction
+    def global_clock(self) -> Clock:
+        return self._global_clock
 
     @property
     def global_fixed_clock(self) -> FixedClock:
         return self._fixed_clock
+
+    # Possibly useful clock properties
+
+    # @property
+    # def current_fixed_tick(self) -> int:
+    #     return self._fixed_clock.ticks
+
+    # @property
+    # def accumulated_time(self) -> float:
+    #     return self._fixed_clock.accumulated
+
+    # @property
+    # def accumulated_fraction(self) -> float:
+    #     return self._fixed_clock.fraction
 
 
 def open_window(
