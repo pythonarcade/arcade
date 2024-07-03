@@ -59,7 +59,7 @@ class MyCoinGame(UIView):
             ":resources:/images/animated_characters/female_adventurer/femaleAdventurer_idle.png",
             scale=0.5,
             center_x=1280 / 2,
-            center_y=720 / 2
+            center_y=720 / 2,
         )
         self.sprites.append(self.player)
 
@@ -69,7 +69,7 @@ class MyCoinGame(UIView):
                 ":resources:images/items/coinGold.png",
                 scale=0.5,
                 center_x=150 * i,
-                center_y=720 / 2
+                center_y=720 / 2,
             )
             self.coins.append(coin)
 
@@ -78,9 +78,14 @@ class MyCoinGame(UIView):
         button = UIFlatButton(text="Add a coin")
         anchor.add(button, anchor_x="center_x", anchor_y="bottom", align_y=10)
 
-        self.coin_counter = anchor.add(UILabel(text="Collected coins 0"), anchor_x="left", anchor_y="top", align_y=-10, align_x=10)
+        self.coin_counter = anchor.add(
+            UILabel(text="Collected coins 0"),
+            anchor_x="left",
+            anchor_y="top",
+            align_y=-10,
+            align_x=10,
+        )
         self.coin_counter.with_background(color=arcade.color.TRANSPARENT_BLACK)
-
 
         # Connect button to a function
         @button.event("on_click")
