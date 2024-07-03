@@ -119,3 +119,15 @@ def test_size_hint_contains_padding_and_updated(window):
 
     label.with_padding(all=3)
     assert label.size_hint_min == (size_hint_min[0] + 6, size_hint_min[1] + 6)
+
+    
+def test_uilabel_automatically_fit_content(uimanager):
+    label = UILabel(text="First Text")
+    uimanager.add(label)
+    start_width = label.rect.width
+
+    label.text = "Second Text, which is way longer"
+    uimanager.execute_layout()
+
+    assert label.rect.width > start_width
+

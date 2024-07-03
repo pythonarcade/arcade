@@ -64,8 +64,7 @@ class UILabel(UIWidget):
                            ``multiline`` of True is the same thing as
                            a :py:class:`~arcade.gui.UITextArea`.
     :param size_hint: A tuple of floats between 0 and 1 defining the amount of
-                      space of the parent should be requested.
-    :param size_hint_min: Minimum size hint width and height in pixel.
+                      space of the parent should be requested. Default (0, 0) which fits the content.
     :param size_hint_max: Maximum size hint width and height in pixel.
     :param style: Not used. Labels will have no need for a style; they are too
                   simple (just a text display).
@@ -86,8 +85,7 @@ class UILabel(UIWidget):
         italic=False,
         align="left",
         multiline: bool = False,
-        size_hint=None,
-        size_hint_min=None,
+        size_hint=(0, 0),
         size_hint_max=None,
         **kwargs,
     ):
@@ -125,7 +123,6 @@ class UILabel(UIWidget):
             width=width or self.label.content_width,
             height=height or self.label.content_height,
             size_hint=size_hint,
-            size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             **kwargs,
         )
