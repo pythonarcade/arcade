@@ -74,7 +74,7 @@ class ModalSection(Section):
 
     def draw_button(self):
         # draws the button and button text
-        self.button.draw()
+        arcade.draw_sprite(self.button)
         arcade.draw_text('Close Modal', self.button.left + 5,
                          self.button.bottom + self.button.height / 2,
                          arcade.color.WHITE)
@@ -146,15 +146,15 @@ class Panel(Section):
     def draw_button_stop(self):
         arcade.draw_text('Press button to stop the ball', self.left + 10,
                          self.top - 40, COLOR_LIGHT, 10)
-        self.button_stop.draw()
+        arcade.draw_sprite(self.button_stop)
 
     def draw_button_toggle_info_bar(self):
         arcade.draw_text('Press to toggle info_bar', self.left + 10,
                          self.top - 140, COLOR_LIGHT, 10)
-        self.button_toggle_info_bar.draw()
+        arcade.draw_sprite(self.button_toggle_info_bar)
 
     def draw_button_show_modal(self):
-        self.button_show_modal.draw()
+        arcade.draw_sprite(self.button_show_modal)
         arcade.draw_text('Show Modal', self.left - 37 + self.width / 2,
                          self.bottom + 95, COLOR_DARK, 10)
 

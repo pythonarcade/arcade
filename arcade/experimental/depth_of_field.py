@@ -184,7 +184,6 @@ class App(Window):
         focus_change_speed: float = 0.1,
     ):
         super().__init__()
-        self.time: float = 0.0
         self.sprites: SpriteList = SpriteList()
         self._batch = Batch()
         self.focus_range: float = focus_range
@@ -217,7 +216,6 @@ class App(Window):
         self.dof = DepthOfField()
 
     def on_update(self, delta_time: float):
-        self.time += delta_time
         raw_focus = self.focus_range * (cos(pi * self.focus_change_speed * self.time) * 0.5 + 0.5)
         self.dof.render_program["focus_depth"] = raw_focus / self.focus_range
         self.indicator_label.value = f"Focus depth: {raw_focus:.3f} / {self.focus_range}"

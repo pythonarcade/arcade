@@ -4,7 +4,7 @@ import math
 import random
 
 import arcade
-from arcade.experimental.lights import Light, LightLayer
+from arcade.future.light import Light, LightLayer
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 1280
@@ -19,8 +19,6 @@ class MyGame(arcade.Window):
         Set up the application.
         """
         super().__init__(width, height, title)
-        self.time = 0
-        self.frame = 0
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
         self.light_layer = LightLayer(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -57,9 +55,7 @@ class MyGame(arcade.Window):
 
     def on_update(self, dt):
         # dt = 0.1
-        self.frame += 1
         try:
-            self.time += dt
             for i, light in enumerate(self.light_layer):
                 light.radius = 20 + math.sin(self.time + i) * 40
         except Exception as e:

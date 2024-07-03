@@ -103,8 +103,7 @@ class Perspective(arcade.Window):
                         center_x=64 + x * 128,
                         center_y=64 + y * 128,
                     )
-                ) 
-        self.time = 0
+                )
 
         self.offscreen_cam = arcade.camera.Camera2D(
             position=(0.0, 0.0),
@@ -131,9 +130,6 @@ class Perspective(arcade.Window):
 
         # Draw the plane
         self.geometry.render(self.program)
-
-    def on_update(self, delta_time: float):
-        self.time += delta_time
 
     def draw_offscreen(self):
         """Render into the texture mapped """

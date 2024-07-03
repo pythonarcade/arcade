@@ -1,5 +1,5 @@
 import arcade
-from arcade.experimental.texture_render_target import RenderTargetTexture
+from arcade.future import RenderTargetTexture
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600

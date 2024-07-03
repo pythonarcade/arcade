@@ -46,7 +46,6 @@ class MyGame(arcade.Window):
 
         self.draw_time = 0
         self.processing_time = 0
-        self.time = 0
 
         # -- Pymunk
         self.space = pymunk.Space()
@@ -118,8 +117,6 @@ class MyGame(arcade.Window):
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_update(self, delta_time):
-        start_time = timeit.default_timer()
-
         self.ticks_to_next_ball -= 1
         if self.ticks_to_next_ball <= 0:
             self.ticks_to_next_ball = 20
@@ -158,8 +155,6 @@ class MyGame(arcade.Window):
             ball.center_y = ball.pymunk_shape.body.position.y
             # Reverse angle because pymunk rotates ccw
             ball.angle = math.degrees(-ball.pymunk_shape.body.angle)
-
-        self.time = timeit.default_timer() - start_time
 
 
 def main():

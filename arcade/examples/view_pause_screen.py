@@ -49,11 +49,11 @@ class GameView(arcade.View):
     def on_draw(self):
         self.clear()
         # Draw all the sprites.
-        self.player_sprite.draw()
+        arcade.draw_sprite(self.player_sprite)
 
         # Show tip to pause screen
         arcade.draw_text("Press Esc. to pause",
-                         WIDTH / 2,
+                         WIDTH // 2,
                          HEIGHT - 100,
                          arcade.color.BLACK,
                          font_size=20,
@@ -91,7 +91,7 @@ class PauseView(arcade.View):
         # The previous View (GameView) was passed in
         # and saved in self.game_view.
         player_sprite = self.game_view.player_sprite
-        player_sprite.draw()
+        arcade.draw_sprite(player_sprite)
 
         # draw an orange filter over him
         arcade.draw_lrbt_rectangle_filled(left=player_sprite.left,

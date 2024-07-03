@@ -4,7 +4,6 @@ from typing import Optional
 
 import arcade
 import arcade.gl as gl
-from arcade.types.rect import Rect
 
 
 class NinePatchTexture:
@@ -96,7 +95,7 @@ class NinePatchTexture:
         # References for the texture
         self._atlas = atlas or self.ctx.default_atlas
         self._texture = texture
-        self._set_texture(texture)
+        self._add_to_atlas(texture)
 
         # pixel texture co-ordinate start and end of central box.
         self._left = left
@@ -105,15 +104,6 @@ class NinePatchTexture:
         self._top = top
 
         self._check_sizes()
-
-    @classmethod
-    def from_rect(
-        cls, rect: Rect, texture: arcade.Texture, atlas: Optional[arcade.DefaultTextureAtlas] = None
-    ) -> NinePatchTexture:
-        """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
-        return cls(
-            int(rect.left), int(rect.right), int(rect.bottom), int(rect.top), texture, atlas=atlas
-        )
 
     @property
     def ctx(self) -> arcade.ArcadeContext:
@@ -127,7 +117,8 @@ class NinePatchTexture:
 
     @texture.setter
     def texture(self, texture: arcade.Texture):
-        self._set_texture(texture)
+        self._texture = texture
+        self._add_to_atlas(texture)
 
     @property
     def program(self) -> gl.program.Program:
@@ -142,7 +133,7 @@ class NinePatchTexture:
     def program(self, program: gl.program.Program):
         self._program = program
 
-    def _set_texture(self, texture: arcade.Texture):
+    def _add_to_atlas(self, texture: arcade.Texture):
         """
         Internal method for setting the texture.
 
@@ -150,7 +141,6 @@ class NinePatchTexture:
         """
         if not self._atlas.has_texture(texture):
             self._atlas.add(texture)
-        self._texture = texture
 
     @property
     def left(self) -> int:
@@ -203,11 +193,10 @@ class NinePatchTexture:
         """The height of the texture in pixels."""
         return self.texture.height
 
-    def draw_sized(
+    def draw_rect(
         self,
         *,
-        position: tuple[float, float] = (0.0, 0.0),
-        size: tuple[float, float],
+        rect: arcade.types.Rect,
         pixelated: bool = False,
         **kwargs,
     ):
@@ -220,8 +209,7 @@ class NinePatchTexture:
                      smaller than the total size of the border areas.
 
 
-        :param position: Bottom left offset of the texture in pixels
-        :param size: Size of the 9-patch as width, height in pixels
+        :param rect: Rectangle to draw the 9-patch texture in
         :param pixelated: Whether to draw with nearest neighbor interpolation
         """
         self.program.set_uniform_safe("texture_id", self._atlas.get_texture_id(self._texture))
@@ -230,10 +218,10 @@ class NinePatchTexture:
         else:
             self._atlas.texture.filter = self._ctx.LINEAR, self._ctx.LINEAR
 
-        self.program["position"] = position
+        self.program["position"] = rect.bottom_left
         self.program["start"] = self._left, self._bottom
         self.program["end"] = self.width - self._right, self.height - self._top
-        self.program["size"] = size
+        self.program["size"] = rect.size
         self.program["t_size"] = self._texture.size
 
         self._atlas.use_uv_texture(0)

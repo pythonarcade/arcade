@@ -2,7 +2,7 @@
 Light demo
 """
 import arcade
-from arcade.experimental.lights import Light, LightLayer
+from arcade.future.light import Light, LightLayer
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768

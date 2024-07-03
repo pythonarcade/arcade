@@ -3,9 +3,8 @@ from unittest.mock import Mock
 import pytest
 from pyglet.math import Vec2
 
-from arcade import LBWH
 from arcade.gui import UILabel
-from arcade.types import Color
+from arcade.types import Color, LBWH
 
 
 def test_uilabel_inits_with_text_size(window):
@@ -100,3 +99,14 @@ def test_change_text_does_normal_render_with_background(window):
 
     label.text = "Second Text"
     label.parent.trigger_render.assert_not_called()
+
+
+def test_uilabel_automatically_fit_content(uimanager):
+    label = UILabel(text="First Text")
+    uimanager.add(label)
+    start_width = label.rect.width
+
+    label.text = "Second Text, which is way longer"
+    uimanager.execute_layout()
+
+    assert label.rect.width > start_width

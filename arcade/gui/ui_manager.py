@@ -18,7 +18,6 @@ from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
 
 import arcade
-from arcade import LBWH, Rect
 from arcade.gui.events import (
     UIKeyPressEvent,
     UIKeyReleaseEvent,
@@ -34,7 +33,7 @@ from arcade.gui.events import (
 )
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget
-from arcade.types import AnchorPoint, Point2
+from arcade.types import LBWH, AnchorPoint, Point2, Rect
 
 W = TypeVar("W", bound=UIWidget)
 

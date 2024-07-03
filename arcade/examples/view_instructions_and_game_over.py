@@ -23,7 +23,7 @@ import random
 
 WIDTH = 1280
 HEIGHT = 720
-SPRITE_SCALING = 0.5
+SPRITE_SCALING = 1.0
 
 
 class MenuView(arcade.View):

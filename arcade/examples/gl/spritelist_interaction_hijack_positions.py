@@ -19,8 +19,6 @@ class HijackSpritePositions(arcade.Window):
 
     def __init__(self):
         super().__init__(1280, 720, "Hijack Sprite Positions", resizable=True)
-        self.time = 0
-
         # Generate lots of coins. We don't care about the initial positions
         # since our shader is setting those
         self.coins = arcade.SpriteList()
@@ -77,7 +75,6 @@ class HijackSpritePositions(arcade.Window):
         self.coins.draw()
 
     def on_update(self, delta_time: float):
-        self.time += delta_time
         # Keep updating the current time to animation the movement
         self.position_program["time"] = self.time / 4
         # Update the "bendyness" value

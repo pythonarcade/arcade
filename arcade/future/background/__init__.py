@@ -8,9 +8,9 @@ import arcade.gl as gl
 from arcade import get_window
 from arcade.resources import resolve
 
-from arcade.experimental.background.background_texture import BackgroundTexture
-from arcade.experimental.background.background import Background
-from arcade.experimental.background.groups import BackgroundGroup, ParallaxGroup
+from arcade.future.background.background_texture import BackgroundTexture
+from arcade.future.background.background import Background
+from arcade.future.background.groups import BackgroundGroup, ParallaxGroup
 
 __all__ = [
     "Background",

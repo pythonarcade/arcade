@@ -1,7 +1,8 @@
-from arcade import LBWH
+from pyglet.math import Vec2
+
 from arcade.gui import UIDummy, UIBoxLayout
 from arcade.gui.widgets.layout import UIAnchorLayout
-from pyglet.math import Vec2
+from arcade.types import LBWH
 
 
 def test_place_widget(window):

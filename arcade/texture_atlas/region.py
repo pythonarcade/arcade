@@ -78,20 +78,26 @@ class AtlasRegion:
             # Width and height
             _width = self.width / atlas.width
             _height = self.height / atlas.height
+            # Half pixel correction
+            hp_x, hp_y = 0.5 / atlas.width, 0.5 / atlas.height
+            # Upper left corner. Note that are mapping the texture upside down and corners
+            # are named as from the vertex position point of view.
+            ul_x, ul_y = self.x / atlas.width, self.y / atlas.height
+
             # upper_left, upper_right, lower_left, lower_right
             self.texture_coordinates = (
                 # upper_left
-                self.x / atlas.width,
-                self.y / atlas.height,
+                ul_x + hp_x,
+                ul_y + hp_y,
                 # upper_right
-                (self.x / atlas.width) + _width,
-                (self.y / atlas.height),
+                ul_x + _width - hp_x,
+                ul_y + hp_y,
                 # lower_left
-                (self.x / atlas.width),
-                (self.y / atlas.height) + _height,
+                ul_x + hp_x,
+                ul_y + _height - hp_y,
                 # lower_right
-                (self.x / atlas.width) + _width,
-                (self.y / atlas.height) + _height,
+                ul_x + _width - hp_x,
+                ul_y + _height - hp_y,
             )
 
     def verify_image_size(self, image_data: "ImageData"):
@@ -102,7 +108,7 @@ class AtlasRegion:
         at any point causing an atlas update to fail.
         """
         if image_data.size != (self.width, self.height):
-            raise ValueError(
+            raise RuntimeError(
                 (
                     f"ImageData '{image_data.hash}' change their internal image "
                     f"size from {self.width}x{self.height} to "
