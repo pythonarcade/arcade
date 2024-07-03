@@ -261,7 +261,7 @@ class Offscreen:
         """Clear the offscreen buffer"""
         self.fbo.clear()
 
-    def read_pixel(self, x, y) -> tuple[int, int, int, int]:
+    def read_pixel(self, x, y, components=3) -> tuple[int, int, int, int] | tuple[int, int, int]:
         """Read a single RGBA pixel from the offscreen buffer"""
         data = self.fbo.read(components=4, viewport=(x, y, 1, 1))
         return (
@@ -271,9 +271,9 @@ class Offscreen:
             int.from_bytes(data[12:16], "little"),
         )
 
-    def read_region(self, x, y, width, height) -> list[tuple[int, int, int, int]]:
+    def read_region(self, rect: Rect) -> list[tuple[int, int, int, int]]:
         """Read a region of RGBA pixels from the offscreen buffer"""
-        data = self.fbo.read(components=4, viewport=(x, y, width, height))
+        data = self.fbo.read(components=4, viewport=(rect.left, rect.bottom, rect.width, rect.height))
         return [
             (
                 int.from_bytes(data[i : i + 4], "little"),
@@ -284,18 +284,18 @@ class Offscreen:
             for i in range(0, len(data), 16)
         ]
 
-    def read_region_bytes(self, rect: Rect) -> bytes:
+    def read_region_bytes(self, rect: Rect, components=3) -> bytes:
         """Read a region of RGBA pixels from the offscreen buffer as bytes"""
         return self.fbo.read(
-            components=4,
+            components=components,
             viewport=(rect.left, rect.bottom, rect.width, rect.height),
         )
 
-    def read_region_image(self, rect: Rect) -> PIL.Image.Image:
+    def read_region_image(self, rect: Rect, components=3) -> PIL.Image.Image:
         im = PIL.Image.frombytes(
-            "RGBA",
+            "RGBA" if components == 4 else "RGB",
             (int(rect.width), int(rect.height)),
-            self.read_region_bytes(rect),
+            self.read_region_bytes(rect, components=components),
         )
         return im.transpose(PIL.Image.Transpose.FLIP_TOP_BOTTOM)
 
