@@ -340,6 +340,12 @@ class Offscreen:
         )
         return im.transpose(PIL.Image.Transpose.FLIP_TOP_BOTTOM)
 
+    def assert_images_almost_equal(self, image1: PIL.Image.Image, image2: PIL.Image.Image, abs=2):
+        """Assert that two images are almost equal"""
+        assert image1.size == image2.size, f"{image1.size} != {image2.size}"
+        assert image1.mode == image2.mode, f"{image1.mode} != {image2.mode}"
+        assert image1.tobytes() == pytest.approx(image2.tobytes(), abs=abs)
+
 
 @pytest.fixture(scope="function")
 def offscreen():

@@ -1,7 +1,7 @@
 import arcade
 
 
-def test_drawing_dims():
+def test_drawing_dims(window):
     radius = 50
     width = radius * 2
     x = 200
