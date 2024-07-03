@@ -247,14 +247,38 @@ def draw_rect_outline(
     HALF_BORDER = border_width / 2
 
     # fmt: off
-    i_lb = rect.bottom_left.x  + HALF_BORDER, rect.bottom_left.y  + HALF_BORDER
-    i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y + HALF_BORDER
-    i_rt = rect.top_right.x    - HALF_BORDER, rect.top_right.y    - HALF_BORDER
-    i_lt = rect.top_left.x     + HALF_BORDER, rect.top_left.y     - HALF_BORDER
-    o_lb = rect.bottom_left.x  - HALF_BORDER, rect.bottom_left.y  - HALF_BORDER
-    o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y - HALF_BORDER
-    o_rt = rect.top_right.x    + HALF_BORDER, rect.top_right.y    + HALF_BORDER
-    o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y    + HALF_BORDER
+    left   = rect.left
+    right  = rect.right
+    bottom = rect.bottom
+    top    = rect.top
+    x      = rect.x
+    y      = rect.y
+
+    # o = outer, i = inner
+    #
+    # o_lt                            o_rt
+    #  +-------------------------------+
+    #  |  i_lt                   i_rt  |
+    #  |    +---------------------+    |
+    #  |    |                     |    |
+    #  |    |                     |    |
+    #  |    |                     |    |
+    #  |    +---------------------+    |
+    #  |  i_lb                   i_rb  |
+    #  +-------------------------------+
+    # o_lb                            o_rb
+
+    # Inner vertices
+    i_lb = left  + HALF_BORDER, bottom + HALF_BORDER
+    i_rb = right - HALF_BORDER, bottom + HALF_BORDER
+    i_rt = right - HALF_BORDER, top    - HALF_BORDER
+    i_lt = left  + HALF_BORDER, top    - HALF_BORDER
+
+    # Outer vertices
+    o_lb = left  - HALF_BORDER, bottom - HALF_BORDER
+    o_rb = right + HALF_BORDER, bottom - HALF_BORDER
+    o_rt = right + HALF_BORDER, top    + HALF_BORDER
+    o_lt = left  - HALF_BORDER, top    + HALF_BORDER
     # fmt: on
 
     point_list: Point2List = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
@@ -262,7 +286,7 @@ def draw_rect_outline(
     if tilt_angle != 0:
         point_list_2 = []
         for point in point_list:
-            new_point = rotate_point(point[0], point[1], rect.x, rect.y, tilt_angle)
+            new_point = rotate_point(point[0], point[1], x, y, tilt_angle)
             point_list_2.append(new_point)
         point_list = point_list_2
 
