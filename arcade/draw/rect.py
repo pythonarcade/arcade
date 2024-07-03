@@ -5,7 +5,7 @@ from arcade.color import WHITE
 from arcade.math import rotate_point
 from arcade.sprite import BasicSprite
 from arcade.texture import Texture
-from arcade.types import LBWH, LRBT, RGBA255, XYWH, AsFloat, Color, PointList, Rect
+from arcade.types import LBWH, LRBT, RGBA255, XYWH, Color, PointList, Rect
 from arcade.window_commands import get_window
 
 from .helpers import _generic_draw_line_strip
@@ -32,8 +32,11 @@ def draw_texture_rect(
     :param alpha: Transparency of image. 0.0 is fully transparent, 1.0 (default) is visible.
     """
     ctx = get_window().ctx
+
     if blend:
         ctx.enable(ctx.BLEND)
+    else:
+        ctx.disable(ctx.BLEND)
 
     atlas = ctx.default_atlas
 
@@ -262,15 +265,17 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
     ctx.disable(ctx.BLEND)
 
 
-def draw_rect_outline_kwargs(
-    color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
-) -> None:
-    rect = Rect.from_kwargs(**kwargs)
-    draw_rect_outline(rect, color, border_width, tilt_angle)
+# These might be "oddly specific" and also needs docstrings. Disabling or 3.0.0
+
+# def draw_rect_outline_kwargs(
+#     color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
+# ) -> None:
+#     rect = Rect.from_kwargs(**kwargs)
+#     draw_rect_outline(rect, color, border_width, tilt_angle)
 
 
-def draw_rect_filled_kwargs(
-    color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
-) -> None:
-    rect = Rect.from_kwargs(**kwargs)
-    draw_rect_filled(rect, color, tilt_angle)
+# def draw_rect_filled_kwargs(
+#     color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
+# ) -> None:
+#     rect = Rect.from_kwargs(**kwargs)
+#     draw_rect_filled(rect, color, tilt_angle)

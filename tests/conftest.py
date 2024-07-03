@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import gc
 import os
-from contextlib import contextmanager
 from pathlib import Path
 
 if os.environ.get("ARCADE_PYTEST_USE_RUST"):
@@ -10,8 +8,11 @@ if os.environ.get("ARCADE_PYTEST_USE_RUST"):
     arcade_accelerate.bootstrap()
 
 import pytest
+import PIL.Image
+from pyglet.math import Mat4
 
 import arcade
+from arcade import Rect, LBWH
 from arcade import gl
 # from arcade.texture import default_texture_cache
 
@@ -20,6 +21,7 @@ FIXTURE_ROOT = PROJECT_ROOT / "tests" / "fixtures"
 arcade.resources.add_resource_handle("fixtures", FIXTURE_ROOT)
 REAL_WINDOW_CLASS = arcade.Window
 WINDOW = None
+OFFSCREEN = None
 
 
 def create_window(width=800, height=600, caption="Testing", **kwargs):
@@ -287,3 +289,92 @@ def window_proxy():
     yield None
     arcade.Window = _window
     arcade.open_window = _open_window
+
+
+# --- Fixtures for offscreen rendering
+class Offscreen:
+
+    def __init__(self):
+        self.ctx = WINDOW.ctx
+        self.texture = self.ctx.texture((1280, 720), components=4)
+        self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
+
+    def use(self):
+        """Use the offscreen buffer"""
+        self.fbo.use()
+        WINDOW.projection = Mat4.orthogonal_projection(0, 1280, 0, 720, -100, 100)
+
+    def clear(self):
+        """Clear the offscreen buffer"""
+        self.fbo.clear()
+
+    def get_image(self) -> PIL.Image.Image:
+        """Get the offscreen buffer as an image"""
+        region = LBWH(0, 0, 1280, 720)
+        return self.read_region_image(region)
+
+    def read_pixel(self, x, y, components=3) -> tuple[int, int, int, int] | tuple[int, int, int]:
+        """Read a single RGBA pixel from the offscreen buffer"""
+        data = self.fbo.read(components=4, viewport=(x, y, 1, 1))
+        return (
+            int.from_bytes(data[0:4], "little"),
+            int.from_bytes(data[4:8], "little"),
+            int.from_bytes(data[8:12], "little"),
+            int.from_bytes(data[12:16], "little"),
+        )
+
+    def read_region(self, rect: Rect) -> list[tuple[int, int, int, int]]:
+        """Read a region of RGBA pixels from the offscreen buffer"""
+        data = self.fbo.read(components=4, viewport=(rect.left, rect.bottom, rect.width, rect.height))
+        return [
+            (
+                int.from_bytes(data[i : i + 4], "little"),
+                int.from_bytes(data[i + 4 : i + 8], "little"),
+                int.from_bytes(data[i + 8 : i + 12], "little"),
+                int.from_bytes(data[i + 12 : i + 16], "little"),
+            )
+            for i in range(0, len(data), 16)
+        ]
+
+    def read_region_bytes(self, rect: Rect, components=3) -> bytes:
+        """Read a region of RGBA pixels from the offscreen buffer as bytes"""
+        return self.fbo.read(
+            components=components,
+            viewport=(rect.left, rect.bottom, rect.width, rect.height),
+        )
+
+    def read_region_image(self, rect: Rect, components=3) -> PIL.Image.Image:
+        im = PIL.Image.frombytes(
+            "RGBA" if components == 4 else "RGB",
+            (int(rect.width), int(rect.height)),
+            self.read_region_bytes(rect, components=components),
+        )
+        return im.transpose(PIL.Image.Transpose.FLIP_TOP_BOTTOM)
+
+    def assert_images_almost_equal(self, image1: PIL.Image.Image, image2: PIL.Image.Image, abs=2):
+        """Assert that two images are almost equal"""
+        assert image1.size == image2.size, f"{image1.size} != {image2.size}"
+        assert image1.mode == image2.mode, f"{image1.mode} != {image2.mode}"
+        assert image1.tobytes() == pytest.approx(image2.tobytes(), abs=abs)
+
+
+@pytest.fixture(scope="function")
+def offscreen():
+    """
+    Offscreen rendering tools.
+
+    A global offscreen 720p target that can be used for testing
+    """
+    global OFFSCREEN
+
+    window = create_window()
+    arcade.set_window(window)
+    prepare_window(window)
+
+    if OFFSCREEN is None:
+        OFFSCREEN = Offscreen()
+
+    OFFSCREEN.clear()
+    OFFSCREEN.use()
+    yield OFFSCREEN
+    window.use()
