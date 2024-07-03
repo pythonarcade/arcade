@@ -3,9 +3,8 @@ from unittest.mock import Mock
 import pytest
 from pyglet.math import Vec2
 
-from arcade import LBWH
 from arcade.gui import UILabel
-from arcade.types import Color
+from arcade.types import Color, LBWH
 
 
 def test_uilabel_inits_with_text_size(window):

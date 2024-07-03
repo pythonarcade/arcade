@@ -193,11 +193,10 @@ class NinePatchTexture:
         """The height of the texture in pixels."""
         return self.texture.height
 
-    def draw_sized(
+    def draw_rect(
         self,
         *,
-        position: tuple[float, float] = (0.0, 0.0),
-        size: tuple[float, float],
+        rect: arcade.types.Rect,
         pixelated: bool = False,
         **kwargs,
     ):
@@ -220,10 +219,10 @@ class NinePatchTexture:
         else:
             self._atlas.texture.filter = self._ctx.LINEAR, self._ctx.LINEAR
 
-        self.program["position"] = position
+        self.program["position"] = rect.bottom_left
         self.program["start"] = self._left, self._bottom
         self.program["end"] = self.width - self._right, self.height - self._top
-        self.program["size"] = size
+        self.program["size"] = rect.size
         self.program["t_size"] = self._texture.size
 
         self._atlas.use_uv_texture(0)

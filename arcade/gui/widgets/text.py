@@ -8,7 +8,6 @@ from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 
 import arcade
-from arcade import LBWH
 from arcade.gui.events import (
     UIEvent,
     UIMouseDragEvent,
@@ -23,7 +22,7 @@ from arcade.gui.property import bind
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.types import RGBA255, Color, RGBOrA255
+from arcade.types import RGBA255, Color, RGBOrA255, LBWH
 
 
 class UILabel(UIWidget):
@@ -424,9 +423,7 @@ class UIInputText(UIWidget):
                 x = int(event.x - self.left - self.LAYOUT_OFFSET)
                 y = int(event.y - self.bottom)
                 if isinstance(event, UIMouseDragEvent):
-                    self.caret.on_mouse_drag(
-                        x, y, event.dx, event.dy, event.buttons, event.modifiers
-                    )
+                    self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
                     self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)

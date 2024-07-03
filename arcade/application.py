@@ -21,8 +21,7 @@ from arcade import SectionManager, get_display_size, set_window
 from arcade.clock import Clock, FixedClock
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color, RGBANormalized, RGBOrA255
-from arcade.types.rect import LBWH, Rect
+from arcade.types import Color, RGBANormalized, RGBOrA255, LBWH, Rect
 from arcade.utils import is_raspberry_pi
 
 LOG = logging.getLogger(__name__)
@@ -244,7 +243,6 @@ class Window(pyglet.window.Window):
             self.center_window()
 
         if enable_polling:
-
             self.keyboard = pyglet.window.key.KeyStateHandler()
 
             if pyglet.options["headless"]:
@@ -477,9 +475,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_drag(
-        self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
-    ) -> Optional[bool]:
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int) -> Optional[bool]:
         """
         Called repeatedly while the mouse moves with a button down.
 
@@ -795,9 +791,7 @@ class Window(pyglet.window.Window):
         :param new_view: View to show
         """
         if not isinstance(new_view, View):
-            raise TypeError(
-                f"Window.show_view() takes an arcade.View," f"but it got a {type(new_view)}."
-            )
+            raise TypeError(f"Window.show_view() takes an arcade.View," f"but it got a {type(new_view)}.")
 
         self._ctx.screen.use()
         self.viewport = (0, 0, self.width, self.height)
@@ -1192,9 +1186,7 @@ class View:
         """
         pass
 
-    def on_mouse_drag(
-        self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int
-    ) -> Optional[bool]:
+    def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int) -> Optional[bool]:
         """
         Override this function to add mouse button functionality.
 
