@@ -328,10 +328,13 @@ class PhysicsEngineSimple:
     def walls(self) -> list[SpriteList]:
         """Which :py:class:`.SpriteList` instances block player movement.
 
-        Any sprite in these should not move. Doing so incurs performance
-        issues. See :py:class:`PhysicsEnginePlatformer.walls` for further
-        information. For platformer physics such as moving platforms and
-        gravity, consider using the :py:class:`PhysicsEnginePlatformer`.
+        .. important:: Avoid moving sprites in these lists!
+
+                       Doing so incurs performance costs.
+
+        See :py:class:`PhysicsEnginePlatformer.walls` for further information.
+        For platformer physics such as moving platforms and gravity, consider
+        using the :py:class:`PhysicsEnginePlatformer`.
         """
         return self._walls
 
