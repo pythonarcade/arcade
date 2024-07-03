@@ -100,9 +100,21 @@ class Sprite(BasicSprite, PymunkMixin):
         self._properties: Optional[dict[str, Any]] = None
 
         # Boundaries for moving platforms in tilemaps
+        #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
+        #: uses this as the left boundary for moving
+        #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
         self.boundary_left: Optional[float] = None
+        #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
+        #: uses this as the right boundary for moving
+        #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
         self.boundary_right: Optional[float] = None
+        #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
+        #: uses this as the top boundary for moving
+        #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
         self.boundary_top: Optional[float] = None
+        #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
+        #: uses this as the top boundary for moving
+        #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
         self.boundary_bottom: Optional[float] = None
 
         self.cur_texture_index: int = 0
