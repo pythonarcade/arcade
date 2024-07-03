@@ -9,6 +9,7 @@ if os.environ.get("ARCADE_PYTEST_USE_RUST"):
 
 import pytest
 import PIL.Image
+from pyglet.math import Mat4
 
 import arcade
 from arcade import Rect, LBWH
@@ -302,6 +303,11 @@ class Offscreen:
         """Clear the offscreen buffer"""
         self.fbo.clear()
 
+    def get_image(self) -> PIL.Image.Image:
+        """Get the offscreen buffer as an image"""
+        region = LBWH(0, 0, 1280, 720)
+        return self.read_region_image(region)
+
     def read_pixel(self, x, y, components=3) -> tuple[int, int, int, int] | tuple[int, int, int]:
         """Read a single RGBA pixel from the offscreen buffer"""
         data = self.fbo.read(components=4, viewport=(x, y, 1, 1))
@@ -365,5 +371,6 @@ def offscreen():
 
     OFFSCREEN.clear()
     OFFSCREEN.fbo.use()
+    WINDOW.projection = Mat4.orthogonal_projection(0, 1280, 0, 720, -1, 1)
     yield OFFSCREEN
     window.use()
