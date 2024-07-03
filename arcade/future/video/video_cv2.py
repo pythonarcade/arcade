@@ -151,6 +151,6 @@ class CV2PlayerView(arcade.View):
 
 
 if __name__ == "__main__":
-    window = arcade.Window(800, 600, "Video Player")
+    window = arcade.Window(1280, 720, "Video Player")
     window.show_view(CV2PlayerView(":resources:video/earth.mp4", loop=True, resize=False))
     window.run()
