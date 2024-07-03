@@ -245,6 +245,7 @@ def draw_rect_outline(
     """
 
     HALF_BORDER = border_width / 2
+    # Extremely unrolled code below
 
     # fmt: off
     left   = rect.left
@@ -256,40 +257,56 @@ def draw_rect_outline(
 
     # o = outer, i = inner
     #
-    # o_lt                            o_rt
-    #  +-------------------------------+
-    #  |  i_lt                   i_rt  |
-    #  |    +---------------------+    |
-    #  |    |                     |    |
-    #  |    |                     |    |
-    #  |    |                     |    |
-    #  |    +---------------------+    |
-    #  |  i_lb                   i_rb  |
-    #  +-------------------------------+
-    # o_lb                            o_rb
+    # o_left, o_top                  o_right, o_top
+    #  +----------------------------------------+
+    #  | i_left, i_top          i_right, i_top  |
+    #  |  +----------------------------------+  |
+    #  |  |                                  |  |
+    #  |  |                                  |  |
+    #  |  |                                  |  |
+    #  |  +----------------------------------+  |
+    #  | i_left, i_bottom    i_right , i_bottom |
+    #  +----------------------------------------+
+    # o_left, o_bottom               o_right, o_bottom
 
-    # Inner vertices
-    i_lb = left  + HALF_BORDER, bottom + HALF_BORDER
-    i_rb = right - HALF_BORDER, bottom + HALF_BORDER
-    i_rt = right - HALF_BORDER, top    - HALF_BORDER
-    i_lt = left  + HALF_BORDER, top    - HALF_BORDER
+    i_left   = left   + HALF_BORDER
+    i_bottom = bottom + HALF_BORDER
+    i_right  = right  - HALF_BORDER
+    i_top    = top    - HALF_BORDER
 
-    # Outer vertices
-    o_lb = left  - HALF_BORDER, bottom - HALF_BORDER
-    o_rb = right + HALF_BORDER, bottom - HALF_BORDER
-    o_rt = right + HALF_BORDER, top    + HALF_BORDER
-    o_lt = left  - HALF_BORDER, top    + HALF_BORDER
+    o_left   = left   - HALF_BORDER
+    o_bottom = bottom - HALF_BORDER
+    o_right  = right  + HALF_BORDER
+    o_top    = top    + HALF_BORDER
+
+    # This is intentionally unrolled to minimize repacking tuples
+    if tilt_angle == 0:
+        point_list: PointList = (
+            (o_left  , o_top   ),
+            (i_left  , i_top   ),
+            (o_right , o_top   ),
+            (i_right , i_top   ),
+            (o_right , o_bottom),
+            (i_right , i_bottom),
+            (o_left  , o_bottom),
+            (i_left  , i_bottom),
+            (o_left  , i_top   ),
+            (i_left  , i_top   )
+        )
+    else:
+        point_list: PointList = (
+            rotate_point(o_left   , o_top   , x, y, tilt_angle),
+            rotate_point(i_left   , i_top   , x, y, tilt_angle),
+            rotate_point(o_right  , o_top   , x, y, tilt_angle),
+            rotate_point(i_right  , i_top   , x, y, tilt_angle),
+            rotate_point(o_right  , o_bottom, x, y, tilt_angle),
+            rotate_point(i_right  , i_bottom, x, y, tilt_angle),
+            rotate_point(o_left   , o_bottom, x, y, tilt_angle),
+            rotate_point(i_left   , i_bottom, x, y, tilt_angle),
+            rotate_point(o_left   , i_top   , x, y, tilt_angle),
+            rotate_point(i_left   , i_top   , x, y, tilt_angle)
+        )
     # fmt: on
-
-    point_list: Point2List = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
-
-    if tilt_angle != 0:
-        point_list_2 = []
-        for point in point_list:
-            new_point = rotate_point(point[0], point[1], x, y, tilt_angle)
-            point_list_2.append(new_point)
-        point_list = point_list_2
-
     _generic_draw_line_strip(point_list, color, gl.TRIANGLE_STRIP)
 
 
