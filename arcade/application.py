@@ -611,12 +611,9 @@ class Window(pyglet.window.Window):
         :param width: New width
         :param height: New height
         """
-        # NOTE: When a second window is opened pyglet will
-        #       dispatch on_resize during the window constructor.
-        #       The arcade context is not created at that time
-        if hasattr(self, "_ctx"):
-            # Retain projection scrolling if applied
-            self.viewport = (0, 0, width, height)
+
+        # Retain viewport
+        self.viewport = (0, 0, width, height)
 
         return False
 
