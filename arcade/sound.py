@@ -4,6 +4,7 @@ Sound Library.
 
 from __future__ import annotations
 
+import logging
 import math
 import os
 from pathlib import Path
@@ -23,6 +24,8 @@ else:
 import pyglet.media as media
 
 __all__ = ["Sound", "load_sound", "play_sound", "stop_sound"]
+
+logger = logging.getLogger("arcade")
 
 
 class Sound:
@@ -202,7 +205,7 @@ def play_sound(
     :param speed: Change the speed of the sound which also changes pitch, default 1.0
     """
     if sound is None:
-        print("Unable to play sound, no data passed in.")
+        logger.warning("Unable to play sound, no data passed in.")
         return None
 
     elif not isinstance(sound, Sound):
@@ -215,7 +218,7 @@ def play_sound(
     try:
         return sound.play(volume, pan, loop, speed)
     except Exception as ex:
-        print("Error playing sound.", ex)
+        logging.warn("Error playing sound.", ex)
         return None
 
 

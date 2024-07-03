@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import bisect
+import logging
 import math
 from typing import Optional
 
@@ -13,6 +14,8 @@ from .enums import (
     FACE_UP,
 )
 from .sprite import Sprite
+
+logger = logging.getLogger("arcade")
 
 
 class TextureKeyframe:
@@ -334,7 +337,7 @@ class AnimatedWalkingSprite(Sprite):
             self.texture = texture_list[self.cur_texture_index]
 
         if self._texture is None:
-            print("Error, no texture set")
+            logger.warn("Error, no texture set")
         else:
             self.width = self._texture.width * self.scale_x
             self.height = self._texture.height * self.scale_x
