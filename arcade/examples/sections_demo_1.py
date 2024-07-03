@@ -75,7 +75,7 @@ class ScreenPart(arcade.Section):
                              self.top - 50, arcade.color.BLACK, 16)
 
         # draw the box
-        self.box.draw()
+        arcade.draw_sprite(self.box)
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float,
                       _buttons: int, _modifiers: int):

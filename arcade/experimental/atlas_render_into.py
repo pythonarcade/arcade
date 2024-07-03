@@ -13,12 +13,12 @@ class AtlasRenderDemo(arcade.Window):
 
     def __init__(self):
         super().__init__(1280, 720, "Atlas Render Demo")
-        self.atlas = arcade.TextureAtlas((600, 600))
+        self.atlas = arcade.DefaultTextureAtlas((600, 600))
 
         self.texture_1 = arcade.Texture.create_empty("render_area_1", size=(256, 256))
         self.texture_2 = arcade.Texture.create_empty("render_area_2", size=(256, 256))
-        self.sprite_1 = arcade.Sprite(self.texture_1, center_x=200, center_y=300)
-        self.sprite_2 = arcade.Sprite(self.texture_2, center_x=600, center_y=300)
+        self.sprite_1 = arcade.Sprite(self.texture_1, center_x=400, center_y=360)
+        self.sprite_2 = arcade.Sprite(self.texture_2, center_x=850, center_y=360)
 
         self.spritelist = arcade.SpriteList(atlas=self.atlas)
         self.spritelist.extend([self.sprite_1, self.sprite_2])

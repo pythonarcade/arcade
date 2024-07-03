@@ -91,7 +91,6 @@ class PygameInteraction(arcade.Window):
     def __init__(self):
         super().__init__(512, 512, "Pygame Interaction")
         self.surface_texture = SurfaceTexture(self.ctx, size=(160, 160))
-        self.time = 0
 
     def on_draw(self):
         self.clear()
@@ -115,10 +114,6 @@ class PygameInteraction(arcade.Window):
         # Write the surface to the texture and draw it
         self.surface_texture.write_surface_to_texture()
         self.surface_texture.draw()
-
-    def on_update(self, delta_time):
-        # self.time += delta_time
-        pass
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:

@@ -80,7 +80,7 @@ class VideoPlayerCV2:
         self.time: float = 0.0
 
         # Get the number of frames in the video
-        self.frames: int = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.frames: int = self.video.get(cv2.CAP_PROP_FRAME_COUNT)  # type: ignore
 
         # Create and configure the OpenGL texture for the video
         self.texture = self.ctx.texture((self._width, self._height), components=3)
@@ -151,6 +151,6 @@ class CV2PlayerView(arcade.View):
 
 
 if __name__ == "__main__":
-    window = arcade.Window(800, 600, "Video Player")
+    window = arcade.Window(1280, 720, "Video Player")
     window.show_view(CV2PlayerView(":resources:video/earth.mp4", loop=True, resize=False))
     window.run()

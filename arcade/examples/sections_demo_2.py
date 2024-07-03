@@ -74,7 +74,7 @@ class Player(arcade.Section):
         )
 
         # draw the paddle
-        self.paddle.draw()
+        arcade.draw_sprite(self.paddle)
 
     def on_key_press(self, symbol: int, modifiers: int):
         # set the paddle direction and movement speed
@@ -166,7 +166,7 @@ class Pong(arcade.View):
     def on_draw(self):
         self.clear(color=BEAU_BLUE)  # clear the screen
 
-        self.ball.draw()  # draw the ball
+        arcade.draw_sprite(self.ball)  # draw the ball
 
         half_window_x = self.window.width / 2  # middle x
 
