@@ -39,15 +39,20 @@ class MyCoinGame(UIView):
         self.ingame_camera = arcade.Camera2D()
         self.ingame_camera.bottom_left = 100, 100
 
-        # timer setup
-        self.total_time = 0
+        # in-game counter
+        self._total_time = 0
+        self._last_coin_spawn = 0
+        self._coins_collected = 0
+
+        # upgradable player values
+        self._player_speed = 5
 
         # setup in-game objects
         self.sprites = arcade.SpriteList()
 
         self.game_area = arcade.SpriteSolidColor(
-            width=1280,
-            height=720,
+            width=1300,
+            height=730,
             color=arcade.color.GRAY_ASPARAGUS,
             center_x=1280 / 2,
             center_y=720 / 2,
@@ -75,8 +80,26 @@ class MyCoinGame(UIView):
 
         # UI setup, we use UIView, which automatically adds UIManager as self.ui
         anchor = self.ui.add(UIAnchorLayout())
-        button = UIFlatButton(text="Add a coin")
+        button = UIFlatButton(text="Get faster: 5 Coins", width=200, height=40)
         anchor.add(button, anchor_x="center_x", anchor_y="bottom", align_y=10)
+
+        @button.event("on_click")
+        def upgrade_speed(event: UIOnClickEvent):
+            cost = self._player_speed
+            if self._coins_collected >= cost:
+                self._coins_collected -= cost
+                self._player_speed += 1
+                button.text = f"Get faster: {self._player_speed} Coins"
+                print("Speed upgraded")
+
+        # position top center, with a 40px offset
+        self.out_of_game_area = anchor.add(
+            UILabel(text="Out of game area", font_size=32),
+            anchor_x="center",
+            anchor_y="top",
+            align_y=-40,
+        )
+        self.out_of_game_area.visible = False
 
         self.coin_counter = anchor.add(
             UILabel(text="Collected coins 0"),
@@ -85,15 +108,11 @@ class MyCoinGame(UIView):
             align_y=-10,
             align_x=10,
         )
-        self.coin_counter.with_background(color=arcade.color.TRANSPARENT_BLACK)
-
-        # Connect button to a function
-        @button.event("on_click")
-        def add_coin(event: UIOnClickEvent):
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=0.5)
-            coin.center_x = random.randint(0, 1280)
-            coin.center_y = random.randint(0, 720)
-            self.coins.append(coin)
+        self.coin_counter.with_background(
+            color=arcade.color.TRANSPARENT_BLACK
+            # giving a background will make the label way more performant,
+            # because it will not re-render the whole UI after a text change
+        )
 
     def on_draw_before_ui(self):
         self.ingame_camera.use()  # use the in-game camera to draw in-game objects
@@ -101,17 +120,29 @@ class MyCoinGame(UIView):
         self.coins.draw()
 
     def on_update(self, delta_time: float) -> Optional[bool]:
-        self.total_time += delta_time
+        self._total_time += delta_time
+        self._last_coin_spawn += delta_time
+
+        # spawn new coins
+        if self._last_coin_spawn > 3:
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png",
+                scale=0.5,
+                center_x=random.randint(0, 1280),
+                center_y=random.randint(0, 720),
+            )
+            self.coins.append(coin)
+            self._last_coin_spawn = 0
 
         # move the player sprite
         if {arcade.key.LEFT, arcade.key.A} & self.keys:
-            self.player.left -= 5
+            self.player.left -= self._player_speed
         if {arcade.key.RIGHT, arcade.key.D} & self.keys:
-            self.player.left += 5
+            self.player.left += self._player_speed
         if {arcade.key.UP, arcade.key.W} & self.keys:
-            self.player.top += 5
+            self.player.top += self._player_speed
         if {arcade.key.DOWN, arcade.key.S} & self.keys:
-            self.player.top -= 5
+            self.player.top -= self._player_speed
 
         # move the camera with the player
         self.ingame_camera.position = self.player.position
@@ -120,8 +151,20 @@ class MyCoinGame(UIView):
         collisions = self.player.collides_with_list(self.coins)
         for coin in collisions:
             coin.remove_from_sprite_lists()
+            self._coins_collected += 1
             print("Coin collected")
 
+        # update the coin counter
+        self.coin_counter.text = f"Collected coins {self._coins_collected}"
+        self.coin_counter.fit_content()
+
+        # inform player if they are out of the game area
+        if not self.game_area.collides_with_sprite(self.player):
+            self.out_of_game_area.visible = True
+        else:
+            self.out_of_game_area.visible = False
+
+        # test to rotate the UI camera
         # self.ui.camera.angle = self.total_time * 100  # rotate the UI camera
 
         return False
