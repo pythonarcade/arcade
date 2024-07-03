@@ -44,7 +44,7 @@ RESIZE_STEP = 128
 # texture anyway, so more rows can be added.
 UV_TEXTURE_WIDTH = 4096
 
-LOG = logging.getLogger("atlas")
+LOG = logging.getLogger(__name__)
 # LOG.handlers = [logging.StreamHandler()]
 # LOG.setLevel(logging.INFO)
 
