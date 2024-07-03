@@ -10,12 +10,25 @@ from arcade.types.rect import Rect
 
 
 class SpatialHash(Generic[SpriteType]):
-    """
-    Structure for fast collision checking with sprites.
+    """A data structure best for collision checks with non-moving sprites.
 
-    See: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
+    It subdivides space into a grid of squares, each with sides of length
+    :py:attr:`cell_size`. Moving a sprite from one place to another is the
+    same as removing and adding it. Although moving a few can be okay, it
+    can quickly add up and slow down a game.
 
-    :param cell_size: Size (width and height) of the cells in the spatial hash
+    .. _classic gamedev.net article: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
+    .. _redblob_hashing: https://www.redblobgames.com/x/1730-spatial-hash/
+
+    To learn more about spatial hashing, please see the following:
+
+    * A `RedBlob Games interactive demo <redblobl_hashing>`_ (see top panel)
+    * Arcade's tips on :ref:`collision_detection_performance`
+    * For an in-depth look, see this `classic gamedev.net article`_
+
+    Args:
+        cell_size:
+            The width and height of each square in the grid.
     """
 
     def __init__(self, cell_size: int) -> None:
@@ -25,7 +38,14 @@ class SpatialHash(Generic[SpriteType]):
         if not isinstance(cell_size, int):
             raise ValueError("cell_size must be an integer")
 
-        self.cell_size = cell_size
+        self.cell_size: int = cell_size
+        """How big each grid cell is on each side.
+
+        .. warning:: Do not change this after creation!
+
+        Since each cell is a square, they're used as both the
+        width and height.
+        """
         # Buckets of sprites per cell
         self.contents: dict[IPoint, set[SpriteType]] = {}
         # All the buckets a sprite is in.
