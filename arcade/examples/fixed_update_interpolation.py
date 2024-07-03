@@ -70,7 +70,7 @@ class Game(arcade.Window):
         self.unfixed_sprite.center_y += self.unfixed_sprite.change_y * delta_time
 
         self.interpolated_sprite.center_y = arcade.math.lerp(
-            self.last_position, self.fixed_sprite.center_y, self.accumulated_fraction
+            self.last_position, self.fixed_sprite.center_y, self.global_fixed_clock.fraction
         )
 
     def on_draw(self):
