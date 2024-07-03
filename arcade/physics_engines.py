@@ -9,11 +9,12 @@ import math
 from typing import Iterable, Optional, Union
 
 from arcade import (
+    BasicSprite,
     Sprite,
     SpriteList,
     SpriteType,
     check_for_collision,
-    check_for_collision_with_lists, BasicSprite,
+    check_for_collision_with_lists,
 )
 from arcade.math import get_distance
 
@@ -83,9 +84,7 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
 
 
 def _move_sprite(
-        moving_sprite: Sprite,
-        can_collide: Iterable[SpriteList[SpriteType]],
-        ramp_up: bool
+    moving_sprite: Sprite, can_collide: Iterable[SpriteList[SpriteType]], ramp_up: bool
 ) -> list[SpriteType]:
     """Update a sprite's angle and position, returning a list of collisions.
 
@@ -231,7 +230,9 @@ def _move_sprite(
                             # print("Ramp up check")
                             cur_y_change -= 1
                             moving_sprite.center_y = almost_original_y + cur_y_change
-                            collision_check = check_for_collision_with_lists(moving_sprite, can_collide)
+                            collision_check = check_for_collision_with_lists(
+                                moving_sprite, can_collide
+                            )
                         cur_y_change += 1
                         collision_check = []
 
@@ -277,7 +278,9 @@ def _move_sprite(
     return complete_hit_list
 
 
-def _add_to_list(dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]) -> None:
+def _add_to_list(
+    dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]
+) -> None:
     if not source:
         return
     elif isinstance(source, SpriteList):
@@ -508,6 +511,7 @@ class PhysicsEnginePlatformer:
         * :py:meth:`enable_multi_jump`
         * :py:meth:`disable_multi_jump`
         """
+
     # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
     # TODO: figure out what do do with 15_ladders_moving_platforms.py
     # It's no longer used by any exampple or tutorial file
@@ -570,7 +574,9 @@ class PhysicsEnginePlatformer:
         return self._platforms
 
     @platforms.setter
-    def platforms(self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
+    def platforms(
+        self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None
+    ) -> None:
         if platforms:
             _add_to_list(self._platforms, platforms)
         else:
