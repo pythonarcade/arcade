@@ -11,11 +11,12 @@ python -m arcade.gui.examples.gui_and_camera
 
 from __future__ import annotations
 
+import math
 import random
 from typing import Optional
 
 import arcade
-from arcade.gui import UIView, UIFlatButton, UIOnClickEvent, UILabel
+from arcade.gui import UIView, UIFlatButton, UIOnClickEvent, UILabel, UIBoxLayout
 from arcade.gui.widgets.layout import UIAnchorLayout
 
 
@@ -41,7 +42,10 @@ class MyCoinGame(UIView):
 
         # in-game counter
         self._total_time = 0
+        self._game_duration = 60
+        self._game_over = False
         self._last_coin_spawn = 0
+        self._coin_spawn_delay = 3
         self._coins_collected = 0
 
         # upgradable player values
@@ -69,28 +73,50 @@ class MyCoinGame(UIView):
         self.sprites.append(self.player)
 
         self.coins = arcade.SpriteList()
-        for i in range(9):
+        for i in range(12):
+            # place coins in a circle around the player, radius =100
             coin = arcade.Sprite(
                 ":resources:images/items/coinGold.png",
                 scale=0.5,
-                center_x=150 * i,
-                center_y=720 / 2,
+                center_x=1280 / 2 + 200 * math.cos(math.radians(i * 40)),
+                center_y=720 / 2 + 200 * math.sin(math.radians(i * 40)),
             )
             self.coins.append(coin)
 
         # UI setup, we use UIView, which automatically adds UIManager as self.ui
         anchor = self.ui.add(UIAnchorLayout())
-        button = UIFlatButton(text="Get faster: 5 Coins", width=200, height=40)
-        anchor.add(button, anchor_x="center_x", anchor_y="bottom", align_y=10)
 
-        @button.event("on_click")
+        shop_buttons = anchor.add(
+            UIBoxLayout(vertical=False, space_between=10),
+            anchor_x="center",
+            anchor_y="bottom",
+            align_y=10,
+        )
+
+        # speed upgrade button
+        speed_upgrade = UIFlatButton(text="Upgrade Speed (5C)", width=200, height=40)
+        shop_buttons.add(speed_upgrade)
+
+        @speed_upgrade.event("on_click")
         def upgrade_speed(event: UIOnClickEvent):
             cost = self._player_speed
             if self._coins_collected >= cost:
                 self._coins_collected -= cost
                 self._player_speed += 1
-                button.text = f"Get faster: {self._player_speed} Coins"
+                speed_upgrade.text = f"Update Speed ({self._player_speed}C)"
                 print("Speed upgraded")
+
+        # update spawn rate button
+        spawn_rate_upgrade = UIFlatButton(text="Upgrade spawn rate: 10C", width=300, height=40)
+        shop_buttons.add(spawn_rate_upgrade)
+
+        @spawn_rate_upgrade.event("on_click")
+        def upgrade_spawn_rate(event: UIOnClickEvent):
+            cost = 10
+            if self._coins_collected >= cost:
+                self._coins_collected -= cost
+                self._coin_spawn_delay -= 0.5
+                print("Spawn rate upgraded")
 
         # position top center, with a 40px offset
         self.out_of_game_area = anchor.add(
@@ -102,7 +128,7 @@ class MyCoinGame(UIView):
         self.out_of_game_area.visible = False
 
         self.coin_counter = anchor.add(
-            UILabel(text="Collected coins 0"),
+            UILabel(text="Collected coins 0", size_hint=(0, 0)),
             anchor_x="left",
             anchor_y="top",
             align_y=-10,
@@ -114,17 +140,56 @@ class MyCoinGame(UIView):
             # because it will not re-render the whole UI after a text change
         )
 
+        # Game timer
+        self.timer = anchor.add(
+            UILabel(
+                text="Time 30.0",
+                font_size=15,
+                size_hint=(0, 0),  # take the whole width to prevent linebreaks
+            ),
+            anchor_x="center",
+            anchor_y="top",
+            align_y=-10,
+            align_x=-10,
+        )
+        self.timer.with_background(color=arcade.color.TRANSPARENT_BLACK)
+
     def on_draw_before_ui(self):
         self.ingame_camera.use()  # use the in-game camera to draw in-game objects
         self.sprites.draw()
         self.coins.draw()
 
     def on_update(self, delta_time: float) -> Optional[bool]:
+        if self._total_time > self._game_duration:
+            # ad new UI label to show the end of the game
+            game_over_text = self.ui.add(
+                UILabel(
+                    text="End of game!\n"
+                    f"You achieved {self._coins_collected} coins!\n"
+                    "Press ESC to exit.\n"
+                    "Use ENTER to restart.",
+                    font_size=32,
+                    bold=True,
+                    multiline=True,
+                    align="center",
+                    text_color=arcade.color.WHITE,
+                    size_hint=(0, 0),
+                ),
+            )
+            game_over_text.with_padding(all=10)
+            game_over_text.with_background(color=arcade.types.Color(50, 50, 50, 120))
+            game_over_text.center_on_screen()
+
+            return True
+
         self._total_time += delta_time
         self._last_coin_spawn += delta_time
 
+        # update the timer
+        self.timer.text = f"Time {self._game_duration - self._total_time:.1f}"
+
         # spawn new coins
-        if self._last_coin_spawn > 3:
+        if self._last_coin_spawn > self._coin_spawn_delay:
             coin = arcade.Sprite(
                 ":resources:images/items/coinGold.png",
                 scale=0.5,
@@ -132,7 +197,7 @@ class MyCoinGame(UIView):
                 center_y=random.randint(0, 720),
             )
             self.coins.append(coin)
-            self._last_coin_spawn = 0
+            self._last_coin_spawn -= self._coin_spawn_delay
 
         # move the player sprite
         if {arcade.key.LEFT, arcade.key.A} & self.keys:
@@ -156,7 +221,6 @@ class MyCoinGame(UIView):
 
         # update the coin counter
         self.coin_counter.text = f"Collected coins {self._coins_collected}"
-        self.coin_counter.fit_content()
 
         # inform player if they are out of the game area
         if not self.game_area.collides_with_sprite(self.player):
@@ -164,17 +228,25 @@ class MyCoinGame(UIView):
         else:
             self.out_of_game_area.visible = False
 
-        # test to rotate the UI camera
-        # self.ui.camera.angle = self.total_time * 100  # rotate the UI camera
+        # slide in the UI from bottom, until total time reaches 2 seconds
+        progress = min(1.0, self._total_time / 2)
+        self.ui.camera.bottom_left = (0, 50 * (1 - progress))
 
         return False
 
     def on_key_press(self, symbol: int, modifiers: int) -> Optional[bool]:
         self.keys.add(symbol)
+
+        if symbol == arcade.key.ESCAPE:
+            arcade.close_window()
+        if symbol == arcade.key.ENTER:
+            self.window.show_view(MyCoinGame())
+
         return False
 
     def on_key_release(self, symbol: int, modifiers: int) -> Optional[bool]:
-        self.keys.remove(symbol)
+        if symbol in self.keys:
+            self.keys.remove(symbol)
         return False
 
 

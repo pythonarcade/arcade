@@ -346,7 +346,7 @@ class UIManager(EventDispatcher):
         It uses the internal camera's map_coordinate methods, and should work with
         all transformations possible with the basic orthographic camera.
         """
-        x_, y_, *c = self.camera.project((x, y))  # convert screen to ui coordinates
+        x_, y_, *c = self.camera.unproject((x, y))  # convert screen to ui coordinates
         return x_, y_
 
     def on_event(self, event) -> Union[bool, None]:
@@ -363,7 +363,7 @@ class UIManager(EventDispatcher):
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
-        return self.dispatch_ui_event(UIMouseMovementEvent(self, round(x_), round(y), dx, dy))
+        return self.dispatch_ui_event(UIMouseMovementEvent(self, round(x_), round(y_), dx, dy))
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         x_, y_ = self.adjust_mouse_coordinates(x, y)
