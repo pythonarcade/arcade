@@ -33,8 +33,6 @@ def draw_texture_rect(
     """
     ctx = get_window().ctx
 
-    # It's important to be explicit about the blend state in case blending
-    # for some reason is enabled globally already
     if blend:
         ctx.enable(ctx.BLEND)
     else:
