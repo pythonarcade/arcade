@@ -288,14 +288,25 @@ def _add_to_list(dest: list[SpriteList], source: Optional[SpriteList | Iterable[
 
 @copy_dunders_unimplemented
 class PhysicsEngineSimple:
-    """
-    Simplistic physics engine for use in games without gravity, such as top-down
-    games. It is easier to get
-    started with this engine than more sophisticated engines like PyMunk.
+    """A basic single-player physics engine best for top-down games.
 
-    :param player_sprite: The moving sprite
-    :param  Union[SpriteList, Iterable[SpriteList] walls: The sprites it can't move through.
-        This can be one or multiple spritelists.
+    This is the easiest engine to get started with. It's best when:
+
+    * You need a top-down view
+    * You need to collide with non-moving terrain
+    * You don't need anything else
+
+    For side-scrolling games focused on jumping puzzles, you may want
+    the :py:class:`PlatformerPhysicsEngine` instead. Experienced users
+    may want to try the :py:class:`~arcade.pymunk_phyics_engine.PymunkPhysicsEngine`.
+
+    Args:
+        player_sprite:
+            A sprite which will be controlled by the player.
+
+        walls:
+            A :py:class:`.SpriteList` or :py:class:`list` of them which
+            should stop player movement.
     """
 
     def __init__(
@@ -304,6 +315,7 @@ class PhysicsEngineSimple:
         walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
     ) -> None:
         self.player_sprite: Sprite = player_sprite
+        """The player-controlled :py:class:`.Sprite`."""
         self._walls: list[SpriteList] = []
 
         if walls:
@@ -311,6 +323,11 @@ class PhysicsEngineSimple:
 
     @property
     def walls(self) -> list[SpriteList]:
+        """Get or adjust which :py:class:`.SpriteList`s to use as terrain.
+
+        These should not move. For platformer physics, consider using the
+        :py:class:`PhysicsEnginePlatformer` instead.
+        """
         return self._walls
 
     @walls.setter
@@ -325,10 +342,11 @@ class PhysicsEngineSimple:
         self._walls.clear()
 
     def update(self) -> list[SpriteType]:
-        """
-        Move everything and resolve collisions.
+        """Move :py:attr:`player_sprite` and return any colliding sprites.
 
-        :Returns: SpriteList with all sprites contacted. Empty list if no sprites.
+        Returns:
+            A :py:class:`list` of the colliding sprites. If there were
+            zero collisions, it will be empty.
         """
 
         return _move_sprite(self.player_sprite, self.walls, ramp_up=False)
