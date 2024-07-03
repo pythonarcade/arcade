@@ -278,7 +278,7 @@ def _move_sprite(
 
 
 def _add_to_list(dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]) -> None:
-    if source is None:
+    if not source:
         return
     elif isinstance(source, SpriteList):
         dest.append(source)
