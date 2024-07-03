@@ -299,6 +299,11 @@ class Offscreen:
         self.texture = self.ctx.texture((1280, 720), components=4)
         self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
 
+    def use(self):
+        """Use the offscreen buffer"""
+        self.fbo.use()
+        WINDOW.projection = Mat4.orthogonal_projection(0, 1280, 0, 720, -100, 100)
+
     def clear(self):
         """Clear the offscreen buffer"""
         self.fbo.clear()
@@ -370,7 +375,6 @@ def offscreen():
         OFFSCREEN = Offscreen()
 
     OFFSCREEN.clear()
-    OFFSCREEN.fbo.use()
-    WINDOW.projection = Mat4.orthogonal_projection(0, 1280, 0, 720, -1, 1)
+    OFFSCREEN.use()
     yield OFFSCREEN
     window.use()
