@@ -109,7 +109,9 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         if self.width == 0:
             self.norm_value = 0
         else:
-            self.norm_value = (x - rect.left - self._cursor_width) / float(self.content_width - 2 * self._cursor_width)
+            self.norm_value = (x - rect.left - self._cursor_width) / float(
+                self.content_width - 2 * self._cursor_width
+            )
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
@@ -311,7 +313,9 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
 
         rel_cursor_x = cursor_center_x - self.content_rect.left
         arcade.draw_circle_filled(rel_cursor_x, slider_center_y, cursor_radius, cursor_color)
-        arcade.draw_circle_filled(rel_cursor_x, slider_center_y, cursor_radius // 4, cursor_outline_color)
+        arcade.draw_circle_filled(
+            rel_cursor_x, slider_center_y, cursor_radius // 4, cursor_outline_color
+        )
         arcade.draw_circle_outline(
             rel_cursor_x,
             slider_center_y,
