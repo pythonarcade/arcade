@@ -19,7 +19,7 @@ from arcade.camera.projection_functions import (
     unproject_orthographic,
 )
 from arcade.gl import Framebuffer
-from arcade.types import LBWH, LRBT, Point, Rect
+from arcade.types import LBWH, LRBT, XYWH, Point, Rect
 from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
@@ -752,7 +752,7 @@ class Camera2D:
         """
         _r = radians(value)
         # Note that this is flipped as we want 0 degrees to be vert.
-        self._camera_data.position = (sin(_r), cos(_r), 0.0)
+        self._camera_data.up = (-sin(_r), cos(_r), 0.0)
 
     @property
     def zoom(self) -> float:
@@ -786,9 +786,8 @@ class Camera2D:
         When matching the projection to the viewport the method keeps
         the projections center in the same relative place.
         """
-
-        self.width = self.viewport_width
-        self.height = self.viewport_height
+        x, y = self._projection_data.rect.x, self._projection_data.rect.y
+        self._projection_data.rect = XYWH(x, y, self.viewport_width, self.viewport_height)
 
     def match_screen(
         self, and_projection: bool = True, and_scissor: bool = True, and_position: bool = False
