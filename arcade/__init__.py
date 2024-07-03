@@ -148,8 +148,6 @@ from .draw import draw_triangle_filled
 from .draw import draw_triangle_outline
 from .draw import draw_lbwh_rectangle_filled
 from .draw import draw_lbwh_rectangle_outline
-from .draw import draw_rect_filled_kwargs
-from .draw import draw_rect_outline_kwargs
 from .screenshot import get_image
 from .screenshot import get_pixel
 
@@ -343,8 +341,6 @@ __all__ = [
     "draw_triangle_outline",
     "draw_lbwh_rectangle_filled",
     "draw_lbwh_rectangle_outline",
-    "draw_rect_outline_kwargs",
-    "draw_rect_filled_kwargs",
     "enable_timings",
     "exit",
     "finish_render",

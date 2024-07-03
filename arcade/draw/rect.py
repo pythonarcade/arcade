@@ -265,15 +265,17 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
     ctx.disable(ctx.BLEND)
 
 
-def draw_rect_outline_kwargs(
-    color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
-) -> None:
-    rect = Rect.from_kwargs(**kwargs)
-    draw_rect_outline(rect, color, border_width, tilt_angle)
+# These might be "oddly specific" and also needs docstrings. Disabling or 3.0.0
+
+# def draw_rect_outline_kwargs(
+#     color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
+# ) -> None:
+#     rect = Rect.from_kwargs(**kwargs)
+#     draw_rect_outline(rect, color, border_width, tilt_angle)
 
 
-def draw_rect_filled_kwargs(
-    color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
-) -> None:
-    rect = Rect.from_kwargs(**kwargs)
-    draw_rect_filled(rect, color, tilt_angle)
+# def draw_rect_filled_kwargs(
+#     color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
+# ) -> None:
+#     rect = Rect.from_kwargs(**kwargs)
+#     draw_rect_filled(rect, color, tilt_angle)
