@@ -49,7 +49,6 @@ class App(arcade.Window):
     def __init__(self, *args, **kwargs):
         # We need to specify OpenGL 4.3 when using Compute Shaders
         super().__init__(*SIZE, "Compute Shader", gl_version=(4, 3))
-        self.time = 0
         self.cs = self.ctx.compute_shader(source=COMPUTE_SHADER)
         # In gles the texture needs to be immutable (immutable storage, not contents)
         self.texture = self.ctx.texture(SIZE, components=4, immutable=True)
@@ -107,7 +106,6 @@ class App(arcade.Window):
         self.quad.render(self.program)
 
     def on_update(self, delta_time: float):
-        self.time += delta_time
         self.cs["time"] = self.time * 10
 
 

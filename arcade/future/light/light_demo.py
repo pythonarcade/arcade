@@ -18,7 +18,6 @@ class MyGame(arcade.Window):
         Set up the application.
         """
         super().__init__(width, height, title)
-        self.time = 0
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
         self.torch_list = arcade.SpriteList()
@@ -87,7 +86,6 @@ class MyGame(arcade.Window):
 
     def on_update(self, dt):
         # Keep track of elapsed time
-        self.time += dt
         self.moving_light.position = (
             400 + math.sin(self.time) * 300,
             300 + math.cos(self.time) * 50,

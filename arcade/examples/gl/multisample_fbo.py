@@ -19,8 +19,6 @@ class MultisampleFramebuffer(arcade.Window):
 
     def __init__(self, width, height):
         super().__init__(width, height, "Multisampled Framebuffer", samples=SAMPLES)
-        self.time = 0
-
         # Create a MSAA texture and framebuffer
         self.texture = self.ctx.texture(self.get_framebuffer_size(), samples=SAMPLES)
         self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
@@ -50,9 +48,6 @@ class MultisampleFramebuffer(arcade.Window):
         # NOTE: It might be safer with a shader
         self.ctx.screen.use()
         self.ctx.copy_framebuffer(self.fbo, self.ctx.screen)
-
-    def on_update(self, delta_time: float):
-        self.time += delta_time
 
 
 MultisampleFramebuffer(800, 600).run()

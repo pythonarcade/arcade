@@ -131,7 +131,6 @@ class App(arcade.Window):
         # We need to specify OpenGL 4.3 when using Compute Shaders
         super().__init__(1280, 720, "Compute Shader", gl_version=(4, 3), resizable=True, vsync=True)
         # Keep track of time
-        self.time = 0
         self.frame_time = 0
         # The work group size we have configured the compute shader to.
         # This is hardcoded the compute shader (careful with changing)
@@ -317,7 +316,6 @@ class App(arcade.Window):
 
     def on_update(self, delta_time: float):
         # Keep our time variables up to date
-        self.time += delta_time
         self.frame_time = delta_time
 
     def gen_initial_data(self, num_balls):
