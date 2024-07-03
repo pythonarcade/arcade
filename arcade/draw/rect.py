@@ -32,7 +32,9 @@ def draw_texture_rect(
     :param alpha: Transparency of image. 0.0 is fully transparent, 1.0 (default) is visible.
     """
     ctx = get_window().ctx
-    # Explicitly enable or disable blending to state bleeding
+
+    # It's important to be explicit about the blend state in case blending
+    # for some reason is enabled globally already
     if blend:
         ctx.enable(ctx.BLEND)
     else:
