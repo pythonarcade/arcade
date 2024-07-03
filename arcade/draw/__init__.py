@@ -33,7 +33,6 @@ from .rect import (
     draw_sprite_rect,
 )
 from .helpers import get_points_for_thick_line
-from .screenshot import get_pixel, get_image
 
 __all__ = [
     # arc
@@ -74,7 +73,4 @@ __all__ = [
     "draw_sprite_rect",
     # helpers
     "get_points_for_thick_line",
-    # screenshot
-    "get_pixel",
-    "get_image",
 ]
