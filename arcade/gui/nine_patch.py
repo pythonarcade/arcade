@@ -209,8 +209,7 @@ class NinePatchTexture:
                      smaller than the total size of the border areas.
 
 
-        :param position: Bottom left offset of the texture in pixels
-        :param size: Size of the 9-patch as width, height in pixels
+        :param rect: Rectangle to draw the 9-patch texture in
         :param pixelated: Whether to draw with nearest neighbor interpolation
         """
         self.program.set_uniform_safe("texture_id", self._atlas.get_texture_id(self._texture))
