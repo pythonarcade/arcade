@@ -385,10 +385,7 @@ class UIInputText(UIWidget):
         # If not active, check to activate, return
         if not self._active and isinstance(event, UIMousePressEvent):
             if self.rect.point_in_rect(event.pos):
-                self._active = True
-                self.trigger_full_render()
-                self.caret.on_activate()
-                self.caret.position = len(self.doc.text)
+                self.activate()
                 return EVENT_UNHANDLED
 
         # If active check to deactivate
@@ -398,9 +395,7 @@ class UIInputText(UIWidget):
                 y = int(event.y - self.bottom)
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
-                self._active = False
-                self.trigger_full_render()
-                self.caret.on_deactivate()
+                self.deactivate()
                 return EVENT_UNHANDLED
 
         # If active pass all non press events to caret
@@ -432,6 +427,23 @@ class UIInputText(UIWidget):
             return EVENT_HANDLED
 
         return EVENT_UNHANDLED
+
+    @property
+    def active(self) -> bool:
+        return self._active
+
+    def activate(self):
+        """Programmatically activate the text input field."""
+        self._active = True
+        self.trigger_full_render()
+        self.caret.on_activate()
+        self.caret.position = len(self.doc.text)
+
+    def deactivate(self):
+        """Programmatically deactivate the text input field."""
+        self._active = False
+        self.trigger_full_render()
+        self.caret.on_deactivate()
 
     def _update_layout(self):
         # Update Pyglet layout size

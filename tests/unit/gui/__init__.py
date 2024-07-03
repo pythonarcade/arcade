@@ -23,6 +23,9 @@ class InteractionMixin:
     def release(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
         self.on_mouse_release(x=x, y=y, button=button, modifiers=0)
 
+    def type_text(self, text: str):
+        self.on_text(text)
+
     def click(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
         self.click_and_hold(x, y, button=button)
         self.release(x, y, button=button)
