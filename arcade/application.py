@@ -214,6 +214,8 @@ class Window(pyglet.window.Window):
         # self.invalid = False
         set_window(self)
 
+        self.push_handlers(on_resize=self._on_resize)
+
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         self._background_color: Color = TRANSPARENT_BLACK
 
@@ -601,18 +603,10 @@ class Window(pyglet.window.Window):
         """
         return False
 
-    def on_resize(self, width: int, height: int) -> Optional[bool]:
+    def _on_resize(self, width: int, height: int):
         """
-        Override this function to add custom code to be called any time the window
-        is resized. The main responsibility of this method is updating
-        the projection and the viewport.
-
-        If you are not changing the default behavior when overriding, make sure
-        you call the parent's ``on_resize`` first::
-
-            def on_resize(self, width: int, height: int):
-                super().on_resize(width, height)
-                # Add extra resize logic here
+        Update the screen's viewport. If you need custom behaviour on resize there is another
+        method that can be overridden.
 
         :param width: New width
         :param height: New height
@@ -625,6 +619,16 @@ class Window(pyglet.window.Window):
             self.viewport = (0, 0, width, height)
 
         return False
+
+    def on_resize(self, width: int, height: int) -> Optional[bool]:
+        """
+        Override this function to add custom code to be called any time the window
+        is resized.
+
+        :param width: New width
+        :param height: New height
+        """
+        pass
 
     def set_min_size(self, width: int, height: int) -> None:
         """Wrap the Pyglet window call to set minimum size
