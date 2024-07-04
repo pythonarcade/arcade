@@ -2,9 +2,6 @@ import pytest
 import time
 
 import arcade
-import pyglet
-
-from pyglet.math import Mat4
 
 
 def test_window(window: arcade.Window):
@@ -47,9 +44,6 @@ def test_window(window: arcade.Window):
     assert isinstance(factor, float) 
     assert factor > 0
 
-    arcade.start_render()
-    arcade.finish_render()
-
     def f():
         pass
 
@@ -57,3 +51,30 @@ def test_window(window: arcade.Window):
     time.sleep(0.01)
     arcade.unschedule(f)
     window.test()
+
+
+def test_start_finish_render(window):
+    """Test start and finish render"""
+    # start_render must be called first
+    with pytest.raises(RuntimeError):
+        arcade.finish_render()
+
+    arcade.start_render()
+    assert window._start_finish_render_data is not None
+
+    # Draw something into the buffer
+    arcade.draw_lbwh_rectangle_filled(0, 0, 100, 100, arcade.color.RED)
+
+    # Only allowed to call start_render once
+    with pytest.raises(RuntimeError):
+        arcade.start_render()
+  
+    arcade.finish_render()
+
+    # Make sure we rendered something to the screen
+    window._start_finish_render_data.draw()
+    assert arcade.get_pixel(50, 50) == arcade.color.RED.rgb
+
+    # Only allowed to call finish_render once
+    with pytest.raises(RuntimeError):
+        arcade.finish_render()

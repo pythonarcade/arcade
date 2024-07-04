@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import pyglet
 import pyglet.gl as gl
@@ -17,12 +17,17 @@ from pyglet.display.base import ScreenMode
 from pyglet.window import MouseCursor
 
 import arcade
-from arcade import SectionManager, get_display_size, set_window
 from arcade.clock import Clock, FixedClock
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
+from arcade.sections import SectionManager
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
 from arcade.utils import is_raspberry_pi
+from arcade.window_commands import get_display_size, set_window
+
+if TYPE_CHECKING:
+    from arcade.start_finish_data import StartFinishRenderData
+
 
 LOG = logging.getLogger(__name__)
 
@@ -235,8 +240,6 @@ class Window(pyglet.window.Window):
         self._current_view: Optional[View] = None
         self.textbox_time = 0.0
         self.key: Optional[int] = None
-        self.flip_count: int = 0
-        self.static_display: bool = False
 
         # See if we should center the window
         if center_window:
@@ -254,6 +257,12 @@ class Window(pyglet.window.Window):
         else:
             self.keyboard = None
             self.mouse = None
+
+        # Framebuffer for drawing content into when start_render is called.
+        # These are typically functions just at module level wrapped in
+        # start_render and finish_render calls. The framebuffer is repeatedly
+        # rendered to the window when the event loop starts.
+        self._start_finish_render_data: Optional[StartFinishRenderData] = None
 
     @property
     def current_view(self) -> Optional["View"]:
@@ -629,6 +638,11 @@ class Window(pyglet.window.Window):
         """
         Override this function to add your custom drawing code.
         """
+        if self._start_finish_render_data:
+            self.clear()
+            self._start_finish_render_data.draw()
+            return True
+
         return False
 
     def on_resize(self, width: int, height: int) -> Optional[bool]:
@@ -889,13 +903,6 @@ class Window(pyglet.window.Window):
         # Garbage collect OpenGL resources
         num_collected = self.ctx.gc()
         LOG.debug("Garbage collected %s OpenGL resource(s)", num_collected)
-
-        # Attempt to handle static draw setups
-        if self.static_display:
-            if self.flip_count > 0:
-                return
-            else:
-                self.flip_count += 1
 
         super().flip()
 

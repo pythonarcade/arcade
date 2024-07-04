@@ -55,7 +55,7 @@ class MyView(arcade.View):
         pass
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.ui.draw()
 
 

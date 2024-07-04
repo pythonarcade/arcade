@@ -21,7 +21,7 @@ python -m arcade.examples.drawing_primitives
 import arcade
 
 # Open the window. Set the window title and dimensions (width and height)
-arcade.open_window(600, 600, "Drawing Primitives Example")
+arcade.open_window(600, 600, "Drawing Primitives Example", resizable=True)
 
 # Set the background color to white
 # For a list of named colors see

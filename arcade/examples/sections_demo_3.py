@@ -283,7 +283,7 @@ class GameView(arcade.View):
         self.section_manager.add_section(self.map)
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
 
 
 def main():

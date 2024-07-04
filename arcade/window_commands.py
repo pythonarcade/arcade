@@ -179,31 +179,51 @@ def exit() -> None:
     pyglet.app.exit()
 
 
-def start_render() -> None:
+def start_render(pixelated=False, blend=True) -> None:
     """
-    Clears the window.
+    Start recording drawing functions into an offscreen buffer.
+    Call :py:func:`arcade.finish_render` to stop recording. The
+    start_render/finish_render calls can only be called once.
 
-    More practical alternatives to this function is
-    :py:meth:`arcade.Window.clear`
-    or :py:meth:`arcade.View.clear`.
+    When running arcade this buffer will be presented to the screen.
+
+    A few configuration options are available in this function.
+
+    :param pixelated: If True, the buffer will be be pixelated when resized. Otherwise, it will be smooth.
+    :param blend: If alpha blending
     """
-    get_window().clear()
+    from arcade.start_finish_data import StartFinishRenderData
+
+    window = get_window()
+    if window._start_finish_render_data is not None:
+        raise RuntimeError(
+            (
+                "start_render() can only be called once during the application's lifetime "
+                "and should only be used when calling draw functions at module level in "
+                "a simple script to produce a static image. If you are seeing this error "
+                "you likely intended to call clear() instead."
+            )
+        )
+
+    window._start_finish_render_data = StartFinishRenderData(pixelated=pixelated, blend=blend)
+    window._start_finish_render_data.begin()
 
 
-def finish_render():
+def finish_render() -> None:
     """
-    Swap buffers and displays what has been drawn.
+    Stop recording drawing functions into an offscreen buffer.
+    :py:func:`arcade.start_render` should be called before this function.
 
-    .. Warning::
-
-        If you are extending the :py:class:`~arcade.Window` class, this function
-        should not be called. The event loop will automatically swap the window
-        framebuffer for you after ``on_draw``.
-
+    :py:func:`arcade.run` can be called after this function to present the buffer.
     """
-    get_window().static_display = True
-    get_window().flip_count = 0
-    get_window().flip()
+    window = get_window()
+    if window._start_finish_render_data is None:
+        raise RuntimeError("finish_render() was called without a matching start_render() call.")
+
+    if window._start_finish_render_data.completed:
+        raise RuntimeError("finish_render() was called more than once.")
+
+    window._start_finish_render_data.end()
 
 
 def set_background_color(color: RGBA255) -> None:
