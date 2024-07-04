@@ -10,6 +10,13 @@ def test_create():
     assert sh.buckets_for_sprite == {}
     assert sh.count == 0
 
+def test_incorrect_str_input():
+    with pytest.raises(TypeError):
+        sh = SpatialHash(cell_size="10")
+    
+def test_incorrect_inf_input():
+    with pytest.raises(TypeError):
+        sh = SpatialHash(cell_size=float("inf"))
 
 def test_reset():
     sh = SpatialHash(cell_size=10)

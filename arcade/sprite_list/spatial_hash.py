@@ -33,10 +33,10 @@ class SpatialHash(Generic[SpriteType]):
 
     def __init__(self, cell_size: int) -> None:
         # Sanity check the cell size
+        if not isinstance(cell_size, int):
+            raise TypeError("cell_size must be an int (integer)")
         if cell_size <= 0:
             raise ValueError("cell_size must be greater than 0")
-        if not isinstance(cell_size, int):
-            raise ValueError("cell_size must be an integer")
 
         self.cell_size: int = cell_size
         """How big each grid cell is on each side.
