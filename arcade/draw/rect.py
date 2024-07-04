@@ -44,7 +44,7 @@ def draw_texture_rect(
 
     atlas = atlas or ctx.default_atlas
 
-    texture_id, _ = ctx.default_atlas.add(texture)
+    texture_id, _ = atlas.add(texture)
     if pixelated:
         atlas.texture.filter = gl.NEAREST, gl.NEAREST
     else:

@@ -13,7 +13,7 @@ SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Happy Face Example"
 
 # Open the window. Set the window title and dimensions
-arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
 # Set the background color
 arcade.set_background_color(arcade.color.WHITE)
