@@ -158,9 +158,6 @@ class MyCoinGame(UIView):
 
         self.cam_pos = self.ui.camera.position
 
-        self.ui.add(UIFlatButton(text="BottomLeftButton", width=100, height=100))
-        self.ui.camera.angle = 90
-
     def on_draw_before_ui(self):
         self.in_game_camera.use()  # use the in-game camera to draw in-game objects
         self.sprites.draw()
@@ -261,7 +258,7 @@ class MyCoinGame(UIView):
 
 
 if __name__ == "__main__":
-    window = arcade.Window(1280, 720, "CoinGame Example", resizable=True)
+    window = arcade.Window(1280, 720, "CoinGame Example", resizable=False)
     window.background_color = arcade.color.DARK_BLUE_GRAY
     window.show_view(MyCoinGame())
     window.run()

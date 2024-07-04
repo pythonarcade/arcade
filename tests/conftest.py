@@ -5,6 +5,7 @@ from pathlib import Path
 
 if os.environ.get("ARCADE_PYTEST_USE_RUST"):
     import arcade_accelerate  # pyright: ignore [reportMissingImports]
+
     arcade_accelerate.bootstrap()
 
 import pytest
@@ -24,10 +25,10 @@ WINDOW = None
 OFFSCREEN = None
 
 
-def create_window(width=800, height=600, caption="Testing", **kwargs):
+def create_window(width=1280, height=720, caption="Testing", **kwargs):
     global WINDOW
     if not WINDOW:
-        WINDOW = REAL_WINDOW_CLASS(title="Testing", vsync=False, antialiasing=False)
+        WINDOW = REAL_WINDOW_CLASS(width=width, height=height, title=caption, vsync=False, antialiasing=False)
         WINDOW.set_vsync(False)
         # This value is being monkey-patched into the Window class so that tests can identify if we are using
         # arcade-accelerate easily in case they need to disable something when it is enabled.
@@ -151,7 +152,7 @@ class WindowProxy:
     @property
     def mouse(self):
         return self.window.mouse
-    
+
     @property
     def keyboard(self):
         return self.window.keyboard
@@ -174,7 +175,7 @@ class WindowProxy:
     @property
     def _start_finish_render_data(self):
         return self.window._start_finish_render_data
-    
+
     @_start_finish_render_data.setter
     def _start_finish_render_data(self, data):
         self.window._start_finish_render_data = data
@@ -193,7 +194,7 @@ class WindowProxy:
 
     def on_draw(self):
         return self.window.on_draw()
-    
+
     def on_update(self, dt):
         return self.window.on_update(dt)
 
@@ -294,10 +295,12 @@ def window_proxy():
     arcade.Window = WindowProxy
 
     _open_window = arcade.open_window
+
     def open_window(*args, **kwargs):
         window = create_window(*args, **kwargs)
         prepare_window(window)
         return window
+
     arcade.open_window = open_window
 
     yield None
@@ -307,7 +310,6 @@ def window_proxy():
 
 # --- Fixtures for offscreen rendering
 class Offscreen:
-
     def __init__(self):
         self.ctx = WINDOW.ctx
         self.texture = self.ctx.texture((1280, 720), components=4)
