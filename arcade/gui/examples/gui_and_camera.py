@@ -1,9 +1,11 @@
 """
-Arrange widgets in vertical or horizontal lines with UIBoxLayout
+This example shows how to use arcade.gui with a camera.
+It is a simple game where the player can move around and collect coins.
+The player can upgrade their speed and the spawn rate of the coins.
+The game has a timer and ends after 60 seconds.
+The game is controlled with the arrow keys or WASD.
 
-The direction UIBoxLayout follows is controlled by the `vertical` keyword
-argument. It is True by default. Pass False to it to arrange elements in
-a horizontal line.
+At the beginning of the game, the UI camera is used, to apply some animations.
 
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.gui.examples.gui_and_camera
@@ -26,7 +28,7 @@ class MyCoinGame(UIView):
     basic GUI setup. We add UIManager to the view under `self.ui`.
 
     The example showcases how to:
-    - use UIView to setup a basic GUI
+    - use UIView to set up a basic GUI
     - add a button to the view and connect it to a function
     - use camera to move the view
 
@@ -37,8 +39,8 @@ class MyCoinGame(UIView):
 
         # basic camera setup
         self.keys = set()
-        self.ingame_camera = arcade.Camera2D()
-        self.ingame_camera.bottom_left = 100, 100
+        self.in_game_camera = arcade.Camera2D()
+        self.in_game_camera.bottom_left = 100, 100
 
         # in-game counter
         self._total_time = 0
@@ -156,8 +158,11 @@ class MyCoinGame(UIView):
 
         self.cam_pos = self.ui.camera.position
 
+        self.ui.add(UIFlatButton(text="BottomLeftButton", width=100, height=100))
+        self.ui.camera.angle = 90
+
     def on_draw_before_ui(self):
-        self.ingame_camera.use()  # use the in-game camera to draw in-game objects
+        self.in_game_camera.use()  # use the in-game camera to draw in-game objects
         self.sprites.draw()
         self.coins.draw()
 
@@ -212,7 +217,7 @@ class MyCoinGame(UIView):
             self.player.top -= self._player_speed
 
         # move the camera with the player
-        self.ingame_camera.position = self.player.position
+        self.in_game_camera.position = self.player.position
 
         # collect coins
         collisions = self.player.collides_with_list(self.coins)
@@ -246,9 +251,6 @@ class MyCoinGame(UIView):
             arcade.close_window()
         if symbol == arcade.key.ENTER:
             self.window.show_view(MyCoinGame())
-        if symbol == arcade.key.SPACE:
-            # Allows user to rotate camera to show off full functionality of the ui camera
-            self.ui.camera.angle += 5
 
         return False
 
