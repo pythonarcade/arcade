@@ -10,12 +10,11 @@ import math
 from typing import Tuple
 
 import arcade
-from arcade.resources import (
-    image_female_person_idle,
-    image_laser_blue01,
-    image_zombie_idle,
-)
 from arcade.types import Color
+
+IMAGE_FEMALE_PERSON_IDLE = ":assets:images/animated_characters/female_person/femalePerson_idle.png"
+IMAGE_LASER_BLUE01 = ":assets:images/space_shooter/laserBlue01.png"
+IMAGE_ZOMBIE_IDLE = ":assets:images/animated_characters/zombie/zombie_idle.png"
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_ENEMY = 0.5
@@ -48,7 +47,7 @@ def sprite_off_screen(
 class Player(arcade.Sprite):
     def __init__(self, bar_list: arcade.SpriteList) -> None:
         super().__init__(
-            image_female_person_idle,
+            IMAGE_FEMALE_PERSON_IDLE,
             scale=SPRITE_SCALING_PLAYER,
         )
         self.indicator_bar: IndicatorBar = IndicatorBar(
@@ -60,7 +59,7 @@ class Player(arcade.Sprite):
 class Bullet(arcade.Sprite):
     def __init__(self) -> None:
         super().__init__(
-            image_laser_blue01,
+            IMAGE_LASER_BLUE01,
             scale=SPRITE_SCALING_BULLET,
         )
 
@@ -256,7 +255,7 @@ class MyGame(arcade.Window):
         self.player_sprite_list.append(self.player_sprite)
 
         # Create enemy Sprite
-        self.enemy_sprite = arcade.Sprite(image_zombie_idle, scale=SPRITE_SCALING_ENEMY)
+        self.enemy_sprite = arcade.Sprite(IMAGE_ZOMBIE_IDLE, scale=SPRITE_SCALING_ENEMY)
         self.enemy_sprite_list.append(self.enemy_sprite)
 
         # Create text objects
