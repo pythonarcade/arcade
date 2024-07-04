@@ -671,7 +671,8 @@ class UISpriteWidget(UIWidget):
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
         surface.clear(color=TRANSPARENT_BLACK)
-        surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
+        if self._sprite is not None:
+            surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
 class UILayout(UIWidget):

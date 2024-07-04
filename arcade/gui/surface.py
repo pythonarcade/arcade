@@ -121,12 +121,12 @@ class Surface:
         else:
             arcade.draw_texture_rect(tex, LBWH(x, y, width, height), angle=angle, alpha=alpha)
 
-    def draw_sprite(self, x, y, width, height, sprite):
+    def draw_sprite(self, x: float, y: float, width: float, height: float, sprite: arcade.Sprite):
         """Draw a sprite to the surface"""
         sprite.position = x + width // 2, y + height // 2
         sprite.width = width
         sprite.height = height
-        sprite.draw()
+        arcade.draw_sprite(sprite)
 
     @contextmanager
     def activate(self):
