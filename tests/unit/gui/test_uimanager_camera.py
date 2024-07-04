@@ -41,12 +41,11 @@ def test_ui_manager_use_rotated_camera(uimanager, window):
 
     # WHEN
     uimanager.camera.angle = 90
-    # coordinate calculated by `uimanager.camera.project((50, 50))`,
-    # using hard coded values, to avoid dependency on camera
-    uimanager.click(950, -230)
+    x, y = uimanager.camera.project((50, 50))
+    uimanager.click(x, y)
 
     # THEN
-    assert button.on_click.called
+    assert button.on_click.called, (uimanager.camera.project((50, 50)), window.size)
 
 
 def test_ui_manager_use_zoom_camera(uimanager, window):
@@ -56,9 +55,8 @@ def test_ui_manager_use_zoom_camera(uimanager, window):
 
     # WHEN
     uimanager.camera.zoom = 0.9
-    # coordinate calculated by `uimanager.camera.project((50, 50))`,
-    # using hard coded values, to avoid dependency on camera
-    uimanager.click(109, 80)
+    x, y = uimanager.camera.project((50, 50))
+    uimanager.click(x, y)
 
     # THEN
-    assert button.on_click.called, uimanager.camera.project((50, 50))
+    assert button.on_click.called

@@ -21,9 +21,11 @@ class UIView(View):
         self.ui = UIManager()
 
     def on_show_view(self):
+        """If subclassing UIView, don't forget to call super().on_show_view()."""
         self.ui.enable()
 
     def on_hide_view(self):
+        """If subclassing UIView, don't forget to call super().on_hide_view()."""
         self.ui.disable()
 
     def on_draw(self):
