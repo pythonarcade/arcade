@@ -137,7 +137,7 @@ class Surface:
         # Set viewport and projection
         self.limit(LBWH(0, 0, *self.size))
         # Set blend function
-        blend_func = self.ctx.blend_func
+        prev_blend_func = self.ctx.blend_func
 
         try:
             self.ctx.blend_func = self.blend_func_render_into
@@ -145,7 +145,7 @@ class Surface:
                 yield self
         finally:
             # Restore blend function.
-            self.ctx.blend_func = blend_func
+            self.ctx.blend_func = prev_blend_func
 
     def limit(self, rect: Rect):  # TODO track limit usage
         """Reduces the draw area to the given rect"""
