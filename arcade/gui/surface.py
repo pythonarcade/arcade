@@ -121,12 +121,12 @@ class Surface:
         else:
             arcade.draw_texture_rect(tex, LBWH(x, y, width, height), angle=angle, alpha=alpha)
 
-    def draw_sprite(self, x, y, width, height, sprite):
+    def draw_sprite(self, x: float, y: float, width: float, height: float, sprite: arcade.Sprite):
         """Draw a sprite to the surface"""
         sprite.position = x + width // 2, y + height // 2
         sprite.width = width
         sprite.height = height
-        sprite.draw()
+        arcade.draw_sprite(sprite)
 
     @contextmanager
     def activate(self):
@@ -137,7 +137,7 @@ class Surface:
         # Set viewport and projection
         self.limit(LBWH(0, 0, *self.size))
         # Set blend function
-        blend_func = self.ctx.blend_func
+        prev_blend_func = self.ctx.blend_func
 
         try:
             self.ctx.blend_func = self.blend_func_render_into
@@ -145,7 +145,7 @@ class Surface:
                 yield self
         finally:
             # Restore blend function.
-            self.ctx.blend_func = blend_func
+            self.ctx.blend_func = prev_blend_func
 
     def limit(self, rect: Rect):  # TODO track limit usage
         """Reduces the draw area to the given rect"""
