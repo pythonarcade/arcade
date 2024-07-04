@@ -220,6 +220,9 @@ def finish_render() -> None:
     if window._start_finish_render_data is None:
         raise RuntimeError("finish_render() was called without a matching start_render() call.")
 
+    if window._start_finish_render_data.completed:
+        raise RuntimeError("finish_render() was called more than once.")
+
     window._start_finish_render_data.end()
 
 

@@ -26,6 +26,7 @@ class StartFinishRenderData:
         )
         self.atlas.add(self.texture)
         self._generator_func = None
+        self.completed = False
 
     def begin(self):
         """Enable rendering into the buffer"""
@@ -39,6 +40,7 @@ class StartFinishRenderData:
     def end(self):
         """Switch back to rendering into the window"""
         self.generator_func.__exit__(None, None, None)
+        self.completed = True
 
     def draw(self):
         """Draw the buffer to the screen"""

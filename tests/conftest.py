@@ -48,6 +48,7 @@ def prepare_window(window: arcade.Window):
     # ctx._atlas = None  # Clear the global atlas
     # default_texture_cache.flush()  # Clear the global/default texture cache
     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.LINEAR, gl.LINEAR
+    window._start_finish_render_data = None
     window.hide_view()  # Disable views if any is active
     window.dispatch_pending_events()
     try:
@@ -170,6 +171,14 @@ class WindowProxy:
     def current_camera(self):
         return self.window.current_camera
 
+    @property
+    def _start_finish_render_data(self):
+        return self.window._start_finish_render_data
+    
+    @_start_finish_render_data.setter
+    def _start_finish_render_data(self, data):
+        self.window._start_finish_render_data = data
+
     @current_camera.setter
     def current_camera(self, new_camera):
         self.window.current_camera = new_camera
@@ -199,6 +208,9 @@ class WindowProxy:
 
     def set_size(self, width, height):
         self.window.set_size(width, height)
+
+    def get_framebuffer_size(self):
+        return self.window.get_framebuffer_size()
 
     def get_pixel_ratio(self):
         return self.window.get_pixel_ratio()
@@ -283,7 +295,9 @@ def window_proxy():
 
     _open_window = arcade.open_window
     def open_window(*args, **kwargs):
-        return create_window(*args, **kwargs)
+        window = create_window(*args, **kwargs)
+        prepare_window(window)
+        return window
     arcade.open_window = open_window
 
     yield None

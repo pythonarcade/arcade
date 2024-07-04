@@ -97,7 +97,7 @@ def test_render_with_movement(window: arcade.Window):
     individual_coin.position = (230, 230)
 
     def on_draw():
-        arcade.start_render()
+        window.clear()
         coin_list.draw()
         character_list.draw()
         assert arcade.get_pixel(150, 50) == (191, 121, 88)
@@ -163,7 +163,7 @@ def test_render_sprite_solid_pixels(window: arcade.Window):
         character_list.append(character_sprite)
 
     def on_draw():
-        arcade.start_render()
+        window.clear()
         character_list.draw()
 
         for i in range(7):
@@ -274,7 +274,7 @@ def test_render_sprite_remove(window):
     character_list.append(sprite_3)
 
     def on_draw():
-        arcade.start_render()
+        window.clear()
         character_list.draw()
 
     def update(delta_time):

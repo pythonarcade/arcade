@@ -46,7 +46,7 @@ def test_sprite_animated_old(window: arcade.Window):
     character_list.append(player)
 
     def on_draw():
-        arcade.start_render()
+        window.clear()
         character_list.draw()
 
     def update(delta_time):

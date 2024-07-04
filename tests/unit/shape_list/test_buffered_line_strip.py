@@ -4,6 +4,7 @@ from arcade import shape_list
 
 def test_buffered_lines(window):
     window.background_color = arcade.color.WHITE
+    window.clear()
 
     point_list = ([0, 100],
                     [100, 100],
@@ -11,7 +12,6 @@ def test_buffered_lines(window):
                     [300, 300])
     line_strip = shape_list.create_line_strip(point_list, arcade.csscolor.BLACK, 10)
 
-    arcade.start_render()
     line_strip.draw()
     p = arcade.get_pixel(0, 100)
     assert p == (0, 0, 0)

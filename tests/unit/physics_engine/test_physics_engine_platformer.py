@@ -33,7 +33,7 @@ def test_physics_engine(window):
     )
 
     def on_draw():
-        arcade.start_render()
+        window.clear()
         wall_list.draw()
         character_list.draw()
 
