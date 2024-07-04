@@ -21,8 +21,18 @@ OUT_FILE = ARCADE_ROOT / "doc" / "api_docs" / "resources.rst"
 RESOURCE_URL = "https://github.com/pythonarcade/arcade/blob/development/arcade/{}?raw=true"
 
 COLUMNS = 3
-skip_extensions = arcade.resources._resource_list_skip_extensions
-
+# Metadata for the resource list: utils\create_resource_list.py
+skip_extensions = [
+    ".glsl",
+    ".md",
+    ".py",
+    ".yml",
+    ".url",
+    ".txt",
+    ".tiled-project",
+    ".ttf",
+    ".pyc",
+]
 
 def skipped_file(file_path: Path):
     """Return True if file should be skipped."""
