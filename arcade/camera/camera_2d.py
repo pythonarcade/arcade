@@ -741,7 +741,7 @@ class Camera2D:
         clock-wise.
         """
         # Note that this is flipped as we want 0 degrees to be vert. Normally you have y first and then x.
-        return degrees(atan2(self._camera_data.position[0], self._camera_data.position[1]))
+        return degrees(atan2(self._camera_data.up[0], self._camera_data.up[1]))
 
     @angle.setter
     def angle(self, value: float) -> None:
@@ -752,7 +752,7 @@ class Camera2D:
         """
         _r = radians(value)
         # Note that this is flipped as we want 0 degrees to be vert.
-        self._camera_data.up = (-sin(_r), cos(_r), 0.0)
+        self._camera_data.up = (sin(_r), cos(_r), 0.0)
 
     @property
     def zoom(self) -> float:

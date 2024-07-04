@@ -154,6 +154,8 @@ class MyCoinGame(UIView):
         )
         self.timer.with_background(color=arcade.color.TRANSPARENT_BLACK)
 
+        self.cam_pos = self.ui.camera.position
+
     def on_draw_before_ui(self):
         self.ingame_camera.use()  # use the in-game camera to draw in-game objects
         self.sprites.draw()
@@ -230,7 +232,10 @@ class MyCoinGame(UIView):
 
         # slide in the UI from bottom, until total time reaches 2 seconds
         progress = min(1.0, self._total_time / 2)
-        self.ui.camera.bottom_left = (0, 50 * (1 - progress))
+
+        # Because we allow for camera rotation we have work on the center
+        # and not the edge because it behaves oddly otherwise
+        self.ui.camera.position = (self.window.center_x, 50 * (1 - progress) + self.window.center_y)
 
         return False
 
@@ -241,6 +246,9 @@ class MyCoinGame(UIView):
             arcade.close_window()
         if symbol == arcade.key.ENTER:
             self.window.show_view(MyCoinGame())
+        if symbol == arcade.key.SPACE:
+            # Allows user to rotate camera to show off full functionality of the ui camera
+            self.ui.camera.angle += 5
 
         return False
 
