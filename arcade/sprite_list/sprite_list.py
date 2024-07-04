@@ -1041,6 +1041,7 @@ class SpriteList(Generic[SpriteType]):
             raise ValueError("Attempting to render without shader program.")
         self._write_sprite_buffers_to_gpu()
 
+        prev_blend_func = self.ctx.blend_func
         if self._blend:
             self.ctx.enable(self.ctx.BLEND)
             # Set custom blend function or revert to default
@@ -1088,7 +1089,8 @@ class SpriteList(Generic[SpriteType]):
         # Leave global states to default
         if self._blend:
             self.ctx.disable(self.ctx.BLEND)
-            self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+            if blend_function is not None:
+                self.ctx.blend_func = prev_blend_func
 
     def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1.0) -> None:
         """Draw all the hit boxes in this list"""
