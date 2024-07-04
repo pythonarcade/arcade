@@ -232,7 +232,7 @@ class MyCoinGame(UIView):
 
         # slide in the UI from bottom, until total time reaches 2 seconds
         progress = min(1.0, self._total_time / 2)
-        
+
         # Because we allow for camera rotation we have work on the center
         # and not the edge because it behaves oddly otherwise
         self.ui.camera.position = (self.window.center_x, 50 * (1 - progress) + self.window.center_y)
