@@ -41,7 +41,7 @@ class MyWindow(Window):
         anchor.add(UIInputText().with_border())
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         self.ui.draw()
 
 
