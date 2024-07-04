@@ -197,7 +197,8 @@ class NinePatchTexture:
         self,
         *,
         rect: arcade.types.Rect,
-        pixelated: bool = False,
+        pixelated: bool = True,
+        blend: bool = True,
         **kwargs,
     ):
         """
@@ -212,6 +213,11 @@ class NinePatchTexture:
         :param rect: Rectangle to draw the 9-patch texture in
         :param pixelated: Whether to draw with nearest neighbor interpolation
         """
+        if blend:
+            self._ctx.enable_only(self._ctx.BLEND)
+        else:
+            self._ctx.disable(self._ctx.BLEND)
+
         self.program.set_uniform_safe("texture_id", self._atlas.get_texture_id(self._texture))
         if pixelated:
             self._atlas.texture.filter = self._ctx.NEAREST, self._ctx.NEAREST
@@ -227,6 +233,9 @@ class NinePatchTexture:
         self._atlas.use_uv_texture(0)
         self._atlas.texture.use(1)
         self._geometry.render(self._program, vertices=1)
+
+        if blend:
+            self._ctx.disable(self._ctx.BLEND)
 
     def _check_sizes(self):
         """Raise a ValueError if any dimension is invalid."""
