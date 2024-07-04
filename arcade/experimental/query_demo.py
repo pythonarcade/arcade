@@ -23,7 +23,7 @@ class MyGame(arcade.Window):
         num_sprites = 100_000
         sprite_scale = 0.02  # All sprites covering the screen
         # sprite_scale = 1.0  # default
-        self.texture = arcade.load_texture(arcade.resources.image_box_crate)
+        self.texture = arcade.load_texture(":assets:images/tiles/boxCrate.png")
 
         r = int(math.sqrt(num_sprites))
         for y in range(r):
