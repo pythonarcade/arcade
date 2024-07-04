@@ -1,7 +1,5 @@
 from unittest.mock import Mock
 
-import pytest
-
 import arcade
 from arcade import LBWH
 from arcade.gui import UIFlatButton
@@ -36,21 +34,29 @@ def test_ui_manager_use_positioned_camera(uimanager, window):
     assert button.on_click.called
 
 
-@pytest.mark.skip("Rotation still work in progress")
 def test_ui_manager_use_rotated_camera(uimanager, window):
     # GIVEN
-    clicked = False
-
     button = uimanager.add(UIFlatButton(text="BottomLeftButton", width=100, height=100))
-
-    @button.event("on_click")
-    def on_click(event):
-        nonlocal clicked
-        clicked = True
+    button.on_click = Mock()
 
     # WHEN
     uimanager.camera.angle = 90
-    uimanager.click(150, 150)
+    x, y = uimanager.camera.project((50, 50))
+    uimanager.click(x, y)
 
     # THEN
-    assert clicked
+    assert button.on_click.called, (uimanager.camera.project((50, 50)), window.size)
+
+
+def test_ui_manager_use_zoom_camera(uimanager, window):
+    # GIVEN
+    button = uimanager.add(UIFlatButton(text="BottomLeftButton", width=100, height=100))
+    button.on_click = Mock()
+
+    # WHEN
+    uimanager.camera.zoom = 0.9
+    x, y = uimanager.camera.project((50, 50))
+    uimanager.click(x, y)
+
+    # THEN
+    assert button.on_click.called
