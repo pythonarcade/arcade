@@ -2,6 +2,8 @@ from typing import Tuple
 
 import pytest as pytest
 
+from pyglet.math import Vec2
+
 from arcade import Window, LRBT
 from arcade.camera import Camera2D
 from arcade.camera.data_types import ZeroProjectionDimension, OrthographicProjectionData
@@ -136,3 +138,17 @@ def test_move_camera_and_unproject(window: Window):
     screen_coordinate = camera.project(world_coordinate)
 
     assert screen_coordinate == (pytest.approx(0), pytest.approx(0))
+
+def test_rotate_camera_with_angle(window: Window):
+    camera = Camera2D()
+    camera.angle = 45
+    assert camera.angle == pytest.approx(45.0)
+    assert camera.up == pytest.approx(Vec2(0.5**0.5, 0.5**0.5))
+
+    camera.angle = 180
+    assert camera.angle == pytest.approx(180.0)
+    assert camera.up == pytest.approx(Vec2(0.0, -1.0))
+
+    camera.angle = 270
+    assert camera.angle == pytest.approx(-90.0)
+    assert camera.up == pytest.approx(Vec2(-1.0, 0.0))
