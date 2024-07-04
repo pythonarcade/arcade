@@ -10,6 +10,7 @@ If Python and Arcade are installed, this example can be run from the
 command line with:
 python -m arcade.examples.sprite_move_controller
 """
+
 import arcade
 
 SPRITE_SCALING = 0.5
@@ -23,7 +24,7 @@ DEAD_ZONE = 0.05
 
 
 class Player(arcade.Sprite):
-    """ Player sprite """
+    """Player sprite"""
 
     def __init__(self, filename, scale):
         super().__init__(filename, scale=scale)
@@ -45,11 +46,10 @@ class Player(arcade.Sprite):
             self.controller.push_handlers(self)
 
     def update(self):
-        """ Move the player """
+        """Move the player"""
 
         # If there is a controller, grab the speed.
         if self.controller:
-
             # x-axis
             movement_x = self.controller.leftx
             if abs(movement_x) < DEAD_ZONE:
@@ -81,17 +81,17 @@ class Player(arcade.Sprite):
 
     # noinspection PyMethodMayBeStatic
     def on_button_press(self, controller, button_name):
-        """ Handle button-down event for the controller """
+        """Handle button-down event for the controller"""
         print(f"Button {button_name} down")
 
     # noinspection PyMethodMayBeStatic
     def on_button_release(self, controller, button_name):
-        """ Handle button-up event for the controller """
+        """Handle button-up event for the controller"""
         print(f"Button {button_name} up")
 
     # noinspection PyMethodMayBeStatic
     def on_stick_motion(self, controller, stick_name, x, y):
-        """ Handle hat events """
+        """Handle hat events"""
         print(f"Movement on stick {stick_name}: ({x}, {y})")
 
 
@@ -127,15 +127,14 @@ class MyGame(arcade.Window):
         )
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.all_sprites_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = Player(
-            ":resources:images/animated_characters/female_person/"
-            "femalePerson_idle.png",
+            ":resources:images/animated_characters/female_person/" "femalePerson_idle.png",
             SPRITE_SCALING,
         )
         self.player_sprite.position = self.width / 2, self.height / 2
@@ -157,14 +156,14 @@ class MyGame(arcade.Window):
             self.error_text.draw()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.all_sprites_list.update()
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.player_sprite.change_y = MOVEMENT_SPEED
@@ -176,7 +175,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
@@ -185,7 +184,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

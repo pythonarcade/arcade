@@ -2,6 +2,7 @@
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.music_control_demo
 """
+
 import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons
@@ -14,8 +15,7 @@ class MyView(arcade.View):
 
         self.media_player = None
         self.paused = True
-        self.songs = [":resources:music/funkyrobot.mp3",
-                      ":resources:music/1918.mp3"]
+        self.songs = [":resources:music/funkyrobot.mp3", ":resources:music/1918.mp3"]
         self.cur_song_index = 0
 
         self.my_music = arcade.load_sound(self.songs[self.cur_song_index])
@@ -26,12 +26,15 @@ class MyView(arcade.View):
         box = arcade.gui.widgets.layout.UIBoxLayout(vertical=False, space_between=20)
 
         # --- Start button
-        normal_texture = arcade.load_texture(":resources:onscreen_controls/flat_dark/"
-                                             "sound_off.png")
-        hover_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/"
-                                            "sound_off.png")
-        press_texture = arcade.load_texture(":resources:onscreen_controls/shaded_dark/"
-                                            "sound_off.png")
+        normal_texture = arcade.load_texture(
+            ":resources:onscreen_controls/flat_dark/" "sound_off.png"
+        )
+        hover_texture = arcade.load_texture(
+            ":resources:onscreen_controls/shaded_dark/" "sound_off.png"
+        )
+        press_texture = arcade.load_texture(
+            ":resources:onscreen_controls/shaded_dark/" "sound_off.png"
+        )
 
         # Create our button
         self.start_button = arcade.gui.widgets.buttons.UITextureButton(
@@ -132,20 +135,26 @@ class MyView(arcade.View):
             self.media_player.seek(self.media_player.time + 10)
 
     def sound_button_on(self):
-        self.start_button.texture_pressed = \
-            arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")
-        self.start_button.texture = \
-            arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_on.png")
-        self.start_button.texture_hovered = \
-            arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_on.png")
+        self.start_button.texture_pressed = arcade.load_texture(
+            ":resources:onscreen_controls/shaded_dark/sound_on.png"
+        )
+        self.start_button.texture = arcade.load_texture(
+            ":resources:onscreen_controls/flat_dark/sound_on.png"
+        )
+        self.start_button.texture_hovered = arcade.load_texture(
+            ":resources:onscreen_controls/shaded_dark/sound_on.png"
+        )
 
     def sound_button_off(self):
-        self.start_button.texture_pressed = \
-            arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
-        self.start_button.texture = \
-            arcade.load_texture(":resources:onscreen_controls/flat_dark/sound_off.png")
-        self.start_button.texture_hovered = \
-            arcade.load_texture(":resources:onscreen_controls/shaded_dark/sound_off.png")
+        self.start_button.texture_pressed = arcade.load_texture(
+            ":resources:onscreen_controls/shaded_dark/sound_off.png"
+        )
+        self.start_button.texture = arcade.load_texture(
+            ":resources:onscreen_controls/flat_dark/sound_off.png"
+        )
+        self.start_button.texture_hovered = arcade.load_texture(
+            ":resources:onscreen_controls/shaded_dark/sound_off.png"
+        )
 
     def start_button_clicked(self, *_):
         self.paused = False
@@ -168,22 +177,27 @@ class MyView(arcade.View):
 
         # This draws our UI elements
         self.ui_manager.draw()
-        arcade.draw_text("Music Demo",
-                         x=0, y=self.window.height - 55,
-                         width=self.window.width,
-                         font_size=40,
-                         align="center",
-                         color=arcade.color.BLACK)
+        arcade.draw_text(
+            "Music Demo",
+            x=0,
+            y=self.window.height - 55,
+            width=self.window.width,
+            font_size=40,
+            align="center",
+            color=arcade.color.BLACK,
+        )
 
         if self.media_player:
             seconds = self.media_player.time
             minutes = int(seconds // 60)
             seconds = int(seconds % 60)
-            arcade.draw_text(f"Time: {minutes}:{seconds:02}",
-                             x=10, y=10, color=arcade.color.BLACK, font_size=24)
+            arcade.draw_text(
+                f"Time: {minutes}:{seconds:02}", x=10, y=10, color=arcade.color.BLACK, font_size=24
+            )
             volume = self.media_player.volume
-            arcade.draw_text(f"Volume: {volume:3.1f}",
-                             x=10, y=50, color=arcade.color.BLACK, font_size=24)
+            arcade.draw_text(
+                f"Volume: {volume:3.1f}", x=10, y=50, color=arcade.color.BLACK, font_size=24
+            )
 
     def on_show_view(self):
         self.window.background_color = arcade.color.ALMOND

@@ -4,6 +4,7 @@ Show a timer on-screen.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.timer
 """
+
 import arcade
 
 SCREEN_WIDTH = 1280
@@ -36,7 +37,7 @@ class MyGame(arcade.Window):
         self.total_time = 0.0
 
     def on_draw(self):
-        """ Use this function to draw everything to the screen. """
+        """Use this function to draw everything to the screen."""
         # Clear all pixels in the window
         self.clear()
 

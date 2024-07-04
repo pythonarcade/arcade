@@ -48,7 +48,6 @@ def gen_colors(width, height):
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.set_vsync(True)
@@ -77,8 +76,12 @@ class MyGame(arcade.Window):
         )
 
         # Transform geometry for the two buffers. This is used to move the points with a transform shader
-        self.transform1 = self.ctx.geometry([gl.BufferDescription(self.buffer1, "2f 2f", ["in_pos", "in_dest"])])
-        self.transform2 = self.ctx.geometry([gl.BufferDescription(self.buffer2, "2f 2f", ["in_pos", "in_dest"])])
+        self.transform1 = self.ctx.geometry(
+            [gl.BufferDescription(self.buffer1, "2f 2f", ["in_pos", "in_dest"])]
+        )
+        self.transform2 = self.ctx.geometry(
+            [gl.BufferDescription(self.buffer2, "2f 2f", ["in_pos", "in_dest"])]
+        )
 
         # Let's make the coordinate system match the viewport
         projection = Mat4.orthogonal_projection(0, self.width, 0, self.height, -100, 100)

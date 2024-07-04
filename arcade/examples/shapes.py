@@ -20,9 +20,9 @@ NUMBER_OF_SHAPES = 200
 
 
 class Shape:
-    """ Generic base shape class """
-    def __init__(self, x, y, width, height, angle, delta_x, delta_y,
-                 delta_angle, color):
+    """Generic base shape class"""
+
+    def __init__(self, x, y, width, height, angle, delta_x, delta_y, delta_angle, color):
         self.x = x
         self.y = y
         self.width = width
@@ -48,29 +48,24 @@ class Shape:
 
 
 class Ellipse(Shape):
-
     def draw(self):
-        arcade.draw_ellipse_filled(self.x, self.y, self.width, self.height,
-                                   self.color, self.angle)
+        arcade.draw_ellipse_filled(self.x, self.y, self.width, self.height, self.color, self.angle)
 
 
 class Rectangle(Shape):
-
     def draw(self):
-        arcade.draw_rect_filled(arcade.rect.XYWH(self.x, self.y, self.width, self.height),
-                                self.color, self.angle)
+        arcade.draw_rect_filled(
+            arcade.rect.XYWH(self.x, self.y, self.width, self.height), self.color, self.angle
+        )
 
 
 class Line(Shape):
-
     def draw(self):
-        arcade.draw_line(self.x, self.y,
-                         self.x + self.width, self.y + self.height,
-                         self.color, 2)
+        arcade.draw_line(self.x, self.y, self.x + self.width, self.y + self.height, self.color, 2)
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
         # Call the parent __init__
@@ -80,7 +75,6 @@ class MyGame(arcade.Window):
         self.shape_list = []
 
         for i in range(NUMBER_OF_SHAPES):
-
             # Random spot
             x = random.randrange(0, SCREEN_WIDTH)
             y = random.randrange(0, SCREEN_HEIGHT)
@@ -107,25 +101,28 @@ class MyGame(arcade.Window):
             shape_type = random.randrange(3)
 
             if shape_type == 0:
-                shape = Rectangle(x, y, width, height, angle, d_x, d_y,
-                                  d_angle, (red, green, blue, alpha))
+                shape = Rectangle(
+                    x, y, width, height, angle, d_x, d_y, d_angle, (red, green, blue, alpha)
+                )
             elif shape_type == 1:
-                shape = Ellipse(x, y, width, height, angle, d_x, d_y,
-                                d_angle, (red, green, blue, alpha))
+                shape = Ellipse(
+                    x, y, width, height, angle, d_x, d_y, d_angle, (red, green, blue, alpha)
+                )
             else:
-                shape = Line(x, y, width, height, angle, d_x, d_y,
-                             d_angle, (red, green, blue, alpha))
+                shape = Line(
+                    x, y, width, height, angle, d_x, d_y, d_angle, (red, green, blue, alpha)
+                )
 
             # Add this new shape to the list
             self.shape_list.append(shape)
 
     def on_update(self, dt):
-        """ Move everything """
+        """Move everything"""
         for shape in self.shape_list:
             shape.move()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         self.clear()
 
         # Draw the shapes

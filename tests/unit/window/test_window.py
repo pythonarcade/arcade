@@ -41,13 +41,13 @@ def test_window(window: arcade.Window):
     assert v[3] == height
 
     factor = window.get_pixel_ratio()
-    assert isinstance(factor, float) 
+    assert isinstance(factor, float)
     assert factor > 0
 
     def f():
         pass
 
-    arcade.schedule(f, 1/60)
+    arcade.schedule(f, 1 / 60)
     time.sleep(0.01)
     arcade.unschedule(f)
     window.test()
@@ -68,7 +68,7 @@ def test_start_finish_render(window):
     # Only allowed to call start_render once
     with pytest.raises(RuntimeError):
         arcade.start_render()
-  
+
     arcade.finish_render()
 
     # Make sure we rendered something to the screen

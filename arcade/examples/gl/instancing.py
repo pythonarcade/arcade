@@ -21,7 +21,6 @@ SCREEN_TITLE = "Instancing"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         """
         Set up the application.

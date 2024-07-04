@@ -1,6 +1,7 @@
 """
 Test fallback for hitbox creation with empty textures.
 """
+
 from PIL import Image
 import arcade
 

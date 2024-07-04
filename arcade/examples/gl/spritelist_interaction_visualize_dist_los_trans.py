@@ -33,7 +33,6 @@ INTERACTION_RADIUS = 200
 
 
 class SpriteListInteraction(arcade.Window):
-
     def __init__(self):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "SpriteList Interaction - LoS")
 
@@ -161,7 +160,9 @@ class SpriteListInteraction(arcade.Window):
         # Lookup texture/framebuffer for walls so we can trace pixels in the shader.
         # It contains a texture attachment with the same size as the window.
         # We draw only the walls into this one as a line of sight lookup
-        self.walls_fbo = self.ctx.framebuffer(color_attachments=[self.ctx.texture((WINDOW_WIDTH, WINDOW_HEIGHT))])
+        self.walls_fbo = self.ctx.framebuffer(
+            color_attachments=[self.ctx.texture((WINDOW_WIDTH, WINDOW_HEIGHT))]
+        )
         # Draw the walls into the framebuffer
         with self.walls_fbo.activate() as fbo:
             fbo.clear()
@@ -215,7 +216,9 @@ class SpriteListInteraction(arcade.Window):
         self.player.draw()
 
         # Visualize the interaction radius
-        arcade.draw_circle_filled(self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64))
+        arcade.draw_circle_filled(
+            self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64)
+        )
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         # Move the sprite to mouse position

@@ -8,6 +8,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_properties
 """
+
 import arcade
 
 # --- Constants ---
@@ -19,10 +20,10 @@ SCREEN_TITLE = "Sprites with Properties Example"
 
 
 class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+    """Our custom Window Class"""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -42,7 +43,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -50,25 +51,29 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=0.75)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=0.75
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 150
         self.player_list.append(self.player_sprite)
 
         # Create the sprites
         for x in range(180, 1100, 100):
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=0.3, center_x=x, center_y=400)
-            coin.intensity = 'dim'
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png", scale=0.3, center_x=x, center_y=400
+            )
+            coin.intensity = "dim"
             coin.alpha = 64
             self.coin_list.append(coin)
 
         # Create trigger
-        self.trigger_sprite = arcade.Sprite(":resources:images/pinball/bumper.png", scale=0.5,
-                                            center_x=750, center_y=50)
+        self.trigger_sprite = arcade.Sprite(
+            ":resources:images/pinball/bumper.png", scale=0.5, center_x=750, center_y=50
+        )
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
         self.clear()
         self.coin_list.draw()
         arcade.draw_sprite(self.trigger_sprite)
@@ -81,21 +86,21 @@ class MyGame(arcade.Window):
         arcade.draw_text(instructions2, 10, 70, arcade.color.WHITE, 14)
 
         # Query the property on the coins and show results.
-        coins_are_bright = [coin.intensity == 'bright' for coin in self.coin_list]
+        coins_are_bright = [coin.intensity == "bright" for coin in self.coin_list]
         output_any = f"Any sprites have intensity=bright? : {any(coins_are_bright)}"
         arcade.draw_text(output_any, 10, 40, arcade.color.WHITE, 14)
         output_all = f"All sprites have intensity=bright? : {all(coins_are_bright)}"
         arcade.draw_text(output_all, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):
-        """ Handle Mouse Motion """
+        """Handle Mouse Motion"""
 
         # Move the center of the player sprite to match the mouse x, y
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
@@ -106,18 +111,18 @@ class MyGame(arcade.Window):
 
         # Loop through each colliding sprite to set intensity=bright
         for coin in coins_hit_list:
-            coin.intensity = 'bright'
+            coin.intensity = "bright"
             coin.alpha = 255
 
         hit_trigger = arcade.check_for_collision(self.player_sprite, self.trigger_sprite)
         if hit_trigger:
-            intense_sprites = [sprite for sprite in self.coin_list if sprite.intensity == 'bright']
+            intense_sprites = [sprite for sprite in self.coin_list if sprite.intensity == "bright"]
             for coin in intense_sprites:
                 coin.remove_from_sprite_lists()
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame()
     window.setup()
     arcade.run()

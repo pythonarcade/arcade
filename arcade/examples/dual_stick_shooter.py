@@ -7,6 +7,7 @@ not present, the game will fail back to use keyboard controls (WASD to move, arr
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.dual_stick_shooter
 """
+
 import math
 import pprint
 import random
@@ -57,14 +58,17 @@ def dump_controller_state(ticks, controller):
     fmt_str = "{:6d} "
     num_fmts = ["{:5.2f}"] * 6
     fmt_str += " ".join(num_fmts)
-    print(fmt_str.format(ticks,
-                         controller.leftx,
-                         controller.lefty,
-                         controller.lefttrigger,
-                         controller.rightx,
-                         controller.righty,
-                         controller.righttrigger,
-                         ))
+    print(
+        fmt_str.format(
+            ticks,
+            controller.leftx,
+            controller.lefty,
+            controller.lefttrigger,
+            controller.rightx,
+            controller.righty,
+            controller.righttrigger,
+        )
+    )
 
 
 def get_stick_position(x, y):
@@ -89,7 +93,7 @@ class Player(arcade.sprite.Sprite):
 
 class Enemy(arcade.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(':resources:images/pinball/bumper.png', scale=0.5, center_x=x, center_y=y)
+        super().__init__(":resources:images/pinball/bumper.png", scale=0.5, center_x=x, center_y=y)
 
     def follow_sprite(self, player_sprite):
         """
@@ -192,7 +196,9 @@ class MyGame(arcade.Window):
 
         if self.controller:
             # Controller input - movement
-            move_x, move_y, move_angle = get_stick_position(self.controller.leftx, self.controller.lefty)
+            move_x, move_y, move_angle = get_stick_position(
+                self.controller.leftx, self.controller.lefty
+            )
             if move_angle:
                 self.player.change_x = move_x * MOVEMENT_SPEED
                 self.player.change_y = move_y * MOVEMENT_SPEED
@@ -202,7 +208,9 @@ class MyGame(arcade.Window):
                 self.player.change_y = 0
 
             # Controller input - shooting
-            shoot_x, shoot_y, shoot_angle = get_stick_position(self.controller.rightx, self.controller.righty)
+            shoot_x, shoot_y, shoot_angle = get_stick_position(
+                self.controller.rightx, self.controller.righty
+            )
             if shoot_angle:
                 self.spawn_bullet(shoot_angle)
         else:
@@ -227,14 +235,12 @@ class MyGame(arcade.Window):
         self.enemy_list.update()
         self.player.update()
         self.bullet_list.update()
-        ship_death_hit_list = arcade.check_for_collision_with_list(self.player,
-                                                                   self.enemy_list)
+        ship_death_hit_list = arcade.check_for_collision_with_list(self.player, self.enemy_list)
         if len(ship_death_hit_list) > 0:
             self.game_over = True
         for bullet in self.bullet_list:
             bullet_killed = False
-            enemy_shot_list = arcade.check_for_collision_with_list(bullet,
-                                                                   self.enemy_list)
+            enemy_shot_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
             # Loop through each colliding sprite, remove it, and add to the score.
             for enemy in enemy_shot_list:
                 enemy.remove_from_sprite_lists()
@@ -331,15 +337,17 @@ class MyGame(arcade.Window):
 
         # Game over message
         if self.game_over:
-            arcade.draw_text("Game Over",
-                             SCREEN_WIDTH / 2,
-                             SCREEN_HEIGHT / 2,
-                             arcade.color.WHITE, 100,
-                             width=SCREEN_WIDTH,
-                             align="center",
-                             anchor_x="center",
-                             anchor_y="center")
-
+            arcade.draw_text(
+                "Game Over",
+                SCREEN_WIDTH / 2,
+                SCREEN_HEIGHT / 2,
+                arcade.color.WHITE,
+                100,
+                width=SCREEN_WIDTH,
+                align="center",
+                anchor_x="center",
+                anchor_y="center",
+            )
 
 
 def main():

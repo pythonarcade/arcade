@@ -28,6 +28,7 @@ Controls:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.net_process_animal_facts
 """
+
 import PIL.Image
 import random
 import time
@@ -43,19 +44,26 @@ CHOICES = ["meow", "woof"]  # Which facts to display
 
 class AnimalFacts(arcade.View):
     """Display a random cat fact"""
+
     def __init__(self):
         super().__init__()
         self.loading = False
         self.text_fact = arcade.Text(
             "",
-            x=self.window.width / 2, y=self.window.height / 2 + 50,
-            width=1100, font_size=36, anchor_x="center", anchor_y="center",
+            x=self.window.width / 2,
+            y=self.window.height / 2 + 50,
+            width=1100,
+            font_size=36,
+            anchor_x="center",
+            anchor_y="center",
             multiline=True,
         )
         self.text_info = arcade.Text(
             "Press SPACE to request new fact",
             font_size=20,
-            x=20, y=40, color=arcade.color.LIGHT_BLUE,
+            x=20,
+            y=40,
+            color=arcade.color.LIGHT_BLUE,
         )
         self.angle = 0  # Rotation for the spinning loading initicator
         # Keep track of time to auto request new facts
@@ -75,7 +83,7 @@ class AnimalFacts(arcade.View):
         fade = clamp(time.time() - self.bg_updated_time, 0.0, 1.0)
         self.draw_background(self.bg_texture_1, fade * 0.35)
         if fade < 1.0:
-            self.draw_background(self.bg_texture_2,  0.35 * (1.0 - fade))
+            self.draw_background(self.bg_texture_2, 0.35 * (1.0 - fade))
 
         # Draw the fact text
         self.text_fact.draw()
@@ -92,9 +100,11 @@ class AnimalFacts(arcade.View):
         progress = 1.0 - ((time.time() - self.last_updated) / self.update_interval)
         if progress > 0:
             arcade.draw_lrbt_rectangle_filled(
-                left=0, right=self.window.width * progress,
-                bottom=0, top=20,
-                color=arcade.color.LIGHT_KHAKI
+                left=0,
+                right=self.window.width * progress,
+                bottom=0,
+                top=20,
+                color=arcade.color.LIGHT_KHAKI,
             )
 
         # Draw info text
@@ -109,7 +119,12 @@ class AnimalFacts(arcade.View):
         scale = max(self.window.width / texture.width, self.window.height / texture.height)
         arcade.draw_texture_rect(
             texture,
-            arcade.XYWH(self.window.width / 2, self.window.height / 2, texture.width * scale, texture.height * scale),
+            arcade.XYWH(
+                self.window.width / 2,
+                self.window.height / 2,
+                texture.width * scale,
+                texture.height * scale,
+            ),
             blend=True,
             alpha=alpha,
         )
@@ -171,6 +186,7 @@ class AnimaFactsService:
     A daemon process that will keep running and return random cat facts.
     The process will die with the main process.
     """
+
     def __init__(self):
         # Queue for sending commands to the process
         self.in_queue = mp.Queue()

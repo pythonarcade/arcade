@@ -12,7 +12,9 @@ def test_copy_dunders_raise_notimplementederror():
     """
 
     # Make sure BasicSprite raises NotImplementedError
-    texture = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png")
+    texture = arcade.load_texture(
+        ":resources:images/animated_characters/female_person/femalePerson_idle.png"
+    )
     basic_sprite = arcade.BasicSprite(texture)
 
     with pytest.raises(NotImplementedError):

@@ -16,7 +16,11 @@ def test_strafe():
     # Then
     for dirs in directions:
         camera_data.position = grips.strafe(camera_data, dirs)
-        assert camera_data.position == (dirs[0], dirs[1], 0.0), f"Strafe failed to move the camera data correctly, {dirs}"
+        assert camera_data.position == (
+            dirs[0],
+            dirs[1],
+            0.0,
+        ), f"Strafe failed to move the camera data correctly, {dirs}"
         camera_data.position = (0.0, 0.0, 0.0)
 
     # Given
@@ -25,7 +29,11 @@ def test_strafe():
 
     for dirs in directions:
         camera_data.position = grips.strafe(camera_data, dirs)
-        assert camera_data.position == (0.0, dirs[1], dirs[0]), f"Strafe failed to move the camera data correctly, {dirs}"
+        assert camera_data.position == (
+            0.0,
+            dirs[1],
+            dirs[0],
+        ), f"Strafe failed to move the camera data correctly, {dirs}"
         camera_data.position = (0.0, 0.0, 0.0)
 
 

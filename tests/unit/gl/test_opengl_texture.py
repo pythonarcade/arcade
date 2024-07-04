@@ -14,7 +14,7 @@ def test_default_properties(ctx):
     assert texture.filter == (ctx.LINEAR, ctx.LINEAR)
     assert texture.wrap_x == ctx.REPEAT
     assert texture.wrap_y == ctx.REPEAT
-    assert repr(texture).startswith('<Texture')
+    assert repr(texture).startswith("<Texture")
 
 
 def test_properties(ctx):
@@ -47,8 +47,8 @@ def test_mipmaps(ctx):
 
 def test_write_read(ctx):
     """Writing to texture"""
-    in_data = array.array('f', list(range(40))).tobytes()
-    texture = ctx.texture((10, 1), components=4, dtype='f4')
+    in_data = array.array("f", list(range(40))).tobytes()
+    texture = ctx.texture((10, 1), components=4, dtype="f4")
     texture.write(in_data)
     out_data = texture.read()
     assert len(out_data) == 40 * 4
@@ -61,7 +61,7 @@ def test_write_read(ctx):
     assert isinstance(texture.read(), bytes)
 
     # Write with viewport
-    in_data = array.array('f', list(range(20))).tobytes()
+    in_data = array.array("f", list(range(20))).tobytes()
     texture.write(in_data, viewport=(5, 1))
     texture.write(in_data, viewport=(0, 0, 5, 1))
     # TODO: Check results
@@ -71,17 +71,17 @@ def test_write_read(ctx):
         texture.write(in_data, viewport=(1,))
 
     with pytest.raises(TypeError):
-        texture.write('moo')
+        texture.write("moo")
 
     # Supply too little data
-    texture = ctx.texture((2, 2), components=4, dtype='f1')
+    texture = ctx.texture((2, 2), components=4, dtype="f1")
     with pytest.raises(ValueError):
-        texture.write(b'\x00\x00', viewport=(0, 0, 1, 1))
+        texture.write(b"\x00\x00", viewport=(0, 0, 1, 1))
 
     # Supply too much data
-    texture = ctx.texture((2, 2), components=4, dtype='f1')
+    texture = ctx.texture((2, 2), components=4, dtype="f1")
     with pytest.raises(ValueError):
-        texture.write(b'\x00' * 5, viewport=(0, 0, 1, 1))
+        texture.write(b"\x00" * 5, viewport=(0, 0, 1, 1))
 
     # TODO: Test LODs
 
@@ -89,7 +89,7 @@ def test_write_read(ctx):
 def test_write_buffer_protocol(ctx):
     """Test creating texture from data using buffer protocol"""
     # In constructor
-    data = array.array('B', [0, 0, 255, 255])
+    data = array.array("B", [0, 0, 255, 255])
     texture = ctx.texture((2, 2), components=1, data=data)
     assert texture.read() == data.tobytes()
     # Using write()
@@ -104,7 +104,7 @@ def test_creation_failed(ctx):
         ctx.texture((100_000, 1), components=1)
 
     with pytest.raises(ValueError):
-        ctx.texture((10, 10), components=4, dtype='moo')
+        ctx.texture((10, 10), components=4, dtype="moo")
 
 
 def test_components(ctx):
@@ -125,6 +125,7 @@ def test_components(ctx):
 
 def test_texture_dtypes(ctx):
     """Create textures using different formats"""
+
     def test_texture_format(dtype):
         for components in range(1, 5):
             texture = ctx.texture((10, 10), components=components, dtype=dtype)
@@ -133,24 +134,24 @@ def test_texture_dtypes(ctx):
             assert texture.components == components
             assert texture.dtype == dtype
 
-    test_texture_format('f1')
-    test_texture_format('f2')
-    test_texture_format('f4')
+    test_texture_format("f1")
+    test_texture_format("f2")
+    test_texture_format("f4")
 
-    test_texture_format('i1')
-    test_texture_format('i2')
-    test_texture_format('i4')
+    test_texture_format("i1")
+    test_texture_format("i2")
+    test_texture_format("i4")
 
-    test_texture_format('u1')
-    test_texture_format('u2')
-    test_texture_format('u4')
+    test_texture_format("u1")
+    test_texture_format("u2")
+    test_texture_format("u4")
 
 
 def test_depth(ctx):
     """Create depth texture"""
     tex = ctx.depth_texture((100, 100))
     assert tex.size == (100, 100)
-    assert tex.compare_func == '<='
+    assert tex.compare_func == "<="
 
 
 def test_byte_size(ctx):
@@ -166,28 +167,29 @@ def test_byte_size(ctx):
     assert texture.byte_size == 64
 
     # 16 bit float
-    texture = ctx.texture((4, 4), components=1, dtype='f2')
+    texture = ctx.texture((4, 4), components=1, dtype="f2")
     assert texture.byte_size == 32
-    texture = ctx.texture((4, 4), components=4, dtype='f2')
+    texture = ctx.texture((4, 4), components=4, dtype="f2")
     assert texture.byte_size == 128
 
     # 32 bit float
-    texture = ctx.texture((4, 4), components=1, dtype='f4')
+    texture = ctx.texture((4, 4), components=1, dtype="f4")
     assert texture.byte_size == 64
-    texture = ctx.texture((4, 4), components=4, dtype='f4')
+    texture = ctx.texture((4, 4), components=4, dtype="f4")
     assert texture.byte_size == 256
 
     # 16 bit integer
-    texture = ctx.texture((4, 4), components=1, dtype='i2')
+    texture = ctx.texture((4, 4), components=1, dtype="i2")
     assert texture.byte_size == 32
-    texture = ctx.texture((4, 4), components=4, dtype='i2')
+    texture = ctx.texture((4, 4), components=4, dtype="i2")
     assert texture.byte_size == 128
 
     # 32 bit float
-    texture = ctx.texture((4, 4), components=1, dtype='i4')
+    texture = ctx.texture((4, 4), components=1, dtype="i4")
     assert texture.byte_size == 64
-    texture = ctx.texture((4, 4), components=4, dtype='i4')
+    texture = ctx.texture((4, 4), components=4, dtype="i4")
     assert texture.byte_size == 256
+
 
 def test_resize(ctx):
     tex = ctx.texture((100, 100), components=4)

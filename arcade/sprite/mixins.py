@@ -23,7 +23,6 @@ class PyMunk:
 
 
 class PymunkMixin:
-
     def __init__(self) -> None:
         self.pymunk = PyMunk()
         self.force = [0.0, 0.0]

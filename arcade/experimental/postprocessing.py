@@ -54,7 +54,6 @@ class PostProcessing:
 
 
 class GaussianBlurPass(PostProcessing):
-
     def __init__(self, size, kernel_size=5, sigma=2, multiplier=0, step=1):
         super().__init__(size)
         self._kernel_size = kernel_size

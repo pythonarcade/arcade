@@ -461,7 +461,6 @@ class BasicSprite:
 
     @rgb.setter
     def rgb(self, color: RGBOrA255):
-
         # Fast validation of size by unpacking channel values
         try:
             r, g, b, *_a = color

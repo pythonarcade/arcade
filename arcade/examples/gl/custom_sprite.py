@@ -31,7 +31,6 @@ from arcade.gl.types import BufferDescription
 
 
 class GeoSprites(arcade.Window):
-
     def __init__(self):
         super().__init__(800, 600, "Custom Sprites", resizable=True)
         self.camera = arcade.camera.Camera2D()

@@ -631,7 +631,9 @@ class TileMap:
                     if len(key_frame_list) == 1:
                         my_sprite.texture = key_frame.texture
 
-            cast(TextureAnimationSprite, my_sprite).animation = TextureAnimation(keyframes=key_frame_list)  # type: ignore
+            cast(TextureAnimationSprite, my_sprite).animation = TextureAnimation(
+                keyframes=key_frame_list
+            )  # type: ignore
 
         return my_sprite
 

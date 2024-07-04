@@ -26,7 +26,10 @@ HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
 VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
 
 # If the player moves further than this boundary away from the camera we use a constraint to move the camera
-CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY
+)
+
 
 class MyGame(arcade.Window):
     """
@@ -70,17 +73,15 @@ class MyGame(arcade.Window):
         self.camera = None
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
-        self.wall_list = arcade.SpriteList(use_spatial_hash=True,
-                                           spatial_hash_cell_size=128)
+        self.wall_list = arcade.SpriteList(use_spatial_hash=True, spatial_hash_cell_size=128)
         self.enemy_list = arcade.SpriteList()
 
         # Set up the player
-        resource = ":resources:images/animated_characters/" \
-                   "female_person/femalePerson_idle.png"
+        resource = ":resources:images/animated_characters/" "female_person/femalePerson_idle.png"
         self.player = arcade.Sprite(resource, scale=SPRITE_SCALING)
         self.player.center_x = SPRITE_SIZE * 5
         self.player.center_y = SPRITE_SIZE * 1
@@ -96,8 +97,9 @@ class MyGame(arcade.Window):
         spacing = SPRITE_SIZE * 3
         for column in range(10):
             for row in range(15):
-                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                       scale=SPRITE_SCALING)
+                sprite = arcade.Sprite(
+                    ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING
+                )
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height
@@ -107,8 +109,7 @@ class MyGame(arcade.Window):
                 if random.randrange(100) > 30:
                     self.wall_list.append(sprite)
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player,
-                                                         self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(self.player, self.wall_list)
 
         # --- Path related
         # This variable holds the travel-path. We keep it as an attribute so
@@ -136,13 +137,15 @@ class MyGame(arcade.Window):
         # Note: If the enemy sprites are the same size, we only need to calculate
         # one of these. We do NOT need a different one for each enemy. The sprite
         # is just used for a size calculation.
-        self.barrier_list = arcade.AStarBarrierList(enemy,
-                                                    self.wall_list,
-                                                    grid_size,
-                                                    playing_field_left_boundary,
-                                                    playing_field_right_boundary,
-                                                    playing_field_bottom_boundary,
-                                                    playing_field_top_boundary)
+        self.barrier_list = arcade.AStarBarrierList(
+            enemy,
+            self.wall_list,
+            grid_size,
+            playing_field_left_boundary,
+            playing_field_right_boundary,
+            playing_field_bottom_boundary,
+            playing_field_top_boundary,
+        )
 
         self.camera = camera.Camera2D()
 
@@ -164,7 +167,7 @@ class MyGame(arcade.Window):
             arcade.draw_line_strip(self.path, arcade.color.BLUE, 2)
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Calculate speed based on the keys pressed
         self.player.change_x = 0
@@ -186,10 +189,9 @@ class MyGame(arcade.Window):
         enemy = self.enemy_list[0]
         # Set to True if we can move diagonally. Note that diagonal movement
         # might cause the enemy to clip corners.
-        self.path = arcade.astar_calculate_path(enemy.position,
-                                                self.player.position,
-                                                self.barrier_list,
-                                                diagonal_movement=False)
+        self.path = arcade.astar_calculate_path(
+            enemy.position, self.player.position, self.barrier_list, diagonal_movement=False
+        )
         # print(self.path,"->", self.player.position)
 
         # --- Manage Scrolling ---
@@ -198,7 +200,7 @@ class MyGame(arcade.Window):
         )
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key in (arcade.key.UP, arcade.key.W):
             self.up_pressed = True
@@ -213,7 +215,7 @@ class MyGame(arcade.Window):
             self.close()
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key in (arcade.key.UP, arcade.key.W):
             self.up_pressed = False
@@ -226,7 +228,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

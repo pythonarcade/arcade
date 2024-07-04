@@ -4,6 +4,7 @@ Platformer Template
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.template_platformer
 """
+
 import arcade
 
 # --- Constants
@@ -31,10 +32,8 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self):
-
         # Call the parent class and set up the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT,
-                         SCREEN_TITLE, resizable=True)
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
 
         # Our TileMap Object
         self.tile_map = None
@@ -125,14 +124,9 @@ class MyGame(arcade.Window):
 
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
-        arcade.draw_text(score_text,
-                         x=10,
-                         y=10,
-                         color=arcade.csscolor.WHITE,
-                         font_size=18)
+        arcade.draw_text(score_text, x=10, y=10, color=arcade.csscolor.WHITE, font_size=18)
 
     def update_player_speed(self):
-
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
 
@@ -174,14 +168,16 @@ class MyGame(arcade.Window):
         screen_center_y = self.player_sprite.center_y
 
         # Set some limits on how far we scroll
-        if screen_center_x - self.width/2 < 0:
-            screen_center_x = self.width/2
-        if screen_center_y - self.height/2 < 0:
-            screen_center_y = self.height/2
+        if screen_center_x - self.width / 2 < 0:
+            screen_center_x = self.width / 2
+        if screen_center_y - self.height / 2 < 0:
+            screen_center_y = self.height / 2
 
         # Here's our center, move to it
         player_centered = screen_center_x, screen_center_y
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, player_centered, 0.1)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position, player_centered, 0.1
+        )
 
     def on_update(self, delta_time):
         """Movement and game logic"""
@@ -205,7 +201,7 @@ class MyGame(arcade.Window):
         self.center_camera_to_player()
 
     def on_resize(self, width: int, height: int):
-        """ Resize window """
+        """Resize window"""
         super().on_resize(width, height)
         self.camera_sprites.match_screen(and_projection=True)
         self.camera_gui.match_screen(and_projection=True)

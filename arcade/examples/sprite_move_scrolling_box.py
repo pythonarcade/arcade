@@ -22,7 +22,9 @@ VIEWPORT_MARGIN = 200
 HORIZONTAL_BOUNDARY = DEFAULT_SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
 VERTICAL_BOUNDARY = DEFAULT_SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
 # If the player moves further than this boundary away from the camera we use a constraint to move the camera
-CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY
+)
 
 # How fast the camera pans to the player. 1.0 is instant.
 CAMERA_SPEED = 0.1
@@ -32,7 +34,7 @@ PLAYER_MOVEMENT_SPEED = 7
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         """
@@ -59,15 +61,16 @@ class MyGame(arcade.Window):
         self.camera_gui = arcade.camera.Camera2D()
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=0.4)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=0.4
+        )
         self.player_sprite.center_x = 256
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
@@ -77,7 +80,9 @@ class MyGame(arcade.Window):
             for y in range(0, 1600, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                    wall = arcade.Sprite(
+                        ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING
+                    )
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -108,20 +113,22 @@ class MyGame(arcade.Window):
         camera_x, camera_y = self.camera_sprites.position
         arcade.draw_rect_outline(
             arcade.XYWH(camera_x, camera_y, CAMERA_BOUNDARY.width, CAMERA_BOUNDARY.height),
-            arcade.color.RED, 2
+            arcade.color.RED,
+            2,
         )
 
         # Select the (unscrolled) camera for our GUI
         self.camera_gui.use()
 
         # Draw the GUI
-        arcade.draw_rect_filled(arcade.rect.XYWH(self.width // 2, 20, self.width, 40), arcade.color.ALMOND)
+        arcade.draw_rect_filled(
+            arcade.rect.XYWH(self.width // 2, 20, self.width, 40), arcade.color.ALMOND
+        )
         text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, {self.camera_sprites.position[1]:5.1f})"
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
-
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -133,7 +140,7 @@ class MyGame(arcade.Window):
             self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP:
             self.up_pressed = False
@@ -145,7 +152,7 @@ class MyGame(arcade.Window):
             self.right_pressed = False
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
@@ -199,7 +206,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

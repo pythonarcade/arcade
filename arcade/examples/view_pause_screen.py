@@ -24,10 +24,22 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         self.clear()
-        arcade.draw_text("Menu Screen", WIDTH / 2, HEIGHT / 2,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to advance.", WIDTH / 2, HEIGHT / 2 - 75,
-                         arcade.color.GRAY, font_size=20, anchor_x="center")
+        arcade.draw_text(
+            "Menu Screen",
+            WIDTH / 2,
+            HEIGHT / 2,
+            arcade.color.BLACK,
+            font_size=50,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            "Click to advance.",
+            WIDTH / 2,
+            HEIGHT / 2 - 75,
+            arcade.color.GRAY,
+            font_size=20,
+            anchor_x="center",
+        )
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         game = GameView()
@@ -37,8 +49,10 @@ class MenuView(arcade.View):
 class GameView(arcade.View):
     def __init__(self):
         super().__init__()
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_sprite.velocity = 3, 3
@@ -52,12 +66,14 @@ class GameView(arcade.View):
         arcade.draw_sprite(self.player_sprite)
 
         # Show tip to pause screen
-        arcade.draw_text("Press Esc. to pause",
-                         WIDTH // 2,
-                         HEIGHT - 100,
-                         arcade.color.BLACK,
-                         font_size=20,
-                         anchor_x="center")
+        arcade.draw_text(
+            "Press Esc. to pause",
+            WIDTH // 2,
+            HEIGHT - 100,
+            arcade.color.BLACK,
+            font_size=20,
+            anchor_x="center",
+        )
 
     def on_update(self, delta_time):
         # Call update on all sprites
@@ -94,31 +110,43 @@ class PauseView(arcade.View):
         arcade.draw_sprite(player_sprite)
 
         # draw an orange filter over him
-        arcade.draw_lrbt_rectangle_filled(left=player_sprite.left,
-                                          right=player_sprite.right,
-                                          bottom=player_sprite.bottom,
-                                          top=player_sprite.top,
-                                          color=arcade.color.ORANGE[:3] + (200,))
+        arcade.draw_lrbt_rectangle_filled(
+            left=player_sprite.left,
+            right=player_sprite.right,
+            bottom=player_sprite.bottom,
+            top=player_sprite.top,
+            color=arcade.color.ORANGE[:3] + (200,),
+        )
 
-        arcade.draw_text("PAUSED", WIDTH / 2, HEIGHT / 2 + 50,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text(
+            "PAUSED",
+            WIDTH / 2,
+            HEIGHT / 2 + 50,
+            arcade.color.BLACK,
+            font_size=50,
+            anchor_x="center",
+        )
 
         # Show tip to return or reset
-        arcade.draw_text("Press Esc. to return",
-                         WIDTH / 2,
-                         HEIGHT / 2,
-                         arcade.color.BLACK,
-                         font_size=20,
-                         anchor_x="center")
-        arcade.draw_text("Press Enter to reset",
-                         WIDTH / 2,
-                         HEIGHT / 2 - 30,
-                         arcade.color.BLACK,
-                         font_size=20,
-                         anchor_x="center")
+        arcade.draw_text(
+            "Press Esc. to return",
+            WIDTH / 2,
+            HEIGHT / 2,
+            arcade.color.BLACK,
+            font_size=20,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            "Press Enter to reset",
+            WIDTH / 2,
+            HEIGHT / 2 - 30,
+            arcade.color.BLACK,
+            font_size=20,
+            anchor_x="center",
+        )
 
     def on_key_press(self, key, _modifiers):
-        if key == arcade.key.ESCAPE:   # resume game
+        if key == arcade.key.ESCAPE:  # resume game
             self.window.show_view(self.game_view)
         elif key == arcade.key.ENTER:  # reset game
             game = GameView()

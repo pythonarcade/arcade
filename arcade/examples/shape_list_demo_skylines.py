@@ -4,6 +4,7 @@ City Scape Generator
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.shape_list_demo_skylines
 """
+
 import random
 import arcade
 from arcade.shape_list import (
@@ -34,15 +35,25 @@ def make_star_field(star_count):
     return shape_list
 
 
-def make_skyline(width, skyline_height, skyline_color,
-                 gap_chance=0.70, window_chance=0.30, light_on_chance=0.5,
-                 window_color=(255, 255, 200), window_margin=3, window_gap=2,
-                 cap_chance=0.20):
+def make_skyline(
+    width,
+    skyline_height,
+    skyline_color,
+    gap_chance=0.70,
+    window_chance=0.30,
+    light_on_chance=0.5,
+    window_color=(255, 255, 200),
+    window_margin=3,
+    window_gap=2,
+    cap_chance=0.20,
+):
     """Make a skyline of buildings"""
     shape_list = ShapeElementList()
 
     # Add the "base" that we build the buildings on
-    shape = create_rectangle_filled(width / 2, skyline_height / 2, width, skyline_height, skyline_color)
+    shape = create_rectangle_filled(
+        width / 2, skyline_height / 2, width, skyline_height, skyline_color
+    )
     shape_list.append(shape)
 
     building_center_x = 0
@@ -51,7 +62,6 @@ def make_skyline(width, skyline_height, skyline_color,
     color_list = []
 
     while building_center_x < width:
-
         # Is there a gap between the buildings?
         if random.random() < gap_chance:
             gap_width = random.randrange(10, 50)
@@ -97,7 +107,9 @@ def make_skyline(width, skyline_height, skyline_color,
 
             # Based on that, how big should they be?
             window_height = (building_height - window_margin * 2) / window_rows
-            window_width = (building_width - window_margin * 2 - window_gap * (window_columns - 1)) / window_columns
+            window_width = (
+                building_width - window_margin * 2 - window_gap * (window_columns - 1)
+            ) / window_columns
 
             # Find the bottom left of the building so we can start adding widows
             building_base_y = building_center_y - building_height / 2
@@ -108,9 +120,14 @@ def make_skyline(width, skyline_height, skyline_color,
                 for column in range(window_columns):
                     if random.random() < light_on_chance:
                         x1 = building_left_x + column * (window_width + window_gap) + window_margin
-                        x2 = building_left_x + column * (window_width + window_gap) + window_width + window_margin
+                        x2 = (
+                            building_left_x
+                            + column * (window_width + window_gap)
+                            + window_width
+                            + window_margin
+                        )
                         y1 = building_base_y + row * window_height
-                        y2 = building_base_y + row * window_height + window_height * .8
+                        y2 = building_base_y + row * window_height + window_height * 0.8
 
                         skyline_point_list.append([x1, y1])
                         skyline_point_list.append([x1, y2])
@@ -120,7 +137,7 @@ def make_skyline(width, skyline_height, skyline_color,
                         for i in range(4):
                             color_list.append((window_color[0], window_color[1], window_color[2]))
 
-        building_center_x += (building_width / 2)
+        building_center_x += building_width / 2
 
     shape = create_rectangles_filled_with_colors(skyline_point_list, color_list)
     shape_list.append(shape)
@@ -129,10 +146,10 @@ def make_skyline(width, skyline_height, skyline_color,
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         # Enable vertical sync to make scrolling smoother

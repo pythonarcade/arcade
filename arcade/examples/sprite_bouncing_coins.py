@@ -23,7 +23,7 @@ MOVEMENT_SPEED = 5
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         """
@@ -36,7 +36,7 @@ class MyGame(arcade.Window):
         self.wall_list = None
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.wall_list = arcade.SpriteList()
@@ -47,13 +47,17 @@ class MyGame(arcade.Window):
         # Create horizontal rows of boxes
         for x in range(32, SCREEN_WIDTH, 64):
             # Bottom edge
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING
+            )
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
 
             # Top edge
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING
+            )
             wall.center_x = x
             wall.center_y = SCREEN_HEIGHT - 32
             self.wall_list.append(wall)
@@ -61,13 +65,17 @@ class MyGame(arcade.Window):
         # Create vertical columns of boxes
         for y in range(96, SCREEN_HEIGHT, 64):
             # Left
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING
+            )
             wall.center_x = 32
             wall.center_y = y
             self.wall_list.append(wall)
 
             # Right
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING
+            )
             wall.center_x = SCREEN_WIDTH - 32
             wall.center_y = y
             self.wall_list.append(wall)
@@ -75,7 +83,9 @@ class MyGame(arcade.Window):
         # Create boxes in the middle
         for x in range(128, SCREEN_WIDTH, 196):
             for y in range(128, SCREEN_HEIGHT, 196):
-                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
+                wall = arcade.Sprite(
+                    ":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING
+                )
                 wall.center_x = x
                 wall.center_y = y
                 # wall.angle = 45
@@ -108,10 +118,9 @@ class MyGame(arcade.Window):
         self.coin_list.draw()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         for coin in self.coin_list:
-
             coin.center_x += coin.change_x
             walls_hit = arcade.check_for_collision_with_list(coin, self.wall_list)
             for wall in walls_hit:
@@ -134,7 +143,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

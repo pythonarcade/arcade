@@ -46,6 +46,7 @@ class SoundButton(arcade.SpriteSolidColor):
     You can tell it to play a sound faster or slower, as well as adjust
     the volume of the sound.
     """
+
     def __init__(self, sound_file, speed, volume, center_x, center_y):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, color=arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file)

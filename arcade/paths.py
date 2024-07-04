@@ -242,7 +242,6 @@ class AStarBarrierList:
         bottom: int,
         top: int,
     ):
-
         self.grid_size = grid_size
         self.bottom = int(bottom // grid_size)
         self.top = int(top // grid_size)

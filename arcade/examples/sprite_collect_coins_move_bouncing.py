@@ -23,16 +23,13 @@ SCREEN_TITLE = "Sprite Collect Moving and Bouncing Coins Example"
 
 
 class Coin(arcade.Sprite):
-
     def __init__(self, filename, scale):
-
         super().__init__(filename, scale=scale)
 
         self.change_x = 0
         self.change_y = 0
 
     def update(self):
-
         # Move the coin
         self.center_x += self.change_x
         self.center_y += self.change_y
@@ -52,10 +49,10 @@ class Coin(arcade.Sprite):
 
 
 class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+    """Our custom Window Class"""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -73,7 +70,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.all_sprites_list = arcade.SpriteList()
@@ -94,7 +91,6 @@ class MyGame(arcade.Window):
 
         # Create the coins
         for i in range(50):
-
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
@@ -110,7 +106,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
         self.clear()
         self.all_sprites_list.draw()
 
@@ -119,22 +115,21 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):
-        """ Handle Mouse Motion """
+        """Handle Mouse Motion"""
 
         # Move the center of the player sprite to match the mouse x, y
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.all_sprites_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                        self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:

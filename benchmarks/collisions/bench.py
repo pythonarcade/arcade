@@ -30,7 +30,9 @@ window = arcade.Window()
 rng.seed(2)
 for i in range(0, WALLS_COUNT):
     wall = arcade.SpriteSolidColor(
-        rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), rng.randint(WALL_DIM_MIN, WALL_DIM_MAX), arcade.color.BLACK
+        rng.randint(WALL_DIM_MIN, WALL_DIM_MAX),
+        rng.randint(WALL_DIM_MIN, WALL_DIM_MAX),
+        arcade.color.BLACK,
     )
     wall.position = rng.randint(0, SCREEN_WIDTH), rng.randint(0, SCREEN_HEIGHT)
     walls.append(wall)
@@ -55,7 +57,10 @@ for i in range(0, int(SIMULATE_MINUTES * 60 * SIMULATE_FPS)):
 
     # Move all bullets
     for bullet in bullets:
-        bullet.position = (bullet.position[0] + bullet.velocity[0], bullet.position[1] + bullet.velocity[1])
+        bullet.position = (
+            bullet.position[0] + bullet.velocity[0],
+            bullet.position[1] + bullet.velocity[1],
+        )
 
     # Check for collisions
     bullets_w_collision = []

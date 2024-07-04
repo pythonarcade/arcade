@@ -21,14 +21,17 @@ from arcade.gl import geometry
 
 
 class NormalMapping(arcade.Window):
-
     def __init__(self):
         super().__init__(512, 512, "Normal Mapping")
 
         # Load the color (diffuse) and normal texture
         # These should ideally be the same size
-        self.texture_diffuse = self.ctx.load_texture(":resources:images/test_textures/normal_mapping/diffuse.jpg")
-        self.texture_normal = self.ctx.load_texture(":resources:images/test_textures/normal_mapping/normal.jpg")
+        self.texture_diffuse = self.ctx.load_texture(
+            ":resources:images/test_textures/normal_mapping/diffuse.jpg"
+        )
+        self.texture_normal = self.ctx.load_texture(
+            ":resources:images/test_textures/normal_mapping/normal.jpg"
+        )
 
         # Shader program doing basic normal mapping
         self.program = self.ctx.program(

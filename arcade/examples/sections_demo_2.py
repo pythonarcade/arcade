@@ -18,9 +18,10 @@ Note:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sections_demo_2
 """
+
 import random
 
-import  arcade
+import arcade
 from arcade.color import BLACK, BLUE, RED, BEAU_BLUE, GRAY
 from arcade.key import W, S, UP, DOWN
 
@@ -34,9 +35,12 @@ class Player(arcade.Section):
     paddle can move
     """
 
-    def __init__(self, left: int, bottom: int, width: int, height: int,
-                 key_up: int, key_down: int, **kwargs):
-        super().__init__(left, bottom, width, height, accept_keyboard_keys={key_up, key_down}, **kwargs)
+    def __init__(
+        self, left: int, bottom: int, width: int, height: int, key_up: int, key_down: int, **kwargs
+    ):
+        super().__init__(
+            left, bottom, width, height, accept_keyboard_keys={key_up, key_down}, **kwargs
+        )
 
         # keys assigned to move the paddle
         self.key_up: int = key_up
@@ -58,19 +62,24 @@ class Player(arcade.Section):
 
     def on_draw(self):
         # draw sections info and score
-        if self.name == 'Left':
-            keys = 'W and S'
+        if self.name == "Left":
+            keys = "W and S"
             start_x = self.left + 5
         else:
-            keys = 'UP and DOWN'
+            keys = "UP and DOWN"
             start_x = self.left - 290
         arcade.draw_text(
-            f'Player {self.name} (move paddle with: {keys})',
-            start_x, self.top - 20, BLUE, 9,
+            f"Player {self.name} (move paddle with: {keys})",
+            start_x,
+            self.top - 20,
+            BLUE,
+            9,
         )
         arcade.draw_text(
-            f'Score: {self.score}', self.left + 20,
-            self.bottom + 20, BLUE,
+            f"Score: {self.score}",
+            self.left + 20,
+            self.bottom + 20,
+            BLUE,
         )
 
         # draw the paddle
@@ -89,7 +98,6 @@ class Player(arcade.Section):
 
 
 class Pong(arcade.View):
-
     def __init__(self):
         super().__init__()
 
@@ -99,11 +107,17 @@ class Pong(arcade.View):
 
         # we store each Section
         self.left_player: Player = Player(
-            0, 0, PLAYER_SECTION_WIDTH, self.window.height, key_up=W,
-            key_down=S, name='Left')
+            0, 0, PLAYER_SECTION_WIDTH, self.window.height, key_up=W, key_down=S, name="Left"
+        )
         self.right_player: Player = Player(
-            self.window.width - PLAYER_SECTION_WIDTH, 0, PLAYER_SECTION_WIDTH,
-            self.window.height, key_up=UP, key_down=DOWN, name='Right')
+            self.window.width - PLAYER_SECTION_WIDTH,
+            0,
+            PLAYER_SECTION_WIDTH,
+            self.window.height,
+            key_up=UP,
+            key_down=DOWN,
+            name="Right",
+        )
 
         # add the sections to the SectionManager so Sections start to work
         self.add_section(self.left_player)
@@ -159,7 +173,7 @@ class Pong(arcade.View):
             self.end_game(self.left_player)
 
     def end_game(self, winner: Player):
-        """ Called when one player wins """
+        """Called when one player wins"""
         winner.score += 1  # increment the winner score
         self.setup()  # prepare a new game
 
@@ -176,7 +190,7 @@ class Pong(arcade.View):
 
 def main():
     # create the window
-    window = arcade.Window(title='Two player simple Pong with Sections!')
+    window = arcade.Window(title="Two player simple Pong with Sections!")
 
     # create the custom View
     game = Pong()
@@ -191,5 +205,5 @@ def main():
     window.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

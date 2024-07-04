@@ -55,7 +55,6 @@ class CameraData:
         forward: Point3 = (0.0, 0.0, -1.0),
         zoom: float = 1.0,
     ):
-
         #: A 3D vector which describes where the camera is located.
         self.position: tuple[float, float, float] = position
         #: A 3D vector which describes which direction is up (+y).
@@ -114,7 +113,6 @@ class OrthographicProjectionData:
     def __init__(
         self, left: float, right: float, bottom: float, top: float, near: float, far: float
     ):
-
         # Data for generating Orthographic Projection matrix
         self.rect: Rect = LRBT(left, right, bottom, top)
         #: The 'closest' visible position along the forward direction.

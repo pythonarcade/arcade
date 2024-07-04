@@ -13,6 +13,7 @@ that don't update frequently.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.array_backed_grid_buffered
 """
+
 import arcade
 
 # Set how many rows and columns we will have

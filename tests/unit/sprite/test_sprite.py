@@ -1,13 +1,16 @@
 """
 Strictly unit tests for the sprite class.
 """
+
 import pytest as pytest
 
 import arcade
 from pyglet.math import Vec2
 
 frame_counter = 0
-SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png")
+SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(
+    ":resources:images/animated_characters/female_person/femalePerson_idle.png"
+)
 SPRITE_TEXTURE_GOLD_COIN = arcade.load_texture(":resources:images/items/coinGold.png")
 
 
@@ -69,9 +72,7 @@ def test_set_size():
         sprite.size = 1
 
 
-@pytest.mark.parametrize('not_a_texture', [
-    1, "not_a_texture", (1, 2, 3)
-])
+@pytest.mark.parametrize("not_a_texture", [1, "not_a_texture", (1, 2, 3)])
 def test_sprite_texture_setter_raises_type_error_when_given_non_texture(not_a_texture):
     sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=1.0)
     with pytest.raises(TypeError):
@@ -275,10 +276,7 @@ def test_rescale_relative_to_point(window):
     # expected:
     #  1. sprite is 3.31 times further away from origin to upper right
     #  2. sprite is now 3.31 times larger
-    sprite_1 = sprite_64x64_at_position(
-        window_center_x + 50,
-        window_center_y - 50
-    )
+    sprite_1 = sprite_64x64_at_position(window_center_x + 50, window_center_y - 50)
     sprite_1.rescale_relative_to_point((0, 0), 3.31)
     assert sprite_1.scale == (3.31, 3.31)
     assert sprite_1.center_x == (window_center_x + 50) * 3.31
@@ -293,10 +291,7 @@ def test_rescale_relative_to_point(window):
     # result:
     #  1. sprite distance doubled
     #  2. sprite scale doubled
-    sprite_2 = sprite_64x64_at_position(
-        window_center_x + 10,
-        window_center_y + 10
-    )
+    sprite_2 = sprite_64x64_at_position(window_center_x + 10, window_center_y + 10)
     sprite_2.scale = (2.0, 1.0)
     sprite_2.rescale_relative_to_point(window_center, 2.0)
     assert sprite_2.scale == (4.0, 2.0)
@@ -312,10 +307,7 @@ def test_rescale_relative_to_point(window):
     # result:
     #  1. sprite distance tripled
     #  2. sprite scale tripled
-    sprite_3 = sprite_64x64_at_position(
-        window_center_x - 10,
-        window_center_y - 10
-    )
+    sprite_3 = sprite_64x64_at_position(window_center_x - 10, window_center_y - 10)
     sprite_3.scale = (0.5, 1.5)
     sprite_3.rescale_relative_to_point(window_center, 3.0)
     assert sprite_3.scale == (1.5, 4.5)
@@ -346,10 +338,7 @@ def test_rescale_relative_to_point(window):
 
     # edge case: point != sprite center, factor == 1.0
     # expected : no movement or size change occurs
-    sprite_6 = sprite_64x64_at_position(
-        window_center_x - 81,
-        window_center_y + 81
-    )
+    sprite_6 = sprite_64x64_at_position(window_center_x - 81, window_center_y + 81)
     sprite_6.rescale_relative_to_point((50, 40), 1.0)
     assert sprite_6.scale == (1.0, 1.0)
     assert sprite_6.center_x == window_center_x - 81
@@ -359,10 +348,7 @@ def test_rescale_relative_to_point(window):
 
     # edge case: point != sprite center, factor == 1.0
     # expected : no movement or size change occurs
-    sprite_7 = sprite_64x64_at_position(
-        window_center_x - 81,
-        window_center_y + 81
-    )
+    sprite_7 = sprite_64x64_at_position(window_center_x - 81, window_center_y + 81)
     sprite_7.rescale_relative_to_point((50, 40), 1.0)
     assert sprite_7.scale == (1.0, 1.0)
     assert sprite_7.center_x == window_center_x - 81
@@ -374,10 +360,7 @@ def test_rescale_relative_to_point(window):
     # expected :
     #  1. sprite teleports to opposite side of point
     #  2. sprite has negative versions of scale data
-    sprite_8 = sprite_64x64_at_position(
-        window_center_x - 81,
-        window_center_y + 81
-    )
+    sprite_8 = sprite_64x64_at_position(window_center_x - 81, window_center_y + 81)
     sprite_8.rescale_relative_to_point(window_center, -1.0)
     assert sprite_8.scale == (-1.0, -1.0)
     assert sprite_8.center_x == window_center_x + 81
@@ -391,16 +374,10 @@ def test_rescale_relative_to_point_with_vec_quants(window):
     window_center_x, window_center_y = window_center
 
     def sprite_64x64_at_position(x, y):
-        return arcade.Sprite(
-            ":resources:images/items/gold_1.png",
-            center_x=x, center_y=y
-        )
+        return arcade.Sprite(":resources:images/items/gold_1.png", center_x=x, center_y=y)
 
     # sprite with initial _scale[0] == _scale[1] works with identical scale
-    sprite_1 = sprite_64x64_at_position(
-        window_center_x + 50,
-        window_center_y - 50
-    )
+    sprite_1 = sprite_64x64_at_position(window_center_x + 50, window_center_y - 50)
     sprite_1.rescale_relative_to_point((0, 0), (3.31, 3.31))
     assert sprite_1.scale == (3.31, 3.31)
     assert sprite_1.center_x == (window_center_x + 50) * 3.31
@@ -409,10 +386,7 @@ def test_rescale_relative_to_point_with_vec_quants(window):
     assert sprite_1.height == 64 * 3.31
 
     # sprite with x scale > y scale works correctly
-    sprite_2 = sprite_64x64_at_position(
-        window_center_x + 10,
-        window_center_y + 10
-    )
+    sprite_2 = sprite_64x64_at_position(window_center_x + 10, window_center_y + 10)
     sprite_2.scale = (2.0, 1.0)
     sprite_2.rescale_relative_to_point(window_center, (2.0, 2.0))
     assert sprite_2.scale == (4.0, 2.0)
@@ -422,10 +396,7 @@ def test_rescale_relative_to_point_with_vec_quants(window):
     assert sprite_2.height == 128
 
     # sprite with y scale > x scale works correctly
-    sprite_3 = sprite_64x64_at_position(
-        window_center_x - 10,
-        window_center_y - 10
-    )
+    sprite_3 = sprite_64x64_at_position(window_center_x - 10, window_center_y - 10)
     sprite_3.scale = (0.5, 1.5)
     sprite_3.rescale_relative_to_point(window_center, (3.0, 3.0))
     assert sprite_3.scale == (1.5, 4.5)
@@ -446,10 +417,7 @@ def test_rescale_relative_to_point_with_vec_quants(window):
 
     # edge case: point != sprite center, factor == 1.0
     # expected : no movement or size change occurs
-    sprite_5 = sprite_64x64_at_position(
-        window_center_x - 81,
-        window_center_y + 81
-    )
+    sprite_5 = sprite_64x64_at_position(window_center_x - 81, window_center_y + 81)
     sprite_5.rescale_relative_to_point((50, 40), (1.0, 1.0))
     assert sprite_5.scale == (1.0, 1.0)
     assert sprite_5.center_x == window_center_x - 81
@@ -469,10 +437,7 @@ def test_rescale_relative_to_point_with_vec_quants(window):
 
     # edge case: point != sprite center, factor == 1.0
     # expected : no movement or size change occurs
-    sprite_7 = sprite_64x64_at_position(
-        window_center_x - 81,
-        window_center_y + 81
-    )
+    sprite_7 = sprite_64x64_at_position(window_center_x - 81, window_center_y + 81)
     sprite_7.rescale_relative_to_point((50, 40), (1.0, 1.0))
     assert sprite_7.scale == (1.0, 1.0)
     assert sprite_7.center_x == window_center_x - 81

@@ -57,15 +57,7 @@ class SoundButton(arcade.SpriteSolidColor):
     times as you want.
     """
 
-    def __init__(
-        self,
-        sound_file,
-        pan=0.5,
-        volume=0.5,
-        center_x=0,
-        center_y=0,
-        streaming=False
-    ):
+    def __init__(self, sound_file, pan=0.5, volume=0.5, center_x=0, center_y=0, streaming=False):
         super().__init__(BUTTON_SIZE, BUTTON_SIZE, color=arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file, streaming=streaming)
         self.pan = pan
@@ -94,7 +86,7 @@ class MyGame(arcade.Window):
                 volume=0.1,
                 center_x=BUTTON_X_POSITIONS[0],
                 center_y=SCREEN_HEIGHT / 2 + 150,
-                streaming=True
+                streaming=True,
             )
         )
 

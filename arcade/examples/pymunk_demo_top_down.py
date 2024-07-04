@@ -5,6 +5,7 @@ Top-down
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.pymunk_demo_top_down
 """
+
 import math
 import random
 import arcade
@@ -27,9 +28,10 @@ BULLET_MOVE_FORCE = 2500
 
 
 class MyWindow(arcade.Window):
-    """ Main Window """
+    """Main Window"""
+
     def __init__(self, width, height, title):
-        """ Init """
+        """Init"""
         super().__init__(width, height, title)
 
         self.background_color = arcade.color.AMAZON
@@ -49,7 +51,7 @@ class MyWindow(arcade.Window):
         self.down_pressed = False
 
     def setup(self):
-        """ Set up everything """
+        """Set up everything"""
         # Create the sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
@@ -60,35 +62,40 @@ class MyWindow(arcade.Window):
         # Set up the player
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=SPRITE_SCALING_PLAYER)
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 250
         self.player_sprite.center_y = 250
         self.player_list.append(self.player_sprite)
 
         # Set up the walls
         for x in range(0, SCREEN_WIDTH + 1, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 scale=SPRITE_SCALING_PLAYER)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING_PLAYER
+            )
             wall.center_x = x
             wall.center_y = 0
             self.wall_list.append(wall)
 
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 scale=SPRITE_SCALING_PLAYER)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING_PLAYER
+            )
             wall.center_x = x
             wall.center_y = SCREEN_HEIGHT
             self.wall_list.append(wall)
 
         # Set up the walls
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 scale=SPRITE_SCALING_PLAYER)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING_PLAYER
+            )
             wall.center_x = 0
             wall.center_y = y
             self.wall_list.append(wall)
 
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 scale=SPRITE_SCALING_PLAYER)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING_PLAYER
+            )
             wall.center_x = SCREEN_WIDTH
             wall.center_y = y
             self.wall_list.append(wall)
@@ -96,21 +103,24 @@ class MyWindow(arcade.Window):
         # Add some movable rocks
         for x in range(SPRITE_SIZE * 2, SPRITE_SIZE * 13, SPRITE_SIZE):
             rock = random.randrange(4) + 1
-            item = arcade.Sprite(f":resources:images/space_shooter/meteorGrey_big{rock}.png",
-                                 scale=SPRITE_SCALING_PLAYER)
+            item = arcade.Sprite(
+                f":resources:images/space_shooter/meteorGrey_big{rock}.png",
+                scale=SPRITE_SCALING_PLAYER,
+            )
             item.center_x = x
             item.center_y = 400
             self.rock_list.append(item)
 
         # Add some movable coins
         for x in range(SPRITE_SIZE * 2, SPRITE_SIZE * 13, SPRITE_SIZE):
-            items = [":resources:images/items/gemBlue.png",
-                     ":resources:images/items/gemRed.png",
-                     ":resources:images/items/coinGold.png",
-                     ":resources:images/items/keyBlue.png"]
+            items = [
+                ":resources:images/items/gemBlue.png",
+                ":resources:images/items/gemRed.png",
+                ":resources:images/items/coinGold.png",
+                ":resources:images/items/keyBlue.png",
+            ]
             item_name = random.choice(items)
-            item = arcade.Sprite(item_name,
-                                 scale=SPRITE_SCALING_PLAYER)
+            item = arcade.Sprite(item_name, scale=SPRITE_SCALING_PLAYER)
             item.center_x = x
             item.center_y = 300
             self.gem_list.append(item)
@@ -129,18 +139,17 @@ class MyWindow(arcade.Window):
         gravity = (0, 0)
 
         # Create the physics engine
-        self.physics_engine = PymunkPhysicsEngine(damping=damping,
-                                                  gravity=gravity)
+        self.physics_engine = PymunkPhysicsEngine(damping=damping, gravity=gravity)
 
         def rock_hit_handler(sprite_a, sprite_b, arbiter, space, data):
-            """ Called for bullet/rock collision """
+            """Called for bullet/rock collision"""
             bullet_shape = arbiter.shapes[0]
             bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
             bullet_sprite.remove_from_sprite_lists()
             print("Rock")
 
         def wall_hit_handler(sprite_a, sprite_b, arbiter, space, data):
-            """ Called for bullet/rock collision """
+            """Called for bullet/rock collision"""
             bullet_shape = arbiter.shapes[0]
             bullet_sprite = self.physics_engine.get_sprite_for_shape(bullet_shape)
             bullet_sprite.remove_from_sprite_lists()
@@ -159,12 +168,14 @@ class MyWindow(arcade.Window):
         # Friction is between two objects in contact. It is important to remember
         # in top-down games that friction moving along the 'floor' is controlled
         # by damping.
-        self.physics_engine.add_sprite(self.player_sprite,
-                                       friction=0.6,
-                                       moment_of_inertia=PymunkPhysicsEngine.MOMENT_INF,
-                                       damping=0.01,
-                                       collision_type="player",
-                                       max_velocity=400)
+        self.physics_engine.add_sprite(
+            self.player_sprite,
+            friction=0.6,
+            moment_of_inertia=PymunkPhysicsEngine.MOMENT_INF,
+            damping=0.01,
+            collision_type="player",
+            max_velocity=400,
+        )
 
         # Create the walls.
         # By setting the body type to PymunkPhysicsEngine.STATIC the walls can't
@@ -173,28 +184,26 @@ class MyWindow(arcade.Window):
         # PymunkPhysicsEngine.KINEMATIC objects will move, but are assumed to be
         # repositioned by code and don't respond to physics forces.
         # Dynamic is default.
-        self.physics_engine.add_sprite_list(self.wall_list,
-                                            friction=0.6,
-                                            collision_type="wall",
-                                            body_type=PymunkPhysicsEngine.STATIC)
+        self.physics_engine.add_sprite_list(
+            self.wall_list,
+            friction=0.6,
+            collision_type="wall",
+            body_type=PymunkPhysicsEngine.STATIC,
+        )
 
         # Create some boxes to push around.
         # Mass controls, well, the mass of an object. Defaults to 1.
-        self.physics_engine.add_sprite_list(self.rock_list,
-                                            mass=2,
-                                            friction=0.8,
-                                            damping=0.1,
-                                            collision_type="rock")
+        self.physics_engine.add_sprite_list(
+            self.rock_list, mass=2, friction=0.8, damping=0.1, collision_type="rock"
+        )
         # Create some boxes to push around.
         # Mass controls, well, the mass of an object. Defaults to 1.
-        self.physics_engine.add_sprite_list(self.gem_list,
-                                            mass=0.5,
-                                            friction=0.8,
-                                            damping=0.4,
-                                            collision_type="rock")
+        self.physics_engine.add_sprite_list(
+            self.gem_list, mass=0.5, friction=0.8, damping=0.4, collision_type="rock"
+        )
 
     def on_mouse_press(self, x, y, button, modifiers):
-        """ Called whenever the mouse button is clicked. """
+        """Called whenever the mouse button is clicked."""
 
         bullet = arcade.SpriteSolidColor(5, 5, arcade.color.RED)
         self.bullet_list.append(bullet)
@@ -223,12 +232,9 @@ class MyWindow(arcade.Window):
         bullet.center_x += size * force[0]
         bullet.center_y += size * force[1]
 
-        self.physics_engine.add_sprite(bullet,
-                                       mass=0.1,
-                                       damping=1.0,
-                                       friction=0.6,
-                                       collision_type="bullet",
-                                       elasticity=0.9)
+        self.physics_engine.add_sprite(
+            bullet, mass=0.1, damping=1.0, friction=0.6, collision_type="bullet", elasticity=0.9
+        )
 
         # Taking into account the angle, calculate our force.
         force[0] *= BULLET_MOVE_FORCE
@@ -237,7 +243,7 @@ class MyWindow(arcade.Window):
         self.physics_engine.apply_force(bullet, force)
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -252,16 +258,14 @@ class MyWindow(arcade.Window):
             bullet.position = self.player_sprite.position
             bullet.center_x += 30
             self.bullet_list.append(bullet)
-            self.physics_engine.add_sprite(bullet,
-                                           mass=0.2,
-                                           damping=1.0,
-                                           friction=0.6,
-                                           collision_type="bullet")
+            self.physics_engine.add_sprite(
+                bullet, mass=0.2, damping=1.0, friction=0.6, collision_type="bullet"
+            )
             force = (3000, 0)
             self.physics_engine.apply_force(bullet, force)
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP:
             self.up_pressed = False
@@ -273,7 +277,7 @@ class MyWindow(arcade.Window):
             self.right_pressed = False
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
@@ -297,7 +301,7 @@ class MyWindow(arcade.Window):
         self.physics_engine.step()
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
         self.clear()
         self.wall_list.draw()
         self.bullet_list.draw()
@@ -307,7 +311,7 @@ class MyWindow(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

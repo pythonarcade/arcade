@@ -12,7 +12,6 @@ SCREEN_TITLE = "Lighting Demo (Experimental)"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         """
         Set up the application.

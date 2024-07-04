@@ -1,6 +1,7 @@
 """
 Import and run all examples one frame
 """
+
 import contextlib
 import io
 import inspect
@@ -14,13 +15,14 @@ import pytest
 # TODO: Also add platform_tutorial and gl
 EXAMPLE_DIR = Path(arcade.__file__).parent / "examples"
 # These examples are allowed to print to stdout
-ALLOW_STDOUT = set([
-    "arcade.examples.dual_stick_shooter",
-    "arcade.examples.net_process_animal_facts",
-])
-IGNORE_PATTERNS = [
-    'net_process_animal_facts'
-]
+ALLOW_STDOUT = set(
+    [
+        "arcade.examples.dual_stick_shooter",
+        "arcade.examples.net_process_animal_facts",
+    ]
+)
+IGNORE_PATTERNS = ["net_process_animal_facts"]
+
 
 def list_examples():
     for example in EXAMPLE_DIR.glob("*.py"):

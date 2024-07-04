@@ -460,7 +460,6 @@ def create_rectangle(
     if filled:
         data[-2:] = reversed(data[-2:])
     else:
-
         i_lb = (
             center_x - width / 2 + border_width / 2,
             center_y - height / 2 + border_width / 2,

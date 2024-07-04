@@ -52,7 +52,6 @@ class Buffer:
         reserve: int = 0,
         usage: str = "static",
     ):
-
         self._ctx = ctx
         self._glo = glo = gl.GLuint()
         self._size = -1

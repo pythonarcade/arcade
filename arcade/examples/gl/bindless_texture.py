@@ -34,7 +34,6 @@ from arcade.gl import BufferDescription, Texture2D
 
 
 class BindlessTexture(arcade.Window):
-
     def __init__(self):
         super().__init__(
             1280,
@@ -147,7 +146,9 @@ class BindlessTexture(arcade.Window):
         self.textures: List[Texture2D] = []
         # Make a cycle iterator from arcade's resources (images)
         resources = [
-            getattr(arcade.resources, resource) for resource in dir(arcade.resources) if resource.startswith("image_")
+            getattr(arcade.resources, resource)
+            for resource in dir(arcade.resources)
+            if resource.startswith("image_")
         ]
         resource_cycle = cycle(resources)
 

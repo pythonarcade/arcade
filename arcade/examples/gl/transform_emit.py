@@ -16,7 +16,6 @@ from arcade.gl import BufferDescription
 
 
 class TransformEmit(arcade.Window):
-
     def __init__(self):
         super().__init__(1280, 720, "Transform Emit")
         self.time = 0
@@ -130,7 +129,9 @@ class TransformEmit(arcade.Window):
         self.buffer_pos_2 = self.ctx.buffer(reserve=self.num_points * 8)
         self.buffer_vel_2 = self.ctx.buffer(reserve=self.num_points * 8)
 
-        self.buffer_colors = self.ctx.buffer(data=array("f", [random.random() for _ in range(self.num_points * 3)]))
+        self.buffer_colors = self.ctx.buffer(
+            data=array("f", [random.random() for _ in range(self.num_points * 3)])
+        )
 
         # Geometry definition for drawing the two sets of positions
         self.draw_geometry_1 = self.ctx.geometry(
@@ -184,7 +185,6 @@ class TransformEmit(arcade.Window):
 
         # Do we have points to emit?
         if self.active_points < self.num_points:
-
             emit_count = min(self.num_points - self.active_points, self.emit_max_points)
             # print("Emitting", emit_count)
 

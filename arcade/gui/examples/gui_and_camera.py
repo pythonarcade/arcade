@@ -249,6 +249,8 @@ class MyCoinGame(UIView):
         if symbol == arcade.key.SPACE:
             # Allows user to rotate camera to show off full functionality of the ui camera
             self.ui.camera.angle += 5
+        if symbol == arcade.key.BACKSPACE:
+            self.ui.camera.angle -= 5
 
         return False
 

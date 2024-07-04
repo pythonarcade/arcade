@@ -2,6 +2,7 @@
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_scrollable_text
 """
+
 import arcade
 from arcade import load_texture
 
@@ -33,12 +34,7 @@ class MyView(arcade.View):
         super().__init__()
         self.ui = UIManager()
 
-        bg_tex = NinePatchTexture(
-            left=5,
-            right=5,
-            top=5,
-            bottom=5,
-            texture=TEX_GREY_PANEL)
+        bg_tex = NinePatchTexture(left=5, right=5, top=5, bottom=5, texture=TEX_GREY_PANEL)
         text_area = UITextArea(
             x=100,
             y=400,
@@ -78,7 +74,7 @@ class MyView(arcade.View):
             self.window.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(1280, 720, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

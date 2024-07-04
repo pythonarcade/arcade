@@ -15,7 +15,6 @@ WINDOW_HEIGHT = 600
 
 
 class Player(arcade.Sprite):
-
     def __init__(
         self,
         walls: arcade.SpriteList,
@@ -45,7 +44,6 @@ class Player(arcade.Sprite):
 
 
 class Game(arcade.Window):
-
     def __init__(self):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "Input Example")
 

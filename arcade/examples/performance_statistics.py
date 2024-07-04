@@ -19,6 +19,7 @@ If Python and Arcade are installed, this example can be run from the
 command line with:
 python -m arcade.examples.performance_statistics
 """
+
 import random
 from typing import Optional
 
@@ -46,7 +47,8 @@ arcade.enable_timings()
 
 
 class Coin(arcade.BasicSprite):
-    """ Our coin sprite class """
+    """Our coin sprite class"""
+
     def __init__(self, texture: arcade.Texture, scale: float):
         super().__init__(texture, scale=scale)
         # Add a velocity to the coin
@@ -54,12 +56,9 @@ class Coin(arcade.BasicSprite):
         self.change_y = 0
 
     def update(self):
-        """ Update the sprite. """
+        """Update the sprite."""
         # Setting the position is faster than setting x & y individually
-        self.position = (
-            self.position[0] + self.change_x,
-            self.position[1] + self.change_y
-        )
+        self.position = (self.position[0] + self.change_x, self.position[1] + self.change_y)
 
         # Bounce the coin on the edge of the window
         if self.position[0] < 0:
@@ -73,10 +72,10 @@ class Coin(arcade.BasicSprite):
 
 
 class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+    """Our custom Window Class"""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -90,7 +89,6 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def add_coins(self, amount):
-
         # Create the coins
         for i in range(amount):
             # Create the coin instance
@@ -100,7 +98,7 @@ class MyGame(arcade.Window):
             # Position the coin
             coin.position = (
                 random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE),
-                random.randrange(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE)
+                random.randrange(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE),
             )
 
             coin.change_x = random.randrange(-3, 4)
@@ -110,7 +108,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.coin_list = arcade.SpriteList(use_spatial_hash=False)
@@ -143,12 +141,11 @@ class MyGame(arcade.Window):
 
         # Create a Text object to show the current FPS
         self.fps_text = arcade.Text(
-            f"FPS: {arcade.get_fps(60):5.1f}",
-            10, 10, arcade.color.BLACK, 22
+            f"FPS: {arcade.get_fps(60):5.1f}", 10, 10, arcade.color.BLACK, 22
         )
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
 
         # Clear the screen
         self.clear()
@@ -165,7 +162,7 @@ class MyGame(arcade.Window):
             self.fps_text.draw()
 
     def on_update(self, delta_time):
-        """ Update method """
+        """Update method"""
         self.frame_count += 1
 
         # Print and clear timings every 60 frames
@@ -185,7 +182,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame()
     window.setup()
     arcade.run()

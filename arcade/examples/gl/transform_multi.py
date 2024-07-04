@@ -18,7 +18,6 @@ import arcade
 
 
 class App(arcade.Window):
-
     def __init__(self):
         super().__init__(1280, 720)
         self.num_invocations = 20

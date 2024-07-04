@@ -4,6 +4,7 @@ Using a Vertex Buffer Object With Lines
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.lines_buffered
 """
+
 import random
 import arcade
 from arcade.shape_list import (
@@ -32,21 +33,21 @@ class MyGame(arcade.Window):
         self.set_vsync(True)
 
         self.shape_list = ShapeElementList()
-        point_list = ((0, 50),
-                      (10, 10),
-                      (50, 0),
-                      (10, -10),
-                      (0, -50),
-                      (-10, -10),
-                      (-50, 0),
-                      (-10, 10),
-                      (0, 50))
+        point_list = (
+            (0, 50),
+            (10, 10),
+            (50, 0),
+            (10, -10),
+            (0, -50),
+            (-10, -10),
+            (-50, 0),
+            (-10, 10),
+            (0, 50),
+        )
 
         # Filter out anything other than a Color, such as imports and
         # helper functions.
-        colors = [
-            color for name, color in
-            getmembers(arcade.color, lambda c: isinstance(c, Color))]
+        colors = [color for name, color in getmembers(arcade.color, lambda c: isinstance(c, Color))]
 
         for i in range(200):
             x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH)

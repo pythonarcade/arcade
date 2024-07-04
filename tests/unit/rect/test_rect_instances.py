@@ -21,15 +21,11 @@ def test_attributes():
 
 def test_equivalency():
     assert (
-            LBWH(10, 10, 10, 10)
-            ==
-            LRBT(10, 20, 10, 20)
-            ==
-            XYWH(15, 15, 10, 10)
-            ==
-            XYRR(15, 15, 5, 5)
-            ==
-            A_RECT
+        LBWH(10, 10, 10, 10)
+        == LRBT(10, 20, 10, 20)
+        == XYWH(15, 15, 10, 10)
+        == XYRR(15, 15, 5, 5)
+        == A_RECT
     )
 
 
@@ -93,28 +89,22 @@ def test_at_position():
 def test_views():
     assert A_RECT.lrbt == (10, 20, 10, 20)
     assert A_RECT.lbwh == (10, 10, 10, 10)
-    assert A_RECT.xyrr == (15, 15,  5,  5)
+    assert A_RECT.xyrr == (15, 15, 5, 5)
     assert A_RECT.xywh == (15, 15, 10, 10)
     assert A_RECT.viewport == (10, 10, 10, 10)
 
 
-class SubclassedRect(Rect):
-    ...
+class SubclassedRect(Rect): ...
 
 
 ALL_ZEROES = tuple((0 for _ in Rect._fields))
 
 
-def _formats_correctly(
-        func: Callable[[Any], str],
-        starts_with_format: str,
-        instance: Any
-) -> bool:
+def _formats_correctly(func: Callable[[Any], str], starts_with_format: str, instance: Any) -> bool:
     """True if func(instance) starts w/ its class name as specified."""
 
     class_name = instance.__class__.__name__
-    return func(instance).startswith(
-        starts_with_format.format(class_name=class_name))
+    return func(instance).startswith(starts_with_format.format(class_name=class_name))
 
 
 def test_repr():

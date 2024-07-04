@@ -27,7 +27,6 @@ NUM_COINS = 10_000
 
 
 class GPUBouncingCoins(arcade.Window):
-
     def __init__(self):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, resizable=True)
 
@@ -96,7 +95,9 @@ class GPUBouncingCoins(arcade.Window):
         # We only create one position buffer because the second one is in the spritelist
 
         # Buffer with some quick random velocities for our coins
-        self.buffer_velocity_1 = self.ctx.buffer(data=array("f", [uniform(-1, 1) for _ in range(NUM_COINS * 2)]))
+        self.buffer_velocity_1 = self.ctx.buffer(
+            data=array("f", [uniform(-1, 1) for _ in range(NUM_COINS * 2)])
+        )
         # Second velocity buffer
         self.buffer_velocity_2 = self.ctx.buffer(reserve=self.buffer_velocity_1.size)
         # Create a buffer with the same size as the position buffer in  the spritelist.
@@ -136,7 +137,10 @@ class GPUBouncingCoins(arcade.Window):
         self.coins.draw()
 
         # Swap things around for next frame
-        self.buffer_velocity_1, self.buffer_velocity_2 = self.buffer_velocity_2, self.buffer_velocity_1
+        self.buffer_velocity_1, self.buffer_velocity_2 = (
+            self.buffer_velocity_2,
+            self.buffer_velocity_1,
+        )
         self.geometry_1, self.geometry_2 = self.geometry_2, self.geometry_1
 
     def on_update(self, delta_time: float):

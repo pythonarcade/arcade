@@ -57,31 +57,33 @@ class MyGame(arcade.Window):
             ":resources:/images/miami_synth_parallax/layers/back.png",
             size=bg_layer_size_px,
             depth=10.0,
-            scale=PIXEL_SCALE
+            scale=PIXEL_SCALE,
         )
         self.backgrounds.add_from_file(
             ":resources:/images/miami_synth_parallax/layers/buildings.png",
             size=bg_layer_size_px,
             depth=5.0,
-            scale=PIXEL_SCALE
+            scale=PIXEL_SCALE,
         )
         self.backgrounds.add_from_file(
             ":resources:/images/miami_synth_parallax/layers/palms.png",
             size=bg_layer_size_px,
             depth=3.0,
-            scale=PIXEL_SCALE
+            scale=PIXEL_SCALE,
         )
         self.backgrounds.add_from_file(
             ":resources:/images/miami_synth_parallax/layers/highway.png",
             size=bg_layer_size_px,
             depth=1.0,
-            scale=PIXEL_SCALE
+            scale=PIXEL_SCALE,
         )
 
         # Create & position the player sprite in the center of the camera's view
         self.player_sprite = arcade.Sprite(
             ":resources:/images/miami_synth_parallax/car/car-idle.png",
-            center_x=self.camera.viewport_width // 2, center_y=-200.0, scale=PIXEL_SCALE
+            center_x=self.camera.viewport_width // 2,
+            center_y=-200.0,
+            scale=PIXEL_SCALE,
         )
         self.player_sprite.bottom = 0
 
@@ -91,7 +93,9 @@ class MyGame(arcade.Window):
     def pan_camera_to_player(self):
         # Move the camera toward the center of the player's sprite
         target_x = self.player_sprite.center_x
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, self.height//2), CAMERA_SPEED)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position, (target_x, self.height // 2), CAMERA_SPEED
+        )
 
     def on_update(self, delta_time: float):
         # Move the player in our infinite world
@@ -99,7 +103,6 @@ class MyGame(arcade.Window):
         self.pan_camera_to_player()
 
     def on_draw(self):
-
         # Set up our drawing
         self.clear()
         self.camera.use()

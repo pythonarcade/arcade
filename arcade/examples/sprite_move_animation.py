@@ -8,6 +8,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_move_animation
 """
+
 import arcade
 import random
 
@@ -44,9 +45,7 @@ class PlayerCharacter(arcade.Sprite):
         # Set up parent class
         super().__init__(self.idle_texture_pair[0], scale=CHARACTER_SCALING)
 
-
     def update_animation(self, delta_time: float = 1 / 60):
-
         # Figure out if we need to flip face left or right
         if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
             self.character_face_direction = LEFT_FACING
@@ -68,10 +67,10 @@ class PlayerCharacter(arcade.Sprite):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
         super().__init__(width, height, title)
 
         # Sprite lists
@@ -172,7 +171,7 @@ class MyGame(arcade.Window):
             self.player.change_x = 0
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Move the player
         self.player_list.update()
@@ -190,7 +189,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

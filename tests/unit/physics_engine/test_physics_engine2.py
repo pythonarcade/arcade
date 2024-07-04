@@ -1,4 +1,5 @@
-""" Physics engine tests. """
+"""Physics engine tests."""
+
 import copy
 
 import pytest
@@ -17,9 +18,10 @@ def check_spritelists_prop_clears_instead_of_overwrites(engine, prop_name: str):
 
     * extra allocations from copying lists (see arcade.utils.Chain)
     * Avoid GC thrash from creating & deleting items
-     """
+    """
+
     def _get_current():
-        return getattr(engine, f'_{prop_name}')
+        return getattr(engine, f"_{prop_name}")
 
     original_list = _get_current()
 
@@ -258,7 +260,8 @@ def simple_engine_tests(moving_sprite, wall_list, physics_engine):
         else:
             assert len(collisions) == 1
 
-    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, 'walls')
+    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, "walls")
+
 
 def platformer_tests(moving_sprite, wall_list, physics_engine):
     wall_sprite_1 = wall_list[0]
@@ -327,8 +330,8 @@ def platformer_tests(moving_sprite, wall_list, physics_engine):
     collisions = physics_engine.update()
     assert moving_sprite.position == (3, -6)
 
-    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, 'platforms')
-    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, 'ladders')
+    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, "platforms")
+    check_spritelists_prop_clears_instead_of_overwrites(physics_engine, "ladders")
 
 
 # Temp fix for https://github.com/pythonarcade/arcade/issues/2074
@@ -357,9 +360,7 @@ def test_main(window: arcade.Window):
     simple_engine_tests(moving_sprite, wall_list, physics_engine)
     nocopy_tests(physics_engine)
 
-    physics_engine = arcade.PhysicsEnginePlatformer(
-        moving_sprite, wall_list, gravity_constant=0.0
-    )
+    physics_engine = arcade.PhysicsEnginePlatformer(moving_sprite, wall_list, gravity_constant=0.0)
     basic_tests(moving_sprite, wall_list, physics_engine)
     platformer_tests(moving_sprite, wall_list, physics_engine)
     nocopy_tests(physics_engine)

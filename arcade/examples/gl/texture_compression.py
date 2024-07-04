@@ -16,7 +16,6 @@ from pyglet import gl
 
 
 class CompressedTextures(arcade.Window):
-
     def __init__(self):
         super().__init__(1280, 720, "Compressed Textures Example")
 

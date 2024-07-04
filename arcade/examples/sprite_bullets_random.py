@@ -4,6 +4,7 @@ Show how to have enemies shoot bullets at random intervals.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_bullets_random
 """
+
 import arcade
 import random
 
@@ -13,7 +14,7 @@ SCREEN_TITLE = "Sprites and Random Bullets Example"
 
 
 class MyGame(arcade.Window):
-    """ Main application class """
+    """Main application class"""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -28,13 +29,15 @@ class MyGame(arcade.Window):
         self.player = None
 
     def setup(self):
-        """ Setup the variables for the game. """
+        """Setup the variables for the game."""
         self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
         # Add player ship
-        self.player = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", scale=0.5)
+        self.player = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_orange.png", scale=0.5
+        )
         self.player_list.append(self.player)
 
         # Add top-left enemy ship
@@ -52,7 +55,7 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
     def on_draw(self):
-        """Render the screen. """
+        """Render the screen."""
 
         self.clear()
 
@@ -61,11 +64,10 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
     def on_update(self, delta_time):
-        """All the logic to move, and the game logic goes here. """
+        """All the logic to move, and the game logic goes here."""
 
         # Loop through each enemy that we have
         for enemy in self.enemy_list:
-
             # Have a random 1 in 200 change of shooting each 1/60th of a second
             odds = 200
 
@@ -88,13 +90,13 @@ class MyGame(arcade.Window):
         self.bullet_list.update()
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
-        """ Called whenever the mouse moves. """
+        """Called whenever the mouse moves."""
         self.player.center_x = x
         self.player.center_y = 20
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

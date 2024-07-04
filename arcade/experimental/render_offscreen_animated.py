@@ -63,7 +63,6 @@ def make_skyline(
     color_list = []
 
     while building_center_x < width:
-
         # Is there a gap between the buildings?
         if random.random() < gap_chance:
             gap_width = random.randrange(10, 50)

@@ -25,7 +25,7 @@ SQUARE_SPACING = 10
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -47,7 +47,6 @@ class MyGame(arcade.Window):
         # Now calculate all the points
         for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
             for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
-
                 # Calculate where the four points of the rectangle will be if
                 # x and y are the center
                 top_left = (x - HALF_SQUARE_WIDTH, y + HALF_SQUARE_HEIGHT)

@@ -60,7 +60,6 @@ def check_submodules(parent_module_absolute_name: str) -> None:
 
     # Check all modules nested immediately inside it on the file system
     for finder, child_module_name, is_pkg in pkgutil.iter_modules(parent_module_file_path):
-
         child_module_file_path = Path(finder.path) / f"{child_module_name}.py"
         child_module_absolute_name = f"{parent_module_absolute_name}.{child_module_name}"
 
@@ -78,7 +77,6 @@ def test_docstrings():
     # For each immediate child folder module in arcade.examples,
     # check the immediate child python files for correct docstrings.
     for folder_submodule_path in Path(arcade.examples.__path__[0]).iterdir():
-
         # Skip file modules we already covered above outside the loop
         if not folder_submodule_path.is_dir():
             continue

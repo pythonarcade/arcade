@@ -6,6 +6,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_health
 """
+
 import math
 from typing import Tuple
 
@@ -52,7 +53,10 @@ class Player(arcade.Sprite):
             scale=SPRITE_SCALING_PLAYER,
         )
         self.indicator_bar: IndicatorBar = IndicatorBar(
-            self, bar_list, (self.center_x, self.center_y), scale=(1.5, 1.5),
+            self,
+            bar_list,
+            (self.center_x, self.center_y),
+            scale=(1.5, 1.5),
         )
         self.health: int = PLAYER_HEALTH
 
@@ -194,9 +198,7 @@ class IndicatorBar:
         """Sets the fullness of the bar."""
         # Check if new_fullness if valid
         if not (0.0 <= new_fullness <= 1.0):
-            raise ValueError(
-                f"Got {new_fullness}, but fullness must be between 0.0 and 1.0."
-            )
+            raise ValueError(f"Got {new_fullness}, but fullness must be between 0.0 and 1.0.")
 
         # Set the size of the bar
         self._fullness = new_fullness

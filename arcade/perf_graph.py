@@ -63,7 +63,6 @@ class PerfGraph(arcade.Sprite):
         y_axis_num_lines: int = 4,
         view_y_scale_step: float = 20.0,
     ):
-
         unique_id = str(random.random())
         self.minimap_texture = arcade.Texture.create_empty(unique_id, (width, height))
         super().__init__(self.minimap_texture)
@@ -304,7 +303,6 @@ class PerfGraph(arcade.Sprite):
         # Render to the internal texture
         # This ugly spacing is intentional to make type checking work.
         with atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:  # type: ignore
-
             # Set the background color
             fbo.clear(color=self.background_color)
 

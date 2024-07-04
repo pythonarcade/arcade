@@ -15,7 +15,6 @@ SCREEN_TITLE = "Shader Setup With Pixel Manipulation"
 
 
 class ShaderSetup(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.time = 0

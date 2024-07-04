@@ -5,6 +5,7 @@ from pathlib import Path
 
 if os.environ.get("ARCADE_PYTEST_USE_RUST"):
     import arcade_accelerate  # pyright: ignore [reportMissingImports]
+
     arcade_accelerate.bootstrap()
 
 import pytest
@@ -151,7 +152,7 @@ class WindowProxy:
     @property
     def mouse(self):
         return self.window.mouse
-    
+
     @property
     def keyboard(self):
         return self.window.keyboard
@@ -174,7 +175,7 @@ class WindowProxy:
     @property
     def _start_finish_render_data(self):
         return self.window._start_finish_render_data
-    
+
     @_start_finish_render_data.setter
     def _start_finish_render_data(self, data):
         self.window._start_finish_render_data = data
@@ -193,7 +194,7 @@ class WindowProxy:
 
     def on_draw(self):
         return self.window.on_draw()
-    
+
     def on_update(self, dt):
         return self.window.on_update(dt)
 
@@ -294,10 +295,12 @@ def window_proxy():
     arcade.Window = WindowProxy
 
     _open_window = arcade.open_window
+
     def open_window(*args, **kwargs):
         window = create_window(*args, **kwargs)
         prepare_window(window)
         return window
+
     arcade.open_window = open_window
 
     yield None
@@ -307,7 +310,6 @@ def window_proxy():
 
 # --- Fixtures for offscreen rendering
 class Offscreen:
-
     def __init__(self):
         self.ctx = WINDOW.ctx
         self.texture = self.ctx.texture((1280, 720), components=4)
@@ -339,7 +341,9 @@ class Offscreen:
 
     def read_region(self, rect: Rect) -> list[tuple[int, int, int, int]]:
         """Read a region of RGBA pixels from the offscreen buffer"""
-        data = self.fbo.read(components=4, viewport=(rect.left, rect.bottom, rect.width, rect.height))
+        data = self.fbo.read(
+            components=4, viewport=(rect.left, rect.bottom, rect.width, rect.height)
+        )
         return [
             (
                 int.from_bytes(data[i : i + 4], "little"),

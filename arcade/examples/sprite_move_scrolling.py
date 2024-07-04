@@ -28,7 +28,7 @@ PLAYER_MOVEMENT_SPEED = 7
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         """
@@ -58,15 +58,16 @@ class MyGame(arcade.Window):
         self.camera_gui = arcade.camera.Camera2D()
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=0.4)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=0.4
+        )
         self.player_sprite.center_x = 256
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
@@ -76,7 +77,9 @@ class MyGame(arcade.Window):
             for y in range(0, 1600, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                    wall = arcade.Sprite(
+                        ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING
+                    )
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -87,7 +90,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # This command has to happen before we start drawing
         self.clear()
@@ -103,14 +106,17 @@ class MyGame(arcade.Window):
         self.camera_gui.use()
 
         # Draw the GUI
-        arcade.draw_rect_filled(arcade.rect.XYWH(self.width // 2, 20, self.width, 40),
-                                arcade.color.ALMOND)
-        text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, " \
-               f"{self.camera_sprites.position[1]:5.1f})"
+        arcade.draw_rect_filled(
+            arcade.rect.XYWH(self.width // 2, 20, self.width, 40), arcade.color.ALMOND
+        )
+        text = (
+            f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, "
+            f"{self.camera_sprites.position[1]:5.1f})"
+        )
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -122,7 +128,7 @@ class MyGame(arcade.Window):
             self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP:
             self.up_pressed = False
@@ -134,7 +140,7 @@ class MyGame(arcade.Window):
             self.right_pressed = False
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
@@ -166,7 +172,9 @@ class MyGame(arcade.Window):
         """
 
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position, position, CAMERA_SPEED
+        )
 
     def on_resize(self, width: int, height: int):
         """
@@ -179,7 +187,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

@@ -32,7 +32,6 @@ FRAME_DELAY = 2  # The game will only update every 2nd frame
 
 
 class GameOfLife(arcade.Window):
-
     def __init__(self, width, height):
         super().__init__(width, height, "Game of Life - Shader Version")
         self.frame = 0
@@ -46,7 +45,9 @@ class GameOfLife(arcade.Window):
             components=3,
             filter=(self.ctx.NEAREST, self.ctx.NEAREST),
         )
-        self.texture_2 = self.ctx.texture(self.texture_size, components=3, filter=(self.ctx.NEAREST, self.ctx.NEAREST))
+        self.texture_2 = self.ctx.texture(
+            self.texture_size, components=3, filter=(self.ctx.NEAREST, self.ctx.NEAREST)
+        )
         self.write_initial_state()
 
         # Add the textures to framebuffers so we can render to them

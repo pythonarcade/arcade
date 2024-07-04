@@ -17,7 +17,9 @@ def test_rebuild(ctx, common):
     slot_b, region_b = atlas.add(tex_small)
     region_a = atlas.get_texture_region_info(tex_big.atlas_name)
     region_b = atlas.get_texture_region_info(tex_small.atlas_name)
-    common.check_internals(atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0)
+    common.check_internals(
+        atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0
+    )
 
     # Re-build and check states
     atlas.rebuild()
@@ -25,7 +27,9 @@ def test_rebuild(ctx, common):
     assert slot_b == atlas.get_texture_id(tex_small)
     region_aa = atlas.get_texture_region_info(tex_big.atlas_name)
     region_bb = atlas.get_texture_region_info(tex_small.atlas_name)
-    common.check_internals(atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0)
+    common.check_internals(
+        atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0
+    )
 
     # The textures have switched places in the atlas and should
     # have the same left position
@@ -34,7 +38,9 @@ def test_rebuild(ctx, common):
     assert region_b.texture_coordinates[0] != region_bb.texture_coordinates[0]
     assert region_a.texture_coordinates[0] != region_aa.texture_coordinates[0]
 
-    common.check_internals(atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0)
+    common.check_internals(
+        atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0
+    )
 
 
 def test_resize(ctx, common):
@@ -47,9 +53,13 @@ def test_resize(ctx, common):
 
     atlas.add(t1)
     atlas.add(t2)
-    common.check_internals(atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0)
+    common.check_internals(
+        atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0
+    )
     atlas.resize((50, 100))
-    common.check_internals(atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0)
+    common.check_internals(
+        atlas, images=2, textures=2, unique_textures=2, textures_added=2, textures_removed=0
+    )
 
     assert atlas._textures_added == 2
     assert atlas._finalizers_created == 2
@@ -65,7 +75,9 @@ def test_resize(ctx, common):
     t1 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (255, 0, 0, 255)))
     t2 = arcade.Texture(image=PIL.Image.new("RGBA", (50, 50), (0, 255, 0, 255)))
     atlas.add(t1)
-    common.check_internals(atlas, images=1, textures=1, unique_textures=1, textures_added=1, textures_removed=0)
+    common.check_internals(
+        atlas, images=1, textures=1, unique_textures=1, textures_added=1, textures_removed=0
+    )
 
     with pytest.raises(AllocatorException):
         atlas.add(t2)

@@ -1,5 +1,6 @@
 """Test AtlasRegion class."""
-import pytest   
+
+import pytest
 import PIL.Image
 
 from arcade.texture_atlas.region import AtlasRegion
@@ -18,10 +19,14 @@ def test_region_coordinates(ctx):
     # Simulate the half pixel location
     a, b = 0.5 / 8, 1 - 0.5 / 8
     assert region.texture_coordinates == (
-        a, a,
-        b, a,
-        a, b,
-        b, b,
+        a,
+        a,
+        b,
+        a,
+        a,
+        b,
+        b,
+        b,
     )
     # Above raw values:
     # (

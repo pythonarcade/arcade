@@ -9,6 +9,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.maze_depth_first
 """
+
 import random
 import arcade
 import timeit
@@ -40,10 +41,13 @@ VIEWPORT_MARGIN = 200
 HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
 VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
 # If the player moves further than this boundary away from the camera we use a constraint to move the camera
-CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY
+)
+
 
 def _create_grid_with_cells(width, height):
-    """ Create a grid with empty cells on odd row/column combinations. """
+    """Create a grid with empty cells on odd row/column combinations."""
     grid = []
     for row in range(height):
         grid.append([])
@@ -69,7 +73,7 @@ def make_maze_depth_first(maze_width, maze_height):
 
         d = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)]
         random.shuffle(d)
-        for (xx, yy) in d:
+        for xx, yy in d:
             if vis[yy][xx]:
                 continue
             if xx == x:
@@ -85,7 +89,7 @@ def make_maze_depth_first(maze_width, maze_height):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         """
@@ -112,7 +116,7 @@ class MyGame(arcade.Window):
         self.draw_time = 0
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -130,7 +134,9 @@ class MyGame(arcade.Window):
             for row in range(MAZE_HEIGHT):
                 for column in range(MAZE_WIDTH):
                     if maze[row][column] == 1:
-                        wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                        wall = arcade.Sprite(
+                            ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING
+                        )
                         wall.center_x = column * SPRITE_SIZE + SPRITE_SIZE / 2
                         wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                         self.wall_list.append(wall)
@@ -152,7 +158,9 @@ class MyGame(arcade.Window):
                     column_count = end_column - start_column + 1
                     column_mid = (start_column + end_column) / 2
 
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                    wall = arcade.Sprite(
+                        ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING
+                    )
                     wall.center_x = column_mid * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.center_y = row * SPRITE_SIZE + SPRITE_SIZE / 2
                     wall.width = SPRITE_SIZE * column_count
@@ -161,13 +169,13 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=SPRITE_SCALING)
+            scale=SPRITE_SCALING,
+        )
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
         placed = False
         while not placed:
-
             # Randomly position
             self.player_sprite.center_x = random.randrange(MAZE_WIDTH * SPRITE_SIZE)
             self.player_sprite.center_y = random.randrange(MAZE_HEIGHT * SPRITE_SIZE)
@@ -206,27 +214,18 @@ class MyGame(arcade.Window):
 
         output = f"Sprite Count: {sprite_count}"
         left, bottom = self.camera.bottom_left
-        arcade.draw_text(output,
-                         left + 20,
-                         SCREEN_HEIGHT - 20 + bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(output, left + 20, SCREEN_HEIGHT - 20 + bottom, arcade.color.WHITE, 16)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output,
-                         left + 20,
-                         SCREEN_HEIGHT - 40 + bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(output, left + 20, SCREEN_HEIGHT - 40 + bottom, arcade.color.WHITE, 16)
 
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output,
-                         left + 20,
-                         SCREEN_HEIGHT - 60 + bottom,
-                         arcade.color.WHITE, 16)
+        arcade.draw_text(output, left + 20, SCREEN_HEIGHT - 60 + bottom, arcade.color.WHITE, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.player_sprite.change_y = MOVEMENT_SPEED
@@ -238,7 +237,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.change_y = 0
@@ -246,7 +245,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         start_time = timeit.default_timer()
 
@@ -265,7 +264,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

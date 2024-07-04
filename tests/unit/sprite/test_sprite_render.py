@@ -1,9 +1,12 @@
 """
 Rendering tests for Sprite
 """
+
 import arcade
 
-SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png")
+SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(
+    ":resources:images/animated_characters/female_person/femalePerson_idle.png"
+)
 SPRITE_TEXTURE_GOLD_COIN = arcade.load_texture(":resources:images/items/coinGold.png")
 
 
@@ -258,17 +261,26 @@ def test_render_sprite_remove(window):
 
     character_list = arcade.SpriteList()
 
-    sprite_1 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
+    sprite_1 = arcade.Sprite(
+        ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        scale=CHARACTER_SCALING,
+    )
     sprite_1.center_x = 150
     sprite_1.center_y = 150
     character_list.append(sprite_1)
 
-    sprite_2 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
+    sprite_2 = arcade.Sprite(
+        ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        scale=CHARACTER_SCALING,
+    )
     sprite_2.center_x = 250
     sprite_2.center_y = 250
     character_list.append(sprite_2)
 
-    sprite_3 = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", scale=CHARACTER_SCALING)
+    sprite_3 = arcade.Sprite(
+        ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        scale=CHARACTER_SCALING,
+    )
     sprite_3.center_x = 250
     sprite_3.center_y = 250
     character_list.append(sprite_3)

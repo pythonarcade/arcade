@@ -35,7 +35,6 @@ DOT_SIZE = 10
 
 
 class MyGame(arcade.Window):
-
     def __init__(self):
         super().__init__(WIDTH, HEIGHT, "Sprite Depth Testing Example w/ a Cosine Wave")
 

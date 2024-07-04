@@ -12,12 +12,14 @@ def get_dollar_sign(sprite_sheet: arcade.SpriteSheet):
     Crop out the dollar sign from the sprite sheet.
     """
     # left, upper, right, and lower
-    return sprite_sheet.image.crop((
-        9 * 4,  # left: 4th column
-        16,  # upper: second row
-        9 * 4 + 8,  # right: 8 pixels wide
-        16 + 16  # lower: 16 pixels tall
-    ))
+    return sprite_sheet.image.crop(
+        (
+            9 * 4,  # left: 4th column
+            16,  # upper: second row
+            9 * 4 + 8,  # right: 8 pixels wide
+            16 + 16,  # lower: 16 pixels tall
+        )
+    )
 
 
 @pytest.fixture(scope="module")
@@ -130,5 +132,5 @@ def test_get_texture_grid(sprite_sheet):
     assert len(textures) == 255
     for texture in textures:
         assert texture.image.size == (8, 16)
-    
+
     assert textures[36].image.tobytes() == get_dollar_sign(sprite_sheet).tobytes()

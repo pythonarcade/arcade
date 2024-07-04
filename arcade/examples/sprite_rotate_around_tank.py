@@ -21,6 +21,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_rotate_around_tank
 """
+
 import math
 import arcade
 from arcade.types import Point
@@ -60,6 +61,7 @@ class RotatingSprite(arcade.Sprite):
     Other games might not rotate the sprite. For example, moving
     platforms in a platformer wouldn't rotate.
     """
+
     def rotate_around_point(self, point: Point, degrees: float):
         """
         Rotate the sprite around a point by the set amount of degrees
@@ -72,13 +74,10 @@ class RotatingSprite(arcade.Sprite):
         self.angle += degrees
 
         # Move the sprite along a circle centered around the passed point
-        self.position = rotate_point(
-            self.center_x, self.center_y,
-            point[0], point[1], degrees)
+        self.position = rotate_point(self.center_x, self.center_y, point[0], point[1], degrees)
 
 
 class ExampleWindow(arcade.Window):
-
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -90,8 +89,7 @@ class ExampleWindow(arcade.Window):
         self.tank.position = SCREEN_MIDDLE
 
         self.barrel = RotatingSprite(TANK_BARREL)
-        self.barrel.position =\
-            SCREEN_MIDDLE[0], SCREEN_MIDDLE[1] - TANK_BARREL_LENGTH_HALF
+        self.barrel.position = SCREEN_MIDDLE[0], SCREEN_MIDDLE[1] - TANK_BARREL_LENGTH_HALF
 
         self.tank_direction = 0.0  # Forward & backward throttle
         self.tank_turning = 0.0  # Turning strength to the left or right
@@ -104,13 +102,14 @@ class ExampleWindow(arcade.Window):
         self._correct = True
         self.correct_text = arcade.Text(
             "Turret Rotation is Correct, Press P to Switch",
-            SCREEN_MIDDLE[0], SCREEN_HEIGHT - 25,
-            anchor_x='center')
+            SCREEN_MIDDLE[0],
+            SCREEN_HEIGHT - 25,
+            anchor_x="center",
+        )
 
         self.control_text = arcade.Text(
-            "WASD to move tank, Mouse to aim",
-            SCREEN_MIDDLE[0], 15,
-            anchor_x='center')
+            "WASD to move tank, Mouse to aim", SCREEN_MIDDLE[0], 15, anchor_x="center"
+        )
 
     def on_draw(self):
         self.clear()
@@ -129,8 +128,7 @@ class ExampleWindow(arcade.Window):
 
         # Rotate the tank's body in place without changing position
         # We'll rotate the barrel after updating the entire tank's x & y
-        self.tank.angle += TANK_TURN_SPEED_DEGREES\
-            * self.tank_turning * delta_time
+        self.tank.angle += TANK_TURN_SPEED_DEGREES * self.tank_turning * delta_time
 
         # Calculate how much the tank should move forward or back
         move_magnitude = self.tank_direction * TANK_SPEED_PIXELS * delta_time
@@ -138,19 +136,15 @@ class ExampleWindow(arcade.Window):
         y_dir = math.cos(self.tank.radians) * move_magnitude
 
         # Move the tank's body
-        self.tank.position =\
-            self.tank.center_x + x_dir,\
-            self.tank.center_y + y_dir
+        self.tank.position = self.tank.center_x + x_dir, self.tank.center_y + y_dir
 
         # Move the barrel with the body
-        self.barrel.position =\
-            self.barrel.center_x + x_dir,\
-            self.barrel.center_y + y_dir
+        self.barrel.position = self.barrel.center_x + x_dir, self.barrel.center_y + y_dir
 
         # Begin rotating the barrel by finding the angle to the mouse
         mouse_angle = get_angle_degrees(
-            self.tank.center_x, self.tank.center_y,
-            self.mouse_pos[0], self.mouse_pos[1])
+            self.tank.center_x, self.tank.center_y, self.mouse_pos[0], self.mouse_pos[1]
+        )
 
         # Compensate for the flipped orientation of the barrel texture
         # This could be skipped if the texture faced up instead
@@ -179,10 +173,11 @@ class ExampleWindow(arcade.Window):
         elif symbol == arcade.key.P:
             self.correct = not self.correct
 
-            self.correct_text.text =\
-                f"Turret Rotation is "\
-                f"{'Correct' if self.correct else 'Incorrect'},"\
+            self.correct_text.text = (
+                f"Turret Rotation is "
+                f"{'Correct' if self.correct else 'Incorrect'},"
                 f" Press P to Switch"
+            )
 
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol == arcade.key.W:
@@ -209,8 +204,8 @@ class ExampleWindow(arcade.Window):
         self._correct = correct
         if correct:
             angle = get_angle_radians(
-                self.tank.center_y, self.tank.center_x,
-                self.mouse_pos[1], self.mouse_pos[0])
+                self.tank.center_y, self.tank.center_x, self.mouse_pos[1], self.mouse_pos[0]
+            )
 
             self.barrel.position = (
                 self.barrel.center_x + math.sin(angle) * TANK_BARREL_LENGTH_HALF,
@@ -226,5 +221,5 @@ def main():
     window.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

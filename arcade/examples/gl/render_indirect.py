@@ -35,7 +35,6 @@ WINDOW_HEIGHT = 600
 
 
 class RenderIndirect(arcade.Window):
-
     def __init__(self):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "Render Indirect", gl_version=(4, 3))
         # We don't want vsync when using a query to measure performance
@@ -56,7 +55,9 @@ class RenderIndirect(arcade.Window):
         # indices: Optional indices for an index buffer
         # array_draw_commands: List of draw commands for rendering each individual square (without index buffer)
         # indexed_draw_commands: List of draw commands for rendering each individual square (with index buffer)
-        geometry, indices, array_draw_commands, indexed_draw_commands = self.gen_data(self.num_objects)
+        geometry, indices, array_draw_commands, indexed_draw_commands = self.gen_data(
+            self.num_objects
+        )
 
         # Crate OpenGL buffers of the data
         self.draw_command_array_buffer = self.ctx.buffer(data=array("I", array_draw_commands))

@@ -26,7 +26,7 @@ MOVEMENT_SPEED = 5
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
         """
@@ -67,15 +67,25 @@ class MyGame(arcade.Window):
 
         # Draw text on the screen so the user has an idea of what is happening
         text_size = 18
-        arcade.draw_text("Press F to toggle between full screen and windowed mode, unstretched.",
-                         SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 20,
-                         arcade.color.WHITE, text_size, anchor_x="center")
-        arcade.draw_text("Press S to toggle between full screen and windowed mode, stretched.",
-                         SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 20,
-                         arcade.color.WHITE, text_size, anchor_x="center")
+        arcade.draw_text(
+            "Press F to toggle between full screen and windowed mode, unstretched.",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 2 - 20,
+            arcade.color.WHITE,
+            text_size,
+            anchor_x="center",
+        )
+        arcade.draw_text(
+            "Press S to toggle between full screen and windowed mode, stretched.",
+            SCREEN_WIDTH // 2,
+            SCREEN_HEIGHT // 2 + 20,
+            arcade.color.WHITE,
+            text_size,
+            anchor_x="center",
+        )
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
         if key == arcade.key.F:
             # User hits f. Flip between full and not full screen.
             self.set_fullscreen(not self.fullscreen)
@@ -100,7 +110,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     MyGame()
     arcade.run()
 

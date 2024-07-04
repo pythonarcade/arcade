@@ -23,7 +23,6 @@ from arcade.gl import BufferDescription
 
 
 class Perspective(arcade.Window):
-
     def __init__(self):
         super().__init__(1280, 720, "Perspective", resizable=True)
         # Simple texture shader for the plane.
@@ -67,23 +66,37 @@ class Perspective(arcade.Window):
         self.program["projection"] = self.proj
 
         # Framebuffer / virtual screen to render the contents into
-        self.fbo = self.ctx.framebuffer(
-            color_attachments=self.ctx.texture(size=(1024, 1024))
-        )
+        self.fbo = self.ctx.framebuffer(color_attachments=self.ctx.texture(size=(1024, 1024)))
 
         # Set up the geometry buffer for the plane.
         # This is four points with texture coordinates
         # creating a rectangle
         buffer = self.ctx.buffer(
             data=array(
-                'f',
+                "f",
                 [
-                    # x  y   z  u  v 
-                    -1,  1, 0, 0, 1,  # Top Left     
-                    -1, -1, 0, 0, 0,  # Bottom Left
-                     1,  1, 0, 1, 1,  # Top Right
-                     1, -1, 0, 1, 0,  # Bottom right
-                ]
+                    # x  y   z  u  v
+                    -1,
+                    1,
+                    0,
+                    0,
+                    1,  # Top Left
+                    -1,
+                    -1,
+                    0,
+                    0,
+                    0,  # Bottom Left
+                    1,
+                    1,
+                    0,
+                    1,
+                    1,  # Top Right
+                    1,
+                    -1,
+                    0,
+                    1,
+                    0,  # Bottom right
+                ],
             )
         )
         # Make this into a geometry object we can draw-
@@ -108,7 +121,7 @@ class Perspective(arcade.Window):
         self.offscreen_cam = arcade.camera.Camera2D(
             position=(0.0, 0.0),
             viewport=arcade.LBWH(0, 0, self.fbo.width, self.fbo.height),
-            projection=arcade.LRBT(0, self.fbo.width, 0, self.fbo.height)
+            projection=arcade.LRBT(0, self.fbo.width, 0, self.fbo.height),
         )
 
     def on_draw(self):
@@ -132,7 +145,7 @@ class Perspective(arcade.Window):
         self.geometry.render(self.program)
 
     def draw_offscreen(self):
-        """Render into the texture mapped """
+        """Render into the texture mapped"""
         # Activate the offscreen framebuffer and draw the sprites into it
         with self.fbo.activate() as fbo:
             fbo.clear()
@@ -141,7 +154,9 @@ class Perspective(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
+        self.program["projection"] = Mat4.perspective_projection(
+            self.aspect_ratio, 0.1, 100, fov=75
+        )
 
 
 def main():

@@ -26,7 +26,6 @@ TEXTURE_RIGHT = 1
 
 
 class Player(arcade.Sprite):
-
     def __init__(self, left_texture, right_texture):
         super().__init__(left_texture, scale=SPRITE_SCALING)
         self.textures.append(right_texture)
@@ -69,7 +68,7 @@ class MyGame(arcade.Window):
         self.right_texture = self.left_texture.flip_left_right()
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_sprite_list = arcade.SpriteList()
@@ -92,14 +91,14 @@ class MyGame(arcade.Window):
         self.player_sprite_list.draw()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.player_sprite_list.update()
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key in (arcade.key.UP, arcade.key.W):
             self.player_sprite.change_y = MOVEMENT_SPEED
@@ -113,7 +112,7 @@ class MyGame(arcade.Window):
             arcade.close_window()
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key in (arcade.key.UP, arcade.key.DOWN, arcade.key.W, arcade.key.S):
             self.player_sprite.change_y = 0
@@ -122,7 +121,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

@@ -8,6 +8,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_move_angle
 """
+
 import arcade
 import math
 
@@ -22,10 +23,10 @@ ANGLE_SPEED = 5
 
 
 class Player(arcade.Sprite):
-    """ Player class """
+    """Player class"""
 
     def __init__(self, image, scale):
-        """ Set up the player """
+        """Set up the player"""
 
         # Call the parent init
         super().__init__(image, scale=scale)
@@ -68,14 +69,15 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.BLACK
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player(":resources:images/space_shooter/playerShip1_orange.png",
-                                    SPRITE_SCALING)
+        self.player_sprite = Player(
+            ":resources:images/space_shooter/playerShip1_orange.png", SPRITE_SCALING
+        )
         self.player_sprite.center_x = SCREEN_WIDTH / 2
         self.player_sprite.center_y = SCREEN_HEIGHT / 2
         self.player_list.append(self.player_sprite)
@@ -92,14 +94,14 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.player_list.update()
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         # Forward/back
         if key == arcade.key.UP:
@@ -114,7 +116,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_angle = ANGLE_SPEED
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.player_sprite.speed = 0
@@ -123,7 +125,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

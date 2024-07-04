@@ -66,13 +66,7 @@ class MyGame(arcade.Window):
         self.gui_camera = None
 
         # Text
-        self.fps_text = arcade.Text(
-            "",
-            x=10,
-            y=40,
-            color=arcade.color.BLACK,
-            font_size=14
-        )
+        self.fps_text = arcade.Text("", x=10, y=40, color=arcade.color.BLACK, font_size=14)
         self.distance_text = arcade.Text(
             "0.0",
             x=10,
@@ -121,7 +115,9 @@ class MyGame(arcade.Window):
             self.background_color = self.tile_map.background_color
 
         # Keep player from running through the wall_list layer
-        walls = [self.wall_list, ]
+        walls = [
+            self.wall_list,
+        ]
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite, walls, gravity_constant=GRAVITY
         )
@@ -215,9 +211,7 @@ class MyGame(arcade.Window):
         if not self.game_over:
             self.physics_engine.update()
 
-        coins_hit = arcade.check_for_collision_with_list(
-            self.player_sprite, self.coin_list
-        )
+        coins_hit = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
         for coin in coins_hit:
             coin.remove_from_sprite_lists()
             self.score += 1
@@ -226,18 +220,20 @@ class MyGame(arcade.Window):
         self.pan_camera_to_user(panning_fraction=0.12)
 
     def pan_camera_to_user(self, panning_fraction: float = 1.0):
-        """ Manage Scrolling """
+        """Manage Scrolling"""
 
         # This spot would center on the user
         screen_center_x = self.player_sprite.center_x
         screen_center_y = self.player_sprite.center_y
-        if screen_center_x - self.width/2 < 0:
-            screen_center_x = self.width/2
-        if screen_center_y - self.height/2 < 0:
-            screen_center_y = self.height/2
+        if screen_center_x - self.width / 2 < 0:
+            screen_center_x = self.width / 2
+        if screen_center_y - self.height / 2 < 0:
+            screen_center_y = self.height / 2
         user_centered = screen_center_x, screen_center_y
 
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, user_centered, panning_fraction)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position, user_centered, panning_fraction
+        )
 
 
 def main():

@@ -7,6 +7,7 @@ Tiled available from: https://www.mapeditor.org/
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_tiled_map_with_levels
 """
+
 import time
 
 import arcade
@@ -21,7 +22,7 @@ SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SPRITE_SCALING
 
 # How many pixels to keep as a maximum between the player and the camera.
-CAMERA_BOUNDARY =  arcade.LRBT(-140, 140,-100,300)
+CAMERA_BOUNDARY = arcade.LRBT(-140, 140, -100, 300)
 
 # Physics
 MOVEMENT_SPEED = 5
@@ -143,9 +144,7 @@ class MyGame(arcade.Window):
         distance = self.player_sprite.right
         left, bottom = self.camera.bottom_left
         output = f"Distance: {distance:.0f}"
-        arcade.draw_text(
-            output, left + 10, bottom + 20, arcade.color.BLACK, 14
-        )
+        arcade.draw_text(output, left + 10, bottom + 20, arcade.color.BLACK, 14)
 
         if self.game_over:
             arcade.draw_text(

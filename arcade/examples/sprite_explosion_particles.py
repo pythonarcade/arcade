@@ -10,6 +10,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_explosion_particles
 """
+
 import random
 import math
 import arcade
@@ -44,11 +45,13 @@ PARTICLE_COUNT = 20
 PARTICLE_RADIUS = 3
 
 # Possible particle colors
-PARTICLE_COLORS = [arcade.color.ALIZARIN_CRIMSON,
-                   arcade.color.COQUELICOT,
-                   arcade.color.LAVA,
-                   arcade.color.KU_CRIMSON,
-                   arcade.color.DARK_TANGERINE]
+PARTICLE_COLORS = [
+    arcade.color.ALIZARIN_CRIMSON,
+    arcade.color.COQUELICOT,
+    arcade.color.LAVA,
+    arcade.color.KU_CRIMSON,
+    arcade.color.DARK_TANGERINE,
+]
 
 # Chance we'll flip the texture to white and make it 'sparkle'
 PARTICLE_SPARKLE_CHANCE = 0.02
@@ -72,6 +75,7 @@ SMOKE_CHANCE = 0.25
 
 class Smoke(arcade.SpriteCircle):
     """Particle with smoke like behavior."""
+
     def __init__(self, size):
         super().__init__(size, arcade.color.LIGHT_GRAY, soft=True)
         self.change_y = SMOKE_RISE_RATE
@@ -91,7 +95,8 @@ class Smoke(arcade.SpriteCircle):
 
 
 class Particle(arcade.SpriteCircle):
-    """ Explosion particle"""
+    """Explosion particle"""
+
     def __init__(self):
         """
         Simple particle sprite based on circle sprite.
@@ -106,7 +111,7 @@ class Particle(arcade.SpriteCircle):
         self.change_y = math.cos(math.radians(direction)) * speed
 
     def update(self):
-        """ Update the particle """
+        """Update the particle"""
         if self.alpha == 0:
             # Faded out, remove
             self.remove_from_sprite_lists()
@@ -132,10 +137,10 @@ class Particle(arcade.SpriteCircle):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -146,8 +151,9 @@ class MyGame(arcade.Window):
         self.explosions_list = arcade.SpriteList()
 
         # Set up the player info. Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png",
-                                           scale=SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip2_orange.png", scale=SPRITE_SCALING_PLAYER
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -186,7 +192,7 @@ class MyGame(arcade.Window):
                 scale=SPRITE_SCALING_COIN,
                 angle=180,
                 center_x=random.randrange(25, SCREEN_WIDTH - 25),
-                center_y=random.randrange(150, SCREEN_HEIGHT)
+                center_y=random.randrange(150, SCREEN_HEIGHT),
             )
             # Add the ship to the lists
             self.enemy_list.append(enemy)
@@ -222,7 +228,9 @@ class MyGame(arcade.Window):
         arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(
+            ":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER
+        )
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
@@ -246,7 +254,7 @@ class MyGame(arcade.Window):
             self.close()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on bullet sprites
         self.bullet_list.update()
@@ -254,13 +262,11 @@ class MyGame(arcade.Window):
 
         # Loop through each bullet
         for bullet in self.bullet_list:
-
             # Check this bullet to see if it hit a coin
             hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
 
             # If it did...
             if len(hit_list) > 0:
-
                 # Get rid of the bullet
                 bullet.remove_from_sprite_lists()
 

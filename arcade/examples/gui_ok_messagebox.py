@@ -4,6 +4,7 @@ Example code showing how to use the OKMessageBox
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_ok_messagebox
 """
+
 import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons
@@ -26,10 +27,7 @@ class MyView(arcade.View):
             text="Show Message Box", width=300
         )
         # Create a label to show the user's choices
-        self.last_choice = arcade.gui.UILabel(
-            text="",
-            align="left", width=300
-        )
+        self.last_choice = arcade.gui.UILabel(text="", align="left", width=300)
 
         # Add both widgets to the v_box to center them
         self.v_box.add(show_message_box_button)
@@ -50,9 +48,7 @@ class MyView(arcade.View):
         message_box = arcade.gui.UIMessageBox(
             width=300,
             height=200,
-            message_text=(
-                "Which option do you choose?"
-            ),
+            message_text=("Which option do you choose?"),
             buttons=["Ok", "Cancel"],
         )
 
@@ -88,7 +84,7 @@ class MyView(arcade.View):
             self.window.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(1280, 720, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

@@ -4,6 +4,7 @@ Example code showing how to create some of the different UIWidgets.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_widgets
 """
+
 import arcade
 import arcade.gui
 import arcade.gui.widgets.buttons
@@ -42,9 +43,7 @@ class MyView(arcade.View):
         self.v_box.add(ui_text_label)
 
         # Create a UIFlatButton
-        ui_flatbutton = arcade.gui.widgets.buttons.UIFlatButton(
-            text="Flat Button", width=200
-        )
+        ui_flatbutton = arcade.gui.widgets.buttons.UIFlatButton(text="Flat Button", width=200)
         self.v_box.add(ui_flatbutton)
 
         # Handle Clicks
@@ -64,9 +63,7 @@ class MyView(arcade.View):
         self.v_box.add(ui_texture_button)
 
         # Create a widget to hold the v_box widget, that will center the buttons
-        self.ui.add(
-            arcade.gui.widgets.layout.UIAnchorLayout(children=[self.v_box])
-        )
+        self.ui.add(arcade.gui.widgets.layout.UIAnchorLayout(children=[self.v_box]))
 
     def on_click_start(self, event):
         print("Start:", event)
@@ -85,7 +82,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(1280, 720, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

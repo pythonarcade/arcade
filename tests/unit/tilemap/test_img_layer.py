@@ -19,7 +19,7 @@ def test_image_layer():
     assert "img-offset" in tile_map.sprite_lists
     assert len(tile_map.sprite_lists["img-offset"]) == 1
     image = tile_map.sprite_lists["img-offset"][0]
-    
+
     assert image.width == 1024
     assert image.height == 600
     assert image.left == 1280
@@ -43,7 +43,7 @@ def test_image_layer_with_scaling():
     assert "img-offset" in tile_map.sprite_lists
     assert len(tile_map.sprite_lists["img-offset"]) == 1
     image = tile_map.sprite_lists["img-offset"][0]
-    
+
     assert image.width == 512
     assert image.height == 300
     assert image.left == 640

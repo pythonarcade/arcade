@@ -4,6 +4,7 @@ Unit tests for utils.py
 Can run these tests individually with:
 python -m pytest tests/unit/test_utils.py
 """
+
 from arcade import utils
 
 

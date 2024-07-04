@@ -33,10 +33,10 @@ def test_shader_source(ctx):
     elif ctx.gl_api == "gles":
         assert source_wrapper.version == 310
 
-    assert source_wrapper.out_attributes == ['out_pos', 'out_velocity']
-    source = source_wrapper.get_source(defines={'TEST': 1, 'TEST2': '2'})
-    assert '#define TEST 1' in source
-    assert '#define TEST2 2' in source
+    assert source_wrapper.out_attributes == ["out_pos", "out_velocity"]
+    source = source_wrapper.get_source(defines={"TEST": 1, "TEST2": "2"})
+    assert "#define TEST 1" in source
+    assert "#define TEST2 2" in source
 
 
 def test_shader_source_empty(ctx):
@@ -49,12 +49,7 @@ def test_shader_source_missing_version(ctx):
     with pytest.raises(ShaderException):
         ShaderSource(
             ctx,
-            (
-                "in vec3 in_vert\n"
-                "void main() {\n"
-                "   gl_Position = vec3(in_vert, 1.0);\n"
-                "}\n"
-            ),
+            ("in vec3 in_vert\n" "void main() {\n" "   gl_Position = vec3(in_vert, 1.0);\n" "}\n"),
             None,
             gl.GL_VERTEX_SHADER,
         )
@@ -65,12 +60,7 @@ def test_shader_source_malformed(ctx):
     with pytest.raises(ShaderException):
         ShaderSource(
             ctx,
-            (
-                "in in_vert\n"
-                "void main() \n"
-                "   gl_Position = vec3(in_vert, 1.0)\n"
-                "}\n"
-            ),
+            ("in in_vert\n" "void main() \n" "   gl_Position = vec3(in_vert, 1.0)\n" "}\n"),
             None,
             gl.GL_VERTEX_SHADER,
         )
@@ -103,8 +93,8 @@ def test_shader_source_malformed(ctx):
         None,
         gl.GL_VERTEX_SHADER,
     )
-    source = wrapper.get_source(defines={'TEST': 1})
-    assert 'TEST 1' in source
+    source = wrapper.get_source(defines={"TEST": 1})
+    assert "TEST 1" in source
 
 
 def test_shader_program_broken_out(ctx):
@@ -121,7 +111,7 @@ def test_shader_program_broken_out(ctx):
         None,
         gl.GL_VERTEX_SHADER,
     )
-    wrapper.out_attributes == ['out_vert']
+    wrapper.out_attributes == ["out_vert"]
 
 
 def test_program_basic(ctx):
@@ -156,15 +146,15 @@ def test_program_basic(ctx):
     assert program.glo > 0
     program.use()
     # assert ctx.active_program == program
-    assert repr(program).startswith('<Program')
+    assert repr(program).startswith("<Program")
 
     # TODO: Test all uniform types
-    program['pos_offset'] = 1, 2
-    assert program['pos_offset'] == (1.0, 2.0)
+    program["pos_offset"] = 1, 2
+    assert program["pos_offset"] == (1.0, 2.0)
     with pytest.raises(KeyError):
-        program['this_uniform_do_not_exist'] = 0
+        program["this_uniform_do_not_exist"] = 0
     with pytest.raises(KeyError):
-        program['this_uniform_do_not_exist']
+        program["this_uniform_do_not_exist"]
 
 
 def test_vertex_shader(ctx):
@@ -180,6 +170,7 @@ def test_vertex_shader(ctx):
         }
         """,
     )
+
 
 def test_geo_shader(ctx):
     # Program with geometry shader
@@ -281,7 +272,7 @@ def test_varyings(ctx):
     program = ctx.program(
         vertex_shader=src,
     )
-    assert program.varyings == ['out_pos', 'out_velocity']
+    assert program.varyings == ["out_pos", "out_velocity"]
 
     if ctx.gl_version >= (4, 1):
         program = ctx.program(
@@ -298,7 +289,7 @@ def test_varyings(ctx):
             }
             """,
         )
-        assert program.varyings == ['out_pos', 'out_velocity']
+        assert program.varyings == ["out_pos", "out_velocity"]
 
     # Illegal varying names
     with pytest.raises(ShaderException):
@@ -306,9 +297,9 @@ def test_varyings(ctx):
 
     # Mapping one of two varyings
     program = ctx.program(vertex_shader=src, varyings=["out_pos"])
-    assert program.varyings == ['out_pos']
+    assert program.varyings == ["out_pos"]
     program = ctx.program(vertex_shader=src, varyings=["out_velocity"])
-    assert program.varyings == ['out_velocity']
+    assert program.varyings == ["out_velocity"]
 
     # Configure capture mode
     program = ctx.program(vertex_shader=src, varyings_capture_mode="interleaved")
@@ -320,7 +311,8 @@ def test_varyings(ctx):
 def test_uniform_block(ctx):
     """Test uniform block"""
     # Simple tranform with a uniform block
-    program = ctx.program(vertex_shader="""
+    program = ctx.program(
+        vertex_shader="""
         #version 330
         uniform Projection {
             uniform mat4 matrix;
@@ -334,9 +326,9 @@ def test_uniform_block(ctx):
     """
     )
     # Obtain the ubo info and modify binding + test properties
-    ubo = program['Projection']
+    ubo = program["Projection"]
     assert isinstance(ubo, UniformBlock)
-    program['Projection'] = 1
+    program["Projection"] = 1
     assert ubo.binding == 1
     ubo.binding = 0
     assert ubo.binding == 0
@@ -350,4 +342,4 @@ def test_uniform_block(ctx):
     vao = ctx.geometry()
     ubo_buffer.bind_to_uniform_block(0)
     vao.transform(program, buffer, vertices=1)
-    assert struct.unpack('2f', buffer.read()) == pytest.approx((1, 1), 0.01)
+    assert struct.unpack("2f", buffer.read()) == pytest.approx((1, 1), 0.01)

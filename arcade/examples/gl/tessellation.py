@@ -17,7 +17,6 @@ SCREEN_TITLE = "Bezier Curve Tessellation"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         """
         Set up the application.
@@ -100,7 +99,9 @@ class MyGame(arcade.Window):
         )
         # fmt: on
 
-        self.geometry = self.ctx.geometry([BufferDescription(self.ctx.buffer(data=vertices), "2f", ["in_vert"])])
+        self.geometry = self.ctx.geometry(
+            [BufferDescription(self.ctx.buffer(data=vertices), "2f", ["in_vert"])]
+        )
 
     def on_draw(self):
         self.clear()

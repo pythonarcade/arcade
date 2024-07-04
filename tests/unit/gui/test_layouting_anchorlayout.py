@@ -29,7 +29,11 @@ def test_place_widget(window):
 def test_place_widget_relative_to_own_content_rect(window):
     dummy = UIDummy(width=100, height=200)
 
-    subject = UIAnchorLayout(x=0, y=0, width=500, height=500).with_border(width=2).with_padding(left=50, top=100)
+    subject = (
+        UIAnchorLayout(x=0, y=0, width=500, height=500)
+        .with_border(width=2)
+        .with_padding(left=50, top=100)
+    )
 
     subject.add(
         dummy,
@@ -104,7 +108,9 @@ def test_grow_child_to_max_size(window):
 
 def test_shrink_child_to_min_size(window):
     subject = UIAnchorLayout(width=400, height=400)
-    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(0.1, 0.1), size_hint_min=(200, 150)))
+    dummy = subject.add(
+        UIDummy(width=100, height=100, size_hint=(0.1, 0.1), size_hint_min=(200, 150))
+    )
 
     subject._do_layout()
 
@@ -124,7 +130,9 @@ def test_grow_child_within_bounds(window):
 
 def test_only_adjust_size_if_size_hint_is_given_for_dimension(window):
     subject = UIAnchorLayout(width=400, height=400)
-    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(2, None), size_hint_min=(None, 200)))
+    dummy = subject.add(
+        UIDummy(width=100, height=100, size_hint=(2, None), size_hint_min=(None, 200))
+    )
 
     subject._do_layout()
 

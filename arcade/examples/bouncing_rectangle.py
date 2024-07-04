@@ -25,10 +25,9 @@ BACKGROUND_COLOR = arcade.color.ALMOND
 
 
 class Item:
-    """ This class represents our rectangle """
+    """This class represents our rectangle"""
 
     def __init__(self):
-
         # Set up attribute variables
 
         # Where we are
@@ -59,11 +58,12 @@ class Item:
     def draw(self):
         # Draw the rectangle
         arcade.draw_rect_filled(
-            arcade.rect.XYWH(self.center_x, self.center_y, RECT_WIDTH, RECT_HEIGHT), RECT_COLOR)
+            arcade.rect.XYWH(self.center_x, self.center_y, RECT_WIDTH, RECT_HEIGHT), RECT_COLOR
+        )
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -83,7 +83,7 @@ class MyGame(arcade.Window):
         self.item.update()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # Clear screen
         self.clear()
@@ -92,7 +92,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 

@@ -30,7 +30,7 @@ GRAVITY = 0.5
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
         """
@@ -51,7 +51,7 @@ class MyGame(arcade.Window):
         self.game_over = False
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.wall_list = arcade.SpriteList()
@@ -76,7 +76,9 @@ class MyGame(arcade.Window):
 
         # Draw the crates
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE * 5):
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING
+            )
 
             wall.bottom = SPRITE_SIZE
             wall.left = x
@@ -105,17 +107,19 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
         # -- Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player_list.append(self.player_sprite)
 
         # Starting position of the player
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
 
-        self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                             self.wall_list,
-                                                             gravity_constant=GRAVITY)
+        self.physics_engine = arcade.PhysicsEnginePlatformer(
+            self.player_sprite, self.wall_list, gravity_constant=GRAVITY
+        )
 
         # Set the background color
         self.background_color = arcade.color.AMAZON
@@ -153,7 +157,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Update the player based on the physics engine
         if not self.game_over:

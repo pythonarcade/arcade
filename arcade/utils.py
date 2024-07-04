@@ -4,6 +4,7 @@ Various utility functions.
 IMPORTANT:
 These  should be standalone and not rely on any arcade imports
 """
+
 from __future__ import annotations
 
 import functools
@@ -14,7 +15,7 @@ from itertools import chain
 from pathlib import Path
 from typing import Generator, Generic, Sequence, Type, TypeVar
 
-_CT = TypeVar('_CT')  # Comparable type, ie supports the <= operator
+_CT = TypeVar("_CT")  # Comparable type, ie supports the <= operator
 
 __all__ = [
     "OutsideRangeError",
@@ -28,7 +29,7 @@ __all__ = [
     "warning",
     "generate_uuid_from_kwargs",
     "is_raspberry_pi",
-    "get_raspberry_pi_info"
+    "get_raspberry_pi_info",
 ]
 
 
@@ -46,6 +47,7 @@ class OutsideRangeError(ValueError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
+
     def __init__(self, var_name: str, value: _CT, lower: _CT, upper: _CT) -> None:
         super().__init__(f"{var_name} must be between {lower} and {upper}, inclusive, not {value}")
         self.var_name = var_name
@@ -66,6 +68,7 @@ class IntOutsideRangeError(OutsideRangeError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
+
     def __init__(self, var_name: str, value: int, lower: int, upper: int) -> None:
         super().__init__(var_name, value, lower, upper)
 
@@ -79,6 +82,7 @@ class FloatOutsideRangeError(OutsideRangeError):
     :param lower: the lower bound, inclusive, of the range
     :param upper: the upper bound, inclusive, of the range
     """
+
     def __init__(self, var_name: str, value: float, lower: float, upper: float) -> None:
         super().__init__(var_name, value, lower, upper)
 
@@ -90,6 +94,7 @@ class ByteRangeError(IntOutsideRangeError):
     :param var_name: the name of the variable or argument
     :param value: the value to fall outside the expected range
     """
+
     def __init__(self, var_name: str, value: int) -> None:
         super().__init__(var_name, value, 0, 255)
 
@@ -108,14 +113,15 @@ class NormalizedRangeError(FloatOutsideRangeError):
     :param var_name: the name of the variable or argument
     :param value: the value to fall outside the expected range
     """
+
     def __init__(self, var_name: str, value: float) -> None:
         super().__init__(var_name, value, 0.0, 1.0)
 
 
 # Since this module forbids importing from the rest of
 # Arcade, we make our own local type variables.
-_T = TypeVar('_T')
-_TType = TypeVar('_TType', bound=Type)
+_T = TypeVar("_T")
+_TType = TypeVar("_TType", bound=Type)
 
 
 class Chain(Generic[_T]):
@@ -131,6 +137,7 @@ class Chain(Generic[_T]):
     Arguments:
         components: The sequences of items to join.
     """
+
     def __init__(self, *components: Sequence[_T]):
         self.components: list[Sequence[_T]] = list(components)
 
@@ -170,18 +177,21 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
 
 
     """
+
     def __copy__(self):  # noqa
-       raise NotImplementedError(
-           f"{self.__class__.__name__} does not implement __copy__, but"
-           f"you may implement it on a custom subclass."
-       )
-    decorated_type.__copy__ =  __copy__
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not implement __copy__, but"
+            f"you may implement it on a custom subclass."
+        )
+
+    decorated_type.__copy__ = __copy__
 
     def __deepcopy__(self, memo):  # noqa
-       raise NotImplementedError(
-           f"{self.__class__.__name__} does not implement __deepcopy__,"
-           f" but you may implement it on a custom subclass."
-       )
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not implement __deepcopy__,"
+            f" but you may implement it on a custom subclass."
+        )
+
     decorated_type.__deepcopy__ = __deepcopy__
 
     return decorated_type
@@ -189,11 +199,13 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
 
 class PerformanceWarning(Warning):
     """Use this for issuing performance warnings."""
+
     pass
 
 
 class ReplacementWarning(Warning):
     """Use this for issuing warnings about naming and functionality changes."""
+
     pass
 
 
@@ -207,6 +219,7 @@ def warning(warning_type: Type[Warning], message: str = "", **kwargs):
         def wrapper(*args, **kwargs):
             warnings.warn(message, warning_type)
             return func(*args, **kwargs)
+
         return wrapper
 
     return actual_warning_decorator
@@ -220,7 +233,9 @@ def generate_uuid_from_kwargs(**kwargs) -> str:
     It must be called with parameters, and will raise an error if passed no keyword arguments.
     """
     if not kwargs:
-        raise Exception("generate_uuid_from_kwargs has to be used with kwargs, please check the doc.")
+        raise Exception(
+            "generate_uuid_from_kwargs has to be used with kwargs, please check the doc."
+        )
 
     return "|".join(f"{key}={str(value)}" for key, value in kwargs.items())
 

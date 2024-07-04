@@ -8,6 +8,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_collect_coins_background
 """
+
 import random
 import arcade
 
@@ -25,7 +26,7 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self, width, height, title):
-        """ Initializer """
+        """Initializer"""
 
         # Call the parent class initializer
         super().__init__(width, height, title)
@@ -36,8 +37,10 @@ class MyGame(arcade.Window):
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
         # Variables that will hold sprite lists
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=PLAYER_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=PLAYER_SCALING,
+        )
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player_sprite)
         self.coin_list = arcade.SpriteList()
@@ -100,7 +103,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on the coin sprites (The sprites don't do much in this
         # example though.)
@@ -122,7 +125,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.reset()
     arcade.run()

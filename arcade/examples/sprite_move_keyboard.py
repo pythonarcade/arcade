@@ -23,10 +23,10 @@ MOVEMENT_SPEED = 5
 
 
 class Player(arcade.Sprite):
-    """ Player Class """
+    """Player Class"""
 
     def update(self):
-        """ Move the player """
+        """Move the player"""
         # Move player.
         # Remove these lines if physics engine is moving player.
         self.center_x += self.change_x
@@ -67,7 +67,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -93,13 +93,13 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Move the player
         self.player_list.update()
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         # If the player presses a key, update the speed
         if key == arcade.key.UP:
@@ -112,7 +112,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         # If a player releases a key, zero out the speed.
         # This doesn't work well if multiple keys are pressed.
@@ -125,7 +125,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

@@ -46,7 +46,6 @@ class InputDevice(Enum):
 
 
 class InputManager:
-
     def __init__(
         self,
         controller: Optional[Controller] = None,

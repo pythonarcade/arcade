@@ -6,6 +6,7 @@ Right-click to cause the tank to move to that point.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.turn_and_move
 """
+
 import math
 import arcade
 
@@ -21,6 +22,7 @@ class Player(arcade.Sprite):
     """
     Sprite that turns and moves
     """
+
     def __init__(self):
         super().__init__(":resources:images/topdown_tanks/tank_green.png")
 
@@ -44,7 +46,7 @@ class Player(arcade.Sprite):
         self.change_y = 0.0
 
     def on_update(self, delta_time: float = 1 / 60):
-        """ Update the player """
+        """Update the player"""
 
         # If we have no destination, don't go anywhere.
         if not self._destination_point:
@@ -70,7 +72,7 @@ class Player(arcade.Sprite):
 
         self.angle = new_angle + IMAGE_ROTATION
         angle_diff = abs(target_angle - new_angle)
-        if  angle_diff < 0.1 or 359.9 < angle_diff:
+        if angle_diff < 0.1 or 359.9 < angle_diff:
             self.angle = target_angle + IMAGE_ROTATION
             target_radians = math.radians(target_angle)
             self.change_x = math.cos(-target_radians) * self.speed
@@ -112,7 +114,7 @@ class MyGame(arcade.Window):
         self.player_list = None
 
     def setup(self):
-        """ Set up the game variables. Call to re-start the game. """
+        """Set up the game variables. Call to re-start the game."""
 
         # Sprite Lists
         self.player_list = arcade.SpriteList()
@@ -148,7 +150,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     game = MyGame()
     game.center_window()
     game.setup()

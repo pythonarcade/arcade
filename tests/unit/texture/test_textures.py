@@ -27,7 +27,7 @@ def test_texture_constructor_hit_box_algo():
 
 
 def test_load_texture():
-    """Create texture with different """
+    """Create texture with different"""
     path = ":resources:images/test_textures/test_texture.png"
     # Basic loading
     tex = arcade.load_texture(path)
@@ -65,5 +65,5 @@ def test_crate_empty():
         (-128.0, -128.0),
         (128.0, -128.0),
         (128.0, 128.0),
-        (-128.0, 128.0)
+        (-128.0, 128.0),
     )

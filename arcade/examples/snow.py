@@ -37,7 +37,7 @@ class Snowflake(arcade.SpriteCircle):
             random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT + 100),
         )
 
-    def on_update(self, delta_time: float = 1/60) -> None:
+    def on_update(self, delta_time: float = 1 / 60) -> None:
         self.center_y -= self.speed * delta_time
 
         # Check if snowflake has fallen below screen
@@ -50,10 +50,10 @@ class Snowflake(arcade.SpriteCircle):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
-        """ Initializer """
+        """Initializer"""
         # Calls "__init__" of parent class (arcade.Window) to setup screen
         super().__init__(width, height, title)
 
@@ -66,7 +66,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.BLACK
 
     def start_snowfall(self):
-        """ Set up snowfall and initialize variables. """
+        """Set up snowfall and initialize variables."""
         for i in range(SNOWFLAKE_COUNT):
             # Create snowflake instance
             snowflake = Snowflake(
@@ -83,7 +83,7 @@ class MyGame(arcade.Window):
             self.snowflake_list.append(snowflake)
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear the screen to the background color
         self.clear()
 
@@ -91,7 +91,7 @@ class MyGame(arcade.Window):
         self.snowflake_list.draw()
 
     def on_update(self, delta_time):
-        """ All the logic to move, and the game logic goes here. """
+        """All the logic to move, and the game logic goes here."""
         # Call update on all the snowflakes
         self.snowflake_list.on_update(delta_time)
 

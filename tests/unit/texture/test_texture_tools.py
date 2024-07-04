@@ -3,7 +3,7 @@ from arcade.texture import (
     ImageData,
     get_default_texture,
     get_default_image,
-    default_texture_cache
+    default_texture_cache,
 )
 
 

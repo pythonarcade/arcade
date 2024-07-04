@@ -10,6 +10,7 @@ See example 2 for how to use easings for angles.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.easing_example_1
 """
+
 import arcade
 from arcade import easing
 from arcade.types import Color
@@ -34,10 +35,10 @@ TIME = 3.0
 
 
 class EasingCircle(arcade.SpriteCircle):
-    """ Player class """
+    """Player class"""
 
     def __init__(self, radius, color):
-        """ Set up the player """
+        """Set up the player"""
 
         # Call the parent init
         super().__init__(radius, color)
@@ -52,10 +53,12 @@ class EasingCircle(arcade.SpriteCircle):
                 x = X_START
                 if self.center_x < SCREEN_WIDTH / 2:
                     x = X_END
-                ex, ey = easing.ease_position(self.position,
-                                              (x, self.center_y),
-                                              rate=180,
-                                              ease_function=self.easing_x_data.ease_function)
+                ex, ey = easing.ease_position(
+                    self.position,
+                    (x, self.center_y),
+                    rate=180,
+                    ease_function=self.easing_x_data.ease_function,
+                )
                 self.easing_x_data = ex
 
         if self.easing_y_data is not None:
@@ -65,10 +68,10 @@ class EasingCircle(arcade.SpriteCircle):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
-        """ Initializer """
+        """Initializer"""
 
         # Call the parent class initializer
         super().__init__(width, height, title)
@@ -81,7 +84,7 @@ class MyGame(arcade.Window):
         self.lines = None
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.ball_list = arcade.SpriteList()
@@ -100,14 +103,19 @@ class MyGame(arcade.Window):
 
         def create_line(line_y):
             line = arcade.shape_list.create_line(
-                X_START, line_y - BALL_RADIUS - LINE_WIDTH,
-                X_END, line_y - BALL_RADIUS,
-                line_color, line_width=LINE_WIDTH,
+                X_START,
+                line_y - BALL_RADIUS - LINE_WIDTH,
+                X_END,
+                line_y - BALL_RADIUS,
+                line_color,
+                line_width=LINE_WIDTH,
             )
             return line
 
         def create_text(text_string):
-            text = arcade.Text(text_string, X_START, y - BALL_RADIUS, color=text_color, font_size=24)
+            text = arcade.Text(
+                text_string, X_START, y - BALL_RADIUS, color=text_color, font_size=24
+            )
             return text
 
         def add_item(item_y, ease_function, text):
@@ -155,7 +163,7 @@ class MyGame(arcade.Window):
         add_item(y, easing.ease_in_out_sin, "Ease in out sin")
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # This command has to happen before we start drawing
         self.clear()
@@ -169,7 +177,7 @@ class MyGame(arcade.Window):
             text.draw()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
@@ -177,7 +185,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

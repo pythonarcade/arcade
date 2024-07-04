@@ -20,7 +20,7 @@ SCREEN_TITLE = "Sprite Change Coins"
 
 
 class Collectable(arcade.Sprite):
-    """ This class represents something the player collects. """
+    """This class represents something the player collects."""
 
     def __init__(self, filename, scale):
         super().__init__(filename, scale=scale)
@@ -46,7 +46,7 @@ class MyGame(arcade.Window):
         self.bumper_texture = arcade.load_texture(":resources:images/pinball/bumper.png")
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -54,8 +54,10 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", scale=0.75)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/" "femalePerson_idle.png",
+            scale=0.75,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -101,7 +103,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
@@ -124,7 +126,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

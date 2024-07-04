@@ -29,14 +29,11 @@ class Coin(arcade.Sprite):
     """
 
     def reset_pos(self):
-
         # Reset the coin to a random spot above the screen
-        self.center_y = random.randrange(SCREEN_HEIGHT + 20,
-                                         SCREEN_HEIGHT + 100)
+        self.center_y = random.randrange(SCREEN_HEIGHT + 20, SCREEN_HEIGHT + 100)
         self.center_x = random.randrange(SCREEN_WIDTH)
 
     def update(self):
-
         # Move the coin
         self.center_y -= 1
 
@@ -47,10 +44,10 @@ class Coin(arcade.Sprite):
 
 
 class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+    """Our custom Window Class"""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
 
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
@@ -69,7 +66,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_sprite_list = arcade.SpriteList()
@@ -80,15 +77,16 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_sprite_list.append(self.player_sprite)
 
         # Create the coins
         for i in range(COIN_COUNT):
-
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
@@ -101,7 +99,7 @@ class MyGame(arcade.Window):
             self.coin_sprite_list.append(coin)
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
         self.clear()
         self.coin_sprite_list.draw()
         self.player_sprite_list.draw()
@@ -111,22 +109,21 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_motion(self, x, y, dx, dy):
-        """ Handle Mouse Motion """
+        """Handle Mouse Motion"""
 
         # Move the center of the player sprite to match the mouse x, y
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.coin_sprite_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                        self.coin_sprite_list)
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_sprite_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:

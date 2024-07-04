@@ -8,6 +8,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.stress_test_draw_moving
 """
+
 import arcade
 import random
 import timeit
@@ -55,10 +56,10 @@ class FPSCounter:
 
 
 class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+    """Our custom Window Class"""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -83,7 +84,6 @@ class MyGame(arcade.Window):
         self.results_file = open(RESULTS_FILE, "w")
 
     def add_coins(self):
-
         # Create the coins
         for i in range(COIN_COUNT_INCREMENT):
             # Create the coin instance
@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.coin_list = arcade.SpriteList(use_spatial_hash=USE_SPATIAL_HASHING)
@@ -114,7 +114,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player)
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
 
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
@@ -176,16 +176,16 @@ class MyGame(arcade.Window):
             # few seconds our readings will be off. So wait some time
             # before taking readings
             if total_program_time > 5:
-
                 # We want the program to run for a while before taking
                 # timing measurements. We don't want the time it takes
                 # to add new sprites to be part of that measurement. So
                 # make sure we have a clear second of nothing but
                 # running the sprites, and not adding the sprites.
                 if total_program_time % 2 == 1:
-
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
-                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = (
+                        f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    )
                     print(output, end="")
                     self.results_file.write(output)
 
@@ -195,8 +195,10 @@ class MyGame(arcade.Window):
                         return
 
                     # Take timings
-                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
-                          f"{self.processing_time:.4f}, {self.draw_time:.4f}")
+                    print(
+                        f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, {self.draw_time:.4f}"
+                    )
                     self.sprite_count_list.append(len(self.coin_list))
                     self.fps_list.append(round(self.fps.get_fps(), 1))
                     self.processing_time_list.append(self.processing_time)
@@ -207,7 +209,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame()
     window.setup()
     arcade.run()

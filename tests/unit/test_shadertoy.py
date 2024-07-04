@@ -2,25 +2,25 @@ import pytest
 from arcade.experimental import Shadertoy, ShadertoyBuffer
 from arcade.gl import Program, Texture2D
 
+
 def glsl(inner: str):
-    return (
-        "void mainImage(out vec4 fragColor, in vec2 fragCoord)\n"
-        "{\n"
-        f"{inner}\n"
-        "}\n"
-    )
+    return "void mainImage(out vec4 fragColor, in vec2 fragCoord)\n" "{\n" f"{inner}\n" "}\n"
 
 
 def test_create_from_file(ctx):
-    st = Shadertoy.create_from_file((100, 200), ":resources:shaders/shadertoy/crt_monitor_filter.glsl")
+    st = Shadertoy.create_from_file(
+        (100, 200), ":resources:shaders/shadertoy/crt_monitor_filter.glsl"
+    )
     check_internals(st)
 
     with pytest.raises(FileNotFoundError):
         st = Shadertoy.create_from_file((100, 200), "something.glsl")
 
+
 def test_create(ctx):
     st = Shadertoy((120, 130), glsl("fragColor = vec4(1.0, 1.0, 1.0, 1.0);"))
     check_internals(st)
+
 
 def test_buffers(ctx):
     st = Shadertoy((120, 130), glsl("fragColor = vec4(1.0, 1.0, 1.0, 1.0);"))
@@ -49,6 +49,7 @@ def test_buffers(ctx):
     assert st.buffer_b == buffer_b
     assert st.buffer_c == buffer_c
     assert st.buffer_d == buffer_d
+
 
 def test_getters_setters(ctx):
     st = Shadertoy((120, 130), glsl("fragColor = vec4(1.0, 1.0, 1.0, 1.0);"))
@@ -83,10 +84,18 @@ def test_getters_setters(ctx):
     st.channel_2 = tx3
     st.channel_3 = tx4
     assert st._channel_resolution == [
-        10, 11, 1,
-        12, 13, 1,
-        14, 15, 1,
-        16, 17, 1,
+        10,
+        11,
+        1,
+        12,
+        13,
+        1,
+        14,
+        15,
+        1,
+        16,
+        17,
+        1,
     ]
 
 

@@ -23,7 +23,7 @@ SQUARE_SPACING = 10
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -46,8 +46,9 @@ class MyGame(arcade.Window):
         # --- Draw all the rectangles
         for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
             for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
-                arcade.draw_rect_filled(arcade.rect.XYWH(x, y, SQUARE_WIDTH, SQUARE_HEIGHT),
-                                        arcade.color.DARK_BLUE)
+                arcade.draw_rect_filled(
+                    arcade.rect.XYWH(x, y, SQUARE_WIDTH, SQUARE_HEIGHT), arcade.color.DARK_BLUE
+                )
 
         # Print the timing
         output = f"Drawing time: {self.draw_time:.3f} seconds per frame."

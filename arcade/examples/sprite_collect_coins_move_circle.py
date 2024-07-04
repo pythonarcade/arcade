@@ -21,9 +21,8 @@ SCREEN_TITLE = "Sprite Collect Coins Moving in Circles Example"
 
 
 class Coin(arcade.Sprite):
-
     def __init__(self, filename, scale):
-        """ Constructor. """
+        """Constructor."""
         # Call the parent class (Sprite) constructor
         super().__init__(filename, scale=scale)
 
@@ -41,23 +40,19 @@ class Coin(arcade.Sprite):
         self.circle_center_y = 0
 
     def update(self):
-
-        """ Update the ball's position. """
+        """Update the ball's position."""
         # Calculate a new x, y
-        self.center_x = self.circle_radius * math.sin(self.circle_angle) \
-            + self.circle_center_x
-        self.center_y = self.circle_radius * math.cos(self.circle_angle) \
-            + self.circle_center_y
+        self.center_x = self.circle_radius * math.sin(self.circle_angle) + self.circle_center_x
+        self.center_y = self.circle_radius * math.cos(self.circle_angle) + self.circle_center_y
 
         # Increase the angle in prep for the next round.
         self.circle_angle += self.circle_speed
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
-
         super().__init__(width, height, title)
 
         # Sprite lists
@@ -69,7 +64,7 @@ class MyGame(arcade.Window):
         self.player_sprite = None
 
     def start_new_game(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.all_sprites_list = arcade.SpriteList()
@@ -80,14 +75,13 @@ class MyGame(arcade.Window):
         # Character image from kenney.nl
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=SPRITE_SCALING
+            scale=SPRITE_SCALING,
         )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.all_sprites_list.append(self.player_sprite)
 
         for i in range(50):
-
             # Create the coin instance
             # Coin image from kenney.nl
             coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING / 3)
@@ -113,7 +107,6 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
-
         # This command has to happen before we start drawing
         self.clear()
 
@@ -129,15 +122,14 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.all_sprites_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                        self.coin_list)
+        hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score.
         for coin in hit_list:

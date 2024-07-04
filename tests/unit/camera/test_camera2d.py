@@ -139,6 +139,7 @@ def test_move_camera_and_unproject(window: Window):
 
     assert screen_coordinate == (pytest.approx(0), pytest.approx(0))
 
+
 def test_rotate_camera_with_angle(window: Window):
     camera = Camera2D()
     camera.angle = 45

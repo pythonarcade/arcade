@@ -4,11 +4,12 @@ Example showing how to draw text to the screen.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.text_loc_example_done
 """
+
 import arcade
 import gettext
 
 # Try to auto-detect the user's language and translate to it
-gettext.install('text_loc_example', localedir='text_loc_example_locale')
+gettext.install("text_loc_example", localedir="text_loc_example_locale")
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500

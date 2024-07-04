@@ -6,9 +6,11 @@ from arcade.gl import Geometry
 def test_visible(window, monkeypatch):
     """Ensure invisible spritelists are not drawn"""
     sp = arcade.SpriteList()
+
     # Monkeypatch Geometry.render to raise an error if called
     def mock_draw(*args, **kwargs):
         raise AssertionError("Should not be called")
+
     monkeypatch.setattr(Geometry, "render", mock_draw)
 
     # Empty spritelist should not be rendered

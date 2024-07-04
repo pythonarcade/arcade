@@ -18,7 +18,6 @@ TRANSFORMS = [
 
 
 class App(arcade.Window):
-
     def __init__(self):
         super().__init__(1200, 600, "Atlas Revamp Check")
         paths = [

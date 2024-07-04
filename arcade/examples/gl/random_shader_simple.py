@@ -28,11 +28,12 @@ def generate_points(count: int):
 
 
 class App(Window):
-
     def __init__(self):
         super().__init__()
         self._point_count = 128  # the number of points we want showing up
-        self._time_seed = time()  # so that the colours change every run we store the time at run to use as a seed
+        self._time_seed = (
+            time()
+        )  # so that the colours change every run we store the time at run to use as a seed
         self._program = self.ctx.program(
             # We're passing the shader source to ctx.shader_inc() so that we can use the #include directive.
             # This is not needed when using load_program() as it will automatically look for the file.

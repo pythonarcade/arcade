@@ -16,7 +16,7 @@ TEXTURE = arcade.Texture(IMAGE)
 def test_draw_texture_rect(window, offscreen):
     """Draw a texture rect and compare it to the expected image."""
     region = LBWH(0, 0, *TEXTURE.size)
-    arcade.draw_texture_rect(TEXTURE, region, blend=False, pixelated=True) 
+    arcade.draw_texture_rect(TEXTURE, region, blend=False, pixelated=True)
 
     screen_image = offscreen.read_region_image(region, components=3)
     expected_image = TEXTURE.image.convert("RGB")

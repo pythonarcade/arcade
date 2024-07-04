@@ -133,11 +133,13 @@ class MyGame(arcade.Window):
 
         self.camera = arcade.camera.Camera2D()
 
-        self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera.view_data,
-                                                              max_amplitude=12.5,
-                                                              acceleration_duration=0.05,
-                                                              falloff_time=0.20,
-                                                              shake_frequency=15.0)
+        self.camera_shake = arcade.camera.grips.ScreenShake2D(
+            self.camera.view_data,
+            max_amplitude=12.5,
+            acceleration_duration=0.05,
+            falloff_time=0.20,
+            shake_frequency=15.0,
+        )
 
         # Center camera on user
         self.pan_camera_to_user()
@@ -193,8 +195,9 @@ class MyGame(arcade.Window):
 
             # Draw game over
             if self.game_over:
-                arcade.draw_text("Game Over", self.width/2, self.height/2, arcade.color.BLACK,
-                                 30)
+                arcade.draw_text(
+                    "Game Over", self.width / 2, self.height / 2, arcade.color.BLACK, 30
+                )
 
         self.frame_count += 1
 
@@ -227,13 +230,15 @@ class MyGame(arcade.Window):
 
         # This spot would center on the user
         screen_center_x, screen_center_y = self.player_sprite.position
-        if screen_center_x < self.camera.viewport_width/2:
-            screen_center_x = self.camera.viewport_width/2
-        if screen_center_y < self.camera.viewport_height/2:
-            screen_center_y = self.camera.viewport_height/2
+        if screen_center_x < self.camera.viewport_width / 2:
+            screen_center_x = self.camera.viewport_width / 2
+        if screen_center_y < self.camera.viewport_height / 2:
+            screen_center_y = self.camera.viewport_height / 2
         user_centered = screen_center_x, screen_center_y
 
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, user_centered, panning_fraction)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position, user_centered, panning_fraction
+        )
 
     def on_update(self, delta_time):
         """Movement and game logic"""

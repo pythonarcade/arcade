@@ -8,6 +8,7 @@ After installing the "arcade" package version 2.4.4+, this program can be run by
 typing:
 python -m arcade.examples.conway_alpha
 """
+
 import arcade
 import random
 
@@ -54,7 +55,6 @@ def create_grids():
         grid_sprites_two_dim.append([])
 
         for column in range(COLUMN_COUNT):
-
             # Make the sprite as a soft circle
             sprite = arcade.SpriteCircle(CELL_WIDTH // 2, ALIVE_COLOR, soft=True)
 
@@ -72,7 +72,7 @@ def create_grids():
 
 
 def randomize_grid(grid: arcade.SpriteList):
-    """ Randomize the grid to alive/dead """
+    """Randomize the grid to alive/dead"""
     for cell in grid:
         pick = random.randrange(2)
         if pick:
@@ -106,24 +106,24 @@ class MyGame(arcade.Window):
         randomize_grid(self.layers_grid_sprites_one_dim[0])
 
     def reset(self):
-        """ Reset the grid """
+        """Reset the grid"""
         randomize_grid(self.layers_grid_sprites_one_dim[0])
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear all pixels in the window
         self.clear()
         self.layers_grid_sprites_one_dim[0].draw()
 
     def on_key_press(self, symbol: int, modifiers: int):
-        """ Handle key press events """
+        """Handle key press events"""
         if symbol == arcade.key.SPACE:
             self.reset()
         elif symbol == arcade.key.ESCAPE:
             self.close()
 
     def on_update(self, delta_time: float):
-        """ Update the grid """
+        """Update the grid"""
 
         # Flip layers
         if self.cur_layer == 0:
@@ -140,31 +140,37 @@ class MyGame(arcade.Window):
             for column in range(COLUMN_COUNT):
                 live_neighbors = 0
                 # -1 -1
-                if row > 0 and column > 0 \
-                        and layer1[row - 1][column - 1].alpha == ALPHA_ON:
+                if row > 0 and column > 0 and layer1[row - 1][column - 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # -1  0
                 if row > 0 and layer1[row - 1][column].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # -1 +1
-                if row > 0 and column < COLUMN_COUNT - 1\
-                        and layer1[row - 1][column + 1].alpha == ALPHA_ON:
+                if (
+                    row > 0
+                    and column < COLUMN_COUNT - 1
+                    and layer1[row - 1][column + 1].alpha == ALPHA_ON
+                ):
                     live_neighbors += 1
                 #  0 +1
-                if column < COLUMN_COUNT - 1 \
-                        and layer1[row][column + 1].alpha == ALPHA_ON:
+                if column < COLUMN_COUNT - 1 and layer1[row][column + 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # +1 +1
-                if row < ROW_COUNT - 1 \
-                        and column < COLUMN_COUNT - 1 \
-                        and layer1[row + 1][column + 1].alpha == ALPHA_ON:
+                if (
+                    row < ROW_COUNT - 1
+                    and column < COLUMN_COUNT - 1
+                    and layer1[row + 1][column + 1].alpha == ALPHA_ON
+                ):
                     live_neighbors += 1
                 # +1  0
                 if row < ROW_COUNT - 1 and layer1[row + 1][column].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # +1 -1
-                if row < ROW_COUNT - 1 and column > 0 \
-                        and layer1[row + 1][column - 1].alpha == ALPHA_ON:
+                if (
+                    row < ROW_COUNT - 1
+                    and column > 0
+                    and layer1[row + 1][column - 1].alpha == ALPHA_ON
+                ):
                     live_neighbors += 1
                 #  0 -1
                 if column > 0 and layer1[row][column - 1].alpha == ALPHA_ON:
@@ -177,7 +183,9 @@ class MyGame(arcade.Window):
                 Any dead cell with three live neighbours becomes a live cell.
                 All other live cells die in the next generation. Similarly, all other dead cells stay dead.
                 """
-                if layer1[row][column].alpha == ALPHA_ON and (live_neighbors == 2 or live_neighbors == 3):
+                if layer1[row][column].alpha == ALPHA_ON and (
+                    live_neighbors == 2 or live_neighbors == 3
+                ):
                     if layer2[row][column].alpha == ALPHA_OFF:
                         layer2[row][column].alpha = ALPHA_ON
                 elif layer1[row][column].alpha == ALPHA_OFF and live_neighbors == 3:
@@ -189,7 +197,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function - starting point to the program """
+    """Main function - starting point to the program"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.center_window()
     arcade.run()

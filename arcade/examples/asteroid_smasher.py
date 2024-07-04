@@ -13,6 +13,7 @@ If Python and Arcade are installed, this example can be run from
 the command line with:
 python -m arcade.examples.asteroid_smasher
 """
+
 import random
 import math
 import arcade
@@ -44,17 +45,19 @@ ASTERIOD_TYPE_TINY = 1
 
 
 class TurningSprite(arcade.Sprite):
-    """ Sprite that sets its angle to the direction it is traveling in. """
+    """Sprite that sets its angle to the direction it is traveling in."""
+
     def update(self):
-        """ Move the sprite """
+        """Move the sprite"""
         super().update()
         self.angle = -math.degrees(math.atan2(self.change_y, self.change_x))
 
 
 class ShipSprite(arcade.Sprite):
-    """ Sprite that represents our spaceship. """
+    """Sprite that represents our spaceship."""
+
     def __init__(self, filename, scale):
-        """ Set up the spaceship. """
+        """Set up the spaceship."""
 
         # Call the parent Sprite constructor
         super().__init__(filename, scale=scale)
@@ -83,7 +86,7 @@ class ShipSprite(arcade.Sprite):
         self.angle = 0
 
     def update(self):
-        """ Update our position and other particulars. """
+        """Update our position and other particulars."""
 
         # Is the user spawning
         if self.respawning:
@@ -146,7 +149,7 @@ class AsteroidSprite(arcade.Sprite):
         self.type = type
 
     def update(self):
-        """ Move the asteroid around. """
+        """Move the asteroid around."""
         super().update()
         if self.center_x < LEFT_LIMIT:
             self.center_x = RIGHT_LIMIT
@@ -159,7 +162,7 @@ class AsteroidSprite(arcade.Sprite):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
@@ -199,7 +202,7 @@ class MyGame(arcade.Window):
         )
 
     def start_new_game(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         self.game_over = False
 
@@ -211,26 +214,30 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = ShipSprite(":resources:images/space_shooter/playerShip1_orange.png",
-                                        scale=SCALE)
+        self.player_sprite = ShipSprite(
+            ":resources:images/space_shooter/playerShip1_orange.png", scale=SCALE
+        )
         self.player_sprite_list.append(self.player_sprite)
         self.lives = 3
 
         # Set up the little icons that represent the player lives.
         cur_pos = 10
         for i in range(self.lives):
-            life = arcade.Sprite(":resources:images/space_shooter/playerLife1_orange.png",
-                                 scale=SCALE)
+            life = arcade.Sprite(
+                ":resources:images/space_shooter/playerLife1_orange.png", scale=SCALE
+            )
             life.center_x = cur_pos + life.width
             life.center_y = life.height
             cur_pos += life.width
             self.ship_life_list.append(life)
 
         # Make the asteroids
-        image_list = (":resources:images/space_shooter/meteorGrey_big1.png",
-                      ":resources:images/space_shooter/meteorGrey_big2.png",
-                      ":resources:images/space_shooter/meteorGrey_big3.png",
-                      ":resources:images/space_shooter/meteorGrey_big4.png")
+        image_list = (
+            ":resources:images/space_shooter/meteorGrey_big1.png",
+            ":resources:images/space_shooter/meteorGrey_big2.png",
+            ":resources:images/space_shooter/meteorGrey_big3.png",
+            ":resources:images/space_shooter/meteorGrey_big4.png",
+        )
         for i in range(STARTING_ASTEROID_COUNT):
             # Pick one of four random rock images
             image_no = random.randrange(4)
@@ -252,7 +259,7 @@ class MyGame(arcade.Window):
         self.text_asteroid_count.text = f"Asteroid Count: {len(self.asteroid_list)}"
 
     def on_draw(self):
-        """ Render the screen """
+        """Render the screen"""
 
         # Clear the screen before we start drawing
         self.clear()
@@ -268,11 +275,12 @@ class MyGame(arcade.Window):
         self.text_asteroid_count.draw()
 
     def on_key_press(self, symbol, modifiers):
-        """ Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
         # Shoot if the player hit the space bar and we aren't respawning.
         if not self.player_sprite.respawning and symbol == arcade.key.SPACE:
-            bullet_sprite = TurningSprite(":resources:images/space_shooter/laserBlue01.png",
-                                          scale=SCALE)
+            bullet_sprite = TurningSprite(
+                ":resources:images/space_shooter/laserBlue01.png", scale=SCALE
+            )
 
             # Set bullet vector
             bullet_speed = 13
@@ -309,7 +317,7 @@ class MyGame(arcade.Window):
             self.close()
 
     def on_key_release(self, symbol, modifiers):
-        """ Called whenever a key is released. """
+        """Called whenever a key is released."""
         if symbol == arcade.key.LEFT:
             self.player_sprite.change_angle = 0
         elif symbol == arcade.key.RIGHT:
@@ -320,7 +328,7 @@ class MyGame(arcade.Window):
             self.player_sprite.thrust = 0
 
     def split_asteroid(self, asteroid: AsteroidSprite):
-        """ Split an asteroid into chunks. """
+        """Split an asteroid into chunks."""
         x = asteroid.center_x
         y = asteroid.center_y
         self.score += 1
@@ -329,12 +337,14 @@ class MyGame(arcade.Window):
             # Split large asteroid into 2 medium ones
             for i in range(3):
                 image_no = random.randrange(2)
-                image_list = [":resources:images/space_shooter/meteorGrey_med1.png",
-                              ":resources:images/space_shooter/meteorGrey_med2.png"]
+                image_list = [
+                    ":resources:images/space_shooter/meteorGrey_med1.png",
+                    ":resources:images/space_shooter/meteorGrey_med2.png",
+                ]
 
-                enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              scale=SCALE * 1.5,
-                                              type=ASTERIOD_TYPE_MEDIUM)
+                enemy_sprite = AsteroidSprite(
+                    image_list[image_no], scale=SCALE * 1.5, type=ASTERIOD_TYPE_MEDIUM
+                )
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
@@ -351,12 +361,14 @@ class MyGame(arcade.Window):
             # Split medium asteroid into 2 small ones
             for i in range(3):
                 image_no = random.randrange(2)
-                image_list = [":resources:images/space_shooter/meteorGrey_small1.png",
-                              ":resources:images/space_shooter/meteorGrey_small2.png"]
+                image_list = [
+                    ":resources:images/space_shooter/meteorGrey_small1.png",
+                    ":resources:images/space_shooter/meteorGrey_small2.png",
+                ]
 
-                enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              scale=SCALE * 1.5,
-                                              type=ASTERIOD_TYPE_SMALL)
+                enemy_sprite = AsteroidSprite(
+                    image_list[image_no], scale=SCALE * 1.5, type=ASTERIOD_TYPE_SMALL
+                )
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
@@ -373,12 +385,14 @@ class MyGame(arcade.Window):
             # Split small asteroid into 2 tiny ones
             for i in range(3):
                 image_no = random.randrange(2)
-                image_list = [":resources:images/space_shooter/meteorGrey_tiny1.png",
-                              ":resources:images/space_shooter/meteorGrey_tiny2.png"]
+                image_list = [
+                    ":resources:images/space_shooter/meteorGrey_tiny1.png",
+                    ":resources:images/space_shooter/meteorGrey_tiny2.png",
+                ]
 
-                enemy_sprite = AsteroidSprite(image_list[image_no],
-                                              scale=SCALE * 1.5,
-                                              type=ASTERIOD_TYPE_TINY)
+                enemy_sprite = AsteroidSprite(
+                    image_list[image_no], scale=SCALE * 1.5, type=ASTERIOD_TYPE_TINY
+                )
 
                 enemy_sprite.center_y = y
                 enemy_sprite.center_x = x
@@ -396,7 +410,7 @@ class MyGame(arcade.Window):
             self.hit_sound4.play()
 
     def on_update(self, x):
-        """ Move everything """
+        """Move everything"""
 
         if not self.game_over:
             self.asteroid_list.update()
@@ -404,8 +418,7 @@ class MyGame(arcade.Window):
             self.player_sprite_list.update()
 
             for bullet in self.bullet_list:
-                asteroids = arcade.check_for_collision_with_list(bullet,
-                                                                 self.asteroid_list)
+                asteroids = arcade.check_for_collision_with_list(bullet, self.asteroid_list)
 
                 for asteroid in asteroids:
                     # expected AsteroidSprite, got Sprite instead
@@ -425,8 +438,9 @@ class MyGame(arcade.Window):
                     bullet.remove_from_sprite_lists()
 
             if not self.player_sprite.respawning:
-                asteroids = arcade.check_for_collision_with_list(self.player_sprite,
-                                                                 self.asteroid_list)
+                asteroids = arcade.check_for_collision_with_list(
+                    self.player_sprite, self.asteroid_list
+                )
                 if len(asteroids) > 0:
                     if self.lives > 0:
                         self.lives -= 1
@@ -445,7 +459,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Start the game """
+    """Start the game"""
     window = MyGame()
     window.start_new_game()
     arcade.run()

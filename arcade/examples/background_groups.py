@@ -81,7 +81,9 @@ class MyGame(arcade.Window):
         elif target_y > 2.0 * self.camera.viewport_height:
             target_y = 2.0 * self.camera.viewport_height
 
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position, (target_x, target_y), CAMERA_SPEED
+        )
 
     def on_update(self, delta_time: float):
         new_position = (

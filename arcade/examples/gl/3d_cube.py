@@ -11,7 +11,6 @@ from arcade.gl import geometry
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.set_vsync(True)
@@ -75,7 +74,9 @@ class MyGame(arcade.Window):
     def on_resize(self, width, height):
         """Set up viewport and projection"""
         self.ctx.viewport = 0, 0, width, height
-        self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=60)
+        self.program["projection"] = Mat4.perspective_projection(
+            self.aspect_ratio, 0.1, 100, fov=60
+        )
 
 
 if __name__ == "__main__":

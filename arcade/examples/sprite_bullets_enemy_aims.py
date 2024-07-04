@@ -15,7 +15,7 @@ BULLET_SPEED = 4
 
 
 class MyGame(arcade.Window):
-    """ Main application class """
+    """Main application class"""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -35,7 +35,9 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Add player ship
-        self.player = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", scale=0.5)
+        self.player = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_orange.png", scale=0.5
+        )
         self.player_list.append(self.player)
 
         # Add top-left enemy ship
@@ -53,7 +55,7 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
 
     def on_draw(self):
-        """Render the screen. """
+        """Render the screen."""
 
         self.clear()
 
@@ -62,13 +64,12 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
     def on_update(self, delta_time):
-        """All the logic to move, and the game logic goes here. """
+        """All the logic to move, and the game logic goes here."""
 
         self.frame_count += 1
 
         # Loop through each enemy that we have
         for enemy in self.enemy_list:
-
             # First, calculate the angle to the player. We could do this
             # only when the bullet fires, but in this case we will rotate
             # the enemy to face the player each frame, so we'll do this
@@ -116,13 +117,13 @@ class MyGame(arcade.Window):
         self.bullet_list.update()
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
-        """Called whenever the mouse moves. """
+        """Called whenever the mouse moves."""
         self.player.center_x = x
         self.player.center_y = y
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

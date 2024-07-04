@@ -44,12 +44,12 @@ CAMERA_SPEED = 0.1
 
 
 def create_grid(width, height):
-    """ Create a two-dimensional grid of specified size. """
+    """Create a two-dimensional grid of specified size."""
     return [[0 for _x in range(width)] for _y in range(height)]
 
 
 def initialize_grid(grid):
-    """ Randomly set grid locations to on/off based on chance. """
+    """Randomly set grid locations to on/off based on chance."""
     height = len(grid)
     width = len(grid[0])
     for row in range(height):
@@ -59,7 +59,7 @@ def initialize_grid(grid):
 
 
 def count_alive_neighbors(grid, x, y):
-    """ Count neighbors that are alive. """
+    """Count neighbors that are alive."""
     height = len(grid)
     width = len(grid[0])
     alive_count = 0
@@ -78,7 +78,7 @@ def count_alive_neighbors(grid, x, y):
 
 
 def do_simulation_step(old_grid):
-    """ Run a step of the cellular automaton. """
+    """Run a step of the cellular automaton."""
     height = len(old_grid)
     width = len(old_grid[0])
     new_grid = create_grid(width, height)
@@ -99,14 +99,14 @@ def do_simulation_step(old_grid):
 
 
 class InstructionView(arcade.View):
-    """ View to show instructions """
+    """View to show instructions"""
 
     def __init__(self):
         super().__init__()
         self.frame_count = 0
 
     def on_show_view(self):
-        """ This is run once when we switch to this view """
+        """This is run once when we switch to this view"""
         self.window.background_color = arcade.csscolor.DARK_SLATE_BLUE
 
         # Reset the viewport, necessary if we have a scrolling game and we need
@@ -114,10 +114,16 @@ class InstructionView(arcade.View):
         self.window.default_camera.use()
 
     def on_draw(self):
-        """ Draw this view """
+        """Draw this view"""
         self.clear()
-        arcade.draw_text("Loading...", self.window.width // 2, self.window.height // 2,
-                         arcade.color.BLACK, font_size=50, anchor_x="center")
+        arcade.draw_text(
+            "Loading...",
+            self.window.width // 2,
+            self.window.height // 2,
+            arcade.color.BLACK,
+            font_size=50,
+            anchor_x="center",
+        )
 
     def on_update(self, dt):
         if self.frame_count == 0:
@@ -187,13 +193,13 @@ class GameView(arcade.View):
         # Set up the player
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=SPRITE_SCALING)
+            scale=SPRITE_SCALING,
+        )
         self.player_list.append(self.player_sprite)
 
         # Randomly place the player. If we are in a wall, repeat until we aren't.
         placed = False
         while not placed:
-
             # Randomly position
             max_x = int(GRID_WIDTH * SPRITE_SIZE)
             max_y = int(GRID_HEIGHT * SPRITE_SIZE)
@@ -209,30 +215,26 @@ class GameView(arcade.View):
         # Draw info on the screen
         sprite_count = len(self.wall_list)
         output = f"Sprite Count: {sprite_count:,}"
-        self.sprite_count_text = arcade.Text(output,
-                                             20,
-                                             self.window.height - 20,
-                                             arcade.color.WHITE, 16)
+        self.sprite_count_text = arcade.Text(
+            output, 20, self.window.height - 20, arcade.color.WHITE, 16
+        )
 
         output = "Drawing time:"
-        self.draw_time_text = arcade.Text(output,
-                                          20,
-                                          self.window.height - 40,
-                                          arcade.color.WHITE, 16)
+        self.draw_time_text = arcade.Text(
+            output, 20, self.window.height - 40, arcade.color.WHITE, 16
+        )
 
         output = "Processing time:"
-        self.processing_time_text = arcade.Text(output,
-                                                20,
-                                                self.window.height - 60,
-                                                arcade.color.WHITE, 16)
+        self.processing_time_text = arcade.Text(
+            output, 20, self.window.height - 60, arcade.color.WHITE, 16
+        )
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                         self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         self.scroll_to_player(1.0)
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # Start timing how long this takes
         draw_start_time = timeit.default_timer()
@@ -263,7 +265,6 @@ class GameView(arcade.View):
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def update_player_speed(self):
-
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
         self.player_sprite.change_y = 0
@@ -278,7 +279,7 @@ class GameView(arcade.View):
             self.player_sprite.change_x = MOVEMENT_SPEED
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -290,7 +291,7 @@ class GameView(arcade.View):
             self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP:
             self.up_pressed = False
@@ -311,7 +312,9 @@ class GameView(arcade.View):
         """
 
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, camera_speed)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position, position, camera_speed
+        )
 
     def on_resize(self, width: int, height: int):
         """
@@ -323,7 +326,7 @@ class GameView(arcade.View):
         self.camera_gui.match_screen(and_projection=True)
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         start_time = timeit.default_timer()
 

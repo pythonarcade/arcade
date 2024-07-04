@@ -7,6 +7,7 @@ https://gist.github.com/silvasur/565419/d9de6a84e7da000797ac681976442073045c74a4
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.tetris
 """
+
 # flake8: noqa: E241
 import arcade
 import random
@@ -30,45 +31,33 @@ SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 SCREEN_TITLE = "Tetris"
 
 colors = [
-    (0,   0,   0, 255),
-    (255, 0,   0, 255),
-    (0,   150, 0, 255),
-    (0,   0,   255, 255),
+    (0, 0, 0, 255),
+    (255, 0, 0, 255),
+    (0, 150, 0, 255),
+    (0, 0, 255, 255),
     (255, 120, 0, 255),
     (255, 255, 0, 255),
-    (180, 0,   255, 255),
-    (0,   220, 220, 255)
+    (180, 0, 255, 255),
+    (0, 220, 220, 255),
 ]
 
 # Define the shapes of the single parts
 tetris_shapes = [
-    [[1, 1, 1],
-     [0, 1, 0]],
-
-    [[0, 2, 2],
-     [2, 2, 0]],
-
-    [[3, 3, 0],
-     [0, 3, 3]],
-
-    [[4, 0, 0],
-     [4, 4, 4]],
-
-    [[0, 0, 5],
-     [5, 5, 5]],
-
+    [[1, 1, 1], [0, 1, 0]],
+    [[0, 2, 2], [2, 2, 0]],
+    [[3, 3, 0], [0, 3, 3]],
+    [[4, 0, 0], [4, 4, 4]],
+    [[0, 0, 5], [5, 5, 5]],
     [[6, 6, 6, 6]],
-
-    [[7, 7],
-     [7, 7]]
+    [[7, 7], [7, 7]],
 ]
 
 
 def create_textures():
-    """ Create a list of images for sprites based on the global colors. """
+    """Create a list of images for sprites based on the global colors."""
     new_textures = []
     for color in colors:
-        image = PIL.Image.new('RGBA', (WIDTH, HEIGHT), color)
+        image = PIL.Image.new("RGBA", (WIDTH, HEIGHT), color)
         new_textures.append(arcade.Texture(image))
     return new_textures
 
@@ -77,9 +66,8 @@ texture_list = create_textures()
 
 
 def rotate_counterclockwise(shape):
-    """ Rotates a matrix clockwise """
-    return [[shape[y][x] for y in range(len(shape))]
-            for x in range(len(shape[0]) - 1, -1, -1)]
+    """Rotates a matrix clockwise"""
+    return [[shape[y][x] for y in range(len(shape))] for x in range(len(shape[0]) - 1, -1, -1)]
 
 
 def check_collision(board, shape, offset):
@@ -96,13 +84,13 @@ def check_collision(board, shape, offset):
 
 
 def remove_row(board, row):
-    """ Remove a row from the board, add a blank row on top. """
+    """Remove a row from the board, add a blank row on top."""
     del board[row]
     return [[0 for _ in range(COLUMN_COUNT)]] + board
 
 
 def join_matrixes(matrix_1, matrix_2, matrix_2_offset):
-    """ Copy matrix 2 onto matrix 1 based on the passed in x, y offset coordinate """
+    """Copy matrix 2 onto matrix 1 based on the passed in x, y offset coordinate"""
     offset_x, offset_y = matrix_2_offset
     for cy, row in enumerate(matrix_2):
         for cx, val in enumerate(row):
@@ -111,7 +99,7 @@ def join_matrixes(matrix_1, matrix_2, matrix_2_offset):
 
 
 def new_board():
-    """ Create a grid of 0's. Add 1's to the bottom for easier collision detection. """
+    """Create a grid of 0's. Add 1's to the bottom for easier collision detection."""
     # Create the main board of 0's
     board = [[0 for _x in range(COLUMN_COUNT)] for _y in range(ROW_COUNT)]
     # Add a bottom border of 1's
@@ -120,10 +108,10 @@ def new_board():
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
-        """ Set up the application. """
+        """Set up the application."""
 
         super().__init__(width, height, title)
 
@@ -192,7 +180,7 @@ class MyGame(arcade.Window):
                 self.new_stone()
 
     def rotate_stone(self):
-        """ Rotate the stone, check collision. """
+        """Rotate the stone, check collision."""
         if not self.game_over and not self.paused:
             new_stone = rotate_counterclockwise(self.stone)
             if self.stone_x + len(new_stone[0]) >= COLUMN_COUNT:
@@ -201,13 +189,13 @@ class MyGame(arcade.Window):
                 self.stone = new_stone
 
     def on_update(self, dt):
-        """ Update, drop stone if warranted """
+        """Update, drop stone if warranted"""
         self.frame_count += 1
         if self.frame_count % 10 == 0:
             self.drop()
 
     def move(self, delta_x):
-        """ Move the stone back and forth based on delta x. """
+        """Move the stone back and forth based on delta x."""
         if not self.game_over and not self.paused:
             new_x = self.stone_x + delta_x
             if new_x < 0:
@@ -264,7 +252,7 @@ class MyGame(arcade.Window):
                 self.board_sprite_list[i].set_texture(v)
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # This command has to happen before we start drawing
         self.clear()
@@ -273,7 +261,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Create the game window, setup, run """
+    """Create the game window, setup, run"""
     my_game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     my_game.setup()
     arcade.run()

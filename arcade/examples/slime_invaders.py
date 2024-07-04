@@ -13,6 +13,7 @@ This example shows how to:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.slime_invaders
 """
+
 import random
 import arcade
 
@@ -44,10 +45,10 @@ PLAY_GAME = 0
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -82,12 +83,19 @@ class MyGame(arcade.Window):
         self.texture_enemy_left = arcade.load_texture(":resources:images/enemies/slimeBlue.png")
         self.texture_enemy_right = self.texture_enemy_left.flip_left_right()
         # The laser points right so we rotate it 270 clockwise to point up
-        self.texture_blue_laser = arcade.load_texture(":resources:images/space_shooter/laserBlue01.png").rotate_270()
+        self.texture_blue_laser = arcade.load_texture(
+            ":resources:images/space_shooter/laserBlue01.png"
+        ).rotate_270()
 
         self.background_color = arcade.color.AMAZON
         self.score_text = arcade.Text("Score: 0", 10, 20, arcade.color.WHITE, 14)
         self.game_over_text = arcade.Text(
-            "GAME OVER", self.width / 2, self.height / 2, arcade.color.WHITE, 60, anchor_x="center",
+            "GAME OVER",
+            self.width / 2,
+            self.height / 2,
+            arcade.color.WHITE,
+            60,
+            anchor_x="center",
         )
 
     def setup_level_one(self):
@@ -104,10 +112,7 @@ class MyGame(arcade.Window):
                 # Create the enemy instance
                 # enemy image from kenney.nl
                 enemy = arcade.Sprite(
-                    self.texture_enemy_right,
-                    scale=SPRITE_SCALING_enemy,
-                    center_x=x,
-                    center_y=y
+                    self.texture_enemy_right, scale=SPRITE_SCALING_enemy, center_x=x, center_y=y
                 )
                 # Add the enemy to the lists
                 self.enemy_list.append(enemy)
@@ -122,15 +127,15 @@ class MyGame(arcade.Window):
         shield_width_count = 20
         shield_height_count = 5
         y_start = 150
-        for x in range(x_start,
-                       x_start + shield_width_count * shield_block_width,
-                       shield_block_width):
-            for y in range(y_start,
-                           y_start + shield_height_count * shield_block_height,
-                           shield_block_height):
-                shield_sprite = arcade.SpriteSolidColor(shield_block_width,
-                                                        shield_block_height,
-                                                        color=arcade.color.WHITE)
+        for x in range(
+            x_start, x_start + shield_width_count * shield_block_width, shield_block_width
+        ):
+            for y in range(
+                y_start, y_start + shield_height_count * shield_block_height, shield_block_height
+            ):
+                shield_sprite = arcade.SpriteSolidColor(
+                    shield_block_width, shield_block_height, color=arcade.color.WHITE
+                )
                 shield_sprite.center_x = x
                 shield_sprite.center_y = y
                 self.shield_list.append(shield_sprite)
@@ -271,7 +276,9 @@ class MyGame(arcade.Window):
             # a chance to fire.
             if random.randrange(chance) == 0 and enemy.center_x not in x_spawn:
                 # Create a bullet
-                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=SPRITE_SCALING_LASER)
+                bullet = arcade.Sprite(
+                    ":resources:images/space_shooter/laserRed01.png", scale=SPRITE_SCALING_LASER
+                )
 
                 # Angle down.
                 bullet.angle = 180
@@ -320,7 +327,6 @@ class MyGame(arcade.Window):
 
         # Loop through each bullet
         for bullet in self.player_bullet_list:
-
             # Check this bullet to see if it hit a enemy
             hit_list = arcade.check_for_collision_with_list(bullet, self.shield_list)
             # If it did, get rid of the bullet
@@ -350,7 +356,7 @@ class MyGame(arcade.Window):
                 bullet.remove_from_sprite_lists()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
         if self.game_state == GAME_OVER:
             return
 

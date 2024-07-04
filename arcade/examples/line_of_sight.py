@@ -22,7 +22,9 @@ VIEWPORT_MARGIN = 250
 HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
 VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
 # If the player moves further than this boundary away from the camera we use a constraint to move the camera
-CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY
+)
 
 
 class MyGame(arcade.Window):
@@ -61,7 +63,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Camera
         self.camera = arcade.camera.Camera2D()
@@ -72,14 +74,18 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
 
         # Set up the player
-        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    scale=SPRITE_SCALING)
+        self.player = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player.center_x = 50
         self.player.center_y = 350
         self.player_list.append(self.player)
 
         # Set enemies
-        enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=SPRITE_SCALING)
+        enemy = arcade.Sprite(
+            ":resources:images/animated_characters/zombie/zombie_idle.png", scale=SPRITE_SCALING
+        )
         enemy.center_x = 350
         enemy.center_y = 350
         self.enemy_list.append(enemy)
@@ -87,7 +93,9 @@ class MyGame(arcade.Window):
         spacing = 200
         for column in range(10):
             for row in range(10):
-                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                sprite = arcade.Sprite(
+                    ":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING
+                )
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height
@@ -97,8 +105,7 @@ class MyGame(arcade.Window):
                 if random.randrange(100) > 20:
                     self.wall_list.append(sprite)
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player,
-                                                         self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(self.player, self.wall_list)
 
     def on_draw(self):
         """
@@ -114,24 +121,24 @@ class MyGame(arcade.Window):
             self.enemy_list.draw()
 
             for enemy in self.enemy_list:
-                if arcade.has_line_of_sight(self.player.position,
-                                            enemy.position,
-                                            self.wall_list):
+                if arcade.has_line_of_sight(self.player.position, enemy.position, self.wall_list):
                     color = arcade.color.RED
                 else:
                     color = arcade.color.WHITE
-                arcade.draw_line(self.player.center_x,
-                                 self.player.center_y,
-                                 enemy.center_x,
-                                 enemy.center_y,
-                                 color,
-                                 2)
+                arcade.draw_line(
+                    self.player.center_x,
+                    self.player.center_y,
+                    enemy.center_x,
+                    enemy.center_y,
+                    color,
+                    2,
+                )
 
         except Exception as e:
             print(e)
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Calculate speed based on the keys pressed
         self.player.change_x = 0
@@ -155,7 +162,7 @@ class MyGame(arcade.Window):
         self.camera.use()
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -167,7 +174,7 @@ class MyGame(arcade.Window):
             self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP:
             self.up_pressed = False
@@ -180,7 +187,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

@@ -23,7 +23,10 @@ def create_ninepatch(
     right: int,
     bottom: int,
     top: int,
-) -> tuple[NinePatchTexture, Image.Image,]:
+) -> tuple[
+    NinePatchTexture,
+    Image.Image,
+]:
     """Create a ninepatch texture with the given borders."""
     # Manually create a ninepatch texture.
     # We make it white by default and draw a red rectangle in the middle.
@@ -31,14 +34,19 @@ def create_ninepatch(
     # NOTE: Pillow's 0,0 is top left, arcade's is bottom left.
     patch_image = Image.new("RGBA", texture_size, (255, 255, 255, 255))
     draw = ImageDraw.Draw(patch_image)
-    draw.rectangle((left, top, texture_size[0] - right - 1, texture_size[1] - bottom - 1), fill=(255, 0, 0, 255))
+    draw.rectangle(
+        (left, top, texture_size[0] - right - 1, texture_size[1] - bottom - 1),
+        fill=(255, 0, 0, 255),
+    )
     texture = arcade.Texture(patch_image)
     # patch_image.show()
 
     # Create the expected image
     expected_image = Image.new("RGBA", patch_size, (255, 255, 255, 255))
     draw = ImageDraw.Draw(expected_image)
-    draw.rectangle((left, top, patch_size[0] - right - 1, patch_size[1] - bottom - 1), fill=(255, 0, 0, 255))
+    draw.rectangle(
+        (left, top, patch_size[0] - right - 1, patch_size[1] - bottom - 1), fill=(255, 0, 0, 255)
+    )
 
     return NinePatchTexture(
         texture=texture,
@@ -67,7 +75,9 @@ def test_draw(ctx, fbo, left, right, bottom, top):
     )
     with fbo.activate():
         fbo.clear()
-        ctx.projection_matrix = Mat4.orthogonal_projection(0, PATCH_SIZE[0], 0, PATCH_SIZE[1], -100, 100)
+        ctx.projection_matrix = Mat4.orthogonal_projection(
+            0, PATCH_SIZE[0], 0, PATCH_SIZE[1], -100, 100
+        )
         patch.draw_rect(
             rect=LBWH(0, 0, PATCH_SIZE[0], PATCH_SIZE[1]),
             pixelated=True,

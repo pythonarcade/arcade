@@ -27,7 +27,9 @@ SCREEN_TITLE = "Pymunk test"
 
 class PhysicsSprite(arcade.Sprite):
     def __init__(self, pymunk_shape, filename):
-        super().__init__(filename, center_x=pymunk_shape.body.position.x, center_y=pymunk_shape.body.position.y)
+        super().__init__(
+            filename, center_x=pymunk_shape.body.position.x, center_y=pymunk_shape.body.position.y
+        )
         self.pymunk_shape = pymunk_shape
 
 
@@ -46,7 +48,7 @@ class BoxSprite(PhysicsSprite):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -93,7 +95,9 @@ class MyGame(arcade.Window):
                 self.space.add(body, shape)
                 # body.sleep()
 
-                sprite = BoxSprite(shape, ":resources:images/tiles/boxCrate_double.png", width=size, height=size)
+                sprite = BoxSprite(
+                    shape, ":resources:images/tiles/boxCrate_double.png", width=size, height=size
+                )
                 self.sprite_list.append(sprite)
 
     def on_draw(self):

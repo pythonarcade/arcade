@@ -14,6 +14,7 @@ information on this subject, see the gui_flat_button example.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_slider
 """
+
 import arcade
 from arcade.gui import UIManager, UILabel
 from arcade.gui.events import UIOnChangeEvent
@@ -39,11 +40,7 @@ class MyView(arcade.View):
 
         # Create a layout to hold the label and the slider
         ui_anchor_layout = arcade.gui.widgets.layout.UIAnchorLayout()
-        ui_anchor_layout.add(
-            child=ui_slider,
-            anchor_x="center_x",
-            anchor_y="center_y"
-        )
+        ui_anchor_layout.add(child=ui_slider, anchor_x="center_x", anchor_y="center_y")
         ui_anchor_layout.add(child=label, align_y=50)
 
         self.ui.add(ui_anchor_layout)
@@ -62,7 +59,7 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(1280, 720, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

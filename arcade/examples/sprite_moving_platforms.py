@@ -6,6 +6,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_moving_platforms
 """
+
 import arcade
 
 SPRITE_SCALING = 0.5
@@ -14,7 +15,7 @@ SCREEN_WIDTH = 1289
 SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite with Moving Platforms Example"
 SPRITE_PIXEL_SIZE = 128
-GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
+GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * SPRITE_SCALING
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -24,17 +25,17 @@ RIGHT_MARGIN = 4 * SPRITE_PIXEL_SIZE * SPRITE_SCALING
 # Physics
 MOVEMENT_SPEED = 10 * SPRITE_SCALING
 JUMP_SPEED = 28 * SPRITE_SCALING
-GRAVITY = .9 * SPRITE_SCALING
+GRAVITY = 0.9 * SPRITE_SCALING
 
 # How fast the camera pans to the player. 1.0 is instant.
 CAMERA_SPEED = 0.1
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
-        """ Initializer """
+        """Initializer"""
 
         # Call the parent init
         super().__init__(width, height, title)
@@ -61,7 +62,7 @@ class MyGame(arcade.Window):
         self.right_down = False
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.static_wall_list = arcade.SpriteList()
@@ -81,7 +82,7 @@ class MyGame(arcade.Window):
         for i in range(50):
             wall = arcade.Sprite(":resources:images/tiles/grassMid.png", scale=SPRITE_SCALING)
             wall.bottom = 0
-            wall.center_x = - 1000 + i * GRID_PIXEL_SIZE
+            wall.center_x = -1000 + i * GRID_PIXEL_SIZE
             self.static_wall_list.append(wall)
 
         # Create platform side to side
@@ -128,7 +129,7 @@ class MyGame(arcade.Window):
             self.player_sprite,
             platforms=self.moving_platform_list,
             walls=self.static_wall_list,
-            gravity_constant=GRAVITY
+            gravity_constant=GRAVITY,
         )
 
         # Set the background color
@@ -166,7 +167,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = 0
 
     def on_key_press(self, key, modifiers):
-        """ Called whenever the mouse moves. """
+        """Called whenever the mouse moves."""
         if key == arcade.key.UP:
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = JUMP_SPEED
@@ -178,7 +179,7 @@ class MyGame(arcade.Window):
             self.set_x_speed()
 
     def on_key_release(self, key, modifiers):
-        """ Called when the user presses a mouse button. """
+        """Called when the user presses a mouse button."""
         if key == arcade.key.LEFT:
             self.left_down = False
             self.set_x_speed()
@@ -187,7 +188,7 @@ class MyGame(arcade.Window):
             self.set_x_speed()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites
         self.physics_engine.update()
@@ -205,11 +206,13 @@ class MyGame(arcade.Window):
         """
 
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position, position, CAMERA_SPEED
+        )
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

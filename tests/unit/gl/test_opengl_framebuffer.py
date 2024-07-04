@@ -2,8 +2,10 @@ import pytest
 import arcade
 
 
-def create(ctx, width, height, components=4, layers=1, dtype='f1'):
-    layers = [ctx.texture((width, height), components=components, dtype=dtype) for _ in range(layers)]
+def create(ctx, width, height, components=4, layers=1, dtype="f1"):
+    layers = [
+        ctx.texture((width, height), components=components, dtype=dtype) for _ in range(layers)
+    ]
     return ctx.framebuffer(color_attachments=layers)
 
 
@@ -18,7 +20,7 @@ def test_properties(ctx):
     assert fb.viewport == (0, 0, 10, 20)
     assert fb.depth_attachment is None
     assert fb.depth_mask is True
-    assert repr(fb).startswith('<Framebuffer')
+    assert repr(fb).startswith("<Framebuffer")
 
 
 def test_viewport(ctx):
@@ -66,17 +68,12 @@ def test_clear(ctx):
 def test_clear_viewport(ctx):
     fb = create(ctx, 4, 4, components=1)
     fb.clear(color=(64, 64, 64, 64))
-    assert fb.read(components=1) == b'\x40' * 16
+    assert fb.read(components=1) == b"\x40" * 16
 
     # Clear only the center pixels and verify that the rest is unchanged
     fb.clear()
     fb.clear(color=(255, 255, 255, 255), viewport=(1, 1, 2, 2))
-    expected = (
-        b'\x00\x00\x00\x00'
-        b'\x00\xff\xff\x00'
-        b'\x00\xff\xff\x00'
-        b'\x00\x00\x00\x00'
-    )
+    expected = b"\x00\x00\x00\x00" b"\x00\xff\xff\x00" b"\x00\xff\xff\x00" b"\x00\x00\x00\x00"
     assert bytes(fb.read(components=1)) == expected
 
 
@@ -85,7 +82,7 @@ def test_clear_with_scissor(ctx):
     fb.clear()
     fb.scissor = 1, 1, 2, 2
     fb.clear(color=(255, 255, 255, 255))
-    assert bytes(fb.read(components=1)) == b'\xff' * 16
+    assert bytes(fb.read(components=1)) == b"\xff" * 16
 
 
 def test_multi_attachment(ctx):
@@ -117,7 +114,9 @@ def test_varying_attachment_size(ctx):
         ctx.framebuffer(
             color_attachments=[
                 ctx.texture((10, 10), components=4),
-                ctx.texture((10, 11), components=4)])
+                ctx.texture((10, 11), components=4),
+            ]
+        )
 
 
 def test_read(ctx):
@@ -130,7 +129,7 @@ def test_read(ctx):
     # Read 3 components
     data = fb.read(components=3)
     assert len(data) == 12
-    assert data == b'\xff\xff\x00' * 4
+    assert data == b"\xff\xff\x00" * 4
 
     # Read from f2 texture
     fb = create(ctx, 2, 2, components=1, layers=1, dtype="f2")
@@ -147,6 +146,7 @@ def test_read(ctx):
     data = fb.read(components=1, dtype="i2")
     assert len(data) == 2 * 2 * 2
 
+
 def test_resize(ctx):
     tex = ctx.texture((100, 100), components=4)
     fbo = ctx.framebuffer(color_attachments=[tex])
@@ -156,6 +156,7 @@ def test_resize(ctx):
     fbo.resize()
     assert fbo.size == tex.size
     assert fbo.viewport == (0, 0, *fbo.size)
+
 
 def test_read_screen_framebuffer(window):
     components = 3

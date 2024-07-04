@@ -8,6 +8,7 @@ the fixed update should be kept close to the nominal update rate, or even faster
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.fixed_update_interpolation.py
 """
+
 import arcade
 
 # --- Constants ---
@@ -20,9 +21,8 @@ SCREEN_TITLE = "Sprite Follow Path Simple Example"
 
 
 class Game(arcade.Window):
-
     def __init__(self):
-        super().__init__(fixed_rate=1/120.0)
+        super().__init__(fixed_rate=1 / 120.0)
         self.unfixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.RADICAL_RED)
         self.interpolated_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.ORANGE)
         self.fixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.GOLD)
@@ -34,7 +34,9 @@ class Game(arcade.Window):
         self.sprites.extend((self.unfixed_sprite, self.fixed_sprite, self.interpolated_sprite))
 
     def setup(self):
-        self.unfixed_sprite.change_y = self.fixed_sprite.change_y = self.interpolated_sprite.change_y = 0.0
+        self.unfixed_sprite.change_y = self.fixed_sprite.change_y = (
+            self.interpolated_sprite.change_y
+        ) = 0.0
 
         self.unfixed_sprite.position = SCREEN_WIDTH / 4.0, SCREEN_HEIGHT / 2.0
         self.interpolated_sprite.position = 2.0 * SCREEN_WIDTH / 4.0, SCREEN_HEIGHT / 2.0
@@ -84,5 +86,5 @@ def main():
     win.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

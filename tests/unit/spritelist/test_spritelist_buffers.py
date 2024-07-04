@@ -2,6 +2,7 @@
 Ensure internal buffers are sized correctly.
 Incorrectly sized buffers can lead to segfaults.
 """
+
 import struct
 import arcade
 
@@ -100,12 +101,12 @@ def test_buffer_sizes(ctx: arcade.ArcadeContext):
 
     # Test the contents of the arrays and buffers.
     # Prepare expected data
-    expected_pos_data = struct.pack('12f', *[v for p in positions for v in p])
-    expected_color_data = struct.pack('16B', *[v for c in colors for v in c])
-    expected_size_data = struct.pack('8f', *[v for s in sizes for v in s])  
-    expected_angle_data = struct.pack('4f', *angles)
+    expected_pos_data = struct.pack("12f", *[v for p in positions for v in p])
+    expected_color_data = struct.pack("16B", *[v for c in colors for v in c])
+    expected_size_data = struct.pack("8f", *[v for s in sizes for v in s])
+    expected_angle_data = struct.pack("4f", *angles)
     expected_texture_data = struct.pack(
-        '4f',
+        "4f",
         *[ctx.default_atlas.get_texture_id(sprite.texture) for sprite in sprites],
     )
 
@@ -124,4 +125,4 @@ def test_buffer_sizes(ctx: arcade.ArcadeContext):
     assert sp._sprite_texture_data.tobytes() == expected_texture_data
 
     # Index buffer
-    assert sp._sprite_index_buf.read() == struct.pack('4i', 0, 1, 2, 3)
+    assert sp._sprite_index_buf.read() == struct.pack("4i", 0, 1, 2, 3)

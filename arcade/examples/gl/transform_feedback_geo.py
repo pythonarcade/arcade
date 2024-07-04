@@ -35,7 +35,6 @@ SCREEN_TITLE = "Transform Feedback"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.time = 0
@@ -145,8 +144,12 @@ class MyGame(arcade.Window):
         self.vao_2 = self.ctx.geometry([BufferDescription(self.buffer_2, "2f 2x4", ["in_pos"])])
 
         # We need to be able to transform both buffers (ping-pong)
-        self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, "2f 2f", ["in_pos", "in_vel"])])
-        self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])])
+        self.gravity_1 = self.ctx.geometry(
+            [BufferDescription(self.buffer_1, "2f 2f", ["in_pos", "in_vel"])]
+        )
+        self.gravity_2 = self.ctx.geometry(
+            [BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])]
+        )
 
         self.mouse_pos = SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
         self.time = time.time()

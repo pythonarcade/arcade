@@ -4,6 +4,7 @@ Show how to have enemies shoot bullets at regular intervals.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_bullets_periodic
 """
+
 import arcade
 
 SCREEN_WIDTH = 1280
@@ -12,10 +13,10 @@ SCREEN_TITLE = "Sprites and Periodic Bullets Example"
 
 
 class EnemySprite(arcade.Sprite):
-    """ Enemy ship class that tracks how long it has been since firing. """
+    """Enemy ship class that tracks how long it has been since firing."""
 
     def __init__(self, image_file, scale, bullet_list, time_between_firing):
-        """ Set up the enemy """
+        """Set up the enemy"""
         super().__init__(image_file, scale=scale)
 
         # How long has it been since we last fired?
@@ -28,14 +29,13 @@ class EnemySprite(arcade.Sprite):
         self.bullet_list = bullet_list
 
     def on_update(self, delta_time: float = 1 / 60):
-        """ Update this sprite. """
+        """Update this sprite."""
 
         # Track time since we last fired
         self.time_since_last_firing += delta_time
 
         # If we are past the firing time, then fire
         if self.time_since_last_firing >= self.time_between_firing:
-
             # Reset timer
             self.time_since_last_firing = 0
 
@@ -49,7 +49,7 @@ class EnemySprite(arcade.Sprite):
 
 
 class MyGame(arcade.Window):
-    """ Main application class """
+    """Main application class"""
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
@@ -62,38 +62,44 @@ class MyGame(arcade.Window):
         self.bullet_list = None
 
     def setup(self):
-        """ Set up the variables for the game. """
+        """Set up the variables for the game."""
 
         self.player_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
 
         # Add player ship
-        self.player = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", scale=0.5)
+        self.player = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_orange.png", scale=0.5
+        )
         self.player_list.append(self.player)
 
         # Add top-left enemy ship
-        enemy = EnemySprite(":resources:images/space_shooter/playerShip1_green.png",
-                            scale=0.5,
-                            bullet_list=self.bullet_list,
-                            time_between_firing=2.0)
+        enemy = EnemySprite(
+            ":resources:images/space_shooter/playerShip1_green.png",
+            scale=0.5,
+            bullet_list=self.bullet_list,
+            time_between_firing=2.0,
+        )
         enemy.center_x = 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
         # Add top-right enemy ship
-        enemy = EnemySprite(":resources:images/space_shooter/playerShip1_green.png",
-                            scale=0.5,
-                            bullet_list=self.bullet_list,
-                            time_between_firing=1.0)
+        enemy = EnemySprite(
+            ":resources:images/space_shooter/playerShip1_green.png",
+            scale=0.5,
+            bullet_list=self.bullet_list,
+            time_between_firing=1.0,
+        )
         enemy.center_x = SCREEN_WIDTH - 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
     def on_draw(self):
-        """Render the screen. """
+        """Render the screen."""
 
         self.clear()
 
@@ -102,7 +108,7 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
     def on_update(self, delta_time):
-        """ All the logic to move, and the game logic goes here. """
+        """All the logic to move, and the game logic goes here."""
 
         # Call on_update for each enemy in  the list
         self.enemy_list.on_update(delta_time)
@@ -123,7 +129,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Run the game """
+    """Run the game"""
     window = MyGame()
     window.setup()
     arcade.run()

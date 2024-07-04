@@ -92,7 +92,6 @@ class Camera2D:
         render_target: Optional[Framebuffer] = None,
         window: Optional["Window"] = None,
     ):
-
         self._window: "Window" = window or get_window()
         self.render_target: Optional[Framebuffer] = render_target
 
@@ -485,7 +484,6 @@ class Camera2D:
 
     @projection.setter
     def projection(self, value: Rect) -> None:
-
         # Unpack and validate
         if not value:
             raise ZeroProjectionDimension((f"Projection area is 0, {value.lrbt}"))

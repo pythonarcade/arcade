@@ -9,6 +9,7 @@ texture offset changed. This creates an illusion of moving.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.background_scrolling
 """
+
 import arcade
 import arcade.future.background as background
 
@@ -45,7 +46,9 @@ class MyGame(arcade.Window):
         # This will center the camera on the player.
         target_x = self.player_sprite.center_x
         target_y = self.player_sprite.center_y
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position, (target_x, target_y), CAMERA_SPEED
+        )
 
     def on_update(self, delta_time: float):
         new_position = (

@@ -1,8 +1,10 @@
 """Test the TextureCacheManager"""
+
 import arcade
 
 SPRITESHEET_PATH = ":assets:images/spritesheets/codepage_437.png"
 TEST_TEXTURE = ":assets:images/test_textures/test_texture.png"
+
 
 def test_create():
     arcade.texture.TextureCacheManager()
@@ -46,7 +48,7 @@ def test_load_spritesheet_texture():
     manager.flush()
     assert len(manager._sprite_sheets) == 0
     assert len(manager.texture_cache._file_entries) == 0
-    assert len(manager.texture_cache._entries) == 0 
+    assert len(manager.texture_cache._entries) == 0
     assert len(manager.image_data_cache) == 0
 
 

@@ -28,10 +28,10 @@ window = None
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -52,8 +52,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -66,14 +65,14 @@ class MyGame(arcade.Window):
         # Image from kenney.nl
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=SPRITE_SCALING_PLAYER)
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
 
         # Create the coins
         for i in range(COIN_COUNT):
-
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
@@ -89,7 +88,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # This command has to happen before we start drawing
         self.clear()
@@ -104,10 +103,12 @@ class MyGame(arcade.Window):
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        """ Called whenever the mouse button is clicked. """
+        """Called whenever the mouse button is clicked."""
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(
+            ":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER
+        )
 
         # Position the bullet at the player's current location
         start_x = self.player_sprite.center_x
@@ -129,7 +130,7 @@ class MyGame(arcade.Window):
         angle = math.atan2(y_diff, x_diff)
 
         # Rotate the sprite clockwise to align it with its travel path
-        bullet.angle = - math.degrees(angle)
+        bullet.angle = -math.degrees(angle)
         print(f"Bullet angle: {bullet.angle:.2f}")
 
         # Use the angle to calculate the velocity's change_x and
@@ -142,14 +143,13 @@ class MyGame(arcade.Window):
         self.bullet_list.append(bullet)
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites
         self.bullet_list.update()
 
         # Loop through each bullet
         for bullet in self.bullet_list:
-
             # Check this bullet to see if it hit a coin
             hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
 
@@ -163,7 +163,12 @@ class MyGame(arcade.Window):
                 self.score += 1
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
+            if (
+                bullet.bottom > self.width
+                or bullet.top < 0
+                or bullet.right < 0
+                or bullet.left > self.width
+            ):
                 bullet.remove_from_sprite_lists()
 
 

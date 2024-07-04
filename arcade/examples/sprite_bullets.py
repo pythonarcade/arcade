@@ -8,6 +8,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_bullets
 """
+
 import random
 import arcade
 
@@ -24,10 +25,10 @@ BULLET_SPEED = 5
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -50,8 +51,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -64,14 +64,14 @@ class MyGame(arcade.Window):
         # Image from kenney.nl
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            scale=SPRITE_SCALING_PLAYER)
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
 
         # Create the coins
         for i in range(COIN_COUNT):
-
             # Create the coin instance
             # Coin image from kenney.nl
             coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
@@ -115,7 +115,9 @@ class MyGame(arcade.Window):
         # Gunshot sound
         arcade.play_sound(self.gun_sound)
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(
+            ":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER
+        )
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
@@ -132,14 +134,13 @@ class MyGame(arcade.Window):
         self.bullet_list.append(bullet)
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on bullet sprites
         self.bullet_list.update()
 
         # Loop through each bullet
         for bullet in self.bullet_list:
-
             # Check this bullet to see if it hit a coin
             hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
 

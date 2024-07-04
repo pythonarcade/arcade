@@ -24,10 +24,10 @@ SCREEN_TITLE = "Sprite Collect Coins Example"
 
 
 class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+    """Our custom Window Class"""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -48,7 +48,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Create the sprite lists
         self.player_list = arcade.SpriteList()
@@ -57,8 +57,8 @@ class MyGame(arcade.Window):
         # Reset the score and the score display
         self.score = 0
         self.score_display = arcade.Text(
-            text="Score: 0", x=10, y=20,
-            color=arcade.color.WHITE, font_size=14)
+            text="Score: 0", x=10, y=20, color=arcade.color.WHITE, font_size=14
+        )
 
         # Set up the player
         # Character image from kenney.nl
@@ -69,11 +69,9 @@ class MyGame(arcade.Window):
 
         # Create the coins
         for i in range(COIN_COUNT):
-
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png",
-                                 scale=SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -83,7 +81,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
 
         # Clear the screen to only show the background color
         self.clear()
@@ -96,17 +94,16 @@ class MyGame(arcade.Window):
         self.score_display.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
-        """ Handle Mouse Motion """
+        """Handle Mouse Motion"""
 
         # Move the player sprite to place its center on the mouse x, y
         self.player_sprite.position = x, y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Generate a list of all sprites that collided with the player.
-        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
-                                                              self.coin_list)
+        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
 
         # Keep track of the score from before collisions occur
         old_score = self.score
@@ -122,7 +119,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame()
     window.setup()
     arcade.run()

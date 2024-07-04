@@ -18,7 +18,6 @@ INTERACTION_RADIUS = 250
 
 
 class SpriteListInteraction(arcade.Window):
-
     def __init__(self):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "SpriteList Interaction")
 
@@ -122,7 +121,9 @@ class SpriteListInteraction(arcade.Window):
         self.player.draw()
 
         # Visualize the interaction radius
-        arcade.draw_circle_filled(self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64))
+        arcade.draw_circle_filled(
+            self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64)
+        )
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         # Move the sprite to mouse position

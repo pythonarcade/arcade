@@ -7,6 +7,7 @@ template.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.starting_template
 """
+
 import arcade
 
 SCREEN_WIDTH = 1280
@@ -90,7 +91,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE).run()
 
 

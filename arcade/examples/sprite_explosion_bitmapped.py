@@ -9,6 +9,7 @@ Explosion graphics from https://www.explosiongenerator.com/
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_explosion_bitmapped
 """
+
 import random
 import arcade
 
@@ -27,7 +28,7 @@ EXPLOSION_TEXTURE_COUNT = 60
 
 
 class Explosion(arcade.Sprite):
-    """ This class creates an explosion animation """
+    """This class creates an explosion animation"""
 
     def __init__(self, texture_list):
         super().__init__(texture_list[0])
@@ -37,7 +38,6 @@ class Explosion(arcade.Sprite):
         self.textures = texture_list
 
     def update(self):
-
         # Update to the next frame of the animation. If we are at the end
         # of our frames, then delete this sprite.
         self.current_texture += 1
@@ -48,10 +48,10 @@ class Explosion(arcade.Sprite):
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
-        """ Initializer """
+        """Initializer"""
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -63,8 +63,10 @@ class MyGame(arcade.Window):
 
         # Set up the player info
         # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -157,7 +159,9 @@ class MyGame(arcade.Window):
         arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(
+            ":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER
+        )
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
@@ -189,13 +193,11 @@ class MyGame(arcade.Window):
 
         # Loop through each bullet
         for bullet in self.bullet_list:
-
             # Check this bullet to see if it hit a coin
             hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
 
             # If it did...
             if len(hit_list) > 0:
-
                 # Make an explosion
                 explosion = Explosion(self.explosion_texture_list)
 

@@ -32,7 +32,6 @@ FRICTION = 0.02
 
 
 class Player(arcade.Sprite):
-
     def update(self):
         self.center_x += self.change_x
         self.center_y += self.change_y
@@ -87,26 +86,34 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Create a sprite list
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    scale=SPRITE_SCALING)
+        self.player_sprite = Player(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player_sprite.position = self.width / 2, self.height / 2
         self.player_list.append(self.player_sprite)
 
         # Create the speed display objects with initial text
         self.x_speed_display = arcade.Text(
             f"X Speed: {self.player_sprite.change_x:6.3f}",
-            10, 50, arcade.color.BLACK, font_size=15,
+            10,
+            50,
+            arcade.color.BLACK,
+            font_size=15,
         )
 
         self.y_speed_display = arcade.Text(
             f"Y Speed: {self.player_sprite.change_y:6.3f}",
-            10, 70, color=arcade.color.BLACK, font_size=15,
+            10,
+            70,
+            color=arcade.color.BLACK,
+            font_size=15,
         )
 
     def on_draw(self):
@@ -125,7 +132,7 @@ class MyGame(arcade.Window):
         self.y_speed_display.draw()
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Add some friction
         if self.player_sprite.change_x > FRICTION:
@@ -171,7 +178,7 @@ class MyGame(arcade.Window):
         self.y_speed_display.text = f"Y Speed: {self.player_sprite.change_y:6.3f}"
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
 
         if key == arcade.key.UP:
             self.up_pressed = True
@@ -183,7 +190,7 @@ class MyGame(arcade.Window):
             self.right_pressed = True
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
 
         if key == arcade.key.UP:
             self.up_pressed = False
@@ -196,7 +203,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

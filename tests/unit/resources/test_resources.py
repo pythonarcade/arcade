@@ -3,6 +3,7 @@ Validate the resources module.
 * Check that all resources are listed in the __init__.py file
 * Check that all resources listed actually exists
 """
+
 import arcade
 
 
@@ -46,7 +47,7 @@ def test_resource_listing_is_complete():
         if path.suffix in skip_extensions:
             continue
         if any(str(path).startswith(str(skip_path)) for skip_path in skip_paths):
-        # if any(path.is_relative_to(skip_path) for skip_path in skip_paths): # Python 3.9+
+            # if any(path.is_relative_to(skip_path) for skip_path in skip_paths): # Python 3.9+
             continue
         paths_in_resources.add(path)
 
@@ -56,10 +57,20 @@ def test_resource_listing_is_complete():
     paths_in_resources.remove(arcade.resources.RESOURCE_DIR / "assets" / "sounds" / "laser1.mp3")
     paths_in_resources.remove(arcade.resources.RESOURCE_DIR / "assets" / "sounds" / "laser1.ogg")
     paths_in_resources.remove(arcade.resources.RESOURCE_DIR / "assets" / "sounds" / "rockHit2.ogg")
-    paths_in_resources.remove(arcade.resources.RESOURCE_DIR / "assets" / "sounds" / "phaseJump1.ogg")
+    paths_in_resources.remove(
+        arcade.resources.RESOURCE_DIR / "assets" / "sounds" / "phaseJump1.ogg"
+    )
     # - images: These exist in two locations
-    paths_in_resources.remove(arcade.resources.RESOURCE_DIR / "assets" / "images" / "items" / "ladderTop.png")
-    paths_in_resources.remove(arcade.resources.RESOURCE_DIR / "assets" / "images" / "items" / "ladderMid.png")
+    paths_in_resources.remove(
+        arcade.resources.RESOURCE_DIR / "assets" / "images" / "items" / "ladderTop.png"
+    )
+    paths_in_resources.remove(
+        arcade.resources.RESOURCE_DIR / "assets" / "images" / "items" / "ladderMid.png"
+    )
 
-    assert paths_in_module - paths_in_resources == set(), "Some resources are not listed in __init__.py"
-    assert paths_in_resources - paths_in_module == set(), "Some resources are listed in __init__.py, but not in folder"
+    assert (
+        paths_in_module - paths_in_resources == set()
+    ), "Some resources are not listed in __init__.py"
+    assert (
+        paths_in_resources - paths_in_module == set()
+    ), "Some resources are listed in __init__.py, but not in folder"

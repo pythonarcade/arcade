@@ -16,7 +16,6 @@ SAMPLES = 8
 
 
 class MultisampleFramebuffer(arcade.Window):
-
     def __init__(self, width, height):
         super().__init__(width, height, "Multisampled Framebuffer", samples=SAMPLES)
         # Create a MSAA texture and framebuffer

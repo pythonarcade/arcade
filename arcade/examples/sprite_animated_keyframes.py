@@ -5,11 +5,11 @@ This sprite type is primarily used internally by tilemaps, but can be used for o
 If Python and arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_animated_keyframes
 """
+
 import arcade
 
 
 class Animated(arcade.Window):
-
     def __init__(self):
         super().__init__(1280, 720, "Time based animated sprite")
 
@@ -45,4 +45,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

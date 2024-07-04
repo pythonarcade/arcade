@@ -5,6 +5,7 @@ and the three ways to process button events.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gui_flat_button
 """
+
 import arcade
 import arcade.gui
 
@@ -30,14 +31,10 @@ class MyView(arcade.View):
         self.v_box = arcade.gui.widgets.layout.UIBoxLayout(space_between=20)
 
         # Create the buttons
-        start_button = arcade.gui.widgets.buttons.UIFlatButton(
-            text="Start Game", width=200
-        )
+        start_button = arcade.gui.widgets.buttons.UIFlatButton(text="Start Game", width=200)
         self.v_box.add(start_button)
 
-        settings_button = arcade.gui.widgets.buttons.UIFlatButton(
-            text="Settings", width=200
-        )
+        settings_button = arcade.gui.widgets.buttons.UIFlatButton(text="Settings", width=200)
         self.v_box.add(settings_button)
 
         # Again, method 1. Use a child class to handle events.
@@ -81,7 +78,7 @@ class MyView(arcade.View):
             self.window.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     window = arcade.Window(1280, 720, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()

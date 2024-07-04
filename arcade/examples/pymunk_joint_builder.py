@@ -4,6 +4,7 @@ Pymunk 2
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.pymunk_joint_builder
 """
+
 import arcade
 import pymunk
 import timeit
@@ -32,7 +33,9 @@ Right-click, fire coin
 
 class PhysicsSprite(arcade.Sprite):
     def __init__(self, pymunk_shape, filename):
-        super().__init__(filename, center_x=pymunk_shape.body.position.x, center_y=pymunk_shape.body.position.y)
+        super().__init__(
+            filename, center_x=pymunk_shape.body.position.x, center_y=pymunk_shape.body.position.y
+        )
         self.pymunk_shape = pymunk_shape
 
 
@@ -51,7 +54,7 @@ class BoxSprite(PhysicsSprite):
 
 
 class MyApplication(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -116,11 +119,14 @@ class MyApplication(arcade.Window):
             color = arcade.color.WHITE
             if isinstance(joint, pymunk.DampedSpring):
                 color = arcade.color.DARK_GREEN
-            arcade.draw_line(joint.a.position.x,
-                             joint.a.position.y,
-                             joint.b.position.x,
-                             joint.b.position.y,
-                             color, 3)
+            arcade.draw_line(
+                joint.a.position.x,
+                joint.a.position.y,
+                joint.b.position.x,
+                joint.b.position.y,
+                color,
+                3,
+            )
 
         # arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         # Display timings
@@ -148,7 +154,9 @@ class MyApplication(arcade.Window):
         shape.friction = 0.3
         self.space.add(body, shape)
 
-        sprite = BoxSprite(shape, ":resources:images/tiles/boxCrate_double.png", width=size, height=size)
+        sprite = BoxSprite(
+            shape, ":resources:images/tiles/boxCrate_double.png", width=size, height=size
+        )
         self.sprite_list.append(sprite)
 
     def make_circle(self, x, y):
@@ -193,7 +201,9 @@ class MyApplication(arcade.Window):
         elif self.shape_2 is None:
             print("Shape 2 Selected")
             self.shape_2 = shape_selected
-            joint = pymunk.DampedSpring(self.shape_1.shape.body, self.shape_2.shape.body, (0, 0), (0, 0), 45, 300, 30)
+            joint = pymunk.DampedSpring(
+                self.shape_1.shape.body, self.shape_2.shape.body, (0, 0), (0, 0), 45, 300, 30
+            )
             self.space.add(joint)
             self.joints.append(joint)
             self.shape_1 = None
@@ -213,7 +223,6 @@ class MyApplication(arcade.Window):
         return shape
 
     def on_mouse_press(self, x, y, button, modifiers):
-
         if button == 1 and self.mode == "Drag":
             self.last_mouse_position = x, y
             self.shape_being_dragged = self.get_shape(x, y)

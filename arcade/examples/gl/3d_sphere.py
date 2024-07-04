@@ -16,7 +16,6 @@ from pyglet.graphics import Batch
 
 
 class Sphere3D(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.sphere = geometry.sphere(1.0, 32, 32, uvs=False)
@@ -69,16 +68,36 @@ class Sphere3D(arcade.Window):
 
         self.text_batch = Batch()
         self.text_cull = arcade.Text(
-            "F2: Toggle cull face (True)", x=10, y=10, font_size=15, color=arcade.color.WHITE, batch=self.text_batch
+            "F2: Toggle cull face (True)",
+            x=10,
+            y=10,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
         self.text_depth = arcade.Text(
-            "F1: Toggle depth test (True)", x=10, y=30, font_size=15, color=arcade.color.WHITE, batch=self.text_batch
+            "F1: Toggle depth test (True)",
+            x=10,
+            y=30,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
         self.text_wireframe = arcade.Text(
-            "SPACE: Toggle wireframe (False)", x=10, y=50, font_size=15, color=arcade.color.WHITE, batch=self.text_batch
+            "SPACE: Toggle wireframe (False)",
+            x=10,
+            y=50,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
         self.text_fs = arcade.Text(
-            "F: Toggle fullscreen (False)", x=10, y=70, font_size=15, color=arcade.color.WHITE, batch=self.text_batch
+            "F: Toggle fullscreen (False)",
+            x=10,
+            y=70,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
         self.text_vert_count = arcade.Text(
             "Use mouse wheel to add/remove vertices",
@@ -89,7 +108,12 @@ class Sphere3D(arcade.Window):
             batch=self.text_batch,
         )
         self.text_rotate = arcade.Text(
-            "Drag mouse to rotate object", x=10, y=110, font_size=15, color=arcade.color.WHITE, batch=self.text_batch
+            "Drag mouse to rotate object",
+            x=10,
+            y=110,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
 
         self.set_vsync(True)

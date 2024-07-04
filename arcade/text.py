@@ -61,7 +61,6 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     :return: Either a resolved path or the original tuple
     """
     if font_name:
-
         # ensure
         if isinstance(font_name, str):
             font_list: tuple[str, ...] = (font_name,)

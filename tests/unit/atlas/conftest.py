@@ -8,7 +8,6 @@ def common():
 
 
 class Common:
-
     @staticmethod
     def check_internals(
         atlas: arcade.DefaultTextureAtlas,
@@ -30,7 +29,7 @@ class Common:
 
         # Unique textures
         assert len(atlas._unique_textures) == unique_textures
-        assert len(atlas._texture_uvs) == unique_textures    # potentially also test free slots
+        assert len(atlas._texture_uvs) == unique_textures  # potentially also test free slots
         assert len(atlas._texture_regions) == unique_textures
         assert len(atlas._unique_texture_ref_count) == unique_textures
 

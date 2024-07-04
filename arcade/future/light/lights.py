@@ -77,7 +77,6 @@ class Light:
 
 
 class LightLayer(RenderTargetTexture):
-
     def __init__(self, width: int, height: int):
         """
         Create a LightLayer

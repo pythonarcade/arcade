@@ -20,10 +20,10 @@ SCREEN_TITLE = "Sprite Collect Coins with Different Levels Example"
 
 
 class FallingCoin(arcade.Sprite):
-    """ Simple sprite that falls down """
+    """Simple sprite that falls down"""
 
     def update(self):
-        """ Move the coin """
+        """Move the coin"""
 
         # Fall down
         self.center_y -= 2
@@ -34,10 +34,10 @@ class FallingCoin(arcade.Sprite):
 
 
 class RisingCoin(arcade.Sprite):
-    """ Simple sprite that falls up """
+    """Simple sprite that falls up"""
 
     def update(self):
-        """ Move the coin """
+        """Move the coin"""
 
         # Move up
         self.center_y += 2
@@ -53,7 +53,7 @@ class MyGame(arcade.Window):
     """
 
     def __init__(self, width, height, title):
-        """ Initialize """
+        """Initialize"""
 
         # Call the parent class initializer
         super().__init__(width, height, title)
@@ -64,8 +64,10 @@ class MyGame(arcade.Window):
 
         # Set up the player info
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player_list.append(self.player_sprite)
 
         self.score = 0
@@ -79,7 +81,6 @@ class MyGame(arcade.Window):
 
     def level_1(self):
         for i in range(20):
-
             # Create the coin instance
             coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING / 3)
 
@@ -92,7 +93,6 @@ class MyGame(arcade.Window):
 
     def level_2(self):
         for i in range(30):
-
             # Create the coin instance
             coin = FallingCoin(":resources:images/items/coinBronze.png", scale=SPRITE_SCALING / 2)
 
@@ -105,7 +105,6 @@ class MyGame(arcade.Window):
 
     def level_3(self):
         for i in range(30):
-
             # Create the coin instance
             coin = RisingCoin(":resources:images/items/coinSilver.png", scale=SPRITE_SCALING / 2)
 
@@ -117,7 +116,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
     def reset(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         self.score = 0
         self.level = 1
@@ -157,7 +156,7 @@ class MyGame(arcade.Window):
         self.player_sprite.center_y = y
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
@@ -182,7 +181,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.reset()
     arcade.run()

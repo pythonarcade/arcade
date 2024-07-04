@@ -6,10 +6,10 @@ def test_buffer_description(ctx):
     # TODO: components > 4
     # TODO: padding
     buffer = ctx.buffer(reserve=4 * 8)
-    attribute_names = ['in_vert', 'in_uv']
+    attribute_names = ["in_vert", "in_uv"]
     descr = BufferDescription(
         buffer,
-        '2f 2f',
+        "2f 2f",
         attribute_names,
     )
     assert descr.num_vertices == 2

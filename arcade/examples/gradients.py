@@ -4,6 +4,7 @@ Drawing Gradients
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gradients
 """
+
 import arcade
 from arcade import shape_list
 
@@ -60,7 +61,11 @@ class MyGame(arcade.Window):
         color1 = (215, 214, 165)
         color2 = (219, 166, 123)
         color3 = (165, 92, 85)
-        points = (SCREEN_WIDTH // 2, 500), (SCREEN_WIDTH // 2 - 100, 400), (SCREEN_WIDTH // 2 + 100, 400)
+        points = (
+            (SCREEN_WIDTH // 2, 500),
+            (SCREEN_WIDTH // 2 - 100, 400),
+            (SCREEN_WIDTH // 2 + 100, 400),
+        )
         colors = (color1, color2, color3)
         shape = shape_list.create_triangles_filled_with_colors(points, colors)
         self.shapes.append(shape)
@@ -68,8 +73,9 @@ class MyGame(arcade.Window):
         # Ellipse, gradient between center and outside
         color1 = (69, 137, 133, 127)
         color2 = (7, 67, 88, 127)
-        shape = shape_list.create_ellipse_filled_with_colors(SCREEN_WIDTH // 2, 350, 50, 50,
-                                                             inside_color=color1, outside_color=color2)
+        shape = shape_list.create_ellipse_filled_with_colors(
+            SCREEN_WIDTH // 2, 350, 50, 50, inside_color=color1, outside_color=color2
+        )
         self.shapes.append(shape)
 
     def on_draw(self):
@@ -84,7 +90,6 @@ class MyGame(arcade.Window):
 
 
 def main():
-
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 

@@ -101,7 +101,9 @@ def make_flash(prev_emitter):
         center_xy=prev_emitter.get_pos(),
         emit_controller=EmitBurst(3),
         particle_factory=lambda emitter: FadeParticle(
-            filename_or_texture=FLASH_TEXTURE, change_xy=rand_in_circle((0.0, 0.0), 3.5), lifetime=0.15
+            filename_or_texture=FLASH_TEXTURE,
+            change_xy=rand_in_circle((0.0, 0.0), 3.5),
+            lifetime=0.15,
         ),
     )
 
@@ -226,7 +228,9 @@ class FireworksApp(arcade.Window):
             self.launch_sparkle_firework,
         )
         random.choice(launchers)(delta_time)
-        pyglet.clock.schedule_once(self.launch_firework, random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX))
+        pyglet.clock.schedule_once(
+            self.launch_firework, random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX)
+        )
 
     def launch_random_firework(self, _delta_time):
         """Simple firework that explodes in a random color"""
@@ -341,7 +345,9 @@ class FireworksApp(arcade.Window):
             e.draw()
         arcade.draw_lrbt_rectangle_filled(0, SCREEN_WIDTH, 0, 25, arcade.color.DARK_GREEN)
         mid = SCREEN_WIDTH / 2
-        arcade.draw_lrbt_rectangle_filled(mid - 2, mid + 2, 10, SPINNER_HEIGHT, arcade.color.DARK_BROWN)
+        arcade.draw_lrbt_rectangle_filled(
+            mid - 2, mid + 2, 10, SPINNER_HEIGHT, arcade.color.DARK_BROWN
+        )
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:

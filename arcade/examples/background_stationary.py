@@ -57,7 +57,9 @@ class MyGame(arcade.Window):
             target_y = 0.0
         elif target_y > self.background.size[1]:
             target_y = self.background.size[1]
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position, (target_x, target_y), CAMERA_SPEED
+        )
 
     def on_update(self, delta_time: float):
         new_position = (

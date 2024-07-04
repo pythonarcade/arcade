@@ -9,6 +9,7 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_rotate_around_point
 """
+
 import arcade
 from arcade.math import rotate_point
 
@@ -43,13 +44,10 @@ class RotatingSprite(arcade.Sprite):
             self.angle += degrees
 
         # Move the sprite along a circle centered on the point by degrees
-        self.position = rotate_point(
-            self.center_x, self.center_y,
-            point[0], point[1], degrees)
+        self.position = rotate_point(self.center_x, self.center_y, point[0], point[1], degrees)
 
 
 class ExampleWindow(arcade.Window):
-
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
@@ -59,47 +57,59 @@ class ExampleWindow(arcade.Window):
         # See https://www.mariowiki.com/Fire_Bar for more information
         self.left_rotating_laser_sprite = RotatingSprite(
             ":resources:images/space_shooter/laserBlue01.png",
-            center_x=QUARTER_WIDTH + 26, center_y=HALF_HEIGHT)
+            center_x=QUARTER_WIDTH + 26,
+            center_y=HALF_HEIGHT,
+        )
 
         self.laser_base_sprite = arcade.Sprite(
-            ":resources:images/tiles/boxCrate.png", scale=0.25,
-            center_x=QUARTER_WIDTH, center_y=HALF_HEIGHT)
+            ":resources:images/tiles/boxCrate.png",
+            scale=0.25,
+            center_x=QUARTER_WIDTH,
+            center_y=HALF_HEIGHT,
+        )
 
         self.laser_text = arcade.Text(
-            "change_angle = True",
-            QUARTER_WIDTH, SCREEN_HEIGHT // 2 - 150,
-            anchor_x='center')
+            "change_angle = True", QUARTER_WIDTH, SCREEN_HEIGHT // 2 - 150, anchor_x="center"
+        )
 
         # This example demonstrates how to make platforms rotate around a point
         self.right_rotating_platform_sprite = RotatingSprite(
-            ":resources:images/tiles/grassHalf.png", scale=0.25,
-            center_x=3 * QUARTER_WIDTH + 50, center_y=HALF_HEIGHT)
+            ":resources:images/tiles/grassHalf.png",
+            scale=0.25,
+            center_x=3 * QUARTER_WIDTH + 50,
+            center_y=HALF_HEIGHT,
+        )
 
         self.platform_base_sprite = arcade.Sprite(
-            ":resources:images/tiles/boxCrate.png", scale=0.25,
-            center_x=3 * QUARTER_WIDTH, center_y=HALF_HEIGHT)
+            ":resources:images/tiles/boxCrate.png",
+            scale=0.25,
+            center_x=3 * QUARTER_WIDTH,
+            center_y=HALF_HEIGHT,
+        )
 
         self.platform_text = arcade.Text(
-            "change_angle = False",
-            3 * QUARTER_WIDTH, HALF_HEIGHT - 150,
-            anchor_x='center')
+            "change_angle = False", 3 * QUARTER_WIDTH, HALF_HEIGHT - 150, anchor_x="center"
+        )
 
-        self.sprites.extend([
-            self.laser_base_sprite,
-            self.left_rotating_laser_sprite,
-            self.platform_base_sprite,
-            self.right_rotating_platform_sprite])
+        self.sprites.extend(
+            [
+                self.laser_base_sprite,
+                self.left_rotating_laser_sprite,
+                self.platform_base_sprite,
+                self.right_rotating_platform_sprite,
+            ]
+        )
 
     def on_update(self, delta_time: float):
         # Rotate the laser sprite and change its angle
         self.left_rotating_laser_sprite.rotate_around_point(
-            self.laser_base_sprite.position,
-            120 * delta_time)
+            self.laser_base_sprite.position, 120 * delta_time
+        )
 
         # Rotate the platform sprite but don't change its angle
         self.right_rotating_platform_sprite.rotate_around_point(
-            self.platform_base_sprite.position,
-            60 * delta_time, False)
+            self.platform_base_sprite.position, 60 * delta_time, False
+        )
 
     def on_draw(self):
         # Draw the sprite list.
@@ -115,5 +125,5 @@ def main():
     window.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -12,6 +12,7 @@ almost the same cost as drawing a single one directly.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.drawing_text_objects_batch
 """
+
 import arcade
 from pyglet.graphics import Batch
 
@@ -60,7 +61,8 @@ class MyGame(arcade.Window):
             start_x,
             start_y,
             arcade.color.FRENCH_WINE,
-            DEFAULT_FONT_SIZE, bold=True,
+            DEFAULT_FONT_SIZE,
+            bold=True,
             batch=self.batch,
         )
 
@@ -123,7 +125,8 @@ class MyGame(arcade.Window):
         start_y -= DEFAULT_LINE_HEIGHT
         self.font_kenney_mini_square = arcade.Text(
             "Kenney Mini Square Font",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             font_name="Kenney Mini Square",
@@ -133,7 +136,8 @@ class MyGame(arcade.Window):
         start_y -= DEFAULT_LINE_HEIGHT
         self.font_kenney_pixel = arcade.Text(
             "Kenney Pixel Font",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             font_name="Kenney Pixel",
@@ -143,7 +147,8 @@ class MyGame(arcade.Window):
         start_y -= DEFAULT_LINE_HEIGHT
         self.font_kenney_pixel_square = arcade.Text(
             "Kenney Pixel Square Font",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             font_name="Kenney Pixel Square",
@@ -153,7 +158,8 @@ class MyGame(arcade.Window):
         start_y -= DEFAULT_LINE_HEIGHT
         self.font_kenney_rocket = arcade.Text(
             "Kenney Rocket Font",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             font_name="Kenney Rocket",
@@ -163,7 +169,8 @@ class MyGame(arcade.Window):
         start_y -= DEFAULT_LINE_HEIGHT
         self.font_kenney_rocket_square = arcade.Text(
             "Kenney Rocket Square Font",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             font_name="Kenney Rocket Square",
@@ -185,13 +192,14 @@ class MyGame(arcade.Window):
         # operating systems.
         self.font_times_new_roman = arcade.Text(
             "Times New Roman (Or closest match on system)",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             font_name=(
                 "Times New Roman",  # Comes with Windows
                 "Times",  # MacOS may sometimes have this variant
-                "Liberation Serif"  # Common on Linux systems
+                "Liberation Serif",  # Common on Linux systems
             ),
             batch=self.batch,
         )
@@ -199,7 +207,8 @@ class MyGame(arcade.Window):
         start_y -= DEFAULT_LINE_HEIGHT
         self.multi_line_breaks = arcade.Text(
             "Multi-Line\ntext using\n\\n characters.",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE / 2,
             multiline=True,
@@ -262,7 +271,8 @@ class MyGame(arcade.Window):
         start_y -= DEFAULT_LINE_HEIGHT
         self.top_left = arcade.Text(
             "'top' and 'left'",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             anchor_x="left",
@@ -273,7 +283,8 @@ class MyGame(arcade.Window):
         start_y -= DEFAULT_LINE_HEIGHT * 2
         self.basline_center = arcade.Text(
             "'baseline' and 'center'",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             anchor_x="center",
@@ -310,7 +321,8 @@ class MyGame(arcade.Window):
         # start_y = 0
         self.rotating_text = arcade.Text(
             "Rotating Text",
-            start_x, start_y,
+            start_x,
+            start_y,
             arcade.color.BLACK,
             DEFAULT_FONT_SIZE,
             anchor_x="center",
@@ -356,12 +368,7 @@ class MyGame(arcade.Window):
             5,
         )
 
-        arcade.draw_point(
-            self.basline_center.x,
-            self.basline_center.y,
-            arcade.color.BARN_RED,
-            5
-        )
+        arcade.draw_point(self.basline_center.x, self.basline_center.y, arcade.color.BARN_RED, 5)
 
         arcade.draw_point(
             self.baseline_right.x,
@@ -385,7 +392,7 @@ class MyGame(arcade.Window):
         )
 
     def on_key_press(self, symbol: int, modifiers: int):
-        """ Handle key press events """
+        """Handle key press events"""
         if symbol == arcade.key.ESCAPE:
             self.close()
 

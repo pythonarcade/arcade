@@ -16,7 +16,6 @@ NUM_COINS = 500
 
 
 class HijackSpritePositions(arcade.Window):
-
     def __init__(self):
         super().__init__(1280, 720, "Hijack Sprite Positions", resizable=True)
         # Generate lots of coins. We don't care about the initial positions

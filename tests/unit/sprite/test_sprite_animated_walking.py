@@ -19,19 +19,34 @@ def test_sprite_animated_old(window: arcade.Window):
     player.scale = 1
     player.stand_right_textures = []
     player.stand_right_textures.append(
-        arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png"))
+        arcade.load_texture(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png"
+        )
+    )
     player.stand_left_textures = [tex.flip_left_right() for tex in player.stand_right_textures]
 
     player.walk_right_textures = []
 
     player.walk_right_textures.append(
-        arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk0.png"))
+        arcade.load_texture(
+            ":resources:images/animated_characters/female_person/femalePerson_walk0.png"
+        )
+    )
     player.walk_right_textures.append(
-        arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk1.png"))
+        arcade.load_texture(
+            ":resources:images/animated_characters/female_person/femalePerson_walk1.png"
+        )
+    )
     player.walk_right_textures.append(
-        arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk2.png"))
+        arcade.load_texture(
+            ":resources:images/animated_characters/female_person/femalePerson_walk2.png"
+        )
+    )
     player.walk_right_textures.append(
-        arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_walk3.png"))
+        arcade.load_texture(
+            ":resources:images/animated_characters/female_person/femalePerson_walk3.png"
+        )
+    )
 
     player.walk_left_textures = [tex.flip_left_right() for tex in player.walk_right_textures]
 

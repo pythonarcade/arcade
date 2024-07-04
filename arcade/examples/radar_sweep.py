@@ -4,6 +4,7 @@ This animation example shows how perform a radar sweep animation.
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.radar_sweep
 """
+
 import arcade
 import math
 
@@ -28,7 +29,7 @@ class Radar:
         self.angle += RADIANS_PER_FRAME * delta_time
 
     def draw(self):
-        """ Use this function to draw everything to the screen. """
+        """Use this function to draw everything to the screen."""
 
         # Calculate the end point of our radar sweep. Using math.
         x = SWEEP_LENGTH * math.sin(self.angle) + CENTER_X
@@ -38,16 +39,18 @@ class Radar:
         arcade.draw_line(CENTER_X, CENTER_Y, x, y, arcade.color.OLIVE, 4)
 
         # Draw the outline of the radar
-        arcade.draw_circle_outline(CENTER_X,
-                                   CENTER_Y,
-                                   SWEEP_LENGTH,
-                                   arcade.color.DARK_GREEN,
-                                   border_width=10,
-                                   num_segments=60)
+        arcade.draw_circle_outline(
+            CENTER_X,
+            CENTER_Y,
+            SWEEP_LENGTH,
+            arcade.color.DARK_GREEN,
+            border_width=10,
+            num_segments=60,
+        )
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
@@ -71,7 +74,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
