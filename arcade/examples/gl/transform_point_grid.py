@@ -18,7 +18,6 @@ python -m arcade.examples.gl.transform_point_grid
 """
 
 import random
-import time
 from array import array
 
 from pyglet.math import Mat4

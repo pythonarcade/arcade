@@ -21,7 +21,6 @@ python -m arcade.examples.gl.transform_feedback
 
 from array import array
 import math
-import time
 import random
 import arcade
 from arcade.gl import BufferDescription

@@ -23,7 +23,6 @@ python -m arcade.examples.gl.transform_feedback_geo
 """
 
 from array import array
-import time
 import random
 import arcade
 from arcade.gl import BufferDescription
