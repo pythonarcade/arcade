@@ -5,7 +5,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.gl.3d_cube_with_cubes
 """
 
-from pyglet.math import Mat4
+from pyglet.math import Mat4, Vec3
 
 import arcade
 from arcade.gl import geometry
@@ -94,7 +94,6 @@ class MyGame(arcade.Window):
         self.quad_fs = geometry.quad_2d_fs()
 
         self.on_resize(*self.get_size())
-        self.time = 0
         self.frame = 0
 
         self.fbo1 = self.ctx.framebuffer(
@@ -113,14 +112,14 @@ class MyGame(arcade.Window):
         self.fbo1.use()
         self.fbo1.clear(color_normalized=(1.0, 1.0, 1.0, 1.0))
 
-        translate = Mat4.from_translation((0, 0, -1.75))
-        rx = Mat4.from_rotation(self.time, (1, 0, 0))
-        ry = Mat4.from_rotation(self.time, (0, 1, 0))
+        translate = Mat4.from_translation(Vec3(0, 0, -1.75))
+        rx = Mat4.from_rotation(self.time, Vec3(1, 0, 0))
+        ry = Mat4.from_rotation(self.time, Vec3(0, 1, 0))
         modelview = translate @ rx @ ry
 
-        if self.frame > 0:
-            self.program["use_texture"] = 1
-            self.fbo2.color_attachments[0].use()
+        self.program["use_texture"] = 1
+        self.fbo2.color_attachments[0].use()
+
         self.program["modelview"] = modelview
         self.cube.render(self.program)
 
@@ -136,9 +135,6 @@ class MyGame(arcade.Window):
         self.fbo1, self.fbo2 = self.fbo2, self.fbo1
         self.frame += 1
 
-    def on_update(self, dt):
-        self.time += dt
-
     def on_resize(self, width, height):
         """Set up viewport and projection"""
         self.ctx.viewport = 0, 0, width, height
@@ -146,5 +142,4 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    MyGame(720, 720, "3D Cube")
-    arcade.run()
+    MyGame(720, 720, "3D Cube").run()
