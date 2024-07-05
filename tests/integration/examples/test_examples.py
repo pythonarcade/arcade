@@ -37,6 +37,7 @@ IGNORE_PATTERNS = [
     "compute",  # Compute shader stuff we can't run in unit test
     "multisample",  # Anything requiring multisampling we can't run in unit test
     "indirect",  # Indirect rendering cannot be run in unit test
+    "bindless",  # Bindless textures cannot be run in unit test
 ]
 
 def list_examples():
