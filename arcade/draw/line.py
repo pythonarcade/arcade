@@ -19,7 +19,7 @@ def draw_line_strip(point_list: Point2List, color: RGBA255, line_width: float = 
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.LINE_STRIP)
     else:
-        triangle_point_list: list[Point] = []
+        triangle_point_list: Point2List = []
         # This needs a lot of improvement
         last_point = None
         for point in point_list:
