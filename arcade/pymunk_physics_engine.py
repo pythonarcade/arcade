@@ -280,7 +280,16 @@ class PymunkPhysicsEngine:
         physics_object.body.apply_impulse_at_local_point(impulse)
 
     def set_position(self, sprite: Sprite, position: Union[pymunk.Vec2d, tuple[float, float]]):
-        """Apply an impulse force on a sprite"""
+        """Set the position of the sprite in the engine's simulation.
+
+        To learn more, please see :py:attr:`pymunk.Body.position`.
+
+        Args:
+            sprite:
+                An Arcade :py:class:`.Sprite` known to the engine.
+            position:
+                A two-dimensional position in world space.
+        """
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
             raise PymunkException(
