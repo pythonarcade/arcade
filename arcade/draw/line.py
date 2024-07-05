@@ -1,13 +1,13 @@
 import array
 
 from arcade import gl
-from arcade.types import RGBA255, Color, Point, PointList
+from arcade.types import RGBA255, Color, Point2List
 from arcade.window_commands import get_window
 
 from .helpers import _generic_draw_line_strip, get_points_for_thick_line
 
 
-def draw_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1) -> None:
+def draw_line_strip(point_list: Point2List, color: RGBA255, line_width: float = 1) -> None:
     """
     Draw a multi-point line.
 
@@ -19,7 +19,7 @@ def draw_line_strip(point_list: PointList, color: RGBA255, line_width: float = 1
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.LINE_STRIP)
     else:
-        triangle_point_list: list[Point] = []
+        triangle_point_list: Point2List = []
         # This needs a lot of improvement
         last_point = None
         for point in point_list:
@@ -73,7 +73,7 @@ def draw_line(
     ctx.disable(ctx.BLEND)
 
 
-def draw_lines(point_list: PointList, color: RGBA255, line_width: float = 1) -> None:
+def draw_lines(point_list: Point2List, color: RGBA255, line_width: float = 1) -> None:
     """
     Draw a set of lines.
 
