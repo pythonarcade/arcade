@@ -250,7 +250,22 @@ class PymunkPhysicsEngine:
             self.non_static_sprite_list.remove(sprite)
 
     def get_sprite_for_shape(self, shape: Optional[pymunk.Shape]) -> Optional[Sprite]:
-        """Given a shape, what sprite is associated with it?"""
+        """Try to get the sprite registered with this engine for ``shape``.
+
+        This method returns ``None`` when:
+
+        * ``shape`` is ``None``
+        * No :py:class:`.Sprite` was to this engine for ``shape``
+
+        The second item may occur if you are using multiple instances of
+        :py:class:`.PymunkPhysicsEngine`.
+
+        Args:
+            shape:
+                A Pymunk shape to perform lookup for.
+        Returns:
+            A sprite for the ``shape``; ``None`` if no sprite is known.
+        """
         for sprite in self.sprites:
             if self.sprites[sprite].shape is shape:
                 return sprite
