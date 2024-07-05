@@ -27,12 +27,10 @@ class MyGame(arcade.Window):
             font_size=100,
             anchor_x="center",
         )
-
-    def setup(self):
-        """
-        Set up the application.
-        """
         self.background_color = arcade.color.ALABAMA_CRIMSON
+        self.total_time = 0.0
+
+    def reset(self):
         self.total_time = 0.0
 
     def on_draw(self):
@@ -65,7 +63,7 @@ class MyGame(arcade.Window):
 
 def main():
     window = MyGame()
-    window.setup()
+    window.reset()
     arcade.run()
 
 

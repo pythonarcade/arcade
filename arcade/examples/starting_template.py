@@ -33,7 +33,7 @@ class MyGame(arcade.Window):
 
     def reset(self):
         """Reset the game to the initial state."""
-        # Create your sprites and sprite lists here
+        # Do changes needed to restart the game here if you want to support that
         pass
 
     def on_draw(self):
@@ -91,7 +91,8 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE).run()
+    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game.run()
 
 
 if __name__ == "__main__":

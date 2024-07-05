@@ -150,7 +150,6 @@ class MyGame(arcade.Window):
 def main():
     """ Main function """
     game = MyGame()
-    game.center_window()
     game.setup()
     arcade.run()
 
