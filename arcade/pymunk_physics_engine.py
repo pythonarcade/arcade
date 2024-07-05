@@ -124,7 +124,7 @@ class PymunkPhysicsEngine:
     def add_sprite(
         self,
         sprite: Sprite,
-        mass: float = 1,
+        mass: float = 1.0,
         friction: float = 0.2,
         elasticity: Optional[float] = None,
         moment_of_inertia: Optional[float] = None,  # correct spelling
@@ -141,9 +141,9 @@ class PymunkPhysicsEngine:
 
         Args:
             sprite:
-                The sprite to add.
+                A :py:class:`.Sprite` to add
             mass:
-                The mass of the object (Defaults to 1).
+                The mass of the object (Defaults to ``1.0``).
             friction:
                 How much the object resists sliding against surfaces:
 
@@ -151,25 +151,31 @@ class PymunkPhysicsEngine:
                    :header-rows: 0
 
                    * - ``0.0``
-                     - Absolute slipperiness
+                     - Absolutely slippery with no resistance at all
                    * - ``0.2``
-                     - Default
-                   * - ``friction > 1.0 ``
+                     - Default (Waxed wood on very wet snow)
+                   * - ``friction > 1.0``
                      - Very rough
 
                 *Higher values may not make a meaningful difference.*
 
             elasticity:
-                How bouncy the object is
+                How bouncy the object is.
 
-                * ``0.0`` is no bounce
-                * ``0.99`` is very bouncy
-                * Values of ``1.0`` or higher can behave badly
+                .. list-table::
+                   :header-rows: 0
+
+                   * - ``0.0``
+                     - No bounce
+                   * - ``0.99``
+                     - Very bouncy
+                   * - ``elasticity >= 1.0``
+                     - May behave badly (breaks conservation of energy)
 
             moment_of_inertia:
                 How much force is needed to change the object's rotation (
                 pass :py:attr:`MOMENT_INF` or ``float('inf')`` to "lock"
-                its angle)
+                its angle).
             body_type:
                 :py:attr:`DYNAMIC` (default), :py:attr:`KINEMATIC`, or
                 :py:attr:`STATIC`.
