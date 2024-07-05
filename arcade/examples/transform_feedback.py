@@ -112,14 +112,12 @@ class MyGame(arcade.Window):
 
         self.ctx.enable_only()  # Ensure no context flags are set
 
-
     def gen_initial_data(self, count):
         for _ in range(count):
             yield random.uniform(-1.2, 1.2)  # pos x
             yield random.uniform(-1.2, 1.2)  # pos y
             yield random.uniform(-.3, .3)  # velocity x
             yield random.uniform(-.3, .3)  # velocity y
-
 
     def on_draw(self):
         self.clear()

@@ -44,7 +44,7 @@ class MenuView(arcade.View):
 
 class InstructionView(arcade.View):
     def on_show_view(self):
-        self.window.background = arcade.color.ORANGE_PEEL
+        self.window.background_color = arcade.color.ORANGE_PEEL
 
     def on_draw(self):
         self.clear()
