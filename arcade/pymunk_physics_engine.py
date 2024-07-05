@@ -159,6 +159,8 @@ class PymunkPhysicsEngine:
 
                 *Higher values may not make a meaningful difference.*
 
+                See :py:attr:`pymunk.Shape.friction` to learn more.
+
             elasticity:
                 How bouncy the object is.
 
@@ -172,10 +174,15 @@ class PymunkPhysicsEngine:
                    * - ``elasticity >= 1.0``
                      - May behave badly (breaks conservation of energy)
 
+                See :py:attr:`pymunk.Shape.elasticity` to learn more.
+
             moment_of_inertia:
                 How much force is needed to change the object's rotation (
                 pass :py:attr:`MOMENT_INF` or ``float('inf')`` to "lock"
                 its angle).
+
+                See :py:attr:`pymunk.Shape.moment_of_inertia` to learn more.
+
             body_type:
                 :py:attr:`DYNAMIC` (default), :py:attr:`KINEMATIC`, or
                 :py:attr:`STATIC`.
