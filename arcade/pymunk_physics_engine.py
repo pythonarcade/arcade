@@ -48,8 +48,65 @@ class PymunkPhysicsEngine:
     """
 
     DYNAMIC = pymunk.Body.DYNAMIC
+    """A ``body_type`` for moving Pymunk-controlled objects.
+
+    An indirect approach is best for controlling the velocity and
+    positioning of dynamic objects:
+
+    * :py:meth:`apply_force`
+    * :py:meth:`apply_impulse`
+
+    .. warning:: Avoid setting velocity directly on dynamic objects!
+
+                 If you need to set velocity directly, you may want to
+                 pass :py:attr:`KINEMATIC` as the ``body_type`` to
+                 :py:meth:`add_sprite` instead.
+
+    If you :py:class:`set_velocity` directly anyway, the
+    following may occur:
+
+    #. Setting velocity approaches infinite acceleration
+    #. ``f = m * a`` approaches ``f = m * infinity``
+    #. Collisions go haywire
+
+    In some games, you may be able to find a way to harness this for
+    comedic effect.
+
+    .. note:: This value is an alias of :py:attr:`pymunk.Body.DYNAMIC`.
+
+              Please see the Pymunk page linked above to learn more.
+    """
     STATIC = pymunk.Body.STATIC
+    """A ``body_type`` for objects which do not move.
+    
+    This is best used for terrain or non-moving platforms.
+   
+    .. note:: This value is an alias of :py:attr:`pymunk.Body.STATIC`.
+    
+              Please see the Pymunk page linked above to learn more.
+    """
     KINEMATIC = pymunk.Body.KINEMATIC
+    """A ``body_type`` for objects controlled by your code or Arcade's.
+    
+    When colliding, Kinematic objects:
+    
+    * act as if they have infinite mass
+    * prevent joined and touching objects from sleeping
+
+    This makes them excellent for game elements like moving platforms or
+    hazards which move or crush game objects. You can control kinematic
+    objects by setting their positions and velocities directly:
+
+    * :py:meth:`set_velocity` 
+    * :py:meth:`set_velocity_horizontal`
+    * :py:meth:`set_velocity_vertical`
+    * :py:meth:`set_position`
+
+    
+    .. note:: This value is an alias of :py:attr:`pymunk.Body.KINEMATIC`.
+    
+              Please see the Pymunk page linked above to learn more.
+    """
     MOMENT_INF = float("inf")
 
     def __init__(
