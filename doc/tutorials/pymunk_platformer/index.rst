@@ -506,7 +506,7 @@ In the ``setup`` method, load in the sprite list from the tmx layer.
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Adding the sprite list
-    :lines: 227
+    :lines: 230-231
 
 Also in the ``setup`` method, we need to add these sprites to the physics engine.
 In this case we'll add the sprites as ``KINEMATIC``. Static sprites don't move.
