@@ -124,7 +124,7 @@ class PymunkPhysicsEngine:
     hazards which move or crush game objects. You can control kinematic
     objects by setting their positions and velocities directly:
 
-    * :py:meth:`set_velocity` 
+    * :py:meth:`set_velocity`
     * :py:meth:`set_velocity_horizontal`
     * :py:meth:`set_velocity_vertical`
     * :py:meth:`set_position`
