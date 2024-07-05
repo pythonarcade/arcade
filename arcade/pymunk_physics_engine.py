@@ -45,7 +45,7 @@ class PymunkPhysicsEngine:
 
     `Pymunk`_ is itself a Python adapter for the professional-grade
     `Chipmunk2D`_ engine. However, Arcade's ``PymunkPhysicsEngine``
-     and its doc are currently in need of improvement.
+    and its doc are currently in need of improvement.
 
      .. note:: Arcade would welcome assistance with improving it.
 
