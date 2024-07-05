@@ -226,7 +226,7 @@ class RenderIndirect(arcade.Window):
                 )
 
         # We want to prove by using a query that the following
-        # is identical for all the redering methods:
+        # is identical for all the rendering methods:
         # * The number of pixels written (rgba / 4)
         # * The number of primitives generate
         # We also compare the nanoseconds each methods is using

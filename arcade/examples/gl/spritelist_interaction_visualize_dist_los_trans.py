@@ -212,7 +212,7 @@ class SpriteListInteraction(arcade.Window):
 
         self.walls.draw()
         self.coins.draw()
-        self.player.draw()
+        arcade.draw_sprite(self.player)
 
         # Visualize the interaction radius
         arcade.draw_circle_filled(self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64))

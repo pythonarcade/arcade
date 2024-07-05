@@ -145,9 +145,29 @@ class WindowProxy:
     def size(self):
         return self.window.size
 
+    @size.setter
+    def size(self, size):
+        self.window.size = size
+
     @property
     def aspect_ratio(self):
         return self.window.aspect_ratio
+
+    @property
+    def projection(self):
+        return self.window.projection
+
+    @projection.setter
+    def projection(self, projection):
+        self.window.projection = projection
+
+    @property
+    def viewport(self):
+        return self.window.viewport 
+
+    @viewport.setter
+    def viewport(self, viewport):
+        self.window.viewport = viewport
 
     @property
     def mouse(self):
@@ -184,6 +204,9 @@ class WindowProxy:
     def current_camera(self, new_camera):
         self.window.current_camera = new_camera
 
+    def close(self):
+        pass
+
     def clear(self, *args, **kwargs):
         return self.window.clear(*args, **kwargs)
 
@@ -197,6 +220,27 @@ class WindowProxy:
 
     def on_update(self, dt):
         return self.window.on_update(dt)
+
+    def on_resize(self, width, height):
+        return self.window.on_resize(width, height)
+
+    def on_key_press(self, symbol, modifiers):
+        return self.window.on_key_press(symbol, modifiers)
+
+    def on_key_release(self, symbol, modifiers):
+        return self.window.on_key_release(symbol, modifiers)
+
+    def on_mouse_motion(self, x, y, dx, dy):
+        return self.window.on_mouse_motion(x, y, dx, dy)
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        return self.window.on_mouse_press(x, y, button, modifiers)
+
+    def on_mouse_release(self, x, y, button, modifiers):
+        return self.window.on_mouse_release(x, y, button, modifiers)
+
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        return self.window.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
 
     def show_view(self, view):
         return self.window.show_view(view)
@@ -306,6 +350,7 @@ def window_proxy():
     yield None
     arcade.Window = _window
     arcade.open_window = _open_window
+    WINDOW.flip()
 
 
 # --- Fixtures for offscreen rendering

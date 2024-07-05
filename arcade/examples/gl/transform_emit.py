@@ -19,7 +19,6 @@ class TransformEmit(arcade.Window):
 
     def __init__(self):
         super().__init__(1280, 720, "Transform Emit")
-        self.time = 0
 
         # Program to simply draw the points
         self.visualize_points_program = self.ctx.program(
@@ -179,7 +178,6 @@ class TransformEmit(arcade.Window):
         self.buffer_vel_1, self.buffer_vel_2 = self.buffer_vel_2, self.buffer_vel_1
 
     def on_update(self, delta_time):
-        self.time += delta_time
         # print("active points", self.active_points)
 
         # Do we have points to emit?
