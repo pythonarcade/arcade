@@ -228,7 +228,6 @@ class PymunkPhysicsEngine:
         collision_type: Optional[str] = None,
     ):
         """Add all sprites in a sprite list to the physics engine."""
-
         for sprite in sprite_list:
             self.add_sprite(
                 sprite=sprite,
@@ -298,7 +297,20 @@ class PymunkPhysicsEngine:
         physics_object.body.angle = math.radians(rotation)
 
     def set_velocity(self, sprite: Sprite, velocity: tuple[float, float]):
-        """Apply an impulse force on a sprite"""
+        """Directly set the velocity of a sprite known to the engine.
+
+        .. warning:: Avoid using this on any :py:attr:`DYNAMIC` objects!
+
+        This function is meant for :py:attr:`KINEMATIC` objects. Using
+        it on a sprite added as :py:attr:`DYNAMIC` can cause strange and
+        very broken behavior.
+
+        To learn more, please see:
+
+        * Pymunk's documentation on :py:attr:`~pymunk.Body.DYNAMIC` and
+          :py:attr:`~pymunk.Body.KINEMATIC`
+
+        """
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
             raise PymunkException(
