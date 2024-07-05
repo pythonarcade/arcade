@@ -17,7 +17,6 @@ class ShaderSetup(arcade.Window):
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
-        self.time = 0
         self.program = self.ctx.program(
             vertex_shader="""
             #version 330

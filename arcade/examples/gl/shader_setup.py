@@ -18,7 +18,6 @@ class ShaderSetup(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
-        self.time = 0
         self.program = self.ctx.program(
             vertex_shader="""
             #version 330
@@ -92,9 +91,6 @@ class ShaderSetup(arcade.Window):
         self.texture.use(0)
         # Draw the geometry using the program
         self.quad.render(self.program)
-
-    def on_update(self, dt):
-        self.time += dt
 
 
 ShaderSetup(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE).run()

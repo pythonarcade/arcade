@@ -38,7 +38,6 @@ class MyGame(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
-        self.time = 0
 
         # Program to visualize the points
         self.points_program = self.ctx.program(
@@ -149,7 +148,6 @@ class MyGame(arcade.Window):
         self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])])
 
         self.mouse_pos = SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
-        self.time = time.time()
 
     def gen_initial_data(self, count):
         for _ in range(count):
@@ -165,13 +163,8 @@ class MyGame(arcade.Window):
         self.ctx.enable_only(self.ctx.BLEND)
         self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
 
-        # Calculate the actual delta time and current time
-        t = time.time()
-        frame_time = t - self.time
-        self.time = t
-
         # Set uniforms in the program
-        self.gravity_program["dt"] = frame_time
+        self.gravity_program["dt"] = self.global_clock.delta_time
         self.gravity_program["force"] = 10.0
         self.gravity_program["gravity_pos"] = self.mouse_pos
 

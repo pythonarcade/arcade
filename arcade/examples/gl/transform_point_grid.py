@@ -142,8 +142,6 @@ class MyGame(arcade.Window):
             }
             """,
         )
-        self.frame_time = 0
-        self.last_time = time.time()
         self.mouse_pos = -100, -100
 
     def on_draw(self):
@@ -155,13 +153,8 @@ class MyGame(arcade.Window):
         # Draw the points we calculated last frame
         self.geometry1.render(self.points_program, mode=gl.POINTS)
 
-        # Calculate delta time (not extremely accurate, but good enough)
-        now = time.time()
-        self.frame_time = now - self.last_time
-        self.last_time = now
-
         # Move points with transform
-        self.transform_program["dt"] = self.frame_time
+        self.transform_program["dt"] = self.global_clock.delta_time
         self.transform_program["mouse_pos"] = self.mouse_pos
         self.transform1.transform(self.transform_program, self.buffer2)
 

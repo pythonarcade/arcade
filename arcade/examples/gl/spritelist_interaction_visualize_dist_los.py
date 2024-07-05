@@ -177,7 +177,7 @@ class SpriteListInteraction(arcade.Window):
         # use correctly named input name(s). in_pos in this example
         # what will automatically map in the position buffer to the vertex shader.
         self.coins.geometry.render(self.program_visualize_dist, vertices=len(self.coins))
-        self.player.draw()
+        arcade.draw_sprite(self.player)
 
         # Visualize the interaction radius
         arcade.draw_circle_filled(self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64))

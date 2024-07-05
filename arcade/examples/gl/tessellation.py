@@ -22,7 +22,6 @@ class MyGame(arcade.Window):
         """
         Set up the application.
         """
-        self.time = 0
         super().__init__(width, height, title, gl_version=(4, 1))
         self.program = self.ctx.program(
             vertex_shader="""
@@ -106,9 +105,6 @@ class MyGame(arcade.Window):
         self.clear()
         self.program["time"] = self.time
         self.geometry.render(self.program, mode=self.ctx.PATCHES)
-
-    def on_update(self, dt):
-        self.time += dt
 
 
 if __name__ == "__main__":

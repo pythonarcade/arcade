@@ -11,24 +11,42 @@ from pathlib import Path
 import arcade
 import pytest
 
-# TODO: Also add platform_tutorial and gl
-EXAMPLE_DIR = Path(arcade.__file__).parent / "examples"
+# File path, module path
+EXAMPLE_LOCATIONS = [
+    (
+        Path(arcade.__file__).parent / "examples",
+        "arcade.examples"
+    ),
+    (
+        Path(arcade.__file__).parent / "examples" / "platform_tutorial",
+        "arcade.examples.platform_tutorial"
+    ),
+    (
+        Path(arcade.__file__).parent / "examples" / "gl",
+        "arcade.examples.gl"
+    ),
+]
 # These examples are allowed to print to stdout
 ALLOW_STDOUT = set([
     "arcade.examples.dual_stick_shooter",
-    "arcade.examples.net_process_animal_facts",
+    "transform_multi",
 ])
 IGNORE_PATTERNS = [
-    'net_process_animal_facts'
+    "net_process_animal_facts",  # Starts network process
+    "transform_emit",  # Broken
+    "compute",  # Compute shader stuff we can't run in unit test
+    "multisample",  # Anything requiring multisampling we can't run in unit test
+    "indirect",  # Indirect rendering cannot be run in unit test
 ]
 
 def list_examples():
-    for example in EXAMPLE_DIR.glob("*.py"):
-        if example.stem.startswith("_"):
-            continue
-        if example.stem in IGNORE_PATTERNS:
-            continue
-        yield f"arcade.examples.{example.stem}", example, True
+    for path, module_path in EXAMPLE_LOCATIONS:
+        for example in path.glob("*.py"):
+            if example.stem.startswith("_"):
+                continue
+            if example.stem in IGNORE_PATTERNS:
+                continue
+            yield f"{module_path}.{path.name}", example, True
 
 
 def find_class_inheriting_from_window(module):
