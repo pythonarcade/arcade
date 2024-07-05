@@ -440,7 +440,25 @@ class PymunkPhysicsEngine:
         physics_object.body.velocity = new_cv
 
     def set_friction(self, sprite: Sprite, friction: float):
-        """Apply force to a Sprite."""
+        """Set the friction a sprite experiences against other surfaces.
+
+        This is how "rough" a sprite is during a collision with others:
+
+        * ``0.0`` is the lowest value allowed (absolute slipperiness)
+        * Higher values slide less on surfaces and other objects
+
+        Pymunk allows setting ``friction`` higher than ``1.0``, but very
+        high values might not have meaningful gameplay impact.
+
+        .. _Simple Wikipedia's Article on Friction: https://simple.wikipedia.org/wiki/Friction
+
+        To learn more, please see:
+
+        * The :ref:`pymunk_platformer_tutorial-add_physics_engine` step
+          of the :ref:`pymunk_platformer_tuturial`
+        * `Simple Wikipedia's Article on Friction`_
+        * :py:attr:`pymunk.Poly.friction`
+        """
         physics_object = self.sprites[sprite]
         if physics_object.shape is None:
             raise PymunkException(
