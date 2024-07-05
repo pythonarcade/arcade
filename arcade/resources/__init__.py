@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union
+from typing import Union, Optional, Sequence
 from arcade.utils import warning, ReplacementWarning
 
 #: The absolute path to this directory
@@ -159,3 +159,46 @@ def get_resource_handle_paths(handle: str) -> list[Path]:
         return handles[handle]
     except KeyError:
         raise KeyError(f'Unknown resource handle "{handle}"')
+
+
+def list_built_in_assets(
+    *, name: Optional[str] = None, extensions: Optional[Sequence[str]] = None
+) -> list[Path]:
+    """
+    List built in assets in arcade.
+
+    This will traverse the assets directory returning a list of resources
+    optionally filtered by name and file extensions.
+
+    Example::
+
+        # Get all assets
+        list_built_in_assets()
+
+        # Only get .png files
+        list_built_in_assets(extensions=(".png",))
+
+        # Get all card images
+        list_built_in_assets(name="card", extensions=(".png", ".jpg"))
+
+    :param name: Include only assets that contain this string in the filename
+    :param extensions: A tuple of file extensions to filter by
+    :return: A list of absolute paths to requested assets
+    """
+    all_paths = ASSET_PATH.glob("**/*")
+    if extensions is None and name is None:
+        return list(all_paths)
+
+    if name:
+        name = name.lower()
+
+    filtered_paths: list[Path] = []
+    for path in all_paths:
+        if extensions and path.suffix not in extensions:
+            continue
+        if name and name not in path.name.lower():
+            continue
+
+        filtered_paths.append(path)
+
+    return filtered_paths
