@@ -7,7 +7,7 @@ from arcade.math import rotate_point
 from arcade.sprite import BasicSprite
 from arcade.texture import Texture
 from arcade.texture_atlas.base import TextureAtlasBase
-from arcade.types import LBWH, LRBT, RGBA255, XYWH, Color, Rect, Point2List
+from arcade.types import LBWH, LRBT, RGBA255, XYWH, Color, Point2List, Rect
 from arcade.window_commands import get_window
 
 from .helpers import _generic_draw_line_strip
