@@ -45,9 +45,14 @@ def list_examples():
         for example in path.glob("*.py"):
             if example.stem.startswith("_"):
                 continue
-            if example.stem in IGNORE_PATTERNS:
+            def is_ignored(example):
+                for pattern in IGNORE_PATTERNS:
+                    if pattern in example.stem:
+                        return True
+                return False
+            if is_ignored(example):
                 continue
-            yield f"{module_path}.{path.name}", example, True
+            yield f"{module_path}.{example.stem}", example, True
 
 
 def find_class_inheriting_from_window(module):
@@ -71,6 +76,7 @@ def find_main_function(module):
 def test_examples(window_proxy, module_path, file_path, allow_stdout):
     """Run all examples"""
     os.environ["ARCADE_TEST"] = "TRUE"
+    print(f"Running {module_path}...")
 
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
