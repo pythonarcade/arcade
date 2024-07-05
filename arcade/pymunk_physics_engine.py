@@ -78,18 +78,18 @@ class PymunkPhysicsEngine:
     """
     STATIC = pymunk.Body.STATIC
     """A ``body_type`` for objects which do not move.
-    
+
     This is best used for terrain or non-moving platforms.
-   
+
     .. note:: This value is an alias of :py:attr:`pymunk.Body.STATIC`.
-    
+
               Please see the Pymunk page linked above to learn more.
     """
     KINEMATIC = pymunk.Body.KINEMATIC
     """A ``body_type`` for objects controlled by your code or Arcade's.
-    
+
     When colliding, Kinematic objects:
-    
+
     * act as if they have infinite mass
     * prevent joined and touching objects from sleeping
 
@@ -102,9 +102,9 @@ class PymunkPhysicsEngine:
     * :py:meth:`set_velocity_vertical`
     * :py:meth:`set_position`
 
-    
+
     .. note:: This value is an alias of :py:attr:`pymunk.Body.KINEMATIC`.
-    
+
               Please see the Pymunk page linked above to learn more.
     """
     MOMENT_INF = float("inf")
