@@ -584,7 +584,7 @@ class PymunkPhysicsEngine:
         To learn more, please see:
 
         * The :ref:`pymunk_platformer_tutorial-add_physics_engine` step
-          of the :ref:`pymunk_platformer_tuturial`
+          of the :ref:`pymunk_platformer_tutorial`
         * `Simple Wikipedia's Article on Friction`_
         * :py:attr:`pymunk.Poly.friction`
         """
