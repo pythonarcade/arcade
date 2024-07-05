@@ -155,6 +155,9 @@ tiled map you created:
 * :ref:`pymunk_demo_platformer_04`
 * :ref:`pymunk_demo_platformer_04_diff`
 
+
+.. _pymunk_platformer_tutorial-add_physics_engine:
+
 Add Physics Engine
 ------------------
 
@@ -503,7 +506,7 @@ In the ``setup`` method, load in the sprite list from the tmx layer.
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Adding the sprite list
-    :lines: 227
+    :lines: 230-231
 
 Also in the ``setup`` method, we need to add these sprites to the physics engine.
 In this case we'll add the sprites as ``KINEMATIC``. Static sprites don't move.

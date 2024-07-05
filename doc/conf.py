@@ -177,7 +177,9 @@ html_baseurl = 'https://api.arcade.academy/'
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                        'pyglet': ('https://pyglet.readthedocs.io/en/latest/', None),
-                       'PIL': ('https://pillow.readthedocs.io/en/stable', None)}
+                       'PIL': ('https://pillow.readthedocs.io/en/stable', None),
+                       'pymunk': ('https://www.pymunk.org/en/latest/', None)
+                       }
 
 # Fix: "more than one target found for cross-reference 'Texture'"
 suppress_warnings = [
