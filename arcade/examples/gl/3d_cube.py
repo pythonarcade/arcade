@@ -5,7 +5,7 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.gl.3d_cube
 """
 
-from pyglet.math import Mat4
+from pyglet.math import Mat4, Vec3
 import arcade
 from arcade.gl import geometry
 
@@ -55,22 +55,18 @@ class MyGame(arcade.Window):
             """,
         )
         self.on_resize(*self.get_size())
-        self.time = 0
 
     def on_draw(self):
         self.clear()
         self.ctx.enable_only(self.ctx.CULL_FACE, self.ctx.DEPTH_TEST)
 
-        translate = Mat4.from_translation((0, 0, -1.75))
-        rx = Mat4.from_rotation(self.time, (1, 0, 0))
-        ry = Mat4.from_rotation(self.time * 0.77, (0, 1, 0))
+        translate = Mat4.from_translation(Vec3(0, 0, -1.75))
+        rx = Mat4.from_rotation(self.time, Vec3(1, 0, 0))
+        ry = Mat4.from_rotation(self.time * 0.77, Vec3(0, 1, 0))
         modelview = translate @ rx @ ry
         self.program["modelview"] = modelview
 
         self.cube.render(self.program)
-
-    def on_update(self, dt):
-        self.time += dt
 
     def on_resize(self, width, height):
         """Set up viewport and projection"""
