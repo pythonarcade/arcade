@@ -7,7 +7,7 @@ from arcade.math import rotate_point
 from arcade.sprite import BasicSprite
 from arcade.texture import Texture
 from arcade.texture_atlas.base import TextureAtlasBase
-from arcade.types import LBWH, LRBT, RGBA255, XYWH, Color, PointList, Rect
+from arcade.types import LBWH, LRBT, RGBA255, XYWH, Color, Rect, Point2List
 from arcade.window_commands import get_window
 
 from .helpers import _generic_draw_line_strip
@@ -248,7 +248,7 @@ def draw_rect_outline(
     o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y    + HALF_BORDER
     # fmt: on
 
-    point_list: PointList = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
+    point_list: Point2List = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
 
     if tilt_angle != 0:
         point_list_2 = []
