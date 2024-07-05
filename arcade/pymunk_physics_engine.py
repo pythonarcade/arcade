@@ -37,14 +37,41 @@ class PymunkException(Exception):
 # Temp fix for https://github.com/pythonarcade/arcade/issues/2074
 @copy_dunders_unimplemented
 class PymunkPhysicsEngine:
-    """
-    Pymunk Physics Engine
+    """An Arcade-specific adapter for `Pymunk`_.
 
-    :param gravity: The direction where gravity is pointing
-    :param damping: The amount of speed which is kept to the next tick. A value of 1.0 means no speed loss,
-                    while 0.9 has 10% loss of speed etc.
-    :param maximum_incline_on_ground: The maximum incline the ground can have, before is_on_ground() becomes False
-        default = 0.708 or a little bit over 45° angle
+    _Pymunk: https://www.pymunk.org/en/latest/index.html
+    _Chipmunk2D:  https://chipmunk-physics.net/
+    _cONTRIBUTING.md: https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md
+
+    `Pymunk`_ is itself a Python adapter for the professional-grade
+    `Chipmunk2D`_ engine. However, Arcade's ``PymunkPhysicsEngine``
+     and its doc are currently in need of improvement.
+
+     .. note:: Arcade would welcome assistance with improving it.
+
+               If you are interested, please see Arcade's
+               `CONTRIBUTING.md`_.
+
+    Args:
+        gravity:
+            The direction where gravity is pointing.
+            See :py:attr:`pymunk.Space.gravity` to learn more.
+        damping:
+            The default velocity loss per tick across the
+            :py:class:`~pymunk.Space` for all :py:attr:`DYNAMIC`
+            objects.
+
+            * Override this for objects by passing different value
+              :`add_sprite` or :py:meth:`add_spritelist`
+            * See :py:attr:`pymunk.Space.damping` to learn more
+
+        maximum_incline_on_ground:
+            The maximum incline the ground can have before
+            :py:meth:`is_on_ground` returns ``False``.
+
+            * Defaults to ``0.708`` radians (a bit over 45 °)
+            * Not a pymunk value, but an Arcade feature
+
     """
 
     DYNAMIC = pymunk.Body.DYNAMIC
