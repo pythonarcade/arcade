@@ -146,9 +146,7 @@ class BindlessTexture(arcade.Window):
         self.handles = []
         self.textures: List[Texture2D] = []
         # Make a cycle iterator from arcade's resources (images)
-        resources = [
-            getattr(arcade.resources, resource) for resource in dir(arcade.resources) if resource.startswith("image_")
-        ]
+        resources = arcade.resources.list_built_in_assets(name="female", extensions=(".png",))
         resource_cycle = cycle(resources)
 
         # Load enough textures to cover for each point/sprite
@@ -179,6 +177,8 @@ class BindlessTexture(arcade.Window):
         )
 
     def on_draw(self):
+        self.clear()
+        self.ctx.enable(self.ctx.BLEND)
         # Bind the SSBO with texture handles to binding point 0
         # matching the binding point in the shader.
         self.texture_ssbo.bind_to_storage_buffer(binding=0)
