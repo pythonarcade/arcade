@@ -137,23 +137,59 @@ class PymunkPhysicsEngine:
         radius: float = 0,
         collision_type: Optional[str] = "default",
     ):
-        """ Add a sprite to the physics engine.
+        """Add a sprite to the physics engine.
 
-            :param sprite: The sprite to add.
-            :param mass: The mass of the object. Defaults to 1.
-            :param friction: The friction the object has. Defaults to 0.2.
-            :param elasticity: How bouncy this object is. 0 is no bounce. Values of 1.0 and higher may behave badly.
-            :param moment_of_inertia: The moment of inertia, or force needed to change angular momentum. \
-            Providing infinite makes this object stuck in its rotation.
-            :param body_type: The type of the body. Defaults to Dynamic, meaning, the body can move, rotate etc. \
-            Providing STATIC makes it fixed to the world.
-            :param damping: See class docs.
-            :param gravity: See class docs.
-            :param max_velocity: The maximum velocity of the object.
-            :param max_horizontal_velocity: Maximum velocity on the x axis in pixels.
-            :param max_vertical_velocity: Maximum velocity on the y axis in pixels.
-            :param radius: Radius for the shape created for the sprite in pixels.
-            :param collision_type: Assign a name to the sprite, use this name when adding collision handler.
+        Args:
+            sprite:
+                The sprite to add.
+            mass:
+                The mass of the object (Defaults to 1).
+            friction:
+                How much the object resists sliding against surfaces:
+
+                .. list-table::
+                   :header-rows: 0
+
+                   * - ``0.0``
+                     - Absolute slipperiness
+                   * - ``0.2``
+                     - Default
+                   * - ``friction > 1.0 ``
+                     - Very rough
+
+                *Higher values may not make a meaningful difference.*
+
+            elasticity:
+                How bouncy the object is
+
+                * ``0.0`` is no bounce
+                * ``0.99`` is very bouncy
+                * Values of ``1.0`` or higher can behave badly
+
+            moment_of_inertia:
+                How much force is needed to change the object's rotation (
+                pass :py:attr:`MOMENT_INF` or ``float('inf')`` to "lock"
+                its angle)
+            body_type:
+                :py:attr:`DYNAMIC` (default), :py:attr:`KINEMATIC`, or
+                :py:attr:`STATIC`.
+            damping:
+                Like air resistance. See the :py:class:`.PymunkPhysicsEngine`
+                top-level doc.
+            gravity:
+                See the :py:class:`.PymunkPhysicsEngine` top-level doc.
+            max_velocity:
+                The maximum velocity of this object.
+            max_horizontal_velocity:
+                Clamp the velocity on the x axis to this.
+            max_vertical_velocity:
+                Clamp the velocity along the y axis to this.
+            radius:
+                The radius for the :py:class:`pymunk.Shape` created for
+                the :py:class:`sprite <.Sprite>`.
+            collision_type:
+                Assign a collision name to this sprite. It will be used
+                by :py:meth:`add_collision_handler` if called.
         """
 
         if damping is not None:
