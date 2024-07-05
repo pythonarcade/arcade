@@ -11,7 +11,7 @@ python -m arcade.examples.gl.3d_sphere
 import arcade
 from arcade.math import clamp
 from arcade.gl import geometry
-from pyglet.math import Mat4
+from pyglet.math import Mat4, Vec3
 from pyglet.graphics import Batch
 
 
@@ -98,19 +98,19 @@ class Sphere3D(arcade.Window):
         self.rot_y = 0
         self.wireframe = True
         self.vert_count = 0.5
-        self.drag = False
-        self.time = 0
+        self.drag_time = None
         self.flags = set([self.ctx.DEPTH_TEST])
 
     def on_draw(self):
         self.clear()
         self.ctx.enable_only(*self.flags)
         self.ctx.wireframe = self.wireframe
+        time = self.drag_time or self.time
 
         # Position and rotate the sphere
-        translate = Mat4.from_translation((0, 0, -2.5))
-        rx = Mat4.from_rotation(self.time + self.rot_x, (0, 1, 0))
-        ry = Mat4.from_rotation(self.time + self.rot_y, (1, 0, 0))
+        translate = Mat4.from_translation(Vec3(0, 0, -2.5))
+        rx = Mat4.from_rotation(time + self.rot_x, Vec3(0, 1, 0))
+        ry = Mat4.from_rotation(time + self.rot_y, Vec3(1, 0, 0))
         # Set matrices and draw
         self.view = translate @ rx @ ry
         self.projection = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=60)
@@ -124,10 +124,6 @@ class Sphere3D(arcade.Window):
 
         with self.ctx.enabled_only():
             self.text_batch.draw()
-
-    def on_update(self, dt):
-        if not self.drag:
-            self.time += dt / 2
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
@@ -157,12 +153,12 @@ class Sphere3D(arcade.Window):
             self.text_cull.text = f"F2: Toggle cull face ({self.ctx.CULL_FACE in self.flags})"
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        self.drag = True
+        self.drag_time = self.time
         self.rot_x += dx / 100
         self.rot_y -= dy / 100
 
     def on_mouse_release(self, x, y, button, modifiers):
-        self.drag = False
+        self.drag_time = None
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
         self.vert_count = clamp(self.vert_count + scroll_y / 500, 0.0, 1.0)
