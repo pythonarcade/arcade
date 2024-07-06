@@ -543,12 +543,11 @@ class UIGridLayout(UILayout):
         """
         Add a widget to the grid layout.
 
-        :param child: Specified child widget to add.
+        :param child: Specified widget to add as a child of the layout.
         :param col_num: Column index in which the widget is to be added.
-                            The first column is numbered 0; which is the top
-                            left corner.
+            The first column at the left of the widget starts at 0.
         :param row_num: The row number in which the widget is to be added.
-                            The first row is numbered 0; which is the
+            The first row at the top of the layout is numbered 0.
         :param col_span: Number of columns the widget will stretch for.
         :param row_span: Number of rows the widget will stretch for.
         """
