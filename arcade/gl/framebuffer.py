@@ -398,7 +398,11 @@ class Framebuffer:
             gl.glClearColor(*clear_color)
 
             if self.depth_attachment:
-                gl.glClearDepth(depth)
+                if self._ctx.gl_api == "gl":
+                    gl.glClearDepth(depth)
+                else:  # gles only supports glClearDepthf
+                    gl.glClearDepthf(depth)
+
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             else:
                 gl.glClear(gl.GL_COLOR_BUFFER_BIT)
