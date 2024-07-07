@@ -70,9 +70,9 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
 
-        scale = Vec2(scale, scale)  # Will be used below
-        self._scale: Vec2 = scale
-        self._size: Vec2 = scale * texture.size
+        scale_vec2 = Vec2(scale, scale)  # Will be used below
+        self._scale: Vec2 = scale_vec2
+        self._size: Vec2 = scale_vec2 * texture.size
 
         self._visible = bool(visible)
         self._color: Color = WHITE
@@ -82,7 +82,7 @@ class BasicSprite:
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
 
-        self._hit_box = HitBox(self._texture.hit_box_points, position, scale)
+        self._hit_box = HitBox(self._texture.hit_box_points, position, scale_vec2)
 
     # --- Core Properties ---
 
