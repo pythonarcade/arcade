@@ -212,7 +212,7 @@ class Sprite(BasicSprite, PymunkMixin):
     @property
     def change_x(self) -> float:
         """Get or set the velocity in the x plane of the sprite."""
-        return self.velocity[0]
+        return self._velocity[0]
 
     @change_x.setter
     def change_x(self, new_value: float) -> None:
@@ -221,7 +221,7 @@ class Sprite(BasicSprite, PymunkMixin):
     @property
     def change_y(self) -> float:
         """Get or set the velocity in the y plane of the sprite."""
-        return self.velocity[1]
+        return self._velocity[1]
 
     @change_y.setter
     def change_y(self, new_value: float) -> None:
