@@ -135,7 +135,8 @@ class Text:
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
     :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
-    :param bold: Whether to draw the text as bold
+    :param bold: Whether to draw the text as bold, and if a string,
+        how bold. See :py:attr:`.bold` to learn more.
     :param italic: Whether to draw the text as italic
     :param anchor_x: How to calculate the anchor point's x coordinate.
                          Options: "left", "center", or "right"
@@ -184,7 +185,7 @@ class Text:
         width: int | None = None,
         align: str = "left",
         font_name: FontNameOrNames = ("calibri", "arial"),
-        bold: bool = False,
+        bold: bool | str = False,
         italic: bool = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
@@ -490,14 +491,23 @@ class Text:
         self._label.set_style("align", align)
 
     @property
-    def bold(self) -> bool:
+    def bold(self) -> bool | str:
         """
-        Get or set bold state of the label
+        Get or set bold state of the label.
+
+        The supported values include:
+
+        * ``"black"``
+        * ``"bold" (same as ``True``)
+        * ``"semibold"``
+        * ``"semilight"``
+        * ``"light"``
+
         """
         return self._label.bold
 
     @bold.setter
-    def bold(self, bold: bool):
+    def bold(self, bold: bool | str):
         self._label.bold = bold
 
     @property
@@ -593,7 +603,7 @@ def create_text_sprite(
     width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
-    bold: bool = False,
+    bold: bool | str = False,
     italic: bool = False,
     anchor_x: str = "left",
     multiline: bool = False,
@@ -684,7 +694,7 @@ def draw_text(
     width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
-    bold: bool = False,
+    bold: bool | str = False,
     italic: bool = False,
     anchor_x: str = "left",
     anchor_y: str = "baseline",
@@ -724,7 +734,8 @@ def draw_text(
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
     :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
-    :param bold: Whether to draw the text as bold
+    :param bold: Whether to draw the text as bold, and if a :py:class:`str`,
+        how bold to draw it. See :py:attr:`.Text.bold` to learn more.
     :param italic: Whether to draw the text as italic
     :param anchor_x: How to calculate the anchor point's x coordinate
     :param anchor_y: How to calculate the anchor point's y coordinate
