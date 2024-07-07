@@ -335,7 +335,7 @@ class BasicSprite:
                   and height instead of negatives.
 
         """
-        return Vec2(*self._scale)
+        return self._scale
 
     @scale.setter
     def scale(self, new_scale: Point2 | AsFloat):
