@@ -412,10 +412,10 @@ class Window(pyglet.window.Window):
     def set_fullscreen(
         self,
         fullscreen: bool = True,
-        screen: Optional["Window"] = None,
-        mode: Optional[ScreenMode] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
+        screen: pyglet.window.Window | None = None,
+        mode: ScreenMode | None = None,
+        width: float | None = None,
+        height: float | None = None,
     ) -> None:
         """
         Change the fullscreen status of the window.
@@ -442,6 +442,13 @@ class Window(pyglet.window.Window):
             height (int, optional): Override the height of the window
         """
         super().set_fullscreen(fullscreen, screen, mode, width, height)
+        # fmt: off
+        super().set_fullscreen(
+            fullscreen, screen, mode,
+            # TODO: resolve the upstream int / float screen coord issue
+            None if width is None else int(width),
+            None if height is None else int(height))
+        # fmt: on
 
     def center_window(self) -> None:
         """Center the window on your desktop."""
