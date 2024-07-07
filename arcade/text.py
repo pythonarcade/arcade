@@ -216,7 +216,7 @@ class Text:
             anchor_y=anchor_y,  # type: ignore
             color=Color.from_iterable(color),
             width=width,
-            align=align,
+            align=align,  # type: ignore
             bold=bold,
             italic=italic,
             multiline=multiline,
