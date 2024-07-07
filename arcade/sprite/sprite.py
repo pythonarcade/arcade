@@ -322,7 +322,7 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Stop the Sprite's motion by setting the velocity and angle change to 0.
         """
-        self.velocity = 0, 0
+        self._velocity = Vec2(0, 0)
         self.change_angle = 0
 
     # ----Update Methods ----
