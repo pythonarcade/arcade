@@ -385,7 +385,7 @@ class Text:
         """
         Get or set the text color for the label
         """
-        return self._label.color
+        return Color.from_iterable(self._label.color)
 
     @color.setter
     def color(self, color: RGBOrA255):
