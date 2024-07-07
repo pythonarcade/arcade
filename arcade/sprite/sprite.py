@@ -249,7 +249,7 @@ class Sprite(BasicSprite, PymunkMixin):
             )
 
         self._texture = texture
-        self._size = texture.size * self._scale
+        self._size = self._scale * texture.size
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:

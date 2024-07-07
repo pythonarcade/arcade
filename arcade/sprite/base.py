@@ -363,7 +363,7 @@ class BasicSprite:
         new_scale = Vec2(scale_x, scale_y)
         self._hit_box.scale = new_scale
         self._scale = new_scale
-        self._size = self._texture.size * new_scale
+        self._size = new_scale * self._texture.size
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
@@ -601,7 +601,7 @@ class BasicSprite:
             )
 
         self._texture = texture
-        self._size = texture.size * self._scale
+        self._size = self._scale * texture.size
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_texture(self)
