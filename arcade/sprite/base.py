@@ -42,8 +42,9 @@ class BasicSprite:
     __slots__ = (
         "_position",
         "_depth",
-        "_width",
-        "_height",
+        "_size",
+        #"_width",
+        #"_height",
         "_scale",
         "_color",
         "_texture",
@@ -63,13 +64,16 @@ class BasicSprite:
         visible: bool = True,
         **kwargs: Any,
     ) -> None:
-        self._position = (center_x, center_y)
+
+        position = Vec2(center_x, center_y)  # Will be used below
+        self._position: Vec2 = position
         self._depth = 0.0
         self._texture = texture
-        width, height = texture.size
-        self._width = width * scale
-        self._height = height * scale
-        self._scale = (scale, scale)
+
+        scale = Vec2(scale, scale)  # Will be used below
+        self._scale: Vec2 = scale
+        self._size: Vec2 = scale * texture.size
+
         self._visible = bool(visible)
         self._color: Color = WHITE
         self.sprite_lists: list["SpriteList"] = []
@@ -78,9 +82,18 @@ class BasicSprite:
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
 
-        self._hit_box = HitBox(self._texture.hit_box_points, self._position, self._scale)
+        self._hit_box = HitBox(self._texture.hit_box_points, position, scale)
 
     # --- Core Properties ---
+
+    # Temp Vec2 test compat stubs for things which expect them
+    @property
+    def _width(self) -> float:
+        return self._size[0]
+
+    @property
+    def _height(self) -> float:
+        return self._size[1]
 
     @property
     def position(self) -> Point2:
