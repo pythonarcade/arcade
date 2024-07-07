@@ -204,15 +204,18 @@ class BasicSprite:
     @height.setter
     def height(self, new_value: float):
         size = self._size
-        if new_value != size[1]:
-            new_scale = Vec2(self._scale[0], new_value / self._texture.height)
-            self._scale = new_scale
-            self._hit_box.scale = new_scale
-            self._size = Vec2(size[0], new_value)
 
-            self.update_spatial_hash()
-            for sprite_list in self.sprite_lists:
-                sprite_list._update_height(self)
+        if new_value == size[1]:
+           return
+
+        new_scale = Vec2(self._scale[0], new_value / self._texture.height)
+        self._scale = new_scale
+        self._hit_box.scale = new_scale
+        self._size = Vec2(size[0], new_value)
+
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_height(self)
 
     @property
     def size(self) -> Vec2:
