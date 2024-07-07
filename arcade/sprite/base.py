@@ -601,8 +601,7 @@ class BasicSprite:
             )
 
         self._texture = texture
-        self._width = texture.width * self._scale[0]
-        self._height = texture.height * self._scale[1]
+        self._size = texture.size * self._scale
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_texture(self)
