@@ -19,7 +19,7 @@ if os.environ.get("ARCADE_SOUND_BACKENDS"):
         v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(",")
     )
 else:
-    pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
+    pyglet.options.audio = ("openal", "xaudio2", "directsound", "pulse", "silent")
 
 import pyglet.media as media
 
