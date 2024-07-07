@@ -239,16 +239,18 @@ class BasicSprite:
                 "size must be a tuple-like object which unpacks to exactly 2 coordinates"
             )
         old_size = self._size
-        if old_size[0] != width or old_size[1] != height:
-            texture_size = self._texture.size
-            new_size = Vec2(width, height)
-            self._scale = new_size / texture_size
-            self._size = new_size
+        if old_size[0] == width and old_size[1] == height:
+            return
 
-            self.update_spatial_hash()
+        texture_size = self._texture.size
+        new_size = Vec2(width, height)
+        self._scale = new_size / texture_size
+        self._size = new_size
 
-            for sprite_list in self.sprite_lists:
-                sprite_list._update_size(self)
+        self.update_spatial_hash()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
 
     @property
     def scale_x(self) -> float:
