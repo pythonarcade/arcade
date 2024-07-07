@@ -74,7 +74,9 @@ class BackgroundTexture:
         Get or set the horizontal wrapping of the texture. This decides how textures
         are read when texture coordinates are outside the ``[0.0, 1.0]`` area.
         Default value is ``REPEAT``.
+
         Valid options are::
+
             # Note: Enums can also be accessed in arcade.gl.
             # Repeat pixels on the y-axis.
             texture.wrap_x = ctx.REPEAT
@@ -84,6 +86,7 @@ class BackgroundTexture:
             texture.wrap_x = ctx.CLAMP_TO_EDGE
             # Use the border color (black by default) when reading outside the texture.
             texture.wrap_x = ctx.CLAMP_TO_BORDER
+
         :type: int
         """
         return self.texture.wrap_x
@@ -98,7 +101,9 @@ class BackgroundTexture:
         Get or set the horizontal wrapping of the texture. This decides how textures
         are read when texture coordinates are outside the ``[0.0, 1.0]`` area.
         Default value is ``REPEAT``.
+
         Valid options are::
+
             # Note: Enums can also be accessed in arcade.gl.
             # Repeat pixels on the y-axis.
             texture.wrap_y = ctx.REPEAT
@@ -108,6 +113,7 @@ class BackgroundTexture:
             texture.wrap_y = ctx.CLAMP_TO_EDGE
             # Use the border color (black by default) when reading outside the texture.
             texture.wrap_y = ctx.CLAMP_TO_BORDER
+            
         :type: int
         """
         return self.texture.wrap_y

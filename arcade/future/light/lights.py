@@ -10,6 +10,19 @@ from arcade.types import RGBOrA255
 
 
 class Light:
+    """
+    Create a Light.
+
+    Note: It's important to separate lights that don't change properties
+    and static ones with the ``usage`` parameter.
+
+    :param center_x: X position of the light
+    :param center_y: Y position of the light
+    :param radius: Radius of the light
+    :param color: Color of the light
+    :param mode: 'hard' or 'soft' light
+    """
+
     HARD = 1.0
     SOFT = 0.0
 
@@ -21,18 +34,6 @@ class Light:
         color: RGBOrA255 = WHITE,
         mode: str = "hard",
     ):
-        """
-        Create a Light.
-
-        Note: It's important to separate lights that don't change properties
-        and static ones with the ``usage`` parameter.
-
-        :param center_x: X position of the light
-        :param center_y: Y position of the light
-        :param radius: Radius of the light
-        :param color: Color of the light
-        :param mode: 'hard' or 'soft' light
-        """
         if not (isinstance(color, tuple) or isinstance(color, list)):
             raise ValueError(
                 "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
@@ -77,15 +78,15 @@ class Light:
 
 
 class LightLayer(RenderTargetTexture):
+    """
+    Create a LightLayer
+
+    The size of a layer should ideally be of the same size and the screen.
+
+    :param Tuple[int, int] size: Width and height of light layer
+    """
 
     def __init__(self, width: int, height: int):
-        """
-        Create a LightLayer
-
-        The size of a layer should ideally be of the same size and the screen.
-
-        :param Tuple[int, int] size: Width and height of light layer
-        """
         super().__init__(width, height)
 
         self._lights: list[Light] = []
