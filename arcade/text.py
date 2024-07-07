@@ -214,7 +214,8 @@ class Text:
             y=y,  # type: ignore
             z=z,  # type: ignore
             font_name=adjusted_font,
-            font_size=font_size,
+            # TODO: Fix this upstream (Mac & Linux seem to allow float)
+            font_size=font_size,  # type: ignore
             # use type: ignore since cast is slow & pyglet used Literal
             anchor_x=anchor_x,  # type: ignore
             anchor_y=anchor_y,  # type: ignore
