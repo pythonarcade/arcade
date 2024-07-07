@@ -112,14 +112,14 @@ class Window(pyglet.window.Window):
         self,
         width: int = 1280,
         height: int = 720,
-        title: Optional[str] = "Arcade Window",
+        title: str | None = "Arcade Window",
         fullscreen: bool = False,
         resizable: bool = False,
         update_rate: float = 1 / 60,
         antialiasing: bool = True,
         gl_version: tuple[int, int] = (3, 3),
-        screen: Optional[pyglet.display.Screen] = None,
-        style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
+        screen: pyglet.display.Screen | None = None,
+        style: str | None = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
         visible: bool = True,
         vsync: bool = False,
         gc_mode: str = "context_gc",
@@ -129,7 +129,7 @@ class Window(pyglet.window.Window):
         gl_api: str = "gl",
         draw_rate: float = 1 / 60,
         fixed_rate: float = 1.0 / 60.0,
-        fixed_frame_cap: Optional[int] = None,
+        fixed_frame_cap: int | None = None,
     ) -> None:
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
