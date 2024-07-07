@@ -340,13 +340,13 @@ class BasicSprite:
     @scale.setter
     def scale(self, new_scale: Point2 | AsFloat):
         if isinstance(new_scale, (float, int)):
-            scale_vec2 = Vec2(new_scale, new_scale)
+            scale_x = new_scale
+            scale_y = new_scale
 
         else:  # Treat it as some sort of iterable or sequence
             # Don't abstract this. Keep it here since it's a hot code path
             try:
                 scale_x, scale_y = new_scale  # type / length implicit check
-                scale_vec2 = Vec2(scale_x, scale_y)
             except ValueError:
                 raise ValueError(
                     "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
@@ -356,12 +356,14 @@ class BasicSprite:
                     "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
                 )
 
-        if scale_vec2 == self._scale:
+        old_scale = self._scale
+        if scale_x == old_scale[0] and scale_y == old_scale[1]:
             return
 
-        self._hit_box.scale = scale_vec2
-        self._scale = scale_vec2
-        self._size = self._texture.size * scale_vec2
+        new_scale = Vec2(scale_x, scale_y)
+        self._hit_box.scale = new_scale
+        self._scale = new_scale
+        self._size = self._texture.size * new_scale
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
