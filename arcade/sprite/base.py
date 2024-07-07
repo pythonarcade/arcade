@@ -174,15 +174,16 @@ class BasicSprite:
     @property
     def height(self) -> float:
         """Get or set the height of the sprite in pixels."""
-        return self._height
+        return self._size[1]
 
     @height.setter
     def height(self, new_value: float):
-        if new_value != self._height:
+        size = self._size
+        if new_value != size[1]:
             new_scale = Vec2(self._scale[0], new_value / self._texture.height)
             self._scale = new_scale
             self._hit_box.scale = new_scale
-            self._size = Vec2(self._size[0], new_value)
+            self._size = Vec2(size[0], new_value)
 
             self.update_spatial_hash()
             for sprite_list in self.sprite_lists:
