@@ -113,7 +113,7 @@ class BackgroundTexture:
             texture.wrap_y = ctx.CLAMP_TO_EDGE
             # Use the border color (black by default) when reading outside the texture.
             texture.wrap_y = ctx.CLAMP_TO_BORDER
-            
+
         :type: int
         """
         return self.texture.wrap_y
