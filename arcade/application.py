@@ -365,10 +365,10 @@ class Window(pyglet.window.Window):
     def set_fullscreen(
         self,
         fullscreen: bool = True,
-        screen: Optional["Window"] = None,
-        mode: Optional[ScreenMode] = None,
-        width: Optional[float] = None,
-        height: Optional[float] = None,
+        screen: pyglet.window.Window | None = None,
+        mode: ScreenMode | None = None,
+        width: float | None = None,
+        height: float | None = None,
     ) -> None:
         """
         Set if we are full screen or not.
@@ -380,10 +380,18 @@ class Window(pyglet.window.Window):
                 have been obtained by enumerating `Screen.get_modes`.  If
                 None, an appropriate mode will be selected from the given
                 `width` and `height`.
-        :param width:
-        :param height:
+        :param width: Although marked as py:class:`float`, will be
+            rounded via :py:class:`int` if not ``None``.
+        :param height: Although marked as py:class:`float`, will be
+            rounded via :py:class:`int` if not ``None``.
         """
-        super().set_fullscreen(fullscreen, screen, mode, width, height)
+        # fmt: off
+        super().set_fullscreen(
+            fullscreen, screen, mode,
+            # TODO: resolve the upstream int / float screen coord issue
+            None if width is None else int(width),
+            None if height is None else int(height))
+        # fmt: on
 
     def center_window(self) -> None:
         """
