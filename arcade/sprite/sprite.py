@@ -170,7 +170,7 @@ class Sprite(BasicSprite, PymunkMixin):
         self.angle = new_value * 180.0 / math.pi
 
     @property
-    def velocity(self) -> Point2:
+    def velocity(self) -> Vec2:
         """
         Get or set the velocity of the sprite.
 
