@@ -4,6 +4,8 @@ import math
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional, Union
 
+from pyglet.math import Vec2
+
 import arcade
 from arcade import Texture
 from arcade.hitbox import HitBox, RotatableHitBox
@@ -93,7 +95,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
         self._angle = angle
         # Movement
-        self._velocity = 0.0, 0.0
+        self._velocity: Vec2 = Vec2(0.0, 0.0)
         self.change_angle: float = 0.0
 
         # Custom sprite properties
@@ -128,8 +130,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
         self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(angle=self._angle)
 
-        self._width = self._texture.width * scale
-        self._height = self._texture.height * scale
+        self._size = self._texture.size * self._scale
 
     # --- Properties ---
 
@@ -187,7 +188,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @velocity.setter
     def velocity(self, new_value: Point2) -> None:
-        self._velocity = new_value
+        self._velocity = Vec2(*new_value)
 
     @property
     def change_x(self) -> float:
@@ -196,7 +197,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @change_x.setter
     def change_x(self, new_value: float) -> None:
-        self._velocity = new_value, self._velocity[1]
+        self._velocity = Vec2(new_value, self._velocity[1])
 
     @property
     def change_y(self) -> float:
@@ -205,7 +206,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @change_y.setter
     def change_y(self, new_value: float) -> None:
-        self._velocity = self._velocity[0], new_value
+        self._velocity = Vec2(self._velocity[0], new_value)
 
     @property
     def hit_box(self) -> HitBox:
@@ -249,8 +250,8 @@ class Sprite(BasicSprite, PymunkMixin):
             )
 
         self._texture = texture
-        self._width = texture.width * self._scale[0]
-        self._height = texture.height * self._scale[1]
+        self._size = texture.size * self._size
+
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_texture(self)
@@ -278,8 +279,7 @@ class Sprite(BasicSprite, PymunkMixin):
         :param speed: speed
         """
         angle_rad = math.radians(self.angle)
-        self.center_x += math.sin(angle_rad) * speed
-        self.center_y += math.cos(angle_rad) * speed
+        self.position += Vec2(0.0, speed).rotate(angle_rad)
 
     def reverse(self, speed: float = 1.0) -> None:
         """
@@ -287,7 +287,8 @@ class Sprite(BasicSprite, PymunkMixin):
 
         :param speed: speed
         """
-        self.forward(-speed)
+        angle_rad = math.radians(self.angle)
+        self.position -= Vec2(0.0, speed).rotate(angle_rad)
 
     def strafe(self, speed: float = 1.0) -> None:
         """
@@ -296,8 +297,10 @@ class Sprite(BasicSprite, PymunkMixin):
         :param speed: speed
         """
         angle_rad = math.radians(self.angle + 90)
-        self.center_x += math.sin(angle_rad) * speed
-        self.center_y += math.cos(angle_rad) * speed
+        self.position += Vec2(
+            math.sin(angle_rad) * speed,
+            math.cos(angle_rad) * speed
+        )
 
     def turn_right(self, theta: float = 90.0) -> None:
         """
