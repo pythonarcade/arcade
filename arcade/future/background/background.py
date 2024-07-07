@@ -16,7 +16,7 @@ class Background:
     This can be used to move the background without actually adjusting the position
     You may supply your own shader and geometries.
     The default shader implements 4 uniforms.
-        vec2 pos, vec2 size, vec3 color, mat3 pixelTransform, and float blend.
+    vec2 pos, vec2 size, vec3 color, mat3 pixelTransform, and float blend.
     """
 
     def __init__(
@@ -104,7 +104,7 @@ class Background:
         :param filters: The OpenGl Texture filters (gl.Nearest by default).
         :param color: This is a color defined from 0-255. Prioritises color_norm
         :param color_norm: This is a color defined from 0.0-1.0. Prioritises color_norm
-        assumed to be in the range 0.0-1.0.
+                           assumed to be in the range 0.0-1.0.
         :param shader: The shader used for rendering.
         :param geometry: The geometry used for rendering (a rectangle equal to the size by default).
         :return: The generated Background.

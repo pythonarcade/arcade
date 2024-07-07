@@ -13,11 +13,11 @@ SCREEN_TITLE = "Lighting Demo (Experimental)"
 
 
 class MyGame(arcade.Window):
+    """
+    Set up the application.
+    """
 
     def __init__(self, width, height, title):
-        """
-        Set up the application.
-        """
         super().__init__(width, height, title)
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 

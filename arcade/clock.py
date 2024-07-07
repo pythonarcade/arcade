@@ -2,7 +2,7 @@ class Clock:
     """
     A time keeping class.
 
-    :Coming post 3.0:
+    *Coming post 3.0:*
     you can add 'sub-clocks' to arcade's top level clock which will tick at the same time, and
     have cumulative tick_speeds. This allows you to slow down only certain elements rather than everything.
     """
