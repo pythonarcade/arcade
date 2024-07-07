@@ -272,7 +272,7 @@ class BasicSprite:
         if new_scale_y == old_scale_y:
             return
 
-        new_scale = (old_scale_x, new_scale_y)
+        new_scale = Vec2(old_scale_x, new_scale_y)
 
         # Apply scale to hitbox first to raise any exceptions quickly
         self._hit_box.scale = new_scale
