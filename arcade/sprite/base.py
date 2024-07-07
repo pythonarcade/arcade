@@ -706,6 +706,10 @@ class BasicSprite:
                 (old_y - point_y) * factor_y + point_y,
             )
 
+        # TODO: this seems potentially redundant given we use .position above
+        # It's a setter which already rebuilds things, so we probably should
+        # only rebuild once.
+
         # rebuild all spatial metadata
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
