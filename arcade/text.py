@@ -45,9 +45,8 @@ def load_font(path: Union[str, Path]) -> None:
 FontNameOrNames = Union[str, tuple[str, ...]]
 
 
-def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
-    """
-    Attempt to resolve a tuple of font names.
+def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
+    """Attempt to resolve a font name.
 
     Preserves the original logic of this section, even though it
     doesn't seem to make sense entirely. Comments are an attempt
@@ -83,8 +82,12 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
             except FileNotFoundError:
                 pass
 
-    # failed to find it ourselves, hope pyglet can make sense of it
-    return font_name
+        # failed to find it ourselves, hope pyglet can make sense of it
+        # Note this is the best approximation of what I unerstand the old
+        # behavior to have been.
+        return pyglet.font.load(font_list).name
+
+    raise ValueError(f"Couldn't find a font for {font_name!r}")
 
 
 def _draw_pyglet_label(label: pyglet.text.Label) -> None:
@@ -204,6 +207,7 @@ class Text:
             )
 
         adjusted_font = _attempt_font_name_resolution(font_name)
+
         self._label = pyglet.text.Label(
             text=text,
             # pyglet is lying about what it takes here and float is entirely valid
