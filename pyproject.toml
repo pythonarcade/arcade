@@ -19,7 +19,14 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "pyglet @ https://github.com/pyglet/pyglet/zipball/development",
+    # Currently, follow these steps:
+    # 1. Clone this https://github.com/pyglet/pyglet/pull/1154
+    # 2. cd into it
+    # 3. pip install -I -e .
+    # 4. Go back to the arcade directory
+    # 5. pytest tests/unit
+    # Unit tests should now pass :D
+    "pyglet @ https://github.com/einarf/pyglet/zipball/vectors2",
     "pillow~=10.2.0",
     "pymunk~=6.6.0",
     "pytiled-parser~=2.2.5",
