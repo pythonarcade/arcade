@@ -218,7 +218,6 @@ class BasicSprite:
     def size(self, new_value: Point2):
         try:
             width, height = new_value
-            size_vec2 = Vec2(width, height)
         except ValueError:
             raise ValueError(
                 "size must be a tuple-like object which unpacks to exactly 2 coordinates"
@@ -227,11 +226,12 @@ class BasicSprite:
             raise TypeError(
                 "size must be a tuple-like object which unpacks to exactly 2 coordinates"
             )
-        if width != self.width or height != self.height:
+        old_size = self._size
+        if old_size[0] != width or old_size[1] != height:
             texture_size = self._texture.size
-
-            self._scale = size_vec2 / texture_size
-            self._size = size_vec2
+            new_size = Vec2(width, height)
+            self._scale = new_size / texture_size
+            self._size = new_size
 
             self.update_spatial_hash()
 
