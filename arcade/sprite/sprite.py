@@ -152,7 +152,6 @@ class Sprite(BasicSprite, PymunkMixin):
 
         self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(angle=self._angle)
 
-
     # --- Properties ---
 
     @property
@@ -313,10 +312,7 @@ class Sprite(BasicSprite, PymunkMixin):
             speed: The speed at which the sprite moves.
         """
         angle_rad = math.radians(self.angle + 90)
-        self.position += Vec2(
-            math.sin(angle_rad) * speed,
-            math.cos(angle_rad) * speed
-        )
+        self.position += Vec2(math.sin(angle_rad) * speed, math.cos(angle_rad) * speed)
 
     def turn_right(self, theta: float = 90.0) -> None:
         """
