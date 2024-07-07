@@ -363,10 +363,7 @@ class Sprite(BasicSprite, PymunkMixin):
         # Users can define these values in any unit they want, but this breaks
         # compatibility with physics engines. Consider changing this in the future.
         delta_time *= 60
-        self.position = (
-            self._position[0] + self.change_x * delta_time,
-            self._position[1] + self.change_y * delta_time,
-        )
+        self.position += self._velocity * delta_time
         self.angle += self.change_angle * delta_time
 
     # ----Utility Methods----
