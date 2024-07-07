@@ -118,10 +118,18 @@ class BasicSprite:
 
     @center_x.setter
     def center_x(self, new_value: float):
-        if new_value == self._position[0]:
+        position = self._position
+        if new_value == position[0]:
             return
 
-        self.position = (new_value, self._position[1])
+        new_position = Vec2(new_value, position[1])
+
+        self._position = new_position
+        self._hit_box.position = new_position
+        self.update_spatial_hash()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_position(self)
 
     @property
     def center_y(self) -> float:
