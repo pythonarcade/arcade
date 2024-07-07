@@ -293,7 +293,7 @@ class BasicSprite:
         # Apply scale to hitbox first to raise any exceptions quickly
         self._hit_box.scale = new_scale
         self._scale = new_scale
-        self._height = self._texture.height * new_scale_y
+        self._size = Vec2(self._size[0], self._texture.height * new_scale_y)
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
