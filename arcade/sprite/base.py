@@ -142,7 +142,7 @@ class BasicSprite:
         if new_value == position[1]:
             return
 
-        new_position = (position[0], new_value)
+        new_position = Vec2(position[0], new_value)
 
         self._position = new_position
         self._hit_box.position = new_position
@@ -181,7 +181,7 @@ class BasicSprite:
             new_scale = Vec2(new_value / self._texture.width, self._scale[1])
             self._scale = new_scale
             self._hit_box.scale = new_scale
-            self._size = (new_value, size[1])
+            self._size = Vec2(new_value, size[1])
 
             self.update_spatial_hash()
             for sprite_list in self.sprite_lists:
