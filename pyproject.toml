@@ -19,14 +19,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    # Currently, follow these steps:
-    # 1. Clone this https://github.com/pyglet/pyglet/pull/1154
-    # 2. cd into it
-    # 3. pip install -I -e .
-    # 4. Go back to the arcade directory
-    # 5. pytest tests/unit
-    # Unit tests should now pass :D
-    "pyglet @ https://github.com/einarf/pyglet/archive/refs/heads/vectors-2.tar.gz",
+    # TODO: Fix this once pyglet2.1dev4 releases
+    "pyglet@git+https://github.com/einarf/pyglet/#egg=vectors-2",
     "pillow~=10.2.0",
     "pymunk~=6.6.0",
     "pytiled-parser~=2.2.5",
