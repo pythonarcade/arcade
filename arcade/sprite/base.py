@@ -160,11 +160,12 @@ class BasicSprite:
 
     @width.setter
     def width(self, new_value: float):
-        if new_value != self._width:
+        size = self._size
+        if new_value != size[0]:
             new_scale = Vec2(new_value / self._texture.width, self._scale[1])
             self._scale = new_scale
             self._hit_box.scale = new_scale
-            self._size = (new_value, self.size[1])
+            self._size = (new_value, size[1])
 
             self.update_spatial_hash()
             for sprite_list in self.sprite_lists:
