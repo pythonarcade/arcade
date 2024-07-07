@@ -96,8 +96,13 @@ class BasicSprite:
         return self._size[1]
 
     @property
-    def position(self) -> Point2:
-        """Get or set the center x and y position of the sprite."""
+    def position(self) -> Vec2:
+        """
+        Get or set the center x and y position of the sprite.
+
+        Returns:
+            (center_x, center_y)
+        """
         return self._position
 
     @position.setter
@@ -234,16 +239,16 @@ class BasicSprite:
 
     @scale_x.setter
     def scale_x(self, new_scale_x: AsFloat):
-        old_scale_x, old_scale_y = self._scale
-        if new_scale_x == old_scale_x:
+        old_scale = self._scale
+        if new_scale_x == old_scale[0]:
             return
 
-        new_scale = (new_scale_x, old_scale_y)
+        new_scale = Vec2(new_scale_x, old_scale[1])
 
         # Apply scale to hitbox first to raise any exceptions quickly
         self._hit_box.scale = new_scale
         self._scale = new_scale
-        self._width = self._texture.width * new_scale_x
+        self._size = Vec2(self._texture.width * new_scale_x, self._size[1])
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
