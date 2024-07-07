@@ -327,17 +327,14 @@ class Sprite(BasicSprite, PymunkMixin):
 
     # ----Update Methods ----
 
-    def update(self) -> None:
+    def update(self, dt: float = 1.0) -> None:
         """
         The default update method for a Sprite. Can be overridden by a subclass.
 
         This method moves the sprite based on its velocity and angle change.
         """
-        self.position = (
-            self._position[0] + self.change_x,
-            self._position[1] + self.change_y,
-        )
-        self.angle += self.change_angle
+        self.position += self._velocity * 1.0
+        self.angle += self.change_angle * 1.0
 
     # ----Utility Methods----
 
