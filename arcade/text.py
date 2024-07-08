@@ -670,7 +670,7 @@ def draw_text(
     text: Any,
     x: int,
     y: int,
-    color: RGBA255 = arcade.color.WHITE,
+    color: RGBOrA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int | None = None,
     align: str = "left",
