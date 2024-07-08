@@ -1,11 +1,11 @@
 from arcade import gl
 from arcade.earclip import earclip
-from arcade.types import RGBA255, Point2List
+from arcade.types import Point2List, RGBOrA255
 
 from .helpers import _generic_draw_line_strip, get_points_for_thick_line
 
 
-def draw_polygon_filled(point_list: Point2List, color: RGBA255) -> None:
+def draw_polygon_filled(point_list: Point2List, color: RGBOrA255) -> None:
     """
     Draw a polygon that is filled in.
 
@@ -18,7 +18,7 @@ def draw_polygon_filled(point_list: Point2List, color: RGBA255) -> None:
     _generic_draw_line_strip(flattened_list, color, gl.TRIANGLES)
 
 
-def draw_polygon_outline(point_list: Point2List, color: RGBA255, line_width: float = 1) -> None:
+def draw_polygon_outline(point_list: Point2List, color: RGBOrA255, line_width: float = 1) -> None:
     """
     Draw a polygon outline. Also known as a "line loop."
 
