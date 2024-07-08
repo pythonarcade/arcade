@@ -67,7 +67,9 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
         elif isinstance(font_name, tuple):
             font_list = font_name
         else:
-            raise TypeError("font_name parameter must be a string, or a tuple of strings that specify a font name.")
+            raise TypeError(
+                "font_name parameter must be a string, or a tuple of strings that specify a font name."
+            )
 
         for font in font_list:
             try:
