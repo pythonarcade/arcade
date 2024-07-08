@@ -298,14 +298,14 @@ def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> Non
 # These might be "oddly specific" and also needs docstrings. Disabling or 3.0.0
 
 # def draw_rect_outline_kwargs(
-#     color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
+#     color: RGBAOrA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
 # ) -> None:
 #     rect = Rect.from_kwargs(**kwargs)
 #     draw_rect_outline(rect, color, border_width, tilt_angle)
 
 
 # def draw_rect_filled_kwargs(
-#     color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
+#     color: RGBAOrA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
 # ) -> None:
 #     rect = Rect.from_kwargs(**kwargs)
 #     draw_rect_filled(rect, color, tilt_angle)
