@@ -196,8 +196,10 @@ class Text:
         if align not in ("left", "center", "right"):
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
-        if multiline and width == 0:
-            raise ValueError("The 'width' parameter must be set when 'multiline' is True.")
+        if multiline and not width:
+            raise ValueError(
+                f"The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
+                f"but got {width!r}.")
 
         adjusted_font = _attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
