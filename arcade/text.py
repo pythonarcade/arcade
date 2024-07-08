@@ -392,7 +392,7 @@ class Text:
         self._label.color = Color.from_iterable(color)
 
     @property
-    def width(self) -> Optional[int]:
+    def width(self) -> int | None:
         """
         Get or set the width of the label in pixels.
         This value affects text flow when multiline text is used.
@@ -406,7 +406,7 @@ class Text:
         self._label.width = width
 
     @property
-    def height(self) -> Optional[int]:
+    def height(self) -> int | None:
         """
         Get or set the height of the label in pixels
         This value affects text flow when multiline text is used.
