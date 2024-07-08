@@ -61,7 +61,6 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
     :return: Either a resolved path or the original tuple
     """
     if font_name:
-
         # ensure
         if isinstance(font_name, str):
             font_list: tuple[str, ...] = (font_name,)
@@ -174,8 +173,8 @@ class Text:
     def __init__(
         self,
         text: str,
-        x: int,
-        y: int,
+        x: float,
+        y: float,
         color: RGBOrA255 = arcade.color.WHITE,
         font_size: float = 12,
         width: Optional[int] = 0,
@@ -189,7 +188,7 @@ class Text:
         rotation: float = 0,
         batch: Optional[pyglet.graphics.Batch] = None,
         group: Optional[pyglet.graphics.Group] = None,
-        z: int = 0,
+        z: float = 0,
     ):
         # Raises a RuntimeError if no window for better user feedback
         arcade.get_window()
@@ -203,9 +202,10 @@ class Text:
         adjusted_font = _attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
             text=text,
-            x=x,
-            y=y,
-            z=z,
+            # pyglet is lying about what it takes here and float is entirely valid
+            x=x,  # type: ignore
+            y=y,  # type: ignore
+            z=z,  # type: ignore
             font_name=adjusted_font,
             font_size=font_size,
             # use type: ignore since cast is slow & pyglet used Literal
