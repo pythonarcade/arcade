@@ -583,7 +583,7 @@ class Text:
 def create_text_sprite(
     text: str,
     color: RGBOrA255 = arcade.color.WHITE,
-    font_size: float = 12,
+    font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
@@ -671,7 +671,7 @@ def draw_text(
     x: int,
     y: int,
     color: RGBOrA255 = arcade.color.WHITE,
-    font_size: float = 12,
+    font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
