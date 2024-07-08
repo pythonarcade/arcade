@@ -1,6 +1,6 @@
 import array
 
-from arcade.types import Color, RGBOrA255, Point2List
+from arcade.types import Color, Point2List, RGBOrA255
 from arcade.types.rect import XYWH
 from arcade.window_commands import get_window
 
