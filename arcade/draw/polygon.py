@@ -18,7 +18,7 @@ def draw_polygon_filled(point_list: Point2List, color: RGBOrA255) -> None:
     _generic_draw_line_strip(flattened_list, color, gl.TRIANGLES)
 
 
-def draw_polygon_outline(point_list: Point2List, color: RGBOrA255, line_width: float = 1) -> None:
+def draw_polygon_outline(point_list: Point2List, color: RGBOrA255, line_width: float = 1.0) -> None:
     """
     Draw a polygon outline. Also known as a "line loop."
 
