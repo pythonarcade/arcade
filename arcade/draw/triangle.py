@@ -1,12 +1,12 @@
 from arcade import gl
-from arcade.types import RGBA255
+from arcade.types import RGBOrA255
 
 from .helpers import _generic_draw_line_strip
 from .polygon import draw_polygon_outline
 
 
 def draw_triangle_filled(
-    x1: float, y1: float, x2: float, y2: float, x3: float, y3: float, color: RGBA255
+    x1: float, y1: float, x2: float, y2: float, x3: float, y3: float, color: RGBOrA255
 ) -> None:
     """
     Draw a filled in triangle.
@@ -35,7 +35,7 @@ def draw_triangle_outline(
     y2: float,
     x3: float,
     y3: float,
-    color: RGBA255,
+    color: RGBOrA255,
     border_width: float = 1,
 ) -> None:
     """
@@ -47,7 +47,7 @@ def draw_triangle_outline(
     :param y2: y value of second coordinate.
     :param x3: x value of third coordinate.
     :param y3: y value of third coordinate.
-    :param color: RGBA255 of triangle as an RGBA
+    :param color: RGBOrA255 of triangle as an RGBA
         :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
     :param border_width: Width of the border in pixels. Defaults to 1.
     """
