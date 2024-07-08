@@ -5,7 +5,7 @@ Drawing text with pyglet label
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 import pyglet
 
@@ -244,7 +244,7 @@ class Text:
         self._label.batch = batch
 
     @property
-    def group(self) -> Optional[pyglet.graphics.Group]:
+    def group(self) -> pyglet.graphics.Group | None:
         return self._label.group
 
     @group.setter
