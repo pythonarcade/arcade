@@ -5,14 +5,14 @@ Drawing text with pyglet label
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 import pyglet
 
 import arcade
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
-from arcade.types import RGBA255, Color, Point, RGBOrA255
+from arcade.types import Color, Point, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
 
 __all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
@@ -244,7 +244,7 @@ class Text:
         self._label.batch = batch
 
     @property
-    def group(self) -> Optional[pyglet.graphics.Group]:
+    def group(self) -> pyglet.graphics.Group | None:
         return self._label.group
 
     @group.setter
@@ -388,11 +388,11 @@ class Text:
         return self._label.color
 
     @color.setter
-    def color(self, color: RGBA255):
+    def color(self, color: RGBOrA255):
         self._label.color = Color.from_iterable(color)
 
     @property
-    def width(self) -> Optional[int]:
+    def width(self) -> int | None:
         """
         Get or set the width of the label in pixels.
         This value affects text flow when multiline text is used.
@@ -406,7 +406,7 @@ class Text:
         self._label.width = width
 
     @property
-    def height(self) -> Optional[int]:
+    def height(self) -> int | None:
         """
         Get or set the height of the label in pixels
         This value affects text flow when multiline text is used.
@@ -416,7 +416,7 @@ class Text:
         return self._label.height
 
     @height.setter
-    def height(self, value):
+    def height(self, value: int):
         self._label.height = value
 
     @property
@@ -531,9 +531,9 @@ class Text:
 
     def draw_debug(
         self,
-        anchor_color: RGBA255 = arcade.color.RED,
-        background_color: RGBA255 = arcade.color.DARK_BLUE,
-        outline_color: RGBA255 = arcade.color.WHITE,
+        anchor_color: RGBOrA255 = arcade.color.RED,
+        background_color: RGBOrA255 = arcade.color.DARK_BLUE,
+        outline_color: RGBOrA255 = arcade.color.WHITE,
     ) -> None:
         """
         Draw test with debug geometry showing the content
@@ -582,8 +582,8 @@ class Text:
 
 def create_text_sprite(
     text: str,
-    color: RGBA255 = arcade.color.WHITE,
-    font_size: float = 12,
+    color: RGBOrA255 = arcade.color.WHITE,
+    font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
@@ -592,7 +592,7 @@ def create_text_sprite(
     anchor_x: str = "left",
     multiline: bool = False,
     texture_atlas: TextureAtlasBase | None = None,
-    background_color: RGBA255 | None = None,
+    background_color: RGBOrA255 | None = None,
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
@@ -670,8 +670,8 @@ def draw_text(
     text: Any,
     x: int,
     y: int,
-    color: RGBA255 = arcade.color.WHITE,
-    font_size: float = 12,
+    color: RGBOrA255 = arcade.color.WHITE,
+    font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
