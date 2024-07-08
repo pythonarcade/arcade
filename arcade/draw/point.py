@@ -1,32 +1,32 @@
 import array
 
-from arcade.types import RGBA255, Color, PointList
+from arcade.types import Color, PointList, RGBOrA255
 from arcade.types.rect import XYWH
 from arcade.window_commands import get_window
 
 from .rect import draw_rect_filled
 
 
-def draw_point(x: float, y: float, color: RGBA255, size: float) -> None:
+def draw_point(x: float, y: float, color: RGBOrA255, size: float) -> None:
     """
     Draw a point.
 
     :param x: x position of point.
     :param y: y position of point.
-    :param color: A color, specified as an RGBA tuple or a
+    :param color: A color as an RGBA tuple, RGB tuple, or a
         :py:class:`~arcade.types.Color` instance.
     :param size: Size of the point in pixels.
     """
     draw_rect_filled(XYWH(x, y, size, size), color)
 
 
-def draw_points(point_list: PointList, color: RGBA255, size: float = 1) -> None:
+def draw_points(point_list: PointList, color: RGBOrA255, size: float = 1) -> None:
     """
     Draw a set of points.
 
     :param point_list: List of points Each point is
          in a list. So it is a list of lists.
-    :param color: A color, specified as an RGBA tuple or a
+    :param color: A color as an RGBA tuple, RGB tuple, or a
         :py:class:`~arcade.types.Color` instance.
     :param size: Size of the point in pixels.
     """

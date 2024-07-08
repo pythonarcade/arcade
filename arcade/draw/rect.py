@@ -7,7 +7,7 @@ from arcade.math import rotate_point
 from arcade.sprite import BasicSprite
 from arcade.texture import Texture
 from arcade.texture_atlas.base import TextureAtlasBase
-from arcade.types import LBWH, LRBT, RGBA255, XYWH, Color, Point2List, Rect
+from arcade.types import LBWH, LRBT, XYWH, Color, Point2List, Rect, RGBOrA255
 from arcade.window_commands import get_window
 
 from .helpers import _generic_draw_line_strip
@@ -133,7 +133,7 @@ def draw_lrbt_rectangle_outline(
     right: float,
     bottom: float,
     top: float,
-    color: RGBA255,
+    color: RGBOrA255,
     border_width: float = 1,
 ) -> None:
     """
@@ -162,7 +162,7 @@ def draw_lbwh_rectangle_outline(
     bottom: float,
     width: float,
     height: float,
-    color: RGBA255,
+    color: RGBOrA255,
     border_width: float = 1,
 ) -> None:
     """
@@ -180,7 +180,7 @@ def draw_lbwh_rectangle_outline(
 
 
 def draw_lrbt_rectangle_filled(
-    left: float, right: float, bottom: float, top: float, color: RGBA255
+    left: float, right: float, bottom: float, top: float, color: RGBOrA255
 ) -> None:
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
@@ -206,7 +206,7 @@ def draw_lrbt_rectangle_filled(
 
 
 def draw_lbwh_rectangle_filled(
-    left: float, bottom: float, width: float, height: float, color: RGBA255
+    left: float, bottom: float, width: float, height: float, color: RGBOrA255
 ) -> None:
     """
     Draw a filled rectangle extending from bottom left to top right
@@ -222,7 +222,7 @@ def draw_lbwh_rectangle_filled(
 
 
 def draw_rect_outline(
-    rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0
+    rect: Rect, color: RGBOrA255, border_width: float = 1, tilt_angle: float = 0
 ) -> None:
     """
     Draw a rectangle outline.
@@ -260,7 +260,7 @@ def draw_rect_outline(
     _generic_draw_line_strip(point_list, color, gl.TRIANGLE_STRIP)
 
 
-def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
+def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> None:
     """
     Draw a filled-in rectangle.
 
