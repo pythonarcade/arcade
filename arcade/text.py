@@ -199,7 +199,8 @@ class Text:
         if multiline and not width:
             raise ValueError(
                 f"The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
-                f"but got {width!r}.")
+                f"but got {width!r}."
+            )
 
         adjusted_font = _attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
