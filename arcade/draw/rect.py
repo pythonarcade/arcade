@@ -143,7 +143,8 @@ def draw_lrbt_rectangle_outline(
     :param right: The x coordinate of the right edge of the rectangle.
     :param bottom: The y coordinate of the rectangle bottom.
     :param top: The y coordinate of the top of the rectangle.
-    :param color: The color of the rectangle.
+    :param color: The outline color as an RGBA :py:class:`tuple`, RGB
+        :py:class:`tuple`, or a :py:class:`.Color` instance.
     :param border_width: The width of the border in pixels. Defaults to one.
     :Raises ValueError: Raised if left > right or top < bottom.
 
@@ -172,8 +173,8 @@ def draw_lbwh_rectangle_outline(
     :param bottom_left_y: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param color: The outline color as an RGBA :py:class:`tuple`, RGB
+        :py:class:`tuple`, or a :py:class:`.Color` instance.
     :param border_width: The width of the border in pixels. Defaults to one.
     """
     draw_rect_outline(LBWH(left, bottom, width, height), color, border_width)
@@ -189,7 +190,8 @@ def draw_lrbt_rectangle_filled(
     :param right: The x coordinate of the right edge of the rectangle.
     :param bottom: The y coordinate of the rectangle bottom.
     :param top: The y coordinate of the top of the rectangle.
-    :param color: The color of the rectangle.
+    :param color: The fill color as an RGBA :py:class:`tuple`,
+        RGB :py:class:`tuple`, or a :py:class:`.Color` instance.
     :Raises ValueError: Raised if left > right or top < bottom.
     """
     if left > right:
@@ -215,8 +217,8 @@ def draw_lbwh_rectangle_filled(
     :param bottom: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
-    :param color: The color of the rectangles an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param color: The fill color as an RGBA :py:class:`tuple`, RGB
+        :py:class:`tuple`, :py:class:`~arcade.types.Color` instance
     """
     draw_rect_filled(LBWH(left, bottom, width, height), color)
 
@@ -229,8 +231,8 @@ def draw_rect_outline(
 
     :param rect: The rectangle to draw.
         a :py:class`~arcade.types.Rect` instance.
-    :param color: The color of the rectangle.
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param color: The fill color as an RGBA :py:class:`tuple`,
+        RGB :py:class:`tuple`, or :py:class`.Color` instance.
     :param border_width: width of the lines, in pixels.
     :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
     """
@@ -266,8 +268,8 @@ def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> Non
 
     :param rect: The rectangle to draw.
         a :py:class`~arcade.types.Rect` instance.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param color: The fill color as an RGBA :py:class:`tuple`,
+        RGB :py:class:`tuple, or :py:class`.Color` instance.
     :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
     """
     # Fail if we don't have a window, context, or right GL abstractions
