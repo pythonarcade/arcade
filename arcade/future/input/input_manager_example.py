@@ -6,6 +6,8 @@ import random
 import pyglet
 
 import arcade
+
+
 from arcade.future.input import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
 
 WINDOW_WIDTH = 800
