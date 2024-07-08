@@ -1,6 +1,6 @@
 import array
 
-from arcade.types import Color, PointList, RGBOrA255
+from arcade.types import Color, RGBOrA255, Point2List
 from arcade.types.rect import XYWH
 from arcade.window_commands import get_window
 
@@ -8,27 +8,49 @@ from .rect import draw_rect_filled
 
 
 def draw_point(x: float, y: float, color: RGBOrA255, size: float) -> None:
-    """
-    Draw a point.
+    """Draw a 2D point at ``(x, y)`` as a square ``size`` pixels wide.
 
-    :param x: x position of point.
-    :param y: y position of point.
-    :param color: A color as an RGBA tuple, RGB tuple, or a
-        :py:class:`~arcade.types.Color` instance.
-    :param size: Size of the point in pixels.
+    The square will be centered on ``(x, y)`` with the given ``color``
+    as its fill value.
+
+    To draw more rounded shapes, please see:
+
+    * :py:func:`arcade.draw.circle.draw_circle_filled`
+    * :py:func:`pyglet.shapes.Circle`
+
+    Args:
+        x:
+            The center of the square along the x axis.
+        y:
+            The center of the square along the y axis.
+        color:
+            The fill color of the square as an RGBA :py:class:`tuple`,
+            RGB py:class:`tuple`, or a :py:class:`.Color` instance.
+        size:
+             The width and height of the square in pixels.
     """
     draw_rect_filled(XYWH(x, y, size, size), color)
 
 
-def draw_points(point_list: PointList, color: RGBOrA255, size: float = 1) -> None:
-    """
-    Draw a set of points.
+def draw_points(point_list: Point2List, color: RGBOrA255, size: float = 1) -> None:
+    """Draw 2D points as squares ``size`` pixels  wide.
 
-    :param point_list: List of points Each point is
-         in a list. So it is a list of lists.
-    :param color: A color as an RGBA tuple, RGB tuple, or a
-        :py:class:`~arcade.types.Color` instance.
-    :param size: Size of the point in pixels.
+    Each point in ``point_list`` will be drawn centered on its x and y
+    value with the same ``color`` and square ``size`` in pixels.
+
+    To draw more rounded shapes, please see:
+
+    * :py:func:`arcade.draw.circle.draw_circle_filled`
+    * :py:func:`pyglet.shapes.Circle`
+
+    Args:
+        point_list:
+            A :py:class:`list` or :py:class:`tuple` of 2D points.
+        color:
+            The fill color for the points as an RGBA :py:class:`tuple`,
+            RGB :py:class:`tuple`, or :py:class:`.Color` instance.
+        size:
+            The width and height of each point's square in pixels.
     """
     # Fails immediately if we don't have a window or context
     window = get_window()
