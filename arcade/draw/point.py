@@ -7,7 +7,7 @@ from arcade.window_commands import get_window
 from .rect import draw_rect_filled
 
 
-def draw_point(x: float, y: float, color: RGBOrA255, size: float) -> None:
+def draw_point(x: float, y: float, color: RGBOrA255, size: float = 1.0) -> None:
     """Draw a 2D point at ``(x, y)`` as a square ``size`` pixels wide.
 
     The square will be centered on ``(x, y)`` with the given ``color``
@@ -32,7 +32,7 @@ def draw_point(x: float, y: float, color: RGBOrA255, size: float) -> None:
     draw_rect_filled(XYWH(x, y, size, size), color)
 
 
-def draw_points(point_list: Point2List, color: RGBOrA255, size: float = 1) -> None:
+def draw_points(point_list: Point2List, color: RGBOrA255, size: float = 1.0) -> None:
     """Draw 2D points as squares ``size`` pixels  wide.
 
     Each point in ``point_list`` will be drawn centered on its x and y
