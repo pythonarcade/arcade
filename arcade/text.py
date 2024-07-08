@@ -12,7 +12,7 @@ import pyglet
 import arcade
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
-from arcade.types import RGBA255, Color, Point, RGBOrA255
+from arcade.types import Color, Point, RGBOrA255
 from arcade.utils import PerformanceWarning, warning
 
 __all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
