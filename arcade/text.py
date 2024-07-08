@@ -582,7 +582,7 @@ class Text:
 
 def create_text_sprite(
     text: str,
-    color: RGBA255 = arcade.color.WHITE,
+    color: RGBOrA255 = arcade.color.WHITE,
     font_size: float = 12,
     width: int | None = None,
     align: str = "left",
@@ -592,7 +592,7 @@ def create_text_sprite(
     anchor_x: str = "left",
     multiline: bool = False,
     texture_atlas: TextureAtlasBase | None = None,
-    background_color: RGBA255 | None = None,
+    background_color: RGBOrA255 | None = None,
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
