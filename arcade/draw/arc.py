@@ -2,7 +2,7 @@ import math
 
 from arcade import gl
 from arcade.math import rotate_point
-from arcade.types import RGBA255
+from arcade.types import RGBOrA255
 
 from .helpers import _generic_draw_line_strip
 
@@ -12,7 +12,7 @@ def draw_arc_filled(
     center_y: float,
     width: float,
     height: float,
-    color: RGBA255,
+    color: RGBOrA255,
     start_angle: float,
     end_angle: float,
     tilt_angle: float = 0,
@@ -62,7 +62,7 @@ def draw_arc_outline(
     center_y: float,
     width: float,
     height: float,
-    color: RGBA255,
+    color: RGBOrA255,
     start_angle: float,
     end_angle: float,
     border_width: float = 1,

@@ -7,7 +7,7 @@ from arcade.math import rotate_point
 from arcade.sprite import BasicSprite
 from arcade.texture import Texture
 from arcade.texture_atlas.base import TextureAtlasBase
-from arcade.types import LBWH, LRBT, RGBA255, XYWH, Color, Point2List, Rect
+from arcade.types import LBWH, LRBT, XYWH, Color, Point2List, Rect, RGBOrA255
 from arcade.window_commands import get_window
 
 from .helpers import _generic_draw_line_strip
@@ -133,7 +133,7 @@ def draw_lrbt_rectangle_outline(
     right: float,
     bottom: float,
     top: float,
-    color: RGBA255,
+    color: RGBOrA255,
     border_width: float = 1,
 ) -> None:
     """
@@ -143,7 +143,8 @@ def draw_lrbt_rectangle_outline(
     :param right: The x coordinate of the right edge of the rectangle.
     :param bottom: The y coordinate of the rectangle bottom.
     :param top: The y coordinate of the top of the rectangle.
-    :param color: The color of the rectangle.
+    :param color: The outline color as an RGBA :py:class:`tuple`, RGB
+        :py:class:`tuple`, or a :py:class:`.Color` instance.
     :param border_width: The width of the border in pixels. Defaults to one.
     :Raises ValueError: Raised if left > right or top < bottom.
 
@@ -162,7 +163,7 @@ def draw_lbwh_rectangle_outline(
     bottom: float,
     width: float,
     height: float,
-    color: RGBA255,
+    color: RGBOrA255,
     border_width: float = 1,
 ) -> None:
     """
@@ -172,15 +173,15 @@ def draw_lbwh_rectangle_outline(
     :param bottom_left_y: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param color: The outline color as an RGBA :py:class:`tuple`, RGB
+        :py:class:`tuple`, or a :py:class:`.Color` instance.
     :param border_width: The width of the border in pixels. Defaults to one.
     """
     draw_rect_outline(LBWH(left, bottom, width, height), color, border_width)
 
 
 def draw_lrbt_rectangle_filled(
-    left: float, right: float, bottom: float, top: float, color: RGBA255
+    left: float, right: float, bottom: float, top: float, color: RGBOrA255
 ) -> None:
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
@@ -189,7 +190,8 @@ def draw_lrbt_rectangle_filled(
     :param right: The x coordinate of the right edge of the rectangle.
     :param bottom: The y coordinate of the rectangle bottom.
     :param top: The y coordinate of the top of the rectangle.
-    :param color: The color of the rectangle.
+    :param color: The fill color as an RGBA :py:class:`tuple`,
+        RGB :py:class:`tuple`, or a :py:class:`.Color` instance.
     :Raises ValueError: Raised if left > right or top < bottom.
     """
     if left > right:
@@ -206,7 +208,7 @@ def draw_lrbt_rectangle_filled(
 
 
 def draw_lbwh_rectangle_filled(
-    left: float, bottom: float, width: float, height: float, color: RGBA255
+    left: float, bottom: float, width: float, height: float, color: RGBOrA255
 ) -> None:
     """
     Draw a filled rectangle extending from bottom left to top right
@@ -215,22 +217,22 @@ def draw_lbwh_rectangle_filled(
     :param bottom: The y coordinate of the bottom of the rectangle.
     :param width: The width of the rectangle.
     :param height: The height of the rectangle.
-    :param color: The color of the rectangles an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param color: The fill color as an RGBA :py:class:`tuple`, RGB
+        :py:class:`tuple`, :py:class:`~arcade.types.Color` instance
     """
     draw_rect_filled(LBWH(left, bottom, width, height), color)
 
 
 def draw_rect_outline(
-    rect: Rect, color: RGBA255, border_width: float = 1, tilt_angle: float = 0
+    rect: Rect, color: RGBOrA255, border_width: float = 1, tilt_angle: float = 0
 ) -> None:
     """
     Draw a rectangle outline.
 
     :param rect: The rectangle to draw.
         a :py:class`~arcade.types.Rect` instance.
-    :param color: The color of the rectangle.
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param color: The fill color as an RGBA :py:class:`tuple`,
+        RGB :py:class:`tuple`, or :py:class`.Color` instance.
     :param border_width: width of the lines, in pixels.
     :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
     """
@@ -260,14 +262,14 @@ def draw_rect_outline(
     _generic_draw_line_strip(point_list, color, gl.TRIANGLE_STRIP)
 
 
-def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
+def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> None:
     """
     Draw a filled-in rectangle.
 
     :param rect: The rectangle to draw.
         a :py:class`~arcade.types.Rect` instance.
-    :param color: The color of the rectangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+    :param color: The fill color as an RGBA :py:class:`tuple`,
+        RGB :py:class:`tuple, or :py:class`.Color` instance.
     :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
     """
     # Fail if we don't have a window, context, or right GL abstractions
@@ -296,14 +298,14 @@ def draw_rect_filled(rect: Rect, color: RGBA255, tilt_angle: float = 0) -> None:
 # These might be "oddly specific" and also needs docstrings. Disabling or 3.0.0
 
 # def draw_rect_outline_kwargs(
-#     color: RGBA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
+#     color: RGBAOrA255 = WHITE, border_width: int = 1, tilt_angle: float = 0, **kwargs: AsFloat
 # ) -> None:
 #     rect = Rect.from_kwargs(**kwargs)
 #     draw_rect_outline(rect, color, border_width, tilt_angle)
 
 
 # def draw_rect_filled_kwargs(
-#     color: RGBA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
+#     color: RGBAOrA255 = WHITE, tilt_angle: float = 0, **kwargs: AsFloat
 # ) -> None:
 #     rect = Rect.from_kwargs(**kwargs)
 #     draw_rect_filled(rect, color, tilt_angle)
