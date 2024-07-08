@@ -177,7 +177,7 @@ class Text:
         y: float,
         color: RGBOrA255 = arcade.color.WHITE,
         font_size: float = 12,
-        width: Optional[int] = 0,
+        width: int | None = 0,
         align: str = "left",
         font_name: FontNameOrNames = ("calibri", "arial"),
         bold: bool = False,
@@ -186,8 +186,8 @@ class Text:
         anchor_y: str = "baseline",
         multiline: bool = False,
         rotation: float = 0,
-        batch: Optional[pyglet.graphics.Batch] = None,
-        group: Optional[pyglet.graphics.Group] = None,
+        batch: pyglet.graphics.Batch | None = None,
+        group: pyglet.graphics.Group | None = None,
         z: float = 0,
     ):
         # Raises a RuntimeError if no window for better user feedback
