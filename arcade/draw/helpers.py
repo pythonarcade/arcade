@@ -2,7 +2,7 @@ import array
 import math
 
 from arcade import gl
-from arcade.types import RGBA255, Color, Point2, Point2List
+from arcade.types import Color, Point2, Point2List, RGBOrA255
 from arcade.window_commands import get_window
 
 
@@ -43,7 +43,7 @@ def get_points_for_thick_line(
 
 
 def _generic_draw_line_strip(
-    point_list: Point2List, color: RGBA255, mode: int = gl.LINE_STRIP
+    point_list: Point2List, color: RGBOrA255, mode: int = gl.LINE_STRIP
 ) -> None:
     """
     Draw a line strip. A line strip is a set of continuously connected
