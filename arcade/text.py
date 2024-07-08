@@ -671,7 +671,7 @@ def draw_text(
     y: int,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
-    width: int = 0,
+    width: int | None = 0,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
     bold: bool = False,
@@ -849,8 +849,11 @@ def draw_text(
     if align not in ("left", "center", "right"):
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
-    if multiline and width == 0:
-        raise ValueError("The 'width' parameter must be set when 'multiline' is True.")
+    if multiline and not width:
+        raise ValueError(
+            f"The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
+            f"but got {width!r}."
+        )
 
     if not label:
         adjusted_font = _attempt_font_name_resolution(font_name)
