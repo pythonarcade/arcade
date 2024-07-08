@@ -1,4 +1,4 @@
-from arcade.types import RGBA255
+from arcade.types import RGBOrA255
 
 from .arc import draw_arc_filled, draw_arc_outline
 
@@ -8,7 +8,7 @@ def draw_parabola_filled(
     start_y: float,
     end_x: float,
     height: float,
-    color: RGBA255,
+    color: RGBOrA255,
     tilt_angle: float = 0,
 ) -> None:
     """
@@ -35,7 +35,7 @@ def draw_parabola_outline(
     start_y: float,
     end_x: float,
     height: float,
-    color: RGBA255,
+    color: RGBOrA255,
     border_width: float = 1,
     tilt_angle: float = 0,
 ) -> None:
