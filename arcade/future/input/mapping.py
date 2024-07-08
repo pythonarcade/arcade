@@ -69,9 +69,12 @@ class Mapping:
 
     def __init__(self, input: inputs.InputEnum):
         try:
-            self._input_type = inputs.CLASS_TO_INPUT_TYPE[input]
+            self._input_type = inputs.CLASS_TO_INPUT_TYPE[type(input)]
         except KeyError:
-            raise TypeError("Input specified for ActionMapping must inherit from InputEnum")
+            raise TypeError(
+                f"Got {input} input specified for ActionMapping must be of of: "
+                f"{', '.join((t.__name__ for t in inputs.CLASS_TO_INPUT_TYPE.keys()))}"
+            )
         self._input = input
 
 
