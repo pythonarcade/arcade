@@ -388,7 +388,7 @@ class Text:
         return self._label.color
 
     @color.setter
-    def color(self, color: RGBA255):
+    def color(self, color: RGBOrA255):
         self._label.color = Color.from_iterable(color)
 
     @property
@@ -531,9 +531,9 @@ class Text:
 
     def draw_debug(
         self,
-        anchor_color: RGBA255 = arcade.color.RED,
-        background_color: RGBA255 = arcade.color.DARK_BLUE,
-        outline_color: RGBA255 = arcade.color.WHITE,
+        anchor_color: RGBOrA255 = arcade.color.RED,
+        background_color: RGBOrA255 = arcade.color.DARK_BLUE,
+        outline_color: RGBOrA255 = arcade.color.WHITE,
     ) -> None:
         """
         Draw test with debug geometry showing the content
