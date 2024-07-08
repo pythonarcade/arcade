@@ -177,7 +177,7 @@ class Text:
         y: float,
         color: RGBOrA255 = arcade.color.WHITE,
         font_size: float = 12,
-        width: Optional[int] = 0,
+        width: int | None = None,
         align: str = "left",
         font_name: FontNameOrNames = ("calibri", "arial"),
         bold: bool = False,
@@ -186,8 +186,8 @@ class Text:
         anchor_y: str = "baseline",
         multiline: bool = False,
         rotation: float = 0,
-        batch: Optional[pyglet.graphics.Batch] = None,
-        group: Optional[pyglet.graphics.Group] = None,
+        batch: pyglet.graphics.Batch | None = None,
+        group: pyglet.graphics.Group | None = None,
         z: float = 0,
     ):
         # Raises a RuntimeError if no window for better user feedback
@@ -196,8 +196,11 @@ class Text:
         if align not in ("left", "center", "right"):
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
-        if multiline and width == 0:
-            raise ValueError("The 'width' parameter must be set when 'multiline' is True.")
+        if multiline and not width:
+            raise ValueError(
+                f"The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
+                f"but got {width!r}."
+            )
 
         adjusted_font = _attempt_font_name_resolution(font_name)
         self._label = pyglet.text.Label(
@@ -581,15 +584,15 @@ def create_text_sprite(
     text: str,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
-    width: Optional[int] = None,
+    width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
     bold: bool = False,
     italic: bool = False,
     anchor_x: str = "left",
     multiline: bool = False,
-    texture_atlas: Optional[TextureAtlasBase] = None,
-    background_color: Optional[RGBA255] = None,
+    texture_atlas: TextureAtlasBase | None = None,
+    background_color: RGBA255 | None = None,
 ) -> arcade.Sprite:
     """
     Creates a sprite containing text based off of :py:class:`~arcade.Text`.
@@ -669,7 +672,7 @@ def draw_text(
     y: int,
     color: RGBA255 = arcade.color.WHITE,
     font_size: float = 12,
-    width: int = 0,
+    width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
     bold: bool = False,
@@ -847,8 +850,11 @@ def draw_text(
     if align not in ("left", "center", "right"):
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
-    if multiline and width == 0:
-        raise ValueError("The 'width' parameter must be set when 'multiline' is True.")
+    if multiline and not width:
+        raise ValueError(
+            f"The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
+            f"but got {width!r}."
+        )
 
     if not label:
         adjusted_font = _attempt_font_name_resolution(font_name)
