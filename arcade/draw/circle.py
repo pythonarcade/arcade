@@ -1,7 +1,7 @@
 import array
 
 from arcade import gl
-from arcade.types import RGBA255, Color
+from arcade.types import Color, RGBOrA255
 from arcade.window_commands import get_window
 
 
@@ -9,7 +9,7 @@ def draw_circle_filled(
     center_x: float,
     center_y: float,
     radius: float,
-    color: RGBA255,
+    color: RGBOrA255,
     tilt_angle: float = 0,
     num_segments: int = -1,
 ) -> None:
@@ -42,7 +42,7 @@ def draw_circle_outline(
     center_x: float,
     center_y: float,
     radius: float,
-    color: RGBA255,
+    color: RGBOrA255,
     border_width: float = 1,
     tilt_angle: float = 0,
     num_segments: int = -1,
@@ -80,7 +80,7 @@ def draw_ellipse_filled(
     center_y: float,
     width: float,
     height: float,
-    color: RGBA255,
+    color: RGBOrA255,
     tilt_angle: float = 0,
     num_segments: int = -1,
 ) -> None:
@@ -130,7 +130,7 @@ def draw_ellipse_outline(
     center_y: float,
     width: float,
     height: float,
-    color: RGBA255,
+    color: RGBOrA255,
     border_width: float = 1,
     tilt_angle: float = 0,
     num_segments: int = -1,
