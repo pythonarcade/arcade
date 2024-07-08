@@ -416,7 +416,7 @@ class Text:
         return self._label.height
 
     @height.setter
-    def height(self, value):
+    def height(self, value: int):
         self._label.height = value
 
     @property
