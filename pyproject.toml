@@ -19,7 +19,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "pyglet == 2.1dev3",
+    # Use pyglet's development branch as a rolling release package
+    # at the cost of slow download and constant pip install -I -e .[dev]
+    "pyglet@git+https://github.com/pyglet/pyglet.git@development#egg=pyglet",
+    # Expected future dev preview release on PyPI (not yet released)
+    # pyglet == 2.1dev4
     "pillow~=10.2.0",
     "pymunk~=6.6.0",
     "pytiled-parser~=2.2.5",
