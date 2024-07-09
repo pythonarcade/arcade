@@ -122,6 +122,36 @@ class BasicSprite:
         self.position = (self._position[0], new_value)
 
     @property
+    def x(self) -> float:
+        """Get or set the x position of the sprite.
+
+        Currently, this is equivalent to `.center_x`, but will change in the future
+        if/when an anchor point on a Sprite is implemented."""
+        return self._position[0]
+
+    @x.setter
+    def x(self, new_value: float):
+        if new_value == self._position[0]:
+            return
+
+        self.position = (new_value, self._position[1])
+
+    @property
+    def y(self) -> float:
+        """Get or set the y position of the sprite.
+
+        Currently, this is equivalent to `.center_y`, but will change in the future
+        if/when an anchor point on a Sprite is implemented."""
+        return self._position[1]
+
+    @y.setter
+    def y(self, new_value: float):
+        if new_value == self._position[1]:
+            return
+
+        self.position = (self._position[0], new_value)
+
+    @property
     def depth(self) -> float:
         """
         Get or set the depth of the sprite.
@@ -185,13 +215,9 @@ class BasicSprite:
         try:
             width, height = new_value
         except ValueError:
-            raise ValueError(
-                "size must be a tuple-like object which unpacks to exactly 2 coordinates"
-            )
+            raise ValueError("size must be a tuple-like object which unpacks to exactly 2 coordinates")
         except TypeError:
-            raise TypeError(
-                "size must be a tuple-like object which unpacks to exactly 2 coordinates"
-            )
+            raise TypeError("size must be a tuple-like object which unpacks to exactly 2 coordinates")
 
         if width != self._width or height != self._height:
             texture_width, texture_height = self._texture.size
@@ -314,13 +340,9 @@ class BasicSprite:
             try:
                 scale_x, scale_y = new_scale  # type / length implicit check
             except ValueError:
-                raise ValueError(
-                    "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
-                )
+                raise ValueError("scale must be a tuple-like object which unpacks to exactly 2 coordinates")
             except TypeError:
-                raise TypeError(
-                    "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
-                )
+                raise TypeError("scale must be a tuple-like object which unpacks to exactly 2 coordinates")
 
         new_scale = scale_x, scale_y
         if new_scale == self._scale:
@@ -461,7 +483,6 @@ class BasicSprite:
 
     @rgb.setter
     def rgb(self, color: RGBOrA255):
-
         # Fast validation of size by unpacking channel values
         try:
             r, g, b, *_a = color
@@ -470,10 +491,7 @@ class BasicSprite:
 
         except ValueError:  # It's always a length issue
             raise ValueError(
-                (
-                    f"{self.__class__.__name__},rgb takes 3 or 4 channel"
-                    f" colors, but got {len(color)} channels"
-                )
+                (f"{self.__class__.__name__},rgb takes 3 or 4 channel" f" colors, but got {len(color)} channels")
             )
 
         # Unpack to avoid index / . overhead & prep for repack
@@ -646,13 +664,9 @@ class BasicSprite:
                 if factor_x == 1.0 and factor_y == 1.0:
                     return
             except ValueError:
-                raise ValueError(
-                    "factor must be a float, int, or tuple-like which unpacks as two float-like values"
-                )
+                raise ValueError("factor must be a float, int, or tuple-like which unpacks as two float-like values")
             except TypeError:
-                raise TypeError(
-                    "factor must be a float, int, or tuple-like unpacks as two float-like values"
-                )
+                raise TypeError("factor must be a float, int, or tuple-like unpacks as two float-like values")
 
         # set the scale and, if this sprite has a texture, the size data
         old_scale_x, old_scale_y = self._scale
