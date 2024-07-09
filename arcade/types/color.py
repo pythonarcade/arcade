@@ -123,7 +123,6 @@ class Color(RGBA255):
     __slots__ = ()
 
     def __new__(cls, r: int, g: int, b: int, a: int = 255):
-
         if not 0 <= r <= 255:
             raise ByteRangeError("r", r)
 
@@ -456,9 +455,7 @@ class Color(RGBA255):
             # full opacity if no alpha specified
             return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), 255)
         elif len(code) == 8:
-            return cls(
-                int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
-            )
+            return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16))
 
         raise ValueError(f"Improperly formatted color: '{code}'")
 
@@ -502,6 +499,22 @@ class Color(RGBA255):
 
         return cls(r, g, b, a)
 
+    def with_alpha(self, alpha: int) -> Color:
+        """Create a :py:class:`Color` with a specified alpha from a predefined color.
+
+        .. code-block:: python
+
+            # Color with alpha with a predefined constant
+            >>> arcade.color.BLUE.with_alpha(100)
+            Color(r = 0, g = 0, b = 255, a = 100)
+
+        :param r: Specify a value for the red channel
+        :param g: Specify a value for the green channel
+        :param b: Specify a value for the blue channel
+        :param a: Specify a value for the alpha channel
+        """
+        return Color(self.r, self.g, self.b, alpha)
+
     def swizzle(self, order: str) -> tuple[int, ...]:
         """Get a :py:class:`tuple` of channel values in the given ``order``.
 
@@ -541,8 +554,6 @@ class Color(RGBA255):
         ret = []
         for c in order.lower():
             if c not in "rgba":
-                raise ValueError(
-                    f"Swizzle string must only contain characters in [RGBArgba], not {c}."
-                )
+                raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
             ret.append(getattr(self, c))
         return tuple(ret)
