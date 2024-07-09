@@ -455,7 +455,9 @@ class Color(RGBA255):
             # full opacity if no alpha specified
             return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), 255)
         elif len(code) == 8:
-            return cls(int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16))
+            return cls(
+                int(code[:2], 16), int(code[2:4], 16), int(code[4:6], 16), int(code[6:8], 16)
+            )
 
         raise ValueError(f"Improperly formatted color: '{code}'")
 
@@ -554,6 +556,8 @@ class Color(RGBA255):
         ret = []
         for c in order.lower():
             if c not in "rgba":
-                raise ValueError(f"Swizzle string must only contain characters in [RGBArgba], not {c}.")
+                raise ValueError(
+                    f"Swizzle string must only contain characters in [RGBArgba], not {c}."
+                )
             ret.append(getattr(self, c))
         return tuple(ret)
