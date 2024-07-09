@@ -215,9 +215,13 @@ class BasicSprite:
         try:
             width, height = new_value
         except ValueError:
-            raise ValueError("size must be a tuple-like object which unpacks to exactly 2 coordinates")
+            raise ValueError(
+                "size must be a tuple-like object which unpacks to exactly 2 coordinates"
+            )
         except TypeError:
-            raise TypeError("size must be a tuple-like object which unpacks to exactly 2 coordinates")
+            raise TypeError(
+                "size must be a tuple-like object which unpacks to exactly 2 coordinates"
+            )
 
         if width != self._width or height != self._height:
             texture_width, texture_height = self._texture.size
@@ -340,9 +344,13 @@ class BasicSprite:
             try:
                 scale_x, scale_y = new_scale  # type / length implicit check
             except ValueError:
-                raise ValueError("scale must be a tuple-like object which unpacks to exactly 2 coordinates")
+                raise ValueError(
+                    "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
+                )
             except TypeError:
-                raise TypeError("scale must be a tuple-like object which unpacks to exactly 2 coordinates")
+                raise TypeError(
+                    "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
+                )
 
         new_scale = scale_x, scale_y
         if new_scale == self._scale:
@@ -491,7 +499,10 @@ class BasicSprite:
 
         except ValueError:  # It's always a length issue
             raise ValueError(
-                (f"{self.__class__.__name__},rgb takes 3 or 4 channel" f" colors, but got {len(color)} channels")
+                (
+                    f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                    f" colors, but got {len(color)} channels"
+                )
             )
 
         # Unpack to avoid index / . overhead & prep for repack
@@ -664,9 +675,13 @@ class BasicSprite:
                 if factor_x == 1.0 and factor_y == 1.0:
                     return
             except ValueError:
-                raise ValueError("factor must be a float, int, or tuple-like which unpacks as two float-like values")
+                raise ValueError(
+                    "factor must be a float, int, or tuple-like which unpacks as two float-like values"
+                )
             except TypeError:
-                raise TypeError("factor must be a float, int, or tuple-like unpacks as two float-like values")
+                raise TypeError(
+                    "factor must be a float, int, or tuple-like unpacks as two float-like values"
+                )
 
         # set the scale and, if this sprite has a texture, the size data
         old_scale_x, old_scale_y = self._scale
