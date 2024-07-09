@@ -7,8 +7,7 @@ from typing import Optional
 import pyglet
 
 import arcade
-
-from . import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
+from arcade.future.input import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -33,7 +32,7 @@ class Player(arcade.Sprite):
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self, walls=walls, gravity_constant=1)
 
-    def on_update(self, delta_time: float):
+    def on_update(self, delta_time: float = 1 / 60) -> None:
         self.input_manager.update()
         self.change_x = self.input_manager.axis("Move") * 5
 
@@ -124,6 +123,7 @@ class Game(arcade.Window):
     def on_key_press(self, key, modifiers):
         key = Keys(key)
 
+        # Give keyboard focus to player # N
         if key == Keys.KEY_1:
             self.players[0].input_manager.allow_keyboard = True
             for index, player in enumerate(self.players):
