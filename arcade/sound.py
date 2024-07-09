@@ -38,9 +38,7 @@ class Sound:
             raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
-        self.source: Source = media.load(
-            self.file_name, streaming=streaming
-        )
+        self.source: Source = media.load(self.file_name, streaming=streaming)
 
         if self.source.duration is None:
             raise ValueError(
