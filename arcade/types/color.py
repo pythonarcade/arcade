@@ -501,13 +501,19 @@ class Color(RGBA255):
 
         return cls(r, g, b, a)
 
-    def with_alpha(self, alpha: int) -> Color:
-        """Create a :py:class:`Color` with a specified alpha from a predefined color.
+    def replace(
+        self,
+        r: Optional[int] = None,
+        g: Optional[int] = None,
+        b: Optional[int] = None,
+        a: Optional[int] = None,
+    ) -> Color:
+        """Create a :py:class:`Color` with specified values replaced in a predefined color.
 
         .. code-block:: python
 
             # Color with alpha with a predefined constant
-            >>> arcade.color.BLUE.with_alpha(100)
+            >>> arcade.color.BLUE.replace(a = 100)
             Color(r = 0, g = 0, b = 255, a = 100)
 
         :param r: Specify a value for the red channel
@@ -515,7 +521,12 @@ class Color(RGBA255):
         :param b: Specify a value for the blue channel
         :param a: Specify a value for the alpha channel
         """
-        return Color(self.r, self.g, self.b, alpha)
+        return Color(
+            self.r if r is None else r,
+            self.g if g is None else g,
+            self.b if b is None else b,
+            self.a if a is None else a,
+        )
 
     def swizzle(self, order: str) -> tuple[int, ...]:
         """Get a :py:class:`tuple` of channel values in the given ``order``.
