@@ -123,7 +123,6 @@ class Color(RGBA255):
     __slots__ = ()
 
     def __new__(cls, r: int, g: int, b: int, a: int = 255):
-
         if not 0 <= r <= 255:
             raise ByteRangeError("r", r)
 
@@ -501,6 +500,33 @@ class Color(RGBA255):
             a = rand & MASK_RGBA_A
 
         return cls(r, g, b, a)
+
+    def replace(
+        self,
+        r: Optional[int] = None,
+        g: Optional[int] = None,
+        b: Optional[int] = None,
+        a: Optional[int] = None,
+    ) -> Color:
+        """Create a :py:class:`Color` with specified values replaced in a predefined color.
+
+        .. code-block:: python
+
+            # Color with alpha with a predefined constant
+            >>> arcade.color.BLUE.replace(a = 100)
+            Color(r = 0, g = 0, b = 255, a = 100)
+
+        :param r: Specify a value for the red channel
+        :param g: Specify a value for the green channel
+        :param b: Specify a value for the blue channel
+        :param a: Specify a value for the alpha channel
+        """
+        return Color(
+            self.r if r is None else r,
+            self.g if g is None else g,
+            self.b if b is None else b,
+            self.a if a is None else a,
+        )
 
     def swizzle(self, order: str) -> tuple[int, ...]:
         """Get a :py:class:`tuple` of channel values in the given ``order``.
