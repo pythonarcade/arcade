@@ -68,6 +68,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx_copybutton',
     'sphinx_sitemap',
+    # "sphinx_autodoc_typehints",
     'doc.extensions.prettyspecialmethods'
 ]
 
@@ -130,12 +131,11 @@ napoleon_google_docstring = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'furo'
+html_theme = 'sphinx_rtd_theme'
 
 html_theme_options = {
-    "light_logo": "../_images/arcade-logo.svg",
-    "dark_logo": "../_images/arcade-logo.svg",
-
+    # "light_logo": "../_images/arcade-logo.svg",
+    # "dark_logo": "../_images/arcade-logo.svg",
 }
 
 html_title = f"Python Arcade {version}"
