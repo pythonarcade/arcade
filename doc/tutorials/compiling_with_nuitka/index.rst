@@ -95,7 +95,7 @@ This will copy the whole folder named ``assets`` at the specified location to th
 
 .. Note::
 
-    If you want to use a custom resource handler and Nuitka's one-file build see: :ref:`resource_handlers_one_file_builds`.
+    If you want to use a custom resource handles and Nuitka's one-file build see: :ref:`resource_handles_one_file_builds`.
 
 Removing The Console Window
 ---------------------------
