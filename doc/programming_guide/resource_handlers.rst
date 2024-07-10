@@ -1,24 +1,24 @@
-.. _resource_handlers:
+.. _resource_handles:
 
-Adding Your Own Resource Handlers
-=================================
+Adding Your Own Resource Handles
+================================
 
-Arcade provides a convenient way to locate asset through it's resource handlers. Arcade already has a number of
-Built-In sprites, images and other resources available for use inside the ``:resources:`` handler, which you
-may already be familiar with:
+Arcade provides a convenient way to locate asset through it's resource handles. Arcade already has a number of
+Built-In sprites, images and other resources available for use inside the ``:assert::``, and ``:system:``
+``:resources:`` handles, which you may already be familiar with:
 
 .. code-block:: python
 
    my_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png", SPRITE_SCALE)
 
 
-Arcade also allows the ability to register additional resources handlers. This is helpful when you want to include
+Arcade also allows the ability to register additional resources handles. This is helpful when you want to include
 your own resource folders for your project.
 
 Basic Usage
 -----------
 
-You can register a new resource handler by using ``arcade.resources.add_resource_handle(handle: str, path: Union[str, Path])``:
+You can register a new resource handle by using :py:func:`arcade.resources.add_resource_handle`:
 
 .. code-block:: python
 
@@ -28,7 +28,7 @@ You can register a new resource handler by using ``arcade.resources.add_resource
 
     The ``add_resource_handle`` function must be given an **absolute** path.
 
-Then, you can use resources from your handler:
+Then, you can use resources from your handle:
 
 .. code-block:: python
 
@@ -42,8 +42,8 @@ Despite needing an absolute path, you can use Python's ``Path.resolve()`` to res
     ...
     arcade.resources.add_resource_handle("my_resources", Path("assets/my_res_folder").resolve())
 
-Adding Multiple Directories to a Resource Handler
--------------------------------------------------
+Adding Multiple Directories to a Resource Handle
+------------------------------------------------
 
 You can also add multiple directories to a single resource handler:
 
@@ -58,9 +58,9 @@ it locates the requested resource. Here, Arcade will start it's search in the la
 ``my_second_res_folder``. If the requested resource is not present within ``my_second_res_folder`` it will then move
 onto the directories added before it, in this case, ``my_first_res_dir``.
 
-.. _resource_handlers_one_file_builds:
+.. _resource_handles_one_file_builds:
 
-Resources Handlers and PyInstaller/Nuitka one-file builds
+Resources Handles and PyInstaller/Nuitka one-file builds
 ---------------------------------------------------------
 
 When distributing your file as a one-file, standalone build with either Nuitka or PyInstaller you will need to specify
