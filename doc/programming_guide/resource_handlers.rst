@@ -93,6 +93,6 @@ as a Python program: ``python mygame.py``.
 .. warning::
 
     Do not use a ``./`` (single dot) to specify the relative location (even when you use ``Path.resolve()``). The
-    ``./`` will be interpreted to the location of the executable and not the temporary location your executable your
-    application is unbundled too.
+    ``./`` will be interpreted to the location of the executable and not the temporary location your application is
+    unbundled to.
 
