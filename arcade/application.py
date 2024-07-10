@@ -648,9 +648,12 @@ class Window(pyglet.window.Window):
         return False
 
     def _on_resize(self, width: int, height: int):
-        """
-        Update the screen's viewport. If you need custom behaviour on resize there is another
-        method that can be overridden.
+        """The internal method called when the window is resized.
+
+        The purpose of this method is mainly setting the viewport
+        to the new size of the window. Users should override
+        :meth:`~arcade.Window.on_resize` instead. This method is
+        called first.
 
         :param width: New width
         :param height: New height
@@ -663,8 +666,11 @@ class Window(pyglet.window.Window):
 
     def on_resize(self, width: int, height: int) -> Optional[bool]:
         """
-        Override this function to add custom code to be called any time the window
-        is resized.
+        Override this method to add custom actions when the window is resized.
+
+        An internal ``_on_resize`` is called first adjusting the viewport
+        to the new size of the window so there is no need to call
+        ```super().on_resize(width, height)```.
 
         :param width: New width
         :param height: New height
