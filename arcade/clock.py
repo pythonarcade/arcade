@@ -1,8 +1,8 @@
 __all__ = (
-    'Clock',
-    'FixedClock',
-    'GLOBAL_CLOCK',
-    'GLOBAL_FIXED_CLOCK',
+    "Clock",
+    "FixedClock",
+    "GLOBAL_CLOCK",
+    "GLOBAL_FIXED_CLOCK",
 )
 
 
@@ -13,8 +13,6 @@ class Clock:
     *Coming post 3.0:*
     you can add 'sub-clocks' to arcade's top level clock which will tick at the same time, and
     have cumulative tick_speeds. This allows you to slow down only certain elements rather than everything.
-
-    # TODO: Allow for tick speed changes post initialisation
     """
 
     def __init__(
@@ -29,6 +27,9 @@ class Clock:
         self._tick_delta_time = delta_time * self._tick_speed
         self._elapsed_time += self._tick_delta_time
         self._frame += 1
+
+    def set_tick_speed(self, new_tick_speed: float):
+        self._tick_speed = new_tick_speed
 
     def time_since(self, time: float):
         return self._elapsed_time - time
@@ -99,6 +100,9 @@ class FixedClock(Clock):
         self._fixed_rate: float = fixed_tick_rate
         super().__init__()
 
+    def set_tick_speed(self, new_tick_speed: float):
+        raise ValueError("It is not safe to change the tick speed of a fixed clock post initilisation.")
+
     def tick(self, delta_time: float):
         if delta_time != self._fixed_rate:
             raise ValueError(
@@ -123,18 +127,20 @@ class FixedClock(Clock):
 GLOBAL_CLOCK = Clock()
 GLOBAL_FIXED_CLOCK = FixedClock(sibling=GLOBAL_CLOCK)
 
+
 def _setup_clock(initial_elapsed: float = 0.0, initial_frame: int = 0, tick_speed: float = 1.0):
     """
     Private method used by the arcade window to setup the global clock post initalisation
     """
-    GLOBAL_CLOCK._elapsed_time = initial_elapsed # noqa: SLF001
-    GLOBAL_CLOCK._frame = initial_frame # noqa: SLF001
-    GLOBAL_CLOCK._tick_speed = tick_speed # noqa: SLF001
+    GLOBAL_CLOCK._elapsed_time = initial_elapsed  # noqa: SLF001
+    GLOBAL_CLOCK._frame = initial_frame  # noqa: SLF001
+    GLOBAL_CLOCK._tick_speed = tick_speed  # noqa: SLF001
+
 
 def _setup_fixed_clock(fixed_tick_rate: float = 1.0 / 60.0):
     """
     Private method used by the arcade window to setup the global fixed clock post initalisation
     """
-    GLOBAL_FIXED_CLOCK._elapsed_time = GLOBAL_CLOCK.time # noqa: SLF001
-    GLOBAL_FIXED_CLOCK._frame = GLOBAL_CLOCK.tick_count # noqa: SLF001
-    GLOBAL_FIXED_CLOCK._fixed_rate = fixed_tick_rate # noqa: SLF001
+    GLOBAL_FIXED_CLOCK._elapsed_time = GLOBAL_CLOCK.time  # noqa: SLF001
+    GLOBAL_FIXED_CLOCK._frame = GLOBAL_CLOCK.tick_count  # noqa: SLF001
+    GLOBAL_FIXED_CLOCK._fixed_rate = fixed_tick_rate  # noqa: SLF001

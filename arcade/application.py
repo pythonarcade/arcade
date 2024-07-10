@@ -17,7 +17,7 @@ from pyglet.display.base import ScreenMode
 from pyglet.window import MouseCursor
 
 import arcade
-from arcade.clock import Clock, FixedClock, GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
+from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.sections import SectionManager
@@ -427,7 +427,7 @@ class Window(pyglet.window.Window):
             GLOBAL_FIXED_CLOCK.tick(self._fixed_rate)
             self.dispatch_event("on_fixed_update", self._fixed_rate)
             fixed_count += 1
-        self.dispatch_event("on_update", delta_time)
+        self.dispatch_event("on_update", GLOBAL_CLOCK.delta_time)
 
     def set_update_rate(self, rate: float) -> None:
         """
