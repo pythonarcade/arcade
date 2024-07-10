@@ -1,3 +1,11 @@
+__all__ = (
+    'Clock',
+    'FixedClock',
+    'GLOBAL_CLOCK',
+    'GLOBAL_FIXED_CLOCK',
+)
+
+
 class Clock:
     """
     A time keeping class.
@@ -5,6 +13,8 @@ class Clock:
     *Coming post 3.0:*
     you can add 'sub-clocks' to arcade's top level clock which will tick at the same time, and
     have cumulative tick_speeds. This allows you to slow down only certain elements rather than everything.
+
+    # TODO: Allow for tick speed changes post initialisation
     """
 
     def __init__(
@@ -108,3 +118,23 @@ class FixedClock(Clock):
     @property
     def fraction(self):
         return self.accumulated / self._fixed_rate
+
+
+GLOBAL_CLOCK = Clock()
+GLOBAL_FIXED_CLOCK = FixedClock(sibling=GLOBAL_CLOCK)
+
+def _setup_clock(initial_elapsed: float = 0.0, initial_frame: int = 0, tick_speed: float = 1.0):
+    """
+    Private method used by the arcade window to setup the global clock post initalisation
+    """
+    GLOBAL_CLOCK._elapsed_time = initial_elapsed # noqa: SLF001
+    GLOBAL_CLOCK._frame = initial_frame # noqa: SLF001
+    GLOBAL_CLOCK._tick_speed = tick_speed # noqa: SLF001
+
+def _setup_fixed_clock(fixed_tick_rate: float = 1.0 / 60.0):
+    """
+    Private method used by the arcade window to setup the global fixed clock post initalisation
+    """
+    GLOBAL_FIXED_CLOCK._elapsed_time = GLOBAL_CLOCK.time # noqa: SLF001
+    GLOBAL_FIXED_CLOCK._frame = GLOBAL_CLOCK.tick_count # noqa: SLF001
+    GLOBAL_FIXED_CLOCK._fixed_rate = fixed_tick_rate # noqa: SLF001
