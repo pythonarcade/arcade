@@ -112,7 +112,6 @@ The Python Arcade Library
        programming_guide/sections
        programming_guide/gui/index
        programming_guide/texture_atlas
-       programming_guide/edge_artifacts/index
        programming_guide/resource_handlers
        programming_guide/logging
        programming_guide/opengl_notes
