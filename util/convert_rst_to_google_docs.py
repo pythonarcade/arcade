@@ -1,3 +1,9 @@
+"""
+Attempt to convert the docstrings in the Arcade codebase from RST to Google Docs format.
+
+https://github.com/pythonarcade/arcade/issues/1797
+"""
+
 import glob
 import re
 
