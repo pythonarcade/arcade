@@ -73,6 +73,12 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.types.rect"
         ]
     },
+    "resources.rst": {
+        "title": "Resources",
+        "use_declarations_in": [
+            "arcade.resources",
+        ],
+    },
     "drawing_primitives.rst": {
         "title": "Drawing - Primitives",
         "use_declarations_in": [
