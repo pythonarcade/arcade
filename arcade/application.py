@@ -234,6 +234,8 @@ class Window(pyglet.window.Window):
         # self.invalid = False
         set_window(self)
 
+        self.push_handlers(on_resize=self._on_resize)
+
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         self._background_color: Color = TRANSPARENT_BLACK
 
@@ -645,30 +647,35 @@ class Window(pyglet.window.Window):
 
         return False
 
-    def on_resize(self, width: int, height: int) -> Optional[bool]:
-        """
-        Override this function to add custom code to be called any time the window
-        is resized. The main responsibility of this method is updating
-        the projection and the viewport.
+    def _on_resize(self, width: int, height: int):
+        """The internal method called when the window is resized.
 
-        If you are not changing the default behavior when overriding, make sure
-        you call the parent's ``on_resize`` first::
-
-            def on_resize(self, width: int, height: int):
-                super().on_resize(width, height)
-                # Add extra resize logic here
+        The purpose of this method is mainly setting the viewport
+        to the new size of the window. Users should override
+        :meth:`~arcade.Window.on_resize` instead. This method is
+        called first.
 
         :param width: New width
         :param height: New height
         """
-        # NOTE: When a second window is opened pyglet will
-        #       dispatch on_resize during the window constructor.
-        #       The arcade context is not created at that time
-        if hasattr(self, "_ctx"):
-            # Retain projection scrolling if applied
-            self.viewport = (0, 0, width, height)
+
+        # Retain viewport
+        self.viewport = (0, 0, width, height)
 
         return False
+
+    def on_resize(self, width: int, height: int) -> Optional[bool]:
+        """
+        Override this method to add custom actions when the window is resized.
+
+        An internal ``_on_resize`` is called first adjusting the viewport
+        to the new size of the window so there is no need to call
+        ```super().on_resize(width, height)```.
+
+        :param width: New width
+        :param height: New height
+        """
+        pass
 
     def set_min_size(self, width: int, height: int) -> None:
         """Wrap the Pyglet window call to set minimum size
