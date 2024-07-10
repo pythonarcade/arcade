@@ -13,7 +13,6 @@ via hotkeys.
 """
 from __future__ import annotations
 
-import os
 import re
 import sys
 from collections.abc import Mapping
@@ -31,7 +30,8 @@ from doc_helpers import (
     EMPTY_TUPLE,
     get_module_path,
     NotExcludedBy,
-    Vfs
+    Vfs,
+    build_import_tree,
 )
 
 
@@ -39,6 +39,7 @@ REPO_ROOT = SharedPaths.REPO_ROOT
 ARCADE_ROOT = SharedPaths.ARCADE_ROOT
 API_DOC_GENERATION_DIR = SharedPaths.API_DOC_ROOT / "api"
 QUICK_INDEX_FILE_PATH = API_DOC_GENERATION_DIR / "quick_index.rst"
+IMPORT_TREE = build_import_tree(ARCADE_ROOT)
 
 # --- 1. Special rules & excludes ---
 
@@ -459,7 +460,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
         ) -> Generator[tuple[str, str], None, None]:
             kind_list = member_lists[kind]
             for name in filter(member_not_excluded, kind_list):
-                yield name, f"{module_name}.{name}"
+                yield name, IMPORT_TREE.resolve(f"{module_name}.{name}")
 
         # Classes
         for name, full_name in iter_declarations('class'):
