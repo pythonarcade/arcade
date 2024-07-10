@@ -59,30 +59,24 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(width, height, title)
 
-        # Variables that will hold sprite lists
-        self.player_list = None
-
         # Set up the player info
-        self.player_sprite = None
-
-        # Set the background color
-        self.background_color = arcade.color.BLACK
-        self.text = "Move the mouse and press 1-9 to apply an easing function."
-
-    def setup(self):
-        """Set up the game and initialize the variables."""
-
-        # Sprite lists
         self.player_list = arcade.SpriteList()
 
+        # Load the player texture. The ship points up by default. We need it to point right.
+        # That's why we rotate it 90 degrees clockwise.
+        texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
+        texture = texture.rotate_90()
+
         # Set up the player
-        self.player_sprite = Player(
-            ":resources:images/space_shooter/playerShip1_orange.png", SPRITE_SCALING
-        )
+        self.player_sprite = Player(texture, SPRITE_SCALING)
         self.player_sprite.angle = 0
         self.player_sprite.center_x = SCREEN_WIDTH / 2
         self.player_sprite.center_y = SCREEN_HEIGHT / 2
         self.player_list.append(self.player_sprite)
+
+        # Set the background color
+        self.background_color = arcade.color.BLACK
+        self.text = "Move the mouse and press 1-9 to apply an easing function."
 
     def on_draw(self):
         """Render the screen."""
@@ -168,8 +162,7 @@ class MyGame(arcade.Window):
 def main():
     """Main function"""
     window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
-    arcade.run()
+    window.run()
 
 
 if __name__ == "__main__":
