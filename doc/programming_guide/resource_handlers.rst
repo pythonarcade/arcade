@@ -18,15 +18,15 @@ your own resource folders for your project.
 Basic Usage
 -----------
 
-You can register a new resource handler by using ``arcade.resources.add_resource_handler(handle: str, path: Union[str, Path])``:
+You can register a new resource handler by using ``arcade.resources.add_resource_handle(handle: str, path: Union[str, Path])``:
 
 .. code-block:: python
 
-    arcade.resources.add_resource_handler("my_resources", "/home/users/username/my_game/my_res_folder")
+    arcade.resources.add_resource_handle("my_resources", "/home/users/username/my_game/my_res_folder")
 
 .. note::
 
-    The ``add_resource_handler`` function must be given an **absolute** path.
+    The ``add_resource_handle`` function must be given an **absolute** path.
 
 Then, you can use resources from your handler:
 
@@ -40,7 +40,7 @@ Despite needing an absolute path, you can use Python's ``Path.resolve()`` to res
 
     from pathlib import Path
     ...
-    arcade.resources.add_resource_handler("my_resources", Path("assets/my_res_folder").resolve())
+    arcade.resources.add_resource_handle("my_resources", Path("assets/my_res_folder").resolve())
 
 Adding Multiple Directories to a Resource Handler
 -------------------------------------------------
@@ -50,8 +50,8 @@ You can also add multiple directories to a single resource handler:
 .. code-block:: python
 
     # Adding multiple resources folders to the same resource handler:
-    arcade.resources.add_resource_handler("my_resources", "/home/users/username/my_game/my_first_res_folder/")
-    arcade.resources.add_resource_handler("my_resources", "/home/users/username/my_game/my_second_res_folder/")
+    arcade.resources.add_resource_handle("my_resources", "/home/users/username/my_game/my_first_res_folder/")
+    arcade.resources.add_resource_handle("my_resources", "/home/users/username/my_game/my_second_res_folder/")
 
 When multiple directories are added to a single resource handler, Arcade will search through the added directories until
 it locates the requested resource. Here, Arcade will start it's search in the last added directory first, in this case
