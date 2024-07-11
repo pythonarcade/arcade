@@ -56,6 +56,8 @@ RELEASE = VERSION
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx_rtd_theme',
+    'sphinx_rtd_dark_mode',
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.imgconverter',  # Converts .gif for PDF doc build
@@ -133,11 +135,21 @@ napoleon_google_docstring = True
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
 
+# See sphinx-rtd-theme docs for details on each option:
+# https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
     'display_version': True,
+    'logo_only': False,
+    'sticky_navigation': True,
+    'navigation_depth': 3,
+    'collapse_navigation': False,
 }
 
-html_title = f"Python Arcade {version}"
+# The single config option provided by sphinx-rtd-dark-mode
+# https://github.com/MrDogeBro/sphinx_rtd_dark_mode#config
+default_dark_mode = True
+
+html_title = f'Python Arcade {version}'
 
 html_js_files = [
     'https://code.jquery.com/jquery-3.6.3.min.js',
@@ -149,7 +161,7 @@ html_css_files = [
 ]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-# html_logo = '_static/favicon-32x32.png'
+html_logo = '_static/favicon-32x32.png'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -339,6 +351,8 @@ class Visitor(docutils.nodes.SparseNodeVisitor):
 
 def setup(app):
     app.add_css_file("css/custom.css")
+    app.add_js_file("js/custom.js")
+
     # IMPORTANT: We can't use app.add_autodocumenter!
     # See the docstring of ClassDocumenter above for why.
     sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
