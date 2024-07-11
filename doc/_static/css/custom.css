@@ -1,3 +1,13 @@
+:root {
+    --color-emphasis: #73c054;
+
+    --color-sidebar-bg-light: #2b2b2b;
+    --color-sidebar-bg-dark: #171716;
+
+    --color-main-bg-light: #f2f2f2;
+    --color-main-bg-dark: #202020;
+}
+
 body {
     counter-reset: listing;
 }
@@ -13,6 +23,125 @@ body {
         columns: 2;
     }
 }
+
+
+/* Sidebar + top left logo area */
+.wy-side-nav-search,
+.wy-nav-side {
+    background-color: var(--color-sidebar-bg-light) !important;
+}
+html[data-theme="dark"] .wy-side-nav-search,
+html[data-theme="dark"] .wy-nav-side {
+    background-color: var(--color-sidebar-bg-dark) !important;
+}
+
+
+/* Sidebar big headers. */
+.wy-menu-vertical p.caption {
+    color: var(--color-emphasis);
+}
+
+/* 1st level sections */
+html[data-theme="dark"] .wy-menu-vertical li.current > a {
+    background-color: var(--color-main-bg-dark) !important;
+}
+html[data-theme="dark"] .wy-menu-vertical li.toctree-l2 a {
+    background-color: #131313 !important;
+}
+/* 2nd level sections */
+html[data-theme="dark"] .wy-menu-vertical li.toctree-l2.current a {
+    background-color: #222222 !important;
+}
+/* 3rd level sections */
+html[data-theme="dark"] .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a {
+    background-color: #222222 !important;
+    border-right: currentcolor;
+}
+
+
+/* The main content area */
+.wy-nav-content {
+    background-color: var(--color-main-bg-light);
+}
+html[data-theme="dark"] .wy-nav-content {
+    background-color: var(--color-main-bg-dark) !important;
+}
+
+
+/* The area under main content, when content doesn't fill the full height of the window */
+.wy-nav-content-wrap {
+    background-color: #e8e8e8;
+}
+html[data-theme="dark"] .wy-nav-content-wrap {
+    background-color: #252525 !important;
+}
+
+
+/* Mobile top header bar. */
+.wy-nav-top,
+.wy-nav-top a {
+    color: var(--color-emphasis) !important;
+    background-color: var(--color-sidebar-bg-light) !important;
+}
+html[data-theme="dark"] .wy-nav-top,
+html[data-theme="dark"] .wy-nav-top a {
+    color: var(--color-emphasis) !important;
+    background-color: var(--color-sidebar-bg-light) !important;
+}
+
+
+/* Remove RTD "home" icon (small house) before page logo text. */
+.wy-side-nav-search .icon-home::before {
+    content: none;
+}
+
+/* Swap the ordering of default RTD logo/title elements and position accordingly. */
+.wy-side-nav-search .icon-home {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: left;
+
+    padding: 16px 12px;
+
+    color: var(--color-emphasis) !important;
+}
+.wy-side-nav-search .icon-home img.logo {
+    margin: 0 !important;
+    padding: 0px;
+    padding-right: 10px;
+}
+
+
+/* Center the page on desktop screens for better readability. */
+@media screen and (min-width: 768px) {
+    .wy-nav-content {
+        max-width: 900px;
+    }
+
+    /* Page background behind centered area, visible on wide screens. */
+    .wy-body-for-nav {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #cbd0c7;
+
+        /* Subtle box shadow to make the content "pop" when centered. */
+        box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.70);
+        -webkit-box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.70);
+        -moz-box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.70);
+    }
+    html[data-theme="dark"] .wy-body-for-nav {
+        background-color: #262826;
+    }
+
+    /* Required extra rules for navigation & revision flyout to center everything. */
+    .wy-nav-side,
+    .rst-versions {
+        left: inherit;
+    }
+}
+
 
 /* Wrap individual main page items for easier group manipulation
  of contents and images. See PR #2027 for main page css changes */
