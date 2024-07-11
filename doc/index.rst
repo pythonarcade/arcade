@@ -74,6 +74,8 @@ The Python Arcade Library
        example_code/game_jam_2020
        example_code/sample_games
 
+.. _main-page-tutorials:
+
 .. container:: main-page-item-wrapper
 
     .. image:: images/learn.svg
