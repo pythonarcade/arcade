@@ -253,7 +253,7 @@ to align them neatly */
     display: flex;
     margin-left: -10px;
 }
-#the-python-arcade-library h2 {
+/* #the-python-arcade-library h2 {
     font-size: var(--font-size--small);
     font-weight: 400;
     margin-bottom: 0;
@@ -262,7 +262,7 @@ to align them neatly */
     text-transform: uppercase;
     width: 100%;
     display: flex;
-}
+} */
 .main-page-box > .main-page-box-gh {
     display: flex;
     align-items: center;
