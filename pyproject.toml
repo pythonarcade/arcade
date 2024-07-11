@@ -38,26 +38,28 @@ Book = "https://learn.arcade.academy"
 # Note: this actually requires Python 3.9 due to sphinx==7.2.2
 # Used for dev work
 dev = [
+    # --- Documentation: Sphinx 7 based currently
+    "sphinx>=7.3.7,<8",  # April 2024
+    "sphinx_rtd_theme==2.0.0",  # Nov 2023
+    "sphinx-autobuild==2024.4.16",  # April 2024
+    "sphinx-copybutton==0.5.2", # April 2023
+    "sphinx-sitemap==2.6.0",  # April 2024
+    "pygments==2.17.2",  # 2.18 has breaking changes in lexer
+    "docutils==0.20.1",  # ?
+    "typer[all]==0.11.0",
+    # "pyyaml==6.0.1",
+    # "readthedocs-sphinx-search==0.3.2",
+    # "sphinx-autodoc-typehints==2.0.1",
+    # --- tools and build
     "black",
     "pytest",
-    "mypy",
-    "ruff",
+    "pytest-cov",
+    "pytest-mock",
     "coverage",
     "coveralls",
-    "pytest-mock",
-    "pytest-cov",
-    "pygments==2.17.2",
-    "docutils==0.20.1",
-    "sphinx_rtd_theme==2.0.0",
-    "readthedocs-sphinx-search==0.3.2",
-    "sphinx-autodoc-typehints==2.0.1",
+    "mypy",
+    "ruff",
     "pyright==1.1.355",
-    "pyyaml==6.0.1",
-    "sphinx>=7.3.7,<8",
-    "sphinx-autobuild==2024.4.16",
-    "sphinx-copybutton==0.5.2",
-    "sphinx-sitemap==2.5.1",
-    "typer[all]==0.11.0",
     "wheel",
 ]
 # Testing only

@@ -134,8 +134,7 @@ napoleon_google_docstring = True
 html_theme = 'sphinx_rtd_theme'
 
 html_theme_options = {
-    # "light_logo": "../_images/arcade-logo.svg",
-    # "dark_logo": "../_images/arcade-logo.svg",
+    'display_version': True,
 }
 
 html_title = f"Python Arcade {version}"
@@ -174,12 +173,13 @@ html_baseurl = 'https://api.arcade.academy/'
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
 # html_codeblock_linenos_style = 'table'
 
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                       'pyglet': ('https://pyglet.readthedocs.io/en/latest/', None),
-                       'PIL': ('https://pillow.readthedocs.io/en/stable', None),
-                       'pymunk': ('https://www.pymunk.org/en/latest/', None)
-                       }
+# Configuration for intersphinx enabling linking other projects
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'pyglet': ('https://pyglet.readthedocs.io/en/latest/', None),
+    'PIL': ('https://pillow.readthedocs.io/en/stable', None),
+    'pymunk': ('https://www.pymunk.org/en/latest/', None),
+}
 
 # Fix: "more than one target found for cross-reference 'Texture'"
 suppress_warnings = [
