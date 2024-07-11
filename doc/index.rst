@@ -106,6 +106,7 @@ The Python Arcade Library
        :caption: Guide
 
        programming_guide/sprites/index
+       programming_guide/event_loop
        programming_guide/keyboard
        programming_guide/sound
        programming_guide/textures
