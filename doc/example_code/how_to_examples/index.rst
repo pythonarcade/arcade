@@ -1,7 +1,7 @@
 .. _example-code:
 
-How-To Example Code
-===================
+Examples
+========
 
 
 Starting Templates

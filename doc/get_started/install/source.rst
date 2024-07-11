@@ -1,5 +1,5 @@
-Installation From Source
-========================
+From Source
+===========
 
 First step is to clone the repository:
 

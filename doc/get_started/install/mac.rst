@@ -1,5 +1,5 @@
-Installation on Mac
-===================
+Mac
+===
 
 Go to the `Python website <https://www.python.org/downloads/>`_ and download Python.
 

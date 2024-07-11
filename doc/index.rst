@@ -74,12 +74,12 @@ Arcade is developed by volunteers.
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: About
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Getting Started
 
    get_started/install/index
@@ -88,7 +88,7 @@ Arcade is developed by volunteers.
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Manual
 
    programming_guide/sprites/index
@@ -109,21 +109,21 @@ Arcade is developed by volunteers.
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Contributing
 
    get_started/introduction
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Community
 
    get_started/introduction
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: API Reference
 
    get_started/introduction

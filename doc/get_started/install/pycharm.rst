@@ -1,5 +1,5 @@
-Setting Up a Virtual Environment In PyCharm
-===========================================
+Virtual Environment In PyCharm
+==============================
 
 A Python virtual environment (venv) allows libraries to be installed for just a single
 project, rather than shared across everyone using the computer. It also does
