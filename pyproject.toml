@@ -46,20 +46,20 @@ dev = [
     "sphinx-sitemap==2.6.0",  # April 2024
     "pygments==2.17.2",  # 2.18 has breaking changes in lexer
     "docutils==0.20.1",  # ?
-    "typer[all]==0.11.0",
     # "pyyaml==6.0.1",
     # "readthedocs-sphinx-search==0.3.2",
     # "sphinx-autodoc-typehints==2.0.1",
     # --- tools and build
-    "black",
     "pytest",
     "pytest-cov",
     "pytest-mock",
     "coverage",
-    "coveralls",
-    "mypy",
+    "coveralls",  # Do we really need this?
+    "black",
     "ruff",
-    "pyright==1.1.355",
+    "mypy",
+    "pyright==1.1.355",    
+    "typer[all]==0.11.0",  # Needed for make.py
     "wheel",
 ]
 # Testing only
