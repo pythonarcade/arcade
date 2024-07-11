@@ -53,7 +53,7 @@ The Python Arcade Library
 
     .. toctree::
        :maxdepth: 1
-       :caption: Get Started
+       :caption: Getting Started
 
        get_started/introduction
        get_started/get_started
@@ -68,7 +68,7 @@ The Python Arcade Library
 
     .. toctree::
        :maxdepth: 1
-       :caption: Examples
+       :caption: Example Code
 
        example_code/how_to_examples/index
        example_code/game_jam_2020
@@ -84,7 +84,7 @@ The Python Arcade Library
 
     .. toctree::
        :maxdepth: 1
-       :caption: Tutorials
+       :caption: Tutorial Projects
 
        tutorials/platform_tutorial/index
        tutorials/pymunk_platformer/index
@@ -105,7 +105,7 @@ The Python Arcade Library
 
     .. toctree::
        :maxdepth: 1
-       :caption: Guide
+       :caption: Manual
 
        programming_guide/sprites/index
        programming_guide/keyboard

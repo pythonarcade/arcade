@@ -41,6 +41,7 @@ dev = [
     # --- Documentation: Sphinx 7 based currently
     "sphinx>=7.3.7,<8",  # April 2024
     "sphinx_rtd_theme==2.0.0",  # Nov 2023
+    "sphinx-rtd-dark-mode==1.3.0",
     "sphinx-autobuild==2024.4.16",  # April 2024
     "sphinx-copybutton==0.5.2", # April 2023
     "sphinx-sitemap==2.6.0",  # April 2024
