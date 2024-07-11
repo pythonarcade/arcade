@@ -15,14 +15,17 @@ WINDOW_TITLE = 'Sprite Stress Test'
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 SPRITE_COUNT = 3000
-COIN_START_SCALE = 0.1 # 
-COIN_END_SCALE = 10.0 # arcade.Vec2(10.0, 10.0)
+COIN_START_SCALE = 0.1
+COIN_END_SCALE = 10.0
 
-COLLISION_BOX_START = arcade.Vec2(0.1, 0.1)
+COLLISION_BOX_SIZE = arcade.Vec2(100, 100)
+COLLISION_BOX_MAX_SCALE = arcade.Vec2(WINDOW_WIDTH / 200.0, WINDOW_HEIGHT / 200.0)
 
 # -- TEMP FOR TESTING --
 import cProfile
 
+
+FIXED_UPDATE_PROFILER = cProfile.Profile()
 
 class MyGame(arcade.Window):
 
@@ -38,10 +41,24 @@ class MyGame(arcade.Window):
             )
             for _ in range(SPRITE_COUNT)
         ])
+        self.collision_box = arcade.SpriteSolidColor(
+            COLLISION_BOX_SIZE.x, COLLISION_BOX_SIZE.y,
+            self.center_x, self.center_y
+        )
+
+    def on_update(self, delta_time: float) -> bool | None:
+        pass
+
+    def on_fixed_update(self, delta_time: float):
+        with FIXED_UPDATE_PROFILER:
+            # We will be moving and colliding the sprites in the fixed update
+            # as we don't want the lag to cause tunneling, may cause death spiraling.
+            pass
 
     def on_draw(self) -> bool | None:
         self.clear()
         self.coin_sprites.draw()
+        arcade.draw_sprite(self.collision_box)
 
 
 def main():
@@ -50,3 +67,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    FIXED_UPDATE_PROFILER.print_stats('time')
