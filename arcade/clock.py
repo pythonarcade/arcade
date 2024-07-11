@@ -101,7 +101,9 @@ class FixedClock(Clock):
         super().__init__()
 
     def set_tick_speed(self, new_tick_speed: float):
-        raise ValueError("It is not safe to change the tick speed of a fixed clock post initilisation.")
+        raise ValueError(
+            "It is not safe to change the tick speed of a fixed clock post initilisation."
+        )
 
     def tick(self, delta_time: float):
         if delta_time != self._fixed_rate:
