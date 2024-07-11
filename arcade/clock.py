@@ -20,8 +20,8 @@ class Clock:
     Args:
         initial_elapsed (float, optional): The amount of time the clock should assume has already occured.
                                            Defaults to 0.0
-        initial_tick: The number of ticks the clock should assume has already occured. Defaults to 0.
-        tick_speed: A multiplier on how the 'speed' of time.
+        initial_tick (int, optional): The number of ticks the clock should assume has already occured. Defaults to 0.
+        tick_speed (float, optional): A multiplier on how the 'speed' of time.
                     i.e. a value of 0.5 means time elapsed half as fast for this clock. Defaults to 1.0.
     """
 
