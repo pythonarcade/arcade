@@ -143,6 +143,44 @@ html[data-theme="dark"] .wy-nav-top a {
 }
 
 
+/*
+ * Togglable sidebar sections functionality.
+ *
+ * Directly adapted from Godot's own custom RDT code:
+ * https://github.com/godotengine/godot-docs/blob/master/_static/css/custom.css
+ *
+ * <sidebar_toggle>
+ */
+.wy-menu-vertical p.caption {
+    cursor: pointer;
+}
+.wy-menu-vertical p.caption.active {
+    background-color: var(--navbar-category-active-color);
+}
+.wy-menu-vertical p.caption:hover {
+    background-color: var(--navbar-background-color-hover);
+}
+.wy-menu-vertical p.caption.active .caption-text:before {
+    transform: rotate(90deg);
+}
+.wy-menu-vertical p.caption .caption-text:before {
+    content: "❯";
+    display: inline-block;
+    margin-left: -4px;
+    transition: transform 0.2s;
+    width: 16px;
+    height: 32px;
+    transform-origin: 2px 16px;
+}
+.wy-menu-vertical p.caption + ul {
+    display: none;
+}
+.wy-menu-vertical p.caption + ul.active {
+    display: block;
+}
+/* </sidebar_toggle> */
+
+
 /* Wrap individual main page items for easier group manipulation
  of contents and images. See PR #2027 for main page css changes */
 .main-page-item-wrapper {
