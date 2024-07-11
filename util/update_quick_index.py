@@ -115,6 +115,12 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.sprite_list.collision"
         ]
     },
+    "clock.rst": {
+        "title": "Clock",
+        "use_declarations_in": [
+            "arcade.clock",
+        ],
+    },
     "text.rst": {
         "title": "Text",
         "use_declarations_in": [

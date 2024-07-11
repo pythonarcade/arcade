@@ -25,6 +25,7 @@ python -m arcade.examples.gl.transform_feedback_geo
 from array import array
 import random
 import arcade
+import arcade.clock
 from arcade.gl import BufferDescription
 
 # Do the math to figure out our screen dimensions
@@ -163,7 +164,7 @@ class MyGame(arcade.Window):
         self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
 
         # Set uniforms in the program
-        self.gravity_program["dt"] = self.global_clock.delta_time
+        self.gravity_program["dt"] = arcade.clock.GLOBAL_CLOCK.delta_time
         self.gravity_program["force"] = 10.0
         self.gravity_program["gravity_pos"] = self.mouse_pos
 
