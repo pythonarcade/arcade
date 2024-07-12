@@ -195,13 +195,13 @@ API_FILE_TO_TITLE_AND_MODULES = {
         ]
     },
     "game_controller.rst": {
-        "title": "Game Controller Support",
+        "title": "Game Controller",
         "use_declarations_in": [
             "arcade.controller"
         ]
     },
     "joysticks.rst": {
-        "title": "Joystick Support",
+        "title": "Joystick",
         "use_declarations_in": [
             "arcade.joysticks"
         ]
@@ -227,7 +227,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         ]
     },
     "isometric.rst": {
-        "title": "Isometric Map Support (incomplete)",
+        "title": "Isometric Map (incomplete)",
         "use_declarations_in": [
             "arcade.isometric"
         ]

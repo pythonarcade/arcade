@@ -16,7 +16,6 @@ Select the instructions for your platform:
    mac
    linux
    source
-   pycharm
    obsolete
 
 Advanced
