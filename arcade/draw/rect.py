@@ -20,7 +20,7 @@ def draw_texture_rect(
     color: Color = WHITE,
     angle=0.0,
     blend=True,
-    alpha=1.0,
+    alpha=255,
     pixelated=False,
     atlas: Optional[TextureAtlasBase] = None,
 ) -> None:
@@ -32,10 +32,13 @@ def draw_texture_rect(
     :param color: Color of the texture. Defaults to white.
     :param angle: Rotation of the texture in degrees. Defaults to zero.
     :param blend: If True, enable alpha blending. Defaults to True.
-    :param alpha: Transparency of image. 0.0 is fully transparent, 1.0 (default) is visible.
+    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is fully opaque.
     :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
     """
     ctx = get_window().ctx
+
+    # Clamp alpha to 0-255
+    alpha_normalized = max(0, min(255, alpha)) / 255.0
 
     if blend:
         ctx.enable(ctx.BLEND)
@@ -60,7 +63,7 @@ def draw_texture_rect(
     program["size"] = rect.width, rect.height
     program["angle"] = angle
     program["texture_id"] = float(texture_id)
-    program["spritelist_color"] = 1.0, 1.0, 1.0, alpha
+    program["spritelist_color"] = 1.0, 1.0, 1.0, alpha_normalized
 
     geometry.render(program, mode=gl.POINTS, vertices=1)
 
@@ -72,7 +75,7 @@ def draw_sprite(
     sprite: BasicSprite,
     *,
     blend: bool = True,
-    alpha=1.0,
+    alpha=255,
     pixelated=False,
     atlas: Optional[TextureAtlasBase] = None,
 ) -> None:
@@ -81,7 +84,7 @@ def draw_sprite(
 
     :param sprite: The sprite to draw.
     :param blend: Draw the sprite with or without alpha blending
-    :param alpha: Fade the sprite from completely transparent to opaque (range: 0.0 to 1.0)
+    :param alpha: Fade the sprite from completely transparent to opaque (range: 0 to 255)
     :param pixelated: If true the sprite will be render in pixelated style. Otherwise smooth/linear
     :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
     """
@@ -102,7 +105,7 @@ def draw_sprite_rect(
     rect: Rect,
     *,
     blend: bool = True,
-    alpha=1.0,
+    alpha=255,
     pixelated=False,
     atlas: Optional[TextureAtlasBase] = None,
 ) -> None:
@@ -112,7 +115,7 @@ def draw_sprite_rect(
     :param sprite: The sprite to draw.
     :param rect: The location and size of the sprite
     :param blend: Draw the sprite with or without alpha blending
-    :param alpha: Fade the sprite from completely transparent to opaque (range: 0.0 to 1.0)
+    :param alpha: Fade the sprite from completely transparent to opaque (range: 0 to 255)
     :param pixelated: If true the sprite will be render in pixelated style. Otherwise smooth/linear
     :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
     """

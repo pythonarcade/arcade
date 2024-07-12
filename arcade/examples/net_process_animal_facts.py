@@ -111,7 +111,7 @@ class AnimalFacts(arcade.View):
             texture,
             arcade.XYWH(self.window.width / 2, self.window.height / 2, texture.width * scale, texture.height * scale),
             blend=True,
-            alpha=alpha,
+            alpha=int(alpha * 255),
         )
 
     def on_update(self, delta_time: float):
