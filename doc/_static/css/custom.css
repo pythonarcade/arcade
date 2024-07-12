@@ -217,6 +217,57 @@ html[data-theme="dark"] .wy-nav-top a {
     font-size: 85%;
     color: var(--dark-link-color);
 }
+
+
+/*
+ * Facelift example page with custom card layout
+ */
+#examples figure {
+  display: inline-flex;
+  align-items: center;
+  flex-direction: column;
+
+  background-color: #eee;
+
+  padding: 24px;
+  padding-bottom: 0;
+
+  /* Tuned so that all cards with up to 3 rows of text (95%) will be the same height. */
+  min-height: 230px;
+
+  margin-right: 4px;
+
+  width: 190px !important;
+
+  border: #ddd 1px solid;
+  border-radius: 8px;
+}
+
+#examples figure figcaption {
+    padding: 16px 0;
+}
+#examples figure figcaption .headerlink {
+    display: none;
+}
+#examples figure figcaption * {
+    margin: 0;
+    display: inline-block;
+}
+#examples figure img {
+    /* Notice: the uniformity of these "cards" is based on the images all being same height */
+    height: 100px;
+
+    border: #bbb 1px solid;
+    border-radius: 8px;
+}
+
+html[data-theme="dark"] #examples figure {
+  background-color: #2b2b2b;
+  border-color: #333;
+}
+html[data-theme="dark"] #examples figure img {
+    border: #111 2px solid;
+}
 /* Wrap individual main page items for easier group manipulation
  of contents and images. See PR #2027 for main page css changes */
 .main-page-item-wrapper {
