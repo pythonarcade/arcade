@@ -23,7 +23,7 @@ The winning team consisted of a single member, EmberDuck.
 He created a very polished game, focusing in on one core idea and just nailing it perfectly.
 This is a game where the player controls 3 different characters which need to jump over obstacles.
 Check out the
-`source code <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/Score_AAA>`_.
+`source code <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/Score_AAA>`__.
 
 .. figure:: https://raw.githubusercontent.com/python-discord/game-jam-2020/master/Finalists/Score_AAA/ressources/Screenshot_full.png
     :target: https://github.com/python-discord/game-jam-2020/tree/master/Finalists/Score_AAA
@@ -38,7 +38,7 @@ different levels. The slimes can either move together in a stack, or the player 
 apart to control each of them one by one. The physics in this game was a nice addition and tied
 the game together nicely. The graphics in this game were quite beautiful and the UI complemented
 it well. Check out the 
-`source code <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/gamer_gang>`_.
+`source code <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/gamer_gang>`__.
 
 .. figure:: images/gamer_gang.png
     :target: https://github.com/python-discord/game-jam-2020/tree/master/Finalists/gamer_gang
@@ -52,7 +52,7 @@ the player can switch between 3 different wizards, each having their own special
 The red wizard has great strength, while the green wizard has a lot of defense and the blue 
 wizard is quick and fast. A unique and exceptional feature of this game was the backend server 
 which allowed a player to register/login. Check out the 
-`source code <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/monkeys-and-frogs-on-fire>`_
+`source code <https://github.com/python-discord/game-jam-2020/tree/master/Finalists/monkeys-and-frogs-on-fire>`__
 
 Hatchlings
 ----------

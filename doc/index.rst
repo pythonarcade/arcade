@@ -79,6 +79,7 @@ Arcade is developed by volunteers.
 
    about/intro
    about/faq
+   programming_guide/release_notes
 
 .. toctree::
    :hidden:
@@ -109,6 +110,7 @@ Arcade is developed by volunteers.
    programming_guide/performance_tips
    programming_guide/headless
    programming_guide/vsync
+   programming_guide/pygame_comparison
 
 .. toctree::
    :hidden:
@@ -124,8 +126,6 @@ Arcade is developed by volunteers.
 
    get_started/how_to_get_help
    games/index
-   .. games/sample_games
-   .. games/game_jam_2020
 
 .. toctree::
    :hidden:
