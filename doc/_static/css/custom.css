@@ -268,6 +268,109 @@ html[data-theme="dark"] #examples figure {
 html[data-theme="dark"] #examples figure img {
     border: #111 2px solid;
 }
+
+
+/*
+ * Syntax highlight color fixes for basic code blocks in dark mode.
+ * <code_colors>
+ */
+html[data-theme="dark"] pre {
+    /* baseline */
+    background-color: #282828 !important;
+    color: #e0e0e0 !important;
+}
+html[data-theme="dark"] pre .linenos {
+    /* line numbers */
+    color: #888 !important;
+    border-right-color: #404040 !important;
+}
+html[data-theme="dark"] pre .nc {
+    /* class declarations */
+    color: #0880FF !important;
+}
+html[data-theme="dark"] pre .kc,
+html[data-theme="dark"] pre .kn,
+html[data-theme="dark"] pre .nb,
+html[data-theme="dark"] pre .bp,
+html[data-theme="dark"] pre .k {
+    /* `None` + `import` + typehints + `self` + keywords */
+    color: var(--color-emphasis) !important;
+}
+html[data-theme="dark"] pre .fm,
+html[data-theme="dark"] pre .vm,
+html[data-theme="dark"] pre .nf {
+    /* function + method declarations + `__name__` */
+    color: #00B7FF !important;
+    font-weight: bold;
+}
+html[data-theme="dark"] pre .nd,
+html[data-theme="dark"] pre .ow,
+html[data-theme="dark"] pre .si,
+html[data-theme="dark"] pre .sa {
+    /* decorators + `in` + f-string tokens */
+    color: #D56CF2 !important;
+}
+html[data-theme="dark"] pre .s1,
+html[data-theme="dark"] pre .s2,
+html[data-theme="dark"] pre .sd {
+    /* strings + docstrings */
+    color: #FF873F !important;
+}
+html[data-theme="dark"] pre .c1 {
+    /* comments */
+    color: #4c8831 !important;
+}
+html[data-theme="dark"] pre .o,
+html[data-theme="dark"] pre .mf,
+html[data-theme="dark"] pre .mi {
+    /* operators + numeral variable values */
+    color: #afafaf !important;
+}
+html[data-theme="dark"] pre .gp {
+    /* The REPL `>>>` token */
+    color: var(--color-emphasis) !important;
+}
+html[data-theme="dark"] pre .hll {
+    /* Line highlights background */
+    background-color: #323331 !important;
+}
+
+html[data-theme="dark"] .rst-content code.literal {
+    /* in-line code blocks */
+    color: #FF873F;
+}
+/* </code_colors> */
+
+
+/*
+ * Color fixes for Sphinx-generated class and function info boxes in dark mode.
+ * <sphinx_colors>
+ */
+html.writer-html4 .rst-content dl:not(.docutils) > dt,
+html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) > dt {
+    border-color: var(--color-emphasis);
+    color: #383838;
+    background-color: #eef6eb;
+}
+html[data-theme="dark"].writer-html4 .rst-content dl:not(.docutils) > dt,
+html[data-theme="dark"].writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) > dt {
+    border-color: #689d52 !important;
+    color: #ababab !important;
+    background-color: #262826 !important;
+}
+
+html[data-theme="dark"] .sig.py .descname .pre,
+html[data-theme="dark"] .sig.py .descclassname .pre {
+    color: #eee !important;
+}
+html[data-theme="dark"] .rst-content .viewcode-link {
+    /* make the "[source]" link less popping in the definition boxes */
+    color: var(--dark-link-color);
+    opacity: 0.3;
+}
+/* </sphinx_colors> */
+
+
 /* Wrap individual main page items for easier group manipulation
  of contents and images. See PR #2027 for main page css changes */
 .main-page-item-wrapper {
