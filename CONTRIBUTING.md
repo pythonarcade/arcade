@@ -91,6 +91,8 @@ The following command will run black for you if you do not want to configure you
 a good idea to run this command when you are finished working anyways, as our CI will use this to check that
 the formatting is correct.
 
+Docstring should be formatted using [Google Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
+
 ```bash
 python make.py format
 ```
@@ -222,7 +224,6 @@ run the following:
 ```console
 ./make.py latexpdf
 ```
-
 
 ## Optional: Improve Ergonomics on Mac and Linux
 
