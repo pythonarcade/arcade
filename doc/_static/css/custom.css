@@ -103,21 +103,31 @@ html[data-theme="dark"] .wy-nav-top a {
     content: none;
 }
 
-/* Swap the ordering of default RTD logo/title elements and position accordingly. */
+/* Redesign the top-left logo area. */
 .wy-side-nav-search .icon-home {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: column-reverse;
     align-items: center;
-    justify-content: left;
 
     padding: 16px 12px;
+    padding-bottom: 32px;
 
     color: var(--color-emphasis) !important;
+
+    border-radius: 16px;
 }
 .wy-side-nav-search .icon-home img.logo {
     margin: 0 !important;
-    padding: 0px;
-    padding-right: 10px;
+    padding: 0;
+    max-width: 100px;
+    padding-bottom: 16px;
+}
+.wy-side-nav-search > div.version {
+    font-size: 85%;
+    /* Same monospace as our `pre` blocks */
+    font-family: SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;
+    margin-top: -38px;
+    margin-bottom: 24px;
 }
 
 
