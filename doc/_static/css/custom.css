@@ -6,6 +6,10 @@
 
     --color-main-bg-light: #f2f2f2;
     --color-main-bg-dark: #202020;
+
+    /* Variable defined by the rtd dark mode extension.
+     * Explicitly redefined to match the light mode link color. */
+    ---dark-link-color: #2980b9;
 }
 
 body {
@@ -22,6 +26,13 @@ body {
     .toc-outside-links {
         columns: 2;
     }
+}
+
+
+/* Fix some basic html element colors in dark mode */
+html[data-theme="dark"] input,
+html[data-theme="dark"] label {
+    color: var(--dark-text-color);
 }
 
 
@@ -199,6 +210,13 @@ html[data-theme="dark"] .wy-nav-top a {
 /* </sidebar_toggle> */
 
 
+/* Fix the monospaced fonts in API quick reference listing */
+#quickapi code {
+    background: none;
+    border: none;
+    font-size: 85%;
+    color: var(--dark-link-color);
+}
 /* Wrap individual main page items for easier group manipulation
  of contents and images. See PR #2027 for main page css changes */
 .main-page-item-wrapper {
