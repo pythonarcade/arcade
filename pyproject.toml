@@ -35,7 +35,6 @@ Source = "https://github.com/pythonarcade/arcade"
 Book = "https://learn.arcade.academy"
 
 [project.optional-dependencies]
-# Note: this actually requires Python 3.9 due to sphinx==7.2.2
 # Used for dev work
 dev = [
     # --- Documentation: Sphinx 7 based currently
