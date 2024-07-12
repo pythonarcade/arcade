@@ -111,7 +111,6 @@ Arcade is developed by volunteers.
    :maxdepth: 1
    :caption: Contributing
 
-   get_started/how_to_get_help
    contributing_guide/index
 
 .. toctree::
@@ -119,6 +118,7 @@ Arcade is developed by volunteers.
    :maxdepth: 1
    :caption: Community
 
+   get_started/how_to_get_help
    games/sample_games
    games/game_jam_2020
 
