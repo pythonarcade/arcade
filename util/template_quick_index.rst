@@ -11,12 +11,8 @@
 
 .. _quick_index:
 
-API Index
-=========
+Quick Index
+===========
 
-* :ref:`color`
-* :ref:`csscolor`
-* :ref:`key`
-* :ref:`resources`
-
-
+The quick index is a fast way to look up classes and functions in arcade.
+Note that attributes are not included here.

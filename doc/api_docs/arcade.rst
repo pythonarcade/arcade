@@ -21,6 +21,7 @@ for the Python Arcade library. See also:
     api/camera_2d
     api/sprite_list
     api/sprite_scenes
+    api/clock
     api/text
     api/tilemap
     api/texture

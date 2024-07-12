@@ -23,6 +23,7 @@ from array import array
 import math
 import random
 import arcade
+import arcade.clock
 from arcade.gl import BufferDescription
 
 # Do the math to figure out our screen dimensions
@@ -125,7 +126,7 @@ class MyGame(arcade.Window):
         self.ctx.point_size = 2 * self.get_pixel_ratio()
 
         # Set uniforms in the program
-        self.gravity_program["dt"] = self.global_clock.delta_time
+        self.gravity_program["dt"] = arcade.clock.GLOBAL_CLOCK.delta_time
         self.gravity_program["force"] = 0.25
         self.gravity_program["gravity_pos"] = math.sin(self.time * 0.77) * 0.25, math.cos(self.time) * 0.25
 

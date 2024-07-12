@@ -2,13 +2,15 @@
 Interpolate a sprite's motion which is calculated in fixed update.
 
 The bouncing done in this example is very bare-bones, and unstable.
-The fixed update has been slowed down to highlight the value of interpolation,
+The tick speed of the global clock has been slowed down.
+This helps highlight the natural 'laggy' behaviour of fixed update physics
 the fixed update should be kept close to the nominal update rate, or even faster.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.fixed_update_interpolation.py
 """
 import arcade
+import arcade.clock
 
 # --- Constants ---
 GRAVITY = 98.1  # 98.1 px per second
@@ -22,10 +24,13 @@ SCREEN_TITLE = "Sprite Follow Path Simple Example"
 class Game(arcade.Window):
 
     def __init__(self):
-        super().__init__(fixed_rate=1/120.0)
+        super().__init__(fixed_rate=1/60.0)
         self.unfixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.RADICAL_RED)
         self.interpolated_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.ORANGE)
         self.fixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.GOLD)
+
+        # by setting the tick speed to 0.1 the standard update perseves time at a tenth speed
+        arcade.clock.GLOBAL_CLOCK.set_tick_speed(0.1)
 
         # We store the last position of the fixed sprite to find the interpolated sprite's position
         self.last_position = 0.0
@@ -70,7 +75,7 @@ class Game(arcade.Window):
         self.unfixed_sprite.center_y += self.unfixed_sprite.change_y * delta_time
 
         self.interpolated_sprite.center_y = arcade.math.lerp(
-            self.last_position, self.fixed_sprite.center_y, self.global_fixed_clock.fraction
+            self.last_position, self.fixed_sprite.center_y, arcade.clock.GLOBAL_FIXED_CLOCK.fraction
         )
 
     def on_draw(self):

@@ -1,5 +1,5 @@
-Installation on Linux
-=====================
+Linux
+=====
 
 The Arcade library is Python 3.7+ only. First check your version of Python to ensure
 you have 3.7 or higher:
