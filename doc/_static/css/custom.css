@@ -58,6 +58,14 @@ html[data-theme="dark"] .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > 
     border-right: currentcolor;
 }
 
+/* Fix nav tree item visibility for API reference page titles */
+.toctree-l3 code,
+html[data-theme="dark"] .toctree-l3 code {
+    background: none;
+    border: none;
+    font-size: 90%;
+}
+
 
 /* The main content area */
 .wy-nav-content {
