@@ -77,6 +77,9 @@ Arcade is developed by volunteers.
    :maxdepth: 1
    :caption: About
 
+   about/intro
+   about/faq
+
 .. toctree::
    :hidden:
    :maxdepth: 1
@@ -85,6 +88,7 @@ Arcade is developed by volunteers.
    get_started/install/index
    example_code/index
    tutorials/index
+   get_started/arcade_book
    api_docs/resources
 
 .. toctree::
@@ -119,8 +123,9 @@ Arcade is developed by volunteers.
    :caption: Community
 
    get_started/how_to_get_help
-   games/sample_games
-   games/game_jam_2020
+   games/index
+   .. games/sample_games
+   .. games/game_jam_2020
 
 .. toctree::
    :hidden:

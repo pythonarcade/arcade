@@ -1,7 +1,7 @@
 .. _get-started-here:
 
-Start Here
-==========
+The Arcade Book
+===============
 
 .. image:: images/treasure-map.svg
     :width: 40%

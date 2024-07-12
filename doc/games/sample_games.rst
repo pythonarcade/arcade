@@ -1,7 +1,7 @@
 .. _sample_games:
 
-Games Made With Arcade
-======================
+User-submitted Games
+====================
 
 Here are some sample games made with Arcade.
 Have a game you'd like to share here? E-mail
