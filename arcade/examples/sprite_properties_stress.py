@@ -117,9 +117,8 @@ class MyGame(arcade.Window):
 
             # apply velocities
             for sprite in self.coin_sprites:
-                old_pos = sprite.position
                 frame_vel = sprite.velocity * delta_time
-                sprite.position =old_pos[0] + frame_vel[0], old_pos[1] + frame_vel[1]
+                sprite.position += frame_vel
         print(f'update speed: {time.perf_counter_ns() - start} ns')
 
     def on_draw(self) -> bool | None:
