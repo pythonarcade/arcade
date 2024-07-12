@@ -85,6 +85,7 @@ Arcade is developed by volunteers.
    get_started/install/index
    example_code/index
    tutorials/index
+   api_docs/resources
 
 .. toctree::
    :hidden:
@@ -104,29 +105,30 @@ Arcade is developed by volunteers.
    programming_guide/performance_tips
    programming_guide/headless
    programming_guide/vsync
-   programming_guide/pygame_comparison
-   programming_guide/arcade_vs_pygame
 
 .. toctree::
    :hidden:
    :maxdepth: 1
    :caption: Contributing
 
-   get_started/introduction
+   get_started/how_to_get_help
+   contributing_guide/index
 
 .. toctree::
    :hidden:
    :maxdepth: 1
    :caption: Community
 
-   get_started/introduction
+   games/sample_games
+   games/game_jam_2020
 
 .. toctree::
    :hidden:
    :maxdepth: 1
    :caption: API Reference
 
-   get_started/introduction
+   Index<api_docs/api/quick_index>
+   Reference<api_docs/arcade>
 
 
 .. Indices and tables
