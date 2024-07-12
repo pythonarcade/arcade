@@ -378,7 +378,7 @@ def get_file_declarations(
         instances used to parse each.
     """
 
-    print("Parsing: ", filepath)
+    # print("Parsing: ", filepath)
     filename = filepath.name
 
     # Set up our return value dict
@@ -428,7 +428,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
         full_api_file_name = API_DOC_GENERATION_DIR / api_file_name
         title = page_config.get('title')
         use_declarations_in = page_config.get('use_declarations_in', EMPTY_TUPLE)
-        print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
+        # print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
 
     except Exception as e:
         print(f"ERROR: Unintelligible config data for {api_file_name!r}: {e}")
