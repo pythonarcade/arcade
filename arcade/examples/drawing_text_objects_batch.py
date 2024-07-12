@@ -15,6 +15,8 @@ python -m arcade.examples.drawing_text_objects_batch
 import arcade
 from pyglet.graphics import Batch
 
+# Load fonts bumbled with arcade such as the Kenney fonts
+arcade.resources.load_system_fonts()
 
 WINDOW_WIDTH = 1280  # Window width in pixels
 WINDOW_HEIGHT = 800  # Window height in pixels

@@ -17,7 +17,7 @@ from pyglet.display.base import ScreenMode
 from pyglet.window import MouseCursor
 
 import arcade
-from arcade.clock import Clock, FixedClock
+from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
 from arcade.sections import SectionManager
@@ -209,8 +209,8 @@ class Window(pyglet.window.Window):
             except pyglet.gl.GLException:
                 LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
-        self._global_clock: Clock = Clock()
-        self._fixed_clock: FixedClock = FixedClock(self._global_clock, fixed_rate)
+        _setup_clock()
+        _setup_fixed_clock(fixed_rate)
 
         # We don't call the set_draw_rate function here because unlike the updates, the draw scheduling
         # is initially set in the call to pyglet.app.run() that is done by the run() function.
@@ -233,6 +233,8 @@ class Window(pyglet.window.Window):
         # isn't derived from the Window class.
         # self.invalid = False
         set_window(self)
+
+        self.push_handlers(on_resize=self._on_resize)
 
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         self._background_color: Color = TRANSPARENT_BLACK
@@ -417,15 +419,15 @@ class Window(pyglet.window.Window):
         dispatches the on_update events.
         It also accumulates time and runs fixed updates until the Fixed Clock catches up to the global clock
         """
-        self._global_clock.tick(delta_time)
+        GLOBAL_CLOCK.tick(delta_time)
         fixed_count = 0
-        while self._fixed_clock.accumulated >= self._fixed_rate and (
+        while GLOBAL_FIXED_CLOCK.accumulated >= self._fixed_rate and (
             self._fixed_frame_cap is None or fixed_count <= self._fixed_frame_cap
         ):
-            self._fixed_clock.tick(self._fixed_rate)
+            GLOBAL_FIXED_CLOCK.tick(self._fixed_rate)
             self.dispatch_event("on_fixed_update", self._fixed_rate)
             fixed_count += 1
-        self.dispatch_event("on_update", delta_time)
+        self.dispatch_event("on_update", GLOBAL_CLOCK.delta_time)
 
     def set_update_rate(self, rate: float) -> None:
         """
@@ -645,30 +647,35 @@ class Window(pyglet.window.Window):
 
         return False
 
-    def on_resize(self, width: int, height: int) -> Optional[bool]:
-        """
-        Override this function to add custom code to be called any time the window
-        is resized. The main responsibility of this method is updating
-        the projection and the viewport.
+    def _on_resize(self, width: int, height: int):
+        """The internal method called when the window is resized.
 
-        If you are not changing the default behavior when overriding, make sure
-        you call the parent's ``on_resize`` first::
-
-            def on_resize(self, width: int, height: int):
-                super().on_resize(width, height)
-                # Add extra resize logic here
+        The purpose of this method is mainly setting the viewport
+        to the new size of the window. Users should override
+        :meth:`~arcade.Window.on_resize` instead. This method is
+        called first.
 
         :param width: New width
         :param height: New height
         """
-        # NOTE: When a second window is opened pyglet will
-        #       dispatch on_resize during the window constructor.
-        #       The arcade context is not created at that time
-        if hasattr(self, "_ctx"):
-            # Retain projection scrolling if applied
-            self.viewport = (0, 0, width, height)
+
+        # Retain viewport
+        self.viewport = (0, 0, width, height)
 
         return False
+
+    def on_resize(self, width: int, height: int) -> Optional[bool]:
+        """
+        Override this method to add custom actions when the window is resized.
+
+        An internal ``_on_resize`` is called first adjusting the viewport
+        to the new size of the window so there is no need to call
+        ```super().on_resize(width, height)```.
+
+        :param width: New width
+        :param height: New height
+        """
+        pass
 
     def set_min_size(self, width: int, height: int) -> None:
         """Wrap the Pyglet window call to set minimum size
@@ -1016,41 +1023,19 @@ class Window(pyglet.window.Window):
     # --- CLOCK ALIASES ---
     @property
     def time(self) -> float:
-        return self._global_clock.time
+        return GLOBAL_CLOCK.time
 
     @property
     def fixed_time(self) -> float:
-        return self._fixed_clock.time
+        return GLOBAL_FIXED_CLOCK.time
 
     @property
     def delta_time(self) -> float:
-        return self._global_clock.delta_time
+        return GLOBAL_CLOCK.delta_time
 
     @property
     def fixed_delta_time(self) -> float:
         return self._fixed_rate
-
-    @property
-    def global_clock(self) -> Clock:
-        return self._global_clock
-
-    @property
-    def global_fixed_clock(self) -> FixedClock:
-        return self._fixed_clock
-
-    # Possibly useful clock properties
-
-    # @property
-    # def current_fixed_tick(self) -> int:
-    #     return self._fixed_clock.ticks
-
-    # @property
-    # def accumulated_time(self) -> float:
-    #     return self._fixed_clock.accumulated
-
-    # @property
-    # def accumulated_fraction(self) -> float:
-    #     return self._fixed_clock.fraction
 
 
 def open_window(

@@ -23,6 +23,7 @@ from array import array
 from pyglet.math import Mat4
 import arcade
 from arcade import gl
+import arcade.clock
 
 
 def gen_initial_data(window, width, height):
@@ -153,7 +154,7 @@ class MyGame(arcade.Window):
         self.geometry1.render(self.points_program, mode=gl.POINTS)
 
         # Move points with transform
-        self.transform_program["dt"] = self.global_clock.delta_time
+        self.transform_program["dt"] = arcade.clock.GLOBAL_CLOCK.delta_time
         self.transform_program["mouse_pos"] = self.mouse_pos
         self.transform1.transform(self.transform_program, self.buffer2)
 
