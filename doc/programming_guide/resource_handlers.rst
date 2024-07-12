@@ -18,15 +18,14 @@ folders. When loading assets, they resource hanldes look like this:
    * - Handle
      - String Prefix
      - Contents
-
    * - assets
      - ``":assets:"``
-     - Built-in sprite images, sounds, and fonts
-
-   * - ``":system:``
-     - Shaders used by the library
-
-   * - ``:resources:``
+     - Built-in images, sounds and other miscellaneous asset
+   * - system
+     - ``":system:``
+     - System resources like shaders, fonts and default gui assets
+   * - resources
+     - ``:resources:``
      - Includes ``:system:`` and ``:assets:``  directories
 
 .. _resource_handles-using:
