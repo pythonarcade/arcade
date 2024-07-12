@@ -38,7 +38,7 @@ from doc_helpers import (
 REPO_ROOT = SharedPaths.REPO_ROOT
 ARCADE_ROOT = SharedPaths.ARCADE_ROOT
 API_DOC_GENERATION_DIR = SharedPaths.API_DOC_ROOT / "api"
-QUICK_INDEX_FILE_PATH = API_DOC_GENERATION_DIR / "quick_index.rst"
+QUICK_INDEX_FILE_PATH = SharedPaths.API_DOC_ROOT / "quick_index.rst"
 IMPORT_TREE = build_import_tree(ARCADE_ROOT)
 
 # --- 1. Special rules & excludes ---
@@ -519,8 +519,8 @@ def main():
         text_file.include_file(
             REPO_ROOT /  'util' / 'template_quick_index.rst')
 
-        text_file.write("The arcade module\n")
-        text_file.write("-----------------\n\n")
+        # text_file.write("The arcade module\n")
+        # text_file.write("-----------------\n\n")
 
         text_file.write(dedent(
             """

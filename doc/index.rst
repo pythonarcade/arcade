@@ -127,7 +127,7 @@ Arcade is developed by volunteers.
    :maxdepth: 1
    :caption: API Reference
 
-   Index<api_docs/api/quick_index>
+   api_docs/quick_index
    Reference<api_docs/arcade>
 
 
