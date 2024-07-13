@@ -27,12 +27,12 @@ def generate_view_matrix(camera_data: CameraData) -> Mat4:
     po = Vec3(*camera_data.position)
 
     # fmt: off
-    return Mat4((
+    return Mat4(
         ri.x, up.x, -fo.x, 0.0,
         ri.y, up.y, -fo.y, 0.0,
         ri.z, up.z, -fo.z, 0.0,
         -ri.dot(po), -up.dot(po), fo.dot(po), 1.0
-    ))
+    )
     # fmt: on
 
 
@@ -69,12 +69,12 @@ def generate_orthographic_matrix(
     tz = -(z_far + z_near) / depth
 
     # fmt: off
-    return Mat4((
+    return Mat4(
         sx, 0.0, 0.0, 0.0,
         0.0,  sy, 0.0, 0.0,
         0.0, 0.0,  sz, 0.0,
         tx,  ty,  tz, 1.0
-    ))
+    )
     # fmt: on
 
 
@@ -110,12 +110,12 @@ def generate_perspective_matrix(
     h = 2 * z_near / height
 
     # fmt: off
-    return Mat4((
+    return Mat4(
         w, 0, 0, 0,
         0, h, 0, 0,
         0, 0, q, -1,
         0, 0, qn, 0
-    ))
+    )
     # fmt: on
 
 
