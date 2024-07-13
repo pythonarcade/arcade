@@ -104,7 +104,6 @@ Arcade is developed by volunteers.
    programming_guide/gui/index
    programming_guide/texture_atlas
    programming_guide/resource_handlers
-   programming_guide/logging
    programming_guide/opengl_notes
    programming_guide/performance_tips
    programming_guide/headless
