@@ -112,7 +112,7 @@ inefficient prototype:
 Custom Texture Atlases
 ^^^^^^^^^^^^^^^^^^^^^^
 
-A :py:class:`~arcade.TextureAtlas` represents :py:class:`~arcade.Texture`
+A :py:class:`~arcade.DefaultTextureAtlas` represents :py:class:`~arcade.Texture`
 data packed side-by-side in video memory. As textures are added, the atlas
 grows to fit them all into the same portion of your GPU's memory.
 
@@ -126,7 +126,7 @@ shaped textures.
 Please see the following for more information:
 
 * :ref:`pg_textureatlas_custom_atlas`
-* The :py:class:`~arcade.TextureAtlas` API documentation
+* The :py:class:`~arcade.DefaultTextureAtlas` API documentation
 
 
 .. _pg_spritelist_advanced_lazy_spritelists:

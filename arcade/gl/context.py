@@ -41,12 +41,17 @@ LOG = logging.getLogger(__name__)
 
 class Context:
     """
-    Represents an OpenGL context. This context belongs to a ``pyglet.Window``
+    Represents an OpenGL context. This context belongs to a pyglet window.
     normally accessed through ``window.ctx``.
 
     The Context class contains methods for creating resources,
     global states and commonly used enums. All enums also exist
     in the ``gl`` module. (``ctx.BLEND`` or ``arcade.gl.BLEND``).
+
+    Args:
+        window: The pyglet window this context belongs to
+        gc_mode: The garbage collection mode. Default is "context_gc"
+        gl_api: The OpenGL api. Default is "gl"
     """
 
     #: The active context
@@ -57,36 +62,36 @@ class Context:
 
     # --- Store the most commonly used OpenGL constants
     # Texture
-    #: Texture interpolation: Nearest pixel
+    #: Texture interpolation - Nearest pixel
     NEAREST = 0x2600
-    #: Texture interpolation: Linear interpolate
+    #: Texture interpolation - Linear interpolate
     LINEAR = 0x2601
-    #: Texture interpolation: Minification filter for mipmaps
+    #: Texture interpolation - Minification filter for mipmaps
     NEAREST_MIPMAP_NEAREST = 0x2700
-    #: Texture interpolation: Minification filter for mipmaps
+    #: Texture interpolation - Minification filter for mipmaps
     LINEAR_MIPMAP_NEAREST = 0x2701
-    #: Texture interpolation: Minification filter for mipmaps
+    #: Texture interpolation - Minification filter for mipmaps
     NEAREST_MIPMAP_LINEAR = 0x2702
-    #: Texture interpolation: Minification filter for mipmaps
+    #: Texture interpolation - Minification filter for mipmaps
     LINEAR_MIPMAP_LINEAR = 0x2703
 
-    #: Texture wrap mode: Repeat
+    #: Texture wrap mode - Repeat
     REPEAT = gl.GL_REPEAT
-    # Texture wrap mode: Clamp to border pixel
+    # Texture wrap mode - Clamp to border pixel
     CLAMP_TO_EDGE = gl.GL_CLAMP_TO_EDGE
-    # Texture wrap mode: Clamp to border color
+    # Texture wrap mode - Clamp to border color
     CLAMP_TO_BORDER = gl.GL_CLAMP_TO_BORDER
-    # Texture wrap mode: Repeat mirrored
+    # Texture wrap mode - Repeat mirrored
     MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
 
     # Flags
-    #: Context flag: Blending
+    #: Context flag - Blending
     BLEND = gl.GL_BLEND
-    #: Context flag: Depth testing
+    #: Context flag - Depth testing
     DEPTH_TEST = gl.GL_DEPTH_TEST
-    #: Context flag: Face culling
+    #: Context flag - Face culling
     CULL_FACE = gl.GL_CULL_FACE
-    #: Context flag: Enables ``gl_PointSize`` in vertex or geometry shaders.
+    #: Context flag - Enables ``gl_PointSize`` in vertex or geometry shaders.
     #:
     #: When enabled we can write to ``gl_PointSize`` in the vertex shader to specify the point size
     #: for each individual point.
@@ -94,7 +99,7 @@ class Context:
     #: If this value is not set in the shader the behavior is undefined. This means the points may
     #: or may not appear depending if the drivers enforce some default value for ``gl_PointSize``.
     #:
-    #: When disabled :py:attr:`Context.point_size` is used.
+    #: When disabled :py:attr:`point_size` is used.
     PROGRAM_POINT_SIZE = gl.GL_PROGRAM_POINT_SIZE
 
     # Blend functions
@@ -122,21 +127,21 @@ class Context:
     # Blend equations
     #: source + destination
     FUNC_ADD = 0x8006
-    #: Blend equations: source - destination
+    #: Blend equations - source - destination
     FUNC_SUBTRACT = 0x800A
-    #: Blend equations: destination - source
+    #: Blend equations - destination - source
     FUNC_REVERSE_SUBTRACT = 0x800B
-    #: Blend equations: Minimum of source and destination
+    #: Blend equations - Minimum of source and destination
     MIN = 0x8007
-    #: Blend equations: Maximum of source and destination
+    #: Blend equations - Maximum of source and destination
     MAX = 0x8008
 
     # Blend mode shortcuts
-    #: Blend mode shortcut for default blend mode: ``SRC_ALPHA, ONE_MINUS_SRC_ALPHA``
+    #: Blend mode shortcut for default blend mode - ``SRC_ALPHA, ONE_MINUS_SRC_ALPHA``
     BLEND_DEFAULT = 0x0302, 0x0303
-    #: Blend mode shortcut for additive blending: ``ONE, ONE``
+    #: Blend mode shortcut for additive blending - ``ONE, ONE``
     BLEND_ADDITIVE = 0x0001, 0x0001
-    #: Blend mode shortcut for pre-multiplied alpha: ``SRC_ALPHA, ONE``
+    #: Blend mode shortcut for pre-multiplied alpha - ``SRC_ALPHA, ONE``
     BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
 
     # VertexArray: Primitives
@@ -305,23 +310,15 @@ class Context:
 
     @property
     def window(self) -> Window:
-        """
-        The window this context belongs to.
-
-        :type: ``pyglet.Window``
-        """
+        """The window this context belongs to."""
         window_ref = self._window_ref()
         if window_ref is None:
-            raise Exception("Window not available, lost referenz.")
+            raise Exception("Window not available, lost reference.")
         return window_ref
 
     @property
     def screen(self) -> Framebuffer:
-        """
-        The framebuffer for the window.
-
-        :type: :py:class:`~arcade.Framebuffer`
-        """
+        """The framebuffer for the window."""
         return self._screen
 
     @property
@@ -329,20 +326,17 @@ class Context:
         """
         Get the currently active framebuffer.
         This property is read-only
-
-        :type: :py:class:`arcade.gl.Framebuffer`
         """
         return self.active_framebuffer
 
     @property
     def gl_version(self) -> Tuple[int, int]:
         """
-        The OpenGL version as a 2 component tuple.
+        The OpenGL major and minor version as a tuple.
+
         This is the reported OpenGL version from
         drivers and might be a higher version than
         you requested.
-
-        :type: tuple (major, minor) version
         """
         return self._gl_version
 
@@ -380,7 +374,6 @@ class Context:
             # Auto collect is similar to python garbage collection.
             # This is a risky mode. Know what you are doing before using this.
             ctx.gc_mode = "auto"
-
         """
         return self._gc_mode
 
@@ -403,8 +396,6 @@ class Context:
             err = ctx.error
             if err:
                 raise RuntimeError("OpenGL error: {err}")
-
-        :type: str
         """
         err = gl.glGetError()
         if err == gl.GL_NO_ERROR:
@@ -532,8 +523,6 @@ class Context:
     def is_enabled(self, flag) -> bool:
         """
         Check if a context flag is enabled
-
-        :type: bool
         """
         return flag in self._flags
 
@@ -551,8 +540,6 @@ class Context:
             ctx.viewport = 0, 0, 1920, 1080
             # Using the current framebuffer size
             ctx.viewport = 0, 0, *ctx.screen.size
-
-        :type: tuple (x, y, width, height)
         """
         return self.active_framebuffer.viewport
 
@@ -578,8 +565,6 @@ class Context:
             ctx.scissor = 0, 0, 100, 100
             # Disable scissoring
             ctx.scissor = None
-
-        :type: tuple (x, y, width, height)
         """
         return self.fbo.scissor
 
@@ -632,8 +617,6 @@ class Context:
             # from the gl module
             from arcade import gl
             ctx.blend_func = gl.ONE, gl.ONE
-
-        :type: tuple (src, dst)
         """
         return self._blend_func
 
@@ -698,8 +681,6 @@ class Context:
         """
         Get or set the wireframe mode.
         When enabled all primitives will be rendered as lines.
-
-        :type: bool
         """
         return self._wireframe
 
@@ -717,8 +698,6 @@ class Context:
         Get or set number of vertices that will be used to make up a single patch primitive.
         Patch primitives are consumed by the tessellation control shader (if present)
         and subsequently used for tessellation.
-
-        :type: int
         """
         value = c_int()
         gl.glGetIntegerv(gl.GL_PATCH_VERTICES, value)
@@ -737,7 +716,7 @@ class Context:
         Set or get the point size. Default is `1.0`.
 
         Point size changes the pixel size of rendered points. The min and max values
-        are limited by :py:attr:`~arcade.gl.Context.info.POINT_SIZE_RANGE`.
+        are limited by :py:attr:`~arcade.gl.context.Limits.POINT_SIZE_RANGE`.
         This value usually at least ``(1, 100)``, but this depends on the drivers/vendors.
 
         If variable point size is needed you can enable :py:attr:`~arcade.gl.Context.PROGRAM_POINT_SIZE`

@@ -95,8 +95,6 @@ class Buffer:
     def size(self) -> int:
         """
         The byte size of the buffer.
-
-        :type: int
         """
         return self._size
 
@@ -104,8 +102,6 @@ class Buffer:
     def ctx(self) -> "Context":
         """
         The context this resource belongs to.
-
-        :type: :py:class:`arcade.gl.Context`
         """
         return self._ctx
 
@@ -113,8 +109,6 @@ class Buffer:
     def glo(self) -> gl.GLuint:
         """
         The OpenGL resource id
-
-        :type: gl.GLuint
         """
         return self._glo
 

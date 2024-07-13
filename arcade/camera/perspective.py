@@ -160,13 +160,13 @@ class PerspectiveProjector(Projector):
     def project(self, world_coordinate: Point) -> Vec2:
         """Convert world coordinates to pixel screen coordinates.
 
-        If a 2D :py:class:`Vec2` is provided instead of a 3D
+        If a 2D :py:class:`~pyglet.math.Vec2` is provided instead of a 3D
         :py:class:`Vec3`, then one will be calculated to the best of the
         method's ability.
 
         Args:
             world_coordinate:
-                A :py:class:`Vec2` or :py:class:`Vec3` as world
+                A :py:class:`~pyglet.math.Vec2` or :py:class:`~pyglet.math.Vec3` as world
                 coordinates.
 
         Returns:

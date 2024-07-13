@@ -42,7 +42,7 @@ Arcade Skill Tree
 
   * ShapeElementLists - Batch together thousands
     of drawing commands into one using a
-    :class:`arcade.ShapeElementList`. See examples in
+    :class:`arcade.shape_list.ShapeElementList`. See examples in
     :ref:`shape-element-lists`.
 
 * Sprites - Almost everything in Arcade is done with the :class:`arcade.Sprite` class.
@@ -75,7 +75,6 @@ Arcade Skill Tree
 
     * Detail amount - :class:`arcade.Sprite`
     * Changing -:class:`arcade.Sprite.hit_box`
-    * Drawing - :class:`arcade.Sprite.draw_hit_box`
 
   * Avoid placing items on walls - :ref:`sprite_no_coins_on_walls`
   * Sprite drag-and-drop - See the :ref:`solitaire_tutorial`.
@@ -177,5 +176,3 @@ Arcade Skill Tree
 
   * Rendering onto a sprite to create a mini-map - :ref:`minimap`
   * Learn to do a compute shader in :ref:`compute_shader_tutorial`.
-
-* :ref:`Logging`
