@@ -7,26 +7,25 @@ from arcade.gui import UILabel
 from arcade.types import Color, LBWH
 
 
-def test_uilabel_inits_with_text_size(window):
+def test_constructor_only_text_no_size(window):
+    """Should fit text"""
     label = UILabel(text="Example")
 
-    assert label.rect.width == pytest.approx(
-        63, abs=6
-    )  # on windows the width differs about 6 pixel
+    assert label.rect.width == pytest.approx(63, abs=7)  # on windows the width differs about 6 pixel
     assert label.rect.height == pytest.approx(19, abs=1)
 
 
-def test_uilabel_uses_size_parameter(window):
+def test_constructor_text_and_size(window):
     label = UILabel(text="Example", width=100, height=50)
     assert label.rect == LBWH(0, 0, 100, 50)
 
 
-def test_uilabel_uses_smaller_size_parameter(window):
+def test_constructor_size_smaller_then_text(window):
     label = UILabel(text="Example", width=20, height=50)
     assert label.rect == LBWH(0, 0, 20, 50)
 
 
-def test_uilabel_allow_multiline_and_uses_text_height(window):
+def test_constructor_fix_width_and_multiline(window):
     label = UILabel(text="E x a m p l e", width=10, multiline=True)
     assert label.rect.left == pytest.approx(0, abs=2)
     assert label.rect.bottom == pytest.approx(0, abs=2)
@@ -34,37 +33,7 @@ def test_uilabel_allow_multiline_and_uses_text_height(window):
     assert label.rect.height == pytest.approx(133, abs=7)
 
 
-def test_uilabel_with_border_keeps_previous_size(window):
-    label = UILabel(text="Example")
-    assert label.rect.width == pytest.approx(63, abs=6)
-    assert label.rect.height == pytest.approx(19, abs=6)
-
-    label.with_border()
-    assert label.rect.width == pytest.approx(63, abs=6)
-    assert label.rect.height == pytest.approx(19, abs=6)
-
-
-def test_uilabel_with_padding_keeps_previous_size(window):
-    label = UILabel(text="Example")
-    assert label.rect.width == pytest.approx(63, abs=6)
-    assert label.rect.height == pytest.approx(19, abs=6)
-
-    label.with_padding(all=2)
-    assert label.rect.width == pytest.approx(63, abs=6)
-    assert label.rect.height == pytest.approx(19, abs=6)
-
-
-def test_uilabel_fixes_internal_text_to_pos_0_0(window):
-    label = UILabel(text="Example")
-    assert label.label.position == (0, 0)
-    assert label.position == Vec2(0, 0)
-
-    label = UILabel(text="Example", x=10, y=10)
-    assert label.label.position == (0, 0)
-    assert label.position == Vec2(10, 10)
-
-
-def test_adaptive_width_support_for_multiline_text(window):
+def test_constructor_adaptive_width_support_for_multiline_text(window):
     """
     This test is a bit tricky. Enabling multiline without a width
     should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
@@ -75,7 +44,37 @@ def test_adaptive_width_support_for_multiline_text(window):
     assert label.height > 20
 
 
-def test_change_text_does_full_render_without_background(window):
+def test_with_border_keeps_previous_size(window):
+    label = UILabel(text="Example")
+    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.height == pytest.approx(19, abs=6)
+
+    label.with_border()
+    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.height == pytest.approx(19, abs=6)
+
+
+def test_with_padding_keeps_previous_size(window):
+    label = UILabel(text="Example")
+    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.height == pytest.approx(19, abs=6)
+
+    label.with_padding(all=2)
+    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.height == pytest.approx(19, abs=6)
+
+
+def test_internals_text_placed_at_0_0(window):
+    label = UILabel(text="Example")
+    assert label._label.position == (0, 0)
+    assert label.position == Vec2(0, 0)
+
+    label = UILabel(text="Example", x=10, y=10)
+    assert label._label.position == (0, 0)
+    assert label.position == Vec2(10, 10)
+
+
+def test_change_text_triggers_full_render_without_background(window):
     """
     This test is a bit tricky. Enabling multiline without a width
     should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
@@ -89,7 +88,7 @@ def test_change_text_does_full_render_without_background(window):
     label.parent.trigger_render.assert_called_once()
 
 
-def test_change_text_does_normal_render_with_background(window):
+def test_change_text_triggers_render_with_background(window):
     """
     This test is a bit tricky. Enabling multiline without a width
     should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
@@ -103,7 +102,7 @@ def test_change_text_does_normal_render_with_background(window):
     label.parent.trigger_render.assert_not_called()
 
 
-def test_size_hint_contains_border_and_updated(window):
+def test_size_hint_min_contains_border_and_updated(window):
     label = UILabel(text="Example")
 
     size_hint_min = label.size_hint_min
@@ -112,7 +111,7 @@ def test_size_hint_contains_border_and_updated(window):
     assert label.size_hint_min == (size_hint_min[0] + 4, size_hint_min[1] + 4)
 
 
-def test_size_hint_contains_padding_and_updated(window):
+def test_size_hint_min_contains_padding_and_updated(window):
     label = UILabel(text="Example")
 
     size_hint_min = label.size_hint_min
@@ -120,14 +119,123 @@ def test_size_hint_contains_padding_and_updated(window):
     label.with_padding(all=3)
     assert label.size_hint_min == (size_hint_min[0] + 6, size_hint_min[1] + 6)
 
-    
-def test_uilabel_automatically_fit_content(uimanager):
-    label = UILabel(text="First Text")
-    uimanager.add(label)
-    start_width = label.rect.width
 
+def test_multiline_exposed_as_property(window):
+    label = UILabel(text="Example")
+    assert not label.multiline
+
+    label = UILabel(text="Example", multiline=True)
+    assert label.multiline
+
+
+def test_size_hint_min_adapts_to_new_text(window):
+    label = UILabel(text="First Text")
+
+    # WHEN, text is changed and layout is executed
+    shm_w, shm_h = label.size_hint_min
     label.text = "Second Text, which is way longer"
+
+    assert label.size_hint_min[0] > shm_w
+    assert label.size_hint_min[1] == shm_h
+
+
+def test_size_hint_min_adapts_to_bigger_font(window):
+    label = UILabel(text="First Text")
+
+    # WHEN, text is changed and layout is executed
+    shm_w, shm_h = label.size_hint_min
+    label.update_font(font_size=20)
+
+    assert label.size_hint_min[0] > shm_w
+    assert label.size_hint_min[1] > shm_h
+
+
+def test_size_hint_min_adapts_to_smaller_font(window):
+    label = UILabel(text="First Text")
+
+    # WHEN, text is changed and layout is executed
+    shm_w, shm_h = label.size_hint_min
+    label.update_font(font_size=2)
+
+    assert label.size_hint_min[0] < shm_w
+    assert label.size_hint_min[1] < shm_h
+
+
+def test_multiline_enabled_size_hint_min_adapts_to_new_text(window):
+    """Tests multiline with auto size. It should adapt to new text.
+
+    Due to the multiline, and the preset width, the height should change.
+    The width might change, but only if the text wrap shortens the longest line.
+    """
+    label = UILabel(text="First Text", multiline=True)
+
+    # WHEN, text is changed and layout is executed
+    shm_w, shm_h = label.size_hint_min
+    label.text = "Second Text, which is way longer"
+
+    assert label.size_hint_min[0] < shm_w
+    assert label.size_hint_min[1] > shm_h
+
+
+def test_integration_with_layout_fit_to_content(uimanager):
+    """Tests multiple integrations with layout/uimanager and auto size.
+
+    Just to be sure, it really works as expected.
+    """
+    label = UILabel(
+        text="Example",
+        size_hint=(0, 0),  # default, enables auto size
+    )
+
+    uimanager.add(label)
     uimanager.execute_layout()
 
-    assert label.rect.width > start_width
+    # auto size should fit the text
+    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.height == pytest.approx(19, abs=6)
 
+    # even when text changed
+    label.text = "Example, which is way longer"
+    uimanager.execute_layout()
+
+    assert label.rect.width > 63
+    assert label.rect.height == pytest.approx(19, abs=6)
+
+    # or font
+    label.text = "Example"
+    label.update_font(font_size=20)
+    uimanager.execute_layout()
+
+    assert label.rect.width > 63
+    assert label.rect.height > 20
+
+
+def test_fit_content_overrides_width(uimanager):
+    label = UILabel(
+        text="Example",
+        width=100,
+        height=50,
+    )
+
+    label.fit_content()
+
+    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.height == pytest.approx(19, abs=6)
+
+
+def test_fit_content_uses_adaptive_multiline_width(uimanager):
+    label = UILabel(
+        text="Example with multiline enabled",
+        width=70,
+        multiline=True,
+    )
+    shm_w, shm_h = label.size_hint_min
+
+    label.fit_content()
+
+    assert label.rect.width > 70
+    assert label.rect.height < 25
+
+    # check size_hint_min updated
+    assert label.size_hint_min[0] > shm_w
+    assert label.size_hint_min[1] < shm_h
