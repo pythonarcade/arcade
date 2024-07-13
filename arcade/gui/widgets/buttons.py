@@ -246,7 +246,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-            font_size=13,
+            font_size=12,
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
             bg=(21, 19, 21, 255),
