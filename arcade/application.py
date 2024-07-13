@@ -161,7 +161,7 @@ class Window(pyglet.window.Window):
             gl_version = 3, 1
             gl_api = "gles"
 
-        self.headless: bool = pyglet.options.get("headless") is True
+        self.headless: bool = arcade.headless
         """If True, the window is running in headless mode."""
 
         config = None
@@ -291,7 +291,7 @@ class Window(pyglet.window.Window):
         if enable_polling:
             self.keyboard = pyglet.window.key.KeyStateHandler()
 
-            if pyglet.options.headless:
+            if arcade.headless:
                 self.push_handlers(self.keyboard)
 
             else:
