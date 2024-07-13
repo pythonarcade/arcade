@@ -84,7 +84,7 @@ What Doesn't Allow Resource Handles?
 If a function or object does not accept a resource handle prefix,
 it is probably one of the following:
 
-* a feature from another library which Arcade uses such as :py:mod:`pyglet`
+* a feature from another library which Arcade uses such as pyglet
 * a problem you should report so we can fix it
 
 If you're unsure, it's always okay to :ref:`ask for help <how-to-get-help>`.
@@ -203,7 +203,7 @@ onto the directories added before it, in this case, ``my_first_res_dir``.
 Cleaner Code with Pathlib
 -------------------------
 
-Python's built-in :py:class:`pathlib` is the newest and
+Python's built-in :py:mod:`pathlib` is the newest and
 friendliest way to navigate files and folders on a computer.
 
 
@@ -213,7 +213,7 @@ Finding your Project Folder
 The first thing you'll want to do is find your resources folder.
 
 Arcade places this in the ``__init__.py`` file of its
-:py:mod:`arcade.resources` module. To make things easier, we'll use the
+``arcade.resources`` module. To make things easier, we'll use the
 same structure here.
 
 
@@ -245,9 +245,8 @@ libraries like Arcade, we'll do the same here:
 That's why we'll use the following to make this easier:
 
 #. The ``__file__`` variable Python automatically creates in every file
-#. The following methods and properties on :py:class:`pathlib.Path`:
-   * :py:meth:`~pathlib.Path.resolve` to get the absolute path
-   * :py:meth:`~pathlib.Path.parent` to get the folder a file is in
+#. The following methods and properties on :py:class:`pathlib.Path`: ``resolve()`` to get the absolute path, and
+   ``parent`` to get the folder a file is in
 
 First, we'll find the absolute path the ``__file__`` we're in:
 
@@ -314,12 +313,12 @@ the following:
 This behavior allows you to add, extend, and even override search
 locations when loading files.
 
-For anything imported from :py:class:`pyglet`
+For anything imported from pyglet.
 
 Implementation Details
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The handles are stored as a :py:class:`dict` inside :py:attr:`arcade.resources.handles`.
+The handles are stored as a :py:class:`dict` inside ``arcade.resources.handles``.
 
 * Each resource handle's name is a :py:class:`str` used to look up a :py:class:`list`
   of :py:class:`pathlib.Path` objects
