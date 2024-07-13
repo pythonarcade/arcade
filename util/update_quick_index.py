@@ -80,7 +80,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         ],
     },
     "drawing_primitives.rst": {
-        "title": "Drawing - Primitives",
+        "title": "Primitives",
         "use_declarations_in": [
             "arcade.draw.arc",
             "arcade.draw.circle",
@@ -211,7 +211,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "use_declarations_in": [
             "arcade.application",
             "arcade.window_commands",
-            "arcade.sections"
+            "arcade.sections",
         ]
     },
     "sound.rst": {
