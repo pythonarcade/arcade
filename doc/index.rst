@@ -79,7 +79,6 @@ Arcade is developed by volunteers.
 
    about/intro
    about/faq
-   programming_guide/release_notes
 
 .. toctree::
    :hidden:
