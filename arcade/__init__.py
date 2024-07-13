@@ -401,7 +401,7 @@ __version__ = VERSION
 # Piggyback on pyglet's doc run detection
 if not getattr(sys, "is_pyglet_doc_run", False):
     # Load additional game controller mappings to Pyglet
-    if not arcade.headless:
+    if not headless:
         try:
             import pyglet.input.controller
 
