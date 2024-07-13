@@ -72,9 +72,9 @@ created through the :py:class:`~arcade.ArcadeContext` if needed.
 .. Warning::
 
     If you are creating and destroying a lot of arcade objects
-    you might want to look into :py:attr:`arcade.ArcadeContext.gc_mode`.
+    you might want to look into :py:attr:`arcade.gl.Context.gc_mode`.
     In Arcade we normally do garbage collection of OpenGL objects
-    once per frame by calling :py:meth:`~arcade.ArcadeContext.gc`.
+    once per frame by calling :py:meth:`~arcade.gl.Context.gc`.
 
 Examples
 --------
