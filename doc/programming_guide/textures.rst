@@ -59,7 +59,7 @@ to significantly speed up loading times.
 The above also applies when using :py:func:`arcade.load_texture` or other
 texture loading functions.
 
-Arcade's default texture cache can be cleared using :py:meth:`arcade.texture.default_texture_cache.flush`.
+Arcade's default texture cache can be cleared using ``arcade.texture.default_texture_cache.flush()``
 
 Custom Textures
 ---------------
