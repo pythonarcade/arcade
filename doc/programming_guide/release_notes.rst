@@ -1119,7 +1119,7 @@ and the documentation.
     * To demonstrate, there is a new :ref:`minimap` example that creates a sprite that has a dynamic minimap
       projected onto it.
 
-    .. image:: ../example_code/how_to_examples/minimap.png
+    .. image:: ../example_code/images/minimap.png
        :width: 50%
        :alt: Screenshot of minimap
 
@@ -1133,7 +1133,7 @@ and the documentation.
   * Kenney.nl's TTF are now included as build-in resources.
   * See the :ref:`drawing_text` example.
 
-  .. image:: ../example_code/how_to_examples/drawing_text.png
+  .. image:: ../example_code/images/drawing_text.png
      :width: 50%
      :alt: Screenshot of drawing text
 
@@ -1157,13 +1157,13 @@ and the documentation.
 
 * Reworked GUI
 
-    .. image:: ../example_code/how_to_examples/gui_flat_button.png
+    .. image:: ../example_code/images/gui_flat_button.png
        :width: 40%
 
-    .. image:: ../example_code/how_to_examples/gui_widgets.png
+    .. image:: ../example_code/images/gui_widgets.png
        :width: 40%
 
-    .. image:: ../example_code/how_to_examples/gui_ok_messagebox.png
+    .. image:: ../example_code/images/gui_ok_messagebox.png
        :width: 40%
 
   * UIElements are replaced by UIWidgets
@@ -1233,7 +1233,7 @@ and the documentation.
 * Added the class :class:`arcade.PerfGraph`, a subclass of Sprite that will graph FPS or time to process a dispatch-able
   event line 'update' or 'on_draw'.
 
-  .. image:: ../example_code/how_to_examples/performance_statistics.png
+  .. image:: ../example_code/images/performance_statistics.png
      :width: 50%
      :alt: Screenshot of performance statistics
 
@@ -1513,12 +1513,12 @@ Arcade 2.4.1 was released 2020-07-13.
 
 Arcade version 2.4 is a major enhancement release to Arcade.
 
-.. image:: ../example_code/how_to_examples/light_demo.png
+.. image:: ../example_code/images/light_demo.png
     :width: 30%
     :class: inline-image
     :target: examples/light_demo.html
 
-.. image:: ../example_code/how_to_examples/astar_pathfinding.png
+.. image:: ../example_code/images/astar_pathfinding.png
     :width: 30%
     :class: inline-image
     :target: examples/astar_pathfinding.html
@@ -1538,7 +1538,7 @@ Arcade version 2.4 is a major enhancement release to Arcade.
     :class: inline-image
     :target: tutorials/card_game/index.html
 
-.. image:: ../example_code/how_to_examples/transform_feedback.png
+.. image:: ../example_code/images/transform_feedback.png
     :width: 30%
     :class: inline-image
     :target: examples/transform_feedback.html

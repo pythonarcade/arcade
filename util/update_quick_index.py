@@ -438,7 +438,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     quick_index_file = vfs.open(QUICK_INDEX_FILE_PATH, "a")
     quick_index_file.write("\n")
 
-    print(f"Generating API ref file {str(full_api_file_name)!r} titled {title!r}")
+    # print(f"Generating API ref file {str(full_api_file_name)!r} titled {title!r}")
     underline = "-" * len(title)
 
     api_file = vfs.open(full_api_file_name, "w")
