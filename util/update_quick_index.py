@@ -443,6 +443,8 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
 
     api_file = vfs.open(full_api_file_name, "w")
     api_file.write(f".. _{api_file_name[:-4]}_api:\n")
+    # api_file.write(f".. py:module:: arcade\n")
+    api_file.write(f".. py:currentmodule:: arcade\n")
     api_file.write(f"\n")
     api_file.write(f"{title}\n")
     api_file.write(f"{underline}\n\n")

@@ -38,7 +38,7 @@ Using Resource Handles
 How Do I Use Resource Handles?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The most common way is creating a :py:class:`~arcade.sprite.Sprite` like this:
+The most common way is creating a :py:class:`~arcade.Sprite` like this:
 
 .. code-block:: python
 
@@ -245,7 +245,7 @@ libraries like Arcade, we'll do the same here:
 That's why we'll use the following to make this easier:
 
 #. The ``__file__`` variable Python automatically creates in every file
-#. The following methods and properties on :py:meth:`pathlib.Path`:
+#. The following methods and properties on :py:class:`pathlib.Path`:
    * :py:meth:`~pathlib.Path.resolve` to get the absolute path
    * :py:meth:`~pathlib.Path.parent` to get the folder a file is in
 
