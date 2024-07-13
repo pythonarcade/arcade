@@ -10,7 +10,7 @@ from __future__ import annotations
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
-from typing import Optional, Final
+from typing import Final, Optional
 
 from pathlib import Path
 
