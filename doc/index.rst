@@ -100,6 +100,7 @@ Arcade is developed by volunteers.
    programming_guide/keyboard
    programming_guide/sound
    programming_guide/textures
+   programming_guide/event_loop
    programming_guide/sections
    programming_guide/gui/index
    programming_guide/texture_atlas
