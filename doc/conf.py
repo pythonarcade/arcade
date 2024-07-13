@@ -133,7 +133,7 @@ todo_include_todos = True
 napoleon_numpy_docstring = False
 napoleon_google_docstring = True
 
-nitpicky = True  # Warn about all references where the target cannot be found.
+# nitpicky = True  # Warn about all references where the target cannot be found.
 
 # -- Options for HTML output ----------------------------------------------
 
