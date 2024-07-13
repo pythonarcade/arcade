@@ -267,7 +267,9 @@ class UITextWidget(UIAnchorLayout):
 
     def __init__(self, *, text: str, multiline: bool = False, **kwargs):
         super().__init__(text=text, **kwargs)
-        self._label = UILabel(text=text, multiline=multiline)  # UILabel supports width=None for multiline
+        self._label = UILabel(
+            text=text, multiline=multiline
+        )  # UILabel supports width=None for multiline
         self.add(self._label)
 
     def place_text(
@@ -460,7 +462,9 @@ class UIInputText(UIWidget):
                 x = int(event.x - self.left - self.LAYOUT_OFFSET)
                 y = int(event.y - self.bottom)
                 if isinstance(event, UIMouseDragEvent):
-                    self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
+                    self.caret.on_mouse_drag(
+                        x, y, event.dx, event.dy, event.buttons, event.modifiers
+                    )
                     self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
