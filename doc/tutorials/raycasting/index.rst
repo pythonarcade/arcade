@@ -36,7 +36,7 @@ Step 1: Add-In the Shadertoy
     The website makes it easy to experiment with shaders, and those shaders can be run
     using the Arcade library.
 
-Now, let's create a shader. We can program shaders using Arcade's :class:`arcade.experimental.Shadertoy` class.
+Now, let's create a shader. We can program shaders using Arcade's ``arcade.experimental.Shadertoy``
 
 We'll modify our prior program to import the Shadertoy class:
 
