@@ -24,6 +24,8 @@ doc/internal/blacklist.rst
 doc/internal/build.rst
 doc/source/quick_index.rst
 doc/example_code/images/thumbs/
+# keep around for backwards compatibility. Remove in 3.1+
+doc/example_code/how_to_examples/thumbs/
 
 # testing
 .pytest_cache/
