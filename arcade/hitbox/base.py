@@ -72,7 +72,7 @@ class HitBoxAlgorithm:
         doesn't manage to figure out any reasonable points for
         an image.
 
-        :param Image image: The image to create a bounding box for.
+        :param image: The image to create a bounding box for.
         :return: A tuple of hit box points.
         """
         size = image.size

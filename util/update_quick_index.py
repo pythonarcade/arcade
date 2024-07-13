@@ -157,6 +157,16 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.texture.tools"
         ]
     },
+    "hitbox.rst": {
+        "title": "Hitbox",
+        "use_declarations_in": [
+            "arcade.hitbox",
+            "arcade.hitbox.base",
+            "arcade.hitbox.bounding_box",
+            "arcade.hitbox.simple",
+            "arcade.hitbox.pymunk",
+        ],
+    },
     "texture_transforms.rst": {
         "title": "Texture Transforms",
         "use_declarations_in": [
