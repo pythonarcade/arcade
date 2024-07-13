@@ -336,11 +336,17 @@ class Text:
         """
         Get or set the font name(s) for the label
         """
-        return self._label.font_name
+        if not isinstance(self._label.font_name, str):
+            return tuple(self._label.font_name)
+        else:
+            return self._label.font_name
 
     @font_name.setter
     def font_name(self, font_name: FontNameOrNames) -> None:
-        self._label.font_name = font_name
+        if isinstance(font_name, str):
+            self._label.font_name = font_name
+        else:
+            self._label.font_name = list(font_name)
 
     @property
     def font_size(self) -> float:
