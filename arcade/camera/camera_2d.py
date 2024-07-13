@@ -469,7 +469,7 @@ class Camera2D:
 
         These are world space values which control how the camera
         projects the world onto the pixel space of the current
-        :py:attr:`.viewport` area.
+        viewport area.
 
         .. warning:: The axis values cannot be equal!
 

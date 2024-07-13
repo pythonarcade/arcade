@@ -197,11 +197,6 @@ intersphinx_mapping = {
     'pymunk': ('https://www.pymunk.org/en/latest/', None),
 }
 
-# Fix: "more than one target found for cross-reference 'Texture'"
-suppress_warnings = [
-    "ref.python",
-]
-
 def strip_init_return_typehint(app, what, name, obj, options, signature, return_annotation):
     # Prevent a the `-> None` annotation from appearing after classes.
     # This annotation comes from the `__init__`, but it renders on the class,
