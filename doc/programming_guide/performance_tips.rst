@@ -71,7 +71,7 @@ per second. If you are drawing hundreds or thousands of lines/boxes then
 performance will be terrible.
 
 If you are encountering this, you can speed things up by using
-:class:`arcade.ShapeElement` lists where you batch together the drawing commands.
+:class:`arcade.shape_list.ShapeElementList` lists where you batch together the drawing commands.
 If you can group items together, than drawing a complex tree can be done with just
 one command.
 
