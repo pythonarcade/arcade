@@ -108,7 +108,6 @@ Arcade is developed by volunteers.
    programming_guide/performance_tips
    programming_guide/headless
    programming_guide/vsync
-   programming_guide/pygame_comparison
 
 .. toctree::
    :hidden:
