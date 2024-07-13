@@ -1,5 +1,6 @@
 :root {
-    --color-emphasis: #73c054;
+    /* --color-emphasis: #73c054; */
+    --color-emphasis: #54c079;
 
     --color-sidebar-bg-light: #2b2b2b;
     --color-sidebar-bg-dark: #171716;
@@ -509,30 +510,6 @@ to align them neatly */
 #how-to-example-code section h3 {
   width: 100%;
 }
-/* Right side image, for longer text */
-img.right-image {
-   float: right;
-   margin-left: 8px;
-   margin-bottom: 4px;
-   margin-top: 10px;
-}
-.section-header {
-    display: flex;
-}
-.section-logo-div {
-    display: block;
-    width: 80px;
-}
-.section-title {
-    display: block;
-}
-.section-title h2 {
-    margin-top: 0.25em;
-}
-.section-logo {
-    width: 78px;
-    padding-right: 15px;
-}
 .vimeo-video {
     border: 0;
     position:absolute;
@@ -601,6 +578,7 @@ body:not([data-theme="light"]) .highlight .c1 {
     color: #007507;
 }
 
+/* Color tables */
 .checkered {
     background-image: url(../checkered.png);
     background-repeat: repeat;
