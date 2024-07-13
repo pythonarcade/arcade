@@ -11,7 +11,7 @@ you have 3.7 or higher:
 If your version shows Python 2.X then try running with:
 
 .. code-block:: bash
-    
+
     python3 -V
 
 If that works and shows you Python 3.7+, then anytime you see the ``python`` command, replace it with ``python3``.
@@ -55,4 +55,3 @@ Raspberry Pi Instructions
 
 Arcade required OpenGL graphics 3.3 or higher. Unfortunately the Raspberry Pi
 does not support this, Arcade can not run on the Raspberry Pi.
-

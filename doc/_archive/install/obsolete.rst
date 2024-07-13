@@ -20,19 +20,19 @@ Please remember the following:
 #. You will need use documentation for the version of Arcade you run
 
 The pairings suggested below might not work. They are based on briefly skimming
-git history.  You may have to use trial and error to look for a version that 
+git history.  You may have to use trial and error to look for a version that
 works, and it's possible that you won't find one! Here be dragons!
 
 ======================= ======================== ===============
-Obsolete Python Version Suggested Arcade Version Git Commit Hash 
+Obsolete Python Version Suggested Arcade Version Git Commit Hash
 ======================= ======================== ===============
-3.8                     2.6.17                   6c4221c 
-3.7                     2.6.17                   6c4221c 
-3.6                     2.6.17                   6e0a9af 
+3.8                     2.6.17                   6c4221c
+3.7                     2.6.17                   6c4221c
+3.6                     2.6.17                   6e0a9af
 3.5                     1.2.2                    078f5be
 ======================= ======================== ===============
 
 You can attempt to install these versions via the command line through pip,
-or by installing from source from github. Check the tags on Arcade's 
+or by installing from source from github. Check the tags on Arcade's
 `github page <https://github.com/pythonarcade/arcade>`_ for additional commit
 IDs.

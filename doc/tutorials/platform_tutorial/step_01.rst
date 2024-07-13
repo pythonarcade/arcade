@@ -16,7 +16,7 @@ Installation
 
   * You should first setup a virtual environment (venv) and activate it.
   * Install Arcade with ``pip install arcade``.
-  * Here are the longer, official :ref:`installation-instructions`.
+  * Here are the longer, official :ref:`install`.
 
 Open a Window
 ~~~~~~~~~~~~~

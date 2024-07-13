@@ -118,7 +118,11 @@ language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_archive/*.rst']
+exclude_patterns = [
+    "links.rst",
+    "substitutions.rst",
+    "_archive/*",
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'default'
@@ -244,9 +248,9 @@ def generate_color_table(filename, source):
             matches = color_match.match(line)
             if not matches:
                 continue
-            
+
             color_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {matches.group('alpha')})"
-            
+
             # Generate the alpha for CSS color function
             alpha = int( matches.group('alpha') ) / 255
             css_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {alpha!s:.4})"

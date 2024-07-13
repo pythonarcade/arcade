@@ -75,4 +75,3 @@ then you can install arcade directly using pip:
 If you happen to be using pipenv, then the appropriate command is:
 
 ``python3 -m pipenv install arcade``
-

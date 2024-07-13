@@ -185,7 +185,7 @@ Arcade Version & Basic Environment Info
 ---------------------------------------
 
 This section assumes you have
-:ref:`installed arcade <installation-instructions>` and activated your
+:ref:`installed arcade <install>` and activated your
 virtual environment.
 
 To get basic information about your current arcade version and
@@ -233,4 +233,4 @@ If you want to try fixing the problem yourself before getting help,
 the likeliest explanations for the error message above are:
 
 * Forgetting to activate your virtual environment
-* Not :ref:`installing arcade <installation-instructions>` successfully
+* Not :ref:`installing arcade <install>` successfully

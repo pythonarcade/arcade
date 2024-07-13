@@ -510,6 +510,13 @@ to align them neatly */
 #how-to-example-code section h3 {
   width: 100%;
 }
+/* Right side image, for longer text */
+img.right-image {
+    float: right;
+    margin-left: 8px;
+    margin-bottom: 4px;
+    margin-top: 10px;
+ }
 .vimeo-video {
     border: 0;
     position:absolute;

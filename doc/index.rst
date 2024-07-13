@@ -86,7 +86,7 @@ Arcade is developed by volunteers.
    :maxdepth: 1
    :caption: Getting Started
 
-   get_started/install/index
+   get_started/install
    example_code/index
    tutorials/index
    get_started/arcade_book

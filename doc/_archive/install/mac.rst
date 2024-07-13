@@ -49,4 +49,3 @@ Support for ``.ogg`` Ogg Vorbis files and ``mp3`` files
 can be added via `HomeBrew <https://brew.sh/>`_ with:
 
 ``brew install ffmpeg``
-
