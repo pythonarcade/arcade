@@ -1,12 +1,12 @@
-import pathlib
+from pathlib import Path
 from itertools import chain
 
 from PIL import Image
 
 
 def main():
-    input_path = pathlib.Path('example_code/how_to_examples')
-    output_path = pathlib.Path('example_code/how_to_examples/thumbs/')
+    input_path = Path('example_code/images')
+    output_path = Path('example_code/images/thumbs/')
 
     png_input_files = input_path.glob('*.png')
     gif_input_files = input_path.glob('*.gif')
@@ -21,6 +21,7 @@ def main():
 
 
 def out_of_date(input_file, output_path):
+    """Check if the thumbnail is out of date."""
     output_file = output_path / input_file.name
 
     if not output_file.exists():
@@ -33,6 +34,7 @@ def out_of_date(input_file, output_path):
 
 
 def generate_thumbnails(input_files, output_path):
+    """Generate thumbnails for the input files."""
     size = 200, 158
 
     output_path.mkdir(exist_ok=True)

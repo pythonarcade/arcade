@@ -311,8 +311,6 @@ class Texture2D:
     def ctx(self) -> "Context":
         """
         The context this texture belongs to
-
-        :type: :py:class:`~arcade.gl.Context`
         """
         return self._ctx
 
@@ -320,8 +318,6 @@ class Texture2D:
     def glo(self) -> gl.GLuint:
         """
         The OpenGL texture id
-
-        :type: GLuint
         """
         return self._glo
 
@@ -329,8 +325,6 @@ class Texture2D:
     def compressed(self) -> bool:
         """
         Is this using a compressed format?
-
-        :type: bool
         """
         return self._compressed
 
@@ -338,8 +332,6 @@ class Texture2D:
     def width(self) -> int:
         """
         The width of the texture in pixels
-
-        :type: int
         """
         return self._width
 
@@ -347,8 +339,6 @@ class Texture2D:
     def height(self) -> int:
         """
         The height of the texture in pixels
-
-        :type: int
         """
         return self._height
 
@@ -356,8 +346,6 @@ class Texture2D:
     def dtype(self) -> str:
         """
         The data type of each component
-
-        :type: str
         """
         return self._dtype
 
@@ -365,8 +353,6 @@ class Texture2D:
     def size(self) -> tuple[int, int]:
         """
         The size of the texture as a tuple
-
-        :type: tuple (width, height)
         """
         return self._width, self._height
 
@@ -374,8 +360,6 @@ class Texture2D:
     def samples(self) -> int:
         """
         Number of samples if multisampling is enabled (read only)
-
-        :type: int
         """
         return self._samples
 
@@ -383,8 +367,6 @@ class Texture2D:
     def byte_size(self) -> int:
         """
         The byte size of the texture.
-
-        :type: int
         """
         return pixel_formats[self._dtype][3] * self._components * self.width * self.height
 
@@ -392,8 +374,6 @@ class Texture2D:
     def components(self) -> int:
         """
         Number of components in the texture
-
-        :type: int
         """
         return self._components
 
@@ -401,8 +381,6 @@ class Texture2D:
     def component_size(self) -> int:
         """
         Size in bytes of each component
-
-        :type: int
         """
         return self._component_size
 
@@ -410,8 +388,6 @@ class Texture2D:
     def depth(self) -> bool:
         """
         If this is a depth texture.
-
-        :type: bool
         """
         return self._depth
 
@@ -419,8 +395,6 @@ class Texture2D:
     def immutable(self) -> bool:
         """
         Does this texture have immutable storage?
-
-        :type: bool
         """
         return self._immutable
 
@@ -518,8 +492,6 @@ class Texture2D:
 
         * https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         * https://www.khronos.org/opengl/wiki/Sampler_Object#Filtering
-
-        :type: tuple (min filter, mag filter)
         """
         return self._filter
 
@@ -552,8 +524,6 @@ class Texture2D:
             texture.wrap_x = ctx.CLAMP_TO_EDGE
             # Use the border color (black by default) when reading outside the texture
             texture.wrap_x = ctx.CLAMP_TO_BORDER
-
-        :type: int
         """
         return self._wrap_x
 
@@ -582,8 +552,6 @@ class Texture2D:
             texture.wrap_x = ctx.CLAMP_TO_EDGE
             # Use the border color (black by default) when reading outside the texture
             texture.wrap_x = ctx.CLAMP_TO_BORDER
-
-        :type: int
         """
         return self._wrap_y
 

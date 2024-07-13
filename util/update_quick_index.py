@@ -38,7 +38,7 @@ from doc_helpers import (
 REPO_ROOT = SharedPaths.REPO_ROOT
 ARCADE_ROOT = SharedPaths.ARCADE_ROOT
 API_DOC_GENERATION_DIR = SharedPaths.API_DOC_ROOT / "api"
-QUICK_INDEX_FILE_PATH = API_DOC_GENERATION_DIR / "quick_index.rst"
+QUICK_INDEX_FILE_PATH = SharedPaths.API_DOC_ROOT / "quick_index.rst"
 IMPORT_TREE = build_import_tree(ARCADE_ROOT)
 
 # --- 1. Special rules & excludes ---
@@ -80,7 +80,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         ],
     },
     "drawing_primitives.rst": {
-        "title": "Drawing - Primitives",
+        "title": "Primitives",
         "use_declarations_in": [
             "arcade.draw.arc",
             "arcade.draw.circle",
@@ -157,6 +157,16 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.texture.tools"
         ]
     },
+    "hitbox.rst": {
+        "title": "Hitbox",
+        "use_declarations_in": [
+            "arcade.hitbox",
+            "arcade.hitbox.base",
+            "arcade.hitbox.bounding_box",
+            "arcade.hitbox.simple",
+            "arcade.hitbox.pymunk",
+        ],
+    },
     "texture_transforms.rst": {
         "title": "Texture Transforms",
         "use_declarations_in": [
@@ -195,13 +205,13 @@ API_FILE_TO_TITLE_AND_MODULES = {
         ]
     },
     "game_controller.rst": {
-        "title": "Game Controller Support",
+        "title": "Game Controller",
         "use_declarations_in": [
             "arcade.controller"
         ]
     },
     "joysticks.rst": {
-        "title": "Joystick Support",
+        "title": "Joystick",
         "use_declarations_in": [
             "arcade.joysticks"
         ]
@@ -211,7 +221,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "use_declarations_in": [
             "arcade.application",
             "arcade.window_commands",
-            "arcade.sections"
+            "arcade.sections",
         ]
     },
     "sound.rst": {
@@ -227,7 +237,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         ]
     },
     "isometric.rst": {
-        "title": "Isometric Map Support (incomplete)",
+        "title": "Isometric Map (incomplete)",
         "use_declarations_in": [
             "arcade.isometric"
         ]
@@ -378,7 +388,7 @@ def get_file_declarations(
         instances used to parse each.
     """
 
-    print("Parsing: ", filepath)
+    # print("Parsing: ", filepath)
     filename = filepath.name
 
     # Set up our return value dict
@@ -428,7 +438,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
         full_api_file_name = API_DOC_GENERATION_DIR / api_file_name
         title = page_config.get('title')
         use_declarations_in = page_config.get('use_declarations_in', EMPTY_TUPLE)
-        print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
+        # print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
 
     except Exception as e:
         print(f"ERROR: Unintelligible config data for {api_file_name!r}: {e}")
@@ -438,11 +448,13 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     quick_index_file = vfs.open(QUICK_INDEX_FILE_PATH, "a")
     quick_index_file.write("\n")
 
-    print(f"Generating API ref file {str(full_api_file_name)!r} titled {title!r}")
+    # print(f"Generating API ref file {str(full_api_file_name)!r} titled {title!r}")
     underline = "-" * len(title)
 
     api_file = vfs.open(full_api_file_name, "w")
     api_file.write(f".. _{api_file_name[:-4]}_api:\n")
+    # api_file.write(f".. py:module:: arcade\n")
+    api_file.write(f".. py:currentmodule:: arcade\n")
     api_file.write(f"\n")
     api_file.write(f"{title}\n")
     api_file.write(f"{underline}\n\n")
@@ -519,8 +531,8 @@ def main():
         text_file.include_file(
             REPO_ROOT /  'util' / 'template_quick_index.rst')
 
-        text_file.write("The arcade module\n")
-        text_file.write("-----------------\n\n")
+        # text_file.write("The arcade module\n")
+        # text_file.write("-----------------\n\n")
 
         text_file.write(dedent(
             """

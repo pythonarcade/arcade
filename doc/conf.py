@@ -56,6 +56,8 @@ RELEASE = VERSION
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx_rtd_theme',
+    'sphinx_rtd_dark_mode',
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx.ext.imgconverter',  # Converts .gif for PDF doc build
@@ -68,6 +70,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx_copybutton',
     'sphinx_sitemap',
+    # "sphinx_autodoc_typehints",
     'doc.extensions.prettyspecialmethods'
 ]
 
@@ -115,7 +118,11 @@ language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = [
+    "links.rst",
+    "substitutions.rst",
+    "_archive/*",
+]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'default'
@@ -126,19 +133,29 @@ todo_include_todos = True
 napoleon_numpy_docstring = False
 napoleon_google_docstring = True
 
+# nitpicky = True  # Warn about all references where the target cannot be found.
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'furo'
+html_theme = 'sphinx_rtd_theme'
 
+# See sphinx-rtd-theme docs for details on each option:
+# https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
-    "light_logo": "../_images/arcade-logo.svg",
-    "dark_logo": "../_images/arcade-logo.svg",
-
+    'display_version': True,
+    'logo_only': False,
+    'sticky_navigation': True,
+    'navigation_depth': 3,
+    'collapse_navigation': False,
 }
 
-html_title = f"Python Arcade {version}"
+# The single config option provided by sphinx-rtd-dark-mode
+# https://github.com/MrDogeBro/sphinx_rtd_dark_mode#config
+default_dark_mode = True
+
+html_title = f'Python Arcade {version}'
 
 html_js_files = [
     'https://code.jquery.com/jquery-3.6.3.min.js',
@@ -150,7 +167,7 @@ html_css_files = [
 ]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-# html_logo = '_static/favicon-32x32.png'
+html_logo = '_static/android-chrome-192x192.png'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -174,17 +191,13 @@ html_baseurl = 'https://api.arcade.academy/'
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
 # html_codeblock_linenos_style = 'table'
 
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
-                       'pyglet': ('https://pyglet.readthedocs.io/en/latest/', None),
-                       'PIL': ('https://pillow.readthedocs.io/en/stable', None),
-                       'pymunk': ('https://www.pymunk.org/en/latest/', None)
-                       }
-
-# Fix: "more than one target found for cross-reference 'Texture'"
-suppress_warnings = [
-    "ref.python",
-]
+# Configuration for intersphinx enabling linking other projects
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'pyglet': ('https://pyglet.readthedocs.io/en/latest/', None),
+    'PIL': ('https://pillow.readthedocs.io/en/stable', None),
+    'pymunk': ('https://www.pymunk.org/en/latest/', None),
+}
 
 def strip_init_return_typehint(app, what, name, obj, options, signature, return_annotation):
     # Prevent a the `-> None` annotation from appearing after classes.
@@ -232,9 +245,9 @@ def generate_color_table(filename, source):
             matches = color_match.match(line)
             if not matches:
                 continue
-            
+
             color_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {matches.group('alpha')})"
-            
+
             # Generate the alpha for CSS color function
             alpha = int( matches.group('alpha') ) / 255
             css_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {alpha!s:.4})"
@@ -339,6 +352,8 @@ class Visitor(docutils.nodes.SparseNodeVisitor):
 
 def setup(app):
     app.add_css_file("css/custom.css")
+    app.add_js_file("js/custom.js")
+
     # IMPORTANT: We can't use app.add_autodocumenter!
     # See the docstring of ClassDocumenter above for why.
     sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter

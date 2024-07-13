@@ -139,8 +139,6 @@ class Framebuffer:
     def glo(self) -> gl.GLuint:
         """
         The OpenGL id/name of the framebuffer
-
-        :type: GLuint
         """
         return self._glo
 
@@ -212,65 +210,37 @@ class Framebuffer:
 
     @property
     def ctx(self) -> "Context":
-        """
-        The context this object belongs to.
-
-        :type: :py:class:`arcade.gl.Context`
-        """
+        """The context this object belongs to."""
         return self._ctx
 
     @property
     def width(self) -> int:
-        """
-        The width of the framebuffer in pixels
-
-        :type: int
-        """
+        """The width of the framebuffer in pixels."""
         return self._width
 
     @property
     def height(self) -> int:
-        """
-        The height of the framebuffer in pixels
-
-        :type: int
-        """
+        """The height of the framebuffer in pixels."""
         return self._height
 
     @property
     def size(self) -> tuple[int, int]:
-        """
-        Size as a ``(w, h)`` tuple
-
-        :type: tuple (int, int)
-        """
+        """Size as a ``(w, h)`` tuple."""
         return self._width, self._height
 
     @property
     def samples(self) -> int:
-        """
-        Number of samples (MSAA)
-
-        :type: int
-        """
+        """Number of samples (MSAA)."""
         return self._samples
 
     @property
     def color_attachments(self) -> list[Texture2D]:
-        """
-        A list of color attachments
-
-        :type: list of :py:class:`arcade.gl.Texture`
-        """
+        """A list of color attachments."""
         return self._color_attachments
 
     @property
     def depth_attachment(self) -> Optional[Texture2D]:
-        """
-        Depth attachment
-
-        :type: :py:class:`arcade.gl.Texture`
-        """
+        """Depth attachment."""
         return self._depth_attachment
 
     @property
@@ -282,8 +252,6 @@ class Framebuffer:
 
         The depth mask value is persistent all will automatically
         be applies every time the framebuffer is bound.
-
-        :type: bool
         """
         return self._depth_mask
 
@@ -576,29 +544,17 @@ class DefaultFrameBuffer(Framebuffer):
 
     @property
     def size(self) -> tuple[int, int]:
-        """
-        Size as a ``(w, h)`` tuple
-
-        :type: tuple (int, int)
-        """
+        """Size as a ``(w, h)`` tuple."""
         return self._ctx.window.get_framebuffer_size()
 
     @property
     def width(self) -> int:
-        """
-        The width of the framebuffer in pixels
-
-        :type: int
-        """
+        """The width of the framebuffer in pixels."""
         return self.size[0]
 
     @property
     def height(self) -> int:
-        """
-        The height of the framebuffer in pixels
-
-        :type: int
-        """
+        """The height of the framebuffer in pixels."""
         return self.size[1]
 
     def _get_framebuffer_size(self) -> tuple[int, int]:
@@ -666,9 +622,6 @@ class DefaultFrameBuffer(Framebuffer):
             ctx.scissor = 0, 0, 100, 100
             # Disable scissoring
             ctx.scissor = None
-
-        :type: tuple (x, y, width, height)
-
         """
         if self._scissor is None:
             return None

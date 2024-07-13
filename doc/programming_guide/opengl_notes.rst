@@ -21,7 +21,7 @@ to make this as painless as possible for the user.
 :py:class:`~arcade.SpriteList` can for example be built before window creation
 and will be initialized internally in the first draw call.
 
-:py:class:`~arcade.TextureAtlas` on the other hand cannot
+:py:class:`~arcade.DefaultTextureAtlas` on the other hand cannot
 be crated before the window is created, but :py:class:`~arcade.Texture`
 can freely be loaded at any time since these only manage
 pixel data with Pillow and calculate hit box data on the cpu.
@@ -96,7 +96,7 @@ first ``draw()`` call or ``initialize()`` is called.
 .. _prog-guide-gl-buffer-protocol-typing:
 
 Writing Raw Bytes to GL Buffers & Textures
------------------------------------------------------------
+------------------------------------------
 
 Many of arcade's OpenGL classes support creation from or writing to
 any object that supports the
@@ -104,7 +104,7 @@ any object that supports the
 The classes most useful to end users are:
 
 * :py:meth:`arcade.gl.Buffer <arcade.gl.Buffer.write>`
-* :py:meth:`arcade.gl.Texture <arcade.gl.Texture.write>`
+* :py:meth:`arcade.gl.Texture2D <arcade.gl.Texture2D.write>`
 
 This functionality can be used for displaying the results of
 calculations such as:

@@ -17,7 +17,7 @@ This should work both in a desktop environment and on servers and even
 in virtual machines. Both software and hardware rendering should
 be acceptable depending on your use case.
 
-We are leveraging the headless mode in pyglet. If you are seeking knowledege
+We are leveraging the headless mode in pyglet. If you are seeking knowledge
 about the inner workings of headless, that's the right place to look.
 
 Enabling headless mode
@@ -32,11 +32,7 @@ This can be done in the following ways:
     import os
     os.environ["ARCADE_HEADLESS"] = "True"
 
-    # The above is a shortcut for
-    import pyglet
-    pyglet.options["headless"] = True
-
-This of course also means you can configure headless externally.
+This means you can configure headless externally.
 
 .. code:: bash
 
@@ -76,9 +72,9 @@ created through the :py:class:`~arcade.ArcadeContext` if needed.
 .. Warning::
 
     If you are creating and destroying a lot of arcade objects
-    you might want to look into :py:attr:`arcade.ArcadeContext.gc_mode`.
+    you might want to look into :py:attr:`arcade.gl.Context.gc_mode`.
     In Arcade we normally do garbage collection of OpenGL objects
-    once per frame by calling :py:meth:`~arcade.ArcadeContext.gc`.
+    once per frame by calling :py:meth:`~arcade.gl.Context.gc`.
 
 Examples
 --------

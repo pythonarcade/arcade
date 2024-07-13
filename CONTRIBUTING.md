@@ -5,19 +5,20 @@ Arcade welcomes contributions, including:
 * [Bug reports & feature suggestions](https://github.com/pythonarcade/arcade/issues)
 * Bug fixes
 * Implementations of requested features
-* Corrections & additions to the documentation 
+* Corrections & additions to the documentation
 * Improvements to the tests
 
 If you're looking for a way to contribute, try checking
-[the currently active issues](https://github.com/pythonarcade/arcade/issues>)
+[the currently active issues](https://github.com/pythonarcade/arcade/issues)
 for one that needs work. If you're new to programming or contributing, check for the
-label `good first issue`, these are issues which have been identified as good candidates
-for first time contributors.
+label `good first issue`, these are issues which have been identified as good candidates for first time contributors.
+
+Notifying us about issues in the code and documentation is also a valuable contribution.
 
 ## Before Making Changes
 
 Before working on an improvement, please make sure to
-[open an issue](https://github.com/pythonarcade/arcade/issues) if one
+[open an issue](https://github.com/pythonarcade/arcade/issues/new) if one
 does not already exist for it.
 
 Tips:
@@ -40,8 +41,7 @@ The rest of the guide will help you get to this point & explain how to test in m
 
 ## Requirements
 
-Although using arcade only requires Python 3.8 or higher, development
-currently requires 3.9 or higher.
+Check that you are using a supported version of Python. Inspect the `pyproject.toml` file for the supported versions. We usually try to work with the latest stable python release.
 
 The rest of this guide assumes you've already done the following:
 
@@ -91,6 +91,8 @@ The following command will run black for you if you do not want to configure you
 a good idea to run this command when you are finished working anyways, as our CI will use this to check that
 the formatting is correct.
 
+Docstring should be formatted using [Google Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
+
 ```bash
 python make.py format
 ```
@@ -99,23 +101,44 @@ In addition to Black, this will sort the imports using [Ruff](https://docs.astra
 your editor to run this, please see [this link](https://docs.astral.sh/ruff/integrations/) for more information on
 Ruff integration for your specific editor.
 
+### Typing
+
+Arcade is using type hints to help with code readability and maintainability.
+Everything that can reasonably be typed should be typed.
+
+In some situations, you may need to use `# type: ignore` to suppress type errors.
+If this is an issue with a third-party library, the following format is preferred:
+
+Also see [this issue](https://github.com/pythonarcade/arcade/issues/1796) for
+more discussion on this topic.
+
+```python
+# type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
+```
+
+This links to an issue in the 3rd party library that is causing the type error.
+This oddly-specific syntax is compatible with both mypy and pyright.
+See [this issue](https://github.com/pythonarcade/arcade/issues/1789) for more information.
+
 ### Use pre-commit hooks to automatically run formatting
 
-You can use `pre-commit <https://pre-commit.com/>`_ to automatically run lint, formatting and type checks against 
+This is not required, but can be helpful in case you forget to run the formatting command before committing your changes.
+
+You can use `pre-commit <https://pre-commit.com/>`_ to automatically run lint, formatting and type checks against
 your changes before you commit them.
 To install pre-commit, run the following command:
 
-.. code-block:: shell
-
-    pip install pre-commit
-    # or on Mac
-    brew install pre-commit
+```bash
+pip install pre-commit
+# or on Mac
+brew install pre-commit
+```
 
 Then, run the following command to install the pre-commit hooks:
 
-.. code-block:: shell
-
-    pre-commit install
+```bash
+pre-commit install
+```
 
 ## Testing
 
@@ -141,16 +164,18 @@ If you want to run either of these tools individually, you can do
 python make.py ruff
 ```
 
-or 
+or
 
 ```bash
 python make.py mypy
 ```
 
-Now you run the framework's unit tests with the following command:
+Now you run the unit tests with the following command:
 
 ```bash
 python make.py test
+# Optionally use pytest directly
+pytest tests/unit
 ```
 
 ### Building & Testing Documentation
@@ -207,7 +232,7 @@ the following packages to build PDFs:
 
 ``console
 sudo apt install latexmk
-sudo apt install texlive-latex-extra 
+sudo apt install texlive-latex-extra
 ``
 To reduce the large (300 MB+) install size of the second package, you
 may be able to use the `--no-install-recommends` flag.
@@ -222,7 +247,6 @@ run the following:
 ```console
 ./make.py latexpdf
 ```
-
 
 ## Optional: Improve Ergonomics on Mac and Linux
 

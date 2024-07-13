@@ -9,7 +9,7 @@ Texture Atlas
 Introduction
 ------------
 
-:py:class:`arcade.TextureAtlas` is where your textures eventually end up
+:py:class:`arcade.DefaultTextureAtlas` is where your textures eventually end up
 when they are used in a sprite. This is where the image data is moved
 to graphics memory (OpenGL) and is one of the reasons we can
 batch draw hundreds of thousands of sprites extremely fast.
@@ -133,7 +133,7 @@ If you have stale textures they can be removed from the atlas using::
     atlas.remove(texture)
 
 This will make the region free for new textures the next time the
-atlas rebuilds. You can also call :py:meth:`arcade.TextureAtlas.rebuild`
+atlas rebuilds. You can also call :py:meth:`arcade.DefaultTextureAtlas.rebuild`
 directly if you are removing a large quantity of textures, but generally
 it's enough to let this happen automatically when needed.
 
@@ -207,11 +207,11 @@ Debugging
 When working with atlases it can be useful to see the contents.
 We provide two methods for this.
 
-:py:meth:`arcade.TextureAtlas.show` will display the atlas using Pillow::
+:py:meth:`arcade.DefaultTextureAtlas.show` will display the atlas using Pillow::
 
     atlas.show()
 
-:py:meth:`arcade.TextureAtlas.save` will save the atlas contents to a png file::
+:py:meth:`arcade.DefaultTextureAtlas.save` will save the atlas contents to a png file::
 
     atlas.write("path/to/atlas.png")
 

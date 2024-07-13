@@ -312,7 +312,7 @@ customize the look of the widget better than styling.
 A texture button a few more arguments than a flat button. ``texture``,
 ``texture_hovered``, and ``texture_pressed`` will change the texture displayed
 on the button respectively. ``scale`` will change the scaling or size of the
-button - it's similar to the sprite :py:attr:`~arcade.Sprite.scale`.
+button - it's similar to the sprite :py:attr:`~arcade.BasicSprite.scale`.
 
 .. hint::
     This widget *does* have ``width`` and ``height`` parameters, but they only

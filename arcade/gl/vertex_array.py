@@ -82,8 +82,6 @@ class VertexArray:
     def ctx(self) -> "Context":
         """
         The Context this object belongs to
-
-        :type: :py:class:`arcade.gl.Context`
         """
         return self._ctx
 
@@ -91,8 +89,6 @@ class VertexArray:
     def program(self) -> Program:
         """
         The assigned program
-
-        :type: :py:class:`arcade.gl.Program`
         """
         return self._program
 
@@ -100,8 +96,6 @@ class VertexArray:
     def ibo(self) -> Optional[Buffer]:
         """
         Element/index buffer
-
-        :type: :py:class:`arcade.gl.Buffer`
         """
         return self._ibo
 
@@ -109,8 +103,6 @@ class VertexArray:
     def num_vertices(self) -> int:
         """
         The number of vertices
-
-        :type: int
         """
         return self._num_vertices
 
