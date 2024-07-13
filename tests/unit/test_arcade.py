@@ -2,6 +2,7 @@ from types import ModuleType
 from copy import copy
 import logging
 import arcade
+import inspect
 from arcade import *
 
 
@@ -16,9 +17,13 @@ def test_import():
     remaining = arcade_names - common
     for name in copy(remaining):
         attr = getattr(arcade, name)
-        if type(attr) is ModuleType:
+        if type(attr) is ModuleType or not inspect.isroutine(attr):
             remaining.remove(name)
-        elif not attr.__module__.startswith('arcade.'):
+        # Extra awful trick because:
+        # 1. attempting to get __module__ of bool members raises AttributeError
+        # 2. inspect.isbuiltin(bool) does not return True for bool
+        # 2. inspect.getmodule(bool) returns the builtins module
+        elif not inspect.getmodule(attr).__name__.startswith('arcade.'):
             remaining.remove(name)
 
     assert len(remaining) == 0
