@@ -22,6 +22,7 @@ from arcade.gui.property import bind
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
+from arcade.text import FontNameOrNames
 from arcade.types import LBWH, RGBA255, Color, RGBOrA255
 
 
@@ -59,16 +60,16 @@ class UILabel(UIWidget):
                       if a width is supplied. Valid options include ``"left"``,
                       ``"center"`` or ``"right"``.
     :param dpi: Resolution of the fonts in the layout. Defaults to 96.
-    :param multiline: If enabled, a ``\\n`` will start a new line. A
-                           :py:class:`~arcade.gui.UITextWidget` with
-                           ``multiline`` of True is the same thing as
-                           a :py:class:`~arcade.gui.UITextArea`.
+    :param multiline: If enabled, a ``\\n`` will start a new line. Changing text or font will require a manual call of
+                      :py:meth:`~arcade.gui.UILabel.fit_content` to prevent text line wrap.
     :param size_hint: A tuple of floats between 0 and 1 defining the amount of
                       space of the parent should be requested. Default (0, 0) which fits the content.
     :param size_hint_max: Maximum size hint width and height in pixel.
     :param style: Not used. Labels will have no need for a style; they are too
                   simple (just a text display).
     """
+
+    ADAPTIVE_MULTILINE_WIDTH = 999999
 
     def __init__(
         self,
@@ -94,11 +95,11 @@ class UILabel(UIWidget):
         # large value and then fitting the size.
         adaptive_multiline = False
         if multiline and not width:
-            width = 999999
+            width = self.ADAPTIVE_MULTILINE_WIDTH
             adaptive_multiline = True
 
         # Use Arcade Text wrapper of pyglet.Label for text rendering
-        self.label = arcade.Text(
+        self._label = arcade.Text(
             x=0,
             y=0,
             text=text,
@@ -115,13 +116,13 @@ class UILabel(UIWidget):
         )
         if adaptive_multiline:
             # +1 is required to prevent line wrap
-            width = self.label.content_width + 1
+            width = self._label.content_width + 1
 
         super().__init__(
             x=x,
             y=y,
-            width=width or self.label.content_width,
-            height=height or self.label.content_height,
+            width=width or self._label.content_width,
+            height=height or self._label.content_height,
             size_hint=size_hint,
             size_hint_max=size_hint_max,
             **kwargs,
@@ -131,11 +132,11 @@ class UILabel(UIWidget):
         # and padding can only be applied later, we can avoid ``fit_content``
         # and set with and height separately.
         if width:
-            self.label.width = int(width)
+            self._label.width = int(width)
         if height:
-            self.label.height = int(height)
+            self._label.height = int(height)
 
-        bind(self, "rect", self._update_layout)
+        bind(self, "rect", self._update_label)
 
         # update size hint when border or padding changes
         bind(self, "_border_width", self._update_size_hint_min)
@@ -149,16 +150,26 @@ class UILabel(UIWidget):
     def fit_content(self):
         """
         Manually set the width and height of the label to contain the whole text.
+        Based on the size_hint_min.
+
+        If multiline is enabled, the width will be calculated based on longest line of the text.
+        And size_hint_min will be updated.
         """
-        min_width, min_height = self.size_hint_min or (0, 0)
+
+        if self.multiline:
+            self._label.width = self.ADAPTIVE_MULTILINE_WIDTH
+            self._update_size_hint_min()
+
+        min_width, min_height = self.size_hint_min or (1, 1)
         self.rect = self.rect.resize(
             width=min_width,
             height=min_height,
         )
+        # rect changes to trigger resizing of the _label automatically
 
     @property
     def text(self):
-        return self.label.text
+        return self._label.text
 
     @text.setter
     def text(self, value):
@@ -168,9 +179,8 @@ class UILabel(UIWidget):
         This triggers a full render to ensure that previous text is cleared out.
         """
 
-        if self.label.text != value:
-            self.label.text = value
-            self._update_layout()
+        if self._label.text != value:
+            self._label.text = value
             self._update_size_hint_min()
 
             if self._bg_color or self._bg_tex:
@@ -178,30 +188,71 @@ class UILabel(UIWidget):
             else:
                 self.trigger_full_render()
 
-    def _update_layout(self):
-        # Update Pyglet layout size
-        layout = self.label
-        layout_size = layout.width, layout.height
+    def _update_label(self):
+        """
+        Update the position and size of the label.
 
-        if layout_size != self.content_size:
-            layout.position = 0, 0, 0  # layout always drawn in scissor box
-            layout.width = int(self.content_width)
-            layout.height = int(self.content_height)
+        So it fits into the content area of the widget.
+        Should always be called after the content area changed.
+        """
+        # Update Pyglet label size
+        label = self._label
+        layout_size = label.width, label.height
+
+        if layout_size != self.content_size or label.position != (0, 0):
+            label.position = 0, 0, 0  # label always drawn in scissor box
+            label.width = int(self.content_width)
+            label.height = int(self.content_height)
 
     def _update_size_hint_min(self):
-        min_width = self.label.content_width + 1  # +1 required to prevent line wrap
+        min_width = self._label.content_width + 1  # +1 required to prevent line wrap
         min_width += self._padding_left + self._padding_right + 2 * self._border_width
 
-        min_height = self.label.content_height
+        min_height = self._label.content_height
         min_height += self._padding_top + self._padding_bottom + 2 * self._border_width
 
         self.size_hint_min = (min_width, min_height)
+
+    def update_font(
+        self,
+        font_name: Optional[FontNameOrNames] = None,
+        font_size: Optional[int] = None,
+        font_color: Optional[Color] = None,
+    ):
+        """
+        Update font of the label.
+        """
+        font_name = font_name or self._label.font_name
+        font_size = font_size or self._label.font_size
+        font_color = font_color or self._label.color
+
+        # Check if values actually changed, if then update and trigger render
+        font_name_changed = self._label.font_name != font_name
+        font_size_changed = self._label.font_size != font_size
+        font_color_changed = self._label.color != font_color
+        if font_name_changed or font_size_changed or font_color_changed:
+            with self._label:
+                self._label.font_name = font_name
+                self._label.font_size = font_size
+                self._label.color = font_color
+            self._update_size_hint_min()
+
+            # Optimised render behaviour
+            if self._bg_color or self._bg_tex:
+                self.trigger_render()
+            else:
+                self.trigger_full_render()
+
+    @property
+    def multiline(self) -> bool:
+        """Return if the label is in multiline mode."""
+        return self._label.multiline
 
     def do_render(self, surface: Surface):
         self.prepare_render(surface)
 
         # pyglet rendering automatically applied by arcade.Text
-        self.label.draw()
+        self._label.draw()
 
 
 class UITextWidget(UIAnchorLayout):
@@ -216,15 +267,8 @@ class UITextWidget(UIAnchorLayout):
 
     def __init__(self, *, text: str, multiline: bool = False, **kwargs):
         super().__init__(text=text, **kwargs)
-
-        self._label = UILabel(
-            text=text, multiline=multiline, width=1000 if multiline else None
-        )  # width 1000 try to prevent line wrap if multiline is enabled
-
+        self._label = UILabel(text=text, multiline=multiline)  # UILabel supports width=None for multiline
         self.add(self._label)
-        self.ui_label.fit_content()
-
-        bind(self, "rect", self.ui_label.fit_content)
 
     def place_text(
         self,
@@ -254,12 +298,11 @@ class UITextWidget(UIAnchorLayout):
         Text of the widget. Modifying this repeatedly will cause significant
         lag; calculating glyph position is very expensive.
         """
-        return self._label.text
+        return self.ui_label.text
 
     @text.setter
     def text(self, value):
         self.ui_label.text = value
-        self.ui_label.fit_content()
         self.trigger_render()
 
     @property
@@ -271,13 +314,7 @@ class UITextWidget(UIAnchorLayout):
         If you want a scrollable text widget, please use :py:class:`~arcade.gui.UITextArea`
         instead.
         """
-        return self._label.label.multiline
-
-    @multiline.setter
-    def multiline(self, value):
-        self._label.label.multiline = value
-        self.ui_label.fit_content()
-        self.trigger_render()
+        return self.ui_label.multiline
 
     @property
     def ui_label(self) -> UILabel:
@@ -285,10 +322,6 @@ class UITextWidget(UIAnchorLayout):
         Internal py:class:`~arcade.gui.UILabel` used for rendering the text.
         """
         return self._label
-
-    @property
-    def label(self) -> arcade.Text:
-        return self._label.label
 
 
 class UIInputText(UIWidget):
@@ -427,9 +460,7 @@ class UIInputText(UIWidget):
                 x = int(event.x - self.left - self.LAYOUT_OFFSET)
                 y = int(event.y - self.bottom)
                 if isinstance(event, UIMouseDragEvent):
-                    self.caret.on_mouse_drag(
-                        x, y, event.dx, event.dy, event.buttons, event.modifiers
-                    )
+                    self.caret.on_mouse_drag(x, y, event.dx, event.dy, event.buttons, event.modifiers)
                     self.trigger_full_render()
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)

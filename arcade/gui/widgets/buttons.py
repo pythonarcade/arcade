@@ -205,22 +205,9 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         font_name = style.get("font_name", UIFlatButton.UIStyle.font_name)
         font_size = style.get("font_size", UIFlatButton.UIStyle.font_size)
         font_color = style.get("font_color", UIFlatButton.UIStyle.font_color)
+        self.ui_label.update_font(font_name, font_size, font_color)
 
-        font_name_changed = self._label.label.font_name != font_name
-        font_size_changed = self._label.label.font_size != font_size
-        font_color_changed = self._label.label.color != font_color
-
-        if font_name_changed or font_size_changed or font_color_changed:
-            with self._label.label:
-                self._label.label.font_name = font_name
-                self._label.label.font_size = font_size
-                self._label.label.color = font_color
-
-            # make label fit its content, but limit size to button size
-            self._label.fit_content()
-            self.ui_label.rect = self.ui_label.rect.max_size(
-                self.content_width, self.content_height
-            )
+        self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
 
 
 class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
@@ -259,7 +246,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-            font_size=12,
+            font_size=13,
             font_name=("calibri", "arial"),
             font_color=arcade.color.WHITE,
             bg=(21, 19, 21, 255),
@@ -329,6 +316,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         style: UIFlatButton.UIStyle = self.get_current_style()
 
         # update label
+        # this might trigger another render run, due to label size change
         self._apply_style(style)
 
         # Render button
@@ -356,19 +344,4 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         font_name = style.get("font_name", UIFlatButton.UIStyle.font_name)
         font_size = style.get("font_size", UIFlatButton.UIStyle.font_size)
         font_color = style.get("font_color", UIFlatButton.UIStyle.font_color)
-
-        font_name_changed = self._label.label.font_name != font_name
-        font_size_changed = self._label.label.font_size != font_size
-        font_color_changed = self._label.label.color != font_color
-
-        if font_name_changed or font_size_changed or font_color_changed:
-            with self._label.label:
-                self._label.label.font_name = font_name
-                self._label.label.font_size = font_size
-                self._label.label.color = font_color
-
-            # make label fit its content, but limit size to button size
-            self._label.fit_content()
-            self.ui_label.rect = self.ui_label.rect.max_size(
-                self.content_width, self.content_height
-            )
+        self.ui_label.update_font(font_name, font_size, font_color)
