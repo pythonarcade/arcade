@@ -1,6 +1,7 @@
 """
 Example using the TextureAnimationSprite class to animate a sprite using keyframes.
-This sprite type is primarily used internally by tilemaps, but can be used for other purposes as well.
+This sprite type is primarily used internally by tilemaps, but can be used for other
+purposes as well.
 
 If Python and arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_animated_keyframes
@@ -14,10 +15,11 @@ class Animated(arcade.Window):
         super().__init__(1280, 720, "Time based animated sprite")
 
         # Load the 8 frames for the walking animation
+        path = ":assets:/images/animated_characters/female_adventurer/"
         keyframes = [
             arcade.TextureKeyframe(
                 texture=arcade.load_texture(
-                    f":assets:/images/animated_characters/female_adventurer/femaleAdventurer_walk{i}.png"
+                    path + f"femaleAdventurer_walk{i}.png"
                 ),
                 duration=100,
             )

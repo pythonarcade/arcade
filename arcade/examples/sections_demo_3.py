@@ -260,13 +260,20 @@ class GameView(arcade.View):
 
         # create and store the modal, so we can set
         # self.modal_section.enabled = True to show it
-        self.modal_section = ModalSection((self.window.width / 2) - 150,
-                                          (self.window.height / 2) - 100,
-                                          300, 200)
+        self.modal_section = ModalSection(
+            (self.window.width / 2) - 150,
+            (self.window.height / 2) - 100,
+            300, 200,
+        )
 
         # we set accept_keyboard_events to False (default to True)
-        self.info_bar = InfoBar(0, self.window.height - INFO_BAR_HEIGHT, self.window.width, INFO_BAR_HEIGHT,
-                                accept_keyboard_keys=False)
+        self.info_bar = InfoBar(
+            0,
+            self.window.height - INFO_BAR_HEIGHT,
+            self.window.width,
+            INFO_BAR_HEIGHT,
+            accept_keyboard_keys=False,
+        )
 
         # as prevent_dispatch is on by default, we let pass the events to the
         # following Section: the map

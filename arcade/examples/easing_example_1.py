@@ -107,7 +107,13 @@ class MyGame(arcade.Window):
             return line
 
         def create_text(text_string):
-            text = arcade.Text(text_string, X_START, y - BALL_RADIUS, color=text_color, font_size=24)
+            text = arcade.Text(
+                text_string,
+                x=X_START,
+                y=y - BALL_RADIUS,
+                color=text_color,
+                font_size=24,
+            )
             return text
 
         def add_item(item_y, ease_function, text):

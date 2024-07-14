@@ -12,7 +12,9 @@ from typing import Tuple
 import arcade
 from arcade.types import Color
 
-IMAGE_FEMALE_PERSON_IDLE = ":assets:images/animated_characters/female_person/femalePerson_idle.png"
+IMAGE_FEMALE_PERSON_IDLE = (
+    ":assets:images/animated_characters/female_person/femalePerson_idle.png"
+)
 IMAGE_LASER_BLUE01 = ":assets:images/space_shooter/laserBlue01.png"
 IMAGE_ZOMBIE_IDLE = ":assets:images/animated_characters/zombie/zombie_idle.png"
 

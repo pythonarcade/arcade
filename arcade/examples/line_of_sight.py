@@ -21,8 +21,14 @@ MOVEMENT_SPEED = 5
 VIEWPORT_MARGIN = 250
 HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
 VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
-# If the player moves further than this boundary away from the camera we use a constraint to move the camera
-CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
+# If the player moves further than this boundary away from
+# the camera we use a constraint to move the camera
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY,
+    HORIZONTAL_BOUNDARY,
+    -VERTICAL_BOUNDARY,
+    VERTICAL_BOUNDARY,
+)
 
 
 class MyGame(arcade.Window):
@@ -72,14 +78,19 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
 
         # Set up the player
-        self.player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    scale=SPRITE_SCALING)
+        self.player = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player.center_x = 50
         self.player.center_y = 350
         self.player_list.append(self.player)
 
         # Set enemies
-        enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=SPRITE_SCALING)
+        enemy = arcade.Sprite(
+            ":resources:images/animated_characters/zombie/zombie_idle.png",
+            scale=SPRITE_SCALING,
+        )
         enemy.center_x = 350
         enemy.center_y = 350
         self.enemy_list.append(enemy)
@@ -87,7 +98,10 @@ class MyGame(arcade.Window):
         spacing = 200
         for column in range(10):
             for row in range(10):
-                sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                sprite = arcade.Sprite(
+                    ":resources:images/tiles/grassCenter.png",
+                    scale=SPRITE_SCALING,
+                )
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height
@@ -97,8 +111,10 @@ class MyGame(arcade.Window):
                 if random.randrange(100) > 20:
                     self.wall_list.append(sprite)
 
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player,
-                                                         self.wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.player,
+            self.wall_list,
+        )
 
     def on_draw(self):
         """
@@ -114,9 +130,9 @@ class MyGame(arcade.Window):
             self.enemy_list.draw()
 
             for enemy in self.enemy_list:
-                if arcade.has_line_of_sight(self.player.position,
-                                            enemy.position,
-                                            self.wall_list):
+                if arcade.has_line_of_sight(
+                    self.player.position, enemy.position, self.wall_list
+                ):
                     color = arcade.color.RED
                 else:
                     color = arcade.color.WHITE

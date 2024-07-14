@@ -69,14 +69,19 @@ class MyGame(arcade.Window):
         self.bullet_list = arcade.SpriteList()
 
         # Add player ship
-        self.player = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", scale=0.5)
+        self.player = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_orange.png",
+            scale=0.5,
+        )
         self.player_list.append(self.player)
 
         # Add top-left enemy ship
-        enemy = EnemySprite(":resources:images/space_shooter/playerShip1_green.png",
-                            scale=0.5,
-                            bullet_list=self.bullet_list,
-                            time_between_firing=2.0)
+        enemy = EnemySprite(
+            ":resources:images/space_shooter/playerShip1_green.png",
+            scale=0.5,
+            bullet_list=self.bullet_list,
+            time_between_firing=2.0,
+        )
         enemy.center_x = 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180

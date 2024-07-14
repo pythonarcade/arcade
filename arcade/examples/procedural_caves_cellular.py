@@ -69,7 +69,12 @@ def count_alive_neighbors(grid, x, y):
             neighbor_y = y + j
             if i == 0 and j == 0:
                 continue
-            elif neighbor_x < 0 or neighbor_y < 0 or neighbor_y >= height or neighbor_x >= width:
+            elif (
+                neighbor_x < 0 or
+                neighbor_y < 0 or
+                neighbor_y >= height or
+                neighbor_x >= width
+            ):
                 # Edges are considered alive. Makes map more likely to appear naturally closed.
                 alive_count += 1
             elif grid[neighbor_y][neighbor_x] == 1:
@@ -311,7 +316,11 @@ class GameView(arcade.View):
         """
 
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, camera_speed)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position,
+            position,
+            camera_speed,
+        )
 
     def on_resize(self, width: int, height: int):
         """

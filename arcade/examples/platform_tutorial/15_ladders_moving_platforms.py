@@ -80,12 +80,18 @@ class MyGame(arcade.Window):
         }
 
         # Load our TileMap
-        self.tile_map = arcade.load_tilemap(":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
+        self.tile_map = arcade.load_tilemap(
+            ":resources:tiled_maps/map_with_ladders.json",
+            scaling=TILE_SCALING,
+            layer_options=layer_options,
+        )
 
         # Create our Scene Based on the TileMap
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.player_texture = arcade.load_texture(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
+        self.player_texture = arcade.load_texture(
+            ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        )
 
         self.player_sprite = arcade.Sprite(self.player_texture)
         self.player_sprite.center_x = 128
@@ -124,7 +130,8 @@ class MyGame(arcade.Window):
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
         # Calculate the right edge of the map in pixels
-        self.end_of_map = (self.tile_map.width * self.tile_map.tile_width) * self.tile_map.scaling
+        self.end_of_map = (self.tile_map.width * self.tile_map.tile_width)
+        self.end_of_map *= self.tile_map.scaling
 
     def on_draw(self):
         """Render the screen."""

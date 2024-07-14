@@ -50,22 +50,31 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=0.75)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=0.75,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 150
         self.player_list.append(self.player_sprite)
 
         # Create the sprites
         for x in range(180, 1100, 100):
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=0.3, center_x=x, center_y=400)
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png",
+                scale=0.3,
+                center_x=x,
+                center_y=400,
+            )
             coin.intensity = 'dim'
             coin.alpha = 64
             self.coin_list.append(coin)
 
         # Create trigger
-        self.trigger_sprite = arcade.Sprite(":resources:images/pinball/bumper.png", scale=0.5,
-                                            center_x=750, center_y=50)
+        self.trigger_sprite = arcade.Sprite(
+            ":resources:images/pinball/bumper.png", scale=0.5,
+            center_x=750, center_y=50,
+        )
 
     def on_draw(self):
         """ Draw everything """
@@ -102,7 +111,9 @@ class MyGame(arcade.Window):
         self.coin_list.update()
 
         # Generate a list of all sprites that collided with the player.
-        coins_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.coin_list)
+        coins_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.coin_list,
+        )
 
         # Loop through each colliding sprite to set intensity=bright
         for coin in coins_hit_list:
@@ -111,7 +122,9 @@ class MyGame(arcade.Window):
 
         hit_trigger = arcade.check_for_collision(self.player_sprite, self.trigger_sprite)
         if hit_trigger:
-            intense_sprites = [sprite for sprite in self.coin_list if sprite.intensity == 'bright']
+            intense_sprites = [
+                sprite for sprite in self.coin_list if sprite.intensity == 'bright'
+            ]
             for coin in intense_sprites:
                 coin.remove_from_sprite_lists()
 

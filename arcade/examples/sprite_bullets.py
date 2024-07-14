@@ -74,7 +74,10 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png",
+                scale=SPRITE_SCALING_COIN,
+            )
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -115,7 +118,10 @@ class MyGame(arcade.Window):
         # Gunshot sound
         arcade.play_sound(self.gun_sound)
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(
+            ":resources:images/space_shooter/laserBlue01.png",
+            scale=SPRITE_SCALING_LASER,
+        )
 
         # The image points to the right, and we want it to point up. So
         # rotate it.

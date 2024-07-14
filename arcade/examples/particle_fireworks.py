@@ -101,13 +101,18 @@ def make_flash(prev_emitter):
         center_xy=prev_emitter.get_pos(),
         emit_controller=EmitBurst(3),
         particle_factory=lambda emitter: FadeParticle(
-            filename_or_texture=FLASH_TEXTURE, change_xy=rand_in_circle((0.0, 0.0), 3.5), lifetime=0.15
+            filename_or_texture=FLASH_TEXTURE,
+            change_xy=rand_in_circle((0.0, 0.0), 3.5),
+            lifetime=0.15,
         ),
     )
 
 
 def make_puff(prev_emitter):
-    """Return emitter that generates the subtle smoke cloud left after a firework shell explodes"""
+    """
+    Return emitter that generates the subtle smoke cloud
+    left after a firework shell explodes.
+    """
     return Emitter(
         center_xy=prev_emitter.get_pos(),
         emit_controller=EmitBurst(4),
@@ -165,7 +170,10 @@ class AnimatedAlphaParticle(LifetimeParticle):
 
 
 class RocketEmitter(Emitter):
-    """Custom emitter class to add gravity to the emitter to represent gravity on the firework shell"""
+    """
+    Custom emitter class to add gravity to the emitter to
+    represent gravity on the firework shell.
+    """
 
     def update(self):
         super().update()
@@ -226,7 +234,10 @@ class FireworksApp(arcade.Window):
             self.launch_sparkle_firework,
         )
         random.choice(launchers)(delta_time)
-        pyglet.clock.schedule_once(self.launch_firework, random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX))
+        pyglet.clock.schedule_once(
+            self.launch_firework,
+            random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX),
+        )
 
     def launch_random_firework(self, _delta_time):
         """Simple firework that explodes in a random color"""
@@ -252,7 +263,10 @@ class FireworksApp(arcade.Window):
         self.emitters.append(spinner2)
 
     def explode_firework(self, prev_emitter):
-        """Actions that happen when a firework shell explodes, resulting in a typical firework"""
+        """
+        Actions that happen when a firework shell explodes,
+        resulting in a typical firework
+        """
         self.emitters.append(make_puff(prev_emitter))
         self.emitters.append(make_flash(prev_emitter))
 
@@ -270,7 +284,10 @@ class FireworksApp(arcade.Window):
         self.emitters.append(sparks)
 
     def explode_ringed_firework(self, prev_emitter):
-        """Actions that happen when a firework shell explodes, resulting in a ringed firework"""
+        """
+        Actions that happen when a firework shell explodes,
+        resulting in a ringed firework.
+        """
         self.emitters.append(make_puff(prev_emitter))
         self.emitters.append(make_flash(prev_emitter))
 
@@ -300,7 +317,10 @@ class FireworksApp(arcade.Window):
         self.emitters.append(ring)
 
     def explode_sparkle_firework(self, prev_emitter):
-        """Actions that happen when a firework shell explodes, resulting in a sparkling firework"""
+        """
+        Actions that happen when a firework shell explodes,
+        resulting in a sparkling firework.
+        """
         self.emitters.append(make_puff(prev_emitter))
         self.emitters.append(make_flash(prev_emitter))
 
@@ -341,7 +361,13 @@ class FireworksApp(arcade.Window):
             e.draw()
         arcade.draw_lrbt_rectangle_filled(0, SCREEN_WIDTH, 0, 25, arcade.color.DARK_GREEN)
         mid = SCREEN_WIDTH / 2
-        arcade.draw_lrbt_rectangle_filled(mid - 2, mid + 2, 10, SPINNER_HEIGHT, arcade.color.DARK_BROWN)
+        arcade.draw_lrbt_rectangle_filled(
+            mid - 2,
+            mid + 2,
+            10,
+            SPINNER_HEIGHT,
+            arcade.color.DARK_BROWN,
+        )
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
@@ -358,7 +384,11 @@ def firework_spark_mutator(particle: FadeParticle):
 
 
 def rocket_smoke_mutator(particle: LifetimeParticle):
-    particle.scale = lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)  # type: ignore
+    particle.scale = lerp(
+        0.5,
+        3.0,
+        particle.lifetime_elapsed / particle.lifetime_original  # type: ignore
+    )
 
 
 def main():

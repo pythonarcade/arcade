@@ -31,13 +31,13 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Background image will be stored in this variable
-        # Image from:
-        # https://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
         # Variables that will hold sprite lists
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=PLAYER_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=PLAYER_SCALING,
+        )
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player_sprite)
         self.coin_list = arcade.SpriteList()
@@ -82,7 +82,10 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw the background texture
-        arcade.draw_texture_rect(self.background, arcade.LBWH(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        arcade.draw_texture_rect(
+            self.background,
+            arcade.LBWH(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+        )
 
         # Draw all the sprites.
         self.coin_list.draw()

@@ -72,9 +72,11 @@ class MyGame(arcade.Window):
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           scale=0.4)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/"
+            "femalePerson_idle.png",
+            scale=0.4,
+        )
         self.player_sprite.center_x = 256
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
@@ -84,7 +86,10 @@ class MyGame(arcade.Window):
             for y in range(0, MAP_HEIGHT, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                    wall = arcade.Sprite(
+                        ":resources:images/tiles/grassCenter.png",
+                        scale=SPRITE_SCALING,
+                    )
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -108,7 +113,8 @@ class MyGame(arcade.Window):
 
     def update_minimap(self):
         proj = 0, MAP_WIDTH, 0, MAP_HEIGHT
-        with self.minimap_sprite_list.atlas.render_into(self.minimap_texture, projection=proj) as fbo:
+        atlas = self.minimap_sprite_list.atlas
+        with atlas.render_into(self.minimap_texture, projection=proj) as fbo:
             fbo.clear(color=MINIMAP_BACKGROUND_COLOR)
             self.wall_list.draw()
             arcade.draw_sprite(self.player_sprite)
@@ -138,8 +144,16 @@ class MyGame(arcade.Window):
         self.minimap_sprite_list.draw()
 
         # Draw the GUI
-        arcade.draw_rect_filled(arcade.rect.XYWH(self.width // 2, 20, self.width, 40), arcade.color.ALMOND)
-        text = f"Scroll value: {self.camera_sprites.position[0]:4.1f}, {self.camera_sprites.position[1]:4.1f}"
+        arcade.draw_rect_filled(
+            arcade.rect.XYWH(self.width // 2, 20, self.width, 40),
+            color=arcade.color.ALMOND,
+        )
+
+        text = (
+            f"Scroll value: "
+            f"{self.camera_sprites.position[0]:4.1f}, "
+            f"{self.camera_sprites.position[1]:4.1f}"
+        )
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
     def on_key_press(self, key, modifiers):
@@ -179,7 +193,11 @@ class MyGame(arcade.Window):
 
         # Scroll to the proper location
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position,
+            position,
+            CAMERA_SPEED,
+        )
 
     def on_resize(self, width: int, height: int):
         """

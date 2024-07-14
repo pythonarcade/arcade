@@ -175,7 +175,8 @@ class MyGame(arcade.Window):
 
                 Any live cell with two or three live neighbours survives.
                 Any dead cell with three live neighbours becomes a live cell.
-                All other live cells die in the next generation. Similarly, all other dead cells stay dead.
+                All other live cells die in the next generation. Similarly,
+                all other dead cells stay dead.
                 """
                 if layer1[row][column].alpha == ALPHA_ON and (live_neighbors == 2 or live_neighbors == 3):
                     if layer2[row][column].alpha == ALPHA_OFF:

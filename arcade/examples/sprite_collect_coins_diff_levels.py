@@ -64,8 +64,10 @@ class MyGame(arcade.Window):
 
         # Set up the player info
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player_list.append(self.player_sprite)
 
         self.score = 0
@@ -81,7 +83,10 @@ class MyGame(arcade.Window):
         for i in range(20):
 
             # Create the coin instance
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING / 3)
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png",
+                scale=SPRITE_SCALING / 3,
+            )
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -94,7 +99,10 @@ class MyGame(arcade.Window):
         for i in range(30):
 
             # Create the coin instance
-            coin = FallingCoin(":resources:images/items/coinBronze.png", scale=SPRITE_SCALING / 2)
+            coin = FallingCoin(
+                ":resources:images/items/coinBronze.png",
+                scale=SPRITE_SCALING / 2,
+            )
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -107,7 +115,10 @@ class MyGame(arcade.Window):
         for i in range(30):
 
             # Create the coin instance
-            coin = RisingCoin(":resources:images/items/coinSilver.png", scale=SPRITE_SCALING / 2)
+            coin = RisingCoin(
+                ":resources:images/items/coinSilver.png",
+                scale=SPRITE_SCALING / 2,
+            )
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)

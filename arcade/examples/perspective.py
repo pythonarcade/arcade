@@ -141,7 +141,9 @@ class Perspective(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
+        self.program["projection"] = Mat4.perspective_projection(
+            self.aspect_ratio, 0.1, 100, fov=75,
+        )
 
 
 def main():

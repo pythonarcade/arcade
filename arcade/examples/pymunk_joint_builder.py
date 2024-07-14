@@ -32,7 +32,11 @@ Right-click, fire coin
 
 class PhysicsSprite(arcade.Sprite):
     def __init__(self, pymunk_shape, filename):
-        super().__init__(filename, center_x=pymunk_shape.body.position.x, center_y=pymunk_shape.body.position.y)
+        super().__init__(
+            filename,
+            center_x=pymunk_shape.body.position.x,
+            center_y=pymunk_shape.body.position.y,
+        )
         self.pymunk_shape = pymunk_shape
 
 
@@ -85,7 +89,12 @@ class MyApplication(arcade.Window):
         # Create the floor
         self.floor_height = 80
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        shape = pymunk.Segment(body, (0, self.floor_height), (SCREEN_WIDTH, self.floor_height), 0.0)
+        shape = pymunk.Segment(
+            body,
+            (0, self.floor_height),
+            (SCREEN_WIDTH, self.floor_height),
+            0.0,
+        )
         shape.friction = 10
         self.space.add(shape, body)
         self.static_lines.append(shape)
@@ -148,7 +157,12 @@ class MyApplication(arcade.Window):
         shape.friction = 0.3
         self.space.add(body, shape)
 
-        sprite = BoxSprite(shape, ":resources:images/tiles/boxCrate_double.png", width=size, height=size)
+        sprite = BoxSprite(
+            shape,
+            ":resources:images/tiles/boxCrate_double.png",
+            width=size,
+            height=size,
+        )
         self.sprite_list.append(sprite)
 
     def make_circle(self, x, y):
@@ -193,7 +207,12 @@ class MyApplication(arcade.Window):
         elif self.shape_2 is None:
             print("Shape 2 Selected")
             self.shape_2 = shape_selected
-            joint = pymunk.DampedSpring(self.shape_1.shape.body, self.shape_2.shape.body, (0, 0), (0, 0), 45, 300, 30)
+            joint = pymunk.DampedSpring(
+                self.shape_1.shape.body,
+                self.shape_2.shape.body,
+                (0, 0), (0, 0),
+                45, 300, 30,
+            )
             self.space.add(joint)
             self.joints.append(joint)
             self.shape_1 = None
