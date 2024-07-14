@@ -233,7 +233,11 @@ class MyGame(arcade.Window):
             screen_center_y = self.camera.viewport_height/2
         user_centered = screen_center_x, screen_center_y
 
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, user_centered, panning_fraction)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position,
+            user_centered,
+            panning_fraction,
+        )
 
     def on_update(self, delta_time):
         """Movement and game logic"""

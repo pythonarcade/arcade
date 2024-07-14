@@ -92,7 +92,10 @@ def setup_room_2():
     for y in (0, SCREEN_HEIGHT - SPRITE_SIZE):
         # Loop for each box going across
         for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
+            wall = arcade.Sprite(
+                ":resources:images/tiles/boxCrate_double.png",
+                scale=SPRITE_SCALING,
+            )
             wall.left = x
             wall.bottom = y
             room.wall_list.append(wall)
@@ -103,7 +106,10 @@ def setup_room_2():
         for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x != 0:
-                wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png", scale=SPRITE_SCALING)
+                wall = arcade.Sprite(
+                    ":resources:images/tiles/boxCrate_double.png",
+                    scale=SPRITE_SCALING,
+                )
                 wall.left = x
                 wall.bottom = y
                 room.wall_list.append(wall)
@@ -160,8 +166,10 @@ class MyGame(arcade.Window):
         self.current_room = 0
 
         # Create a physics engine for this room
-        self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                         self.rooms[self.current_room].wall_list)
+        self.physics_engine = arcade.PhysicsEngineSimple(
+            self.player_sprite,
+            self.rooms[self.current_room].wall_list,
+        )
 
     def on_draw(self):
         """
@@ -216,13 +224,17 @@ class MyGame(arcade.Window):
         # to a different room.
         if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
             self.current_room = 1
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.rooms[self.current_room].wall_list)
+            self.physics_engine = arcade.PhysicsEngineSimple(
+                self.player_sprite,
+                self.rooms[self.current_room].wall_list,
+            )
             self.player_sprite.center_x = 0
         elif self.player_sprite.center_x < 0 and self.current_room == 1:
             self.current_room = 0
-            self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite,
-                                                             self.rooms[self.current_room].wall_list)
+            self.physics_engine = arcade.PhysicsEngineSimple(
+                self.player_sprite,
+                self.rooms[self.current_room].wall_list,
+            )
             self.player_sprite.center_x = SCREEN_WIDTH
 
 

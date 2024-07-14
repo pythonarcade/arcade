@@ -146,8 +146,16 @@ class MyWindow(arcade.Window):
             bullet_sprite.remove_from_sprite_lists()
             print("Wall")
 
-        self.physics_engine.add_collision_handler("bullet", "rock", post_handler=rock_hit_handler)
-        self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
+        self.physics_engine.add_collision_handler(
+            "bullet",
+            "rock",
+            post_handler=rock_hit_handler,
+        )
+        self.physics_engine.add_collision_handler(
+            "bullet",
+            "wall",
+            post_handler=wall_hit_handler,
+        )
 
         # Add the player.
         # For the player, we set the damping to a lower value, which increases

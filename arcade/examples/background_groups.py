@@ -35,8 +35,9 @@ class MyGame(arcade.Window):
         self.backgrounds = background.BackgroundGroup()
 
         # Add each background from a file.
-        # It is important to note that the scale only impacts the texture and not the background.
-        # This means we need to ensure the background size is also scaled correctly.
+        # It is important to note that the scale only impacts the texture
+        # and not the background. This means we need to ensure the background
+        # size is also scaled correctly.
         self.backgrounds.add_from_file(
             ":resources:/images/cybercity_background/far-buildings.png",
             (0.0, 240.0),
@@ -81,7 +82,9 @@ class MyGame(arcade.Window):
         elif target_y > 2.0 * self.camera.viewport_height:
             target_y = 2.0 * self.camera.viewport_height
 
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position, (target_x, target_y), CAMERA_SPEED,
+        )
 
     def on_update(self, delta_time: float):
         new_position = (

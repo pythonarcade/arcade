@@ -57,16 +57,18 @@ class MyGame(arcade.Window):
         self.camera_sprites = arcade.camera.Camera2D()
         self.camera_gui = arcade.camera.Camera2D()
 
-        self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera_sprites.view_data,
-                                                              max_amplitude=15.0,
-                                                              acceleration_duration=0.1,
-                                                              falloff_time=0.5,
-                                                              shake_frequency=10.0)
+        self.camera_shake = arcade.camera.grips.ScreenShake2D(
+            self.camera_sprites.view_data,
+            max_amplitude=15.0,
+            acceleration_duration=0.1,
+            falloff_time=0.5,
+            shake_frequency=10.0,
+        )
 
         self.explosion_sound = arcade.load_sound(":resources:sounds/explosion1.wav")
 
     def setup(self):
-        """ Set up the game and initialize the variables. """
+        """Set up the game and initialize the variables."""
 
         # Sprite lists
         self.player_list = arcade.SpriteList()
@@ -74,8 +76,10 @@ class MyGame(arcade.Window):
         self.bomb_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=0.4)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=0.4,
+        )
         self.player_sprite.center_x = 512
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
@@ -85,7 +89,10 @@ class MyGame(arcade.Window):
             for y in range(0, PLAYING_FIELD_HEIGHT, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", scale=SPRITE_SCALING)
+                    wall = arcade.Sprite(
+                        ":resources:images/tiles/grassCenter.png",
+                        scale=SPRITE_SCALING,
+                    )
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -177,7 +184,11 @@ class MyGame(arcade.Window):
             self.player_sprite.center_x,
             self.player_sprite.center_y
         )
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position,
+            position,
+            CAMERA_SPEED,
+        )
 
     def on_resize(self, width: int, height: int):
         """

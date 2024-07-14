@@ -76,7 +76,10 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png",
+                scale=SPRITE_SCALING_COIN,
+            )
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)
@@ -107,7 +110,10 @@ class MyGame(arcade.Window):
         """ Called whenever the mouse button is clicked. """
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(
+            ":resources:images/space_shooter/laserBlue01.png",
+            scale=SPRITE_SCALING_LASER,
+        )
 
         # Position the bullet at the player's current location
         start_x = self.player_sprite.center_x
@@ -163,7 +169,11 @@ class MyGame(arcade.Window):
                 self.score += 1
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > self.width or bullet.top < 0 or bullet.right < 0 or bullet.left > self.width:
+            if (bullet.bottom > self.width or
+                bullet.top < 0 or
+                bullet.right < 0 or
+                bullet.left > self.width
+            ):
                 bullet.remove_from_sprite_lists()
 
 

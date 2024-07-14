@@ -28,7 +28,11 @@ SCREEN_TITLE = "Pymunk Pegboard Example"
 
 class CircleSprite(arcade.Sprite):
     def __init__(self, filename, pymunk_shape):
-        super().__init__(filename, center_x=pymunk_shape.body.position.x, center_y=pymunk_shape.body.position.y)
+        super().__init__(
+            filename,
+            center_x=pymunk_shape.body.position.x,
+            center_y=pymunk_shape.body.position.y,
+        )
         self.width = pymunk_shape.radius * 2
         self.height = pymunk_shape.radius * 2
         self.pymunk_shape = pymunk_shape

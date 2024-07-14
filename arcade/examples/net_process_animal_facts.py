@@ -109,7 +109,12 @@ class AnimalFacts(arcade.View):
         scale = max(self.window.width / texture.width, self.window.height / texture.height)
         arcade.draw_texture_rect(
             texture,
-            arcade.XYWH(self.window.width / 2, self.window.height / 2, texture.width * scale, texture.height * scale),
+            arcade.XYWH(
+                self.window.width / 2,
+                self.window.height / 2,
+                texture.width * scale,
+                texture.height * scale,
+            ),
             blend=True,
             alpha=int(alpha * 255),
         )

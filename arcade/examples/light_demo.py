@@ -17,8 +17,14 @@ MOVEMENT_SPEED = 5
 VIEWPORT_MARGIN = 200
 HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
 VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
-# If the player moves further than this boundary away from the camera we use a constraint to move the camera
-CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
+# If the player moves further than this boundary away from
+# the camera we use a constraint to move the camera
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY,
+    HORIZONTAL_BOUNDARY,
+    -VERTICAL_BOUNDARY,
+    VERTICAL_BOUNDARY,
+)
 
 # This is the color used for 'ambient light'. If you don't want any
 # ambient light, set it to black.
@@ -71,8 +77,8 @@ class MyGame(arcade.Window):
 
         # --- Light related ---
         # Lights must shine on something. If there is no background sprite or color,
-        # you will just see black. Therefore, we use a loop to create a whole bunch of brick tiles to go in the
-        # background.
+        # you will just see black. Therefore, we use a loop to create a whole
+        # bunch of brick tiles to go in the background.
         for x in range(-128, 2000, 128):
             for y in range(-128, 1000, 128):
                 sprite = arcade.Sprite(":resources:images/tiles/brickTextureWhite.png")

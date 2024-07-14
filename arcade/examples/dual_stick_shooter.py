@@ -79,7 +79,12 @@ def get_stick_position(x, y):
 
 class Player(arcade.sprite.Sprite):
     def __init__(self, filename):
-        super().__init__(filename, scale=0.4, center_x=SCREEN_WIDTH / 2, center_y=SCREEN_HEIGHT / 2)
+        super().__init__(
+            filename,
+            scale=0.4,
+            center_x=SCREEN_WIDTH / 2,
+            center_y=SCREEN_HEIGHT / 2,
+        )
         self.shoot_up_pressed = False
         self.shoot_down_pressed = False
         self.shoot_left_pressed = False
@@ -89,7 +94,12 @@ class Player(arcade.sprite.Sprite):
 
 class Enemy(arcade.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(':resources:images/pinball/bumper.png', scale=0.5, center_x=x, center_y=y)
+        super().__init__(
+            ':resources:images/pinball/bumper.png',
+            scale=0.5,
+            center_x=x,
+            center_y=y,
+        )
 
     def follow_sprite(self, player_sprite):
         """
@@ -192,7 +202,9 @@ class MyGame(arcade.Window):
 
         if self.controller:
             # Controller input - movement
-            move_x, move_y, move_angle = get_stick_position(self.controller.leftx, self.controller.lefty)
+            move_x, move_y, move_angle = get_stick_position(
+                self.controller.leftx, self.controller.lefty
+            )
             if move_angle:
                 self.player.change_x = move_x * MOVEMENT_SPEED
                 self.player.change_y = move_y * MOVEMENT_SPEED
@@ -202,7 +214,9 @@ class MyGame(arcade.Window):
                 self.player.change_y = 0
 
             # Controller input - shooting
-            shoot_x, shoot_y, shoot_angle = get_stick_position(self.controller.rightx, self.controller.righty)
+            shoot_x, shoot_y, shoot_angle = get_stick_position(
+                self.controller.rightx, self.controller.righty
+            )
             if shoot_angle:
                 self.spawn_bullet(shoot_angle)
         else:

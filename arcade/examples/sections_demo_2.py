@@ -34,9 +34,18 @@ class Player(arcade.Section):
     paddle can move
     """
 
-    def __init__(self, left: int, bottom: int, width: int, height: int,
-                 key_up: int, key_down: int, **kwargs):
-        super().__init__(left, bottom, width, height, accept_keyboard_keys={key_up, key_down}, **kwargs)
+    def __init__(
+            self, left: int, bottom: int, width: int, height: int,
+            key_up: int, key_down: int, **kwargs
+        ):
+        super().__init__(
+            left,
+            bottom,
+            width,
+            height,
+            accept_keyboard_keys={key_up, key_down},
+            **kwargs,
+        )
 
         # keys assigned to move the paddle
         self.key_up: int = key_up

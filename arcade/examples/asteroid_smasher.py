@@ -211,31 +211,41 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = ShipSprite(":resources:images/space_shooter/playerShip1_orange.png",
-                                        scale=SCALE)
+        self.player_sprite = ShipSprite(
+            ":resources:images/space_shooter/playerShip1_orange.png",
+            scale=SCALE,
+        )
         self.player_sprite_list.append(self.player_sprite)
         self.lives = 3
 
         # Set up the little icons that represent the player lives.
         cur_pos = 10
         for i in range(self.lives):
-            life = arcade.Sprite(":resources:images/space_shooter/playerLife1_orange.png",
-                                 scale=SCALE)
+            life = arcade.Sprite(
+                ":resources:images/space_shooter/playerLife1_orange.png",
+                scale=SCALE,
+            )
             life.center_x = cur_pos + life.width
             life.center_y = life.height
             cur_pos += life.width
             self.ship_life_list.append(life)
 
         # Make the asteroids
-        image_list = (":resources:images/space_shooter/meteorGrey_big1.png",
-                      ":resources:images/space_shooter/meteorGrey_big2.png",
-                      ":resources:images/space_shooter/meteorGrey_big3.png",
-                      ":resources:images/space_shooter/meteorGrey_big4.png")
+        image_list = (
+            ":resources:images/space_shooter/meteorGrey_big1.png",
+            ":resources:images/space_shooter/meteorGrey_big2.png",
+            ":resources:images/space_shooter/meteorGrey_big3.png",
+            ":resources:images/space_shooter/meteorGrey_big4.png",
+            )
         for i in range(STARTING_ASTEROID_COUNT):
             # Pick one of four random rock images
             image_no = random.randrange(4)
 
-            enemy_sprite = AsteroidSprite(image_list[image_no], scale=SCALE, type=ASTERIOD_TYPE_BIG)
+            enemy_sprite = AsteroidSprite(
+                image_list[image_no],
+                scale=SCALE,
+                type=ASTERIOD_TYPE_BIG,
+            )
 
             # Set position
             enemy_sprite.center_y = random.randrange(BOTTOM_LIMIT, TOP_LIMIT)

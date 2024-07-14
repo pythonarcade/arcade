@@ -146,8 +146,14 @@ arcade.draw_rect_filled(arcade.rect.XYWH(420, 160, 20, 40), arcade.color.BLUSH, 
 arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
 texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
 scale = .6
-arcade.draw_texture_rect(texture, arcade.XYWH(540, 120, texture.width, texture.height).scale(scale))
-arcade.draw_texture_rect(texture, arcade.XYWH(540, 60, texture.width, texture.height).scale(scale), angle=45)
+arcade.draw_texture_rect(
+    texture,
+    arcade.XYWH(540, 120, texture.width, texture.height).scale(scale)
+)
+arcade.draw_texture_rect(
+    texture,
+    arcade.XYWH(540, 60, texture.width, texture.height).scale(scale), angle=45,
+)
 
 # Finish the render.
 # Nothing will be drawn without this.
