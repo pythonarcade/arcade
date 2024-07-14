@@ -459,6 +459,24 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     api_file.write(f"{title}\n")
     api_file.write(f"{underline}\n\n")
 
+    # HACK: Completely override auto-generated module
+    #       Use when experimenting with autodoc
+    # if api_file_name == "types.rst":
+    #     api_file.write(dedent(
+    #         """
+    #         .. automodule:: arcade.types
+    #            :members: RGB, RGBA
+    #            :imported-members: RGB, RGBA
+    #            :ignore-module-all:
+    #            :undoc-members:
+    #            :private-members:
+    #         """
+    #         #    :undoc-members:
+    #         #    :imported-members:
+    #     ))
+    #     api_file.close()
+    #     return
+
     for module_name in use_declarations_in:
         # Did we ever have tests in the path name? What?
         if "test" in module_name:

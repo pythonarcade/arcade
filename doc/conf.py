@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-"""
-Generate HTML docs
-"""
-
+"""Sphinx configuration file"""
 import docutils.nodes
 import os
 import re
@@ -11,10 +8,7 @@ import sphinx.ext.autodoc
 import sphinx.transforms
 import sys
 
-
 # --- Pre-processing Tasks
-
-# Then generate thumbnails if they do not exist
 
 # Make thumbnails for the example code screenshots
 runpy.run_path('../util/generate_example_thumbnails.py', run_name='__main__')
@@ -22,13 +16,6 @@ runpy.run_path('../util/generate_example_thumbnails.py', run_name='__main__')
 runpy.run_path('../util/create_resources_listing.py', run_name='__main__')
 # Run the generate quick API index script
 runpy.run_path('../util/update_quick_index.py', run_name='__main__')
-
-# Enable this is you want __init__ to show up in docs.
-# Ideally, these docs should be in the class docs, not __init__ so try to
-# leave this disabled.
-# autodoc_default_options = {
-#     'special-members': '__init__',
-# }
 
 autodoc_inherit_docstrings = False
 autodoc_default_options = {
@@ -56,40 +43,22 @@ RELEASE = VERSION
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_rtd_theme',
-    'sphinx_rtd_dark_mode',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
+    'sphinx_rtd_theme',  # Read the Docs theme
+    'sphinx_rtd_dark_mode',  # Dark mode for the RTD theme
+    'sphinx.ext.autodoc',  # API doc generation tools
+    'sphinx.ext.napoleon',  # Support for NumPy and Google style docstrings
     'sphinx.ext.imgconverter',  # Converts .gif for PDF doc build
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode',
-    'sphinx_copybutton',
-    'sphinx_sitemap',
-    # "sphinx_autodoc_typehints",
-    'doc.extensions.prettyspecialmethods'
+    'sphinx.ext.intersphinx',  # Link to other projects' docs
+    'sphinx.ext.viewcode',  # display code with line numbers and line highlighting
+    'sphinx_copybutton',  # Adds a copy button to code blocks
+    'sphinx_sitemap',  # sitemap.xml generation
 ]
-
-# --- Spell check. Never worked well.
-# try:
-#     import sphinxcontrib.spelling
-# except ImportError:
-#     pass
-# else:
-#     extensions.append("sphinxcontrib.spelling")
-#
-# spelling_word_list_filename = "wordlist.txt"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-# source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
 # The master toctree document.
@@ -128,12 +97,14 @@ exclude_patterns = [
 pygments_style = 'default'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
+# todo_include_todos = True
 
 napoleon_numpy_docstring = False
 napoleon_google_docstring = True
 
-# nitpicky = True  # Warn about all references where the target cannot be found.
+# Warn about all references where the target cannot be found.
+# This is important to always enable to catch broken doc or api links
+# nitpicky = True
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -276,32 +247,8 @@ def source_read(_app, docname, source):
         generate_color_table("../arcade/csscolor/__init__.py", source)
 
 
-def post_process(_app, _exception):
-    pass
-
-#     try:
-#         dir_path = os.path.dirname(os.path.realpath(__file__))
-#         print(f"Performing dirsync")
-#         print(f"Current dir: {dir_path}")
-#         print(os.listdir("."))
-#         from dirsync import sync
-#         source_path = '../arcade/resources'
-#         print(f"Items in resource path:")
-#         print(os.listdir(source_path))
-#
-#         target_path = 'build/html/resources'
-#
-#         sync(source_path, target_path, 'sync', create=True)  # for syncing one way
-#
-#     except:
-#         print("ERROR: Exception in post-process.")
-#         import traceback
-#         traceback.print_exc()
-#         raise
-
-
 def on_autodoc_process_bases(app, name, obj, options, bases):
-    # Strip `object` from bases, it's just noise
+    """We don't care about the `object` base class, so remove it from the list of bases."""
     bases[:] = [base for base in bases if base is not object]
 
 
@@ -358,7 +305,6 @@ def setup(app):
     # See the docstring of ClassDocumenter above for why.
     sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
     app.connect('source-read', source_read)
-    app.connect('build-finished', post_process)
     app.connect("autodoc-process-docstring", warn_undocumented_members)
     app.connect('autodoc-process-signature', strip_init_return_typehint, -1000)
     app.connect('autodoc-process-bases', on_autodoc_process_bases)
