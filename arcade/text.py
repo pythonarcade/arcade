@@ -668,8 +668,8 @@ def create_text_sprite(
 )
 def draw_text(
     text: Any,
-    x: int,
-    y: int,
+    x: float,
+    y: float,
     color: RGBOrA255 = arcade.color.WHITE,
     font_size: float = 12.0,
     width: int | None = None,
@@ -681,7 +681,7 @@ def draw_text(
     anchor_y: str = "baseline",
     multiline: bool = False,
     rotation: float = 0,
-    z: int = 0,
+    z: float = 0,
 ):
     """
     A simple way for beginners to draw text.
