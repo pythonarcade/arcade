@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
+from typing import Any
 import docutils.nodes
 import os
 import re
@@ -178,13 +179,41 @@ def strip_init_return_typehint(app, what, name, obj, options, signature, return_
     if what == "class" and return_annotation is None:
         return (signature, None)
 
-def warn_undocumented_members(_app, what, name, _obj, _options, lines):
+def inspect_docstring_for_member(
+    _app,
+    what: str,
+    name: str,
+    _obj: object,
+    _options: dict[str, Any],
+    lines: list[str],
+):
+    """
+    Callback for the autodoc-process-docstring event.
+    Where we can plug in various sanity checks such as warning about
+    undocumented members.
+
+    Args:
+        _app: The Sphinx application object
+        what (string): The type of object ("attribute", "class", "module", "function", "method")
+        name: The fully qualified name of the object
+        _obj: The object being documented
+        _options: The autodoc options for this object
+        lines: The lines of the docstring
+    """
+    # For debugging purposes
+    # print(
+    #     f"app={_app}\n"
+    #     f"what={what}\n"
+    #     f"name={name}\n"
+    #     f"obj={_obj}\n"
+    #     f"options={_options}\n"
+    #     f"lines){lines}\n"
+    # )
     if len(lines) == 0:
         print(f"{what} {name} is undocumented")
-        # lines.append(f".. Warning:: {what} ``{name}`` undocumented")
 
-    # Check for docstring on __init__ in classes and raise an error.
-    # The class docstring should cover docs for the initializer only!
+    # Docstring on __init__ in classes raise an error.
+    # Class docstrings should cover the initializer.
     if what == "class":
         doc = _obj.__init__.__doc__
         if doc and isinstance(doc, str) and not doc.startswith("Initialize self"):
@@ -195,8 +224,9 @@ def warn_undocumented_members(_app, what, name, _obj, _options, lines):
 
 
 def generate_color_table(filename, source):
-    """This function Generates the Color tables in the docs for color and csscolor packages"""
-
+    """
+    This function Generates the Color tables in the docs for color and csscolor packages.
+    """
     append_text = "\n\n.. raw:: html\n\n"
     append_text += "    <table class='colorTable'><tbody>\n"
 
@@ -211,7 +241,6 @@ def generate_color_table(filename, source):
 
     with open(filename) as color_file:
         for line in color_file:
-
             # Check if the line has a Color.
             matches = color_match.match(line)
             if not matches:
@@ -222,7 +251,6 @@ def generate_color_table(filename, source):
             # Generate the alpha for CSS color function
             alpha = int( matches.group('alpha') ) / 255
             css_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {alpha!s:.4})"
-
 
             append_text += "    <tr>"
             append_text += f"<td>{matches.group('name')}</td>"
@@ -305,7 +333,7 @@ def setup(app):
     # See the docstring of ClassDocumenter above for why.
     sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
     app.connect('source-read', source_read)
-    app.connect("autodoc-process-docstring", warn_undocumented_members)
+    app.connect("autodoc-process-docstring", inspect_docstring_for_member)
     app.connect('autodoc-process-signature', strip_init_return_typehint, -1000)
     app.connect('autodoc-process-bases', on_autodoc_process_bases)
     app.add_transform(Transform)
