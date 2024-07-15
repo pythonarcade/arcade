@@ -232,7 +232,7 @@ Streaming or Static Loading?
      - Predicted data
      - 1 copy & file at a time, long, uninterrupted
 
-By default, arcade decompresses the entirety of each sound into memory.
+By default, Arcade decompresses the entirety of each sound into memory.
 
 This is the best option for most game sound effects. It's called
 "static" [#staticsourcefoot]_ audio because the data never changes.
@@ -254,7 +254,7 @@ The following subheadings will explain each option in detail.
    See :ref:`sound-compat-easy` to learn more.
 
 .. [#staticsourcefoot]
-   See the :py:class:`pyglet.media.StaticSource` class used by arcade.
+   See the :py:class:`pyglet.media.StaticSource` class used by Arcade.
 
 .. _sound-loading-modes-static:
 
@@ -431,9 +431,9 @@ playback. It's impossible to cover them all here, especially given the
 complexity of :ref:`positional audio <sound-other-libraries-pyglet-positional>`.
 
 Instead, the table below summarizes a few of the most useful members in
-the context of arcade. Superscripts link info about potential issues,
+the context of Arcade. Superscripts link info about potential issues,
 such as name differences between properties and equivalent keyword
-arguments to arcade functions.
+arguments to Arcade functions.
 
 .. list-table::
    :header-rows: 1
@@ -708,13 +708,13 @@ Using Pyglet
 ^^^^^^^^^^^^
 The most obvious external library for audio handling is pyglet:
 
-* It's guaranteed to work wherever arcade's sound support does.
-* It offers far better control over media than arcade
+* It's guaranteed to work wherever Arcade's sound support does.
+* It offers far better control over media than Arcade
 * You may have already used parts of it directly for :ref:`sound-advanced-playback`
 
 Note that :py:attr:`arcade.Sound`'s ``source`` attribute holds a
 :py:class:`pyglet.media.Source`. This means you can start off by cleanly
-using arcade's resource and sound loading with pyglet features as needed.
+using Arcade's resource and sound loading with pyglet features as needed.
 
 .. _sound-other-libraries-pyglet-positional:
 
@@ -725,7 +725,7 @@ volumes across the channels for physical speakers based on in-game
 distances.
 
 Although pyglet exposes its support for this through its
-:py:class:`~pyglet.media.player.Player`, arcade does not currently offer
+:py:class:`~pyglet.media.player.Player`, Arcade does not currently offer
 integrations. You will have to do the setup work yourself.
 
 .. _pyglet_positional_guide: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#positional-audio

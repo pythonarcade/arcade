@@ -230,7 +230,7 @@ libraries like Arcade, we'll do the same here:
    :lineno-start: 1
    :emphasize-lines: 1,1
 
-   from pathlib import Path  # <-- put the line here above arcade
+   from pathlib import Path  # <-- put the line here above Arcade
    import arcade
 
 
