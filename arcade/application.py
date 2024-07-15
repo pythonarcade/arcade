@@ -79,37 +79,38 @@ class Window(pyglet.window.Window):
     .. _pyglet_pg_window_style:
     ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
 
-    :param width: Window width
-    :param height: Window height
-    :param title: Title (appears in title bar)
-    :param fullscreen: Should this be full screen?
-    :param resizable: Can the user resize the window?
-    :param update_rate: How frequently to run the on_update event.
-    :param draw_rate: How frequently to run the on_draw event. (this is the FPS limit)
-    :param fixed_rate: How frequently should the fixed_updates run,
-        fixed updates will always run at this rate.
-    :param fixed_frame_cap: The maximum number of fixed updates that can occur in one update loop.
-        defaults to infinite. If large lag spikes cause your game to freeze, try setting
-        this to a smaller number. This may cause your physics to lag behind temporarily
-    :param antialiasing: Should OpenGL's anti-aliasing be enabled?
-    :param gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
-        and can be overridden when using more advanced OpenGL features.
-    :param screen: Pass a pyglet :py:class:`~pyglet.display.Screen` to
-        request the window be placed on it. See `pyglet's window size &
-        position guide <pyglet_pg_window_size_position_>`_ to learn more.
-    :param style: Request a non-default window style, such as borderless.
-        Some styles only work in certain situations. See `pyglet's guide
-        to window style <pyglet_pg_window_style_>`_ to learn more.
-    :param visible: Should the window be visible immediately
-    :param vsync: Wait for vertical screen refresh before swapping buffer
-        This can make animations and movement look smoother.
-    :param gc_mode: Decides how OpenGL objects should be garbage collected
-        ("context_gc" (default) or "auto")
-    :param center_window: If true, will center the window.
-    :param samples: Number of samples used in antialiasing (default 4). \
-        Usually this is 2, 4, 8 or 16.
-    :param enable_polling: Enabled input polling capability. This makes the ``keyboard`` and
-        ``mouse`` attributes available for use.
+    Keyword Arguments:
+        width (int): Window width
+        height (int): Window height
+        title (str): The title/caption of the window
+        fullscreen (bool): Should this be full screen?
+        resizable (bool): Can the user resize the window?
+        update_rate (float): How frequently to run the on_update event.
+        draw_rate (float): How frequently to run the on_draw event. (this is the FPS limit)
+        fixed_rate (float): How frequently should the fixed_updates run,
+            fixed updates will always run at this rate.
+        fixed_frame_cap (float): The maximum number of fixed updates that can occur in one update
+            loop.defaults to infinite. If large lag spikes cause your game to freeze, try setting
+            this to a smaller number. This may cause your physics to lag behind temporarily
+        antialiasing (bool): Use multisampling framebuffer (antialiasing)
+        samples (int): Number of samples used in antialiasing (default 4).
+            Usually this is 2, 4, 8 or 16.
+        gl_version (tuple[int, int]): What OpenGL version to request. This is ``(3, 3)`` by default
+            and can be overridden when using more advanced OpenGL features.
+        screen: Pass a pyglet :py:class:`~pyglet.display.Screen` to
+            request the window be placed on it. See `pyglet's window size &
+            position guide <pyglet_pg_window_size_position_>`_ to learn more.
+        style: Request a non-default window style, such as borderless.
+            Some styles only work in certain situations. See `pyglet's guide
+            to window style <pyglet_pg_window_style_>`_ to learn more.
+        visible (bool): Should the window be visible immediately
+        vsync (bool): Wait for vertical screen refresh before swapping buffer
+            This can make animations and movement look smoother.
+        gc_mode: Decides how OpenGL objects should be garbage collected
+            ("context_gc" (default) or "auto")
+        center_window (bool): If true, will center the window.
+        enable_polling (bool): Enabled input polling capability. This makes the ``keyboard`` and
+            ``mouse`` attributes available for use.
     """
 
     def __init__(
