@@ -304,7 +304,8 @@ class ArcadeContext(Context):
     def view_matrix(self) -> Mat4:
         """
         Get the current view matrix.
-        This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.view_matrix_2d`.
+        This 4x4 float32 matrix is calculated when setting
+        :py:attr:`~arcade.ArcadeContext.view_matrix_2d`.
 
         This property simply gets and sets pyglet's view matrix.
 
@@ -355,13 +356,13 @@ class ArcadeContext(Context):
         :param common: Common files to be included in all shaders
         :param defines: Substitute ``#define`` values in the source
         :param varyings: The name of the out attributes in a transform shader.
-                                                 This is normally not necessary since we auto detect them,
-                                                 but some more complex out structures we can't detect.
+            This is normally not necessary since we auto detect them,
+            but some more complex out structures we can't detect.
         :param varyings_capture_mode: The capture mode for transforms.
-                                          ``"interleaved"`` means all out attribute will be written to a single buffer.
-                                          ``"separate"`` means each out attribute will be written separate buffers.
-                                          Based on these settings the `transform()` method will accept a single
-                                          buffer or a list of buffer.
+            ``"interleaved"`` means all out attribute will be written to a single buffer.
+            ``"separate"`` means each out attribute will be written separate buffers.
+            Based on these settings the `transform()` method will accept a single
+            buffer or a list of buffer.
         """
         from arcade.resources import resolve
 

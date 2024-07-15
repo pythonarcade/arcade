@@ -51,7 +51,8 @@ class SceneKeyError(KeyError):
 
 class Scene:
     """
-    Stores :py:class:`~arcade.SpriteList` instances as named layers, allowing bulk updates & drawing.
+    Stores :py:class:`~arcade.SpriteList` instances as named layers,
+    allowing bulk updates & drawing.
 
     In addition to helping you update or draw multiple sprite lists at
     once, this class also provides the following convenience methods:
@@ -196,7 +197,8 @@ class Scene:
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
             warn(
-                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+                f"A Spritelist with the name: '{name}', is already in the scene, "
+                "will override Spritelist"
             )
         self._name_mapping[name] = sprite_list
         self._sprite_lists.append(sprite_list)
@@ -230,7 +232,8 @@ class Scene:
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
             warn(
-                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+                f"A Spritelist with the name: '{name}', "
+                "is already in the scene, will override Spritelist"
             )
         self._name_mapping[name] = sprite_list
         before_list = self._name_mapping[before]
@@ -292,7 +295,8 @@ class Scene:
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
             warn(
-                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+                f"A Spritelist with the name: '{name}', "
+                f"is already in the scene, will override Spritelist"
             )
         self._name_mapping[name] = sprite_list
         after_list = self._name_mapping[after]

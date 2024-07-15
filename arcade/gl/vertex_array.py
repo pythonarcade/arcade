@@ -153,8 +153,8 @@ class VertexArray:
             except KeyError:
                 raise ValueError(
                     (
-                        f"Program needs attribute '{prog_attr.name}', but is not present in buffer description. "
-                        f"Buffer descriptions: {content}"
+                        f"Program needs attribute '{prog_attr.name}', but is not present in buffer "
+                        f"description. Buffer descriptions: {content}"
                     )
                 )
 
@@ -162,8 +162,9 @@ class VertexArray:
             if prog_attr.components != attr_descr.components:
                 raise ValueError(
                     (
-                        f"Program attribute '{prog_attr.name}' has {prog_attr.components} components "
-                        f"while the buffer description has {attr_descr.components} components. "
+                        f"Program attribute '{prog_attr.name}' has {prog_attr.components} "
+                        f"components while the buffer description has {attr_descr.components} "
+                        " components. "
                     )
                 )
 
@@ -193,7 +194,8 @@ class VertexArray:
             if attrib_type != prog_attr.gl_type:
                 raise ValueError(
                     (
-                        f"Program attribute '{prog_attr.name}' has type {gl_name(prog_attr.gl_type)} "
+                        f"Program attribute '{prog_attr.name}' has type "
+                        f"{gl_name(prog_attr.gl_type)} "
                         f"while the buffer description has type {gl_name(attr_descr.gl_type)}. "
                     )
                 )
@@ -251,7 +253,8 @@ class VertexArray:
         """
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
-            # # HACK: re-bind index buffer just in case. pyglet rendering was somehow replacing the index buffer.
+            # HACK: re-bind index buffer just in case.
+            #       pyglet rendering was somehow replacing the index buffer.
             gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self._ibo.glo)
             gl.glDrawElementsInstanced(
                 mode,
@@ -417,9 +420,11 @@ class VertexArray:
 
 class Geometry:
     """A higher level abstraction of the VertexArray.
-    It generates VertexArray instances on the fly internally matching the incoming program.
-    This means we can render the same geometry with different programs as long as the
-    :py:class:`~arcade.gl.Program` and :py:class:`~arcade.gl.BufferDescription` have compatible attributes.
+
+    It generates VertexArray instances on the fly internally matching the incoming
+    program. This means we can render the same geometry with different programs
+    as long as the :py:class:`~arcade.gl.Program` and :py:class:`~arcade.gl.BufferDescription`
+    have compatible attributes.
 
     Geometry objects should be created through :py:meth:`arcade.gl.Context.geometry`
 
@@ -460,7 +465,8 @@ class Geometry:
         :param content: (optional) List of BufferDescriptions
         :param index_buffer: (optional) Index/element buffer
         :param mode: (optional) The default draw mode
-        :param index_element_size: Byte size of the index buffer datatype. Can be 1, 2 or 4 (8, 16 or 32bit integer)
+        :param index_element_size: Byte size of the index buffer datatype.
+            Can be 1, 2 or 4 (8, 16 or 32bit integer)
         """
         if self._index_buffer and self._index_element_size not in (1, 2, 4):
             raise ValueError("index_element_size must be 1, 2, or 4")
@@ -522,8 +528,8 @@ class Geometry:
         for other_descr in self._content:
             if other_descr == descr:
                 raise ValueError(
-                    f"A Geometry cannot contain two BufferDescriptions which share an attribute name,"
-                    f"Found a conflict in {descr} and {other_descr}"
+                    "Geometry cannot contain two BufferDescriptions which share an "
+                    f"attribute name. Found a conflict in {descr} and {other_descr}"
                 )
         self._content.append(descr)
 
@@ -576,7 +582,8 @@ class Geometry:
                     self._ctx.LINES_ADJACENCY,
                 ]:
                     raise ValueError(
-                        "Geometry shader expects LINES, LINE_STRIP, LINE_LOOP or LINES_ADJACENCY as input"
+                        "Geometry shader expects LINES, LINE_STRIP, LINE_LOOP "
+                        " or LINES_ADJACENCY as input"
                     )
             if program.geometry_input == self._ctx.LINES_ADJACENCY:
                 if mode not in [self._ctx.LINES_ADJACENCY, self._ctx.LINE_STRIP_ADJACENCY]:
@@ -590,12 +597,14 @@ class Geometry:
                     self._ctx.TRIANGLE_FAN,
                 ]:
                     raise ValueError(
-                        "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP or GL_TRIANGLE_FAN as input"
+                        "Geometry shader expects GL_TRIANGLES, GL_TRIANGLE_STRIP "
+                        "or GL_TRIANGLE_FAN as input"
                     )
             if program.geometry_input == self._ctx.TRIANGLES_ADJACENCY:
                 if mode not in [self._ctx.TRIANGLES_ADJACENCY, self._ctx.TRIANGLE_STRIP_ADJACENCY]:
                     raise ValueError(
-                        "Geometry shader expects GL_TRIANGLES_ADJACENCY or GL_TRIANGLE_STRIP_ADJACENCY as input"
+                        "Geometry shader expects GL_TRIANGLES_ADJACENCY or "
+                        "GL_TRIANGLE_STRIP_ADJACENCY as input"
                     )
 
         vao.render(
@@ -689,7 +698,8 @@ class Geometry:
                 raise ValueError(
                     (
                         "Buffer must be a single Buffer object "
-                        f"because the capture mode of the program is: {program.varyings_capture_mode}"
+                        "because the capture mode of the program is: "
+                        f"{program.varyings_capture_mode}"
                     )
                 )
             vao.transform_interleaved(
@@ -706,7 +716,8 @@ class Geometry:
                 raise ValueError(
                     (
                         "buffer must be a list of Buffer object "
-                        f"because the capture mode of the program is: {program.varyings_capture_mode}"
+                        "because the capture mode of the program is: "
+                        f"{program.varyings_capture_mode}"
                     )
                 )
             vao.transform_separate(

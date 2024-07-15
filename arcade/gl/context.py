@@ -719,8 +719,9 @@ class Context:
         are limited by :py:attr:`~arcade.gl.context.Limits.POINT_SIZE_RANGE`.
         This value usually at least ``(1, 100)``, but this depends on the drivers/vendors.
 
-        If variable point size is needed you can enable :py:attr:`~arcade.gl.Context.PROGRAM_POINT_SIZE`
-        and write to ``gl_PointSize`` in the vertex or geometry shader.
+        If variable point size is needed you can enable
+        :py:attr:`~arcade.gl.Context.PROGRAM_POINT_SIZE` and write to ``gl_PointSize``
+        in the vertex or geometry shader.
 
         .. Note::
 
@@ -832,7 +833,8 @@ class Context:
         self, *, data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"
     ) -> Buffer:
         """
-        Create an OpenGL Buffer object. The buffer will contain all zero-bytes if no data is supplied.
+        Create an OpenGL Buffer object. The buffer will contain all zero-bytes if
+        no data is supplied.
 
         Examples::
 
@@ -935,10 +937,11 @@ class Context:
                 data=image_bytes,
             )
 
-        Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``, ``GL_CLAMP_TO_BORDER``
+        Wrap modes: ``GL_REPEAT``, ``GL_MIRRORED_REPEAT``, ``GL_CLAMP_TO_EDGE``,
+        ``GL_CLAMP_TO_BORDER``
 
-        Minifying filters: ``GL_NEAREST``, ``GL_LINEAR``, ``GL_NEAREST_MIPMAP_NEAREST``, ``GL_LINEAR_MIPMAP_NEAREST``
-        ``GL_NEAREST_MIPMAP_LINEAR``, ``GL_LINEAR_MIPMAP_LINEAR``
+        Minifying filters: ``GL_NEAREST``, ``GL_LINEAR``, ``GL_NEAREST_MIPMAP_NEAREST``,
+        ``GL_LINEAR_MIPMAP_NEAREST`` ``GL_NEAREST_MIPMAP_LINEAR``, ``GL_LINEAR_MIPMAP_LINEAR``
 
         Magnifying filters: ``GL_NEAREST``, ``GL_LINEAR``
 
@@ -1066,8 +1069,8 @@ class Context:
         :param mode: The default draw mode (optional)
         :param mode: The default draw mode (optional)
         :param index_element_size: Byte size of a single index/element in the index buffer.
-                                       In other words, the index buffer can be 8, 16 or 32 bit integers.
-                                       Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
+            In other words, the index buffer can be 8, 16 or 32 bit integers.
+            Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
         return Geometry(
             self,
@@ -1100,13 +1103,13 @@ class Context:
         :param common: Common shader sources injected into all shaders
         :param defines: Substitute #defines values in the source (optional)
         :param varyings: The name of the out attributes in a transform shader.
-                                                 This is normally not necessary since we auto detect them,
-                                                 but some more complex out structures we can't detect.
+            This is normally not necessary since we auto detect them,
+            but some more complex out structures we can't detect.
         :param varyings_capture_mode: The capture mode for transforms.
-                                          ``"interleaved"`` means all out attribute will be written to a single buffer.
-                                          ``"separate"`` means each out attribute will be written separate buffers.
-                                          Based on these settings the `transform()` method will accept a single
-                                          buffer or a list of buffer.
+            ``"interleaved"`` means all out attribute will be written to a single buffer.
+            ``"separate"`` means each out attribute will be written separate buffers.
+            Based on these settings the `transform()` method will accept a single
+            buffer or a list of buffer.
         """
         source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
@@ -1244,9 +1247,11 @@ class Limits:
         self.SUBPIXEL_BITS = self.get(gl.GL_SUBPIXEL_BITS)
         #: Minimum required alignment for uniform buffer sizes and offset
         self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT)
-        #: Value indicates the maximum number of layers allowed in an array texture, and must be at least 256
+        #: Value indicates the maximum number of layers allowed in an array texture,
+        #: and must be at least 256
         self.MAX_ARRAY_TEXTURE_LAYERS = self.get(gl.GL_MAX_ARRAY_TEXTURE_LAYERS)
-        #: A rough estimate of the largest 3D texture that the GL can handle. The value must be at least 64
+        #: A rough estimate of the largest 3D texture that the GL can handle.
+        #: The value must be at least 64
         self.MAX_3D_TEXTURE_SIZE = self.get(gl.GL_MAX_3D_TEXTURE_SIZE)
         #: Maximum number of color attachments in a framebuffer
         self.MAX_COLOR_ATTACHMENTS = self.get(gl.GL_MAX_COLOR_ATTACHMENTS)
@@ -1260,7 +1265,8 @@ class Limits:
         self.MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS = self.get(
             gl.GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS
         )
-        #: Maximum supported texture image units that can be used to access texture maps from the vertex shader
+        #: Maximum supported texture image units that can be used to access texture
+        #: maps from the vertex shader
         self.MAX_COMBINED_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
         #: Maximum number of uniform blocks per program
         self.MAX_COMBINED_UNIFORM_BLOCKS = self.get(gl.GL_MAX_COMBINED_UNIFORM_BLOCKS)
@@ -1292,7 +1298,8 @@ class Limits:
         self.MAX_GEOMETRY_INPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_INPUT_COMPONENTS)
         #: Maximum number of components of outputs written by a geometry shader
         self.MAX_GEOMETRY_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_OUTPUT_COMPONENTS)
-        #: Maximum supported texture image units that can be used to access texture maps from the geometry shader
+        #: Maximum supported texture image units that can be used to access texture
+        #: maps from the geometry shader
         self.MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS)
         #: Maximum number of uniform blocks per geometry shader
         self.MAX_GEOMETRY_UNIFORM_BLOCKS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_BLOCKS)
@@ -1321,18 +1328,22 @@ class Limits:
         self.MAX_VARYING_VECTORS = self.get(gl.GL_MAX_VARYING_VECTORS)
         #: Maximum number of 4-component generic vertex attributes accessible to a vertex shader.
         self.MAX_VERTEX_ATTRIBS = self.get(gl.GL_MAX_VERTEX_ATTRIBS)
-        #: Maximum supported texture image units that can be used to access texture maps from the vertex shader.
+        #: Maximum supported texture image units that can be used to access texture
+        #: maps from the vertex shader.
         self.MAX_VERTEX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS)
         #: Maximum number of individual floating-point, integer, or boolean values that
         #: can be held in uniform variable storage for a vertex shader
         self.MAX_VERTEX_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_VERTEX_UNIFORM_COMPONENTS)
-        #: Maximum number of 4-vectors that may be held in uniform variable storage for the vertex shader
+        #: Maximum number of 4-vectors that may be held in uniform variable storage
+        #: for the vertex shader
         self.MAX_VERTEX_UNIFORM_VECTORS = self.get(gl.GL_MAX_VERTEX_UNIFORM_VECTORS)
         #: Maximum number of components of output written by a vertex shader
         self.MAX_VERTEX_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_VERTEX_OUTPUT_COMPONENTS)
         #: Maximum number of uniform blocks per vertex shader.
         self.MAX_VERTEX_UNIFORM_BLOCKS = self.get(gl.GL_MAX_VERTEX_UNIFORM_BLOCKS)
-        # self.MAX_VERTEX_ATTRIB_RELATIVE_OFFSET = self.get(gl.GL_MAX_VERTEX_ATTRIB_RELATIVE_OFFSET)
+        # self.MAX_VERTEX_ATTRIB_RELATIVE_OFFSET = self.get(
+        #     gl.GL_MAX_VERTEX_ATTRIB_RELATIVE_OFFSET
+        # )
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
         #: The highest supported anisotropy value. Usually 8.0 or 16.0.

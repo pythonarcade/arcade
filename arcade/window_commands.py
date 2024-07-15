@@ -1,5 +1,6 @@
 """
-This submodule has functions that control opening, closing, rendering, and otherwise managing windows.
+This submodule has functions that control opening, closing, rendering,
+and otherwise managing windows.
 It also has commands for scheduling pauses and scheduling interval functions.
 """
 
@@ -96,11 +97,12 @@ def close_window() -> None:
 def run():
     """
     Run the main loop.
-    After the window has been set up, and the event hooks are in place, this is usually one of the last
-    commands on the main program. This is a blocking function starting pyglet's event loop
-    meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
-    """
 
+    After the window has been set up, and the event hooks are in place,
+    this is usually one of the last commands on the main program.
+    This is a blocking function starting pyglet's event loop meaning
+    it will start to dispatch events such as ``on_draw`` and ``on_update``.
+    """
     window = get_window()
 
     # Used in some unit test
@@ -189,7 +191,8 @@ def start_render(pixelated=False, blend=True) -> None:
 
     A few configuration options are available in this function.
 
-    :param pixelated: If True, the buffer will be be pixelated when resized. Otherwise, it will be smooth.
+    :param pixelated: If True, the buffer will be be pixelated when resized.
+                      Otherwise, it will be smooth.
     :param blend: If alpha blending
     """
     from arcade.start_finish_data import StartFinishRenderData

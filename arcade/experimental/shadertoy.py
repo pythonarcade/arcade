@@ -39,7 +39,8 @@ class ShadertoyBase:
 
         uniform float     iTime;                 // shader playback time (in seconds)
         uniform float     iChannelTime[4];       // channel playback time (in seconds)
-        uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down), zw: click
+        uniform vec4      iMouse;                // mouse pixel coords. xy: current (if MLB down)
+                                                   zw: click
         uniform vec3      iResolution;           // viewport resolution (in pixels)
         uniform vec3      iChannelResolution[4]; // channel resolution (in pixels)
         uniform int       iFrame;                // shader playback frame

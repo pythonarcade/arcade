@@ -74,8 +74,10 @@ class Window(pyglet.window.Window):
     The Window class forms the basis of most advanced games that use Arcade.
     It represents a window on the screen, and manages events.
 
-    .. _pyglet_pg_window_size_position: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
-    .. _pyglet_pg_window_style: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
+    .. _pyglet_pg_window_size_position:
+    ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
+    .. _pyglet_pg_window_style:
+    ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
 
     :param width: Window width
     :param height: Window height
@@ -84,13 +86,14 @@ class Window(pyglet.window.Window):
     :param resizable: Can the user resize the window?
     :param update_rate: How frequently to run the on_update event.
     :param draw_rate: How frequently to run the on_draw event. (this is the FPS limit)
-    :param fixed_rate: How frequently should the fixed_updates run, fixed updates will always run at this rate.
+    :param fixed_rate: How frequently should the fixed_updates run,
+        fixed updates will always run at this rate.
     :param fixed_frame_cap: The maximum number of fixed updates that can occur in one update loop.
-                                defaults to infinite. If large lag spikes cause your game to freeze, try setting
-                                this to a smaller number. This may cause your physics to lag behind temporarily
+        defaults to infinite. If large lag spikes cause your game to freeze, try setting
+        this to a smaller number. This may cause your physics to lag behind temporarily
     :param antialiasing: Should OpenGL's anti-aliasing be enabled?
-    :param gl_version: What OpenGL version to request. This is ``(3, 3)`` by default \
-                                       and can be overridden when using more advanced OpenGL features.
+    :param gl_version: What OpenGL version to request. This is ``(3, 3)`` by default
+        and can be overridden when using more advanced OpenGL features.
     :param screen: Pass a pyglet :py:class:`~pyglet.display.Screen` to
         request the window be placed on it. See `pyglet's window size &
         position guide <pyglet_pg_window_size_position_>`_ to learn more.
@@ -98,14 +101,15 @@ class Window(pyglet.window.Window):
         Some styles only work in certain situations. See `pyglet's guide
         to window style <pyglet_pg_window_style_>`_ to learn more.
     :param visible: Should the window be visible immediately
-    :param vsync: Wait for vertical screen refresh before swapping buffer \
-                       This can make animations and movement look smoother.
-    :param gc_mode: Decides how OpenGL objects should be garbage collected ("context_gc" (default) or "auto")
+    :param vsync: Wait for vertical screen refresh before swapping buffer
+        This can make animations and movement look smoother.
+    :param gc_mode: Decides how OpenGL objects should be garbage collected
+        ("context_gc" (default) or "auto")
     :param center_window: If true, will center the window.
     :param samples: Number of samples used in antialiasing (default 4). \
-                         Usually this is 2, 4, 8 or 16.
-    :param enable_polling: Enabled input polling capability. This makes the ``keyboard`` and ``mouse`` \
-                                attributes available for use.
+        Usually this is 2, 4, 8 or 16.
+    :param enable_polling: Enabled input polling capability. This makes the ``keyboard`` and
+        ``mouse`` attributes available for use.
     """
 
     def __init__(
@@ -212,13 +216,14 @@ class Window(pyglet.window.Window):
         _setup_clock()
         _setup_fixed_clock(fixed_rate)
 
-        # We don't call the set_draw_rate function here because unlike the updates, the draw scheduling
-        # is initially set in the call to pyglet.app.run() that is done by the run() function.
-        # run() will pull this draw rate from the Window and use it. Calls to set_draw_rate only need
+        # We don't call the set_draw_rate function here because unlike the updates,
+        # the draw scheduling is initially set in the call to pyglet.app.run()
+        # that is done by the run() function. run() will pull this draw rate from
+        # the Window and use it. Calls to set_draw_rate only need
         # to be done if changing it after the application has been started.
         self._draw_rate = draw_rate
 
-        # Fixed rate cannot be changed post initialisation as this throws off physics sims.
+        # Fixed rate cannot be changed post initialization as this throws off physics sims.
         # If more time resolution is needed in fixed updates, devs can do 'sub-stepping'.
         self._fixed_rate = fixed_rate
         self._fixed_frame_cap = fixed_frame_cap
@@ -349,11 +354,12 @@ class Window(pyglet.window.Window):
         return LBWH(0, 0, self.width, self.height)
 
     def run(self) -> None:
-        """
-        Run the main loop.
-        After the window has been set up, and the event hooks are in place, this is usually one of the last
-        commands on the main program. This is a blocking function starting pyglet's event loop
-        meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
+        """Run the main loop.
+
+        After the window has been set up, and the event hooks are in place, this
+        is usually one of the last commands on the main program. This is a blocking
+        function starting pyglet's event loop meaning it will start to dispatch
+        events such as ``on_draw`` and ``on_update``.
         """
         arcade.run()
 
@@ -415,9 +421,11 @@ class Window(pyglet.window.Window):
 
     def _dispatch_updates(self, delta_time: float) -> None:
         """
-        Internal function that is scheduled with Pyglet's clock, this function gets run by the clock, and
-        dispatches the on_update events.
-        It also accumulates time and runs fixed updates until the Fixed Clock catches up to the global clock
+        Internal function that is scheduled with Pyglet's clock, this function gets
+        run by the clock, and dispatches the on_update events.
+
+        It also accumulates time and runs fixed updates until the Fixed Clock catches
+        up to the global clock
         """
         GLOBAL_CLOCK.tick(delta_time)
         fixed_count = 0
@@ -869,9 +877,10 @@ class Window(pyglet.window.Window):
         if self._current_view.has_sections:
             self._current_view.section_manager.on_show_view()
 
-        # Note: After the View has been pushed onto pyglet's stack of event handlers (via push_handlers()), pyglet
-        # will still call the Window's event handlers. (See pyglet's EventDispatcher.dispatch_event() implementation
-        # for details)
+        # Note: After the View has been pushed onto pyglet's stack of event handlers
+        # (via push_handlers()), pyglet
+        # will still call the Window's event handlers.
+        # (See pyglet's EventDispatcher.dispatch_event() implementation for details)
 
     def hide_view(self) -> None:
         """
@@ -1046,10 +1055,10 @@ def open_window(
     antialiasing: bool = True,
 ) -> Window:
     """
-    This function opens a window. For ease-of-use we assume there will only be one window, and the
-    programmer does not need to keep a handle to the window. This isn't the best architecture, because
-    the window handle is stored in a global, but it makes things easier for programmers if they don't
-    have to track a window pointer.
+    This function opens a window. For ease-of-use we assume there will only be one
+    window, and the programmer does not need to keep a handle to the window.
+    This isn't the best architecture, because the window handle is stored in a global,
+    but it makes things easier for programmers if they don't have to track a window pointer.
 
     :param width: Width of the window.
     :param height: Height of the window.
@@ -1101,8 +1110,10 @@ class View:
         Adds a section to the view Section Manager.
 
         :param section: the section to add to this section manager
-        :param at_index: inserts the section at that index for event capture and update events. If None at the end
-        :param at_draw_order: inserts the section in a specific draw order. Overwrites section.draw_order
+        :param at_index: inserts the section at that index for event capture and
+            update events. If None at the end
+        :param at_draw_order: inserts the section in a specific draw order.
+            Overwrites section.draw_order
         """
         self.section_manager.add_section(section, at_index, at_draw_order)
 

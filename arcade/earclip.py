@@ -13,9 +13,11 @@ def earclip(
 ) -> list[tuple[tuple[float, float], tuple[float, float], tuple[float, float]]]:
     """
     Simple earclipping algorithm for a given polygon p.
+
     polygon is expected to be an array of 2-tuples of the cartesian points of the polygon
     For a polygon with n points it will return n-2 triangles.
-    The triangles are returned as an array of 3-tuples where each item in the tuple is a 2-tuple of the cartesian point.
+    The triangles are returned as an array of 3-tuples where each item in the tuple is a
+    2-tuple of the cartesian point.
 
     Implementation Reference:
         - https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf

@@ -44,10 +44,12 @@ class UIManager(EventDispatcher):
     Handles window events, layout process and rendering.
 
     To process window events, :py:meth:`UIManager.enable()` has to be called,
-    which will inject event callbacks for all window events and redirects them through the widget tree.
+    which will inject event callbacks for all window events and redirects them
+    through the widget tree.
 
-    If used within a view :py:meth:`UIManager.enable()` should be called from :py:meth:`View.on_show_view()` and
-    :py:meth:`UIManager.disable()` should be called from :py:meth:`View.on_hide_view()`
+    If used within a view :py:meth:`UIManager.enable()` should be called from
+    :py:meth:`View.on_show_view()` and :py:meth:`UIManager.disable()` should be
+    called from :py:meth:`View.on_hide_view()`
 
     Supports `size_hint` to grow/shrink direct children dependent on window size.
     Supports `size_hint_min` to ensure size of direct children (e.g. UIBoxLayout).
@@ -104,10 +106,11 @@ class UIManager(EventDispatcher):
         Add a widget to the :class:`UIManager`.
         Added widgets will receive ui events and be rendered.
 
-        By default the latest added widget will receive ui events first and will be rendered on top of others.
+        By default the latest added widget will receive ui events first and will
+        be rendered on top of others.
 
-        The UIManager supports layered setups, widgets added to a higher layer are drawn above lower layers
-        and receive events first.
+        The UIManager supports layered setups, widgets added to a higher layer are
+        drawn above lower layers and receive events first.
         The layer 10 is reserved for overlaying components like dropdowns or tooltips.
 
         :param widget: widget to add
@@ -163,7 +166,8 @@ class UIManager(EventDispatcher):
 
     def get_widgets_at(self, pos: Point2, cls: Type[W] = UIWidget, layer=0) -> Iterable[W]:
         """
-        Yields all widgets containing a position, returns first top laying widgets which is instance of cls.
+        Yields all widgets containing a position, returns first top laying widgets
+        which is instance of cls.
 
         :param pos: Pos within the widget bounds
         :param cls: class which the widget should be an instance of
@@ -313,11 +317,13 @@ class UIManager(EventDispatcher):
         """
         Will draw all widgets to the window.
 
-        UIManager caches all rendered widgets into a framebuffer (something like a window sized image)
-        and only updates the framebuffer if a widget requests rendering via trigger_render().
+        UIManager caches all rendered widgets into a framebuffer (something like a
+        window sized image) and only updates the framebuffer if a widget requests
+        rendering via ``trigger_render()``.
 
         To ensure that the children are positioned properly,
-        a layout process is executed before rendering, changes might also trigger a re-rendering of all widgets.
+        a layout process is executed before rendering, changes might also trigger a
+        re-rendering of all widgets.
 
         Layouting is a two-step process:
         1. Prepare layout, which prepares children and updates own values

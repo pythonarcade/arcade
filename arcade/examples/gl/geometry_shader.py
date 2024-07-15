@@ -96,7 +96,9 @@ class MyGame(arcade.Window):
         self.points = self.ctx.geometry(
             [
                 BufferDescription(
-                    self.ctx.buffer(data=array("f", [random.uniform(-1.0, 1.0) for _ in range(num_points * 2)])),
+                    self.ctx.buffer(
+                        data=array("f", [random.uniform(-1.0, 1.0) for _ in range(num_points * 2)])
+                    ),
                     "2f",
                     ["in_vert"],
                 )

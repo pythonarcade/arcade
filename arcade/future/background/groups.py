@@ -8,7 +8,8 @@ from arcade.future.background import Background
 
 class BackgroundGroup:
     """
-    If you have many backgrounds which you would like to draw together and move together this can help.
+    If you have many backgrounds which you would like to draw together and move
+    together this can help.
     The pos of the Background Group is independent of each Background pos.
     The offset of the BackgroundGroup is the same as each background.
     """

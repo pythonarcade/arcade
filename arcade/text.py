@@ -68,7 +68,8 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
             font_list = font_name
         else:
             raise TypeError(
-                "font_name parameter must be a string, or a tuple of strings that specify a font name."
+                "font_name parameter must be a string, "
+                "or a tuple of strings that specify a font name."
             )
 
         for font in font_list:
@@ -663,7 +664,10 @@ def create_text_sprite(
 
 
 @warning(
-    message="draw_text is an extremely slow function for displaying text. Consider using Text objects instead.",
+    message=(
+        "draw_text is an extremely slow function for displaying text. "
+        "Consider using Text objects instead."
+    ),
     warning_type=PerformanceWarning,
 )
 def draw_text(

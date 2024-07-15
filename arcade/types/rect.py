@@ -42,18 +42,21 @@ class RectKwargs(TypedDict):
 class Rect(NamedTuple):
     """A rectangle, with several convenience properties and functions.
 
-    This object is immutable by design. It provides no setters, and is a NamedTuple subclass.
+    This object is immutable by design. It provides no setters, and is a NamedTuple
+    subclass.
 
-    Attempts to implement all Rectangle functions used in the library, and to be a helpful
-    tool for developers storing/maniulating rectangle and rectangle-like constructs.
+    Attempts to implement all Rectangle functions used in the library, and to be a
+    helpful tool for developers storing/manipulating rectangle and rectangle-like
+    constructs.
 
-    Rectangles cannot rotate by design, since this complicates their implmentation a lot.
+    Rectangles cannot rotate by design, since this complicates their implementation
+    a lot.
 
-    You probably don't want to create one of these directly, and should instead use a helper method, like
-    :py:func:`.LBWH`, :py:func:`.LRBT`, :py:func:`.XYWH`, or :py:func:`.Viewport`.
+    You probably don't want to create one of these directly, and should instead use
+    a helper method, like :py:func:`.LBWH`, :py:func:`.LRBT`, :py:func:`.XYWH`, or
+    :py:func:`.Viewport`.
 
     You can also use :py:meth:`.from_kwargs` to create a Rect from keyword arguments.
-
     """
 
     #: The X position of the rectangle's left edge.
@@ -96,37 +99,58 @@ class Rect(NamedTuple):
 
     @property
     def bottom_left(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-left of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        bottom-left of the rectangle.
+        """
         return Vec2(self.left, self.bottom)
 
     @property
     def bottom_right(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-right of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        bottom-right of the rectangle.
+        """
         return Vec2(self.right, self.bottom)
 
     @property
     def top_left(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-left of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        top-left of the rectangle.
+        """
         return Vec2(self.left, self.top)
 
     @property
     def top_right(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-right of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        top-right of the rectangle.
+        """
         return Vec2(self.right, self.top)
 
     @property
     def bottom_center(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-center of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        bottom-center of the rectangle.
+        """
         return Vec2(self.x, self.bottom)
 
     @property
     def center_right(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the center-right of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        center-right of the rectangle.
+        """
         return Vec2(self.right, self.y)
 
     @property
     def top_center(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-center of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        top-center of the rectangle.
+        """
         return Vec2(self.x, self.top)
 
     @property
@@ -741,7 +765,10 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
 
 
 def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
-    """Creates a new :py:class:`.Rect` from left, bottom, width, and height parameters, restricted to integers."""
+    """
+    Creates a new :py:class:`.Rect` from left, bottom, width, and height parameters,
+    restricted to integers.
+    """
     right = left + width
     top = bottom + height
     x = left + int(width / 2)

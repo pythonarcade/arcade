@@ -85,12 +85,14 @@ class SpriteListInteraction(arcade.Window):
 
             void main() {
                 // ONLY emit a line between the sprite and origin when within the distance
+                mat4 mvp = window.projection * window.view;
+
                 if (distance(v_position[0].xy, origin) < maxDistance) {
                     // First line segment position (origin)
-                    gl_Position = window.projection * window.view * vec4(origin, 0.0, 1.0);
+                    gl_Position = mvp * vec4(origin, 0.0, 1.0);
                     EmitVertex();
                     // Second line segment position (sprite position)
-                    gl_Position = window.projection * window.view * vec4(v_position[0].xy, 0.0, 1.0);
+                    gl_Position = mvp * vec4(v_position[0].xy, 0.0, 1.0);
                     EmitVertex();
                 }
             }
@@ -122,7 +124,12 @@ class SpriteListInteraction(arcade.Window):
         arcade.draw_sprite(self.player)
 
         # Visualize the interaction radius
-        arcade.draw_circle_filled(self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64))
+        arcade.draw_circle_filled(
+            center_x=self.player.center_x,
+            center_y=self.player.center_y,
+            radius=INTERACTION_RADIUS,
+            color=(255, 255, 255, 64)
+        )
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         # Move the sprite to mouse position

@@ -53,7 +53,8 @@ def make_soft_circle_texture(
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
 ) -> Texture:
     """
-    Return a :class:`Texture` of a circle with the given diameter and color, fading out at its edges.
+    Creates a :class:`Texture` of a circle with the given diameter and color,
+    fading out at its edges.
 
     :param diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
     :param color: Color of the circle as a 4-length tuple or
@@ -106,7 +107,8 @@ def make_soft_square_texture(
     name: Optional[str] = None,
 ) -> Texture:
     """
-    Return a :class:`Texture` of a square with the given diameter and color, fading out at its edges.
+    Creates a :class:`Texture` of a square with the given diameter and color,
+    fading out at its edges.
 
     :param size: Diameter of the square and dimensions of the square Texture returned.
     :param color: Color of the square.

@@ -36,7 +36,8 @@ class Light:
     ):
         if not (isinstance(color, tuple) or isinstance(color, list)):
             raise ValueError(
-                "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
+                "Color must be a 3-4 element Tuple or List with red-green-blue "
+                " and optionally an alpha."
             )
 
         if not isinstance(mode, str) or not (mode == "soft" or mode == "hard"):
@@ -51,7 +52,8 @@ class Light:
 
         if len(self._color) != 3:
             raise ValueError(
-                "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
+                "Color must be a 3-4 element Tuple or List with red-green-blue "
+                "and optionally an alpha."
             )
 
     @property

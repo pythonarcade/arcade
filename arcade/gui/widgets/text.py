@@ -60,10 +60,11 @@ class UILabel(UIWidget):
                       if a width is supplied. Valid options include ``"left"``,
                       ``"center"`` or ``"right"``.
     :param dpi: Resolution of the fonts in the layout. Defaults to 96.
-    :param multiline: If enabled, a ``\\n`` will start a new line. Changing text or font will require a manual call of
-                      :py:meth:`~arcade.gui.UILabel.fit_content` to prevent text line wrap.
+    :param multiline: If enabled, a ``\\n`` will start a new line. Changing text or
+        font will require a manual call of :py:meth:`~arcade.gui.UILabel.fit_content`
+        to prevent text line wrap.
     :param size_hint: A tuple of floats between 0 and 1 defining the amount of
-                      space of the parent should be requested. Default (0, 0) which fits the content.
+        space of the parent should be requested. Default (0, 0) which fits the content.
     :param size_hint_max: Maximum size hint width and height in pixel.
     :param style: Not used. Labels will have no need for a style; they are too
                   simple (just a text display).

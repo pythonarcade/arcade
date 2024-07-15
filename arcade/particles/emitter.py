@@ -1,6 +1,6 @@
 """
-Emitter - Invisible object that determines when Particles are emitted, actually emits them, and manages them
-over their lifetime
+Emitter - Invisible object that determines when Particles are emitted,
+actually emits them, and manages them over their lifetime
 """
 
 from __future__ import annotations
@@ -17,7 +17,8 @@ from .particle import Particle
 class EmitController:
     """Base class for how a client configure the rate at which an Emitter emits Particles
 
-    Subclasses allow the client to control the rate and duration of emitting"""
+    Subclasses allow the client to control the rate and duration of emitting
+    """
 
     def how_many(self, delta_time: float, current_particle_count: int) -> int:
         raise NotImplementedError("EmitterRate.how_many must be implemented")
@@ -44,7 +45,10 @@ class EmitBurst(EmitController):
 
 
 class EmitMaintainCount(EmitController):
-    """Used to configure an Emitter so it emits particles so that the given count is always maintained"""
+    """
+    Used to configure an Emitter so it emits particles so that the given count
+    is always maintained.
+    """
 
     def __init__(self, particle_count: int):
         self._target_count = particle_count
@@ -57,7 +61,10 @@ class EmitMaintainCount(EmitController):
 
 
 class EmitInterval(EmitController):
-    """Base class used to configure an Emitter to have a constant rate of emitting. Will emit indefinitely."""
+    """
+    Base class used to configure an Emitter to have a constant rate of emitting.
+    Will emit indefinitely.
+    """
 
     def __init__(self, emit_interval: float):
         if emit_interval <= 0:
@@ -78,7 +85,10 @@ class EmitInterval(EmitController):
 
 
 class EmitterIntervalWithCount(EmitInterval):
-    """Configure an Emitter to emit particles with given interval, ending after emitting given number of particles"""
+    """
+    Configure an Emitter to emit particles with given interval,
+    ending after emitting given number of particles
+    """
 
     def __init__(self, emit_interval: float, particle_count: int):
         super().__init__(emit_interval)
@@ -95,7 +105,10 @@ class EmitterIntervalWithCount(EmitInterval):
 
 
 class EmitterIntervalWithTime(EmitInterval):
-    """Configure an Emitter to emit particles with given interval, ending after given number of seconds"""
+    """
+    Configure an Emitter to emit particles with given interval,
+    ending after given number of seconds
+    """
 
     def __init__(self, emit_interval: float, lifetime: float):
         super().__init__(emit_interval)
@@ -113,7 +126,10 @@ class EmitterIntervalWithTime(EmitInterval):
 
 # Emitter
 class Emitter:
-    """Emits and manages Particles over their lifetime.  The foundational class in a particle system."""
+    """
+    Emits and manages Particles over their lifetime.
+    The foundational class in a particle system.
+    """
 
     def __init__(
         self,
@@ -138,7 +154,10 @@ class Emitter:
         self._particles: arcade.SpriteList = arcade.SpriteList(use_spatial_hash=False)
 
     def _emit(self):
-        """Emit one particle, its initial position and velocity are relative to the position and angle of the emitter"""
+        """
+        Emit one particle, its initial position and velocity are relative to the
+        position and angle of the emitter.
+        """
         p = self.particle_factory(self)
         p.center_x += self.center_x
         p.center_y += self.center_y

@@ -184,8 +184,10 @@ class MyGame(arcade.Window):
                 # running the sprites, and not adding the sprites.
                 if total_program_time % 2 == 1:
 
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
-                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = (
+                        f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    )
                     print(output, end="")
                     self.results_file.write(output)
 
@@ -195,8 +197,10 @@ class MyGame(arcade.Window):
                         return
 
                     # Take timings
-                    print(f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
-                          f"{self.processing_time:.4f}, {self.draw_time:.4f}")
+                    print(
+                        f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, {self.draw_time:.4f}"
+                    )
                     self.sprite_count_list.append(len(self.coin_list))
                     self.fps_list.append(round(self.fps.get_fps(), 1))
                     self.processing_time_list.append(self.processing_time)

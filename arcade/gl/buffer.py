@@ -183,7 +183,8 @@ class Buffer:
         truncated to fit. If the supplied data is smaller than the
         buffer, the remaining bytes will be left unchanged.
 
-        :param data: The byte data to write. This can be bytes or any object supporting the buffer protocol.
+        :param data: The byte data to write. This can be bytes or any object
+            supporting the buffer protocol.
         :param offset: The byte offset
         """
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)

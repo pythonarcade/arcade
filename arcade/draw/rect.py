@@ -33,7 +33,8 @@ def draw_texture_rect(
     :param angle: Rotation of the texture in degrees. Defaults to zero.
     :param blend: If True, enable alpha blending. Defaults to True.
     :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is fully opaque.
-    :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
+    :param atlas: The texture atlas the texture resides in.
+        if not supplied the default texture atlas is used
     """
     ctx = get_window().ctx
 
@@ -86,7 +87,8 @@ def draw_sprite(
     :param blend: Draw the sprite with or without alpha blending
     :param alpha: Fade the sprite from completely transparent to opaque (range: 0 to 255)
     :param pixelated: If true the sprite will be render in pixelated style. Otherwise smooth/linear
-    :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
+    :param atlas: The texture atlas the texture resides in.
+        if not supplied the default texture atlas is used
     """
     draw_texture_rect(
         sprite.texture,
@@ -109,15 +111,16 @@ def draw_sprite_rect(
     pixelated=False,
     atlas: Optional[TextureAtlasBase] = None,
 ) -> None:
-    """
-    Draw a sprite.
+    """Draw a sprite.
 
     :param sprite: The sprite to draw.
     :param rect: The location and size of the sprite
     :param blend: Draw the sprite with or without alpha blending
     :param alpha: Fade the sprite from completely transparent to opaque (range: 0 to 255)
-    :param pixelated: If true the sprite will be render in pixelated style. Otherwise smooth/linear
-    :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
+    :param pixelated: If true the sprite will be render in pixelated style.
+        Otherwise smooth/linear
+    :param atlas: The texture atlas the texture resides in.
+        if not supplied the default texture atlas is used
     """
     draw_texture_rect(
         sprite.texture,

@@ -178,7 +178,7 @@ class MyGame(arcade.Window):
                 All other live cells die in the next generation. Similarly,
                 all other dead cells stay dead.
                 """
-                if layer1[row][column].alpha == ALPHA_ON and (live_neighbors == 2 or live_neighbors == 3):
+                if layer1[row][column].alpha == ALPHA_ON and (live_neighbors == 2 or live_neighbors == 3):  # noqa
                     if layer2[row][column].alpha == ALPHA_OFF:
                         layer2[row][column].alpha = ALPHA_ON
                 elif layer1[row][column].alpha == ALPHA_OFF and live_neighbors == 3:

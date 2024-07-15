@@ -1,5 +1,6 @@
 """
-Particle - Object produced by an Emitter.  Often used in large quantity to produce visual effects effects
+Particle - Object produced by an Emitter.
+Often used in large quantity to produce visual effects effects
 """
 
 from __future__ import annotations

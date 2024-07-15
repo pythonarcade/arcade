@@ -296,7 +296,8 @@ def astar_calculate_path(
 
     :param start_point: Where it starts
     :param end_point: Where it ends
-    :param astar_barrier_list: AStarBarrierList with the boundries to use in the AStarSearch Algorithm
+    :param astar_barrier_list: AStarBarrierList with the boundaries to use in
+        the AStarSearch Algorithm
     :param diagonal_movement: Whether of not to use diagonals in the AStarSearch Algorithm
 
     :return: List of points(the path), or None if no path is found
@@ -340,7 +341,8 @@ def has_line_of_sight(
     :param target: End position position
     :param walls: List of all blocking sprites
     :param max_distance: Max distance point 1 can see
-    :param check_resolution: Check every x pixels for a sprite. Trade-off between accuracy and speed.
+    :param check_resolution: Check every x pixels for a sprite.
+        Trade-off between accuracy and speed.
 
     .. warning:: Try to make sure spatial hashing is enabled on ``walls``!
 

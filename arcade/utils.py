@@ -220,7 +220,9 @@ def generate_uuid_from_kwargs(**kwargs) -> str:
     It must be called with parameters, and will raise an error if passed no keyword arguments.
     """
     if not kwargs:
-        raise Exception("generate_uuid_from_kwargs has to be used with kwargs, please check the doc.")
+        raise Exception(
+            "generate_uuid_from_kwargs has to be used with kwargs, please check the doc."
+        )
 
     return "|".join(f"{key}={str(value)}" for key, value in kwargs.items())
 

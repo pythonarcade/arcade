@@ -1,13 +1,13 @@
 """
 Simple shader based noise example
 
-The code creates squares of random colours all around the Window.
+The code creates squares of random colors all around the Window.
 Uses code injection to use the built-in random.glsl file. This allows for easy access
 to a high quality hash function and methods of using 1, 2, 3, or 4 floats as seeds.
 The function generates a value between 0 and 1.
 
-It is very important when using the x and y coordinates to try use both in all instances. If you only use one you will
-get very obvious artifacts all along the axis that not used.
+It is very important when using the x and y coordinates to try use both in all instances
+If you only use one you will get very obvious artifacts all along the axis that not used.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.gl.random_shader_simple
@@ -31,11 +31,14 @@ class App(Window):
 
     def __init__(self):
         super().__init__()
-        self._point_count = 128  # the number of points we want showing up
-        self._time_seed = time()  # so that the colours change every run we store the time at run to use as a seed
+        # the number of points we want showing up
+        self._point_count = 128
+        # so that the colours change every run we store the time at run to use as a seed
+        self._time_seed = time()
         self._program = self.ctx.program(
-            # We're passing the shader source to ctx.shader_inc() so that we can use the #include directive.
-            # This is not needed when using load_program() as it will automatically look for the file.
+            # We're passing the shader source to ctx.shader_inc() so that we can use
+            # the #include directive. This is not needed when using load_program() as
+            # it will automatically look for the file.
             vertex_shader=self.ctx.shader_inc(
                 """
                 #version 330
@@ -60,8 +63,9 @@ class App(Window):
 
             #include :resources:/shaders/lib/random.glsl
 
-            // predefining the function which will be over written with the code injection.
-            // the random function takes in 1, 2, 3, or 4 floats and returns a new float between 0 and 1
+            // Predefining the function which will be over written with the code injection.
+            // the random function takes in 1, 2, 3, or 4 floats and returns a new float
+            // between 0 and 1
             float random(vec2 v);
             float random(vec3 v);
             float random(vec4 v);
@@ -70,7 +74,7 @@ class App(Window):
             uniform float time_seed;
             flat in int vert_id;
 
-            // so each pixel in each vertex has the same colour we pass in the position
+            // so each pixel in each vertex has the same color we pass in the position
             in vec2 vert_pos;
 
             out vec4 frag_colour;

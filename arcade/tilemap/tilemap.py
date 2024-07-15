@@ -90,7 +90,8 @@ def _get_image_source(
 
     if not image_file:
         print(
-            f"Warning for tile {tile.id}, no image source listed either for individual tile, or as a tileset."
+            f"Warning for tile {tile.id}, no image source listed either for "
+            "individual tile, or as a tileset."
         )
         return None
 
@@ -631,7 +632,10 @@ class TileMap:
                     if len(key_frame_list) == 1:
                         my_sprite.texture = key_frame.texture
 
-            cast(TextureAnimationSprite, my_sprite).animation = TextureAnimation(keyframes=key_frame_list)  # type: ignore
+            # type: ignore
+            cast(TextureAnimationSprite, my_sprite).animation = TextureAnimation(
+                keyframes=key_frame_list
+            )
 
         return my_sprite
 
@@ -768,7 +772,8 @@ class TileMap:
 
                 if my_sprite is None:
                     print(
-                        f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image}"
+                        f"Warning: Could not create sprite number {item} "
+                        f"in layer '{layer.name}' {tile.image}"
                     )
                 else:
                     my_sprite.center_x = (
@@ -952,7 +957,8 @@ class TileMap:
                     point = (x + offset[0], y + offset[1])  # type: ignore
                     points.append(point)
 
-                # If shape is a polyline, and it is closed, we need to remove the duplicate end point
+                # If shape is a polyline, and it is closed, we need to
+                # remove the duplicate end point
                 if points[0][0] == points[-1][0] and points[0][1] == points[-1][1]:
                     points.pop()
             elif isinstance(cur_object, pytiled_parser.tiled_object.Ellipse):

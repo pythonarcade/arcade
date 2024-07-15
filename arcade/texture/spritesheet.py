@@ -109,7 +109,8 @@ class SpriteSheet:
         :param y: Y position of the image (lower left corner)
         :param width: Width of the image.
         :param height: Height of the image.
-        :param origin: Origin of the image. Default is "upper_left". Options are "upper_left" or "lower_left".
+        :param origin: Origin of the image. Default is "upper_left".
+                       Options are "upper_left" or "lower_left".
         """
         # PIL box is a 4-tuple: left, upper, right, and lower
         if origin == "upper_left":

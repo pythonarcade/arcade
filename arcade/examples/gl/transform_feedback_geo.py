@@ -69,19 +69,21 @@ class MyGame(arcade.Window):
                 vec2 center = gl_in[0].gl_Position.xy;
                 // Emit 4 vertices making a triangle strip representing a quad
 
-                gl_Position = window.projection * window.view * vec4(center + vec2(-P_SIZE,  P_SIZE), 0.0, 1.0);
+                mat4 mvp = window.projection * window.view;
+
+                gl_Position = mvp * vec4(center + vec2(-P_SIZE,  P_SIZE), 0.0, 1.0);
                 uv = vec2(0, 1);
                 EmitVertex();
 
-                gl_Position = window.projection * window.view * vec4(center + vec2(-P_SIZE, -P_SIZE), 0.0, 1.0);
+                gl_Position = mvp * vec4(center + vec2(-P_SIZE, -P_SIZE), 0.0, 1.0);
                 uv = vec2(0, 0);
                 EmitVertex();
 
-                gl_Position = window.projection * window.view * vec4(center + vec2( P_SIZE,  P_SIZE), 0.0, 1.0);
+                gl_Position = mvp * vec4(center + vec2( P_SIZE,  P_SIZE), 0.0, 1.0);
                 uv = vec2(1, 1);
                 EmitVertex();
 
-                gl_Position = window.projection * window.view * vec4(center + vec2( P_SIZE, -P_SIZE), 0.0, 1.0);
+                gl_Position = mvp * vec4(center + vec2( P_SIZE, -P_SIZE), 0.0, 1.0);
                 uv = vec2(1, 0);
                 EmitVertex();
                 EndPrimitive();
@@ -144,8 +146,12 @@ class MyGame(arcade.Window):
         self.vao_2 = self.ctx.geometry([BufferDescription(self.buffer_2, "2f 2x4", ["in_pos"])])
 
         # We need to be able to transform both buffers (ping-pong)
-        self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, "2f 2f", ["in_pos", "in_vel"])])
-        self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])])
+        self.gravity_1 = self.ctx.geometry(
+            [BufferDescription(self.buffer_1, "2f 2f", ["in_pos", "in_vel"])]
+        )
+        self.gravity_2 = self.ctx.geometry(
+            [BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])]
+        )
 
         self.mouse_pos = SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
 

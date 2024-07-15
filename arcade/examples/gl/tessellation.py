@@ -99,7 +99,9 @@ class MyGame(arcade.Window):
         )
         # fmt: on
 
-        self.geometry = self.ctx.geometry([BufferDescription(self.ctx.buffer(data=vertices), "2f", ["in_vert"])])
+        self.geometry = self.ctx.geometry(
+            [BufferDescription(self.ctx.buffer(data=vertices), "2f", ["in_vert"])]
+        )
 
     def on_draw(self):
         self.clear()

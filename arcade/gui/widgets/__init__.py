@@ -124,7 +124,8 @@ class UIWidget(EventDispatcher, ABC):
         Add a widget to this :class:`UIWidget` as a child.
         Added widgets will receive ui events and be rendered.
 
-        By default, the latest added widget will receive ui events first and will be rendered on top of others.
+        By default, the latest added widget will receive ui events first and will
+        be rendered on top of others.
 
         :param child: widget to add
         :param index: position a widget is added, None has the highest priority
@@ -189,8 +190,8 @@ class UIWidget(EventDispatcher, ABC):
 
     def trigger_render(self):
         """
-        This will delay a render right before the next frame is rendered, so that :meth:`UIWidget.do_render`
-        is not called multiple times.
+        This will delay a render right before the next frame is rendered, so that
+        :meth:`UIWidget.do_render` is not called multiple times.
         """
         self._requires_render = True
 
@@ -273,8 +274,9 @@ class UIWidget(EventDispatcher, ABC):
         surface.limit(self.content_rect)
 
     def do_render(self, surface: Surface):
-        """Render the widgets graphical representation, use :meth:`UIWidget.prepare_render` to limit the drawing area
-        to the widgets rect and draw relative to 0,0."""
+        """Render the widgets graphical representation, use :meth:`UIWidget.prepare_render`
+        to limit the drawing area to the widgets rect and draw relative to 0,0.
+        """
         pass
 
     def dispatch_ui_event(self, event: UIEvent):
@@ -481,7 +483,8 @@ class UIInteractiveWidget(UIWidget):
     :param size_hint: Tuple of floats (0.0-1.0), how much space of the parent should be requested
     :param size_hint_min: min width and height in pixel
     :param size_hint_max: max width and height in pixel:param x: center x of widget
-    :param interaction_buttons: defines, which mouse buttons should trigger the interaction (default: left mouse button)
+    :param interaction_buttons: defines, which mouse buttons should trigger the
+        interaction (default: left mouse button)
     :param style: not used
     """
 
@@ -734,11 +737,11 @@ class UILayout(UIWidget):
 
     def do_layout(self):
         """
-        Triggered by the UIManager before rendering, :class:`UILayout` s should place themselves and/or children.
-        Do layout will be triggered on children afterward.
+        Triggered by the UIManager before rendering, :class:`UILayout` s should place
+        themselves and/or children. Do layout will be triggered on children afterward.
 
-        Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next frame, this will happen automatically
-        if the position or size of this widget changed.
+        Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next
+        frame, this will happen automatically if the position or size of this widget changed.
         """
 
 
