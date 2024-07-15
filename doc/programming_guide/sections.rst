@@ -103,7 +103,7 @@ This is what looks like using Sections:
 
         def __init__(self, *args, **kwargs):
             self.map_section = Map(0, 0, 700, self.window.height)
-            self.side_section = SideSpace(700, 0, 100, self.window.height)
+            self.side_section = Side(700, 0, 100, self.window.height)
 
             self.add_section(self.map_section)
             self.add_section(self.side_section)
