@@ -54,9 +54,13 @@ class RenderIndirect(arcade.Window):
         # Generate:
         # geometry: Triangles for lots of squares
         # indices: Optional indices for an index buffer
-        # array_draw_commands: List of draw commands for rendering each individual square (without index buffer)
-        # indexed_draw_commands: List of draw commands for rendering each individual square (with index buffer)
-        geometry, indices, array_draw_commands, indexed_draw_commands = self.gen_data(self.num_objects)
+        # array_draw_commands: List of draw commands for rendering each individual
+        # square (without index buffer)
+        # indexed_draw_commands: List of draw commands for rendering each individual
+        # square (with index buffer)
+        geometry, indices, array_draw_commands, indexed_draw_commands = self.gen_data(
+            self.num_objects
+        )
 
         # Crate OpenGL buffers of the data
         self.draw_command_array_buffer = self.ctx.buffer(data=array("I", array_draw_commands))

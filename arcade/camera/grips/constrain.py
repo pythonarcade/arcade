@@ -1,8 +1,10 @@
 """
-Area grips act similarly to position constrains used by physics engines. Much like rotations the order of operations
-can have large impacts on the behaviour of the camera, so try and keep the number of area grips low.
+Area grips act similarly to position constrains used by physics engines. Much like
+rotations the order of operations can have large impacts on the behavior of the
+camera, so try and keep the number of area grips low.
 
-The methods don't update the camera data directly incase you want to smoothly interpolate towards the target position
+The methods don't update the camera data directly incase you want to smoothly
+interpolate towards the target position
 """
 
 from arcade.camera.data_types import CameraData

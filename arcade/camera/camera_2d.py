@@ -31,8 +31,9 @@ __all__ = ["Camera2D"]
 
 class Camera2D:
     """
-    A simple orthographic camera. Similar to SimpleCamera, but takes better advantage of the new data structures.
-    As the Simple Camera is depreciated, any new project should use this camera instead.
+    A simple orthographic camera. Similar to SimpleCamera, but takes better advantage
+    of the new data structures. As the Simple Camera is depreciated, any new project
+    should use this camera instead.
 
     It provides properties to access every important variable for controlling the camera.
     3D properties such as pos, and up are constrained to a 2D plane. There is no access to the
@@ -54,11 +55,14 @@ class Camera2D:
     Replacing the camera data and projection data may break controllers. Their
     contents are exposed via properties rather than directly to prevent this.
 
-    :param viewport: A 4-int tuple which defines the pixel bounds which the camera will project to.
+    :param viewport: A 4-int tuple which defines the pixel bounds which the camera
+        will project to.
     :param position: The 2D position of the camera in the XY plane.
-    :param up: A 2D vector which describes which direction is up (defines the +Y-axis of the camera space).
-    :param zoom: A scalar value which is inversely proportional to the size of the camera projection.
-            i.e. a zoom of 2.0 halves the size of the projection, doubling the perceived size of objects.
+    :param up: A 2D vector which describes which direction is up
+        (defines the +Y-axis of the camera space).
+    :param zoom: A scalar value which is inversely proportional to the size of the
+        camera projection. i.e. a zoom of 2.0 halves the size of the projection,
+        doubling the perceived size of objects.
     :param projection: A 4-float tuple which defines the world space
                 bounds which the camera projects to the viewport.
     :param near: The near clipping plane of the camera.
@@ -70,12 +74,12 @@ class Camera2D:
         Defaults to the currently active window.
 
     :attributes:
-        * render_target - An optional framebuffer to activate at the same time as the projection data,
-            could be the screen, or an offscreen texture
-        * viewport - A rect which describes how the final projection should be mapped from unit-space.
-            defaults to the size of the render_target or window
-        * scissor - An optional rect which describes what pixels of the active render target should be drawn to
-            when undefined the viewport rect is used.
+        * render_target - An optional framebuffer to activate at the same time as
+            the projection data, could be the screen, or an offscreen texture
+        * viewport - A rect which describes how the final projection should be mapped
+            from unit-space. defaults to the size of the render_target or window
+        * scissor - An optional rect which describes what pixels of the active render
+            target should be drawn to when undefined the viewport rect is used.
     """
 
     def __init__(
@@ -448,7 +452,8 @@ class Camera2D:
 
     def point_in_view(self, point: Point2) -> bool:
         """
-        Take a 2D point in the world, and return whether the point is inside the visible area of the camera.
+        Take a 2D point in the world, and return whether the point is inside the
+        visible area of the camera.
         """
         pos = self.position
         diff = point[0] - pos[0], point[1] - pos[1]
@@ -740,7 +745,8 @@ class Camera2D:
         This starts with 0 degrees as [0, 1] rotating
         clock-wise.
         """
-        # Note that this is flipped as we want 0 degrees to be vert. Normally you have y first and then x.
+        # Note that this is flipped as we want 0 degrees to be vert.
+        # Normally you have y first and then x.
         return degrees(atan2(self._camera_data.up[0], self._camera_data.up[1]))
 
     @angle.setter
@@ -797,9 +803,12 @@ class Camera2D:
         Should be called when the screen is resized.
 
         Args:
-            and_projection: Flag whether to also equalise the projection to the viewport. On by default
-            and_scissor: Flag whether to also equalise the scissor box to the viewport. On by default
-            and_position: Flag whether to also center the camera to the viewport. Off by default
+            and_projection: Flag whether to also equalize the projection to the viewport.
+                On by default
+            and_scissor: Flag whether to also equalize the scissor box to the viewport.
+                On by default
+            and_position: Flag whether to also center the camera to the viewport.
+                Off by default
         """
         self.viewport = LBWH(0, 0, self._window.width, self._window.height)
 

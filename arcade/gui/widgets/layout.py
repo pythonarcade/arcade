@@ -19,7 +19,8 @@ class UIAnchorLayout(UILayout):
     Supports the options ``size_hint``, ``size_hint_min``, and
     ``size_hint_max``. Children are allowed to overlap.
 
-    Child are resized based on ``size_hint``. ``size_hint_min/max`` only take effect if a ``size_hint`` is set.
+    Child are resized based on ``size_hint``. ``size_hint_min/max`` only take effect
+    if a ``size_hint`` is set.
 
     Allowed keyword options for
     :py:meth:`~arcade.gui.UIAnchorLayout.add`:
@@ -185,8 +186,8 @@ class UIBoxLayout(UILayout):
         Or use :py:meth:`arcade.gui.UIBoxLayout.fit_content` to resize the layout. The
         bottom-left corner is used as the default anchor point.
 
-    Supports the options: ``size_hint``, ``size_hint_min``, ``size_hint_max``. ``size_hint_min`` is automatically
-    updated based on the minimal required space by children.
+    Supports the options: ``size_hint``, ``size_hint_min``, ``size_hint_max``. ``size_hint_min``
+    is automatically updated based on the minimal required space by children.
 
     If a child widget provides a ``size_hint`` for a dimension, the child will
     be resized within the given range of ``size_hint_min`` and
@@ -771,7 +772,8 @@ class UIGridLayout(UILayout):
 
                     child.rect = new_rect
 
-                    # done due to row-wise rendering as start_y doesn't resets like start_x, specific to row span.
+                    # done due to row-wise rendering as start_y doesn't resets
+                    # like start_x, specific to row span.
                     row_span = max_height_per_row[row_num][col_num][1] or 1
                     actual_row_height = cell_height / row_span
                     if actual_row_height > max_height_row:

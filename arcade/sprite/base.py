@@ -647,7 +647,8 @@ class BasicSprite:
                     return
             except ValueError:
                 raise ValueError(
-                    "factor must be a float, int, or tuple-like which unpacks as two float-like values"
+                    "factor must be a float, int, or tuple-like "
+                    "which unpacks as two float-like values"
                 )
             except TypeError:
                 raise TypeError(

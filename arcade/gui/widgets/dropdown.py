@@ -124,7 +124,8 @@ class UIDropdown(UILayout):
         # generate options
         self._overlay.clear()
 
-        # is there another way then deepcopy, does it matter? ("premature optimization is the root of all evil")
+        # is there another way then deepcopy, does it matter?
+        # ("premature optimization is the root of all evil")
         active_style = deepcopy(UIFlatButton.DEFAULT_STYLE)
         active_style["normal"]["bg"] = (55, 66, 81)
 
@@ -181,5 +182,8 @@ class UIDropdown(UILayout):
         self._overlay.rect = rect.align_top(self.bottom - 2).align_left(self._default_button.left)
 
     def on_change(self, event: UIOnChangeEvent):
-        """To be implemented by the user, triggered when the current selected value is changed to a different option."""
+        """
+        To be implemented by the user, triggered when the current selected value
+        is changed to a different option.
+        """
         pass

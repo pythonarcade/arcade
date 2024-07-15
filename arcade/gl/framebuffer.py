@@ -333,8 +333,10 @@ class Framebuffer:
         If the background color is an ``RGB`` value instead of ``RGBA```
         we assume alpha value 255.
 
-        :param color: A 3 or 4 component tuple containing the color (prioritized over color_normalized)
-        :param color_normalized: A 3 or 4 component tuple containing the color in normalized form
+        :param color: A 3 or 4 component tuple containing the color
+            (prioritized over color_normalized)
+        :param color_normalized: A 3 or 4 component tuple containing the color
+            in normalized form
         :param depth: Value to clear the depth buffer (unused)
         :param normalized: If the color values are normalized or not
         :param Tuple[int, int, int, int] viewport: The viewport range to clear

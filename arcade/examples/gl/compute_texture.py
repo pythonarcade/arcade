@@ -38,7 +38,9 @@ void main() {
 
     // Wave covering the screen diagonally using the global invocation value.
     // This would pretty much be the pixel location
-    float global = sin(float(gl_GlobalInvocationID.x + gl_GlobalInvocationID.y) * 0.01 + time) / 2.0 + 0.5;
+    float global = sin(
+        float(gl_GlobalInvocationID.x + gl_GlobalInvocationID.y) * 0.01 + time
+    ) / 2.0 + 0.5;
     imageStore(destTex, texelPos, vec4(local, global, 0.0, 1.0));
 }
 """

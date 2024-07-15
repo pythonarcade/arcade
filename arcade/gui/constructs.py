@@ -102,9 +102,11 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
 class UIButtonRow(UIBoxLayout):
     """
     Places buttons in a row.
+
     :param vertical: Whether the button row is vertical or not.
     :param align: Where to align the button row.
-    :param size_hint: Tuple of floats (0.0 - 1.0) of how much space of the parent should be requested.
+    :param size_hint: Tuple of floats (0.0 - 1.0) of how much space of the parent
+        should be requested.
     :param size_hint_min: Min width and height in pixel.
     :param size_hint_max: Max width and height in pixel.
     :param space_between: The space between the children.

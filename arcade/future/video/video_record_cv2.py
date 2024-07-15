@@ -37,9 +37,11 @@ class VideoRecorderCV2(arcade.Window):
         super().__init__(width, height, title)
         arcade.set_background_color(arcade.color.BLACK)
 
-        # The video files produced by this are un-compressed and will be massive. Think 1GB+
-        # for even like 15 seconds+ of 1920x1080. If you want compressed video, you can replace the
-        # below line with something like this to use H.264 encoding(this probably needs ffmpeg available):
+        # The video files produced by this are un-compressed and will be massive.
+        # Think 1GB+ for even like 15 seconds+ of 1920x1080. If you want compressed
+        # video, you can replace the below line with something like this to use H.264
+        # encoding(this probably needs ffmpeg available):
+        #
         # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         # self.video = cv2.VideoWriter("my_video.mp4", fourcc, 60, (self.width, self.height))
         self.video = cv2.VideoWriter("my_video.avi", 0, 60, (self.width, self.height))

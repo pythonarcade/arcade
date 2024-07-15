@@ -1,7 +1,8 @@
 """
 Convenience functions that provide a much simpler interface to Emitters and Particles.
 
-These trade away some flexibility in favor of simplicity to allow beginners to start using particle systems.
+These trade away some flexibility in favor of simplicity to allow beginners
+to start using particle systems.
 """
 
 from __future__ import annotations

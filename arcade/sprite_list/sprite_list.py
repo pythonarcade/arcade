@@ -949,7 +949,10 @@ class SpriteList(Generic[SpriteType]):
 
     def _write_sprite_buffers_to_gpu(self) -> None:
         # LOG.debug(
-        #     "[%s] SpriteList._write_sprite_buffers_to_gpu: pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s",
+        #     (
+        #         "[%s] SpriteList._write_sprite_buffers_to_gpu: "
+        #         "pos=%s, size=%s, angle=%s, color=%s tex=%s idx=%s"
+        #     ),
         #     id(self),
         #     self._sprite_pos_changed,
         #     self._sprite_size_changed,
@@ -1030,8 +1033,9 @@ class SpriteList(Generic[SpriteType]):
         :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
                           Shortcut for setting filter to GL_NEAREST for a pixelated look.
                           The filter parameter have precedence over this.
-        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing the
-                         sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or 'arcade.Window.ctx.BLEND_DEFAULT'
+        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing
+                               the sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or
+                               'arcade.Window.ctx.BLEND_DEFAULT'
         """
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return

@@ -172,7 +172,8 @@ class Texture:
         self._hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
         if not isinstance(self._hit_box_algorithm, HitBoxAlgorithm):
             raise TypeError(
-                f"hit_box_algorithm must be an instance of HitBoxAlgorithm, not {type(self._hit_box_algorithm)}"
+                f"hit_box_algorithm must be an instance of HitBoxAlgorithm, "
+                f"not {type(self._hit_box_algorithm)}"
             )
 
         # Internal names

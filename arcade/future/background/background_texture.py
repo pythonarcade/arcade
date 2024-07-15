@@ -13,8 +13,10 @@ from arcade.window_commands import get_window
 
 class BackgroundTexture:
     """
-    BackgroundTextures are PODs (packet of data) types. They have very little functionality by themselves,
-    but are used by Backgrounds. They hold an arcade.gl.Texture and 3 Pyglet.Maths.Mat3s.
+    BackgroundTextures are PODs (packet of data) types. They have very little
+    functionality by themselves, but are used by Backgrounds. They hold an
+    ``arcade.gl.Texture``and 3 `pyglet.math.Mat3``.
+
     The Mat3s define the scaling, rotation, and translation of the pixel data in the texture.
     see background_fs.glsl in resources/shaders for an implementation of this.
     """

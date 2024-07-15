@@ -265,7 +265,10 @@ def _move_sprite(
         moved_x = original_x + cur_x_change * direction
         moved_y = almost_original_y + cur_y_change
         moving_sprite.position = moved_x, moved_y
-        # print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
+        # print(
+        #     f"({moving_sprite.center_x}, {moving_sprite.center_y}) "
+        #     f"{cur_x_change * direction}, {cur_y_change}"
+        # )
 
     # Add in rotating hit list
     for sprite in rotating_hit_list:
@@ -518,9 +521,10 @@ class PhysicsEnginePlatformer:
         * :py:meth:`disable_multi_jump`
         """
 
-    # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
+    # The property object for ladders. This allows us setter/getter/deleter
+    # capabilities in safe manner
     # TODO: figure out what do do with 15_ladders_moving_platforms.py
-    # It's no longer used by any exampple or tutorial file
+    # It's no longer used by any example or tutorial file
     @property
     def ladders(self) -> list[SpriteList]:
         """Ladders turn off gravity while touched by the player.

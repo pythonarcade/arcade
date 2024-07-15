@@ -17,12 +17,13 @@ class UIDraggableMixin(UILayout):
         class DraggablePane(UITexturePane, UIDraggableMixin):
             ...
 
-    This does overwrite :class:`UILayout` behaviour which position themselves, like :class:`UIAnchorWidget`
-
+    This does overwrite :class:`UILayout` behavior which position themselves,
+    like :class:`UIAnchorWidget`
     """
 
     def do_layout(self):
-        # Preserve top left alignment, this overwrites self placing behaviour like from :class:`UIAnchorWidget`
+        # Preserve top left alignment, this overwrites self placing behavior like
+        # from :class:`UIAnchorWidget`
         rect = self.rect
         super().do_layout()
         self.rect = self.rect.align_top(rect.top).align_left(rect.left)
@@ -40,9 +41,11 @@ class UIDraggableMixin(UILayout):
 
 class UIMouseFilterMixin(UIWidget):
     """
-    :class:`UIMouseFilterMixin` can be used to catch all mouse events which occur inside this widget.
+    :class:`UIMouseFilterMixin` can be used to catch all mouse events which occur
+    inside this widget.
 
-    Useful for window like widgets, :class:`UIMouseEvents` should not trigger effects which are under the widget.
+    Useful for window like widgets, :class:`UIMouseEvents` should not trigger
+    effects which are under the widget.
     """
 
     def on_event(self, event) -> Optional[bool]:

@@ -28,7 +28,8 @@ from arcade.gui import (
 from arcade.gui.examples.textured_slider import UITextureSlider
 from arcade.gui.widgets.layout import UIAnchorLayout
 
-# Preload textures, because they are mostly used multiple times, so they are not loaded multiple times
+# Preload textures, because they are mostly used multiple times, so they are not
+# loaded multiple times
 TEX_RED_BUTTON_NORMAL = load_texture(":resources:gui_basic_assets/red_button_normal.png")
 TEX_RED_BUTTON_HOVER = load_texture(":resources:gui_basic_assets/red_button_hover.png")
 TEX_RED_BUTTON_PRESS = load_texture(":resources:gui_basic_assets/red_button_press.png")

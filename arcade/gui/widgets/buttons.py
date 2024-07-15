@@ -43,7 +43,8 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
     :param height: height of widget. Defaults to texture height if not specified.
     :param texture: texture to display for the widget.
     :param texture_hovered: different texture to display if mouse is hovering over button.
-    :param texture_pressed: different texture to display if mouse button is pressed while hovering over button.
+    :param texture_pressed: different texture to display if mouse button is pressed
+        while hovering over button.
     :param text: text to add to the button.
     :param multiline: allows to wrap text, if not enough width available
     :param style: Used to style the button for different states.

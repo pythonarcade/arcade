@@ -196,7 +196,8 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     :param y: y coordinate of bottom left.
     :param width: Width of the slider.
     :param height: Height of the slider.
-    :param Mapping[str, "UISlider.UIStyle"] | None style: Used to style the slider for different states.
+    :param Mapping[str, "UISlider.UIStyle"] | None style: Used to style the slider
+        for different states.
 
     """
 

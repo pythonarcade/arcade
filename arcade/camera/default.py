@@ -103,8 +103,9 @@ class ViewportProjector:
 # about it being a protected class.
 class DefaultProjector(ViewportProjector):
     """
-    An extremely limited projector which lacks any kind of control. This is only here to act as the default camera
-    used internally by arcade. There should be no instance where a developer would want to use this class.
+    An extremely limited projector which lacks any kind of control. This is only
+    here to act as the default camera used internally by arcade. There should be
+    no instance where a developer would want to use this class.
 
     :param window: The window to bind the camera to. Defaults to the currently active window.
     """
@@ -124,7 +125,8 @@ class DefaultProjector(ViewportProjector):
         if self._ctx.viewport == self.viewport and self._ctx.current_camera == self:
             return
 
-        # If the viewport has changed while the default camera is active then the default needs to update itself.
+        # If the viewport has changed while the default camera is active then the
+        # default needs to update itself.
         # If it was another camera's viewport being used the default camera should not update.
         if self._ctx.viewport != self.viewport and self._ctx.current_camera == self:
             self.viewport = self._ctx.viewport

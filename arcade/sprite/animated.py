@@ -327,7 +327,8 @@ class AnimatedWalkingSprite(Sprite):
                 texture_list = self.walk_down_textures
                 if texture_list is None or len(texture_list) == 0:
                     raise RuntimeError(
-                        "update_animation was called on a sprite that doesn't have a list of walk down textures."
+                        "update_animation was called on a sprite that doesn't "
+                        "have a list of walk down textures."
                     )
 
             self.cur_texture_index += 1

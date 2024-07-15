@@ -294,7 +294,6 @@ class DefaultTextureAtlas(TextureAtlasBase):
                 # Write the pixel data to the atlas texture
                 self.write_image(texture.image_data.image, x, y)
             except AllocatorException:
-                # LOG.info("[%s] No room for %s size %s", id(self), texture.atlas_name, texture.image.size)
                 if not self._auto_resize:
                     raise
 

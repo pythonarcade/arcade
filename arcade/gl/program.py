@@ -48,10 +48,10 @@ class Program:
     :param tess_evaluation_shader: tessellation evaluation shader source
     :param varyings: List of out attributes used in transform feedback.
     :param varyings_capture_mode: The capture mode for transforms.
-                                        ``"interleaved"`` means all out attribute will be written to a single buffer.
-                                        ``"separate"`` means each out attribute will be written separate buffers.
-                                        Based on these settings the `transform()` method will accept a single
-                                        buffer or a list of buffer.
+        ``"interleaved"`` means all out attribute will be written to a single buffer.
+        ``"separate"`` means each out attribute will be written separate buffers.
+        Based on these settings the `transform()` method will accept a single
+        buffer or a list of buffer.
     """
 
     __slots__ = (

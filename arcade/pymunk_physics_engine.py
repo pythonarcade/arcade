@@ -282,7 +282,10 @@ class PymunkPhysicsEngine:
             # Custom damping
             if sprite.pymunk.damping is not None:
                 adj_damping = ((sprite.pymunk.damping * 100.0) / 100.0) ** dt
-                # print(f"Custom damping {sprite.pymunk.damping} {my_damping} default to {adj_damping}")
+                # print(
+                #     f"Custom damping {sprite.pymunk.damping} {my_damping} "
+                #     "default to {adj_damping}"
+                # )
                 my_damping = adj_damping
 
             # Custom gravity
@@ -668,9 +671,10 @@ class PymunkPhysicsEngine:
             # Gets the normal vector of the collision. This is the point of collision.
             n = arbiter.contact_point_set.normal
 
-            # Checks if the x component of the gravity is in range of the maximum incline, same for the y component.
-            # This will work, as the normal AND gravity are both points on a circle with a radius of 1.
-            # (both are unit vectors)
+            # Checks if the x component of the gravity is in range of the maximum incline,
+            # same for the y component.
+            # This will work, as the normal AND gravity are both points on a circle with
+            # a radius of 1. (both are unit vectors)
             if (
                 gravity_unit_vector.x + self.maximum_incline_on_ground
                 > n.x

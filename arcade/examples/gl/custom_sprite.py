@@ -87,23 +87,25 @@ class GeoSprites(arcade.Window):
                 // Emit a triangle strip of 4 vertices making a triangle.
                 // The fragment shader will then fill these to triangles in the next stage.
 
+                mat4 mvp = window.projection * window.view;
+
                 // Upper left
-                gl_Position = window.projection * window.view * vec4(vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
+                gl_Position = mvp * vec4(vec2(-hsize.x, hsize.y) + center, 0.0, 1.0);
                 uv = vec2(0, 1);
                 EmitVertex();
 
                 // lower left
-                gl_Position = window.projection * window.view * vec4(vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
+                gl_Position = mvp * vec4(vec2(-hsize.x, -hsize.y) + center, 0.0, 1.0);
                 uv = vec2(0, 0);
                 EmitVertex();
 
                 // upper right
-                gl_Position = window.projection * window.view * vec4(vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
+                gl_Position = mvp * vec4(vec2(hsize.x, hsize.y) + center, 0.0, 1.0);
                 uv = vec2(1, 1);
                 EmitVertex();
 
                 // lower right
-                gl_Position = window.projection * window.view * vec4(vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
+                gl_Position = mvp * vec4(vec2(hsize.x, -hsize.y) + center, 0.0, 1.0);
                 uv = vec2(1, 0);
                 EmitVertex();
 

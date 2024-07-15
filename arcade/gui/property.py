@@ -17,7 +17,8 @@ class _Obs(Generic[P]):
 
     def __init__(self, value: P):
         self.value = value
-        # This will keep any added listener even if it is not referenced anymore and would be garbage collected
+        # This will keep any added listener even if it is not referenced anymore
+        # and would be garbage collected
         self.listeners: set[Callable[[Any, P], Any]] = set()
 
 
@@ -81,7 +82,8 @@ class Property(Generic[P]):
         for listener in obs.listeners:
             try:
                 try:
-                    # FIXME if listener() raises an error, the invalid call will be also shown as an exception
+                    # FIXME if listener() raises an error, the invalid call will be
+                    #       also shown as an exception
                     listener(instance, value)
                 except TypeError:
                     # If the listener does not accept arguments, we call it without it
@@ -96,7 +98,8 @@ class Property(Generic[P]):
     def bind(self, instance, callback):
         obs = self._get_obs(instance)
         # Instance methods are bound methods, which can not be referenced by normal `ref()`
-        # if listeners would be a WeakSet, we would have to add listeners as WeakMethod ourselves into `WeakSet.data`.
+        # if listeners would be a WeakSet, we would have to add listeners as WeakMethod
+        # ourselves into `WeakSet.data`.
         obs.listeners.add(callback)
 
     def unbind(self, instance, callback):

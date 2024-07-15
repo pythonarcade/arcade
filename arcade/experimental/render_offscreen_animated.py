@@ -200,7 +200,9 @@ class MyGame(arcade.Window):
                          0.0,  0.5,  0.0,
                          0.0,  0.0,  1.0
                     );
-                    f_color = texture(tex, (rotate * scale * vec3(v_uv + vec2(-0.5, -0.5), 1.0)).xy * zoom);
+                    f_color = texture(
+                        tex, (rotate * scale * vec3(v_uv + vec2(-0.5, -0.5), 1.0)).xy * zoom
+                    );
                 }
             """,
         )

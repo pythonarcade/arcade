@@ -19,7 +19,8 @@ from arcade.gui.widgets.buttons import UIFlatButton, UITextureButton
 from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
 from arcade.gui.widgets.toggle import UITextureToggle
 
-# Preload textures, because they are mostly used multiple times, so they are not loaded multiple times
+# Preload textures, because they are mostly used multiple times, so they are not
+# loaded multiple times
 ICON_SMALLER = load_texture(":resources:gui_basic_assets/icons/smaller.png")
 ICON_LARGER = load_texture(":resources:gui_basic_assets/icons/larger.png")
 

@@ -47,7 +47,8 @@ class Background:
             self.shader["pos"] = pos
         except KeyError:
             print(
-                "Attempting to set uniform 'pos' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'pos' when the shader does not "
+                "have a uniform with that name."
             )
 
         self._size = size
@@ -55,7 +56,8 @@ class Background:
             self.shader["size"] = size
         except KeyError:
             print(
-                "Attempting to set uniform 'size' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'size' when the shader does not "
+                "have a uniform with that name."
             )
 
         self._blend = 1.0
@@ -63,7 +65,8 @@ class Background:
             self.shader["blend"] = 1.0
         except KeyError:
             print(
-                "Attempting to set uniform 'blend' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'blend' when the shader does not "
+                "have a uniform with that name."
             )
 
         self._color = (
@@ -73,7 +76,8 @@ class Background:
             self.shader["color"] = self._color
         except KeyError:
             print(
-                "Attempting to set uniform 'color' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'color' when the shader does not "
+                "have a uniform with that name."
             )
 
     @staticmethod
@@ -92,8 +96,8 @@ class Background:
         geometry: Optional[gl.Geometry] = None,
     ):
         """
-        This will generate a Background from an input image source. The generated texture is not stored in the
-        texture cache or any texture atlas.
+        This will generate a Background from an input image source.
+        The generated texture is not stored in the texture cache or any texture atlas.
 
         :param tex_src: The image source.
         :param pos: The position of the Background (Bottom Left Corner by default).
@@ -141,7 +145,8 @@ class Background:
             self.shader["size"] = value
         except KeyError:
             print(
-                "Attempting to set uniform 'size' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'size' when the shader does not "
+                "have a uniform with that name."
             )
 
     @property
@@ -155,7 +160,8 @@ class Background:
             self.shader["blend"] = value
         except KeyError:
             print(
-                "Attempting to set uniform 'blend' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'blend' when the shader does not "
+                "have a uniform with that name."
             )
 
     @property
@@ -179,7 +185,8 @@ class Background:
             self.shader["color"] = self._color
         except KeyError:
             print(
-                "Attempting to set uniform 'color' when shader does not have uniform with that name."
+                "Attempting to set uniform 'color' when shader does not "
+                "have uniform with that name."
             )
 
     @property
@@ -193,7 +200,8 @@ class Background:
             self.shader["color"] = self._color
         except KeyError:
             print(
-                "Attempting to set uniform 'color' when shader does not have uniform with that name."
+                "Attempting to set uniform 'color' when shader does not "
+                "have uniform with that name."
             )
 
     def draw(self, shift: tuple[float, float] = (0.0, 0.0)):
@@ -201,14 +209,16 @@ class Background:
             self.shader["pixelTransform"] = self.texture.pixel_transform
         except KeyError:
             print(
-                "Attempting to set uniform 'pixelTransform' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'pixelTransform' when the shader does "
+                "not have a uniform with that name."
             )
 
         try:
             self.shader["pos"] = self.pos[0] + shift[0], self.pos[1] + shift[1]
         except KeyError:
             print(
-                "Attempting to set uniform 'pos' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'pos' when the shader does not have a "
+                "uniform with that name."
             )
 
         self.texture.use(0)

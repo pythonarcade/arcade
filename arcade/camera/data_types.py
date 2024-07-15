@@ -104,9 +104,10 @@ def constrain_camera_data(data: CameraData, forward_priority: bool = False):
 class OrthographicProjectionData:
     """Describes an Orthographic projection.
 
-    This is by default a Left-handed system. with the X axis going from left to right, The Y axis going from
-    bottom to top, and the Z axis going from towards the screen to away from the screen. This can be made
-    right-handed by making the near value greater than the far value.
+    This is by default a Left-handed system. with the X axis going from left to
+    right, The Y axis going from bottom to top, and the Z axis going from towards
+    the screen to away from the screen. This can be made right-handed by making
+    the near value greater than the far value.
     """
 
     __slots__ = ("rect", "near", "far")
@@ -366,7 +367,8 @@ class Projector(Protocol):
         Essentially reverses the effects of the projector.
 
         Args:
-            screen_coordinate: A 2D position in pixels should generally be inside the range of the active viewport.
+            screen_coordinate: A 2D position in pixels should generally be inside
+                the range of the active viewport.
             depth: The depth of the query. This can be though of how far along the forward vector
                    the final coord will be.
         Returns:

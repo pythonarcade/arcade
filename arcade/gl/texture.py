@@ -43,17 +43,18 @@ class Texture2D:
     :param Tuple[int, int] size: The size of the texture
     :param components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
     :param dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-    :param data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
+    :param data: The texture data (optional). Can be bytes or any object supporting
+        the buffer protocol.
     :param filter: The minification/magnification filter of the texture
     :param wrap_x: Wrap mode x
     :param wrap_y: Wrap mode y
     :param target: The texture type (Ignored. Legacy)
     :param depth: creates a depth texture if `True`
     :param samples: Creates a multisampled texture for values > 0.
-                        This value will be clamped between 0 and the max
-                        sample capability reported by the drivers.
+        This value will be clamped between 0 and the max
+        sample capability reported by the drivers.
     :param immutable: Make the storage (not the contents) immutable. This can sometimes be
-                           required when using textures with compute shaders.
+        required when using textures with compute shaders.
     :param internal_format: The internal format of the texture
     """
 
@@ -214,7 +215,8 @@ class Texture2D:
             format_info = pixel_formats[self._dtype]
         except KeyError:
             raise ValueError(
-                f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}"
+                f"dype '{self._dtype}' not support. Supported types are : "
+                f"{tuple(pixel_formats.keys())}"
             )
         _format, _internal_format, self._type, self._component_size = format_info
         if data is not None:
@@ -623,7 +625,8 @@ class Texture2D:
         Read the contents of the texture.
 
         :param level:  The texture level to read
-        :param alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
+        :param alignment: Alignment of the start of each row in memory in number of bytes.
+            Possible values: 1,2,4
         """
         if self._samples > 0:
             raise ValueError("Multisampled textures cannot be read directly")

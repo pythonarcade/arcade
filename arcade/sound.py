@@ -92,8 +92,9 @@ class Sound:
         media.Source._players.append(player)
 
         def _on_player_eos():
-            # Some race condition within Pyglet can cause the player to be removed from this list before
-            # we get to it, so we try and catch the ValueError raised by the removal if it's already been removed.
+            # Some race condition within Pyglet can cause the player to be removed
+            # from this list before we get to it, so we try and catch the ValueError
+            # raised by the removal if it's already been removed.
             try:
                 media.Source._players.remove(player)
             except ValueError:

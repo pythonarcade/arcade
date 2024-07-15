@@ -73,8 +73,9 @@ def check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
             raise TypeError("Parameter 1 is not an instance of a Sprite class.")
         if isinstance(sprite2, SpriteList):
             raise TypeError(
-                "Parameter 2 is a instance of the SpriteList instead of a required Sprite. See if you meant to "
-                "call check_for_collision_with_list instead of check_for_collision."
+                "Parameter 2 is a instance of the SpriteList instead of a required "
+                "Sprite. See if you meant to call check_for_collision_with_list instead "
+                "of check_for_collision."
             )
         elif not isinstance(sprite2, BasicSprite):
             raise TypeError("Parameter 2 is not an instance of a Sprite class.")
@@ -157,7 +158,11 @@ def _get_nearby_sprites(
 
     # Store the number of sprites emitted
     emit_count = ctx.collision_query.primitives_generated
-    # print(emit_count, ctx.collision_query.time_elapsed, ctx.collision_query.time_elapsed / 1_000_000_000)
+    # print(
+    #     emit_count,
+    #     ctx.collision_query.time_elapsed,
+    #     ctx.collision_query.time_elapsed / 1_000_000_000,
+    # )
 
     # If no sprites emitted we can just return an empty list
     if emit_count == 0:
@@ -195,7 +200,8 @@ def check_for_collision_with_list(
     if __debug__:
         if not isinstance(sprite, BasicSprite):
             raise TypeError(
-                f"Parameter 1 is not an instance of the Sprite class, it is an instance of {type(sprite)}."
+                f"Parameter 1 is not an instance of the Sprite class, "
+                f"it is an instance of {type(sprite)}."
             )
         if not isinstance(sprite_list, SpriteList):
             raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
@@ -241,7 +247,8 @@ def check_for_collision_with_lists(
     if __debug__:
         if not isinstance(sprite, BasicSprite):
             raise TypeError(
-                f"Parameter 1 is not an instance of the BasicSprite class, it is an instance of {type(sprite)}."
+                f"Parameter 1 is not an instance of the BasicSprite class, "
+                f"it is an instance of {type(sprite)}."
             )
 
     sprites: List[SpriteType] = []
@@ -322,9 +329,9 @@ def get_sprites_at_exact_point(
 
 def get_sprites_in_rect(rect: Rect, sprite_list: SpriteList[SpriteType]) -> List[SpriteType]:
     """
-    Get a list of sprites in a particular rectangle. This function sees if any sprite overlaps
-    the specified rectangle. If a sprite has a different center_x/center_y but touches the rectangle,
-    this will return that sprite.
+    Get a list of sprites in a particular rectangle. This function sees if any
+    sprite overlaps the specified rectangle. If a sprite has a different
+    center_x/center_y but touches the rectangle, this will return that sprite.
 
     The rectangle is specified as a tuple of (left, right, bottom, top).
 
