@@ -58,8 +58,12 @@ class Game(arcade.Window):
         # Accelerate the sprite downward due to gravity
         self.fixed_sprite.change_y -= GRAVITY * delta_time
 
-        # If the sprite is colliding with the ground then make it 'bounce' by flipping it's velocity
-        if self.fixed_sprite.center_y <= CIRCLE_RADIUS and self.fixed_sprite.change_y <= 0.0:
+        # If the sprite is colliding with the ground then make it 'bounce' by
+        # flipping it's velocity
+        if (
+            self.fixed_sprite.center_y <= CIRCLE_RADIUS
+            and self.fixed_sprite.change_y <= 0.0
+        ):
             self.fixed_sprite.change_y *= -1
 
         # Move the sprite based on its velocity
@@ -70,8 +74,12 @@ class Game(arcade.Window):
         # Accelerate the sprite downward due to gravity
         self.unfixed_sprite.change_y -= GRAVITY * delta_time
 
-        # If the sprite is colliding with the ground then make it 'bounce' by flipping it's velocity
-        if self.unfixed_sprite.center_y <= CIRCLE_RADIUS and self.unfixed_sprite.change_y <= 0.0:
+        # If the sprite is colliding with the ground then make it 'bounce'
+        # by flipping it's velocity
+        if (
+            self.unfixed_sprite.center_y <= CIRCLE_RADIUS
+            and self.unfixed_sprite.change_y <= 0.0
+        ):
             self.unfixed_sprite.change_y *= -1
 
         # Move the sprite based on its velocity

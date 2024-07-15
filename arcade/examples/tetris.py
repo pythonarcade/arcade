@@ -247,8 +247,14 @@ class MyGame(arcade.Window):
                 if grid[row][column]:
                     color = colors[grid[row][column]]
                     # Do the math to figure out where the box is
-                    x = (MARGIN + WIDTH) * (column + offset_x) + MARGIN + WIDTH // 2
-                    y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y) + MARGIN + HEIGHT // 2
+                    x = (
+                        (MARGIN + WIDTH) * (column + offset_x)
+                        + MARGIN + WIDTH // 2
+                    )
+                    y = (
+                        SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y)
+                        + MARGIN + HEIGHT // 2
+                    )
 
                     # Draw the box
                     arcade.draw_rect_filled(arcade.rect.XYWH(x, y, WIDTH, HEIGHT), color)
