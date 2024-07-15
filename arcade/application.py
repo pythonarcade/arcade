@@ -26,9 +26,9 @@ from arcade.utils import is_raspberry_pi
 from arcade.window_commands import get_display_size, set_window
 
 if TYPE_CHECKING:
-    from arcade.start_finish_data import StartFinishRenderData
-    from arcade.camera.default import DefaultProjector
     from arcade.camera import Projector
+    from arcade.camera.default import DefaultProjector
+    from arcade.start_finish_data import StartFinishRenderData
 
 
 LOG = logging.getLogger(__name__)
