@@ -344,6 +344,14 @@ html[data-theme="dark"] .rst-content code.literal {
 
 
 /*
+ * Override grid for field list. We want things stacked vertically.
+ */
+ html.writer-html5 .rst-content dl.citation,html.writer-html5 .rst-content dl.field-list,html.writer-html5 .rst-content dl.footnote {
+    display: block;
+    /* grid-template-columns: auto minmax(80%,95%) */
+}
+
+/*
  * Color fixes for Sphinx-generated class and function info boxes in dark mode.
  * <sphinx_colors>
  */

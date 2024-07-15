@@ -27,6 +27,8 @@ from arcade.window_commands import get_display_size, set_window
 
 if TYPE_CHECKING:
     from arcade.start_finish_data import StartFinishRenderData
+    from arcade.camera.default import DefaultProjector
+    from arcade.camera import Projector
 
 
 LOG = logging.getLogger(__name__)
@@ -106,11 +108,14 @@ class Window(pyglet.window.Window):
         visible (bool): Should the window be visible immediately
         vsync (bool): Wait for vertical screen refresh before swapping buffer
             This can make animations and movement look smoother.
-        gc_mode: Decides how OpenGL objects should be garbage collected
+        gc_mode (str): Decides how OpenGL objects should be garbage collected
             ("context_gc" (default) or "auto")
         center_window (bool): If true, will center the window.
-        enable_polling (bool): Enabled input polling capability. This makes the ``keyboard`` and
-            ``mouse`` attributes available for use.
+        enable_polling (bool): Enabled input polling capability.
+            This makes the :py:attr:`keyboard` and :py:attr:`mouse` attributes available for use.
+
+    Raises:
+        NoOpenGLException: If the system does not support OpenGL requested OpenGL version.
     """
 
     def __init__(
@@ -146,8 +151,8 @@ class Window(pyglet.window.Window):
             gl_version = 3, 1
             gl_api = "gles"
 
-        #: Whether this is a headless window
         self.headless: bool = pyglet.options.get("headless") is True
+        """If True, the window is running in headless mode."""
 
         config = None
         # Attempt to make window with antialiasing
@@ -237,7 +242,6 @@ class Window(pyglet.window.Window):
         # With Pyglet 2.0+, setting this to false will not allow the screen to
         # update. It does, however, cause flickering if creating a window that
         # isn't derived from the Window class.
-        # self.invalid = False
         set_window(self)
 
         self.push_handlers(on_resize=self._on_resize)
@@ -246,12 +250,33 @@ class Window(pyglet.window.Window):
         self._background_color: Color = TRANSPARENT_BLACK
 
         self._current_view: Optional[View] = None
-        self.textbox_time = 0.0
-        self.key: Optional[int] = None
 
         # See if we should center the window
         if center_window:
             self.center_window()
+
+        self.keyboard: Optional[pyglet.window.key.KeyStateHandler] = None
+        """
+        A pyglet KeyStateHandler that can be used to poll the state of the keyboard.
+
+            Example::
+
+                    if self.window.keyboard[key.SPACE]:
+                        print("The space key is currently being held down.")
+        """
+        self.mouse: Optional[pyglet.window.mouse.MouseStateHandler] = None
+        """
+        A pyglet MouseStateHandler that can be used to poll the state of the mouse.
+
+            Example::
+
+                if self.window.mouse.LEFT:
+                    print("The left mouse button is currently being held down.")
+                print(
+                    "The mouse is at position "
+                    f"{self.window.mouse["x"]}, {self.window.mouse["y"]}"
+                )
+        """
 
         if enable_polling:
             self.keyboard = pyglet.window.key.KeyStateHandler()
@@ -355,7 +380,7 @@ class Window(pyglet.window.Window):
         return LBWH(0, 0, self.width, self.height)
 
     def run(self) -> None:
-        """Run the main loop.
+        """Run the event loop.
 
         After the window has been set up, and the event hooks are in place, this
         is usually one of the last commands on the main program. This is a blocking
@@ -612,11 +637,6 @@ class Window(pyglet.window.Window):
                               ctrl, num lock) active during this event.
                               See :ref:`keyboard_modifiers`.
         """
-        try:
-            self.key = symbol
-        except AttributeError:
-            pass
-
         return False
 
     def on_key_release(self, symbol: int, modifiers: int) -> Optional[bool]:
@@ -638,11 +658,6 @@ class Window(pyglet.window.Window):
                               ctrl, num lock) active during this event.
                               See :ref:`keyboard_modifiers`.
         """
-        try:
-            self.key = None
-        except AttributeError:
-            pass
-
         return False
 
     def on_draw(self) -> Optional[bool]:
@@ -753,7 +768,7 @@ class Window(pyglet.window.Window):
         self.ctx.screen.use()
 
     @property
-    def default_camera(self):
+    def default_camera(self) -> DefaultProjector:
         """
         Provides a reference to the default arcade camera.
         Automatically sets projection and view to the size
@@ -762,7 +777,7 @@ class Window(pyglet.window.Window):
         return self._ctx._default_camera
 
     @property
-    def current_camera(self):
+    def current_camera(self) -> Projector:
         """
         Get/Set the current camera. This represents the projector
         currently being used to define the projection and view matrices.
@@ -1244,11 +1259,6 @@ class View:
         :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
-        try:
-            self.key = symbol
-        except AttributeError:
-            pass
-
         return False
 
     def on_key_release(self, _symbol: int, _modifiers: int) -> Optional[bool]:
@@ -1259,11 +1269,6 @@ class View:
         :param _modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                                active during this event. See :ref:`keyboard_modifiers`.
         """
-        try:
-            self.key = None
-        except AttributeError:
-            pass
-
         return False
 
     def on_resize(self, width: int, height: int) -> Optional[bool]:
