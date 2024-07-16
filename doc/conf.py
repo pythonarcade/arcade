@@ -287,7 +287,11 @@ def on_autodoc_process_bases(app, name, obj, options, bases):
 
 
 def setup(app):
+    # Separate stylesheets loosely by category.
+    app.add_css_file("css/colors.css")
+    app.add_css_file("css/layout.css")
     app.add_css_file("css/custom.css")
+
     app.add_js_file("js/custom.js")
 
     # IMPORTANT: We can't use app.add_autodocumenter!

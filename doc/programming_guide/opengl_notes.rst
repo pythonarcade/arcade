@@ -98,7 +98,7 @@ first ``draw()`` call or ``initialize()`` is called.
 Writing Raw Bytes to GL Buffers & Textures
 ------------------------------------------
 
-Many of arcade's OpenGL classes support creation from or writing to
+Many of Arcade's OpenGL classes support creation from or writing to
 any object that supports the
 `buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_.
 The classes most useful to end users are:
@@ -125,7 +125,7 @@ annotations for buffer protocol objects until
 `version 3.12 at the earliest <https://peps.python.org/pep-0688/>`_.
 
 In the meantime, there are workarounds for users who want to write to
-arcade's GL objects from third-party buffer protocol objects:
+Arcade's GL objects from third-party buffer protocol objects:
 
 * use the `typing.cast <https://docs.python.org/3/library/typing.html#typing.cast>`_
   method to convert the object's type for the linter

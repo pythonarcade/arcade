@@ -9,7 +9,7 @@ Vertical synchronization (vsync) is a window option in which the
 video card is prevented from doing anything visible to the display
 memory until after the monitor finishes its current refresh cycle.
 
-To enable vsync in arcade::
+To enable vsync in Arcade::
 
     # On window creation
     arcade.Window(800, 600, "Window Title", vsync=True)
@@ -32,7 +32,7 @@ with your monitor you might experience small hiccups in movement.
 Vertical sync disabled as a default
 ------------------------------------
 
-The arcade window is by default created with vertical sync
+The Arcade window is by default created with vertical sync
 disabled. This is a much safer default for
 a number of reasons.
 

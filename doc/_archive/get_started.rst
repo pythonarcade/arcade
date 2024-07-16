@@ -68,7 +68,7 @@ Arcade Skill Tree
 * Sprite collision detection
 
   * Basic detection -
-    `Learn arcade book on collisions <https://learn.arcade.academy/en/latest/chapters/21_sprites_and_collisions/sprites.html#the-update-method>`_,
+    `Learn Arcade book on collisions <https://learn.arcade.academy/en/latest/chapters/21_sprites_and_collisions/sprites.html#the-update-method>`_,
     :ref:`sprite_collect_coins`
   * Understanding collision detection and spatial hashing: :ref:`collision_detection_performance`
   * Sprite Hit boxes
