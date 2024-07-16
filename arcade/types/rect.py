@@ -444,7 +444,7 @@ class Rect(NamedTuple):
         px, py = point
         return (self.left <= px <= self.right) and (self.bottom <= py <= self.top)
 
-    def point_in_bounce(self, point: Point2) -> bool:
+    def point_in_bounds(self, point: Point2) -> bool:
         """Returns ``True`` if ``point`` is inside this rectangle excluding the boundaries.
 
         :param point: A tuple of :py:class:`int` or :py:class:`float` values.
