@@ -54,10 +54,11 @@ __all__ = [
 def get_screens() -> list:
     """
     Return a list of screens. So for a two-monitor setup, this should return
-    a list of two screens. Can be used with arcade.Window to select which
+    a list of two screens. Can be used with :class:`arcade.Window` to select which
     window we full-screen on.
 
-    :returns: List of screens, one for each monitor.
+    Returns:
+        List of screens, one for each monitor.
     """
     display = pyglet.display.get_display()
     return display.get_screens()
@@ -73,45 +74,55 @@ class NoOpenGLException(Exception):
 
 class Window(pyglet.window.Window):
     """
-    The Window class forms the basis of most advanced games that use Arcade.
-    It represents a window on the screen, and manages events.
+    A window that will appear on your desktop.
+
+    This class is a subclass of Pyglet's Window class with many
+    Arcade-specific features added.
+
+    .. note::
+
+        Arcade currently cannot easily support multiple windows. If you need
+        multiple windows, consider using multiple views or divide the window
+        into sections.
 
     .. _pyglet_pg_window_size_position:
     ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
     .. _pyglet_pg_window_style:
     ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
 
-    Keyword Arguments:
-        width (int): Window width
-        height (int): Window height
-        title (str): The title/caption of the window
-        fullscreen (bool): Should this be full screen?
-        resizable (bool): Can the user resize the window?
-        update_rate (float): How frequently to run the on_update event.
-        draw_rate (float): How frequently to run the on_draw event. (this is the FPS limit)
-        fixed_rate (float): How frequently should the fixed_updates run,
+    Args:
+        width (int, optional): Window width. Defaults to 1280.
+        height (int, optional): Window height. Defaults to 720.
+        title (str, optional): The title/caption of the window
+        fullscreen (bool, optional): Should this be full screen?
+        resizable (bool, optional): Can the user resize the window?
+        update_rate (float, optional): How frequently to run the on_update event.
+        draw_rate (float, optional): How frequently to run the on_draw event. (this is the FPS limit)
+        fixed_rate (float, optional): How frequently should the fixed_updates run,
             fixed updates will always run at this rate.
-        fixed_frame_cap (float): The maximum number of fixed updates that can occur in one update
-            loop.defaults to infinite. If large lag spikes cause your game to freeze, try setting
-            this to a smaller number. This may cause your physics to lag behind temporarily
-        antialiasing (bool): Use multisampling framebuffer (antialiasing)
+        fixed_frame_cap (float, optional): The maximum number of fixed updates that
+            can occur in one update loop.defaults to infinite. If large lag spikes
+            cause your game to freeze, try setting this to a smaller number. This
+            may cause your physics to lag behind temporarily.
+        antialiasing (bool, optional): Use multisampling framebuffer (antialiasing)
         samples (int): Number of samples used in antialiasing (default 4).
             Usually this is 2, 4, 8 or 16.
-        gl_version (tuple[int, int]): What OpenGL version to request. This is ``(3, 3)`` by default
-            and can be overridden when using more advanced OpenGL features.
-        screen: Pass a pyglet :py:class:`~pyglet.display.Screen` to
+        gl_version (tuple[int, int], optional): What OpenGL version to request.
+            This is ``(3, 3)`` by default and can be overridden when using more
+            advanced OpenGL features.
+        screen (optional): Pass a pyglet :py:class:`~pyglet.display.Screen` to
             request the window be placed on it. See `pyglet's window size &
             position guide <pyglet_pg_window_size_position_>`_ to learn more.
-        style: Request a non-default window style, such as borderless.
+        style (optional): Request a non-default window style, such as borderless.
             Some styles only work in certain situations. See `pyglet's guide
             to window style <pyglet_pg_window_style_>`_ to learn more.
-        visible (bool): Should the window be visible immediately
-        vsync (bool): Wait for vertical screen refresh before swapping buffer
+        visible (bool, optional): Should the window be visible immediately
+        vsync (bool, optional): Wait for vertical screen refresh before swapping buffer
             This can make animations and movement look smoother.
-        gc_mode (str): Decides how OpenGL objects should be garbage collected
+        gc_mode (str, optional): Decides how OpenGL objects should be garbage collected
             ("context_gc" (default) or "auto")
-        center_window (bool): If true, will center the window.
-        enable_polling (bool): Enabled input polling capability.
+        center_window (bool, optional): If true, will center the window.
+        enable_polling (bool, optional): Enabled input polling capability.
             This makes the :py:attr:`keyboard` and :py:attr:`mouse` attributes available for use.
 
     Raises:
@@ -300,10 +311,9 @@ class Window(pyglet.window.Window):
     @property
     def current_view(self) -> Optional["View"]:
         """
-        This property returns the current view being shown.
-        To set a different view, call the
-        :py:meth:`arcade.Window.show_view` method.
+        The currently active view.
 
+        To set a different view, call :py:meth:`~arcade.Window.show_view`.
         """
         return self._current_view
 
@@ -312,7 +322,9 @@ class Window(pyglet.window.Window):
         """
         The OpenGL context for this window.
 
-        :type: :py:class:`arcade.ArcadeContext`
+        This context instance provides access to a powerful set of
+        features for lower level OpenGL programming. It is also used
+        internally by Arcade to manage OpenGL resources.
         """
         return self._ctx
 
@@ -323,19 +335,22 @@ class Window(pyglet.window.Window):
         viewport: Optional[tuple[int, int, int, int]] = None,
     ) -> None:
         """Clears the window with the configured background color
-        set through :py:attr:`arcade.Window.background_color`.
+        set through :py:attr:`~arcade.Window.background_color`.
 
-        :param color: (Optional) override the current background color
-            with one of the following:
+        Args:
+            color (optional): Override the current background color
+                with one of the following:
 
-            1. A :py:class:`~arcade.types.Color` instance
-            2. A 3 or 4-length RGB/RGBA :py:class:`tuple` of byte values (0 to 255)
+                1. A :py:class:`~arcade.types.Color` instance
+                2. A 3 or 4-length RGB/RGBA :py:class:`tuple` of byte values (0 to 255)
 
-        :param color_normalized: (Optional) override the current background color
-            using normalized values (0.0 to 1.0). For example, (1.0, 0.0, 0.0, 1.0)
-            making the window contents red.
+            color_normalized (RGBANormalized, optional): override the current background color
+                using normalized values (0.0 to 1.0). For example, (1.0, 0.0, 0.0, 1.0)
+                making the window contents red.
 
-        :param Tuple[int, int, int, int] viewport: The viewport range to clear
+            viewport (Tuple[int, int, int, int], optional): The area of the window to clear.
+                By default, the entire window is cleared.
+                The viewport format is ``(x, y, width, height)``.
         """
         # Use the configured background color if none is provided
         if color is None and color_normalized is None:
@@ -347,7 +362,7 @@ class Window(pyglet.window.Window):
         """
         Get or set the background color for this window.
         This affects what color the window will contain when
-        :py:meth:`~arcade.Window.clear()` is called.
+        :py:meth:`~arcade.Window.clear` is called.
 
         Examples::
 
@@ -361,12 +376,9 @@ class Window(pyglet.window.Window):
             # Set the background color directly from an RGBA tuple
             window.background_color = 255, 0, 0, 255
 
-            # (Discouraged)
             # Set the background color directly from an RGB tuple
             # RGB tuples will assume 255 as the opacity / alpha value
             window.background_color = 255, 0, 0
-
-        :type: Color
         """
         return self._background_color
 
@@ -401,28 +413,37 @@ class Window(pyglet.window.Window):
         fullscreen: bool = True,
         screen: Optional["Window"] = None,
         mode: Optional[ScreenMode] = None,
-        width: Optional[float] = None,
-        height: Optional[float] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
     ) -> None:
         """
-        Set if we are full screen or not.
+        Change the fullscreen status of the window.
 
-        :param fullscreen:
-        :param screen: Which screen should we display on? See :func:`get_screens`
-        :param mode:
-                The screen will be switched to the given mode.  The mode must
+        In most cases you simply want::
+
+            # Enter fullscreen mode
+            window.set_fullscreen(True)
+            # Leave fullscreen mode
+            window.set_fullscreen(False)
+
+        When entering fullscreen mode the window will resize to the screen's
+        resolution. When leaving fullscreen mode the window will resize back
+        to the size it was before entering fullscreen mode.
+
+        Args:
+            fullscreen (bool): Should we enter or leave fullscreen mode?
+            screen (optional): Which screen should we display on? See :func:`get_screens`
+            mode (optional): The screen will be switched to the given mode.  The mode must
                 have been obtained by enumerating `Screen.get_modes`.  If
                 None, an appropriate mode will be selected from the given
                 `width` and `height`.
-        :param width:
-        :param height:
+            width (int, optional): Override the width of the window
+            height (int, optional): Override the height of the window
         """
         super().set_fullscreen(fullscreen, screen, mode, width, height)
 
     def center_window(self) -> None:
-        """
-        Center the window on the screen.
-        """
+        """Center the window on your desktop."""
         # Get the display screen using pyglet
         screen_width, screen_height = get_display_size()
 
@@ -432,16 +453,22 @@ class Window(pyglet.window.Window):
 
     def on_update(self, delta_time: float) -> Optional[bool]:
         """
-        Move everything. Perform collision checks. Do all the game logic here.
+        This method can be implemented and is reserved for game logic.
+        Move sprites. Perform collision checks and other game logic.
+        This method is called every frame before :meth:`on_draw`.
 
-        :param delta_time: Time interval since the last time the function was called.
+        The ``delta_time`` can be used to make sure the game runs at the same
+        speed, no matter the frame rate.
+
+        Args:
+            delta_time (float): Time interval since the last time the function was
+                called in seconds.
         """
         pass
 
     def on_fixed_update(self, delta_time: float):
         """
         Move everything. Perform collision checks. Always
-
         """
         pass
 
@@ -1056,10 +1083,12 @@ class Window(pyglet.window.Window):
 
     @property
     def delta_time(self) -> float:
+        """Shortcut for the global clock's delta_time"""
         return GLOBAL_CLOCK.delta_time
 
     @property
     def fixed_delta_time(self) -> float:
+        """The configured fixed update rate"""
         return self._fixed_rate
 
 
@@ -1071,18 +1100,17 @@ def open_window(
     antialiasing: bool = True,
 ) -> Window:
     """
-    This function opens a window. For ease-of-use we assume there will only be one
-    window, and the programmer does not need to keep a handle to the window.
-    This isn't the best architecture, because the window handle is stored in a global,
-    but it makes things easier for programmers if they don't have to track a window pointer.
+    Shortcut for opening/creating a window with less options.
 
-    :param width: Width of the window.
-    :param height: Height of the window.
-    :param window_title: Title of the window.
-    :param resizable: Whether the user can resize the window.
-    :param antialiasing: Smooth the graphics?
+    For a full set of window options, create a :py:class:`~arcade.Window`
+    instance directly.
 
-    :returns: Handle to window
+    Args:
+        width (int): Width of the window.
+        height (int): Height of the window.
+        window_title (str): Title/caption of the window.
+        resizable (bool): Whether the user can resize the window.
+        antialiasing (bool): Whether to use antialiasing
     """
 
     global _window
@@ -1093,7 +1121,17 @@ def open_window(
 
 class View:
     """
-    Support different views/screens in a window.
+    A view is a way to separate drawing and logic from the window itself.
+    Subclassing the window is very inflexible since you can't easily switch
+    your update and draw logic.
+
+    A view is a way to encapsulate that logic so you can easily switch between
+    different parts of your game. Maybe you have a title screen, a game screen,
+    and a game over screen. Each of these could be a different view.
+
+    Args:
+        window (Window, optional): The window this view is associated with. If None,
+            the current window is used. (Normally you don't need to provide this).
     """
 
     def __init__(self, window: Optional[Window] = None) -> None:
@@ -1103,14 +1141,18 @@ class View:
 
     @property
     def section_manager(self) -> SectionManager:
-        """lazy instantiation of the section manager"""
+        """
+        The section manager for this view.
+
+        If the view has section manager one will be created.
+        """
         if self._section_manager is None:
             self._section_manager = SectionManager(self)
         return self._section_manager
 
     @property
     def has_sections(self) -> bool:
-        """Return if the View has sections"""
+        """Returns ``True`` if this view has sections."""
         if self._section_manager is None:
             return False
         else:
@@ -1125,11 +1167,12 @@ class View:
         """
         Adds a section to the view Section Manager.
 
-        :param section: the section to add to this section manager
-        :param at_index: inserts the section at that index for event capture and
-            update events. If None at the end
-        :param at_draw_order: inserts the section in a specific draw order.
-            Overwrites section.draw_order
+        Args:
+            section (arcade.Section): The section to add to this section manager
+            at_index (int, optional): The index to insert the section for event capture and
+                update events. If ``None`` it will be added at the end.
+            at_draw_order (int, optional): Inserts the section in a specific draw order.
+                Overwrites section.draw_order
         """
         self.section_manager.add_section(section, at_index, at_draw_order)
 
