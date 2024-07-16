@@ -10,6 +10,7 @@ Arcade is built on top of Pyglet and OpenGL.
 
 [<img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Pull Requests Welcome">](http://makeapullrequest.com)
 [<img src="https://img.shields.io/badge/first--timers--only-friendly-blue.svg" alt="First Timers Friendly">](http://www.firsttimersonly.com/)
+[<img src="https://discord.com/api/guilds/458662222697070613/widget.png?style=shield" alt="Discord Shield"/>][Arcade Discord Server]
 
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/arcade)
 
