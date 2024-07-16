@@ -17,8 +17,7 @@ Arcade is built on top of Pyglet and OpenGL.
 
 ![MIT License](https://img.shields.io/pypi/l/arcade)
 
-
-For games made with Arcade, see the [sample games](https://api.arcade.academy/en/latest/sample_games.html).
+For examples of games made Arcade, please see [Games Made with Arcade](https://api.arcade.academy/en/latest/sample_games.html).
 
 ## Stable Documentation
 
