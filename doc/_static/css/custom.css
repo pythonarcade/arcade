@@ -284,3 +284,16 @@ h6 {
 html.writer-html5 .rst-content dl.field-list {
     display: block;
 }
+
+
+/*
+ * Make all tip/hint/warning boxes rounder
+ */
+.rst-content .admonition {
+    border-radius: 4px;
+}
+.rst-content .admonition-title {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding-top: 8px;
+}

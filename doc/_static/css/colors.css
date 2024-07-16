@@ -134,6 +134,43 @@ html[data-theme="dark"] .wy-nav-content-wrap {
 
 
 /*
+ * Mid-article notification box color fixes.
+ */
+/* Tips & Hints */
+html[data-theme="dark"] .rst-content .admonition.hint .admonition-title,
+html[data-theme="dark"] .rst-content .admonition.tip .admonition-title,
+html[data-theme="dark"] .rst-content .admonition.note .admonition-title {
+    background-color: #478352 !important;
+}
+html[data-theme="dark"] .rst-content .admonition.hint,
+html[data-theme="dark"] .rst-content .admonition.tip,
+html[data-theme="dark"] .rst-content .admonition.note {
+    background-color: #304a32 !important;
+    color: #dedede;
+}
+
+/* Warnings */
+html[data-theme="dark"] .rst-content .admonition.attention .admonition-title,
+html[data-theme="dark"] .rst-content .admonition.warning .admonition-title {
+    background-color: #965f36 !important;
+}
+html[data-theme="dark"] .rst-content .admonition.attention,
+html[data-theme="dark"] .rst-content .admonition.warning {
+    background-color: #543f28 !important;
+    color: #dedede;
+}
+
+/* Important */
+html[data-theme="dark"] .rst-content .admonition.important .admonition-title {
+    background-color: #33678a !important;
+}
+html[data-theme="dark"] .rst-content .admonition.important {
+    background-color: #27445a !important;
+    color: #dedede;
+}
+
+
+/*
  * Syntax highlight color fixes for basic code blocks in dark mode.
  * <code_colors>
  */
