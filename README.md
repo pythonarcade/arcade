@@ -6,6 +6,8 @@ It is ideal for beginning programmers, or programmers who want to create
 
 Arcade is built on top of Pyglet and OpenGL.
 
+[Arcade Discord Server]: https://discord.gg/ZjGDqMp
+
 [<img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Pull Requests Welcome">](http://makeapullrequest.com)
 [<img src="https://img.shields.io/badge/first--timers--only-friendly-blue.svg" alt="First Timers Friendly">](http://www.firsttimersonly.com/)
 
@@ -62,6 +64,6 @@ prefer this version if:
 ## Contact the Maintainers
 
 The best way to contact and chat with the maintainers is on the
-[Python Arcade Discord channel](https://discord.gg/ZjGDqMp).
+[Arcade Discord Server][].
 
 paul@cravenfamily.com
