@@ -8,7 +8,9 @@ Arcade is an easy-to-learn Python library for creating 2D video games.
 It is ideal for beginning programmers, or programmers who want to create
 2D games without learning a complex framework.
 
-Arcade is built on top of Pyglet and OpenGL. For examples of games made Arcade,
+[pyglet]: https://github.com/pyglet/pyglet
+
+Arcade is built on top of [pyglet][] and OpenGL. For examples of games made Arcade,
 please see [Games Made with Arcade](https://api.arcade.academy/en/latest/sample_games.html).
 
 [Arcade Discord Server]: https://discord.gg/ZjGDqMp
