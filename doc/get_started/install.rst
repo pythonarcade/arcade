@@ -21,15 +21,15 @@ This will install the latest version of Arcade from `PyPI`_.
 
     pip install arcade
 
-If you are installing arcade directly into your system python meaning
+If you are installing Arcade directly into your system python meaning
 you are not using a virtual environment (or don't know that that is)
-you may need to use the ``--user`` flag to install arcade just for your user.
+you may need to use the ``--user`` flag to install Arcade just for your user.
 
 .. code-block:: bash
 
     pip install arcade --user
 
-Upgrading an existing installation of arcade can be done with the following command
+Upgrading an existing installation of Arcade can be done with the following command
 
 .. code-block:: bash
 
@@ -40,7 +40,7 @@ The ``-I`` flag is used to force reinstall the package completely ignoring what 
 Development version
 -------------------
 
-Pre-releases of arcade may appear on `PyPI`_ using the `dev` suffix.
+Pre-releases of Arcade may appear on `PyPI`_ using the `dev` suffix.
 It's also quick and easy to install the latest development version from github
 
 If you prefer to install from git::
@@ -49,7 +49,7 @@ If you prefer to install from git::
     cd arcade
     pip install -e .
 
-This installs arcade in editable mode so you can make changes to the code and see the changes immediately.
+This installs Arcade in editable mode so you can make changes to the code and see the changes immediately.
 Also consider forking the repository on github installing your fork instead.
 
 Running examples

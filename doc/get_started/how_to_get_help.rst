@@ -26,7 +26,7 @@ information:
    :ref:`error output formatted properly <help-sharing-with-markdown-terminal>`
 #. Your code, with
    :ref:`proper formatting <help-sharing-with-markdown-python>`
-#. Which :ref:`version of arcade <help-basic-environment-info>` you're
+#. Which :ref:`version of Arcade <help-basic-environment-info>` you're
    using and how you installed it
 
 Here's an example as a series of Discord messages (click or tap to
@@ -188,7 +188,7 @@ This section assumes you have
 :ref:`installed arcade <install>` and activated your
 virtual environment.
 
-To get basic information about your current arcade version and
+To get basic information about your current Arcade version and
 environment, run this from within your development environment:
 
 .. code-block:: console
@@ -213,7 +213,7 @@ The output should should look something like this:
 
 
 It's ok if the output looks different from the example above. The second
-half of each line may change to reflect your arcade version, hardware,
+half of each line may change to reflect your Arcade version, hardware,
 and operating system.
 
 You can copy and paste the output into Discord or GitHub using the
@@ -233,4 +233,4 @@ If you want to try fixing the problem yourself before getting help,
 the likeliest explanations for the error message above are:
 
 * Forgetting to activate your virtual environment
-* Not :ref:`installing arcade <install>` successfully
+* Not :ref:`installing Arcade <install>` successfully

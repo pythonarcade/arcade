@@ -40,7 +40,7 @@ class VideoPlayer:
         Call this in `on_draw`.
 
         :param size: Pass None as one of the elements if you want to use the
-        dimension(width, height) attribute.
+            dimension(width, height) attribute.
         """
         if size and len(size) == 2:
             self._width = size[0] or self.width

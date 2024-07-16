@@ -1,5 +1,5 @@
 
-Games made with arcade
+Games made with Arcade
 ======================
 
 .. toctree::

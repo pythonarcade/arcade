@@ -28,7 +28,7 @@ This can be done in the following ways:
 
 .. code:: py
 
-    # Before arcade is imported
+    # Before Arcade is imported
     import os
     os.environ["ARCADE_HEADLESS"] = "True"
 

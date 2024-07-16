@@ -5,7 +5,7 @@ Textures
 Introduction
 ------------
 
-The :py:class:`arcade.Texture` type is how arcade normally interacts with
+The :py:class:`arcade.Texture` type is how Arcade normally interacts with
 images either loaded from disk or created manually. This is basically a
 wrapper for PIL/Pillow images including detection for hit box data
 using pymunk depending on the selected hit box algorithm. These texture
@@ -29,7 +29,7 @@ trouble. When loading textures the absolute path to the file is used
 as part of the name including vertical/horizontal/diagonal, size and
 other parameter for a truly unique name.
 
-When loading texture through arcade the name of the texture will be
+When loading texture through Arcade the name of the texture will be
 the absolute path to the image and various parameters such as size,
 flipping, xy position etc.
 
