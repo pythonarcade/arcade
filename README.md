@@ -1,5 +1,9 @@
 # Welcome to The Arcade Library!
 
+![MIT License](https://img.shields.io/pypi/l/arcade)
+[<img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Pull Requests Welcome">](http://makeapullrequest.com)
+[<img src="https://img.shields.io/badge/first--timers--only-friendly-blue.svg" alt="First Timers Friendly">](http://www.firsttimersonly.com/)
+
 Arcade is an easy-to-learn Python library for creating 2D video games.
 It is ideal for beginning programmers, or programmers who want to create
 2D games without learning a complex framework.
@@ -8,14 +12,9 @@ Arcade is built on top of Pyglet and OpenGL.
 
 [Arcade Discord Server]: https://discord.gg/ZjGDqMp
 
-[<img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Pull Requests Welcome">](http://makeapullrequest.com)
-[<img src="https://img.shields.io/badge/first--timers--only-friendly-blue.svg" alt="First Timers Friendly">](http://www.firsttimersonly.com/)
-
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/arcade)
-
 ![GitHub Commit Activity](https://img.shields.io/github/commit-activity/m/pythonarcade/arcade)
 
-![MIT License](https://img.shields.io/pypi/l/arcade)
 
 For examples of games made Arcade, please see [Games Made with Arcade](https://api.arcade.academy/en/latest/sample_games.html).
 
