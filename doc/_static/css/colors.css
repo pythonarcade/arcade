@@ -29,6 +29,21 @@ html[data-theme="dark"] label {
 
 
 /*
+ * Dark mode scrollbar color fixes, mostly for Chrome-based browsers.
+ */
+html[data-theme="dark"] * {
+  scrollbar-color: #424242 #242424;
+}
+html[data-theme="dark"] > *::-webkit-scrollbar-track {
+  background: #242424;
+}
+html[data-theme="dark"] > *::-webkit-scrollbar-thumb {
+  background-color: #424242;
+  border: 1px none #000000;
+}
+
+
+/*
  * Sidebar and top left logo area.
  */
 .wy-side-nav-search,
