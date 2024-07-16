@@ -97,7 +97,8 @@ class Window(pyglet.window.Window):
         fullscreen (bool, optional): Should this be full screen?
         resizable (bool, optional): Can the user resize the window?
         update_rate (float, optional): How frequently to run the on_update event.
-        draw_rate (float, optional): How frequently to run the on_draw event. (this is the FPS limit)
+        draw_rate (float, optional): How frequently to run the on_draw event.
+            (this is the FPS limit)
         fixed_rate (float, optional): How frequently should the fixed_updates run,
             fixed updates will always run at this rate.
         fixed_frame_cap (float, optional): The maximum number of fixed updates that
@@ -468,7 +469,12 @@ class Window(pyglet.window.Window):
 
     def on_fixed_update(self, delta_time: float):
         """
-        Move everything. Perform collision checks. Always
+        Called for each fixed update. This is useful for physics engines
+        and other systems that should update at a constant rate.
+
+        Args:
+            delta_time (float): Time interval since the last time the function was
+                called in seconds.
         """
         pass
 
@@ -479,6 +485,10 @@ class Window(pyglet.window.Window):
 
         It also accumulates time and runs fixed updates until the Fixed Clock catches
         up to the global clock
+
+        Args:
+            delta_time (float): Time interval since the last time the function was
+                called in seconds.
         """
         GLOBAL_CLOCK.tick(delta_time)
         fixed_count = 0
@@ -493,7 +503,10 @@ class Window(pyglet.window.Window):
     def set_update_rate(self, rate: float) -> None:
         """
         Set how often the on_update function should be dispatched.
-        For example, self.set_update_rate(1 / 60) will set the update rate to 60 times per second.
+        For example::
+
+            # Set the update rate to 60 times per second.
+            self.set_update_rate(1 / 60)
 
         :param rate: Update frequency in seconds
         """
@@ -504,7 +517,10 @@ class Window(pyglet.window.Window):
     def set_draw_rate(self, rate: float) -> None:
         """
         Set how often the on_draw function should be run.
-        For example, set.set_draw_rate(1 / 60) will set the draw rate to 60 frames per second.
+        For example::
+
+            # Set the draw rate to 60 frames per second.
+            set.set_draw_rate(1 / 60)
         """
         self._draw_rate = rate
         pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
@@ -512,14 +528,15 @@ class Window(pyglet.window.Window):
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> Optional[bool]:
         """
-        Called repeatedly while the mouse is moving over the window.
+        Called repeatedly while the mouse is moving in the window area.
 
         Override this function to respond to changes in mouse position.
 
-        :param x: x position of mouse within the window in pixels
-        :param y: y position of mouse within the window in pixels
-        :param dx: Change in x since the last time this method was called
-        :param dy: Change in y since the last time this method was called
+        Args:
+            x (int): x position of mouse within the window in pixels
+            y (int): y position of mouse within the window in pixels
+            dx (int): Change in x since the last time this method was called
+            dy (int): Change in y since the last time this method was called
         """
         pass
 
@@ -531,19 +548,18 @@ class Window(pyglet.window.Window):
         how to do this, see arcade's built-in :ref:`aiming and shooting
         bullets <sprite_bullets_aimed>` demo.
 
-        .. seealso:: :meth:`~.Window.on_mouse_release`
+        Args:
+            x (int): x position of the mouse
+            y (int): y position of the mouse
+            button (int): What button was pressed.
+                This will always be one of the following:
 
-        :param x: x position of the mouse
-        :param y: y position of the mouse
-        :param button: What button was pressed. This will always be
-                           one of the following:
+                - ``arcade.MOUSE_BUTTON_LEFT``
+                - ``arcade.MOUSE_BUTTON_RIGHT``
+                - ``arcade.MOUSE_BUTTON_MIDDLE``
 
-                           * ``arcade.MOUSE_BUTTON_LEFT``
-                           * ``arcade.MOUSE_BUTTON_RIGHT``
-                           * ``arcade.MOUSE_BUTTON_MIDDLE``
-
-        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              active during this event. See :ref:`keyboard_modifiers`.
+            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                      active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -555,12 +571,13 @@ class Window(pyglet.window.Window):
 
         Override this function to handle dragging.
 
-        :param x: x position of mouse
-        :param y: y position of mouse
-        :param dx: Change in x since the last time this method was called
-        :param dy: Change in y since the last time this method was called
-        :param buttons: Which button is pressed
-        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+        Args:
+            x (int): x position of mouse
+            y (int): y position of mouse
+            dx (int): Change in x since the last time this method was called
+            dy (int): Change in y since the last time this method was called
+            buttons (int): Which button is pressed
+            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                               active during this event. See :ref:`keyboard_modifiers`.
         """
         return self.on_mouse_motion(x, y, dx, dy)
@@ -573,13 +590,17 @@ class Window(pyglet.window.Window):
         may be useful when you want to use the duration of a mouse click
         to affect gameplay.
 
-        :param x: x position of mouse
-        :param y: y position of mouse
-        :param button: What button was hit. One of:
-                           arcade.MOUSE_BUTTON_LEFT, arcade.MOUSE_BUTTON_RIGHT,
-                           arcade.MOUSE_BUTTON_MIDDLE
-        :param modifiers: Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              active during this event. See :ref:`keyboard_modifiers`.
+        Args:
+            x (int): x position of mouse
+            y (int): y position of mouse
+            button (int): What button was hit. One of:
+
+                - ``arcade.MOUSE_BUTTON_LEFT``
+                - ``arcade.MOUSE_BUTTON_RIGHT``
+                - ``arcade.MOUSE_BUTTON_MIDDLE``
+
+            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                active during this event. See :ref:`keyboard_modifiers`.
         """
         return False
 
@@ -592,25 +613,26 @@ class Window(pyglet.window.Window):
         the units are unstandardized. How many scroll steps you receive
         may vary wildly between computers depending a number of factors,
         including system settings and the input devices used (i.e. mouse
-        scrollwheel, touchpad, etc).
+        scrollwheel, touch pad, etc).
 
         .. warning:: Not all users can scroll easily!
 
-                     Only some input devices support horizontal
-                     scrolling. Standard vertical scrolling is common,
-                     but some laptop touchpads are hard to use.
+                 Only some input devices support horizontal
+                 scrolling. Standard vertical scrolling is common,
+                 but some laptop touch pads are hard to use.
 
-                     This means you should be careful about how you use
-                     scrolling. Consider making it optional
-                     to maximize the number of people who can play your
-                     game!
+                 This means you should be careful about how you use
+                 scrolling. Consider making it optional
+                 to maximize the number of people who can play your
+                 game!
 
-        :param x: x position of mouse
-        :param y: y position of mouse
-        :param scroll_x: number of steps scrolled horizontally
-                             since the last call of this function
-        :param scroll_y: number of steps scrolled vertically since
-                             the last call of this function
+        Args:
+            x (int): x position of mouse
+            y (int): y position of mouse
+            scroll_x (int): number of steps scrolled horizontally
+                     since the last call of this function
+            scroll_y (int): number of steps scrolled vertically since
+                     the last call of this function
         """
         return False
 
@@ -636,17 +658,26 @@ class Window(pyglet.window.Window):
 
                  It may be possible to use system icons representing
                  cursor interaction states such as hourglasses or resize
-                 arrows by using features ``arcade.Window`` inherits
+                 arrows by using features :class:``~arcade.Window`` inherits
                  from the underlying pyglet window class. See the
                  `pyglet overview on cursors
                  <https://pyglet.readthedocs.io/en/master/programming_guide/mouse.html#changing-the-mouse-cursor>`_
                  for more information.
 
-        :param visible: Whether to hide the system mouse cursor
+        Args:
+            visible (bool): Whether to hide the system mouse cursor
         """
         super().set_mouse_visible(visible)
 
     def on_action(self, action_name: str, state) -> None:
+        """
+        Called when an action is dispatched.
+        This is related to the input manager.
+
+        Args:
+            action_name (str): The name of the action
+            state: The state of the action
+        """
         pass
 
     def on_key_press(self, symbol: int, modifiers: int) -> Optional[bool]:
@@ -659,10 +690,11 @@ class Window(pyglet.window.Window):
                  gameplay, you also need to override
                  :meth:`~.Window.on_key_release`.
 
-        :param symbol: Key that was just pushed down
-        :param modifiers: Bitwise 'and' of all modifiers (shift,
-                              ctrl, num lock) active during this event.
-                              See :ref:`keyboard_modifiers`.
+        Args:
+            symbol (int): Key that was just pushed down
+            modifiers (int): Bitwise 'and' of all modifiers (shift,
+                      ctrl, num lock) active during this event.
+                      See :ref:`keyboard_modifiers`.
         """
         return False
 
@@ -680,16 +712,24 @@ class Window(pyglet.window.Window):
           how long a key was pressed
         * Showing which keys are currently pressed down
 
-        :param symbol: Key that was just released
-        :param modifiers: Bitwise 'and' of all modifiers (shift,
-                              ctrl, num lock) active during this event.
-                              See :ref:`keyboard_modifiers`.
+        Args:
+            symbol (int): Key that was released
+            modifiers (int): Bitwise 'and' of all modifiers (shift,
+                      ctrl, num lock) active during this event.
+                      See :ref:`keyboard_modifiers`.
         """
         return False
 
     def on_draw(self) -> Optional[bool]:
         """
         Override this function to add your custom drawing code.
+
+        THis function is usually called 60 times a second unless
+        another update rate has been set. Should be called after
+        :meth:`~arcade.Window.on_update`.
+
+        This function should normally start with a call to
+        :meth:`~arcade.Window.clear` to clear the screen.
         """
         if self._start_finish_render_data:
             self.clear()
@@ -698,7 +738,7 @@ class Window(pyglet.window.Window):
 
         return False
 
-    def _on_resize(self, width: int, height: int):
+    def _on_resize(self, width: int, height: int) -> Optional[bool]:
         """The internal method called when the window is resized.
 
         The purpose of this method is mainly setting the viewport
@@ -706,10 +746,10 @@ class Window(pyglet.window.Window):
         :meth:`~arcade.Window.on_resize` instead. This method is
         called first.
 
-        :param width: New width
-        :param height: New height
+        Args:
+            width (int): New width of the window
+            height (int): New height of the window
         """
-
         # Retain viewport
         self.viewport = (0, 0, width, height)
 
@@ -723,91 +763,99 @@ class Window(pyglet.window.Window):
         to the new size of the window so there is no need to call
         ```super().on_resize(width, height)```.
 
-        :param width: New width
-        :param height: New height
+        Args:
+            width (int): New width of the window
+            height (int): New height of the window
         """
         pass
 
-    def set_min_size(self, width: int, height: int) -> None:
-        """Wrap the Pyglet window call to set minimum size
+    def set_minimum_size(self, width: int, height: int) -> None:
+        """Set the minimum size of the window.
 
-        :param width: width in pixels.
-        :param height: height in pixels.
+        This will limit how small the window can be resized.
+
+        Args:
+            width (int): Minimum width
+            height (int): Minimum height
+        Raises:
+            ValueError: If the window is not resizable
         """
-
         if self._resizable:
             super().set_minimum_size(width, height)
         else:
             raise ValueError("Cannot set min size on non-resizable window")
 
-    def set_max_size(self, width: int, height: int) -> None:
-        """Wrap the Pyglet window call to set maximum size
+    def set_maximum_size(self, width: int, height: int) -> None:
+        """Sets the maximum size of the window.
 
-        :param width: width in pixels.
-        :param height: height in pixels.
-        :Raises ValueError:
+        This will limit how large the window can be resized.
 
+        Args:
+            width (int): Maximum width
+            height (int): Maximum height
+        Raises:
+            ValueError: If the window is not resizable
         """
-
         if self._resizable:
             super().set_maximum_size(width, height)
         else:
             raise ValueError("Cannot set max size on non-resizable window")
 
     def set_size(self, width: int, height: int) -> None:
-        """
-        Ignore the resizable flag and set the size
+        """Resize the window.
 
-        :param width:
-        :param height:
+        Args:
+            width (int): New width of the window
+            height (int): New height of the window
         """
-
         super().set_size(width, height)
 
     def get_size(self) -> tuple[int, int]:
         """
         Get the size of the window.
-
-        :returns: (width, height)
         """
-
         return super().get_size()
 
     def get_location(self) -> tuple[int, int]:
         """
         Return the X/Y coordinates of the window
-
-        :returns: x, y of window location
         """
-
         return super().get_location()
 
     def set_visible(self, visible: bool = True):
-        """
-        Set if the window is visible or not. Normally, a program's window is visible.
+        """Set if the window should be visible or not.
 
-        :param visible:
+        Args:
+            visible (bool): Should the window be visible?
         """
         super().set_visible(visible)
 
     def use(self) -> None:
-        """Bind the window's framebuffer for rendering commands"""
+        """Make the window the target for drawing.
+
+        The window will always be the target for drawing unless
+        offscreen framebuffers are used in the application.
+
+        This simply binds the window's framebuffer.
+        """
         self.ctx.screen.use()
 
     @property
     def default_camera(self) -> DefaultProjector:
-        """
-        Provides a reference to the default arcade camera.
-        Automatically sets projection and view to the size
-        of the screen.
+        """The default camera for the window.
+
+        This is an extremely simple camera simply responsible for
+        maintaining the default projection and viewport.
         """
         return self._ctx._default_camera
 
     @property
     def current_camera(self) -> Projector:
         """
-        Get/Set the current camera. This represents the projector
-        currently being used to define the projection and view matrices.
+        Get or set the current camera.
+
+        This represents the projector currently being used to define
+        the projection and view matrices.
         """
         return self._ctx.current_camera
 
@@ -853,16 +901,17 @@ class Window(pyglet.window.Window):
 
     def show_view(self, new_view: "View") -> None:
         """
-        Select the view to show in the next frame.
-        This is not a blocking call showing the view.
-        Your code will continue to run after this call
-        and the view will appear in the next dispatch
-        of ``on_update``/``on_draw```.
+        Set the currently active view. This will hide the current view
+        and show the new view in the next frame.
+
+        This is not a blocking call. It will simply point to the new view
+        and return immediately.
 
         Calling this function is the same as setting the
         :py:attr:`arcade.Window.current_view` attribute.
 
-        :param new_view: View to show
+        Args:
+            new_view (View): The view to activate.
         """
         if not isinstance(new_view, View):
             raise TypeError(
@@ -927,11 +976,10 @@ class Window(pyglet.window.Window):
 
     def hide_view(self) -> None:
         """
-        Hide the currently active view (if any) returning us
-        back to ``on_draw`` and ``on_update`` functions in the window.
+        Hide the currently active view (if any).
 
-        This is not necessary to call if you are switching views.
-        Simply call ``show_view`` again.
+        This is only necessary if you don't want an active view
+        falling back to the window's event handlers.
         """
         if self._current_view is None:
             return
@@ -950,14 +998,20 @@ class Window(pyglet.window.Window):
         super()._recreate(changes)
 
     def flip(self) -> None:
-        """
-        Window framebuffers normally have a back and front buffer.
-        This method makes the back buffer visible and hides the front buffer.
-        A frame is rendered into the back buffer, so this method displays
-        the frame we currently worked on.
+        """Present the rendered content to the screen.
 
-        This method also garbage collect OpenGL resources
-        before swapping the buffers.
+        This is not necessary to call when using the standard standard
+        event look. The event loop will automatically call this method
+        after ``on_draw`` has been called.
+
+        Window framebuffers normally have a back and front buffer meaning
+        they are "double buffered". Content is always drawn into the back
+        buffer while the front buffer contains the previous frame.
+        Swapping the buffers makes the back buffer visible and hides the
+        front buffer. This is done to prevent flickering and tearing.
+
+        This method also garbage collects OpenGL resources if there are
+        any dead resources to collect.
         """
         # Garbage collect OpenGL resources
         num_collected = self.ctx.gc()
@@ -966,20 +1020,15 @@ class Window(pyglet.window.Window):
         super().flip()
 
     def switch_to(self) -> None:
-        """Switch the this window."""
+        """Switch the this window context.
+
+        This is normally only used in multi-window applications.
+        """
         super().switch_to()
 
     def set_caption(self, caption) -> None:
-        """Set the caption for the window."""
+        """Set the caption/title of the window."""
         super().set_caption(caption)
-
-    def set_minimum_size(self, width: int, height: int) -> None:
-        """Set smallest window size."""
-        super().set_minimum_size(width, height)
-
-    def set_maximum_size(self, width, height) -> None:
-        """Set largest window size."""
-        super().set_maximum_size(width, height)
 
     def set_location(self, x, y) -> None:
         """Set location of the window."""
