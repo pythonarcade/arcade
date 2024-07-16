@@ -269,3 +269,17 @@ html[data-theme="dark"] .rst-content .viewcode-link {
     opacity: 0.3;
 }
 /* </sphinx_colors> */
+
+
+/*
+ * Footer prev/next buttons
+ */
+html[data-theme="dark"] .rst-footer-buttons .btn-neutral {
+    color: #c1c1c1 !important;
+    background-color: #1a1a1a !important;
+}
+html[data-theme="dark"] .rst-footer-buttons .btn-neutral:hover {
+    color: var(--color-emphasis) !important;
+    background-color: #1a1a1a !important;
+}
+
