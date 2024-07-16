@@ -24,8 +24,7 @@ For games made with Arcade, see  https://api.arcade.academy/en/latest/sample_gam
 
 [Arcade Academy - Learn Python]: https://learn.arcade.academy
 
-The latest stable release is best for learning to program by
-reading [Arcade Academy - Learn Python][].
+The current stable release is best for following [Arcade Academy - Learn Python][].
 
 Read the stable documentation at https://api.arcade.academy or use these quick links:
 
