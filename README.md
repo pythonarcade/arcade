@@ -11,7 +11,7 @@ It is ideal for beginning programmers, or programmers who want to create
 [pyglet]: https://github.com/pyglet/pyglet
 [Games Made with Arcade]: https://api.arcade.academy/en/latest/sample_games.html
 Arcade is built on top of [pyglet][] and OpenGL. See [Games Made with Arcade][]
-for game jam entries and more.
+for example game jam entries and more.
 
 [Arcade Discord Server]: https://discord.gg/ZjGDqMp
 
