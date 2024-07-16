@@ -611,8 +611,19 @@ h4,
 h5,
 h6,
 legend {
-  font-weight: 500;
   font-family:"Josefin Sans", Arial, Helvetica, sans-serif;
+}
+
+.rst-content h1 {
+    font-weight: 600;
+}
+
+.rst-content h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 500;
 }
 
 .icon-home {
