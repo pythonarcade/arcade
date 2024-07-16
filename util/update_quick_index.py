@@ -345,10 +345,14 @@ API_FILE_TO_TITLE_AND_MODULES = {
        "title": "Future Features",
        "use_declarations_in": [
            "arcade.future.texture_render_target",
-           "arcade.future.input",
-           "arcade.future.background",
-           "arcade.future.light",
-           "arcade.future.video"
+           "arcade.future.input.inputs",
+           "arcade.future.input.manager",
+           "arcade.future.input.mapping",
+           "arcade.future.background.background_texture",
+           "arcade.future.background.background",
+           "arcade.future.background.groups",
+           "arcade.future.light.lights",
+           "arcade.future.video.video_player"
        ]
     }
 }
