@@ -39,8 +39,7 @@ Read the stable documentation at https://api.arcade.academy or use these quick l
 |--------------------|------------------|-------------------|----------------|-------------------|
 
 > [!NOTE]
-> This version does will not add support for Python 3.12. See the Development Preview below.
-
+> This version does not support Python 3.12. See the Development Previews section below.
 
 ## Development Previews
 
