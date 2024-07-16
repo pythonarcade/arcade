@@ -255,6 +255,7 @@ h5,
 h6,
 legend {
   font-family:"Josefin Sans", Arial, Helvetica, sans-serif;
+  letter-spacing: -0.5px;
 }
 
 .rst-content h1 {
@@ -269,8 +270,9 @@ h6 {
     font-weight: 500;
 }
 
-.icon-home {
+.icon-home, .wy-nav-top a {
   font-weight: 500;
   font-family:"Josefin Sans", Arial, Helvetica, sans-serif;
   font-size: larger;
+  letter-spacing: -0.5px;
 }
