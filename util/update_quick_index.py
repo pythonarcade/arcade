@@ -340,6 +340,16 @@ API_FILE_TO_TITLE_AND_MODULES = {
            "arcade.camera.default",
            "arcade.camera.static"
        ]
+    },
+    "future.rst": {
+       "title": "Future Features",
+       "use_declarations_in": [
+           "arcade.future.texture_render_target",
+           "arcade.future.input",
+           "arcade.future.background",
+           "arcade.future.light",
+           "arcade.future.video"
+       ]
     }
 }
 
