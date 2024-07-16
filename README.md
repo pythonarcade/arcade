@@ -42,7 +42,7 @@ Read the stable documentation at https://api.arcade.academy or use these quick l
 
 ## Development Previews
 
-To help test the work-in-progress 3.0 release, see https://api.arcade.academy/en/development/
+To help test Arcade's work-in-progress 3.0 version, see https://api.arcade.academy/en/development/
 
 This updates every time this repository's `development` branch is updated. You may
 prefer this version if:
