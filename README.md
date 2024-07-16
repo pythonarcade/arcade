@@ -24,7 +24,7 @@ Read the stable documentation at https://api.arcade.academy.
 
 ## Development Previews
 
-Preview the unfinished next release at https://api.arcade.academy/en/development/.
+Preview the next release at https://api.arcade.academy/en/development/.
 
 ## Citation
 
