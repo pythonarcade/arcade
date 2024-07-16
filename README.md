@@ -33,7 +33,7 @@ or the following quick links:
 * Release notes: https://api.arcade.academy/en/latest/development/release_notes.html
 
 > [!NOTE]
-> This version does will not add support for Python 3.12. See the Development Preview below
+> This version does will not add support for Python 3.12. See the Development Preview below.
 
 
 ## Development Previews
