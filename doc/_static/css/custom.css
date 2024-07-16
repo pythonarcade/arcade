@@ -276,3 +276,11 @@ h6 {
   font-size: larger;
   letter-spacing: -0.5px;
 }
+
+
+/*
+ * Override grid for field list. We want things stacked vertically.
+ */
+html.writer-html5 .rst-content dl.field-list {
+    display: block;
+}
