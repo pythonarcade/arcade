@@ -48,7 +48,7 @@ prefer this version if:
 
 * You are familiar with Python and want the latest features
 * You want to the work of updating when Arcade 3.0 releases
-* You have no choice but to use Python 3.12
+* You need to use Python 3.12
 
 ## Citation
 
