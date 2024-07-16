@@ -15,18 +15,35 @@ Arcade is built on top of Pyglet and OpenGL.
 
 ![MIT License](https://img.shields.io/pypi/l/arcade)
 
-## Documentation
 
-* For full documentation see https://api.arcade.academy
-* For installation: https://api.arcade.academy/en/latest/install/index.html
+## Stable Documentation
+
+The latest stable release is best for following the paired Python tutorial.
+
+To read the stable documentation, see latest release at https://api.arcade.academy
+or the following quick links:
+
+* To install, see: https://api.arcade.academy/en/latest/install/index.html
 * For example code that uses the Arcade library see: https://api.arcade.academy/en/latest/examples/index.html
 * For API documentation see: https://api.arcade.academy/en/latest/quick_index.html
 * Learn Arcade AND how to program: https://learn.arcade.academy
+* For games made with the stable version, see  https://api.arcade.academy/en/latest/sample_games.html
 * Release notes: https://api.arcade.academy/en/latest/development/release_notes.html
 
-## Games Using Arcade
+> [!NOTE]
+> This version does will not add support for Python 3.12. See the Development Preview below
 
-See: https://api.arcade.academy/en/latest/sample_games.html
+
+## Development Previews
+
+To help test the work-in-progress 3.0 release, see https://api.arcade.academy/en/development/
+
+This updates every time this repository's `development` branch is updated. You may
+prefer this version if:
+
+* You are familiar with Python and want the latest features
+* You want to the work of updating when Arcade 3.0 releases
+* You have no choice but to use Python 3.12
 
 ## Citation
 
