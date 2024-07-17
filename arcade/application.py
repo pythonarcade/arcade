@@ -779,13 +779,8 @@ class Window(pyglet.window.Window):
         Args:
             width (int): Minimum width
             height (int): Minimum height
-        Raises:
-            ValueError: If the window is not resizable
         """
-        if self._resizable:
-            super().set_minimum_size(width, height)
-        else:
-            raise ValueError("Cannot set min size on non-resizable window")
+        super().set_minimum_size(width, height)
 
     def set_maximum_size(self, width: int, height: int) -> None:
         """
@@ -796,13 +791,8 @@ class Window(pyglet.window.Window):
         Args:
             width (int): Maximum width
             height (int): Maximum height
-        Raises:
-            ValueError: If the window is not resizable
         """
-        if self._resizable:
-            super().set_maximum_size(width, height)
-        else:
-            raise ValueError("Cannot set max size on non-resizable window")
+        super().set_maximum_size(width, height)
 
     def set_size(self, width: int, height: int) -> None:
         """
@@ -1000,11 +990,11 @@ class Window(pyglet.window.Window):
         self.remove_handlers(self._current_view)
         self._current_view = None
 
-    def _create(self) -> None:
-        super()._create()
+    # def _create(self) -> None:
+    #     super()._create()
 
-    def _recreate(self, changes) -> None:
-        super()._recreate(changes)
+    # def _recreate(self, changes) -> None:
+    #     super()._recreate(changes)
 
     def flip(self) -> None:
         """
