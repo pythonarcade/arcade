@@ -32,20 +32,21 @@ class PerfGraph(arcade.Sprite):
     automatically redrawn to this internal
     :class:`Texture <arcade.Texture>` every ``update_rate`` seconds.
 
-    :param width: The width of the chart texture in pixels
-    :param height: The height of the chart texture in pixels
-    :param graph_data: The pyglet event handler or statistic to track
-    :param update_rate: How often the graph updates, in seconds
-    :param background_color: The background color of the chart
-    :param data_line_color: Color of the line tracking drawn
-    :param axis_color: The color to draw the x & y axes in
-    :param font_color: The color of the label font
-    :param font_size: The size of the label font in points
-    :param y_axis_num_lines: How many grid lines should be used to
-                             divide the y scale of the graph.
-    :param view_y_scale_step: The graph's view area will be scaled to a
-                              multiple of this value to fit to the data
-                              currently displayed.
+    Args:
+        width (int): The width of the chart texture in pixels
+        height (int): The height of the chart texture in pixels
+        graph_data (str): The pyglet event handler or statistic to track
+        update_rate (float): How often the graph updates, in seconds
+        background_color (RGBA255): The background color of the chart
+        data_line_color (RGBA255): Color of the line tracking drawn
+        axis_color (RGBA255): The color to draw the x & y axes in
+        font_color (RGBA255): The color of the label font
+        font_size (int): The size of the label font in points
+        y_axis_num_lines (int): How many grid lines should be used to
+                                divide the y scale of the graph.
+        view_y_scale_step (float): The graph's view area will be scaled to a
+                                   multiple of this value to fit to the data
+                                   currently displayed.
     """
 
     def __init__(
@@ -63,7 +64,6 @@ class PerfGraph(arcade.Sprite):
         y_axis_num_lines: int = 4,
         view_y_scale_step: float = 20.0,
     ):
-
         unique_id = str(random.random())
         self.minimap_texture = arcade.Texture.create_empty(unique_id, (width, height))
         super().__init__(self.minimap_texture)
@@ -164,6 +164,7 @@ class PerfGraph(arcade.Sprite):
 
     @property
     def background_color(self) -> Color:
+        """Get or set the background color of the graph."""
         return self._background_color
 
     @background_color.setter
@@ -172,6 +173,7 @@ class PerfGraph(arcade.Sprite):
 
     @property
     def grid_color(self) -> Color:
+        """Get or set the color of the grid lines."""
         return self._grid_color
 
     @grid_color.setter
@@ -182,6 +184,7 @@ class PerfGraph(arcade.Sprite):
 
     @property
     def axis_color(self) -> Color:
+        """Get or set the color of the x and y axes."""
         return self._axis_color
 
     @axis_color.setter
@@ -192,6 +195,7 @@ class PerfGraph(arcade.Sprite):
 
     @property
     def font_size(self) -> int:
+        """Get or set the font size of the labels."""
         return self._font_size
 
     @font_size.setter
@@ -202,6 +206,7 @@ class PerfGraph(arcade.Sprite):
 
     @property
     def font_color(self) -> Color:
+        """Get or set the font color of the labels."""
         return self._font_color
 
     @font_color.setter
@@ -211,11 +216,9 @@ class PerfGraph(arcade.Sprite):
         for text in self._all_text_objects:
             text.color = new_color
 
-    def remove_from_sprite_lists(self):
+    def remove_from_sprite_lists(self) -> None:
         """
         Remove the sprite from all lists and cancel the update event.
-
-        :return:
         """
         super().remove_from_sprite_lists()
 
@@ -231,8 +234,9 @@ class PerfGraph(arcade.Sprite):
         .. warning:: You do not need to call this method! It will be
                      called automatically!
 
-        :param delta_time: Elapsed time in seconds. Passed by the pyglet
-                           scheduler.
+        Args:
+            delta_time: Elapsed time in seconds. Passed by the pyglet
+                        scheduler.
         """
 
         # Skip update if there is no SpriteList that can draw this graph

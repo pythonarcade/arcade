@@ -153,3 +153,8 @@ html[data-theme="dark"] #examples figure {
 html[data-theme="dark"] #examples figure img {
     border: #111 2px solid;
 }
+
+/* Class property list should be inline, not inline blocks to ensure each property is on a separate line */
+html.writer-html4 .rst-content dl:not(.docutils) .property,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) .property {
+    display: inline;
+}

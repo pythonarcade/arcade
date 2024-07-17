@@ -36,49 +36,66 @@ class Clock:
         self._tick_speed: float = tick_speed
 
     def tick(self, delta_time: float):
+        """
+        Update the clock with the time that has passed since the last tick.
+
+        Args:
+            delta_time (float): The amount of time that has passed since the last tick.
+        """
         self._tick_delta_time = delta_time * self._tick_speed
         self._elapsed_time += self._tick_delta_time
         self._tick += 1
 
     def set_tick_speed(self, new_tick_speed: float):
+        """
+        Set the speed of time for this clock.
+
+        Args:
+            new_tick_speed (float): A multiplier on the 'speed' of time.
+                i.e. a value of 0.5 means time elapsed half as fast for this clock.
+        """
         self._tick_speed = new_tick_speed
 
-    def time_since(self, time: float):
+    def time_since(self, time: float) -> float:
+        """
+        Calculate the amount of time that has passed since the given time.
+
+        Args:
+            time (float): The time to compare against.
+        """
         return self._elapsed_time - time
 
-    def ticks_since(self, tick: int):
+    def ticks_since(self, tick: int) -> int:
+        """
+        Calculate the number of ticks that have occurred since the given tick.
+
+        Args:
+            tick (int): The tick to compare against.
+        """
         return self._tick - tick
 
     @property
-    def time(self):
-        """
-        The total number of seconds that have elapsed for this clock
-        """
+    def time(self) -> float:
+        """The total number of seconds that have elapsed for this clock"""
         return self._elapsed_time
 
     @property
-    def t(self):
-        """
-        Alias to Clock.time
-        """
+    def t(self) -> float:
+        """Alias to Clock.time"""
         return self._elapsed_time
 
     @property
-    def delta_time(self):
-        """
-        The amount of time that elapsed during the last tick
-        """
+    def delta_time(self) -> float:
+        """The amount of time that elapsed during the last tick"""
         return self._tick_delta_time
 
     @property
-    def dt(self):
-        """
-        Alias to Clock.delta_time
-        """
+    def dt(self) -> float:
+        """Alias to Clock.delta_time"""
         return self.delta_time
 
     @property
-    def speed(self):
+    def speed(self) -> float:
         """
         A modifier on the delta time that elapsed each tick.
 
@@ -88,17 +105,13 @@ class Clock:
         return self._tick_speed
 
     @property
-    def ticks(self):
-        """
-        The number of ticks that have occurred for this clock
-        """
+    def ticks(self) -> int:
+        """The number of ticks that have occurred for this clock."""
         return self._tick
 
     @property
-    def tick_count(self):
-        """
-        Alias to Clock.ticks
-        """
+    def tick_count(self) -> int:
+        """Alias to Clock.ticks"""
         return self._tick
 
 
@@ -121,11 +134,24 @@ class FixedClock(Clock):
         super().__init__()
 
     def set_tick_speed(self, new_tick_speed: float):
+        """
+        Set the speed of time for this clock.
+
+        Args:
+            new_tick_speed (float): A multiplier on the 'speed' of time.
+                i.e. a value of 0.5 means time elapsed half as fast for this clock
+        """
         raise ValueError(
             "It is not safe to change the tick speed of a fixed clock post initialization."
         )
 
     def tick(self, delta_time: float):
+        """
+        Update the clock with the time that has passed since the last tick.
+
+        Args:
+            delta_time (float): The amount of time that has passed since the last tick.
+        """
         if delta_time != self._fixed_rate:
             raise ValueError(
                 f"the delta_time {delta_time}, "
@@ -134,15 +160,18 @@ class FixedClock(Clock):
         super().tick(self._fixed_rate)
 
     @property
-    def rate(self):
+    def rate(self) -> float:
+        """The fixed number of seconds that pass for this clock every tick."""
         return self._fixed_rate
 
     @property
-    def accumulated(self):
+    def accumulated(self) -> float:
+        """The total number of seconds that have elapsed for this clock"""
         return self._sibling_clock.time - self._elapsed_time
 
     @property
-    def fraction(self):
+    def fraction(self) -> float:
+        """The fraction of a fixed tick that has passed since the last tick."""
         return self.accumulated / self._fixed_rate
 
 
