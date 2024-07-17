@@ -238,8 +238,8 @@ class ArcadeContext(Context):
     @property
     def default_atlas(self) -> TextureAtlasBase:
         """
-        The default texture atlas. 
-    
+        The default texture atlas.
+
         This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
         is passed in the :py:class:`arcade.SpriteList` constructor.
@@ -356,8 +356,8 @@ class ArcadeContext(Context):
             tess_evaluation_shader (str | Path, optional): Tessellation Evaluation Shader.
             common (Iterable[str], optional): Common files to be included in all shaders.
             defines (dict[str, Any], optional): Substitute `#define` values in the source.
-            varyings (Sequence[str], optional): The name of the out attributes in a transform shader.
-                This is normally not necessary since we auto detect them,
+            varyings (Sequence[str], optional): The name of the out attributes in a
+                transform shader. This is normally not necessary since we auto detect them,
                 but some more complex out structures we can't detect.
             varyings_capture_mode (str, optional): The capture mode for transforms.
 

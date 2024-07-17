@@ -38,7 +38,7 @@ class Clock:
     def tick(self, delta_time: float):
         """
         Update the clock with the time that has passed since the last tick.
-        
+
         Args:
             delta_time (float): The amount of time that has passed since the last tick.
         """
