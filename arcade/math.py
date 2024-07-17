@@ -336,10 +336,11 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
 
 def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[float, float, float]:
     """
-    Rotate a 3-dimensional vector of any length clockwise around a 3-dimensional unit length vector.
+    Rotate a 3-dimensional vector of any length clockwise around a 3-dimensional unit
+    length vector.
 
-    This method of vector rotation is immune to rotation-lock, however it takes a little more effort
-    to find the axis of rotation rather than 3 angles of rotation.
+    This method of vector rotation is immune to rotation-lock, however it takes a little
+    more effort to find the axis of rotation rather than 3 angles of rotation.
     Ref: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html.
 
     Args:
@@ -348,7 +349,8 @@ def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[flo
         angle (float): The angle in degrees to rotate the vector clock-wise by
 
     Returns:
-        tuple[float, float, float]: A rotated 3-dimension vector with the same length as the argument vector.
+        tuple[float, float, float]: A rotated 3-dimension vector with the same length as
+        the argument vector.
     """
     _rotation_rads = -math.radians(angle)
     p1, p2, p3 = vector
