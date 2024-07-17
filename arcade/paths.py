@@ -5,7 +5,7 @@ Classic A-star algorithm for path finding.
 from __future__ import annotations
 
 import math
-from typing import Optional, Union, cast
+from typing import Optional, cast
 
 from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point
 from arcade.math import get_distance, lerp_2d
@@ -18,11 +18,13 @@ def _spot_is_blocked(position: Point2, moving_sprite: Sprite, blocking_sprites: 
     """
     Return if position is blocked
 
-    :param position: position to put moving_sprite at
-    :param moving_sprite: Sprite to use
-    :param blocking_sprites: List of Sprites to check against
+    Args:
+        position (Point2): position to put moving_sprite at
+        moving_sprite (Sprite): Sprite to use
+        blocking_sprites (SpriteList): List of Sprites to check against
 
-    :return: If the Sprite would hit anything in blocking_sprites at the position
+    Returns:
+        bool: If the Sprite would hit anything in blocking_sprites at the position
     """
     original_pos = moving_sprite.position
     moving_sprite.position = position
@@ -35,10 +37,12 @@ def _heuristic(start: Point, goal: Point) -> float:
     """
     Returns a heuristic value for the passed points.
 
-    :param start: The 1st point to compare
-    :param goal: The 2nd point to compare
+    Args:
+        start (Point): The 1st point to compare
+        goal (Point): The 2nd point to compare
 
-    :return: The heuristic of the 2 points
+    Returns:
+        float: The heuristic of the 2 points
     """
     # Use Chebyshev distance heuristic if we can move one square either
     # adjacent or diagonal
@@ -53,16 +57,19 @@ class _AStarGraph(object):
     """
     A grid which tracks 2 barriers and a moving sprite.
 
-    :param Union[List, Tuple, Set] barriers: Is turned into a set, and then used for _AStarSearch
-    :param left: Far left side x value
-    :param right: Far right side x value
-    :param bottom: Far bottom side y value
-    :param top: Far top side y value
+
+    Args:
+        barriers: Barriers to use in the AStarSearch Algorithm
+            These are turned into a set.
+        left (int): Far left side x value
+        right (int): Far right side x value
+        bottom (int): Far bottom side y value
+        top (int): Far top side y value
     """
 
     def __init__(
         self,
-        barriers: Union[list, tuple, set],
+        barriers: list | tuple | set,
         left: int,
         right: int,
         bottom: int,
@@ -222,14 +229,16 @@ class AStarBarrierList:
     Class that manages a list of barriers that can be encountered during
     A* path finding.
 
-    :param moving_sprite: Sprite that will be moving
-    :param blocking_sprites: Sprites that can block movement
-    :param grid_size: Size of the grid, in pixels
-    :param left: Left border of playing field
-    :param right: Right border of playing field
-    :param bottom: Bottom of playing field
-    :param top: Top of playing field
-    :param barrier_list: SpriteList of barriers to use in _AStarSearch, None if not recalculated
+    Args:
+        moving_sprite (Sprite): Sprite that will be moving
+        blocking_sprites (SpriteList): Sprites that can block movement
+        grid_size (int): Size of the grid, in pixels
+        left (int): Left border of playing field
+        right (int): Right border of playing field
+        bottom (int): Bottom of playing field
+        top (int): Top of playing field
+        barrier_list (SpriteList): SpriteList of barriers to use in _AStarSearch,
+            None if not recalculated
     """
 
     def __init__(
@@ -244,20 +253,26 @@ class AStarBarrierList:
     ):
 
         self.grid_size = grid_size
+        """Grid size"""
         self.bottom = int(bottom // grid_size)
+        """Bottom of playing field"""
         self.top = int(top // grid_size)
+        """Top of playing field"""
         self.left = int(left // grid_size)
+        """Left border of playing field"""
         self.right = int(right // grid_size)
+        """Right border of playing field"""
         self.moving_sprite = moving_sprite
+        """Sprite that will be moving"""
         self.blocking_sprites = blocking_sprites
+        """Sprites that can block movement"""
         self.barrier_list = None
+        """SpriteList of barriers to use in _AStarSearch, None if not recalculated"""
 
         self.recalculate()
 
     def recalculate(self):
-        """
-        Recalculate blocking sprites.
-        """
+        """Recalculate blocking sprites."""
         # --- Iterate through the blocking sprites and find where we are blocked
 
         # Save original location
@@ -294,13 +309,15 @@ def astar_calculate_path(
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 
-    :param start_point: Where it starts
-    :param end_point: Where it ends
-    :param astar_barrier_list: AStarBarrierList with the boundaries to use in
-        the AStarSearch Algorithm
-    :param diagonal_movement: Whether of not to use diagonals in the AStarSearch Algorithm
+    Args:
+        start_point (Point): Where it starts
+        end_point (Point): Where it ends
+        astar_barrier_list (AStarBarrierList): AStarBarrierList with the boundaries to use in
+            the AStarSearch Algorithm
+        diagonal_movement (bool): Whether of not to use diagonals in the AStarSearch Algorithm
 
-    :return: List of points(the path), or None if no path is found
+    Returns:
+        List[Point] or None: List of points (the path), or None if no path is found
     """
 
     grid_size = astar_barrier_list.grid_size
@@ -337,19 +354,21 @@ def has_line_of_sight(
     """
     Determine if we have line of sight between two points.
 
-    :param observer: Start position
-    :param target: End position position
-    :param walls: List of all blocking sprites
-    :param max_distance: Max distance point 1 can see
-    :param check_resolution: Check every x pixels for a sprite.
-        Trade-off between accuracy and speed.
-
     .. warning:: Try to make sure spatial hashing is enabled on ``walls``!
 
-                 If spatial hashing is not enabled, this function may run
-                 very slowly!
+        If spatial hashing is not enabled, this function may run
+        very slowly!
 
-    :return: Whether or not oberver to target is blocked by any wall in walls
+    Args:
+        observer: Start position
+        target: End position position
+        walls: List of all blocking sprites
+        max_distance: Max distance point 1 can see
+        check_resolution: Check every x pixels for a sprite.
+            Trade-off between accuracy and speed.
+
+    Returns:
+        Whether or not observer to target is blocked by any wall in walls
     """
     if max_distance <= 0:
         raise ValueError("max_distance must be greater than zero")
