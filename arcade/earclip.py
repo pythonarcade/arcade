@@ -10,7 +10,7 @@ from arcade.types import Point2, Point2List
 
 def earclip(
     polygon: Point2List,
-) -> Point2List:
+) -> list[tuple[tuple[float, float], tuple[float, float], tuple[float, float]]]:
     """
     Simple earclipping algorithm for a given polygon p.
 
