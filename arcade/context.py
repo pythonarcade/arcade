@@ -435,7 +435,7 @@ class ArcadeContext(Context):
         *,
         flip: bool = True,
         build_mipmaps: bool = False,
-        internal_format: int| None = None,
+        internal_format: int | None = None,
         compressed: bool = False,
     ) -> Texture2D:
         """
