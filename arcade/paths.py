@@ -239,6 +239,16 @@ class AStarBarrierList:
         top (int): Top of playing field
         barrier_list (SpriteList): SpriteList of barriers to use in _AStarSearch,
             None if not recalculated
+
+    Attributes:
+        grid_size (int): Grid size
+        bottom (int): Bottom of playing field
+        top (int): Top of playing field
+        left (int): Left border of playing field
+        right (int): Right border of playing field
+        moving_sprite (Sprite): Sprite that will be moving
+        blocking_sprites (SpriteList): Sprites that can block movement
+        barrier_list (SpriteList): SpriteList of barriers to use in _AStarSearch, None if not recalculated
     """
 
     def __init__(
@@ -251,23 +261,14 @@ class AStarBarrierList:
         bottom: int,
         top: int,
     ):
-
         self.grid_size = grid_size
-        """Grid size"""
         self.bottom = int(bottom // grid_size)
-        """Bottom of playing field"""
         self.top = int(top // grid_size)
-        """Top of playing field"""
         self.left = int(left // grid_size)
-        """Left border of playing field"""
         self.right = int(right // grid_size)
-        """Right border of playing field"""
         self.moving_sprite = moving_sprite
-        """Sprite that will be moving"""
         self.blocking_sprites = blocking_sprites
-        """Sprites that can block movement"""
         self.barrier_list = None
-        """SpriteList of barriers to use in _AStarSearch, None if not recalculated"""
 
         self.recalculate()
 
