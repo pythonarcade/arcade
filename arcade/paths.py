@@ -248,7 +248,8 @@ class AStarBarrierList:
         right (int): Right border of playing field
         moving_sprite (Sprite): Sprite that will be moving
         blocking_sprites (SpriteList): Sprites that can block movement
-        barrier_list (SpriteList): SpriteList of barriers to use in _AStarSearch, None if not recalculated
+        barrier_list (SpriteList): SpriteList of barriers to use in _AStarSearch,
+            None if not recalculated
     """
 
     def __init__(
