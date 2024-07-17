@@ -125,6 +125,7 @@ class Sprite(BasicSprite, PymunkMixin):
         self._sprite_list: Optional[SpriteList] = None
         # Debug properties
         self.guid: Optional[str] = None
+        """str: A GUID for debugging purposes."""
 
         self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(angle=self._angle)
 

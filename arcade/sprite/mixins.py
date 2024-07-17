@@ -27,7 +27,16 @@ class PymunkMixin:
     def __init__(self) -> None:
         self.pymunk = PyMunk()
         self.force = [0.0, 0.0]
+        """force vector used by pymunk"""
 
     def pymunk_moved(self, physics_engine, dx: float, dy: float, d_angle: float) -> None:
-        """Called by the pymunk physics engine if this sprite moves."""
+        """
+        Called by the pymunk physics engine if this sprite moves.
+
+        Args:
+            physics_engine (PymunkPhysicsEngine): The physics engine that is calling this method.
+            dx (float): The change in x position.
+            dy (float): The change in y position.
+            d_angle (float): The change in angle.
+        """
         pass
