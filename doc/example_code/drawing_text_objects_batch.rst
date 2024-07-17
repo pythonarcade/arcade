@@ -17,6 +17,6 @@ same as the :ref:`drawing_text_objects` example.
 
 For a much simpler and slower approach,  see :ref:`drawing_text`.
 
-.. literalinclude:: ../../arcade/examples/drawing_text_objects.py
+.. literalinclude:: ../../arcade/examples/drawing_text_objects_batch.py
     :caption: drawing_text_objects.py
     :linenos:
