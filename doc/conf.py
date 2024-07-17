@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
+from typing import Any
 import docutils.nodes
 import os
 import re
@@ -20,11 +21,13 @@ runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 autodoc_inherit_docstrings = False
 autodoc_default_options = {
     'members': True,
-    'member-order': 'groupwise',
+    # 'member-order': 'groupwise',
+    'member-order': 'alphabetical',
     'undoc-members': True,
     'show-inheritance': True
 }
 toc_object_entries_show_parents = 'hide'
+# Special methods in api docs gets a special prefix emoji
 prettyspecialmethods_signature_prefix = '🧙'
 
 sys.path.insert(0, os.path.abspath('..'))
@@ -94,13 +97,13 @@ exclude_patterns = [
 ]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'default'
+pygments_style = 'default'  # will use "sphinx" or the theme's default
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 # todo_include_todos = True
 
-napoleon_numpy_docstring = False
-napoleon_google_docstring = True
+# napoleon_numpy_docstring = False
+# napoleon_google_docstring = True
 
 # Warn about all references where the target cannot be found.
 # This is important to always enable to catch broken doc or api links
@@ -178,13 +181,41 @@ def strip_init_return_typehint(app, what, name, obj, options, signature, return_
     if what == "class" and return_annotation is None:
         return (signature, None)
 
-def warn_undocumented_members(_app, what, name, _obj, _options, lines):
+def inspect_docstring_for_member(
+    _app,
+    what: str,
+    name: str,
+    _obj: object,
+    _options: dict[str, Any],
+    lines: list[str],
+):
+    """
+    Callback for the autodoc-process-docstring event.
+    Where we can plug in various sanity checks such as warning about
+    undocumented members.
+
+    Args:
+        _app: The Sphinx application object
+        what (string): The type of object ("attribute", "class", "module", "function", "method")
+        name: The fully qualified name of the object
+        _obj: The object being documented
+        _options: The autodoc options for this object
+        lines: The lines of the docstring
+    """
+    # For debugging purposes
+    # print(
+    #     f"app={_app}\n"
+    #     f"what={what}\n"
+    #     f"name={name}\n"
+    #     f"obj={_obj}\n"
+    #     f"options={_options}\n"
+    #     f"lines){lines}\n"
+    # )
     if len(lines) == 0:
         print(f"{what} {name} is undocumented")
-        # lines.append(f".. Warning:: {what} ``{name}`` undocumented")
 
-    # Check for docstring on __init__ in classes and raise an error.
-    # The class docstring should cover docs for the initializer only!
+    # Docstring on __init__ in classes raise an error.
+    # Class docstrings should cover the initializer.
     if what == "class":
         doc = _obj.__init__.__doc__
         if doc and isinstance(doc, str) and not doc.startswith("Initialize self"):
@@ -195,8 +226,9 @@ def warn_undocumented_members(_app, what, name, _obj, _options, lines):
 
 
 def generate_color_table(filename, source):
-    """This function Generates the Color tables in the docs for color and csscolor packages"""
-
+    """
+    This function Generates the Color tables in the docs for color and csscolor packages.
+    """
     append_text = "\n\n.. raw:: html\n\n"
     append_text += "    <table class='colorTable'><tbody>\n"
 
@@ -211,7 +243,6 @@ def generate_color_table(filename, source):
 
     with open(filename) as color_file:
         for line in color_file:
-
             # Check if the line has a Color.
             matches = color_match.match(line)
             if not matches:
@@ -223,7 +254,6 @@ def generate_color_table(filename, source):
             alpha = int( matches.group('alpha') ) / 255
             css_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {alpha!s:.4})"
 
-
             append_text += "    <tr>"
             append_text += f"<td>{matches.group('name')}</td>"
             append_text += f"<td>{color_rgba}</td>"
@@ -234,9 +264,11 @@ def generate_color_table(filename, source):
     source[0] += append_text
 
 
-def source_read(_app, docname, source):
-    """Event handler for source-read event"""
-
+def source_read_handler(_app, docname, source):
+    """
+    Event handler for source-read event.
+    Where we can modify the source of a document before it is parsed.
+    """
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
@@ -252,49 +284,6 @@ def on_autodoc_process_bases(app, name, obj, options, bases):
     bases[:] = [base for base in bases if base is not object]
 
 
-class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
-    """A replacement for the default autodocumenter.
-
-    .. warning:: You must monkeypatch the baseclass with this!
-
-                 .. code-block:: python
-
-                    sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
-
-    Why? New ClassDocumenter subclasses appear to be registered for
-    specific names. For example, ``.. autointenum::`` would be declared
-    as follows::
-
-        class IntEnumDocumenter(ClassDocumenter):
-            objtype = 'intenum'
-            # Full class omitted, taken from the extension tutorial:
-            # https://www.sphinx-doc.org/en/master/development/tutorials/autodoc_ext.html#writing-the-extension
-
-    However, this documenter is for the default name, so passing it to
-    `app.app_autodocumenter` will produce a warning about a conflict.
-    Arcade's build config promotes warnings to errors, breaking build.
-    """
-    def add_directive_header(self, sig: str) -> None:
-        r = super().add_directive_header(sig)
-        # Strip empty `Bases: `, will be empty when only superclass is `object`
-        # cuz we remove it earlier
-        strings = self.directive.result
-        if strings[-1] == '   Bases: ':
-            strings.pop()
-        return r
-
-
-class Transform(sphinx.transforms.SphinxTransform):
-    default_priority = 800
-    def apply(self):
-        self.document.walk(Visitor(self.document))
-
-class Visitor(docutils.nodes.SparseNodeVisitor):
-    def visit_desc_annotation(self, node):
-        # Remove `property` prefix from properties so they look the same as
-        # attributes
-        if 'property' in node.astext():
-            node.parent.remove(node)
 
 
 def setup(app):
@@ -307,9 +296,59 @@ def setup(app):
 
     # IMPORTANT: We can't use app.add_autodocumenter!
     # See the docstring of ClassDocumenter above for why.
-    sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
-    app.connect('source-read', source_read)
-    app.connect("autodoc-process-docstring", warn_undocumented_members)
+    # sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
+    app.connect('source-read', source_read_handler)
+    app.connect("autodoc-process-docstring", inspect_docstring_for_member)
     app.connect('autodoc-process-signature', strip_init_return_typehint, -1000)
     app.connect('autodoc-process-bases', on_autodoc_process_bases)
-    app.add_transform(Transform)
+    # app.add_transform(Transform)
+
+
+# ------------------------------------------------------
+# Old hacks that breaks the api docs. !!! DO NOT USE !!!
+# ------------------------------------------------------
+
+# NOTE: Breaks annotated return types in properties and various other members
+# class ClassDocumenter(sphinx.ext.autodoc.ClassDocumenter):
+#     """A replacement for the default autodocumenter.
+
+#     .. warning:: You must monkeypatch the baseclass with this!
+
+#                  .. code-block:: python
+
+#                     sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
+
+#     Why? New ClassDocumenter subclasses appear to be registered for
+#     specific names. For example, ``.. autointenum::`` would be declared
+#     as follows::
+
+#         class IntEnumDocumenter(ClassDocumenter):
+#             objtype = 'intenum'
+#             # Full class omitted, taken from the extension tutorial:
+#             # https://www.sphinx-doc.org/en/master/development/tutorials/autodoc_ext.html#writing-the-extension
+
+#     However, this documenter is for the default name, so passing it to
+#     `app.app_autodocumenter` will produce a warning about a conflict.
+#     Arcade's build config promotes warnings to errors, breaking build.
+#     """
+#     def add_directive_header(self, sig: str) -> None:
+#         r = super().add_directive_header(sig)
+#         # Strip empty `Bases: `, will be empty when only superclass is `object`
+#         # cuz we remove it earlier
+#         strings = self.directive.result
+#         if strings[-1] == '   Bases: ':
+#             strings.pop()
+#         return r
+
+# NOTE: Breaks some properties
+# class Transform(sphinx.transforms.SphinxTransform):
+#     default_priority = 800
+#     def apply(self):
+#         self.document.walk(Visitor(self.document))
+
+# class Visitor(docutils.nodes.SparseNodeVisitor):
+#     def visit_desc_annotation(self, node):
+#         # Remove `property` prefix from properties so they look the same as
+#         # attributes
+#         if 'property' in node.astext():
+#             node.parent.remove(node)
