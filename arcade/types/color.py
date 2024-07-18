@@ -21,7 +21,7 @@ named color values, please see the following:
 from __future__ import annotations
 
 import random
-from typing import Iterable, Optional, TypeVar, Union
+from typing import Iterable, TypeVar, Union
 
 from typing_extensions import Final, Self
 
@@ -464,10 +464,10 @@ class Color(RGBA255):
     @classmethod
     def random(
         cls,
-        r: Optional[int] = None,
-        g: Optional[int] = None,
-        b: Optional[int] = None,
-        a: Optional[int] = None,
+        r: int | None = None,
+        g: int | None = None,
+        b: int | None = None,
+        a: int | None = None,
     ) -> Self:
         """Create a :py:class:`Color` by randomizing all unspecified channels.
 
@@ -503,10 +503,10 @@ class Color(RGBA255):
 
     def replace(
         self,
-        r: Optional[int] = None,
-        g: Optional[int] = None,
-        b: Optional[int] = None,
-        a: Optional[int] = None,
+        r: int | None = None,
+        g: int | None = None,
+        b: int | None = None,
+        a: int | None = None,
     ) -> Color:
         """Create a :py:class:`Color` with specified values replaced in a predefined color.
 

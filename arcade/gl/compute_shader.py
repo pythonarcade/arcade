@@ -12,7 +12,7 @@ from ctypes import (
     create_string_buffer,
     pointer,
 )
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from pyglet import gl
 
@@ -30,7 +30,7 @@ class ComputeShader:
     def __init__(self, ctx: "Context", glsl_source: str) -> None:
         self._ctx = ctx
         self._source = glsl_source
-        self._uniforms: dict[str, Union[UniformBlock, Uniform]] = dict()
+        self._uniforms: dict[str, UniformBlock | Uniform] = dict()
 
         from arcade.gl import ShaderException
 
@@ -135,7 +135,7 @@ class ComputeShader:
         self.use()
         gl.glDispatchCompute(group_x, group_y, group_z)
 
-    def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
+    def __getitem__(self, item) -> Uniform | UniformBlock:
         """Get a uniform or uniform block"""
         try:
             uniform = self._uniforms[item]

@@ -6,7 +6,7 @@ Contains pre-loaded programs
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Optional, Sequence, Union
+from typing import Any, Iterable, Sequence
 
 import pyglet
 from PIL import Image
@@ -198,7 +198,7 @@ class ArcadeContext(Context):
         )
         self.geometry_empty: Geometry = self.geometry()
 
-        self._atlas: Optional[TextureAtlasBase] = None
+        self._atlas: TextureAtlasBase | None = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
         self.label_cache: dict[str, arcade.Text] = {}
@@ -326,14 +326,14 @@ class ArcadeContext(Context):
     def load_program(
         self,
         *,
-        vertex_shader: Union[str, Path],
-        fragment_shader: Optional[Union[str, Path]] = None,
-        geometry_shader: Optional[Union[str, Path]] = None,
-        tess_control_shader: Optional[Union[str, Path]] = None,
-        tess_evaluation_shader: Optional[Union[str, Path]] = None,
-        common: Iterable[Union[str, Path]] = (),
-        defines: Optional[dict[str, Any]] = None,
-        varyings: Optional[Sequence[str]] = None,
+        vertex_shader: str | Path,
+        fragment_shader: str | Path | None = None,
+        geometry_shader: str | Path | None = None,
+        tess_control_shader: str | Path | None = None,
+        tess_evaluation_shader: str | Path | None = None,
+        common: Iterable[str | Path] = (),
+        defines: dict[str, Any] | None = None,
+        varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
         """
@@ -434,7 +434,7 @@ class ArcadeContext(Context):
 
     def load_texture(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         *,
         flip: bool = True,
         build_mipmaps: bool = False,

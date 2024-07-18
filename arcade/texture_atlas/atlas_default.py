@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import copy
 import logging
@@ -5,9 +7,7 @@ import time
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    Optional,
     Sequence,
-    Union,
 )
 from weakref import WeakSet, WeakValueDictionary, finalize
 
@@ -94,9 +94,9 @@ class DefaultTextureAtlas(TextureAtlasBase):
         size: tuple[int, int],
         *,
         border: int = 1,
-        textures: Optional[Sequence["Texture"]] = None,
+        textures: Sequence[Texture] | None = None,
         auto_resize: bool = True,
-        ctx: Optional["ArcadeContext"] = None,
+        ctx: ArcadeContext | None = None,
         capacity: int = 2,
     ):
         self._ctx = ctx or get_window().ctx
@@ -727,7 +727,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
     def render_into(
         self,
         texture: "Texture",
-        projection: Optional[tuple[float, float, float, float]] = None,
+        projection: tuple[float, float, float, float] | None = None,
     ):
         """
         Render directly into a sub-section of the atlas.
@@ -874,7 +874,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
     def save(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         flip: bool = False,
         components: int = 4,
         draw_borders: bool = False,

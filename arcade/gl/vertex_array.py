@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import weakref
 from ctypes import byref, c_void_p
-from typing import TYPE_CHECKING, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Sequence
 
 from pyglet import gl
 
@@ -50,7 +50,7 @@ class VertexArray:
         ctx: "Context",
         program: Program,
         content: Sequence[BufferDescription],
-        index_buffer: Optional[Buffer] = None,
+        index_buffer: Buffer | None = None,
         index_element_size: int = 4,
     ) -> None:
         self._ctx = ctx
@@ -93,7 +93,7 @@ class VertexArray:
         return self._program
 
     @property
-    def ibo(self) -> Optional[Buffer]:
+    def ibo(self) -> Buffer | None:
         """
         Element/index buffer
         """
@@ -131,7 +131,7 @@ class VertexArray:
         ctx.stats.decr("vertex_array")
 
     def _build(
-        self, program: Program, content: Sequence[BufferDescription], index_buffer: Optional[Buffer]
+        self, program: Program, content: Sequence[BufferDescription], index_buffer: Buffer | None
     ) -> None:
         """Build a vertex array compatible with the program passed in"""
         gl.glGenVertexArrays(1, byref(self.glo))
@@ -448,9 +448,9 @@ class Geometry:
     def __init__(
         self,
         ctx: "Context",
-        content: Optional[Sequence[BufferDescription]],
-        index_buffer: Optional[Buffer] = None,
-        mode: Optional[int] = None,
+        content: Sequence[BufferDescription] | None,
+        index_buffer: Buffer | None = None,
+        mode: int | None = None,
         index_element_size: int = 4,
     ) -> None:
         self._ctx = ctx
@@ -496,7 +496,7 @@ class Geometry:
         return self._ctx
 
     @property
-    def index_buffer(self) -> Optional[Buffer]:
+    def index_buffer(self) -> Buffer | None:
         """
         Index/element buffer if supplied at creation.
 
@@ -547,9 +547,9 @@ class Geometry:
         self,
         program: Program,
         *,
-        mode: Optional[GLenumLike] = None,
+        mode: GLenumLike | None = None,
         first: int = 0,
-        vertices: Optional[int] = None,
+        vertices: int | None = None,
         instances: int = 1,
     ) -> None:
         """Render the geometry with a specific program.
@@ -619,7 +619,7 @@ class Geometry:
         program: Program,
         buffer: Buffer,
         *,
-        mode: Optional[GLuintLike] = None,
+        mode: GLuintLike | None = None,
         count: int = -1,
         first: int = 0,
         stride: int = 0,
@@ -670,10 +670,10 @@ class Geometry:
     def transform(
         self,
         program: Program,
-        buffer: Union[Buffer, list[Buffer]],
+        buffer: Buffer | list[Buffer],
         *,
         first: int = 0,
-        vertices: Optional[int] = None,
+        vertices: int | None = None,
         instances: int = 1,
         buffer_offset: int = 0,
     ) -> None:
@@ -683,7 +683,7 @@ class Geometry:
         If a geometry shader is used the output primitive mode is automatically detected.
 
         :param program: The Program to render with
-        :param Union[Buffer, Sequence[Buffer]] buffer: The buffer(s) we transform into.
+        :param Buffer | Sequence[Buffer] buffer: The buffer(s) we transform into.
             This depends on the programs ``varyings_capture_mode``. We can transform
             into one buffer interleaved or transform each attribute into separate buffers.
         :param first: Offset start vertex

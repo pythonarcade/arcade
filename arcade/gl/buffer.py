@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import weakref
 from ctypes import byref, string_at
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from pyglet import gl
 
@@ -48,7 +48,7 @@ class Buffer:
     def __init__(
         self,
         ctx: "Context",
-        data: Optional[BufferProtocol] = None,
+        data: BufferProtocol | None = None,
         reserve: int = 0,
         usage: str = "static",
     ):

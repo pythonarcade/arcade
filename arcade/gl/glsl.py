@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Iterable, Optional
+from typing import TYPE_CHECKING, Iterable
 
 from pyglet import gl
 
@@ -36,7 +36,7 @@ class ShaderSource:
         self,
         ctx: "ArcadeGlContext",
         source: str,
-        common: Optional[Iterable[str]],
+        common: Iterable[str] | None,
         source_type: PyGLenum,
     ):
         """Create a shader source wrapper."""
@@ -79,7 +79,7 @@ class ShaderSource:
         """The out attributes for this program"""
         return self._out_attributes
 
-    def inject_common_sources(self, common: Optional[Iterable[str]]) -> None:
+    def inject_common_sources(self, common: Iterable[str] | None) -> None:
         """Inject common source code into the shader source"""
         if not common:
             return
@@ -96,7 +96,7 @@ class ShaderSource:
             lines = source.split("\n")
             self._lines = self._lines[:line_number] + lines + self._lines[line_number:]
 
-    def get_source(self, *, defines: Optional[dict[str, str]] = None) -> str:
+    def get_source(self, *, defines: dict[str, str] | None = None) -> str:
         """Return the shader source
 
         :param defines: Defines to replace in the source.

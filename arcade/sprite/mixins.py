@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 
 class PyMunk:
     """Object used to hold pymunk info for a sprite."""
@@ -15,11 +13,11 @@ class PyMunk:
     )
 
     def __init__(self):
-        self.damping: Optional[float] = None
-        self.gravity: Optional[tuple[float, float]] = None
-        self.max_velocity: Optional[float] = None
-        self.max_horizontal_velocity: Optional[float] = None
-        self.max_vertical_velocity: Optional[float] = None
+        self.damping: float | None = None
+        self.gravity: tuple[float, float] | None = None
+        self.max_velocity: float | None = None
+        self.max_horizontal_velocity: float | None = None
+        self.max_vertical_velocity: float | None = None
 
 
 class PymunkMixin:

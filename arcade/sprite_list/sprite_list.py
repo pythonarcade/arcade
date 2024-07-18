@@ -20,9 +20,7 @@ from typing import (
     Generic,
     Iterable,
     Iterator,
-    Optional,
     Sized,
-    Union,
     cast,
 )
 
@@ -113,13 +111,13 @@ class SpriteList(Generic[SpriteType]):
         self,
         use_spatial_hash: bool = False,
         spatial_hash_cell_size: int = 128,
-        atlas: Optional[TextureAtlasBase] = None,
+        atlas: TextureAtlasBase | None = None,
         capacity: int = 100,
         lazy: bool = False,
         visible: bool = True,
     ) -> None:
-        self.program: Optional[Program] = None
-        self._atlas: Optional[TextureAtlasBase] = atlas
+        self.program: Program | None = None
+        self._atlas: TextureAtlasBase | None = atlas
         self._initialized = False
         self._lazy = lazy
         self._visible = visible
@@ -153,18 +151,18 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_index_data = array("i", [0] * self._idx_capacity)
 
         # Define and annotate storage space for buffers
-        self._sprite_pos_buf: Optional[Buffer] = None
-        self._sprite_size_buf: Optional[Buffer] = None
-        self._sprite_angle_buf: Optional[Buffer] = None
-        self._sprite_color_buf: Optional[Buffer] = None
-        self._sprite_texture_buf: Optional[Buffer] = None
+        self._sprite_pos_buf: Buffer | None = None
+        self._sprite_size_buf: Buffer | None = None
+        self._sprite_angle_buf: Buffer | None = None
+        self._sprite_color_buf: Buffer | None = None
+        self._sprite_texture_buf: Buffer | None = None
 
         # Index buffer
-        self._sprite_index_buf: Optional[Buffer] = None
+        self._sprite_index_buf: Buffer | None = None
 
-        self._geometry: Optional[Geometry] = None
+        self._geometry: Geometry | None = None
 
-        # Flags for signaling if a buffer needs to be written to the opengl buffer
+        # Flags for signaling if a buffer needs to be written to the OpenGL buffer
         self._sprite_pos_changed: bool = False
         self._sprite_size_changed: bool = False
         self._sprite_angle_changed: bool = False
@@ -176,11 +174,11 @@ class SpriteList(Generic[SpriteType]):
         from .spatial_hash import SpatialHash
 
         self._spatial_hash_cell_size = spatial_hash_cell_size
-        self.spatial_hash: Optional[SpatialHash[SpriteType]] = None
+        self.spatial_hash: SpatialHash[SpriteType] | None = None
         if use_spatial_hash:
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
-        self.properties: Optional[dict[str, Any]] = None
+        self.properties: dict[str, Any] | None = None
 
         # LOG.debug(
         #     "[%s] Creating SpriteList use_spatial_hash=%s capacity=%s",
@@ -408,7 +406,7 @@ class SpriteList(Generic[SpriteType]):
         self._color = self._color[0], self._color[1], self._color[2], value
 
     @property
-    def atlas(self) -> Optional[TextureAtlasBase]:
+    def atlas(self) -> TextureAtlasBase | None:
         """Get the texture atlas for this sprite list"""
         return self._atlas
 
@@ -724,7 +722,7 @@ class SpriteList(Generic[SpriteType]):
         if self.spatial_hash is not None:
             self.spatial_hash.remove(sprite)
 
-    def extend(self, sprites: Union[Iterable[SpriteType], SpriteList[SpriteType]]) -> None:
+    def extend(self, sprites: Iterable[SpriteType] | SpriteList[SpriteType]) -> None:
         """
         Extends the current list with the given iterable
 
@@ -1011,9 +1009,9 @@ class SpriteList(Generic[SpriteType]):
     def draw(
         self,
         *,
-        filter: Optional[Union[PyGLenum, OpenGlFilter]] = None,
-        pixelated: Optional[bool] = None,
-        blend_function: Optional[BlendFunction] = None,
+        filter: PyGLenum | OpenGlFilter | None = None,
+        pixelated: bool | None = None,
+        blend_function: BlendFunction | None = None,
     ) -> None:
         """
         Draw this list of sprites.

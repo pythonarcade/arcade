@@ -12,7 +12,7 @@ It allows you to do the following:
 
 from __future__ import annotations
 
-from typing import Iterable, Optional, Union
+from typing import Iterable
 from warnings import warn
 
 from arcade import Sprite, SpriteList
@@ -78,7 +78,7 @@ class Scene:
         """
         return len(self._sprite_lists)
 
-    def __delitem__(self, sprite_list: Union[int, str, SpriteList]) -> None:
+    def __delitem__(self, sprite_list: int | str | SpriteList) -> None:
         """
         Remove a sprite list from this scene by its index, name, or instance value.
 
@@ -177,7 +177,7 @@ class Scene:
         self,
         name: str,
         use_spatial_hash: bool = False,
-        sprite_list: Optional[SpriteList] = None,
+        sprite_list: SpriteList | None = None,
     ) -> None:
         """
         Add a SpriteList to the scene with the specified name.
@@ -208,7 +208,7 @@ class Scene:
         name: str,
         before: str,
         use_spatial_hash: bool = False,
-        sprite_list: Optional[SpriteList] = None,
+        sprite_list: SpriteList | None = None,
     ) -> None:
         """
         Add a sprite list to the scene with the specified name before another SpriteList.
@@ -272,7 +272,7 @@ class Scene:
         name: str,
         after: str,
         use_spatial_hash: bool = False,
-        sprite_list: Optional[SpriteList] = None,
+        sprite_list: SpriteList | None = None,
     ) -> None:
         """
         Add a SpriteList to the scene with the specified name after a specific SpriteList.
@@ -368,7 +368,7 @@ class Scene:
             key: val for key, val in self._name_mapping.items() if val != sprite_list
         }
 
-    def update(self, names: Optional[Iterable[str]] = None) -> None:
+    def update(self, names: Iterable[str] | None = None) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.update` on the scene's sprite lists.
 
@@ -390,7 +390,7 @@ class Scene:
         for sprite_list in self._sprite_lists:
             sprite_list.update()
 
-    def on_update(self, delta_time: float = 1 / 60, names: Optional[Iterable[str]] = None) -> None:
+    def on_update(self, delta_time: float = 1 / 60, names: Iterable[str] | None = None) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.on_update` on the scene's sprite lists.
 
@@ -413,7 +413,7 @@ class Scene:
         for sprite_list in self._sprite_lists:
             sprite_list.on_update(delta_time)
 
-    def update_animation(self, delta_time: float, names: Optional[Iterable[str]] = None) -> None:
+    def update_animation(self, delta_time: float, names: Iterable[str] | None = None) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.update_animation` on the scene's sprite lists.
 
@@ -438,10 +438,10 @@ class Scene:
 
     def draw(
         self,
-        names: Optional[Iterable[str]] = None,
-        filter: Optional[OpenGlFilter] = None,
+        names: Iterable[str] | None = None,
+        filter: OpenGlFilter | None = None,
         pixelated: bool = False,
-        blend_function: Optional[BlendFunction] = None,
+        blend_function: BlendFunction | None = None,
         **kwargs,
     ) -> None:
         """
@@ -487,7 +487,7 @@ class Scene:
         self,
         color: RGBA255 = Color(0, 0, 0, 255),
         line_thickness: float = 1.0,
-        names: Optional[Iterable[str]] = None,
+        names: Iterable[str] | None = None,
     ) -> None:
         """
         Draw debug hit box outlines for sprites in the scene's layers.
@@ -515,6 +515,6 @@ class Scene:
         """Returns whether or not `_sprite_lists` contains anything"""
         return bool(self._sprite_lists)
 
-    def __contains__(self, item: Union[str, SpriteList]) -> bool:
+    def __contains__(self, item: str | SpriteList) -> bool:
         """True when `item` is in `_sprite_lists` or is a value in `_name_mapping`"""
         return item in self._sprite_lists or item in self._name_mapping

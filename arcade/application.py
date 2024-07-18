@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import pyglet
 import pyglet.gl as gl
@@ -260,13 +260,13 @@ class Window(pyglet.window.Window):
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         self._background_color: Color = TRANSPARENT_BLACK
 
-        self._current_view: Optional[View] = None
+        self._current_view: View | None = None
 
         # See if we should center the window
         if center_window:
             self.center_window()
 
-        self.keyboard: Optional[pyglet.window.key.KeyStateHandler] = None
+        self.keyboard: pyglet.window.key.KeyStateHandler | None = None
         """
         A pyglet KeyStateHandler that can be used to poll the state of the keyboard.
 
@@ -275,7 +275,7 @@ class Window(pyglet.window.Window):
                     if self.window.keyboard[key.SPACE]:
                         print("The space key is currently being held down.")
         """
-        self.mouse: Optional[pyglet.window.mouse.MouseStateHandler] = None
+        self.mouse: pyglet.window.mouse.MouseStateHandler | None = None
         """
         A pyglet MouseStateHandler that can be used to poll the state of the mouse.
 
@@ -306,10 +306,10 @@ class Window(pyglet.window.Window):
         # These are typically functions just at module level wrapped in
         # start_render and finish_render calls. The framebuffer is repeatedly
         # rendered to the window when the event loop starts.
-        self._start_finish_render_data: Optional[StartFinishRenderData] = None
+        self._start_finish_render_data: StartFinishRenderData | None = None
 
     @property
-    def current_view(self) -> Optional["View"]:
+    def current_view(self) -> View | None:
         """
         The currently active view.
 
@@ -330,9 +330,9 @@ class Window(pyglet.window.Window):
 
     def clear(
         self,
-        color: Optional[RGBOrA255] = None,
-        color_normalized: Optional[RGBANormalized] = None,
-        viewport: Optional[tuple[int, int, int, int]] = None,
+        color: RGBOrA255 | None = None,
+        color_normalized: RGBANormalized | None = None,
+        viewport: tuple[int, int, int, int] | None = None,
     ) -> None:
         """
         Clears the window with the configured background color
@@ -461,7 +461,7 @@ class Window(pyglet.window.Window):
         # Center the window
         self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
 
-    def on_update(self, delta_time: float) -> Optional[bool]:
+    def on_update(self, delta_time: float) -> bool | None:
         """
         This method can be implemented and is reserved for game logic.
         Move sprites. Perform collision checks and other game logic.
@@ -535,7 +535,7 @@ class Window(pyglet.window.Window):
         pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
         pyglet.clock.schedule_interval(pyglet.app.event_loop._redraw_windows, self._draw_rate)
 
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> Optional[bool]:
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
         """
         Called repeatedly while the mouse is moving in the window area.
 
@@ -549,7 +549,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> Optional[bool]:
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         """
         Called once whenever a mouse button gets pressed down.
 
@@ -574,7 +574,7 @@ class Window(pyglet.window.Window):
 
     def on_mouse_drag(
         self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
-    ) -> Optional[bool]:
+    ) -> bool | None:
         """
         Called repeatedly while the mouse moves with a button down.
 
@@ -591,7 +591,7 @@ class Window(pyglet.window.Window):
         """
         return self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> Optional[bool]:
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         """
         Called once whenever a mouse button gets released.
 
@@ -613,7 +613,7 @@ class Window(pyglet.window.Window):
         """
         return False
 
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> Optional[bool]:
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> bool | None:
         """
         Called repeatedly while a mouse scroll wheel moves.
 
@@ -689,7 +689,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_key_press(self, symbol: int, modifiers: int) -> Optional[bool]:
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         """
         Called once when a key gets pushed down.
 
@@ -707,7 +707,7 @@ class Window(pyglet.window.Window):
         """
         return False
 
-    def on_key_release(self, symbol: int, modifiers: int) -> Optional[bool]:
+    def on_key_release(self, symbol: int, modifiers: int) -> bool | None:
         """
         Called once when a key gets released.
 
@@ -729,7 +729,7 @@ class Window(pyglet.window.Window):
         """
         return False
 
-    def on_draw(self) -> Optional[bool]:
+    def on_draw(self) -> bool | None:
         """
         Override this function to add your custom drawing code.
 
@@ -747,7 +747,7 @@ class Window(pyglet.window.Window):
 
         return False
 
-    def _on_resize(self, width: int, height: int) -> Optional[bool]:
+    def _on_resize(self, width: int, height: int) -> bool | None:
         """
         The internal method called when the window is resized.
 
@@ -765,7 +765,7 @@ class Window(pyglet.window.Window):
 
         return False
 
-    def on_resize(self, width: int, height: int) -> Optional[bool]:
+    def on_resize(self, width: int, height: int) -> bool | None:
         """
         Override this method to add custom actions when the window is resized.
 
@@ -1087,7 +1087,7 @@ class Window(pyglet.window.Window):
         """Dispatch events"""
         super().dispatch_events()
 
-    def on_mouse_enter(self, x: int, y: int) -> Optional[bool]:
+    def on_mouse_enter(self, x: int, y: int) -> bool | None:
         """
         Called once whenever the mouse enters the window area on screen.
 
@@ -1100,7 +1100,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_leave(self, x: int, y: int) -> Optional[bool]:
+    def on_mouse_leave(self, x: int, y: int) -> bool | None:
         """
         Called once whenever the mouse leaves the window area on screen.
 
@@ -1175,7 +1175,7 @@ class Window(pyglet.window.Window):
 def open_window(
     width: int,
     height: int,
-    window_title: Optional[str] = None,
+    window_title: str | None = None,
     resizable: bool = False,
     antialiasing: bool = True,
 ) -> Window:
@@ -1214,10 +1214,10 @@ class View:
             the current window is used. (Normally you don't need to provide this).
     """
 
-    def __init__(self, window: Optional[Window] = None) -> None:
+    def __init__(self, window: Window | None = None) -> None:
         self.window = arcade.get_window() if window is None else window
-        self.key: Optional[int] = None
-        self._section_manager: Optional[SectionManager] = None
+        self.key: int | None = None
+        self._section_manager: SectionManager | None = None
 
     @property
     def section_manager(self) -> SectionManager:
@@ -1240,8 +1240,8 @@ class View:
     def add_section(
         self,
         section: arcade.Section,
-        at_index: Optional[int] = None,
-        at_draw_order: Optional[int] = None,
+        at_index: int | None = None,
+        at_draw_order: int | None = None,
     ) -> None:
         """
         Adds a section to the view Section Manager.
@@ -1257,9 +1257,9 @@ class View:
 
     def clear(
         self,
-        color: Optional[RGBOrA255] = None,
-        color_normalized: Optional[RGBANormalized] = None,
-        viewport: Optional[tuple[int, int, int, int]] = None,
+        color: RGBOrA255 | None = None,
+        color_normalized: RGBANormalized | None = None,
+        viewport: tuple[int, int, int, int] | None = None,
     ) -> None:
         """
         Clears the window with the configured background color
@@ -1279,7 +1279,7 @@ class View:
         """
         self.window.clear(color=color, color_normalized=color_normalized, viewport=viewport)
 
-    def on_update(self, delta_time: float) -> Optional[bool]:
+    def on_update(self, delta_time: float) -> bool | None:
         """
         This method can be implemented and is reserved for game logic.
         Move sprites. Perform collision checks and other game logic.
@@ -1305,7 +1305,7 @@ class View:
         """
         pass
 
-    def on_draw(self) -> Optional[bool]:
+    def on_draw(self) -> bool | None:
         """
         Override this function to add your custom drawing code.
 
@@ -1329,7 +1329,7 @@ class View:
         """Called once when this view is hidden."""
         pass
 
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> Optional[bool]:
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
         """
         Called repeatedly while the mouse is moving in the window area.
 
@@ -1343,7 +1343,7 @@ class View:
         """
         pass
 
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> Optional[bool]:
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         """
         Called once whenever a mouse button gets pressed down.
 
@@ -1368,7 +1368,7 @@ class View:
 
     def on_mouse_drag(
         self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int
-    ) -> Optional[bool]:
+    ) -> bool | None:
         """
         Called repeatedly while the mouse moves with a button down.
 
@@ -1386,7 +1386,7 @@ class View:
         self.on_mouse_motion(x, y, dx, dy)
         return False
 
-    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> Optional[bool]:
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
         """
         Called once whenever a mouse button gets released.
 
@@ -1408,7 +1408,7 @@ class View:
         """
         pass
 
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> Optional[bool]:
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> bool | None:
         """
         Called repeatedly while a mouse scroll wheel moves.
 
@@ -1440,7 +1440,7 @@ class View:
         """
         pass
 
-    def on_key_press(self, symbol: int, modifiers: int) -> Optional[bool]:
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         """
         Called once when a key gets pushed down.
 
@@ -1458,7 +1458,7 @@ class View:
         """
         return False
 
-    def on_key_release(self, _symbol: int, _modifiers: int) -> Optional[bool]:
+    def on_key_release(self, _symbol: int, _modifiers: int) -> bool | None:
         """
         Called once when a key gets released.
 
@@ -1480,7 +1480,7 @@ class View:
         """
         return False
 
-    def on_resize(self, width: int, height: int) -> Optional[bool]:
+    def on_resize(self, width: int, height: int) -> bool | None:
         """
         Override this method to add custom actions when the window is resized.
 
@@ -1494,7 +1494,7 @@ class View:
         """
         pass
 
-    def on_mouse_enter(self, x: int, y: int) -> Optional[bool]:
+    def on_mouse_enter(self, x: int, y: int) -> bool | None:
         """
         Called once whenever the mouse enters the window area on screen.
 
@@ -1507,7 +1507,7 @@ class View:
         """
         pass
 
-    def on_mouse_leave(self, x: int, y: int) -> Optional[bool]:
+    def on_mouse_leave(self, x: int, y: int) -> bool | None:
         """
         Called once whenever the mouse leaves the window area on screen.
 

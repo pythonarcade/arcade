@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional, Union
-
 import arcade.gl as gl
 from arcade.future.background import BackgroundTexture
 from arcade.window_commands import get_window
@@ -24,9 +22,9 @@ class Background:
         texture: BackgroundTexture,
         pos: tuple[float, float],
         size: tuple[int, int],
-        color: Union[tuple[float, float, float], tuple[int, int, int]],
-        shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None,
+        color: tuple[float, float, float] | tuple[int, int, int],
+        shader: gl.Program | None = None,
+        geometry: gl.Geometry | None = None,
     ):
         self._ctx = get_window().ctx
         if shader is None:
@@ -84,16 +82,16 @@ class Background:
     def from_file(
         tex_src: str,
         pos: tuple[float, float] = (0.0, 0.0),
-        size: Optional[tuple[int, int]] = None,
+        size: tuple[int, int] | None = None,
         offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Optional[tuple[int, int, int]] = None,
-        color_norm: Optional[tuple[float, float, float]] = None,
-        shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None,
+        color: tuple[int, int, int] | None = None,
+        color_norm: tuple[float, float, float] | None = None,
+        shader: gl.Program | None = None,
+        geometry: gl.Geometry | None = None,
     ):
         """
         This will generate a Background from an input image source.
@@ -106,8 +104,8 @@ class Background:
         :param scale: The BackgroundTexture Scale.
         :param angle: The BackgroundTexture angle.
         :param filters: The OpenGl Texture filters (gl.Nearest by default).
-        :param color: This is a color defined from 0-255. Prioritises color_norm
-        :param color_norm: This is a color defined from 0.0-1.0. Prioritises color_norm
+        :param color: This is a color defined from 0-255. Priorities color_norm
+        :param color_norm: This is a color defined from 0.0-1.0. Priorities color_norm
                            assumed to be in the range 0.0-1.0.
         :param shader: The shader used for rendering.
         :param geometry: The geometry used for rendering (a rectangle equal to the size by default).

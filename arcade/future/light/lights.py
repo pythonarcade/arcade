@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from array import array
-from typing import Iterator, Optional, Sequence
+from typing import Iterator, Sequence
 
 from arcade import gl
 from arcade.color import WHITE
@@ -48,7 +48,7 @@ class Light:
         self._radius = radius
         self._attenuation = Light.HARD if mode == "hard" else Light.SOFT
         self._color = color[:3]
-        self._light_layer: Optional[LightLayer] = None
+        self._light_layer: LightLayer | None = None
 
         if len(self._color) != 3:
             raise ValueError(

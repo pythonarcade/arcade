@@ -12,11 +12,9 @@ from typing import (
     Iterable,
     List,
     Literal,
-    Optional,
     Sequence,
     Set,
     Tuple,
-    Union,
     overload,
 )
 
@@ -55,7 +53,7 @@ class Context:
     """
 
     #: The active context
-    active: Optional["Context"] = None
+    active: Context | None = None
 
     #: The OpenGL api. Usually "gl" or "gles".
     gl_api: str = "gl"
@@ -202,7 +200,7 @@ class Context:
         # Detect the default framebuffer
         self._screen = DefaultFrameBuffer(self)
         # Tracking active program
-        self.active_program: Optional[Program] = None
+        self.active_program: Program | None = None
         # Tracking active framebuffer. On context creation the window is the default render target
         self.active_framebuffer: Framebuffer = self._screen
         self._stats: ContextStats = ContextStats(warn_threshold=1000)
@@ -232,7 +230,7 @@ class Context:
         gl.glEnable(gl.GL_SCISSOR_TEST)
 
         # States
-        self._blend_func: Union[Tuple[int, int], Tuple[int, int, int, int]] = self.BLEND_DEFAULT
+        self._blend_func: Tuple[int, int] | Tuple[int, int, int, int] = self.BLEND_DEFAULT
         self._point_size = 1.0
         self._flags: Set[int] = set()
         self._wireframe = False
@@ -388,7 +386,7 @@ class Context:
         self._gc_mode = value
 
     @property
-    def error(self) -> Union[str, None]:
+    def error(self) -> str | None:
         """Check OpenGL error
 
         Returns a string representation of the occurring error
@@ -551,7 +549,7 @@ class Context:
         self.active_framebuffer.viewport = value
 
     @property
-    def scissor(self) -> Optional[Tuple[int, int, int, int]]:
+    def scissor(self) -> Tuple[int, int, int, int] | None:
         """
         Get or set the scissor box for the active framebuffer.
         This is a shortcut for :py:meth:`~arcade.gl.Framebuffer.scissor`.
@@ -576,7 +574,7 @@ class Context:
         self.fbo.scissor = value
 
     @property
-    def blend_func(self) -> Union[Tuple[int, int], Tuple[int, int, int, int]]:
+    def blend_func(self) -> Tuple[int, int] | Tuple[int, int, int, int]:
         """
         Get or set the blend function.
         This is tuple specifying how the color and
@@ -624,7 +622,7 @@ class Context:
         return self._blend_func
 
     @blend_func.setter
-    def blend_func(self, value: Union[Tuple[int, int], Tuple[int, int, int, int]]):
+    def blend_func(self, value: Tuple[int, int] | Tuple[int, int, int, int]):
         self._blend_func = value
         if len(value) == 2:
             gl.glBlendFunc(*value)
@@ -833,7 +831,7 @@ class Context:
     # --- Resource methods ---
 
     def buffer(
-        self, *, data: Optional[BufferProtocol] = None, reserve: int = 0, usage: str = "static"
+        self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static"
     ) -> Buffer:
         """
         Create an OpenGL Buffer object. The buffer will contain all zero-bytes if
@@ -882,8 +880,8 @@ class Context:
     def framebuffer(
         self,
         *,
-        color_attachments: Optional[Union[Texture2D, List[Texture2D]]] = None,
-        depth_attachment: Optional[Texture2D] = None,
+        color_attachments: Texture2D | List[Texture2D] | None = None,
+        depth_attachment: Texture2D | None = None,
     ) -> Framebuffer:
         """Create a Framebuffer.
 
@@ -900,13 +898,13 @@ class Context:
         *,
         components: int = 4,
         dtype: str = "f1",
-        data: Optional[BufferProtocol] = None,
-        wrap_x: Optional[PyGLenum] = None,
-        wrap_y: Optional[PyGLenum] = None,
-        filter: Optional[Tuple[PyGLenum, PyGLenum]] = None,
+        data: BufferProtocol | None = None,
+        wrap_x: PyGLenum | None = None,
+        wrap_y: PyGLenum | None = None,
+        filter: Tuple[PyGLenum, PyGLenum] | None = None,
         samples: int = 0,
         immutable: bool = False,
-        internal_format: Optional[PyGLenum] = None,
+        internal_format: PyGLenum | None = None,
         compressed: bool = False,
         compressed_data: bool = False,
     ) -> Texture2D:
@@ -985,7 +983,7 @@ class Context:
         )
 
     def depth_texture(
-        self, size: Tuple[int, int], *, data: Optional[BufferProtocol] = None
+        self, size: Tuple[int, int], *, data: BufferProtocol | None = None
     ) -> Texture2D:
         """
         Create a 2D depth texture. Can be used as a depth attachment
@@ -1000,9 +998,9 @@ class Context:
 
     def geometry(
         self,
-        content: Optional[Sequence[BufferDescription]] = None,
-        index_buffer: Optional[Buffer] = None,
-        mode: Optional[int] = None,
+        content: Sequence[BufferDescription] | None = None,
+        index_buffer: Buffer | None = None,
+        mode: int | None = None,
         index_element_size: int = 4,
     ):
         """
@@ -1087,13 +1085,13 @@ class Context:
         self,
         *,
         vertex_shader: str,
-        fragment_shader: Optional[str] = None,
-        geometry_shader: Optional[str] = None,
-        tess_control_shader: Optional[str] = None,
-        tess_evaluation_shader: Optional[str] = None,
-        common: Optional[List[str]] = None,
-        defines: Optional[Dict[str, str]] = None,
-        varyings: Optional[Sequence[str]] = None,
+        fragment_shader: str | None = None,
+        geometry_shader: str | None = None,
+        tess_control_shader: str | None = None,
+        tess_evaluation_shader: str | None = None,
+        common: List[str] | None = None,
+        defines: Dict[str, str] | None = None,
+        varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
         """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.

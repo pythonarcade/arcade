@@ -197,7 +197,7 @@ class ReplacementWarning(Warning):
     pass
 
 
-def warning(warning_type: Type[Warning], message: str = "", **kwargs):
+def warning(warning_type: type[Warning], message: str = "", **kwargs):
     def actual_warning_decorator(func):
         nonlocal message
         if warning_type == ReplacementWarning and not message:

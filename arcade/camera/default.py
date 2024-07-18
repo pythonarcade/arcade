@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Generator, Optional
+from typing import TYPE_CHECKING, Generator
 
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
@@ -29,9 +29,9 @@ class ViewportProjector:
 
     def __init__(
         self,
-        viewport: Optional[tuple[int, int, int, int]] = None,
+        viewport: tuple[int, int, int, int] | None = None,
         *,
-        context: Optional["ArcadeContext"] = None,
+        context: ArcadeContext | None = None,
     ):
         self._ctx = context or get_window().ctx
         self._viewport = viewport or self._ctx.viewport
@@ -110,7 +110,7 @@ class DefaultProjector(ViewportProjector):
     :param window: The window to bind the camera to. Defaults to the currently active window.
     """
 
-    def __init__(self, *, context: Optional["ArcadeContext"] = None):
+    def __init__(self, *, context: ArcadeContext | None = None):
         super().__init__(context=context)
 
     def use(self) -> None:

@@ -28,11 +28,7 @@ from __future__ import annotations
 import abc
 import contextlib
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Optional,
-    Union,
-)
+from typing import TYPE_CHECKING
 
 import PIL.Image
 
@@ -64,7 +60,7 @@ class TextureAtlasBase(abc.ABC):
     _fbo: Framebuffer
     _texture: Texture2D
 
-    def __init__(self, ctx: Optional["ArcadeContext"]):
+    def __init__(self, ctx: ArcadeContext | None):
         self._ctx = ctx or arcade.get_window().ctx
         self._size: tuple[int, int] = 0, 0
         self._layers: int = 1
@@ -237,7 +233,7 @@ class TextureAtlasBase(abc.ABC):
     def render_into(
         self,
         texture: "Texture",
-        projection: Optional[tuple[float, float, float, float]] = None,
+        projection: tuple[float, float, float, float] | None = None,
     ):
         """
         Render directly into a sub-section of the atlas.
@@ -369,7 +365,7 @@ class TextureAtlasBase(abc.ABC):
     @abc.abstractmethod
     def save(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         flip: bool = False,
         components: int = 4,
         draw_borders: bool = False,

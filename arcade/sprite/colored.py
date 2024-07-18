@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
 from weakref import WeakValueDictionary
 
 import PIL
@@ -43,7 +42,7 @@ class SpriteSolidColor(Sprite):
     """
 
     __slots__ = ()
-    _default_image: Optional[ImageData] = None
+    _default_image: ImageData | None = None
     # To avoid making lots of texture instances with the same configuration
     # we cache them here weakly. Making a 100 x 100 grid of white sprites
     # only create 1 texture instead of 1000. This saves memory and processing

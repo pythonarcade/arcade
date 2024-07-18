@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import array
-from typing import Optional
 
 from arcade import gl
 from arcade.color import WHITE
@@ -22,7 +23,7 @@ def draw_texture_rect(
     blend=True,
     alpha=255,
     pixelated=False,
-    atlas: Optional[TextureAtlasBase] = None,
+    atlas: TextureAtlasBase | None = None,
 ) -> None:
     """
     Draw a texture on a rectangle.
@@ -78,7 +79,7 @@ def draw_sprite(
     blend: bool = True,
     alpha=255,
     pixelated=False,
-    atlas: Optional[TextureAtlasBase] = None,
+    atlas: TextureAtlasBase | None = None,
 ) -> None:
     """
     Draw a sprite.
@@ -109,7 +110,7 @@ def draw_sprite_rect(
     blend: bool = True,
     alpha=255,
     pixelated=False,
-    atlas: Optional[TextureAtlasBase] = None,
+    atlas: TextureAtlasBase | None = None,
 ) -> None:
     """Draw a sprite.
 

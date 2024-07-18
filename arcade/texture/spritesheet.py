@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal
 
 from PIL import Image
+
+from arcade.resources import resolve
 
 # from arcade import Texture
 from arcade.texture import Texture
@@ -27,11 +31,9 @@ class SpriteSheet:
 
     def __init__(
         self,
-        path: Optional[Union[str, Path]] = None,
-        image: Optional[Image.Image] = None,
+        path: str | Path | None = None,
+        image: Image.Image | None = None,
     ):
-        from arcade.resources import resolve
-
         self._path = None
         if path:
             self._path = resolve(path)
@@ -64,7 +66,7 @@ class SpriteSheet:
         self._image = image
 
     @property
-    def path(self) -> Optional[Path]:
+    def path(self) -> Path | None:
         """
         The path to the sprite sheet.
 
@@ -129,7 +131,7 @@ class SpriteSheet:
         y: int,
         width: int,
         height: int,
-        hit_box_algorithm: Optional["HitBoxAlgorithm"] = None,
+        hit_box_algorithm: HitBoxAlgorithm | None = None,
         origin: OriginChoices = "upper_left",
     ) -> Texture:
         """
@@ -182,7 +184,7 @@ class SpriteSheet:
         columns: int,
         count: int,
         margin: tuple[int, int, int, int] = (0, 0, 0, 0),
-        hit_box_algorithm: Optional["HitBoxAlgorithm"] = None,
+        hit_box_algorithm: HitBoxAlgorithm | None = None,
     ) -> list[Texture]:
         """
         Slice a grid of textures from the sprite sheet.

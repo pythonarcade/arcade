@@ -12,7 +12,7 @@ The better gui for arcade
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Iterable, Optional, Type, TypeVar, Union
+from typing import Iterable, Optional, TypeVar, Union
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
@@ -164,7 +164,7 @@ class UIManager(EventDispatcher):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos: Point2, cls: Type[W] = UIWidget, layer=0) -> Iterable[W]:
+    def get_widgets_at(self, pos: Point2, cls: type[W] = UIWidget, layer=0) -> Iterable[W]:
         """
         Yields all widgets containing a position, returns first top laying widgets
         which is instance of cls.

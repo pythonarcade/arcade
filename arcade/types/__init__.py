@@ -26,7 +26,7 @@ from __future__ import annotations
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import NamedTuple, Optional, Union, TYPE_CHECKING, TypeVar
+from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar
 
 from pytiled_parser import Properties
 
@@ -187,6 +187,6 @@ PathOrTexture = PathOr["Texture"]
 
 class TiledObject(NamedTuple):
     shape: Union[Point, PointList, tuple[int, int, int, int]]
-    properties: Optional[Properties] = None
-    name: Optional[str] = None
-    type: Optional[str] = None
+    properties: Properties | None = None
+    name: str | None = None
+    type: str | None = None

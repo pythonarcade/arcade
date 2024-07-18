@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 import arcade
 from arcade import Texture
@@ -63,7 +63,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     def __init__(
         self,
-        path_or_texture: Optional[PathOrTexture] = None,
+        path_or_texture: PathOrTexture | None = None,
         scale: float = 1.0,
         center_x: float = 0.0,
         center_y: float = 0.0,
@@ -97,34 +97,34 @@ class Sprite(BasicSprite, PymunkMixin):
         self.change_angle: float = 0.0
 
         # Custom sprite properties
-        self._properties: Optional[dict[str, Any]] = None
+        self._properties: dict[str, Any] | None = None
 
         # Boundaries for moving platforms in tilemaps
         #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
         #: uses this as the left boundary for moving
         #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
-        self.boundary_left: Optional[float] = None
+        self.boundary_left: float | None = None
         #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
         #: uses this as the right boundary for moving
         #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
-        self.boundary_right: Optional[float] = None
+        self.boundary_right: float | None = None
         #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
         #: uses this as the top boundary for moving
         #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
-        self.boundary_top: Optional[float] = None
+        self.boundary_top: float | None = None
         #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
         #: uses this as the top boundary for moving
         #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
-        self.boundary_bottom: Optional[float] = None
+        self.boundary_bottom: float | None = None
 
         self.cur_texture_index: int = 0
         self.textures: list[Texture] = _textures
 
         self.physics_engines: list[Any] = []
 
-        self._sprite_list: Optional[SpriteList] = None
+        self._sprite_list: SpriteList | None = None
         # Debug properties
-        self.guid: Optional[str] = None
+        self.guid: str | None = None
         """str: A GUID for debugging purposes."""
 
         self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(angle=self._angle)
@@ -216,7 +216,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._hit_box
 
     @hit_box.setter
-    def hit_box(self, hit_box: Union[HitBox, RotatableHitBox]) -> None:
+    def hit_box(self, hit_box: HitBox | RotatableHitBox) -> None:
         if type(hit_box) is HitBox:
             self._hit_box = hit_box.create_rotatable(self.angle)
         else:

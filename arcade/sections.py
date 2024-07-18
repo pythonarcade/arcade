@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Generator, Iterable, Optional, Union
+from typing import TYPE_CHECKING, Generator, Iterable
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -26,11 +26,11 @@ class Section:
     :param width: the width of this section
     :param height: the height of this section
     :param name: the name of this section
-    :param Union[bool, Iterable] accept_keyboard_keys: whether or not this section
+    :param bool | Iterable accept_keyboard_keys: whether or not this section
         captures keyboard keys through. keyboard events. If the param is an iterable
         means the keyboard keys that are captured in press/release events:
         for example: ``[arcade.key.UP, arcade.key.DOWN]`` will only capture this two keys
-    :param Union[bool, Iterable] accept_mouse_events: whether or not this section
+    :param bool  Iterable accept_mouse_events: whether or not this section
         captures mouse events. If the param is an iterable means the mouse events
         that are captured. for example: ``['on_mouse_press', 'on_mouse_release']``
         will only capture this two events.
@@ -58,22 +58,22 @@ class Section:
         width: int,
         height: int,
         *,
-        name: Optional[str] = None,
-        accept_keyboard_keys: Union[bool, Iterable] = True,
-        accept_mouse_events: Union[bool, Iterable] = True,
-        prevent_dispatch: Optional[Iterable] = None,
-        prevent_dispatch_view: Optional[Iterable] = None,
+        name: str | None = None,
+        accept_keyboard_keys: bool | Iterable = True,
+        accept_mouse_events: bool | Iterable = True,
+        prevent_dispatch: Iterable | None = None,
+        prevent_dispatch_view: Iterable | None = None,
         local_mouse_coordinates: bool = False,
         enabled: bool = True,
         modal: bool = False,
         draw_order: int = 1,
     ):
         # name of the section
-        self.name: Optional[str] = name
+        self.name: str | None = name
 
         # parent view: set by the SectionManager. Protected, you should not change
         # section.view manually
-        self._view: Optional["View"] = None
+        self._view: View | None = None
 
         # section options
         self._enabled: bool = enabled  # enables or disables this section
@@ -87,9 +87,9 @@ class Section:
         self.block_updates: bool = False
 
         # arcade keyboard keys to accept.
-        self.accept_keyboard_keys: Union[bool, Iterable] = accept_keyboard_keys
-        # arcade moouse events to accept.
-        self.accept_mouse_events: Union[bool, Iterable] = accept_mouse_events
+        self.accept_keyboard_keys: bool | Iterable = accept_keyboard_keys
+        # arcade mouse events to accept.
+        self.accept_mouse_events: bool | Iterable = accept_mouse_events
 
         # prevents events to propagate
         self.prevent_dispatch: Iterable = prevent_dispatch or {True}
@@ -116,7 +116,7 @@ class Section:
         self._ec_top: int = self.window.height if self._modal else self._top
 
         # optional section camera
-        self.camera: Optional[Projector] = None
+        self.camera: Projector | None = None
 
     def __repr__(self):
         name = f"Section {self.name}" if self.name else "Section"
@@ -129,7 +129,7 @@ class Section:
         return self._view
 
     @property
-    def section_manager(self) -> Optional["SectionManager"]:
+    def section_manager(self) -> SectionManager | None:
         """Returns the section manager"""
         return self._view.section_manager if self._view else None
 
@@ -356,13 +356,13 @@ class SectionManager:
 
         # True will call view.on_draw before sections on_draw, False after,
         # None will not call view on_draw
-        self.view_draw_first: Optional[bool] = True
+        self.view_draw_first: bool | None = True
         # True will call view.on_update before sections on_update, False after,
         # None will not call view on_update
-        self.view_update_first: Optional[bool] = True
+        self.view_update_first: bool | None = True
         # True will call view.on_resize before sections on_resize, False after,
         # None will not call view on_resize
-        self.view_resize_first: Optional[bool] = True
+        self.view_resize_first: bool | None = True
 
         # Events that the section manager should handle (instead of the View) if
         # sections are present in a View
@@ -415,7 +415,7 @@ class SectionManager:
         for section in self._sections:
             section.enabled = True
 
-    def get_section_by_name(self, name: str) -> Optional[Section]:
+    def get_section_by_name(self, name: str) -> Section | None:
         """
         Returns the first section with the given name
         :param name: the name of the section you want
@@ -429,8 +429,8 @@ class SectionManager:
     def add_section(
         self,
         section: "Section",
-        at_index: Optional[int] = None,
-        at_draw_order: Optional[int] = None,
+        at_index: int | None = None,
+        at_draw_order: int | None = None,
     ) -> None:
         """
         Adds a section to this Section Manager
@@ -564,7 +564,7 @@ class SectionManager:
         for section in self.sections:
             section.accept_keyboard_keys = False
 
-    def get_first_section(self, x: int, y: int, *, event_capture: bool = True) -> Optional[Section]:
+    def get_first_section(self, x: int, y: int, *, event_capture: bool = True) -> Section | None:
         """
         Returns the first section based on x,y position
 
@@ -607,9 +607,9 @@ class SectionManager:
         x: int,
         y: int,
         *args,
-        current_section: Optional[Section] = None,
+        current_section: Section | None = None,
         **kwargs,
-    ) -> Optional[bool]:
+    ) -> bool | None:
         """
         Generic method to dispatch mouse events to the correct Sections
 
@@ -624,7 +624,7 @@ class SectionManager:
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
 
-        sections: Union[list, Generator]
+        sections: list | Generator
 
         if current_section:
             # affected section is already pre-computed
@@ -678,12 +678,12 @@ class SectionManager:
                 prevent_dispatch_view = method(x, y, *args, **kwargs)
         return prevent_dispatch_view or prevent_dispatch
 
-    def dispatch_keyboard_event(self, event: str, *args, **kwargs) -> Optional[bool]:
+    def dispatch_keyboard_event(self, event: str, *args, **kwargs) -> bool | None:
         """
         Generic method to dispatch keyboard events to the correct sections
 
         :param event: the keyboard event name to dispatch
-        :param args: any other position arguments that should be deliverd to the dispatched event
+        :param args: any other position arguments that should be delivered to the dispatched event
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
@@ -708,7 +708,7 @@ class SectionManager:
                     if prevent_dispatch is EVENT_HANDLED or any(
                         test in section.prevent_dispatch for test in [True, event]
                     ):
-                        # prevent_dispatch attributte from section only affect
+                        # prevent_dispatch attributes from section only affect
                         #  if the method is implemented in the same section
                         prevent_dispatch = EVENT_HANDLED
             if section.modal:
@@ -725,25 +725,25 @@ class SectionManager:
             return method(*args, **kwargs) or prevent_dispatch
         return EVENT_UNHANDLED
 
-    def on_mouse_press(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+    def on_mouse_press(self, x: int, y: int, *args, **kwargs) -> bool | None:
         """
-        Triggers the on_mouse_press event on the appropiate sections or view
+        Triggers the on_mouse_press event on the appropriate sections or view
 
         :param x: the x axis coordinate
         :param y: the y axis coordinate
-        :param args: any other position arguments that should be deliverd to the dispatched event
+        :param args: any other position arguments that should be delivered to the dispatched event
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
         return self.dispatch_mouse_event("on_mouse_press", x, y, *args, **kwargs)
 
-    def on_mouse_release(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+    def on_mouse_release(self, x: int, y: int, *args, **kwargs) -> bool | None:
         """
-        Triggers the on_mouse_release event on the appropiate sections or view
+        Triggers the on_mouse_release event on the appropriate sections or view
 
         :param x: the x axis coordinate
         :param y: the y axis coordinate
-        :param args: any other position arguments that should be deliverd to the dispatched event
+        :param args: any other position arguments that should be delivered to the dispatched event
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
@@ -751,7 +751,7 @@ class SectionManager:
 
     def dispatch_mouse_enter_leave_events(
         self, event_origin: str, x: int, y: int, *args, **kwargs
-    ) -> Optional[bool]:
+    ) -> bool | None:
         """
         This helper method will dispatch mouse enter / leave events to sections
         based on 'on_mouse_motion' and 'on_mouse_drag' events.
@@ -799,7 +799,7 @@ class SectionManager:
         # NOTE: the result from mouse enter/leave events is ignored here
         return prevent_dispatch_origin
 
-    def on_mouse_motion(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+    def on_mouse_motion(self, x: int, y: int, *args, **kwargs) -> bool | None:
         """
         This method dispatches the on_mouse_motion and also calculates if
         on_mouse_enter/leave should be fired.
@@ -812,22 +812,22 @@ class SectionManager:
         """
         return self.dispatch_mouse_enter_leave_events("on_mouse_motion", x, y, *args, **kwargs)
 
-    def on_mouse_drag(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+    def on_mouse_drag(self, x: int, y: int, *args, **kwargs) -> bool | None:
         """
         This method dispatches the on_mouse_drag and also calculates if
         on_mouse_enter/leave should be fired.
 
         :param x: the x axis coordinate
         :param y: the y axis coordinate
-        :param args: any other position arguments that should be deliverd to the dispatched event
+        :param args: any other position arguments that should be delivered to the dispatched event
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
         return self.dispatch_mouse_enter_leave_events("on_mouse_drag", x, y, *args, **kwargs)
 
-    def on_mouse_scroll(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+    def on_mouse_scroll(self, x: int, y: int, *args, **kwargs) -> bool | None:
         """
-        Triggers the on_mouse_scroll event on the appropiate sections or view
+        Triggers the on_mouse_scroll event on the appropriate sections or view
 
         :param x: the x axis coordinate
         :param y: the y axis coordinate
@@ -837,14 +837,14 @@ class SectionManager:
         """
         return self.dispatch_mouse_event("on_mouse_scroll", x, y, *args, **kwargs)
 
-    def on_mouse_enter(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+    def on_mouse_enter(self, x: int, y: int, *args, **kwargs) -> bool | None:
         """
         Triggered when the mouse enters the window space
-        Will trigger on_mouse_enter on the appropiate sections or view
+        Will trigger on_mouse_enter on the appropriate sections or view
 
         :param x: the x axis coordinate
         :param y: the y axis coordinate
-        :param args: any other position arguments that should be deliverd to the dispatched event
+        :param args: any other position arguments that should be delivered to the dispatched event
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
@@ -862,14 +862,14 @@ class SectionManager:
             )
         return prevent_dispatch
 
-    def on_mouse_leave(self, x: int, y: int, *args, **kwargs) -> Optional[bool]:
+    def on_mouse_leave(self, x: int, y: int, *args, **kwargs) -> bool | None:
         """
         Triggered when the mouse leaves the window space
-        Will trigger on_mouse_leave on the appropiate sections or view
+        Will trigger on_mouse_leave on the appropriate sections or view
 
         :param x: the x axis coordinate
         :param y: the y axis coordinate
-        :param args: any other position arguments that should be deliverd to the dispatched event
+        :param args: any other position arguments that should be delivered to the dispatched event
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
@@ -884,21 +884,21 @@ class SectionManager:
         self.mouse_over_sections = []
         return prevent_dispatch
 
-    def on_key_press(self, *args, **kwargs) -> Optional[bool]:
+    def on_key_press(self, *args, **kwargs) -> bool | None:
         """
-        Triggers the on_key_press event on the appropiate sections or view
+        Triggers the on_key_press event on the appropriate sections or view
 
-        :param args: any other position arguments that should be deliverd to the dispatched event
+        :param args: any other position arguments that should be delivered to the dispatched event
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
         return self.dispatch_keyboard_event("on_key_press", *args, **kwargs)
 
-    def on_key_release(self, *args, **kwargs) -> Optional[bool]:
+    def on_key_release(self, *args, **kwargs) -> bool | None:
         """
-        Triggers the on_key_release event on the appropiate sections or view
+        Triggers the on_key_release event on the appropriate sections or view
 
-        :param args: any other position arguments that should be deliverd to the dispatched event
+        :param args: any other position arguments that should be delivered to the dispatched event
         :param kwargs: any other keyword arguments that should be delivered to the dispatched event
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """

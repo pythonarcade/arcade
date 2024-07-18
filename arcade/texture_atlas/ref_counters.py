@@ -8,6 +8,8 @@ Reference counters for tracking textures and images in an atlas
   simply a texture using the same image and the same vertex order.
 """
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Dict
 
 if TYPE_CHECKING:

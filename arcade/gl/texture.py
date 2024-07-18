@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import weakref
 from ctypes import byref, string_at
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from pyglet import gl
 
@@ -119,15 +119,15 @@ class Texture2D:
         *,
         components: int = 4,
         dtype: str = "f1",
-        data: Optional[BufferProtocol] = None,
-        filter: Optional[tuple[PyGLuint, PyGLuint]] = None,
-        wrap_x: Optional[PyGLuint] = None,
-        wrap_y: Optional[PyGLuint] = None,
+        data: BufferProtocol | None = None,
+        filter: tuple[PyGLuint, PyGLuint] | None = None,
+        wrap_x: PyGLuint | None = None,
+        wrap_y: PyGLuint | None = None,
         target=gl.GL_TEXTURE_2D,
         depth=False,
         samples: int = 0,
         immutable: bool = False,
-        internal_format: Optional[PyGLuint] = None,
+        internal_format: PyGLuint | None = None,
         compressed: bool = False,
         compressed_data: bool = False,
     ):
@@ -142,7 +142,7 @@ class Texture2D:
         self._samples = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
         self._depth = depth
         self._immutable = immutable
-        self._compare_func: Optional[str] = None
+        self._compare_func: str | None = None
         self._anisotropy = 1.0
         self._internal_format = internal_format
         self._compressed = compressed
@@ -579,7 +579,7 @@ class Texture2D:
         gl.glTexParameterf(self._target, gl.GL_TEXTURE_MAX_ANISOTROPY, self._anisotropy)
 
     @property
-    def compare_func(self) -> Optional[str]:
+    def compare_func(self) -> str | None:
         """
         Get or set the compare function for a depth texture::
 
@@ -598,7 +598,7 @@ class Texture2D:
         return self._compare_func
 
     @compare_func.setter
-    def compare_func(self, value: Union[str, None]):
+    def compare_func(self, value: str | None):
         if not self._depth:
             raise ValueError("Depth comparison function can only be set on depth textures")
 
@@ -660,12 +660,11 @@ class Texture2D:
         :ref:`prog-guide-gl-buffer-protocol-typing` for more
         information.
 
-        :param data: :class:`~arcade.gl.Buffer` or
-                                            buffer protocol object with
-                                            data to write.
+        :param data: :class:`~arcade.gl.Buffer` or buffer protocol
+            object with data to write.
         :param level: The texture level to write
-        :param Union[Tuple[int, int], Tuple[int, int, int, int]] viewport:
-          The area of the texture to write. 2 or 4 component tuple
+        :param Tuple[int, int] | Tuple[int, int, int, int] viewport:
+            The area of the texture to write. 2 or 4 component tuple
         """
         # TODO: Support writing to layers using viewport + alignment
         if self._samples > 0:

@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import cos, pi, sin
-from typing import Callable, Optional
+from typing import Callable
 
 from .math import get_distance
 
@@ -158,7 +158,7 @@ def ease_angle(
     time=None,
     rate=None,
     ease_function: Callable = linear,
-) -> Optional[EasingData]:
+) -> EasingData | None:
     """
     Set up easing for angles.
     """

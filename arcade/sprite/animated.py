@@ -3,7 +3,6 @@ from __future__ import annotations
 import bisect
 import logging
 import math
-from typing import Optional
 
 from arcade import Texture
 
@@ -29,7 +28,7 @@ class TextureKeyframe:
 
     __slots__ = ("texture", "duration", "tile_id")
 
-    def __init__(self, texture: Texture, duration: int = 100, tile_id: Optional[int] = 0, **kwargs):
+    def __init__(self, texture: Texture, duration: int = 100, tile_id: int | None = 0, **kwargs):
         #: The texture to display for this keyframe.
         self.texture = texture
         #: Duration in milliseconds to display this keyframe.
@@ -137,7 +136,7 @@ class TextureAnimationSprite(Sprite):
         center_x: float = 0.0,
         center_y: float = 0.0,
         scale: float = 1.0,
-        animation: Optional[TextureAnimation] = None,
+        animation: TextureAnimation | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -146,7 +145,7 @@ class TextureAnimationSprite(Sprite):
             center_y=center_y,
         )
         self._time = 0.0
-        self._animation: Optional[TextureAnimation] = None
+        self._animation: TextureAnimation | None = None
         if animation:
             self.animation = animation
         self._current_keyframe_index = 0

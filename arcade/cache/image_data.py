@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from arcade.texture import ImageData
@@ -42,7 +42,7 @@ class ImageDataCache:
 
         self._entries[name] = image
 
-    def get(self, name: str) -> Optional["ImageData"]:
+    def get(self, name: str) -> ImageData | None:
         """
         Attempts to retrieve an entry from the cache.
 
@@ -71,10 +71,10 @@ class ImageDataCache:
     def __len__(self):
         return len(self._entries)
 
-    def __getitem__(self, name: str) -> Optional["ImageData"]:
+    def __getitem__(self, name: str) -> ImageData | None:
         return self.get(name)
 
-    def __setitem__(self, name: str, image: "ImageData"):
+    def __setitem__(self, name: str, image: ImageData):
         self.put(name, image)
 
     def __delitem__(self, name: str):

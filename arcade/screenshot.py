@@ -4,7 +4,7 @@ Original screenshot utilities from arcade 2.
 These functions are flawed because they only read from the screen.
 """
 
-from typing import Optional
+from __future__ import annotations
 
 import PIL.Image
 import PIL.ImageOps
@@ -40,8 +40,8 @@ def get_pixel(x: int, y: int, components: int = 3) -> tuple[int, ...]:
 def get_image(
     x: int = 0,
     y: int = 0,
-    width: Optional[int] = None,
-    height: Optional[int] = None,
+    width: int | None = None,
+    height: int | None = None,
     components: int = 4,
 ) -> PIL.Image.Image:
     """

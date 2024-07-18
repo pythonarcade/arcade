@@ -2,6 +2,8 @@
 A helper class to keep track of texture coordinates stored in a texture.
 """
 
+from __future__ import annotations
+
 from array import array
 from collections import deque
 from typing import TYPE_CHECKING, Dict

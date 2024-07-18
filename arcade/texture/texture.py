@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import logging
 from pathlib import Path
-from typing import Any, Optional, Type, Union
+from typing import Any
 
 import PIL.Image
 import PIL.ImageDraw
@@ -51,7 +51,7 @@ class ImageData:
     __slots__ = ("image", "hash", "__weakref__")
     hash_func = "sha256"
 
-    def __init__(self, image: PIL.Image.Image, hash: Optional[str] = None, **kwargs):
+    def __init__(self, image: PIL.Image.Image, hash: str | None = None, **kwargs):
         self.image = image
         self.hash = hash or self.calculate_hash(image)
 
@@ -143,11 +143,11 @@ class Texture:
 
     def __init__(
         self,
-        image: Union[PIL.Image.Image, ImageData],
+        image: PIL.Image.Image | ImageData,
         *,
-        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        hit_box_points: Optional[Point2List] = None,
-        hash: Optional[str] = None,
+        hit_box_algorithm: HitBoxAlgorithm | None = None,
+        hit_box_points: Point2List | None = None,
+        hash: str | None = None,
         **kwargs,
     ):
         # Overrides the hash
@@ -183,8 +183,8 @@ class Texture:
         self._hit_box_points: Point2List = hit_box_points or self._calculate_hit_box_points()
 
         # Optional filename for debugging
-        self._file_path: Optional[Path] = None
-        self._crop_values: Optional[tuple[int, int, int, int]] = None
+        self._file_path: Path | None = None
+        self._crop_values: tuple[int, int, int, int] | None = None
         self._properties: dict[str, Any] = {}
 
     @property
@@ -207,7 +207,7 @@ class Texture:
         return self._cache_name
 
     @property
-    def image_cache_name(self) -> Optional[str]:
+    def image_cache_name(self) -> str | None:
         """
         Get the image cache name for this texture.
         Returns None if file_path is not set.
@@ -264,7 +264,7 @@ class Texture:
 
     @classmethod
     def create_image_cache_name(
-        cls, path: Union[str, Path], crop: tuple[int, int, int, int] = (0, 0, 0, 0)
+        cls, path: str | Path, crop: tuple[int, int, int, int] = (0, 0, 0, 0)
     ):
         return f"{str(path)}|{crop}"
 
@@ -278,7 +278,7 @@ class Texture:
         return self._atlas_name
 
     @property
-    def file_path(self) -> Optional[Path]:
+    def file_path(self) -> Path | None:
         """
         A Path object to the file this texture was loaded from
 
@@ -287,11 +287,11 @@ class Texture:
         return self._file_path
 
     @file_path.setter
-    def file_path(self, path: Optional[Path]):
+    def file_path(self, path: Path | None):
         self._file_path = path
 
     @property
-    def crop_values(self) -> Optional[tuple[int, int, int, int]]:
+    def crop_values(self) -> tuple[int, int, int, int] | None:
         """
         The crop values used to create this texture in the referenced file
 
@@ -300,7 +300,7 @@ class Texture:
         return self._crop_values
 
     @crop_values.setter
-    def crop_values(self, crop: Optional[tuple[int, int, int, int]]):
+    def crop_values(self, crop: tuple[int, int, int, int] | None):
         self._crop_values = crop
 
     @property
@@ -616,7 +616,7 @@ class Texture:
 
     def transform(
         self,
-        transform: Type[Transform],
+        transform: type[Transform],
     ) -> "Texture":
         """
         Create a new texture with the given transform applied.

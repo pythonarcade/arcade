@@ -8,7 +8,6 @@ and you might need to tell pyglet where it's located.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Union
 
 # import sys
 import pyglet
@@ -24,7 +23,7 @@ class VideoPlayer:
     :param loop: Pass `True` to make the video loop.
     """
 
-    def __init__(self, path: Union[str, Path], loop: bool = False):
+    def __init__(self, path: str | Path, loop: bool = False):
         self.player = pyglet.media.Player()
         self.player.loop = loop
         self.player.queue(pyglet.media.load(str(arcade.resources.resolve(path))))
@@ -35,7 +34,7 @@ class VideoPlayer:
         self._width = arcade.get_window().width
         self._height = arcade.get_window().height
 
-    def draw(self, left: int = 0, bottom: int = 0, size: Optional[tuple[int, int]] = None) -> None:
+    def draw(self, left: int = 0, bottom: int = 0, size: tuple[int, int] | None = None) -> None:
         """
         Call this in `on_draw`.
 
@@ -80,7 +79,7 @@ class VideoPlayer:
 
 
 class VideoPlayerView(arcade.View):
-    def __init__(self, path: Union[str, Path]) -> None:
+    def __init__(self, path: str | Path) -> None:
         super().__init__()
         self.video_player = VideoPlayer(path)
 
