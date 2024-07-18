@@ -6,7 +6,7 @@ from __future__ import annotations
 
 # pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from typing import Iterable, Optional, Union
+from typing import Iterable, Optional
 
 from arcade import (
     BasicSprite,
@@ -319,7 +319,7 @@ class PhysicsEngineSimple:
     def __init__(
         self,
         player_sprite: Sprite,
-        walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+        walls: Optional[SpriteList | Iterable[SpriteList]] = None,
     ) -> None:
         self.player_sprite: Sprite = player_sprite
         """The player-controlled :py:class:`.Sprite`."""
@@ -343,7 +343,7 @@ class PhysicsEngineSimple:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
+    def walls(self, walls: Optional[SpriteList | Iterable[SpriteList]] = None) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:
@@ -438,10 +438,10 @@ class PhysicsEnginePlatformer:
     def __init__(
         self,
         player_sprite: Sprite,
-        platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+        platforms: Optional[SpriteList | Iterable[SpriteList]] = None,
         gravity_constant: float = 0.5,
-        ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
-        walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+        ladders: Optional[SpriteList | Iterable[SpriteList]] = None,
+        walls: Optional[SpriteList | Iterable[SpriteList]] = None,
     ) -> None:
         if not isinstance(player_sprite, Sprite):
             raise TypeError("player_sprite must be a Sprite, not a basic_sprite!")
@@ -542,7 +542,7 @@ class PhysicsEnginePlatformer:
         return self._ladders
 
     @ladders.setter
-    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
+    def ladders(self, ladders: Optional[SpriteList | Iterable[SpriteList]] = None) -> None:
         if ladders:
             _add_to_list(self._ladders, ladders)
         else:
@@ -585,7 +585,7 @@ class PhysicsEnginePlatformer:
 
     @platforms.setter
     def platforms(
-        self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None
+        self, platforms: Optional[SpriteList | Iterable[SpriteList]] = None
     ) -> None:
         if platforms:
             _add_to_list(self._platforms, platforms)
@@ -622,7 +622,7 @@ class PhysicsEnginePlatformer:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
+    def walls(self, walls: Optional[SpriteList | Iterable[SpriteList]] = None) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:
