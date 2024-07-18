@@ -439,10 +439,11 @@ class Window(pyglet.window.Window):
                 have been obtained by enumerating `Screen.get_modes`.  If
                 None, an appropriate mode will be selected from the given
                 `width` and `height`.
-            width (int, optional): Override the width of the window
-            height (int, optional): Override the height of the window
+            width: Override the width of the window. Will be rounded to
+                :py:attr:`int`.
+            height: Override the height of the window. Will be rounded to
+                :py:attr:`int`.
         """
-        super().set_fullscreen(fullscreen, screen, mode, width, height)
         # fmt: off
         super().set_fullscreen(
             fullscreen, screen, mode,
