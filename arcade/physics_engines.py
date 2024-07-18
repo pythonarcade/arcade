@@ -4,9 +4,8 @@ Physics engines for top-down or platformers.
 
 from __future__ import annotations
 
-# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from typing import Iterable, Optional
+from typing import Iterable
 
 from arcade import (
     BasicSprite,
@@ -281,9 +280,7 @@ def _move_sprite(
     return complete_hit_list
 
 
-def _add_to_list(
-    dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]
-) -> None:
+def _add_to_list(dest: list[SpriteList], source: SpriteList | Iterable[SpriteList] | None) -> None:
     if not source:
         return
     elif isinstance(source, SpriteList):
@@ -319,7 +316,7 @@ class PhysicsEngineSimple:
     def __init__(
         self,
         player_sprite: Sprite,
-        walls: Optional[SpriteList | Iterable[SpriteList]] = None,
+        walls: SpriteList | Iterable[SpriteList] | None = None,
     ) -> None:
         self.player_sprite: Sprite = player_sprite
         """The player-controlled :py:class:`.Sprite`."""
@@ -343,7 +340,7 @@ class PhysicsEngineSimple:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: Optional[SpriteList | Iterable[SpriteList]] = None) -> None:
+    def walls(self, walls: SpriteList | Iterable[SpriteList] | None = None) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:
@@ -438,10 +435,10 @@ class PhysicsEnginePlatformer:
     def __init__(
         self,
         player_sprite: Sprite,
-        platforms: Optional[SpriteList | Iterable[SpriteList]] = None,
+        platforms: SpriteList | Iterable[SpriteList] | None = None,
         gravity_constant: float = 0.5,
-        ladders: Optional[SpriteList | Iterable[SpriteList]] = None,
-        walls: Optional[SpriteList | Iterable[SpriteList]] = None,
+        ladders: SpriteList | Iterable[SpriteList] | None = None,
+        walls: SpriteList | Iterable[SpriteList] | None = None,
     ) -> None:
         if not isinstance(player_sprite, Sprite):
             raise TypeError("player_sprite must be a Sprite, not a basic_sprite!")
@@ -542,7 +539,7 @@ class PhysicsEnginePlatformer:
         return self._ladders
 
     @ladders.setter
-    def ladders(self, ladders: Optional[SpriteList | Iterable[SpriteList]] = None) -> None:
+    def ladders(self, ladders: SpriteList | Iterable[SpriteList] | None = None) -> None:
         if ladders:
             _add_to_list(self._ladders, ladders)
         else:
@@ -584,7 +581,7 @@ class PhysicsEnginePlatformer:
         return self._platforms
 
     @platforms.setter
-    def platforms(self, platforms: Optional[SpriteList | Iterable[SpriteList]] = None) -> None:
+    def platforms(self, platforms: SpriteList | Iterable[SpriteList] | None = None) -> None:
         if platforms:
             _add_to_list(self._platforms, platforms)
         else:
@@ -620,7 +617,7 @@ class PhysicsEnginePlatformer:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: Optional[SpriteList | Iterable[SpriteList]] = None) -> None:
+    def walls(self, walls: SpriteList | Iterable[SpriteList] | None = None) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:

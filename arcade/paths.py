@@ -5,7 +5,7 @@ Classic A-star algorithm for path finding.
 from __future__ import annotations
 
 import math
-from typing import Optional, cast
+from typing import cast
 
 from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point
 from arcade.math import get_distance, lerp_2d
@@ -138,7 +138,7 @@ class _AStarGraph(object):
             return 1.42
 
 
-def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> Optional[list[Point2]]:
+def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> list[Point2] | None:
     """
     Returns a path from start to end using the AStarSearch Algorithm
 
@@ -307,7 +307,7 @@ def astar_calculate_path(
     end_point: Point,
     astar_barrier_list: AStarBarrierList,
     diagonal_movement: bool = True,
-) -> Optional[list[Point]]:
+) -> list[Point] | None:
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 

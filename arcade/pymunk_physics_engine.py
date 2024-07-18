@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 import math
-from typing import Callable, Optional
+from typing import Callable
 
 import pymunk
 from pyglet.math import Vec2
@@ -23,9 +23,9 @@ LOG = logging.getLogger(__name__)
 class PymunkPhysicsObject:
     """Object that holds pymunk body/shape for a sprite."""
 
-    def __init__(self, body: Optional[pymunk.Body] = None, shape: Optional[pymunk.Shape] = None):
-        self.body: Optional[pymunk.Body] = body
-        self.shape: Optional[pymunk.Shape] = shape
+    def __init__(self, body: pymunk.Body | None = None, shape: pymunk.Shape | None = None):
+        self.body: pymunk.Body | None = body
+        self.shape: pymunk.Shape | None = shape
 
 
 class PymunkException(Exception):
@@ -153,16 +153,16 @@ class PymunkPhysicsEngine:
         sprite: Sprite,
         mass: float = 1.0,
         friction: float = 0.2,
-        elasticity: Optional[float] = None,
-        moment_of_inertia: Optional[float] = None,  # correct spelling
+        elasticity: float | None = None,
+        moment_of_inertia: float | None = None,  # correct spelling
         body_type: int = DYNAMIC,
-        damping: Optional[float] = None,
-        gravity: Optional[pymunk.Vec2d | tuple[float, float] | Vec2] = None,
-        max_velocity: Optional[int] = None,
-        max_horizontal_velocity: Optional[int] = None,
-        max_vertical_velocity: Optional[int] = None,
+        damping: float | None = None,
+        gravity: pymunk.Vec2d | tuple[float, float] | Vec2 | None = None,
+        max_velocity: int | None = None,
+        max_horizontal_velocity: int | None = None,
+        max_vertical_velocity: int | None = None,
         radius: float = 0,
-        collision_type: Optional[str] = "default",
+        collision_type: str | None = "default",
     ):
         """Add a sprite to the physics engine.
 
@@ -357,11 +357,11 @@ class PymunkPhysicsEngine:
         sprite_list,
         mass: float = 1,
         friction: float = 0.2,
-        elasticity: Optional[float] = None,
-        moment_of_inertia: Optional[float] = None,
+        elasticity: float | None = None,
+        moment_of_inertia: float | None = None,
         body_type: int = DYNAMIC,
-        damping: Optional[float] = None,
-        collision_type: Optional[str] = None,
+        damping: float | None = None,
+        collision_type: str | None = None,
     ):
         """Add all sprites in a sprite list to the physics engine."""
         for sprite in sprite_list:
@@ -385,7 +385,7 @@ class PymunkPhysicsEngine:
         if sprite in self.non_static_sprite_list:
             self.non_static_sprite_list.remove(sprite)
 
-    def get_sprite_for_shape(self, shape: Optional[pymunk.Shape]) -> Optional[Sprite]:
+    def get_sprite_for_shape(self, shape: pymunk.Shape | None) -> Sprite | None:
         """Try to get the sprite registered with this engine for ``shape``.
 
         This method returns ``None`` when:
@@ -409,7 +409,7 @@ class PymunkPhysicsEngine:
 
     def get_sprites_from_arbiter(
         self, arbiter: pymunk.Arbiter
-    ) -> tuple[Optional[Sprite], Optional[Sprite]]:
+    ) -> tuple[Sprite | None, Sprite | None]:
         """Given a collision arbiter, return the sprites associated with the collision."""
         shape1, shape2 = arbiter.shapes
         sprite1 = self.get_sprite_for_shape(shape1)
@@ -482,10 +482,10 @@ class PymunkPhysicsEngine:
         self,
         first_type: str,
         second_type: str,
-        begin_handler: Optional[Callable] = None,
-        pre_handler: Optional[Callable] = None,
-        post_handler: Optional[Callable] = None,
-        separate_handler: Optional[Callable] = None,
+        begin_handler: Callable | None = None,
+        pre_handler: Callable | None = None,
+        post_handler: Callable | None = None,
+        separate_handler: Callable | None = None,
     ):
         """Add code to handle collisions between objects."""
 
