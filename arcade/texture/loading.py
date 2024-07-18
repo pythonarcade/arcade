@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional
 
 import PIL.Image
 
@@ -18,8 +17,8 @@ LOG = logging.getLogger(__name__)
 def load_texture(
     file_path: str | Path,
     *,
-    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-    hash: Optional[str] = None,
+    hit_box_algorithm: HitBoxAlgorithm | None = None,
+    hash: str | None = None,
 ) -> Texture:
     """
     Load a texture from disk (no caching).

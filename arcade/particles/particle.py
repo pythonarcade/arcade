@@ -5,7 +5,7 @@ Often used in large quantity to produce visual effects effects
 
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Literal
 
 from arcade.math import clamp, lerp
 from arcade.sprite import Sprite
@@ -17,7 +17,7 @@ class Particle(Sprite):
 
     def __init__(
         self,
-        path_or_texture: Optional[PathOrTexture],
+        path_or_texture: PathOrTexture | None,
         change_xy: tuple[float, float],
         center_xy: Point = (0.0, 0.0),
         angle: float = 0.0,
@@ -85,7 +85,7 @@ class LifetimeParticle(Particle):
 
     def __init__(
         self,
-        filename_or_texture: Optional[PathOrTexture],
+        filename_or_texture: PathOrTexture | None,
         change_xy: Velocity,
         lifetime: float,
         center_xy: Point = (0.0, 0.0),

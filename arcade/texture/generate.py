@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 import PIL.Image
 import PIL.ImageDraw
@@ -21,8 +20,8 @@ LOG = logging.getLogger(__name__)
 def make_circle_texture(
     diameter: int,
     color: RGBA255,
-    name: Optional[str] = None,
-    hitbox_algorithm: Optional[HitBoxAlgorithm] = None,
+    name: str | None = None,
+    hitbox_algorithm: HitBoxAlgorithm | None = None,
 ) -> Texture:
     """
     Return a Texture of a circle with the given diameter and color.
@@ -49,8 +48,8 @@ def make_soft_circle_texture(
     color: RGBA255,
     center_alpha: int = 255,
     outer_alpha: int = 0,
-    name: Optional[str] = None,
-    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
+    name: str | None = None,
+    hit_box_algorithm: HitBoxAlgorithm | None = None,
 ) -> Texture:
     """
     Creates a :class:`Texture` of a circle with the given diameter and color,
@@ -104,7 +103,7 @@ def make_soft_square_texture(
     color: RGBA255,
     center_alpha: int = 255,
     outer_alpha: int = 0,
-    name: Optional[str] = None,
+    name: str | None = None,
 ) -> Texture:
     """
     Creates a :class:`Texture` of a square with the given diameter and color,

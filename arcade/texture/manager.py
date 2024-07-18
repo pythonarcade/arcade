@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional
 
 import PIL.Image
 import PIL.ImageDraw
@@ -106,7 +105,7 @@ class TextureCacheManager:
         y: int,
         width: int,
         height: int,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: hitbox.HitBoxAlgorithm | None = None,
     ) -> Texture:
         """
         Slice out a a texture at x, y, width, height from a sprite sheet.
@@ -139,7 +138,7 @@ class TextureCacheManager:
     def load_or_get_image(
         self,
         path: str | Path,
-        hash: Optional[str] = None,
+        hash: str | None = None,
         mode="RGBA",
     ) -> ImageData:
         """
@@ -169,7 +168,7 @@ class TextureCacheManager:
         y: int = 0,
         width: int = 0,
         height: int = 0,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: hitbox.HitBoxAlgorithm | None = None,
     ) -> Texture:
         """
         Load an image from disk and create a texture.
@@ -197,13 +196,13 @@ class TextureCacheManager:
     def _load_or_get_texture(
         self,
         file_path: Path,
-        hit_box_algorithm: Optional[hitbox.HitBoxAlgorithm] = None,
+        hit_box_algorithm: hitbox.HitBoxAlgorithm | None = None,
         crop: tuple[int, int, int, int] = (0, 0, 0, 0),
-        hash: Optional[str] = None,
+        hash: str | None = None,
     ) -> Texture:
         """Load a texture, or return a cached version if it's already loaded."""
         hit_box_algorithm = hit_box_algorithm or hitbox.algo_default
-        image_data: Optional[ImageData] = None
+        image_data: ImageData | None = None
         texture = None
 
         # Load the image data from disk or get from cache
@@ -244,7 +243,7 @@ class TextureCacheManager:
     def _load_or_get_image(
         self,
         file_path: Path,
-        hash: Optional[str] = None,
+        hash: str | None = None,
         mode: str = "RGBA",
     ) -> tuple[ImageData, bool]:
         """

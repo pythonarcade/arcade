@@ -4,7 +4,6 @@ import struct
 from typing import (
     Iterable,
     List,
-    Optional,
     Tuple,
 )
 
@@ -36,7 +35,7 @@ def get_distance_between_sprites(sprite1: SpriteType, sprite2: SpriteType) -> fl
 
 def get_closest_sprite(
     sprite: SpriteType, sprite_list: SpriteList
-) -> Optional[Tuple[SpriteType, float]]:
+) -> Tuple[SpriteType, float] | None:
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
 

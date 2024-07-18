@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Sequence
 from arcade.utils import warning, ReplacementWarning
 
 #: The absolute path to this directory
@@ -163,7 +163,7 @@ def get_resource_handle_paths(handle: str) -> list[Path]:
 
 
 def list_built_in_assets(
-    *, name: Optional[str] = None, extensions: Optional[Sequence[str]] = None
+    *, name: str | None = None, extensions: Sequence[str] | None = None
 ) -> list[Path]:
     """
     List built in assets in arcade.

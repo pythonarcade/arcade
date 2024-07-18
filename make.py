@@ -18,7 +18,7 @@ import subprocess
 from contextlib import contextmanager
 from pathlib import Path
 from shutil import rmtree, which
-from typing import Generator, Optional, Union
+from typing import Generator, Union
 
 PathLike = Union[Path, str, bytes]
 
@@ -141,7 +141,7 @@ def cd_context(directory: PathLike) -> Generator[Path, None, None]:
         os.chdir(_original_dir)
 
 
-def run(args: Union[str, list[str]], cd: Optional[PathLike] = None) -> None:
+def run(args: str | list[str], cd: PathLike | None = None) -> None:
     """
     Try to run `args` with subprocess, switching into & out of `cd` if provided.
 
@@ -162,7 +162,7 @@ def run(args: Union[str, list[str]], cd: Optional[PathLike] = None) -> None:
         exit(result.returncode)
 
 
-def run_doc(args: Union[str, list[str]]) -> None:
+def run_doc(args: str | list[str]) -> None:
     run(args, cd=FULL_DOC_DIR)
 
 

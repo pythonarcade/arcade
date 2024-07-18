@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
     Tuple,
 )
 
@@ -26,7 +25,7 @@ class TextureArrayAtlas(TextureAtlasBase):
         layers (int): The number of layers (number of textures to store)
     """
 
-    def __init__(self, ctx: Optional[ArcadeContext], size: Tuple[int, int], layers: int):
+    def __init__(self, ctx: ArcadeContext | None, size: Tuple[int, int], layers: int):
         super().__init__(ctx)
         self._size = size
         self._layers = layers

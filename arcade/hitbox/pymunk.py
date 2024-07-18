@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import pymunk
 from PIL.Image import Image
 from pymunk import Vec2d
@@ -27,16 +25,16 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
     #: The default detail when creating a new instance.
     default_detail = 4.5
 
-    def __init__(self, *, detail: Optional[float] = None):
+    def __init__(self, *, detail: float | None = None):
         super().__init__()
         self.detail = detail or self.default_detail
         self._cache_name += f"|detail={self.detail}"
 
-    def __call__(self, *, detail: Optional[float] = None) -> "PymunkHitBoxAlgorithm":
+    def __call__(self, *, detail: float | None = None) -> "PymunkHitBoxAlgorithm":
         """Create a new instance with new default values"""
         return PymunkHitBoxAlgorithm(detail=detail or self.detail)
 
-    def calculate(self, image: Image, detail: Optional[float] = None, **kwargs) -> Point2List:
+    def calculate(self, image: Image, detail: float | None = None, **kwargs) -> Point2List:
         """
         Given an RGBA image, this returns points that make up a hit box around it.
 

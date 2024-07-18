@@ -4,7 +4,7 @@ Metadata about where an image is located in the atlas.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from .base import TexCoords, TextureAtlasBase
 
@@ -61,7 +61,7 @@ class AtlasRegion:
         y: int,
         width: int,
         height: int,
-        texture_coordinates: Optional[TexCoords] = None,
+        texture_coordinates: TexCoords | None = None,
     ):
         #: X position of the texture in the atlas
         self.x = x
