@@ -2,6 +2,8 @@
 Metadata about where an image is located in the atlas.
 """
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Optional
 
 from .base import TexCoords, TextureAtlasBase
