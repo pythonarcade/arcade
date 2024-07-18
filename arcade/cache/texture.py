@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
+
+from arcade.texture.texture import Texture
 
 if TYPE_CHECKING:
     from arcade import Texture
@@ -123,17 +125,13 @@ class TextureCache:
         file_cache_name = Texture.create_image_cache_name(file_path, crop)
         return self._file_entries.get(file_cache_name)
 
-    def delete(
-        self, texture_or_name: Union["Texture", str], raise_if_not_exist: bool = False
-    ) -> None:
+    def delete(self, texture_or_name: Texture | str, raise_if_not_exist: bool = False) -> None:
         """
         Delete a texture from the cache by cache name.
 
         :param texture_or_name: The texture or cache name to delete
         :param ignore_error: If True, ignore errors when deleting
         """
-        from arcade import Texture
-
         if isinstance(texture_or_name, Texture):
             texture = texture_or_name
             name = texture.cache_name

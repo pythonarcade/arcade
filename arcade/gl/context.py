@@ -16,7 +16,6 @@ from typing import (
     Sequence,
     Set,
     Tuple,
-    Union,
     overload,
 )
 
@@ -576,7 +575,7 @@ class Context:
         self.fbo.scissor = value
 
     @property
-    def blend_func(self) -> Union[Tuple[int, int], Tuple[int, int, int, int]]:
+    def blend_func(self) -> Tuple[int, int] | Tuple[int, int, int, int]:
         """
         Get or set the blend function.
         This is tuple specifying how the color and
@@ -624,7 +623,7 @@ class Context:
         return self._blend_func
 
     @blend_func.setter
-    def blend_func(self, value: Union[Tuple[int, int], Tuple[int, int, int, int]]):
+    def blend_func(self, value: Tuple[int, int] | Tuple[int, int, int, int]):
         self._blend_func = value
         if len(value) == 2:
             gl.glBlendFunc(*value)
@@ -882,7 +881,7 @@ class Context:
     def framebuffer(
         self,
         *,
-        color_attachments: Optional[Union[Texture2D, List[Texture2D]]] = None,
+        color_attachments: Optional[Texture2D | List[Texture2D]] = None,
         depth_attachment: Optional[Texture2D] = None,
     ) -> Framebuffer:
         """Create a Framebuffer.

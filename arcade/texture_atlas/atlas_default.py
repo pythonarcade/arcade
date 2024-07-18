@@ -7,7 +7,6 @@ from typing import (
     TYPE_CHECKING,
     Optional,
     Sequence,
-    Union,
 )
 from weakref import WeakSet, WeakValueDictionary, finalize
 
@@ -874,7 +873,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
     def save(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         flip: bool = False,
         components: int = 4,
         draw_borders: bool = False,

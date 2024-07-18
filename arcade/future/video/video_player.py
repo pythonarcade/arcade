@@ -8,7 +8,7 @@ and you might need to tell pyglet where it's located.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 # import sys
 import pyglet
@@ -24,7 +24,7 @@ class VideoPlayer:
     :param loop: Pass `True` to make the video loop.
     """
 
-    def __init__(self, path: Union[str, Path], loop: bool = False):
+    def __init__(self, path: str | Path, loop: bool = False):
         self.player = pyglet.media.Player()
         self.player.loop = loop
         self.player.queue(pyglet.media.load(str(arcade.resources.resolve(path))))

@@ -1,7 +1,9 @@
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal, Optional
 
 from PIL import Image
+
+from arcade.resources import resolve
 
 # from arcade import Texture
 from arcade.texture import Texture
@@ -27,11 +29,9 @@ class SpriteSheet:
 
     def __init__(
         self,
-        path: Optional[Union[str, Path]] = None,
+        path: Optional[str | Path] = None,
         image: Optional[Image.Image] = None,
     ):
-        from arcade.resources import resolve
-
         self._path = None
         if path:
             self._path = resolve(path)

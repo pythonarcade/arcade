@@ -31,7 +31,6 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Optional,
-    Union,
 )
 
 import PIL.Image
@@ -369,7 +368,7 @@ class TextureAtlasBase(abc.ABC):
     @abc.abstractmethod
     def save(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         flip: bool = False,
         components: int = 4,
         draw_borders: bool = False,

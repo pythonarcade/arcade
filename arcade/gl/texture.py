@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import weakref
 from ctypes import byref, string_at
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 from pyglet import gl
 
@@ -598,7 +598,7 @@ class Texture2D:
         return self._compare_func
 
     @compare_func.setter
-    def compare_func(self, value: Union[str, None]):
+    def compare_func(self, value: str | None):
         if not self._depth:
             raise ValueError("Depth comparison function can only be set on depth textures")
 
@@ -660,12 +660,11 @@ class Texture2D:
         :ref:`prog-guide-gl-buffer-protocol-typing` for more
         information.
 
-        :param data: :class:`~arcade.gl.Buffer` or
-                                            buffer protocol object with
-                                            data to write.
+        :param data: :class:`~arcade.gl.Buffer` or buffer protocol
+            object with data to write.
         :param level: The texture level to write
-        :param Union[Tuple[int, int], Tuple[int, int, int, int]] viewport:
-          The area of the texture to write. 2 or 4 component tuple
+        :param Tuple[int, int] | Tuple[int, int, int, int] viewport:
+            The area of the texture to write. 2 or 4 component tuple
         """
         # TODO: Support writing to layers using viewport + alignment
         if self._samples > 0:

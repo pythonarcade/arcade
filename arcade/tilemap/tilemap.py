@@ -124,7 +124,7 @@ class TileMap:
     https://api.arcade.academy/en/latest/examples/platform_tutorial/step_09.html
 
 
-    :param Union[str, Path] map_file: A JSON map file for a Tiled map to initialize from
+    :param str | Path map_file: A JSON map file for a Tiled map to initialize from
     :param scaling: Global scaling to apply to all Sprites.
     :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
     :param use_spatial_hash: If set to True, this will make moving a sprite
@@ -819,10 +819,10 @@ class TileMap:
         sprite_list: Optional[SpriteList] = None
         objects_list: Optional[list[TiledObject]] = []
 
-        shape: Union[list[Point2], tuple[int, int, int, int], Point2, None] = None
+        shape: list[Point2] | tuple[int, int, int, int] | Point2 | None = None
 
         for cur_object in layer.tiled_objects:
-            # shape: Optional[Union[Point, PointList, Rect]] = None
+            # shape: Optional[Point | PointList | Rect] = None
             if isinstance(cur_object, pytiled_parser.tiled_object.Tile):
                 if not sprite_list:
                     sprite_list = SpriteList(
@@ -995,7 +995,7 @@ class TileMap:
 
 
 def load_tilemap(
-    map_file: Union[str, Path],
+    map_file: str | Path,
     scaling: float = 1.0,
     layer_options: Optional[dict[str, dict[str, Any]]] = None,
     use_spatial_hash: bool = False,
@@ -1013,7 +1013,7 @@ def load_tilemap(
     For more clarification on the layer_options key, see the `__init__` function
     of the `TileMap` class
 
-    :param Union[str, Path] map_file: The JSON map file.
+    :param str | Path map_file: The JSON map file.
     :param scaling: The global scaling to apply to all Sprite's within the map.
     :param use_spatial_hash: If set to True, this will make moving a sprite
                in the SpriteList slower, but it will speed up collision detection
@@ -1038,7 +1038,7 @@ def load_tilemap(
     )
 
 
-def read_tmx(map_file: Union[str, Path]) -> pytiled_parser.TiledMap:
+def read_tmx(map_file: str | Path) -> pytiled_parser.TiledMap:
     """
     Deprecated function to raise a warning that it has been removed.
 

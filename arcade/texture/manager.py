@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 import PIL.Image
 import PIL.ImageDraw
@@ -138,7 +138,7 @@ class TextureCacheManager:
 
     def load_or_get_image(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         hash: Optional[str] = None,
         mode="RGBA",
     ) -> ImageData:
@@ -163,7 +163,7 @@ class TextureCacheManager:
 
     def load_or_get_texture(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         *,
         x: int = 0,
         y: int = 0,

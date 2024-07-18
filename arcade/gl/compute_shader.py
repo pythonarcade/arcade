@@ -12,7 +12,7 @@ from ctypes import (
     create_string_buffer,
     pointer,
 )
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from pyglet import gl
 
@@ -135,7 +135,7 @@ class ComputeShader:
         self.use()
         gl.glDispatchCompute(group_x, group_y, group_z)
 
-    def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
+    def __getitem__(self, item) -> Uniform | UniformBlock:
         """Get a uniform or uniform block"""
         try:
             uniform = self._uniforms[item]

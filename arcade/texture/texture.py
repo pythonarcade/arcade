@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import logging
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import PIL.Image
 import PIL.ImageDraw
@@ -264,7 +264,7 @@ class Texture:
 
     @classmethod
     def create_image_cache_name(
-        cls, path: Union[str, Path], crop: tuple[int, int, int, int] = (0, 0, 0, 0)
+        cls, path: str | Path, crop: tuple[int, int, int, int] = (0, 0, 0, 0)
     ):
         return f"{str(path)}|{crop}"
 

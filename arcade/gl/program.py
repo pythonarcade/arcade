@@ -13,7 +13,7 @@ from ctypes import (
     create_string_buffer,
     pointer,
 )
-from typing import TYPE_CHECKING, Any, Iterable, Optional, Union
+from typing import TYPE_CHECKING, Any, Iterable, Optional
 
 from pyglet import gl
 
@@ -88,7 +88,7 @@ class Program:
         self._attributes = []  # type: list[AttribFormat]
         #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
-        self._uniforms: dict[str, Union[Uniform, UniformBlock]] = {}
+        self._uniforms: dict[str, Uniform | UniformBlock] = {}
 
         if self._varyings_capture_mode not in self._valid_capture_modes:
             raise ValueError(
@@ -272,7 +272,7 @@ class Program:
         gl.glDeleteProgram(prog_id)
         ctx.stats.decr("program")
 
-    def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
+    def __getitem__(self, item) -> Uniform | UniformBlock:
         """Get a uniform or uniform block"""
         try:
             uniform = self._uniforms[item]
