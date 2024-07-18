@@ -413,7 +413,7 @@ class Window(pyglet.window.Window):
     def set_fullscreen(
         self,
         fullscreen: bool = True,
-        screen: pyglet.window.Window | None = None,
+        screen=None,
         mode: ScreenMode | None = None,
         width: float | None = None,
         height: float | None = None,
