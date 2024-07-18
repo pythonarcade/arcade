@@ -171,7 +171,7 @@ class Window(pyglet.window.Window):
                 config = pyglet.gl.Config(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
-                    opengl_api=gl_api,
+                    opengl_api=gl_api,  # type: ignore  # pending: upstream fix
                     double_buffer=True,
                     sample_buffers=1,
                     samples=samples,
