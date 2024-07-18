@@ -5,7 +5,7 @@ Drawing text with pyglet label
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 import pyglet
 
@@ -42,7 +42,7 @@ def load_font(path: str | Path) -> None:
     pyglet.font.add_file(str(file_path))
 
 
-FontNameOrNames = str | tuple[str, ...]
+FontNameOrNames = Union[str, tuple[str, ...]]
 
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
@@ -83,7 +83,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
                 pass
 
         # failed to find it ourselves, hope pyglet can make sense of it
-        # Note this is the best approximation of what I unerstand the old
+        # Note this is the best approximation of what I understand the old
         # behavior to have been.
         return pyglet.font.load(font_list).name
 
