@@ -46,7 +46,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
             raise ValueError("At least a single value has to be available for `buttons`")
 
         super().__init__(size_hint=(1, 1))
-        self.register_event_type("on_action")
+        self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
 
         space = 20
 
@@ -136,7 +136,7 @@ class UIButtonRow(UIBoxLayout):
             space_between=space_between,
             style=style,
         )
-        self.register_event_type("on_action")
+        self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
 
         self.button_factory = button_factory
 

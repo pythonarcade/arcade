@@ -517,7 +517,7 @@ class Text:
         self._label.bold = bold
 
     @property
-    def italic(self) -> bool:
+    def italic(self) -> bool | str:
         """
         Get or set the italic state of the label
         """

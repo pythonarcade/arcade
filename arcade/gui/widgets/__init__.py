@@ -99,8 +99,8 @@ class UIWidget(EventDispatcher, ABC):
         self.size_hint_min = size_hint_min
         self.size_hint_max = size_hint_max
 
-        self.register_event_type("on_event")
-        self.register_event_type("on_update")
+        self.register_event_type("on_event")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_update")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
 
         for child in children:
             self.add(child)
@@ -516,7 +516,7 @@ class UIInteractiveWidget(UIWidget):
             size_hint_max=size_hint_max,
             **kwargs,
         )
-        self.register_event_type("on_click")
+        self.register_event_type("on_click")  # type: ignore
 
         self.interaction_buttons = interaction_buttons
 

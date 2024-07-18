@@ -99,7 +99,7 @@ class UIManager(EventDispatcher):
         self._render_to_surface_camera = arcade.Camera2D()
         # this camera is used for rendering the UI and should not be changed by the user
 
-        self.register_event_type("on_event")
+        self.register_event_type("on_event")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
         """
