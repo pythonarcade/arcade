@@ -584,9 +584,7 @@ class PhysicsEnginePlatformer:
         return self._platforms
 
     @platforms.setter
-    def platforms(
-        self, platforms: Optional[SpriteList | Iterable[SpriteList]] = None
-    ) -> None:
+    def platforms(self, platforms: Optional[SpriteList | Iterable[SpriteList]] = None) -> None:
         if platforms:
             _add_to_list(self._platforms, platforms)
         else:
