@@ -76,7 +76,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         bind(self, "pressed", self.trigger_render)
         bind(self, "disabled", self.trigger_render)
 
-        self.register_event_type("on_change")
+        self.register_event_type("on_change")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
 
     def _x_for_value(self, value: float):
         """Provides the x coordinate for the given value."""

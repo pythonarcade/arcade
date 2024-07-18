@@ -18,7 +18,7 @@ python -m arcade.examples.perspective
 from array import array
 
 import arcade
-from pyglet.math import Mat4
+from pyglet.math import Mat4, Vec3
 from arcade.gl import BufferDescription
 
 
@@ -121,8 +121,8 @@ class Perspective(arcade.Window):
         self.fbo.color_attachments[0].use(unit=0)
 
         # Move the plane into camera view and rotate it
-        translate = Mat4.from_translation((0, 0, -2))
-        rotate = Mat4.from_rotation(self.time / 2, (1, 0, 0))
+        translate = Mat4.from_translation(Vec3(0, 0, -2))
+        rotate = Mat4.from_rotation(self.time / 2, Vec3(1, 0, 0))
         self.program["model"] = translate @ rotate
 
         # Scroll the texture coordinates

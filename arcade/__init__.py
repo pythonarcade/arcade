@@ -10,7 +10,7 @@ from __future__ import annotations
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
-from typing import Optional
+from typing import Final, Optional
 
 from pathlib import Path
 
@@ -58,29 +58,21 @@ else:
 # noinspection PyPep8
 import pyglet
 
-# TODO: Remove ASAP after pyglet >= 2.1dev2 is out
-if pyglet.version == "2.1.dev2":
-    # Temporary monkeypatch via deletion since dev2 still includes
-    # overly-specific __eq__ behavior. Later pyglet commits restore
-    # equality with same-valued tuples by deleting the __eq__ methods.
-    from pyglet import math as _pyglet_math
-
-    del _pyglet_math.Vec2.__eq__
-    del _pyglet_math.Vec3.__eq__
-    del _pyglet_math.Vec4.__eq__
 
 # Env variable shortcut for headless mode
-if os.environ.get("ARCADE_HEADLESS"):
-    pyglet.options["headless"] = True
+headless: Final[bool] = bool(os.environ.get("ARCADE_HEADLESS"))
+if headless:
+    pyglet.options.headless = headless  # type: ignore # pending https://github.com/pyglet/pyglet/issues/1164
+
 
 from arcade import utils
 
 # Disable shadow window on macs and in headless mode.
 if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_raspberry_pi():
-    pyglet.options["shadow_window"] = False
+    pyglet.options.shadow_window = False  # type: ignore # pending https://github.com/pyglet/pyglet/issues/1164
 
 # Use the old gdi fonts on windows until directwrite is fast/stable
-# pyglet.options['win32_gdi_font'] = True
+# pyglet.options.win32_gdi_font = True
 
 # Imports from modules that don't do anything circular
 
@@ -152,7 +144,7 @@ from .screenshot import get_image
 from .screenshot import get_pixel
 
 # We don't have joysticks game controllers in headless mode
-if not pyglet.options["headless"]:
+if not headless:  # type: ignore
     from .joysticks import get_game_controllers
     from .joysticks import get_joysticks
     from .controller import ControllerManager
@@ -407,11 +399,12 @@ __version__ = VERSION
 # Piggyback on pyglet's doc run detection
 if not getattr(sys, "is_pyglet_doc_run", False):
     # Load additional game controller mappings to Pyglet
-    if not pyglet.options["headless"]:
+    if not headless:
         try:
             import pyglet.input.controller
 
             mappings_file = resources.resolve(":system:gamecontrollerdb.txt")
-            pyglet.input.controller.add_mappings_from_file(mappings_file)
+            # TODO: remove string conversion once fixed upstream
+            pyglet.input.controller.add_mappings_from_file(str(mappings_file))
         except AssertionError:
             pass

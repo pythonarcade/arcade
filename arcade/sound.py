@@ -11,15 +11,16 @@ from pathlib import Path
 from typing import Optional, Union
 
 import pyglet
+from pyglet.media import Source
 
 from arcade.resources import resolve
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
-    pyglet.options["audio"] = tuple(
+    pyglet.options.audio = tuple(  # type: ignore
         v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(",")
     )
 else:
-    pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
+    pyglet.options.audio = ("openal", "xaudio2", "directsound", "pulse", "silent")  # type: ignore
 
 import pyglet.media as media
 
@@ -39,9 +40,7 @@ class Sound:
             raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
-        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(
-            self.file_name, streaming=streaming
-        )
+        self.source: Source = media.load(self.file_name, streaming=streaming)
 
         if self.source.duration is None:
             raise ValueError(

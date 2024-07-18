@@ -45,9 +45,8 @@ def load_font(path: Union[str, Path]) -> None:
 FontNameOrNames = Union[str, tuple[str, ...]]
 
 
-def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames:
-    """
-    Attempt to resolve a tuple of font names.
+def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
+    """Attempt to resolve a font name.
 
     Preserves the original logic of this section, even though it
     doesn't seem to make sense entirely. Comments are an attempt
@@ -83,8 +82,12 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> FontNameOrNames
             except FileNotFoundError:
                 pass
 
-    # failed to find it ourselves, hope pyglet can make sense of it
-    return font_name
+        # failed to find it ourselves, hope pyglet can make sense of it
+        # Note this is the best approximation of what I unerstand the old
+        # behavior to have been.
+        return pyglet.font.load(font_list).name
+
+    raise ValueError(f"Couldn't find a font for {font_name!r}")
 
 
 def _draw_pyglet_label(label: pyglet.text.Label) -> None:
@@ -132,7 +135,8 @@ class Text:
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
     :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
-    :param bold: Whether to draw the text as bold
+    :param bold: Whether to draw the text as bold, and if a string,
+        how bold. See :py:attr:`.bold` to learn more.
     :param italic: Whether to draw the text as italic
     :param anchor_x: How to calculate the anchor point's x coordinate.
                          Options: "left", "center", or "right"
@@ -181,7 +185,7 @@ class Text:
         width: int | None = None,
         align: str = "left",
         font_name: FontNameOrNames = ("calibri", "arial"),
-        bold: bool = False,
+        bold: bool | str = False,
         italic: bool = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
@@ -204,6 +208,7 @@ class Text:
             )
 
         adjusted_font = _attempt_font_name_resolution(font_name)
+
         self._label = pyglet.text.Label(
             text=text,
             # pyglet is lying about what it takes here and float is entirely valid
@@ -211,13 +216,14 @@ class Text:
             y=y,  # type: ignore
             z=z,  # type: ignore
             font_name=adjusted_font,
-            font_size=font_size,
+            # TODO: Fix this upstream (Mac & Linux seem to allow float)
+            font_size=font_size,  # type: ignore
             # use type: ignore since cast is slow & pyglet used Literal
             anchor_x=anchor_x,  # type: ignore
             anchor_y=anchor_y,  # type: ignore
             color=Color.from_iterable(color),
             width=width,
-            align=align,
+            align=align,  # type: ignore
             bold=bold,
             italic=italic,
             multiline=multiline,
@@ -330,11 +336,17 @@ class Text:
         """
         Get or set the font name(s) for the label
         """
-        return self._label.font_name
+        if not isinstance(self._label.font_name, str):
+            return tuple(self._label.font_name)
+        else:
+            return self._label.font_name
 
     @font_name.setter
     def font_name(self, font_name: FontNameOrNames) -> None:
-        self._label.font_name = font_name
+        if isinstance(font_name, str):
+            self._label.font_name = font_name
+        else:
+            self._label.font_name = list(font_name)
 
     @property
     def font_size(self) -> float:
@@ -386,7 +398,7 @@ class Text:
         """
         Get or set the text color for the label
         """
-        return self._label.color
+        return Color.from_iterable(self._label.color)
 
     @color.setter
     def color(self, color: RGBOrA255):
@@ -485,18 +497,27 @@ class Text:
         self._label.set_style("align", align)
 
     @property
-    def bold(self) -> bool:
+    def bold(self) -> bool | str:
         """
-        Get or set bold state of the label
+        Get or set bold state of the label.
+
+        The supported values include:
+
+        * ``"black"``
+        * ``"bold" (same as ``True``)
+        * ``"semibold"``
+        * ``"semilight"``
+        * ``"light"``
+
         """
         return self._label.bold
 
     @bold.setter
-    def bold(self, bold: bool):
+    def bold(self, bold: bool | str):
         self._label.bold = bold
 
     @property
-    def italic(self) -> bool:
+    def italic(self) -> bool | str:
         """
         Get or set the italic state of the label
         """
@@ -588,7 +609,7 @@ def create_text_sprite(
     width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
-    bold: bool = False,
+    bold: bool | str = False,
     italic: bool = False,
     anchor_x: str = "left",
     multiline: bool = False,
@@ -679,7 +700,7 @@ def draw_text(
     width: int | None = None,
     align: str = "left",
     font_name: FontNameOrNames = ("calibri", "arial"),
-    bold: bool = False,
+    bold: bool | str = False,
     italic: bool = False,
     anchor_x: str = "left",
     anchor_y: str = "baseline",
@@ -719,7 +740,8 @@ def draw_text(
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
     :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
-    :param bold: Whether to draw the text as bold
+    :param bold: Whether to draw the text as bold, and if a :py:class:`str`,
+        how bold to draw it. See :py:attr:`.Text.bold` to learn more.
     :param italic: Whether to draw the text as italic
     :param anchor_x: How to calculate the anchor point's x coordinate
     :param anchor_y: How to calculate the anchor point's y coordinate

@@ -183,7 +183,10 @@ class Context:
     _valid_apis = ("gl", "gles")
 
     def __init__(
-        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
+        self,
+        window: pyglet.window.Window,  # type: ignore
+        gc_mode: str = "context_gc",
+        gl_api: str = "gl",
     ):
         self._window_ref = weakref.ref(window)
         if gl_api not in self._valid_apis:

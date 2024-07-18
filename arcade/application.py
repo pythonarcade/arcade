@@ -132,14 +132,14 @@ class Window(pyglet.window.Window):
         self,
         width: int = 1280,
         height: int = 720,
-        title: Optional[str] = "Arcade Window",
+        title: str | None = "Arcade Window",
         fullscreen: bool = False,
         resizable: bool = False,
         update_rate: float = 1 / 60,
         antialiasing: bool = True,
         gl_version: tuple[int, int] = (3, 3),
-        screen: Optional[pyglet.display.Screen] = None,
-        style: Optional[str] = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
+        screen: pyglet.display.Screen | None = None,
+        style: str | None = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
         visible: bool = True,
         vsync: bool = False,
         gc_mode: str = "context_gc",
@@ -149,7 +149,7 @@ class Window(pyglet.window.Window):
         gl_api: str = "gl",
         draw_rate: float = 1 / 60,
         fixed_rate: float = 1.0 / 60.0,
-        fixed_frame_cap: Optional[int] = None,
+        fixed_frame_cap: int | None = None,
     ) -> None:
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -161,7 +161,7 @@ class Window(pyglet.window.Window):
             gl_version = 3, 1
             gl_api = "gles"
 
-        self.headless: bool = pyglet.options.get("headless") is True
+        self.headless: bool = arcade.headless
         """If True, the window is running in headless mode."""
 
         config = None
@@ -171,7 +171,7 @@ class Window(pyglet.window.Window):
                 config = pyglet.gl.Config(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
-                    opengl_api=gl_api,
+                    opengl_api=gl_api,  # type: ignore  # pending: upstream fix
                     double_buffer=True,
                     sample_buffers=1,
                     samples=samples,
@@ -183,7 +183,7 @@ class Window(pyglet.window.Window):
                     alpha_size=8,
                 )
                 display = pyglet.display.get_display()
-                screen = display.get_default_screen()
+                screen = display.get_default_screen()  # type: ignore  # pending: resolve upstream type tricks
                 if screen:
                     config = screen.get_best_config(config)
             except pyglet.window.NoSuchConfigException:
@@ -195,7 +195,7 @@ class Window(pyglet.window.Window):
             config = pyglet.gl.Config(
                 major_version=gl_version[0],
                 minor_version=gl_version[1],
-                opengl_api=gl_api,
+                opengl_api=gl_api,  # type: ignore  # pending: upstream fix
                 double_buffer=True,
                 depth_size=24,
                 stencil_size=8,
@@ -215,9 +215,10 @@ class Window(pyglet.window.Window):
                 visible=visible,
                 style=style,
             )
-            self.register_event_type("on_update")
-            self.register_event_type("on_action")
-            self.register_event_type("on_fixed_update")
+            # pending: weird import tricks resolved
+            self.register_event_type("on_update")  # type: ignore
+            self.register_event_type("on_action")  # type: ignore
+            self.register_event_type("on_fixed_update")  # type: ignore
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException(
                 "Unable to create an OpenGL 3.3+ context. "
@@ -291,7 +292,7 @@ class Window(pyglet.window.Window):
         if enable_polling:
             self.keyboard = pyglet.window.key.KeyStateHandler()
 
-            if pyglet.options["headless"]:
+            if arcade.headless:
                 self.push_handlers(self.keyboard)
 
             else:
@@ -412,10 +413,10 @@ class Window(pyglet.window.Window):
     def set_fullscreen(
         self,
         fullscreen: bool = True,
-        screen: Optional["Window"] = None,
-        mode: Optional[ScreenMode] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
+        screen=None,
+        mode: ScreenMode | None = None,
+        width: float | None = None,
+        height: float | None = None,
     ) -> None:
         """
         Change the fullscreen status of the window.
@@ -438,10 +439,18 @@ class Window(pyglet.window.Window):
                 have been obtained by enumerating `Screen.get_modes`.  If
                 None, an appropriate mode will be selected from the given
                 `width` and `height`.
-            width (int, optional): Override the width of the window
-            height (int, optional): Override the height of the window
+            width: Override the width of the window. Will be rounded to
+                :py:attr:`int`.
+            height: Override the height of the window. Will be rounded to
+                :py:attr:`int`.
         """
-        super().set_fullscreen(fullscreen, screen, mode, width, height)
+        # fmt: off
+        super().set_fullscreen(
+            fullscreen, screen, mode,
+            # TODO: resolve the upstream int / float screen coord issue
+            None if width is None else int(width),
+            None if height is None else int(height))
+        # fmt: on
 
     def center_window(self) -> None:
         """Center the window on your desktop."""
