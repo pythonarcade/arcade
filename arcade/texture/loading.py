@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 import PIL.Image
 
@@ -16,7 +16,7 @@ LOG = logging.getLogger(__name__)
 
 
 def load_texture(
-    file_path: Union[str, Path],
+    file_path: str | Path,
     *,
     hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
     hash: Optional[str] = None,
@@ -61,7 +61,7 @@ def load_texture(
 
 
 def load_image(
-    file_path: Union[str, Path],
+    file_path: str | Path,
     *,
     mode: str = "RGBA",
 ) -> PIL.Image.Image:
@@ -88,7 +88,7 @@ def load_image(
     return im
 
 
-def load_spritesheet(file_name: Union[str, Path]) -> SpriteSheet:
+def load_spritesheet(file_name: str | Path) -> SpriteSheet:
     """
     Loads an image from disk returning a sprite sheet that can
     further be used to crop out smaller images.

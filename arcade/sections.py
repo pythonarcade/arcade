@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Generator, Iterable, Optional, Union
+from typing import TYPE_CHECKING, Generator, Iterable, Optional
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -26,11 +26,11 @@ class Section:
     :param width: the width of this section
     :param height: the height of this section
     :param name: the name of this section
-    :param Union[bool, Iterable] accept_keyboard_keys: whether or not this section
+    :param bool | Iterable accept_keyboard_keys: whether or not this section
         captures keyboard keys through. keyboard events. If the param is an iterable
         means the keyboard keys that are captured in press/release events:
         for example: ``[arcade.key.UP, arcade.key.DOWN]`` will only capture this two keys
-    :param Union[bool, Iterable] accept_mouse_events: whether or not this section
+    :param bool  Iterable accept_mouse_events: whether or not this section
         captures mouse events. If the param is an iterable means the mouse events
         that are captured. for example: ``['on_mouse_press', 'on_mouse_release']``
         will only capture this two events.
@@ -59,8 +59,8 @@ class Section:
         height: int,
         *,
         name: Optional[str] = None,
-        accept_keyboard_keys: Union[bool, Iterable] = True,
-        accept_mouse_events: Union[bool, Iterable] = True,
+        accept_keyboard_keys: bool | Iterable = True,
+        accept_mouse_events: bool | Iterable = True,
         prevent_dispatch: Optional[Iterable] = None,
         prevent_dispatch_view: Optional[Iterable] = None,
         local_mouse_coordinates: bool = False,
@@ -87,9 +87,9 @@ class Section:
         self.block_updates: bool = False
 
         # arcade keyboard keys to accept.
-        self.accept_keyboard_keys: Union[bool, Iterable] = accept_keyboard_keys
+        self.accept_keyboard_keys: bool | Iterable = accept_keyboard_keys
         # arcade moouse events to accept.
-        self.accept_mouse_events: Union[bool, Iterable] = accept_mouse_events
+        self.accept_mouse_events: bool | Iterable = accept_mouse_events
 
         # prevents events to propagate
         self.prevent_dispatch: Iterable = prevent_dispatch or {True}
@@ -624,7 +624,7 @@ class SectionManager:
         :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
         """
 
-        sections: Union[list, Generator]
+        sections: list | Generator
 
         if current_section:
             # affected section is already pre-computed

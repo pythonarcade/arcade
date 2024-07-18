@@ -6,7 +6,7 @@ Contains pre-loaded programs
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Optional, Sequence, Union
+from typing import Any, Iterable, Optional, Sequence
 
 import pyglet
 from PIL import Image
@@ -326,12 +326,12 @@ class ArcadeContext(Context):
     def load_program(
         self,
         *,
-        vertex_shader: Union[str, Path],
-        fragment_shader: Optional[Union[str, Path]] = None,
-        geometry_shader: Optional[Union[str, Path]] = None,
-        tess_control_shader: Optional[Union[str, Path]] = None,
-        tess_evaluation_shader: Optional[Union[str, Path]] = None,
-        common: Iterable[Union[str, Path]] = (),
+        vertex_shader: str | Path,
+        fragment_shader: Optional[str | Path] = None,
+        geometry_shader: Optional[str | Path] = None,
+        tess_control_shader: Optional[str | Path] = None,
+        tess_evaluation_shader: Optional[str | Path] = None,
+        common: Iterable[str | Path] = (),
         defines: Optional[dict[str, Any]] = None,
         varyings: Optional[Sequence[str]] = None,
         varyings_capture_mode: str = "interleaved",
@@ -434,7 +434,7 @@ class ArcadeContext(Context):
 
     def load_texture(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         *,
         flip: bool = True,
         build_mipmaps: bool = False,

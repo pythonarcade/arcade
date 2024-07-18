@@ -71,7 +71,7 @@ class TextureCacheManager:
         if hit_boxes:
             self._hit_box_cache.flush()
 
-    def _get_real_path(self, path: Union[str, Path]) -> Path:
+    def _get_real_path(self, path: str | Path) -> Path:
         """Resolve the path to the file."""
         if isinstance(path, str):
             return arcade.resources.resolve(path)
@@ -80,7 +80,7 @@ class TextureCacheManager:
         else:
             raise TypeError(f"Invalid path type: {type(path)} for {path}")
 
-    def load_or_get_spritesheet(self, path: Union[str, Path]) -> SpriteSheet:
+    def load_or_get_spritesheet(self, path: str | Path) -> SpriteSheet:
         """
         Load a sprite sheet from disk, or return a cached version.
 
@@ -99,7 +99,7 @@ class TextureCacheManager:
 
     def load_or_get_spritesheet_texture(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         x: int,
         y: int,
         width: int,

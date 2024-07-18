@@ -20,7 +20,7 @@ from __future__ import annotations
 import string
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 import arcade
 from arcade import get_window
@@ -480,7 +480,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_d = value
 
     @classmethod
-    def create_from_file(cls, size: tuple[int, int], path: Union[str, Path]) -> "Shadertoy":
+    def create_from_file(cls, size: tuple[int, int], path: str | Path) -> "Shadertoy":
         """
         Create a Shadertoy from a mainImage shader file.
 
@@ -501,7 +501,7 @@ class Shadertoy(ShadertoyBase):
         """
         return ShadertoyBuffer(self._size, source, repeat=repeat)
 
-    def create_buffer_from_file(self, path: Union[str, Path]) -> ShadertoyBuffer:
+    def create_buffer_from_file(self, path: str | Path) -> ShadertoyBuffer:
         """
         Shortcut for creating a ShadertoyBuffer from shaders source.
         The size of the framebuffer will be the same as the Shadertoy.

@@ -207,7 +207,7 @@ class TileMap:
 
     def __init__(
         self,
-        map_file: Union[str, Path] = "",
+        map_file: str | Path = "",
         scaling: float = 1.0,
         layer_options: Optional[dict[str, dict[str, Any]]] = None,
         use_spatial_hash: bool = False,

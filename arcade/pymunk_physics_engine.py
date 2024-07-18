@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 import math
-from typing import Callable, Optional, Union
+from typing import Callable, Optional
 
 import pymunk
 from pyglet.math import Vec2
@@ -157,7 +157,7 @@ class PymunkPhysicsEngine:
         moment_of_inertia: Optional[float] = None,  # correct spelling
         body_type: int = DYNAMIC,
         damping: Optional[float] = None,
-        gravity: Optional[Union[pymunk.Vec2d, tuple[float, float], Vec2]] = None,
+        gravity: Optional[pymunk.Vec2d | tuple[float, float] | Vec2] = None,
         max_velocity: Optional[int] = None,
         max_horizontal_velocity: Optional[int] = None,
         max_vertical_velocity: Optional[int] = None,
@@ -430,7 +430,7 @@ class PymunkPhysicsEngine:
             )
         physics_object.body.apply_impulse_at_local_point(impulse)
 
-    def set_position(self, sprite: Sprite, position: Union[pymunk.Vec2d, tuple[float, float]]):
+    def set_position(self, sprite: Sprite, position: pymunk.Vec2d | tuple[float, float]):
         """Set the position of the sprite in the engine's simulation.
 
         To learn more, please see :py:attr:`pymunk.Body.position`.

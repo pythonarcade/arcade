@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Optional, Union
+from typing import Optional
 
 import arcade
 from arcade import Texture
@@ -102,7 +102,7 @@ class Surface:
         y: float,
         width: float,
         height: float,
-        tex: Union[Texture, NinePatchTexture],
+        tex: Texture | NinePatchTexture,
         angle: float = 0.0,
         alpha: int = 255,
     ):

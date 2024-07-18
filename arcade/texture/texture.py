@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import logging
 from pathlib import Path
-from typing import Any, Optional, Type, Union
+from typing import Any, Optional, Union
 
 import PIL.Image
 import PIL.ImageDraw
@@ -143,7 +143,7 @@ class Texture:
 
     def __init__(
         self,
-        image: Union[PIL.Image.Image, ImageData],
+        image: PIL.Image.Image | ImageData,
         *,
         hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
         hit_box_points: Optional[Point2List] = None,
@@ -616,7 +616,7 @@ class Texture:
 
     def transform(
         self,
-        transform: Type[Transform],
+        transform: type[Transform],
     ) -> "Texture":
         """
         Create a new texture with the given transform applied.

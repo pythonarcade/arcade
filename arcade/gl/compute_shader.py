@@ -30,7 +30,7 @@ class ComputeShader:
     def __init__(self, ctx: "Context", glsl_source: str) -> None:
         self._ctx = ctx
         self._source = glsl_source
-        self._uniforms: dict[str, Union[UniformBlock, Uniform]] = dict()
+        self._uniforms: dict[str, UniformBlock | Uniform] = dict()
 
         from arcade.gl import ShaderException
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union, Optional, Sequence
+from typing import Optional, Sequence
 from arcade.utils import warning, ReplacementWarning
 
 #: The absolute path to this directory
@@ -24,7 +24,7 @@ __all__ = [
 
 
 @warning(warning_type=ReplacementWarning, new_name="resolve")
-def resolve_resource_path(path: Union[str, Path]) -> Path:
+def resolve_resource_path(path: str | Path) -> Path:
     """
     Attempts to resolve a path to a resource including resource handles.
 
@@ -39,12 +39,12 @@ def resolve_resource_path(path: Union[str, Path]) -> Path:
         resolve(":resources:images/cards/cardBack_blue1.png")
         resolve(":my_handle:music/combat.wav")
 
-    :param Union[str, Path] path: A Path or string
+    :param str | pathlib.Path path: A Path or string
     """
     return resolve(path)
 
 
-def resolve(path: Union[str, Path]) -> Path:
+def resolve(path: str | Path) -> Path:
     """
     Attempts to resolve a path to a resource including resource handles.
 
@@ -59,7 +59,7 @@ def resolve(path: Union[str, Path]) -> Path:
         resolve(":resources:images/cards/cardBack_blue1.png")
         resolve(":my_handle:music/combat.wav")
 
-    :param Union[str, Path] path: A Path or string
+    :param str | pathlib.Path] path: A Path or string
     """
     # Convert to a Path object and resolve resource handle
     if isinstance(path, str):
@@ -117,7 +117,7 @@ def resolve(path: Union[str, Path]) -> Path:
         raise FileNotFoundError(f"Cannot locate resource : {path}")
 
 
-def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
+def add_resource_handle(handle: str, path: str | Path) -> None:
     """
     Add a resource handle or path to an existing handle.
 
@@ -126,7 +126,7 @@ def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     is done in reverse order, so the last path added is searched first.
 
     :param handle: The name of the handle
-    :param Union[str, Path] path: The absolute path to a directory
+    :param str | pathlib.Path] path: The absolute path to a directory
     """
     if isinstance(path, str):
         path = Path(path)

@@ -110,7 +110,7 @@ class TextureCache:
 
     def get_texture_by_filepath(
         self,
-        file_path: Union[str, Path],
+        file_path: str | Path,
         crop: tuple[int, int, int, int] = (0, 0, 0, 0),
     ) -> Optional["Texture"]:
         """

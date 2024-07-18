@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Optional
 
 import arcade.gl as gl
 from arcade.future.background import BackgroundTexture
@@ -24,7 +24,7 @@ class Background:
         texture: BackgroundTexture,
         pos: tuple[float, float],
         size: tuple[int, int],
-        color: Union[tuple[float, float, float], tuple[int, int, int]],
+        color: tuple[float, float, float] | tuple[int, int, int],
         shader: Optional[gl.Program] = None,
         geometry: Optional[gl.Geometry] = None,
     ):

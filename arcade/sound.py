@@ -8,7 +8,7 @@ import logging
 import math
 import os
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 import pyglet
 from pyglet.media import Source
@@ -32,7 +32,7 @@ logger = logging.getLogger("arcade")
 class Sound:
     """This class represents a sound you can play."""
 
-    def __init__(self, file_name: Union[str, Path], streaming: bool = False):
+    def __init__(self, file_name: str | Path, streaming: bool = False):
         self.file_name: str = ""
         file_name = resolve(file_name)
 
@@ -163,7 +163,7 @@ class Sound:
         return player.time
 
 
-def load_sound(path: Union[str, Path], streaming: bool = False) -> Sound:
+def load_sound(path: str | Path, streaming: bool = False) -> Sound:
     """
     Load a sound.
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import weakref
 from ctypes import byref, c_void_p
-from typing import TYPE_CHECKING, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Optional, Sequence
 
 from pyglet import gl
 
@@ -670,7 +670,7 @@ class Geometry:
     def transform(
         self,
         program: Program,
-        buffer: Union[Buffer, list[Buffer]],
+        buffer: Buffer | list[Buffer],
         *,
         first: int = 0,
         vertices: Optional[int] = None,
@@ -683,7 +683,7 @@ class Geometry:
         If a geometry shader is used the output primitive mode is automatically detected.
 
         :param program: The Program to render with
-        :param Union[Buffer, Sequence[Buffer]] buffer: The buffer(s) we transform into.
+        :param Buffer | Sequence[Buffer] buffer: The buffer(s) we transform into.
             This depends on the programs ``varyings_capture_mode``. We can transform
             into one buffer interleaved or transform each attribute into separate buffers.
         :param first: Offset start vertex

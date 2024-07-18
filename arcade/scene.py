@@ -12,7 +12,7 @@ It allows you to do the following:
 
 from __future__ import annotations
 
-from typing import Iterable, Optional, Union
+from typing import Iterable, Optional
 from warnings import warn
 
 from arcade import Sprite, SpriteList
@@ -78,7 +78,7 @@ class Scene:
         """
         return len(self._sprite_lists)
 
-    def __delitem__(self, sprite_list: Union[int, str, SpriteList]) -> None:
+    def __delitem__(self, sprite_list: int | str | SpriteList) -> None:
         """
         Remove a sprite list from this scene by its index, name, or instance value.
 
@@ -515,6 +515,6 @@ class Scene:
         """Returns whether or not `_sprite_lists` contains anything"""
         return bool(self._sprite_lists)
 
-    def __contains__(self, item: Union[str, SpriteList]) -> bool:
+    def __contains__(self, item: str | SpriteList) -> bool:
         """True when `item` is in `_sprite_lists` or is a value in `_name_mapping`"""
         return item in self._sprite_lists or item in self._name_mapping

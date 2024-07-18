@@ -80,7 +80,7 @@ class VideoPlayer:
 
 
 class VideoPlayerView(arcade.View):
-    def __init__(self, path: Union[str, Path]) -> None:
+    def __init__(self, path: str | Path) -> None:
         super().__init__()
         self.video_player = VideoPlayer(path)
 

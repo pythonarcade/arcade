@@ -22,7 +22,6 @@ from typing import (
     Iterator,
     Optional,
     Sized,
-    Union,
     cast,
 )
 
@@ -724,7 +723,7 @@ class SpriteList(Generic[SpriteType]):
         if self.spatial_hash is not None:
             self.spatial_hash.remove(sprite)
 
-    def extend(self, sprites: Union[Iterable[SpriteType], SpriteList[SpriteType]]) -> None:
+    def extend(self, sprites: Iterable[SpriteType] | SpriteList[SpriteType]) -> None:
         """
         Extends the current list with the given iterable
 
@@ -1011,7 +1010,7 @@ class SpriteList(Generic[SpriteType]):
     def draw(
         self,
         *,
-        filter: Optional[Union[PyGLenum, OpenGlFilter]] = None,
+        filter: Optional[PyGLenum | OpenGlFilter] = None,
         pixelated: Optional[bool] = None,
         blend_function: Optional[BlendFunction] = None,
     ) -> None:

@@ -5,7 +5,7 @@ Drawing text with pyglet label
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 import pyglet
 
@@ -18,7 +18,7 @@ from arcade.utils import PerformanceWarning, warning
 __all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
 
 
-def load_font(path: Union[str, Path]) -> None:
+def load_font(path: str | Path) -> None:
     """
     Load fonts in a file (usually .ttf) adding them to a global font registry.
 
@@ -42,7 +42,7 @@ def load_font(path: Union[str, Path]) -> None:
     pyglet.font.add_file(str(file_path))
 
 
-FontNameOrNames = Union[str, tuple[str, ...]]
+FontNameOrNames = str | tuple[str, ...]
 
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
@@ -56,7 +56,7 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
     argument for pyglet to attempt to resolve. This is consistent with
     the original behavior of this code before it was encapsulated.
 
-    :param Union[str, tuple[str, ...]] font_name:
+    :param str | tuple[str, ...] font_name:
     :return: Either a resolved path or the original tuple
     """
     if font_name:
@@ -134,7 +134,7 @@ class Text:
     :param font_size: Size of the text in points
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param str | tuple[str, ...] font_name: A font name, path to a font file, or list of names
     :param bold: Whether to draw the text as bold, and if a string,
         how bold. See :py:attr:`.bold` to learn more.
     :param italic: Whether to draw the text as italic
@@ -739,7 +739,7 @@ def draw_text(
     :param font_size: Size of the text in points
     :param width: A width limit in pixels
     :param align: Horizontal alignment; values other than "left" require width to be set
-    :param Union[str, tuple[str, ...]] font_name: A font name, path to a font file, or list of names
+    :param str | tuple[str, ...] font_name: A font name, path to a font file, or list of names
     :param bold: Whether to draw the text as bold, and if a :py:class:`str`,
         how bold to draw it. See :py:attr:`.Text.bold` to learn more.
     :param italic: Whether to draw the text as italic

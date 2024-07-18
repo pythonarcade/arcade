@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 import arcade
 from arcade import Texture
@@ -216,7 +216,7 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._hit_box
 
     @hit_box.setter
-    def hit_box(self, hit_box: Union[HitBox, RotatableHitBox]) -> None:
+    def hit_box(self, hit_box: HitBox | RotatableHitBox) -> None:
         if type(hit_box) is HitBox:
             self._hit_box = hit_box.create_rotatable(self.angle)
         else:

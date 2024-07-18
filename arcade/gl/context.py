@@ -232,7 +232,7 @@ class Context:
         gl.glEnable(gl.GL_SCISSOR_TEST)
 
         # States
-        self._blend_func: Union[Tuple[int, int], Tuple[int, int, int, int]] = self.BLEND_DEFAULT
+        self._blend_func: Tuple[int, int] | Tuple[int, int, int, int] = self.BLEND_DEFAULT
         self._point_size = 1.0
         self._flags: Set[int] = set()
         self._wireframe = False
@@ -388,7 +388,7 @@ class Context:
         self._gc_mode = value
 
     @property
-    def error(self) -> Union[str, None]:
+    def error(self) -> str | None:
         """Check OpenGL error
 
         Returns a string representation of the occurring error
