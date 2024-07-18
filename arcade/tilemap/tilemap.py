@@ -14,7 +14,7 @@ import math
 import os
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
@@ -80,8 +80,8 @@ def _get_image_info_from_tileset(tile: pytiled_parser.Tile) -> tuple[int, int, i
 
 def _get_image_source(
     tile: pytiled_parser.Tile,
-    map_directory: Optional[str],
-) -> Optional[Path]:
+    map_directory: str | None,
+) -> Path | None:
     image_file = None
     if tile.image:
         image_file = tile.image
@@ -190,7 +190,7 @@ class TileMap:
     "The width in pixels of each tile."
     tile_height: float
     "The height in pixels of each tile."
-    background_color: Optional[Color]
+    background_color: Color | None
     "The background color of the map."
     scaling: float
     "A global scaling value to be applied to all Sprites in the map."
@@ -209,14 +209,14 @@ class TileMap:
         self,
         map_file: str | Path = "",
         scaling: float = 1.0,
-        layer_options: Optional[dict[str, dict[str, Any]]] = None,
+        layer_options: dict[str, dict[str, Any]] | None = None,
         use_spatial_hash: bool = False,
-        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        tiled_map: Optional[pytiled_parser.TiledMap] = None,
+        hit_box_algorithm: HitBoxAlgorithm | None = None,
+        tiled_map: pytiled_parser.TiledMap | None = None,
         offset: Vec2 = Vec2(0, 0),
-        texture_atlas: Optional["TextureAtlasBase"] = None,
+        texture_atlas: TextureAtlasBase | None = None,
         lazy: bool = False,
-        texture_cache_manager: Optional[arcade.TextureCacheManager] = None,
+        texture_cache_manager: arcade.TextureCacheManager | None = None,
     ) -> None:
         if not map_file and not tiled_map:
             raise AttributeError(
@@ -287,9 +287,9 @@ class TileMap:
         self,
         layer: pytiled_parser.Layer,
         global_options: dict[str, Any],
-        layer_options: Optional[dict[str, dict[str, Any]]] = None,
+        layer_options: dict[str, dict[str, Any]] | None = None,
     ) -> None:
-        processed: Union[SpriteList, tuple[Optional[SpriteList], Optional[list[TiledObject]]]]
+        processed: SpriteList | tuple[SpriteList | None, list[TiledObject] | None]
 
         options = global_options
 
@@ -344,7 +344,7 @@ class TileMap:
 
         return x, y
 
-    def get_tilemap_layer(self, layer_path: str) -> Optional[pytiled_parser.Layer]:
+    def get_tilemap_layer(self, layer_path: str) -> pytiled_parser.Layer | None:
         assert isinstance(layer_path, str)
 
         def _get_tilemap_layer(my_path, layers):
@@ -362,8 +362,8 @@ class TileMap:
         layer = _get_tilemap_layer(path, self.tiled_map.layers)
         return layer
 
-    def _get_tile_by_gid(self, tile_gid: int) -> Optional[pytiled_parser.Tile]:
-        tile_ref: Optional[pytiled_parser.Tile]
+    def _get_tile_by_gid(self, tile_gid: int) -> pytiled_parser.Tile | None:
+        tile_ref: pytiled_parser.Tile | None
 
         flipped_diagonally = False
         flipped_horizontally = False
@@ -424,7 +424,7 @@ class TileMap:
 
     def _get_tile_by_id(
         self, tileset: pytiled_parser.Tileset, tile_id: int
-    ) -> Optional[pytiled_parser.Tile]:
+    ) -> pytiled_parser.Tile | None:
         for tileset_key, cur_tileset in self.tiled_map.tilesets.items():
             if cur_tileset is tileset:
                 if cur_tileset.tiles:
@@ -438,8 +438,8 @@ class TileMap:
         self,
         tile: pytiled_parser.Tile,
         scaling: float = 1.0,
-        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
-        custom_class: Optional[type] = None,
+        hit_box_algorithm: HitBoxAlgorithm | None = None,
+        custom_class: type | None = None,
         custom_class_args: dict[str, Any] = {},
     ) -> Sprite:
         """Given a tile from the parser, try and create a Sprite from it."""
@@ -645,9 +645,9 @@ class TileMap:
         texture_atlas: "DefaultTextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
-        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
+        hit_box_algorithm: HitBoxAlgorithm | None = None,
         offset: Vec2 = Vec2(0, 0),
-        custom_class: Optional[type] = None,
+        custom_class: type | None = None,
         custom_class_args: dict[str, Any] = {},
     ) -> SpriteList:
         sprite_list: SpriteList = SpriteList(
@@ -730,9 +730,9 @@ class TileMap:
         texture_atlas: "DefaultTextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
-        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
+        hit_box_algorithm: HitBoxAlgorithm | None = None,
         offset: Vec2 = Vec2(0, 0),
-        custom_class: Optional[type] = None,
+        custom_class: type | None = None,
         custom_class_args: dict[str, Any] = {},
     ) -> SpriteList:
         sprite_list: SpriteList = SpriteList(
@@ -808,16 +808,16 @@ class TileMap:
         texture_atlas: "DefaultTextureAtlas",
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
-        hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
+        hit_box_algorithm: HitBoxAlgorithm | None = None,
         offset: Vec2 = Vec2(0, 0),
-        custom_class: Optional[type] = None,
+        custom_class: type | None = None,
         custom_class_args: dict[str, Any] = {},
-    ) -> tuple[Optional[SpriteList], Optional[list[TiledObject]]]:
+    ) -> tuple[SpriteList | None, list[TiledObject] | None]:
         if not scaling:
             scaling = self.scaling
 
-        sprite_list: Optional[SpriteList] = None
-        objects_list: Optional[list[TiledObject]] = []
+        sprite_list: SpriteList | None = None
+        objects_list: list[TiledObject] | None = []
 
         shape: list[Point2] | tuple[int, int, int, int] | Point2 | None = None
 
@@ -997,11 +997,11 @@ class TileMap:
 def load_tilemap(
     map_file: str | Path,
     scaling: float = 1.0,
-    layer_options: Optional[dict[str, dict[str, Any]]] = None,
+    layer_options: dict[str, dict[str, Any]] | None = None,
     use_spatial_hash: bool = False,
-    hit_box_algorithm: Optional[HitBoxAlgorithm] = None,
+    hit_box_algorithm: HitBoxAlgorithm | None = None,
     offset: Vec2 = Vec2(0, 0),
-    texture_atlas: Optional["DefaultTextureAtlas"] = None,
+    texture_atlas: DefaultTextureAtlas | None = None,
     lazy: bool = False,
 ) -> TileMap:
     """

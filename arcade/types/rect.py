@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import NamedTuple, Optional, TypedDict
+from typing import NamedTuple, TypedDict
 
 from pyglet.math import Vec2
 
@@ -187,8 +187,8 @@ class Rect(NamedTuple):
 
     def resize(
         self,
-        width: Optional[AsFloat] = None,
-        height: Optional[AsFloat] = None,
+        width: AsFloat | None = None,
+        height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
@@ -307,8 +307,8 @@ class Rect(NamedTuple):
 
     def min_size(
         self,
-        width: Optional[AsFloat] = None,
-        height: Optional[AsFloat] = None,
+        width: AsFloat | None = None,
+        height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
@@ -321,8 +321,8 @@ class Rect(NamedTuple):
 
     def max_size(
         self,
-        width: Optional[AsFloat] = None,
-        height: Optional[AsFloat] = None,
+        width: AsFloat | None = None,
+        height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
@@ -335,8 +335,8 @@ class Rect(NamedTuple):
 
     def clamp_height(
         self,
-        min_height: Optional[AsFloat] = None,
-        max_height: Optional[AsFloat] = None,
+        min_height: AsFloat | None = None,
+        max_height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
@@ -348,8 +348,8 @@ class Rect(NamedTuple):
 
     def clamp_width(
         self,
-        min_width: Optional[AsFloat] = None,
-        max_width: Optional[AsFloat] = None,
+        min_width: AsFloat | None = None,
+        max_width: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """Return a :py:class:`.Rect` constrained to the passed dimension.
@@ -372,10 +372,10 @@ class Rect(NamedTuple):
 
     def clamp_size(
         self,
-        min_width: Optional[AsFloat] = None,
-        max_width: Optional[AsFloat] = None,
-        min_height: Optional[AsFloat] = None,
-        max_height: Optional[AsFloat] = None,
+        min_width: AsFloat | None = None,
+        max_width: AsFloat | None = None,
+        min_height: AsFloat | None = None,
+        max_height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """Get a new clamped-size rectangle at the same position and anchored at ``anchor_point``.
