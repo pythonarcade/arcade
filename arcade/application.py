@@ -215,9 +215,10 @@ class Window(pyglet.window.Window):
                 visible=visible,
                 style=style,
             )
-            self.register_event_type("on_update")
-            self.register_event_type("on_action")
-            self.register_event_type("on_fixed_update")
+            # pending: weird import tricks resolved
+            self.register_event_type("on_update")  # type: ignore
+            self.register_event_type("on_action")  # type: ignore
+            self.register_event_type("on_fixed_update")  # type: ignore
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException(
                 "Unable to create an OpenGL 3.3+ context. "
