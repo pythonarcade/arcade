@@ -183,7 +183,8 @@ class Context:
     _valid_apis = ("gl", "gles")
 
     def __init__(
-        self, window: pyglet.window.Window,  # type: ignore
+        self,
+        window: pyglet.window.Window,  # type: ignore
         gc_mode: str = "context_gc",
         gl_api: str = "gl",
     ):
