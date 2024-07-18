@@ -20,7 +20,6 @@ from __future__ import annotations
 import string
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 import arcade
 from arcade import get_window
@@ -70,10 +69,10 @@ class ShadertoyBase:
         self._channel_time = [0.0, 0.0, 0.0, 0.0]
         self._channel_resolution = [0] * 3 * 4
         # Shader inputs
-        self._channel_0: Optional[Texture2D] = None
-        self._channel_1: Optional[Texture2D] = None
-        self._channel_2: Optional[Texture2D] = None
-        self._channel_3: Optional[Texture2D] = None
+        self._channel_0: Texture2D | None = None
+        self._channel_1: Texture2D | None = None
+        self._channel_2: Texture2D | None = None
+        self._channel_3: Texture2D | None = None
 
         self._set_source(source)
         self._quad = geometry.quad_2d_fs()
@@ -191,7 +190,7 @@ class ShadertoyBase:
         return self._channel_time
 
     @property
-    def channel_0(self) -> Optional[Texture2D]:
+    def channel_0(self) -> Texture2D | None:
         """Get or set channel 0"""
         return self._channel_0
 
@@ -203,7 +202,7 @@ class ShadertoyBase:
         self._channel_0 = value
 
     @property
-    def channel_1(self) -> Optional[Texture2D]:
+    def channel_1(self) -> Texture2D | None:
         """Get or set channel 1"""
         return self._channel_1
 
@@ -215,7 +214,7 @@ class ShadertoyBase:
         self._channel_1 = value
 
     @property
-    def channel_2(self) -> Optional[Texture2D]:
+    def channel_2(self) -> Texture2D | None:
         """Get or set channel 2"""
         return self._channel_2
 
@@ -227,7 +226,7 @@ class ShadertoyBase:
         self._channel_2 = value
 
     @property
-    def channel_3(self) -> Optional[Texture2D]:
+    def channel_3(self) -> Texture2D | None:
         """Get or set channel 3"""
         return self._channel_3
 
@@ -255,12 +254,12 @@ class ShadertoyBase:
     def render(
         self,
         *,
-        time: Optional[float] = None,
-        time_delta: Optional[float] = None,
-        mouse_position: Optional[tuple[float, float]] = None,
-        size: Optional[tuple[int, int]] = None,
-        frame: Optional[int] = None,
-        frame_rate: Optional[float] = None,
+        time: float | None = None,
+        time_delta: float | None = None,
+        mouse_position: tuple[float, float] | None = None,
+        size: tuple[int, int] | None = None,
+        frame: int | None = None,
+        frame_rate: float | None = None,
     ):
         """
         Render the shadertoy project to the screen.
@@ -438,13 +437,13 @@ class Shadertoy(ShadertoyBase):
         """
         super().__init__(size, main_source)
 
-        self._buffer_a: Optional[ShadertoyBuffer] = None
-        self._buffer_b: Optional[ShadertoyBuffer] = None
-        self._buffer_c: Optional[ShadertoyBuffer] = None
-        self._buffer_d: Optional[ShadertoyBuffer] = None
+        self._buffer_a: ShadertoyBuffer | None = None
+        self._buffer_b: ShadertoyBuffer | None = None
+        self._buffer_c: ShadertoyBuffer | None = None
+        self._buffer_d: ShadertoyBuffer | None = None
 
     @property
-    def buffer_a(self) -> Optional[ShadertoyBuffer]:
+    def buffer_a(self) -> ShadertoyBuffer | None:
         """Get or set buffer a"""
         return self._buffer_a
 
@@ -453,7 +452,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_a = value
 
     @property
-    def buffer_b(self) -> Optional[ShadertoyBuffer]:
+    def buffer_b(self) -> ShadertoyBuffer | None:
         """Get or set buffer b"""
         return self._buffer_b
 
@@ -462,7 +461,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_b = value
 
     @property
-    def buffer_c(self) -> Optional[ShadertoyBuffer]:
+    def buffer_c(self) -> ShadertoyBuffer | None:
         """Get or set buffer c"""
         return self._buffer_c
 
@@ -471,7 +470,7 @@ class Shadertoy(ShadertoyBase):
         self._buffer_c = value
 
     @property
-    def buffer_d(self) -> Optional[ShadertoyBuffer]:
+    def buffer_d(self) -> ShadertoyBuffer | None:
         """Get or set buffer d"""
         return self._buffer_d
 

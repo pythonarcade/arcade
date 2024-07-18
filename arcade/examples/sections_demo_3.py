@@ -21,7 +21,7 @@ Note:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sections_demo_3
 """
-from typing import Optional
+from __future__ import annotations
 from math import sqrt
 
 import arcade
@@ -136,7 +136,7 @@ class Panel(Section):
 
         self.button_show_modal = self.new_button(COLOR_2)
         # to show the key that's actually pressed
-        self.pressed_key: Optional[int] = None
+        self.pressed_key: int | None = None
 
     @staticmethod
     def new_button(color):
@@ -211,7 +211,7 @@ class Map(Section):
         self.sprite_list: arcade.SpriteList = arcade.SpriteList()
         self.sprite_list.append(self.ball)
 
-        self.pressed_key: Optional[int] = None
+        self.pressed_key: int | None = None
 
     def on_update(self, delta_time: float):
 

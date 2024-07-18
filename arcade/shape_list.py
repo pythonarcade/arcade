@@ -15,7 +15,6 @@ from collections import OrderedDict
 from typing import (
     Generic,
     Iterable,
-    Optional,
     Sequence,
     TypeVar,
     cast,
@@ -76,7 +75,7 @@ class Shape:
         # vao: Geometry,
         # vbo: Buffer,
         mode: int = gl.GL_TRIANGLES,
-        program: Optional[Program] = None,
+        program: Program | None = None,
     ) -> None:
         self.ctx = get_window().ctx
         self.program = program or self.ctx.line_generic_with_colors_program
@@ -92,8 +91,8 @@ class Shape:
         self.data = array("f", [c for a in zip(self.points, self.colors) for b in a for c in b])
         self.vertices = len(points)
 
-        self.geometry: Optional[Geometry] = None
-        self.buffer: Optional[Buffer] = None
+        self.geometry: Geometry | None = None
+        self.buffer: Buffer | None = None
 
     def _init_geometry(self) -> None:
         # NOTE: When drawing a single shape we're not using an index buffer

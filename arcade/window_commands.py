@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import gc
 import os
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
 import pyglet
 
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from arcade import Window
 
 
-_window: Optional["Window"] = None
+_window: Window | None = None
 
 __all__ = [
     "get_display_size",
@@ -64,7 +64,7 @@ def get_window() -> "Window":
     return _window
 
 
-def set_window(window: Optional["Window"]) -> None:
+def set_window(window: Window | None) -> None:
     """
     Set a handle to the current window.
 

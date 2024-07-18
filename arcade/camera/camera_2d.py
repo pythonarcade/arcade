@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from math import atan2, cos, degrees, radians, sin
-from typing import TYPE_CHECKING, Generator, Optional
+from typing import TYPE_CHECKING, Generator
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self
@@ -84,21 +84,20 @@ class Camera2D:
 
     def __init__(
         self,
-        viewport: Optional[Rect] = None,
-        position: Optional[Point2] = None,
+        viewport: Rect | None = None,
+        position: Point2 | None = None,
         up: tuple[float, float] = (0.0, 1.0),
         zoom: float = 1.0,
-        projection: Optional[Rect] = None,
+        projection: Rect | None = None,
         near: float = -100.0,
         far: float = 100.0,
         *,
-        scissor: Optional[Rect] = None,
-        render_target: Optional[Framebuffer] = None,
-        window: Optional["Window"] = None,
+        scissor: Rect | None = None,
+        render_target: Framebuffer | None = None,
+        window: Window | None = None,
     ):
-
-        self._window: "Window" = window or get_window()
-        self.render_target: Optional[Framebuffer] = render_target
+        self._window: Window = window or get_window()
+        self.render_target: Framebuffer | None = render_target
 
         # We don't want to force people to use a render target,
         # but we need to have some form of default size.
@@ -141,18 +140,18 @@ class Camera2D:
         )
 
         self.viewport: Rect = viewport or LRBT(0, 0, width, height)
-        self.scissor: Optional[Rect] = scissor
+        self.scissor: Rect | None = scissor
 
     @classmethod
     def from_camera_data(
         cls,
         *,
-        camera_data: Optional[CameraData] = None,
-        projection_data: Optional[OrthographicProjectionData] = None,
-        render_target: Optional[Framebuffer] = None,
-        viewport: Optional[Rect] = None,
-        scissor: Optional[Rect] = None,
-        window: Optional["Window"] = None,
+        camera_data: CameraData | None = None,
+        projection_data: OrthographicProjectionData | None = None,
+        render_target: Framebuffer | None = None,
+        viewport: Rect | None = None,
+        scissor: Rect | None = None,
+        window: Window | None = None,
     ) -> Self:
         """
         Make a ``Camera2D`` directly from data objects.

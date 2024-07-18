@@ -15,7 +15,7 @@ Note:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sections_demo_1
 """
-from typing import Optional
+from __future__ import annotations
 
 import arcade
 
@@ -59,7 +59,7 @@ class ScreenPart(arcade.Section):
         self.box.position = self.left + (self.width / 2), 50
 
         # variable that will hold the Box when it's being dragged
-        self.hold_box: Optional[Box] = None
+        self.hold_box: Box | None = None
 
     def on_update(self, delta_time: float):
         # call on_update on the owned Box

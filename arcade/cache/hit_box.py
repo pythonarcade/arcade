@@ -15,7 +15,7 @@ import gzip
 import json
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from arcade.resources import resolve
 from arcade.types import Point2List
@@ -46,7 +46,7 @@ class HitBoxCache:
     def __iter__(self):
         return iter(self._entries)
 
-    def get(self, name_or_texture: str | Texture) -> Optional[Point2List]:
+    def get(self, name_or_texture: str | Texture) -> Point2List | None:
         """
         Get the hit box points for a texture with a given hash
         and hit box algorithm.

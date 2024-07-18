@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Callable, Generator, Optional
+from typing import TYPE_CHECKING, Callable, Generator
 
 from pyglet.math import Mat4, Vec2, Vec3
 
@@ -32,25 +32,23 @@ class _StaticCamera:
         self,
         view_matrix: Mat4,
         projection_matrix: Mat4,
-        viewport: Optional[tuple[int, int, int, int]] = None,
+        viewport: tuple[int, int, int, int] | None = None,
         *,
-        project_method: Optional[
-            Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec2]
-        ] = None,
-        unproject_method: Optional[
-            Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec3]
-        ] = None,
-        window: Optional[Window] = None,
+        project_method: (
+            Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec2] | None
+        ) = None,
+        unproject_method: (
+            Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec3] | None
+        ) = None,
+        window: Window | None = None,
     ):
         self._win: Window = window or get_window()
         self._viewport: tuple[int, int, int, int] = viewport or self._win.ctx.viewport
         self._view = view_matrix
         self._projection = projection_matrix
 
-        self._project_method: Optional[Callable[[Point, tuple, Mat4, Mat4], Vec2]] = project_method
-        self._unproject_method: Optional[Callable[[Point, tuple, Mat4, Mat4], Vec3]] = (
-            unproject_method
-        )
+        self._project_method: Callable[[Point, tuple, Mat4, Mat4], Vec2] | None = project_method
+        self._unproject_method: Callable[[Point, tuple, Mat4, Mat4], Vec3] | None = unproject_method
 
     def use(self):
         self._win.current_camera = self
@@ -103,9 +101,9 @@ class _StaticCamera:
 def static_from_orthographic(
     view: CameraData,
     orthographic: OrthographicProjectionData,
-    viewport: Optional[tuple[int, int, int, int]] = None,
+    viewport: tuple[int, int, int, int] | None = None,
     *,
-    window: Optional[Window] = None,
+    window: Window | None = None,
 ) -> _StaticCamera:
     return _StaticCamera(
         generate_view_matrix(view),
@@ -120,9 +118,9 @@ def static_from_orthographic(
 def static_from_perspective(
     view: CameraData,
     perspective: OrthographicProjectionData,
-    viewport: Optional[tuple[int, int, int, int]] = None,
+    viewport: tuple[int, int, int, int] | None = None,
     *,
-    window: Optional[Window] = None,
+    window: Window | None = None,
 ) -> _StaticCamera:
     return _StaticCamera(
         generate_view_matrix(view),
@@ -142,9 +140,9 @@ def static_from_raw_orthographic(
     position: Point3 = (0.0, 0.0, 0.0),
     up: Point3 = (0.0, 1.0, 0.0),
     forward: Point3 = (0.0, 0.0, -1.0),
-    viewport: Optional[tuple[int, int, int, int]] = None,
+    viewport: tuple[int, int, int, int] | None = None,
     *,
-    window: Optional[Window] = None,
+    window: Window | None = None,
 ) -> _StaticCamera:
     view = generate_view_matrix(CameraData(position, up, forward, zoom))
     proj = generate_orthographic_matrix(
@@ -172,9 +170,9 @@ def static_from_raw_perspective(
     position: Point3 = (0.0, 0.0, 0.0),
     up: Point3 = (0.0, 1.0, 0.0),
     forward: Point3 = (0.0, 0.0, -1.0),
-    viewport: Optional[tuple[int, int, int, int]] = None,
+    viewport: tuple[int, int, int, int] | None = None,
     *,
-    window: Optional[Window] = None,
+    window: Window | None = None,
 ) -> _StaticCamera:
     view = generate_view_matrix(CameraData(position, up, forward, zoom))
     proj = generate_perspective_matrix(PerspectiveProjectionData(aspect, fov, near, far), zoom)
@@ -192,13 +190,11 @@ def static_from_raw_perspective(
 def static_from_matrices(
     view: Mat4,
     projection: Mat4,
-    viewport: Optional[tuple[int, int, int, int]],
+    viewport: tuple[int, int, int, int] | None,
     *,
-    window: Optional[Window] = None,
-    project_method: Optional[Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec2]] = None,
-    unproject_method: Optional[
-        Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec3]
-    ] = None,
+    window: Window | None = None,
+    project_method: Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec2] | None = None,
+    unproject_method: Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec3] | None = None,
 ) -> _StaticCamera:
     return _StaticCamera(
         view,

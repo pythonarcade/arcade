@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import random
-from typing import Optional
 
 import pyglet
 
@@ -19,7 +18,7 @@ class Player(arcade.Sprite):
         self,
         walls: arcade.SpriteList,
         input_manager_template: InputManager,
-        controller: Optional[pyglet.input.Controller] = None,
+        controller: pyglet.input.Controller | None = None,
     ):
         super().__init__(
             ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"

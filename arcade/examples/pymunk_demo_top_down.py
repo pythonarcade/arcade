@@ -5,10 +5,10 @@ Top-down
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.pymunk_demo_top_down
 """
+from __future__ import annotations
 import math
 import random
 import arcade
-from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 SCREEN_TITLE = "PyMunk Top-Down"
@@ -40,7 +40,7 @@ class MyWindow(arcade.Window):
         self.rock_list = None
         self.gem_list = None
         self.player_sprite = None
-        self.physics_engine: Optional[PymunkPhysicsEngine] = None
+        self.physics_engine: PymunkPhysicsEngine | None = None
 
         # Track the current state of what key is pressed
         self.left_pressed = False

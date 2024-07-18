@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Iterable, Optional, Sequence, Union
+from typing import Iterable, Sequence, Union
 
 from pyglet import gl
 from typing_extensions import TypeAlias
@@ -115,7 +115,7 @@ GL_NAMES = {
 }
 
 
-def gl_name(gl_type: Optional[PyGLenum]) -> Union[str, PyGLenum, None]:
+def gl_name(gl_type: PyGLenum | None) -> str | PyGLenum | None:
     """Return the name of a gl type"""
     if gl_type is None:
         return None
@@ -146,8 +146,8 @@ class AttribFormat:
 
     def __init__(
         self,
-        name: Optional[str],
-        gl_type: Optional[PyGLenum],
+        name: str | None,
+        gl_type: PyGLenum | None,
         components: int,
         bytes_per_component: int,
         offset=0,
@@ -211,7 +211,7 @@ class BufferDescription:
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    _formats: dict[str, tuple[Optional[PyGLenum], int]] = {
+    _formats: dict[str, tuple[PyGLenum | None, int]] = {
         # (gl enum, byte size)
         # Floats
         "f": (gl.GL_FLOAT, 4),
@@ -252,7 +252,7 @@ class BufferDescription:
         buffer: Buffer,
         formats: str,
         attributes: Sequence[str],
-        normalized: Optional[Iterable[str]] = None,
+        normalized: Iterable[str] | None = None,
         instanced: bool = False,
     ):
         #: The :py:class:`~arcade.gl.Buffer` this description object describes

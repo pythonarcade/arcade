@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from PIL import Image
 from pyglet.math import Mat3
 
@@ -133,8 +131,8 @@ class BackgroundTexture:
     def render_target(
         self,
         context: ArcadeContext,
-        color_attachments: Optional[list[gl.Texture2D]] = None,
-        depth_attachment: Optional[gl.Texture2D] = None,
+        color_attachments: list[gl.Texture2D] | None = None,
+        depth_attachment: gl.Texture2D | None = None,
     ) -> gl.Framebuffer:
         if color_attachments is None:
             color_attachments = []

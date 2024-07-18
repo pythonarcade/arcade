@@ -8,7 +8,6 @@ and you might need to tell pyglet where it's located.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 # import sys
 import pyglet
@@ -35,7 +34,7 @@ class VideoPlayer:
         self._width = arcade.get_window().width
         self._height = arcade.get_window().height
 
-    def draw(self, left: int = 0, bottom: int = 0, size: Optional[tuple[int, int]] = None) -> None:
+    def draw(self, left: int = 0, bottom: int = 0, size: tuple[int, int] | None = None) -> None:
         """
         Call this in `on_draw`.
 

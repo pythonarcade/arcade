@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from arcade.texture.texture import Texture
 
@@ -16,12 +16,12 @@ class TextureBucket:
     """
 
     def __init__(self):
-        self._entries: dict[str, "Texture"] = {}
+        self._entries: dict[str, Texture] = {}
 
-    def put(self, name: str, texture: "Texture") -> None:
+    def put(self, name: str, texture: Texture) -> None:
         self._entries[name] = texture
 
-    def get(self, name: str) -> Optional["Texture"]:
+    def get(self, name: str) -> Texture | None:
         return self._entries.get(name)
 
     def delete(self, name: str, raise_if_not_exist: bool = True) -> None:
@@ -83,7 +83,7 @@ class TextureCache:
         if image_cache_name:
             self._file_entries.put(image_cache_name, texture)
 
-    def get(self, name: str) -> Optional["Texture"]:
+    def get(self, name: str) -> Texture | None:
         """
         Get a texture from the cache by cache name
 
@@ -92,9 +92,7 @@ class TextureCache:
         """
         return self._entries.get(name)
 
-    def get_with_config(
-        self, hash: str, hit_box_algorithm: "HitBoxAlgorithm"
-    ) -> Optional["Texture"]:
+    def get_with_config(self, hash: str, hit_box_algorithm: "HitBoxAlgorithm") -> Texture | None:
         """
         Attempts to find a texture with a specific configuration.
 
@@ -114,7 +112,7 @@ class TextureCache:
         self,
         file_path: str | Path,
         crop: tuple[int, int, int, int] = (0, 0, 0, 0),
-    ) -> Optional["Texture"]:
+    ) -> Texture | None:
         """
         Get a texture from the cache by file path and crop values.
 
@@ -169,7 +167,7 @@ class TextureCache:
         """Iterate over all unique textures"""
         return iter(self.get_all_textures())
 
-    def __getitem__(self, name: str) -> Optional["Texture"]:
+    def __getitem__(self, name: str) -> Texture | None:
         """Get a texture from the cache by cache name"""
         return self.get(name)
 

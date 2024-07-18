@@ -6,9 +6,8 @@ Use a fireworks display to demonstrate "real-world" uses of Emitters and Particl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.particle_fireworks
 """
-
+from __future__ import annotations
 import random
-from typing import Optional
 
 import pyglet
 from pyglet.math import Vec2
@@ -129,7 +128,7 @@ class AnimatedAlphaParticle(LifetimeParticle):
 
     def __init__(
         self,
-        filename_or_texture: Optional[PathOrTexture],
+        filename_or_texture: PathOrTexture | None,
         change_xy: Vec2,
         start_alpha: int = 0,
         duration1: float = 1.0,

@@ -13,7 +13,7 @@ from ctypes import (
     create_string_buffer,
     pointer,
 )
-from typing import TYPE_CHECKING, Any, Iterable, Optional
+from typing import TYPE_CHECKING, Any, Iterable
 
 from pyglet import gl
 
@@ -73,11 +73,11 @@ class Program:
         ctx: "Context",
         *,
         vertex_shader: str,
-        fragment_shader: Optional[str] = None,
-        geometry_shader: Optional[str] = None,
-        tess_control_shader: Optional[str] = None,
-        tess_evaluation_shader: Optional[str] = None,
-        varyings: Optional[list[str]] = None,
+        fragment_shader: str | None = None,
+        geometry_shader: str | None = None,
+        tess_control_shader: str | None = None,
+        tess_evaluation_shader: str | None = None,
+        varyings: list[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ):
         self._ctx = ctx

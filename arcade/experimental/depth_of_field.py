@@ -11,7 +11,7 @@ This example works by doing the following for each frame:
 1. Render a depth value for pixel into a buffer
 2. Render a gaussian blurred version of the scene
 3. For each pixel, use the current depth value to lerp between the
-   blurred and unblurred versions of the scene.
+   blurred and un-blurred versions of the scene.
 
 This is more expensive than rendering the scene directly, but it's
 both easier and more performant than more accurate blur approaches.
@@ -26,7 +26,7 @@ from contextlib import contextmanager
 from math import cos, pi
 from random import randint, uniform
 from textwrap import dedent
-from typing import Optional, cast
+from typing import cast
 
 from pyglet.graphics import Batch
 
@@ -46,7 +46,7 @@ class DepthOfField:
 
     def __init__(
         self,
-        size: Optional[tuple[int, int]] = None,
+        size: tuple[int, int] | None = None,
         clear_color: RGBA255 = (155, 155, 155, 255),
     ):
         self._geo = geometry.quad_2d_fs()
@@ -86,7 +86,7 @@ class DepthOfField:
                 )
             ]
         )
-        self._blurred: Optional[Texture2D] = None
+        self._blurred: Texture2D | None = None
 
         # To keep this example in one file, we use strings for our
         # our shaders. You may want to use pathlib.Path.read_text in

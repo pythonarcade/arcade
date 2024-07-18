@@ -8,7 +8,6 @@ import logging
 import math
 import os
 from pathlib import Path
-from typing import Optional
 
 import pyglet
 from pyglet.media import Source
@@ -194,7 +193,7 @@ def play_sound(
     pan: float = 0.0,
     loop: bool = False,
     speed: float = 1.0,
-) -> Optional[media.Player]:
+) -> media.Player | None:
     """
     Play a sound.
 

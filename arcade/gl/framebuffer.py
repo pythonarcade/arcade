@@ -3,7 +3,7 @@ from __future__ import annotations
 import weakref
 from contextlib import contextmanager
 from ctypes import c_int, string_at
-from typing import TYPE_CHECKING, Generator, Optional
+from typing import TYPE_CHECKING, Generator
 
 from pyglet import gl
 
@@ -66,7 +66,7 @@ class Framebuffer:
         ctx: "Context",
         *,
         color_attachments=None,
-        depth_attachment: Optional[Texture2D] = None,
+        depth_attachment: Texture2D | None = None,
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
@@ -76,7 +76,7 @@ class Framebuffer:
         self._color_attachments = (
             color_attachments if isinstance(color_attachments, list) else [color_attachments]
         )
-        self._depth_attachment: Optional[Texture2D] = depth_attachment
+        self._depth_attachment: Texture2D | None = depth_attachment
         self._samples = 0  # Leaving this at 0 for future sample support
         self._depth_mask = True  # Determines if the depth buffer should be affected
         self._prev_fbo = None
@@ -90,7 +90,7 @@ class Framebuffer:
         # but let's keep this simple with high compatibility.
         self._width, self._height = self._detect_size()
         self._viewport = 0, 0, self._width, self._height
-        self._scissor: Optional[tuple[int, int, int, int]] = None
+        self._scissor: tuple[int, int, int, int] | None = None
 
         # Attach textures to it
         for i, tex in enumerate(self._color_attachments):
@@ -176,7 +176,7 @@ class Framebuffer:
 
     viewport = property(_get_viewport, _set_viewport)
 
-    def _get_scissor(self) -> Optional[tuple[int, int, int, int]]:
+    def _get_scissor(self) -> tuple[int, int, int, int] | None:
         """
         Get or set the scissor box for this framebuffer.
 
@@ -239,7 +239,7 @@ class Framebuffer:
         return self._color_attachments
 
     @property
-    def depth_attachment(self) -> Optional[Texture2D]:
+    def depth_attachment(self) -> Texture2D | None:
         """Depth attachment."""
         return self._depth_attachment
 
@@ -316,10 +316,10 @@ class Framebuffer:
     def clear(
         self,
         *,
-        color: Optional[RGBOrA255] = None,
-        color_normalized: Optional[RGBOrANormalized] = None,
+        color: RGBOrA255 | None = None,
+        color_normalized: RGBOrANormalized | None = None,
         depth: float = 1.0,
-        viewport: Optional[tuple[int, int, int, int]] = None,
+        viewport: tuple[int, int, int, int] | None = None,
     ):
         """
         Clears the framebuffer::
@@ -610,7 +610,7 @@ class DefaultFrameBuffer(Framebuffer):
 
     viewport = property(_get_viewport, _set_viewport)
 
-    def _get_scissor(self) -> Optional[tuple[int, int, int, int]]:
+    def _get_scissor(self) -> tuple[int, int, int, int] | None:
         """
         Get or set the scissor box for this framebuffer.
 

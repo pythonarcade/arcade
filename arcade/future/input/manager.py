@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Union
 
 import pyglet
 from pyglet.input.base import Controller
@@ -49,7 +49,7 @@ class InputManager:
 
     def __init__(
         self,
-        controller: Optional[Controller] = None,
+        controller: Controller | None = None,
         allow_keyboard: bool = True,
         action_handlers: Union[
             Callable[[str, ActionState], Any], list[Callable[[str, ActionState], Any]]
@@ -162,7 +162,7 @@ class InputManager:
     def from_existing(
         cls,
         existing: InputManager,
-        controller: Optional[pyglet.input.Controller] = None,
+        controller: pyglet.input.Controller | None = None,
     ) -> InputManager:
         new = cls(
             allow_keyboard=existing.allow_keyboard,
