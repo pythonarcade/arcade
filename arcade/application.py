@@ -183,7 +183,7 @@ class Window(pyglet.window.Window):
                     alpha_size=8,
                 )
                 display = pyglet.display.get_display()
-                screen = display.get_default_screen()
+                screen = display.get_default_screen()  # type: ignore  # pending: resolve upstream type tricks
                 if screen:
                     config = screen.get_best_config(config)
             except pyglet.window.NoSuchConfigException:
