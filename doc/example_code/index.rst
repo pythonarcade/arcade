@@ -4,9 +4,7 @@ Examples
 ========
 
 .. Partly solve https://github.com/pythonarcade/arcade/issues/2274
-.. through shell globbing support in Sphinx toctrees. We use two
-.. ranges to exclude the index.rst from itself. See the following
-.. to learn more: https://mywiki.wooledge.org/glob
+.. via globbing support in Sphinx toctrees to exclude this file
 
 .. toctree::
    :glob:
