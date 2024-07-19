@@ -3,34 +3,17 @@
 Examples
 ========
 
-.. Solve https://github.com/pythonarcade/arcade/issues/2274
-.. through the simplest brute-force approach which works since there's
-.. there's no good way built-in to exclude the index.rst from itself
+.. Partly solve https://github.com/pythonarcade/arcade/issues/2274
+.. through shell globbing support in Sphinx toctrees. We use two
+.. ranges to exclude the index.rst from itself. See the following
+.. to learn more: https://mywiki.wooledge.org/glob
 
 .. toctree::
    :glob:
    :hidden:
 
-   a*
-   b*
-   c*
-   d*
-   e*
-   f*
-   g*
-   h*
-
-   l*
-   m*
-   n*
-
-   p*
-
-   r*
-   s*
-   t*
-
-   v*
+   [a-h]*
+   [j-z]*
 
 
 Starting Templates
