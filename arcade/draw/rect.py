@@ -293,7 +293,7 @@ def draw_rect_outline(
             (i_right , i_bottom),
             (o_left  , o_bottom),
             (i_left  , i_bottom),
-            (o_left  , i_top   ),
+            (o_left  , o_top   ),
             (i_left  , i_top   )
         )
     else:
@@ -306,7 +306,7 @@ def draw_rect_outline(
             rotate_point(i_right  , i_bottom, x, y, tilt_angle),
             rotate_point(o_left   , o_bottom, x, y, tilt_angle),
             rotate_point(i_left   , i_bottom, x, y, tilt_angle),
-            rotate_point(o_left   , i_top   , x, y, tilt_angle),
+            rotate_point(o_left   , o_top   , x, y, tilt_angle),
             rotate_point(i_left   , i_top   , x, y, tilt_angle)
         )
     # fmt: on
