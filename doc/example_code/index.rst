@@ -30,11 +30,11 @@ Starting Templates
 
    :ref:`template_platformer`
 
-Primitives
-----------
+Drawing Shapes
+--------------
 
-Drawing Primitives
-^^^^^^^^^^^^^^^^^^
+Basic Shape Drawing
+^^^^^^^^^^^^^^^^^^^
 
 .. figure:: images/thumbs/happy_face.png
    :figwidth: 170px
@@ -66,8 +66,8 @@ Drawing Primitives
 
    :ref:`drawing_text_objects_batch`
 
-Animating Drawing Primitives
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Animating Basic Shape Drawing
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: images/thumbs/bouncing_rectangle.png
    :figwidth: 170px
@@ -95,8 +95,8 @@ Animating Drawing Primitives
 
 .. _shape-element-lists:
 
-Faster Drawing with ShapeElementLists
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Faster Shapes with ShapeElementLists
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: images/thumbs/shape_list_demo.png
    :figwidth: 170px
