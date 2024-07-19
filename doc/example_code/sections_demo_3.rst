@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sections_demo_3:
 
 Sections Demo 3

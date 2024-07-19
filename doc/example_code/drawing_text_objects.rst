@@ -1,5 +1,3 @@
-:orphan:
-
 .. _drawing_text_objects:
 
 Better Text Drawing with Text Objects

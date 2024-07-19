@@ -1,5 +1,3 @@
-:orphan:
-
 .. _particle_systems:
 
 Particle Systems

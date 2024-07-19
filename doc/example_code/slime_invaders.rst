@@ -1,5 +1,3 @@
-:orphan:
-
 .. _slime_invaders:
 
 Slime Invaders

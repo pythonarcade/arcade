@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_move_keyboard_better:
 
 Better Move By Keyboard

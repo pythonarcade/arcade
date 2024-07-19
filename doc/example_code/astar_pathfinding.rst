@@ -1,5 +1,3 @@
-:orphan:
-
 .. _astar_pathfinding:
 
 A-Star Path Finding

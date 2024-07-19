@@ -1,5 +1,3 @@
-:orphan:
-
 .. _starting_template:
 
 Starting Template Using Window Class

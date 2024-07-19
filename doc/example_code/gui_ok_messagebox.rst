@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_ok_messagebox:
 
 OK Message Box

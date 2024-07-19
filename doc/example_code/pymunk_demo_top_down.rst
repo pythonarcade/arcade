@@ -1,5 +1,3 @@
-:orphan:
-
 .. _pymunk_demo_top_down:
 
 Pymunk Demo - Top Down

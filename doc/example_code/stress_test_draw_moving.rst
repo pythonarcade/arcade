@@ -1,5 +1,3 @@
-:orphan:
-
 .. _stress_test_draw_moving:
 
 Draw Moving Sprites Stress Test

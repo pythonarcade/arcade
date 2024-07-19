@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_widgets:
 
 GUI Widgets

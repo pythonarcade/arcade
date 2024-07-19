@@ -3,6 +3,35 @@
 Examples
 ========
 
+.. Solve https://github.com/pythonarcade/arcade/issues/2274
+.. through the simplest brute-force approach which works since there's
+.. there's no good way built-in to exclude the index.rst from itself
+
+.. toctree::
+   :glob:
+   :hidden:
+
+   a*
+   b*
+   c*
+   d*
+   e*
+   f*
+   g*
+   h*
+
+   l*
+   m*
+   n*
+
+   p*
+
+   r*
+   s*
+   t*
+
+   v*
+
 
 Starting Templates
 ------------------

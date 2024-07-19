@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_collect_coins_move_down:
 
 Collect Coins Moving Down

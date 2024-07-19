@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_move_keyboard_accel:
 
 Acceleration and Friction

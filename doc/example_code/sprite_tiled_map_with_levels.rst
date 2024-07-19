@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_tiled_map_with_levels:
 
 Work with levels and a tiled map

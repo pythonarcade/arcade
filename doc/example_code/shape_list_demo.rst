@@ -1,5 +1,3 @@
-:orphan:
-
 .. _shape_list_demo:
 
 ShapeElementList Explanation

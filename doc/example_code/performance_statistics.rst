@@ -1,5 +1,3 @@
-:orphan:
-
 .. _performance_statistics_example:
 
 Performance Statistics

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_flat_button:
 
 Flat Text Buttons

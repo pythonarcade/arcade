@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_move_scrolling_shake:
 
 Camera Shake

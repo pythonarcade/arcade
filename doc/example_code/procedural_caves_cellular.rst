@@ -1,5 +1,3 @@
-:orphan:
-
 .. _procedural_caves_cellular:
 
 Procedural Caves - Cellular Automata

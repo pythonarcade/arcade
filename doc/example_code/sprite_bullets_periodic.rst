@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_bullets_periodic:
 
 Have Enemies Periodically Shoot

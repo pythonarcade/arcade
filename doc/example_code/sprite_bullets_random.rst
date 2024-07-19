@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_bullets_random:
 
 Have Enemies Randomly Shoot

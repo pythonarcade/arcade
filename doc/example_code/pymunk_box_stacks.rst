@@ -1,5 +1,3 @@
-:orphan:
-
 .. _pymunk_box_stacks:
 
 Pymunk Physics Engine - Stacks of Boxes

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _lines_buffered:
 
 Using a Vertex Buffer Object With Lines

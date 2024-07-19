@@ -1,5 +1,3 @@
-:orphan:
-
 .. _follow_path:
 
 Sprites That Follow a Path
