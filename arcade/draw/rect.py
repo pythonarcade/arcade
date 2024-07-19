@@ -280,7 +280,7 @@ def draw_rect_outline(
     o_top    = top    + HALF_BORDER
 
     # Declared separately because the code below seems to break mypy
-    point_list: PointList
+    point_list: Point2List
 
     # This is intentionally unrolled to minimize repacking tuples
     if tilt_angle == 0:
