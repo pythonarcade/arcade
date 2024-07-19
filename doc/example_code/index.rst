@@ -9,6 +9,7 @@ Examples
 .. toctree::
    :glob:
    :hidden:
+   :max-depth: 1
 
    [a-h]*
    [j-z]*
