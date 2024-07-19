@@ -206,7 +206,7 @@ class BasicSprite:
         size = self._size
 
         if new_value == size[1]:
-           return
+            return
 
         new_scale = Vec2(self._scale[0], new_value / self._texture.height)
         self._scale = new_scale
