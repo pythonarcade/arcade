@@ -374,10 +374,10 @@ class BasicSprite:
         if scale_x == old_scale[0] and scale_y == old_scale[1]:
             return
 
-        new_scale = Vec2(scale_x, scale_y)
-        self._hit_box.scale = new_scale
-        self._scale = new_scale
-        self._size = new_scale * self._texture.size
+        processed_scale: Vec2 = Vec2(scale_x, scale_y)
+        self._hit_box.scale = processed_scale
+        self._scale = processed_scale
+        self._size = processed_scale * self._texture.size
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
