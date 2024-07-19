@@ -111,15 +111,19 @@ Args:
 ```
 
 * `Args:` should be used for all parameters
-* `Returns:` Can be used if the return value needs additional explanation outside of the current docstring
-* `Raises:` Can be used if the function raises exceptions that need to be documented
-* `Yields:` Can be used if the function is a generator and yields values
+* `Returns:` can be used if the return value needs additional explanation outside of
+   the current docstring. If the return type is already clear from type annotation it
+   can be omitted.
+* `Raises:` can be used if the function raises exceptions that need to be documented
+* `Yields:` can be used if the function is a generator and yields values
 * `Attributes:` we should try to avoid and instead document the attributes in the code
-* Types are visible in the api docs. It's not mandatory to include complex types in the docstring,
-  however, simpler typing is easy enough to include.
+* Types are visible in the api docs. It's not mandatory to include complex types in the
+  docstring, however, simpler typing is easy enough to include.
 * Using `optional` is a good way to indicate that a parameter is optional.
 * Properties and attribute docs don't need a return type when the return type
   is already clear from type annotation.
+
+Attribute docstring in module or class:
 
 ```py
 my_attribute_in_class_or_module: type = value
