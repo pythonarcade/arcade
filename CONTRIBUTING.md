@@ -91,8 +91,6 @@ The following command will run black for you if you do not want to configure you
 a good idea to run this command when you are finished working anyways, as our CI will use this to check that
 the formatting is correct.
 
-Docstring should be formatted using [Google Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
-
 ```bash
 python make.py format
 ```
@@ -100,6 +98,37 @@ python make.py format
 In addition to Black, this will sort the imports using [Ruff](https://docs.astral.sh/ruff/). If you want to setup
 your editor to run this, please see [this link](https://docs.astral.sh/ruff/integrations/) for more information on
 Ruff integration for your specific editor.
+
+Docstring should be formatted using [Google Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
+
+The minium for docstrings is covering all parameters in an `Args:` block.
+
+```python
+Args:
+    width (int): The width of something
+    height (int): The height of something
+    title (str, optional): The title of something
+```
+
+* `Args:` should be used for all parameters
+* `Returns:` can be used if the return value needs additional explanation outside of
+   the current docstring. If the return type is already clear from type annotation it
+   can be omitted.
+* `Raises:` can be used if the function raises exceptions that need to be documented
+* `Yields:` can be used if the function is a generator and yields values
+* `Attributes:` we should try to avoid and instead document the attributes in the code
+* Types are visible in the api docs. It's not mandatory to include complex types in the
+  docstring, however, simpler typing is easy enough to include.
+* Using `optional` is a good way to indicate that a parameter is optional.
+* Properties and attribute docs don't need a return type when the return type
+  is already clear from type annotation.
+
+Attribute docstring in module or class:
+
+```py
+my_attribute_in_class_or_module: type = value
+"""This is a docstring for the attribute."""
+```
 
 ### Typing
 
@@ -190,7 +219,7 @@ Run the doc build to build the web page files, and host a webserver to preview:
 python make.py serve
 ```
 
-You can now open http://localhost:8000 in your browser to preview the docs.
+You can now open <http://localhost:8000> in your browser to preview the docs.
 
 The `doc/build/html` directory will contain the generated website files.  When you change source files,
 it will automatically regenerate, and browser tabs will automatically refresh to show your updates.
@@ -214,7 +243,7 @@ Start a local web server to preview the doc:
 python -m http.server -d doc/build/html
 ```
 
-You can now open http://localhost:8000 in your browser to preview the doc.
+You can now open <http://localhost:8000> in your browser to preview the doc.
 
 Be sure to re-run build & refresh to update after making changes!
 
