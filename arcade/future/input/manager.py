@@ -3,17 +3,17 @@ from __future__ import annotations
 
 from enum import Enum
 from typing import Any, Callable, Union
+from typing_extensions import TypedDict
 
 import pyglet
 from pyglet.input.base import Controller
-from typing_extensions import TypedDict
 
 import arcade
 from arcade.types import OneOrIterableOf
 
-from . import inputs
-from .inputs import InputEnum, InputType
-from .mapping import (
+from arcade.future.input import inputs
+from arcade.future.input.inputs import InputEnum, InputType
+from arcade.future.input.mapping import (
     Action,
     ActionMapping,
     Axis,
