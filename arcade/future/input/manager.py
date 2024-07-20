@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Callable, Union, TypeVar
+from typing import Any, Callable, TypeVar
 from typing_extensions import TypedDict
 
 import pyglet
