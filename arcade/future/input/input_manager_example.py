@@ -12,8 +12,8 @@ import arcade
 
 from arcade.future.input import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 FLOAT_HEIGHT = 80
 
 
