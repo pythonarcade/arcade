@@ -277,7 +277,7 @@ class InputManager:
             self.controller_axes_to_actions[input.value].add(action)
 
     def clear_action_input(self, action: str):
-        self.actions[action]._mappings = set()
+        self.actions[action]._mappings.clear()
 
         to_discard = []
         for key, value in self.keys_to_actions.items():
@@ -351,7 +351,7 @@ class InputManager:
             self.controller_analog_to_axes[input.value].add(axis)
 
     def clear_axis_input(self, axis: str):
-        self.axes[axis]._mappings = set()
+        self.axes[axis]._mappings.clear()
 
         to_discard = []
         for key, value in self.keys_to_axes.items():
