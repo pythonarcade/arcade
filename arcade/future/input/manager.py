@@ -75,6 +75,8 @@ class InputManager:
     ):
         self.actions: dict[str, Action] = {}
 
+        # We don't use defaultdict here because these are current unprotected.
+        # A defaultdict would create sets on *any* access, and we don't want that.
         self.keys_to_actions: dict[int, set[str]] = {}
         self.controller_buttons_to_actions: dict[str, set[str]] = {}
         self.controller_axes_to_actions: dict[str, set[str]] = {}
