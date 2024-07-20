@@ -56,10 +56,12 @@ class InputManager:
         controller_deadzone: float = 0.1,
     ):
         self.actions: dict[str, Action] = {}
+
         self.keys_to_actions: dict[int, set[str]] = {}
         self.controller_buttons_to_actions: dict[str, set[str]] = {}
         self.controller_axes_to_actions: dict[str, set[str]] = {}
         self.mouse_buttons_to_actions: dict[int, set[str]] = {}
+
         self.on_action_listeners: list[Callable[[str, ActionState], Any]] = []
         self.action_subscribers: dict[str, set[Callable[[ActionState], Any]]] = {}
 
