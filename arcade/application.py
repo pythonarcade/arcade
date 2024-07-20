@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 import pyglet
 import pyglet.gl as gl
 import pyglet.window.mouse
-from pyglet.display.base import ScreenMode, Screen
+from pyglet.display.base import Screen, ScreenMode
 from pyglet.window import MouseCursor
 
 import arcade
