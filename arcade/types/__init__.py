@@ -26,7 +26,7 @@ from __future__ import annotations
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar
+from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable
 
 from pytiled_parser import Properties
 
@@ -109,6 +109,7 @@ __all__ = [
     "PointList",
     "Point2List",
     "Point3List",
+    "OneOrIterableOf",
     "EMPTY_POINT_LIST",
     "AnchorPoint",
     "Rect",
@@ -139,6 +140,23 @@ __all__ = [
 
 
 _T = TypeVar("_T")
+
+
+OneOrIterableOf = Union[_T, Iterable[_T]]
+"""Either an instance of something or an iterable of them.
+
+.. important:: Do not pass this ``| None`` or :py:class:`~typing.Optional` types!
+
+Instead of passing this :py:class:`typing.Optional` annotations, please do the
+following instead when possible:
+
+.. code-block:: python
+
+   def annotated(argument: OneOrIterableOf[MyType] = tuple()):
+      ...
+
+This is cleaner.
+"""
 
 # --- Begin potentially obsolete annotations ---
 
