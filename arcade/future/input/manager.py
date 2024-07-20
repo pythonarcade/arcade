@@ -313,12 +313,12 @@ class InputManager:
 
     def register_action_handler(
         self,
-        handler: Union[Callable[[str, ActionState], Any], list[Callable[[str, ActionState], Any]]],
+        handler: OneOrIterableOf[Callable[[str, ActionState], Any]]
     ):
-        if isinstance(handler, list):
-            self.on_action_listeners.extend(handler)
-        else:
+        if callable(handler):
             self.on_action_listeners.append(handler)
+        else:
+            self.on_action_listeners.extend(handler)
 
     def subscribe_to_action(self, name: str, subscriber: Callable[[ActionState], Any]):
         old = self.action_subscribers.get(name, set())
