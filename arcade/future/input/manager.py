@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Callable, Union
+from typing import Any, Callable, Union, TypeVar
 from typing_extensions import TypedDict
 
 import pyglet
@@ -31,9 +31,27 @@ class RawInputManager(TypedDict):
     controller_deadzone: float
 
 
-def _set_discard(set: set, element: Any) -> set:
-    set.discard(element)
-    return set
+_K = TypeVar('_K')
+_V = TypeVar('_V')
+
+
+def _clean_dicts(to_remove: _V, *dicts_to_clean: dict[_K, set[_V]]) -> None:
+    """Clean a dictionary in-place.
+
+    This helps simplify serialization code for controller config.
+    """
+    to_discard = []
+    for to_clean in dicts_to_clean:
+        if to_discard:
+            to_discard.clear()
+
+        for key, set_value in to_clean.items():
+            set_value.discard(to_remove)
+            if len(set_value) == 0:
+                to_discard.append(key)
+
+        for key in to_discard:
+            del to_clean[key]
 
 
 class ActionState(Enum):
@@ -278,38 +296,13 @@ class InputManager:
 
     def clear_action_input(self, action: str):
         self.actions[action]._mappings.clear()
-
-        to_discard = []
-        for key, value in self.keys_to_actions.items():
-            new_set = _set_discard(value, action)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.keys_to_actions[key]
-
-        to_discard = []
-        for key, value in self.controller_buttons_to_actions.items():
-            new_set = _set_discard(value, action)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.controller_buttons_to_actions[key]
-
-        to_discard = []
-        for key, value in self.controller_axes_to_actions.items():
-            new_set = _set_discard(value, action)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.controller_axes_to_actions[key]
-
-        to_discard = []
-        for key, value in self.mouse_buttons_to_actions.items():
-            new_set = _set_discard(value, action)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.mouse_buttons_to_actions[key]
+        _clean_dicts(
+            action,
+            self.keys_to_actions,
+            self.controller_buttons_to_actions,
+            self.controller_axes_to_actions,
+            self.mouse_buttons_to_actions
+        )
 
     def register_action_handler(
         self,
@@ -352,30 +345,12 @@ class InputManager:
 
     def clear_axis_input(self, axis: str):
         self.axes[axis]._mappings.clear()
-
-        to_discard = []
-        for key, value in self.keys_to_axes.items():
-            new_set = _set_discard(value, axis)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.keys_to_axes[key]
-
-        to_discard = []
-        for key, value in self.controller_analog_to_axes.items():
-            new_set = _set_discard(value, axis)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.controller_analog_to_axes[key]
-
-        to_discard = []
-        for key, value in self.controller_buttons_to_axes.items():
-            new_set = _set_discard(value, axis)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.controller_buttons_to_axes[key]
+        _clean_dicts(
+            axis,
+            self.keys_to_axes,
+            self.controller_analog_to_axes,
+            self.controller_buttons_to_axes
+        )
 
     def remove_axis(self, name: str):
         self.clear_axis_input(name)
