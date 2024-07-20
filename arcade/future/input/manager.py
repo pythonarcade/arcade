@@ -9,6 +9,7 @@ from pyglet.input.base import Controller
 from typing_extensions import TypedDict
 
 import arcade
+from arcade.types import OneOrIterableOf
 
 from . import inputs
 from .inputs import InputEnum, InputType
@@ -51,9 +52,7 @@ class InputManager:
         self,
         controller: Controller | None = None,
         allow_keyboard: bool = True,
-        action_handlers: Union[
-            Callable[[str, ActionState], Any], list[Callable[[str, ActionState], Any]]
-        ] = [],
+        action_handlers: OneOrIterableOf[Callable[[str, ActionState], Any]] = tuple(),
         controller_deadzone: float = 0.1,
     ):
         self.actions: dict[str, Action] = {}
