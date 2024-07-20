@@ -101,7 +101,7 @@ Ruff integration for your specific editor.
 
 Docstring should be formatted using [Google Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
 
-The minium for docstrings i covering all parameters in an `Args:` block.
+The minium for docstrings is covering all parameters in an `Args:` block.
 
 ```python
 Args:
