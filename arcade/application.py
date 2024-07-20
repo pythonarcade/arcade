@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 import pyglet
 import pyglet.gl as gl
 import pyglet.window.mouse
-from pyglet.display.base import ScreenMode
+from pyglet.display.base import ScreenMode, Screen
 from pyglet.window import MouseCursor
 
 import arcade
@@ -51,7 +51,7 @@ __all__ = [
 ]
 
 
-def get_screens() -> list:
+def get_screens() -> list[Screen]:
     """
     Return a list of screens. So for a two-monitor setup, this should return
     a list of two screens. Can be used with :class:`arcade.Window` to select which
@@ -61,7 +61,7 @@ def get_screens() -> list:
         List of screens, one for each monitor.
     """
     display = pyglet.display.get_display()
-    return display.get_screens()
+    return display.get_screens()  # type: ignore  # pending: https://github.com/pyglet/pyglet/pull/1176  # noqa
 
 
 class NoOpenGLException(Exception):
