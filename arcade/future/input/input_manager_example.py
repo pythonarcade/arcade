@@ -34,13 +34,15 @@ class Player(arcade.Sprite):
         walls: arcade.SpriteList,
         input_manager_template: InputManager,
         controller: Optional[pyglet.input.Controller] = None,
+        center_x: float = 0.0,
+        center_y: float = 0.0,
         x_max_speed: float = 300.0,
         y_jump_speed: float = 20.0
     ):
         super().__init__(
             texture,
-            center_x=random.randint(0, WINDOW_WIDTH),
-            center_y = 128
+            center_x=center_x,
+            center_y=center_y
         )
         self.x_max_velocity = x_max_speed
         self.y_jump_speed = y_jump_speed
@@ -74,7 +76,7 @@ class Game(arcade.Window):
                 "max_players must between 1 and 4 (the maximum supported by XInput)"
             )
 
-        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, "Input Example")
+        super().__init__(title="Input Example")
 
         self.player_textures = [t for t in player_textures]
         if randomize_textures:
@@ -95,7 +97,7 @@ class Game(arcade.Window):
 
         self.wall_list = arcade.SpriteList(use_spatial_hash=True)
 
-        for x in range(0, 1250, 64):
+        for x in range(0, self.width + 64, 64):
             wall = arcade.Sprite(":resources:images/tiles/grassMid.png", scale=0.5)
             wall.center_x = x
             wall.center_y = 32
@@ -149,10 +151,14 @@ class Game(arcade.Window):
         texture = self.player_textures[slot]
         print(f"got {slot=}, {texture=}")
 
+        # Put the player in a random location
         player = Player(
             texture,
-            self.wall_list,
-            self.INPUT_TEMPLATE, controller)
+            center_x=random.randrange(0, self.width), center_y=128,
+            walls=self.wall_list,
+            input_manager_template=self.INPUT_TEMPLATE,
+            controller=controller)
+
         label_text = f"Player {slot + 1}\n({controller.device.name})"
         label = arcade.Text(label_text, player.center_x, player.center_y + FLOAT_HEIGHT,
                     multiline=True, width=400, align="center", anchor_x="center", batch=self.device_labels_batch)
@@ -207,14 +213,12 @@ class Game(arcade.Window):
             if index != player_index:
                 player.input_manager.allow_keyboard = False
 
-
     def on_update(self, delta_time: float):
         self.player_list.on_update(delta_time)
         for label, player in zip(self.player_device_labels, self.players):
             position_x, position_y = player.position
             position_y += FLOAT_HEIGHT
             label.position = position_x, position_y
-
 
 
 def main():
