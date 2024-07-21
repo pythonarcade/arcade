@@ -9,26 +9,41 @@ from typing_extensions import TypedDict
 from arcade.future.input import inputs
 
 
-class RawActionMapping(TypedDict):
+class RawBindBase(TypedDict):
+    """General base for raw axis or action binds.
+
+    Anything matching this can be passed to
+    :py:func:`~arcade.future.input.inputs.parse_mapping_input_enum` to
+    extract a corresponding :py:class:`~arcade.future.input.inputs.InputEnum`
+    value.
+
+    For specific raw types, see:
+
+    * :py:class:`RawActionMapping`
+    * :py:class:`RawAxisMapping`
+    """
     input_type: int
     input: Union[str, int]
+
+
+class RawActionMapping(RawBindBase):
     mod_shift: bool
     mod_ctrl: bool
     mod_alt: bool
 
 
-class RawAxisMapping(TypedDict):
-    input_type: int
-    input: Union[str, int]
+class RawAxisMapping(RawBindBase):
     scale: float
 
 
 class RawAction(TypedDict):
+    """Annotates the raw form for :py:class:`ActionMapping`."""
     name: str
     mappings: list[RawActionMapping]
 
 
 class RawAxis(TypedDict):
+    """Annotates the raw form for :py:class:`AxisMapping`."""
     name: str
     mappings: list[RawAxisMapping]
 
@@ -125,7 +140,7 @@ def serialize_action(action: Action) -> RawAction:
 def parse_raw_axis(raw_axis: RawAxis) -> Axis:
     axis = Axis(raw_axis["name"])
     for raw_mapping in raw_axis["mappings"]:
-        instance = inputs.parse_instance(raw_mapping)
+        instance = inputs.parse_mapping_input_enum(raw_mapping)
         axis.add_mapping(
             AxisMapping(
                 instance,
