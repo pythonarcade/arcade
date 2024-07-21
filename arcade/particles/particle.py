@@ -111,7 +111,7 @@ class LifetimeParticle(Particle):
     def update(self, delta_time: float = 1 / 60):
         """Advance the Particle's simulation"""
         super().update(delta_time)
-        self.lifetime_elapsed += 1 / 60
+        self.lifetime_elapsed += delta_time
 
     def can_reap(self) -> bool:
         """Determine if Particle can be deleted"""

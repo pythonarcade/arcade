@@ -179,12 +179,13 @@ class Emitter:
 
     def update(self, delta_time: float = 1 / 60):
         # update emitter
-        self.center_x += self.change_x
-        self.center_y += self.change_y
-        self.angle += self.change_angle
+        time_step = delta_time * 60
+        self.center_x += self.change_x * time_step
+        self.center_y += self.change_y * time_step
+        self.angle += self.change_angle * time_step
 
         # update particles
-        emit_count = self.rate_factory.how_many(1 / 60, len(self._particles))
+        emit_count = self.rate_factory.how_many(delta_time, len(self._particles))
         for _ in range(emit_count):
             self._emit()
         self._particles.update(delta_time)

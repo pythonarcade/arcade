@@ -173,11 +173,10 @@ class RocketEmitter(Emitter):
     Custom emitter class to add gravity to the emitter to
     represent gravity on the firework shell.
     """
-
-    def update(self):
-        super().update()
+    def update(self, delta_time: float = 1 / 60):
+        super().update(delta_time)
         # gravity
-        self.change_y += -0.05
+        self.change_y += -0.05 * (60 * delta_time)
 
 
 class FireworksApp(arcade.Window):
@@ -185,7 +184,7 @@ class FireworksApp(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.background_color = arcade.color.BLACK
-        self.emitters = []
+        self.emitters: list[Emitter] = []
 
         self.launch_firework(0)
         arcade.schedule(self.launch_spinner, 4.0)
@@ -348,7 +347,7 @@ class FireworksApp(arcade.Window):
             self.cloud.center_x = 0
         # update
         for e in emitters_to_update:
-            e.update()
+            e.update(delta_time)
         # remove emitters that can be reaped
         to_del = [e for e in emitters_to_update if e.can_reap()]
         for e in to_del:
