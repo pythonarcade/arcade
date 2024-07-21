@@ -158,14 +158,14 @@ class AnimatedAlphaParticle(LifetimeParticle):
         self.out_duration = duration2
         self.end_alpha = end_alpha
 
-    def update(self):
-        super().update()
+    def update(self, delta_time: float = 1 / 60):
+        super().update(delta_time)
         if self.lifetime_elapsed <= self.in_duration:
             u = self.lifetime_elapsed / self.in_duration
-            self.alpha = clamp(lerp(self.start_alpha, self.mid_alpha, u), 0, 255)
+            self.alpha = int(clamp(lerp(self.start_alpha, self.mid_alpha, u), 0, 255))
         else:
             u = (self.lifetime_elapsed - self.in_duration) / self.out_duration
-            self.alpha = clamp(lerp(self.mid_alpha, self.end_alpha, u), 0, 255)
+            self.alpha = int(clamp(lerp(self.mid_alpha, self.end_alpha, u), 0, 255))
 
 
 class RocketEmitter(Emitter):

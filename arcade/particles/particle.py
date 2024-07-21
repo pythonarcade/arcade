@@ -36,9 +36,9 @@ class Particle(Sprite):
         self.alpha = alpha
         self.mutation_callback = mutation_callback
 
-    def update(self):
+    def update(self, delta_time: float = 1 / 60):
         """Advance the Particle's simulation"""
-        super().update()
+        super().update(delta_time)
         if self.mutation_callback:
             self.mutation_callback(self)
 
@@ -108,9 +108,9 @@ class LifetimeParticle(Particle):
         self.lifetime_original = lifetime
         self.lifetime_elapsed = 0.0
 
-    def update(self):
+    def update(self, delta_time: float = 1 / 60):
         """Advance the Particle's simulation"""
-        super().update()
+        super().update(delta_time)
         self.lifetime_elapsed += 1 / 60
 
     def can_reap(self) -> bool:
@@ -149,7 +149,7 @@ class FadeParticle(LifetimeParticle):
         self.alpha = start_alpha
         self.end_alpha = end_alpha
 
-    def update(self):
+    def update(self, delta_time: float = 1 / 60):
         """Advance the Particle's simulation"""
         super().update()
         a = lerp(self.start_alpha, self.end_alpha, self.lifetime_elapsed / self.lifetime_original)

@@ -177,7 +177,7 @@ class Emitter:
         # TODO: should this be a property so a method call isn't needed?
         return self.center_x, self.center_y
 
-    def update(self):
+    def update(self, delta_time: float = 1 / 60):
         # update emitter
         self.center_x += self.change_x
         self.center_y += self.change_y
@@ -187,7 +187,7 @@ class Emitter:
         emit_count = self.rate_factory.how_many(1 / 60, len(self._particles))
         for _ in range(emit_count):
             self._emit()
-        self._particles.update()
+        self._particles.update(delta_time)
         particles_to_reap = [p for p in self._particles if cast(Particle, p).can_reap()]
         for dead_particle in particles_to_reap:
             dead_particle.kill()
