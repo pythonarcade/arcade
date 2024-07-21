@@ -60,6 +60,11 @@ class Axis:
 
 
 class InputMapping:
+    """Base class for other mappings.
+
+    Without subclassing, it's still useful as a type annotation since we
+    we use type hashing a lot.
+    """
 
     def __init__(self, input: inputs.InputEnum):
         try:
