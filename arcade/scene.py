@@ -368,33 +368,17 @@ class Scene:
             key: val for key, val in self._name_mapping.items() if val != sprite_list
         }
 
-    def update(self, names: Iterable[str] | None = None) -> None:
+    def update(
+        self,
+        delta_time: float = 1 / 60,
+        names: Iterable[str] | None = None,
+        *args,
+        **kwargs,
+    ) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.update` on the scene's sprite lists.
 
         By default, this method calls :py:meth:`~arcade.SpriteList.update`
-        on the scene's sprite lists in the default draw order.
-
-        You can limit and reorder the updates with the ``names``
-        argument by passing a list of names in the scene. The sprite
-        lists will be drawn in the order of the passed iterable. If a
-        name is not in the scene, a :py:class:`KeyError` will be raised.
-
-        :param names: Which layers & what order to update them in.
-        """
-        if names:
-            for name in names:
-                self._name_mapping[name].update()
-            return
-
-        for sprite_list in self._sprite_lists:
-            sprite_list.update()
-
-    def on_update(self, delta_time: float = 1 / 60, names: Iterable[str] | None = None) -> None:
-        """
-        Call :py:meth:`~arcade.SpriteList.on_update` on the scene's sprite lists.
-
-        By default, this method calls :py:meth:`~arcade.SpriteList.on_update`
         on the scene's sprite lists in the default draw order.
 
         You can limit and reorder the updates with the ``names``
@@ -407,11 +391,11 @@ class Scene:
         """
         if names:
             for name in names:
-                self._name_mapping[name].on_update(delta_time)
+                self._name_mapping[name].update(delta_time, *args, **kwargs)
             return
 
         for sprite_list in self._sprite_lists:
-            sprite_list.on_update(delta_time)
+            sprite_list.update(delta_time, *args, **kwargs)
 
     def update_animation(self, delta_time: float, names: Iterable[str] | None = None) -> None:
         """

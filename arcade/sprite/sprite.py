@@ -325,11 +325,16 @@ class Sprite(BasicSprite, PymunkMixin):
 
     # ----Update Methods ----
 
-    def update(self) -> None:
+    def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         The default update method for a Sprite. Can be overridden by a subclass.
 
         This method moves the sprite based on its velocity and angle change.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         self.position = (
             self._position[0] + self.change_x,
