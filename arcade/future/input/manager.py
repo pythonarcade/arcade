@@ -75,8 +75,10 @@ class InputManager:
     ):
         self.actions: dict[str, Action] = {}
 
-        # We don't use defaultdict here because these are current unprotected.
-        # A defaultdict would create sets on *any* access, and we don't want that.
+        # We don't use defaultdict here since:
+        # 1. These attributes are unprotected
+        # 2. That means sets would be created on *any* access by the user
+        # 2. Those leftover sets would complicate serialization
         self.keys_to_actions: dict[int, set[str]] = {}
         self.controller_buttons_to_actions: dict[str, set[str]] = {}
         self.controller_axes_to_actions: dict[str, set[str]] = {}
