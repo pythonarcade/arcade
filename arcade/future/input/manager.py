@@ -189,14 +189,8 @@ class InputManager:
             controller=controller,
             controller_deadzone=existing.controller_deadzone,
         )
+        new.copy_existing(existing)
         new.actions = existing.actions.copy()
-        new.keys_to_actions = existing.keys_to_actions.copy()
-        new.controller_buttons_to_actions = existing.controller_buttons_to_actions.copy()
-        new.mouse_buttons_to_actions = existing.mouse_buttons_to_actions.copy()
-        new.axes = existing.axes.copy()
-        new.axes_state = existing.axes_state.copy()
-        new.controller_buttons_to_axes = existing.controller_buttons_to_axes.copy()
-        new.controller_analog_to_axes = existing.controller_analog_to_axes.copy()
 
         return new
 
