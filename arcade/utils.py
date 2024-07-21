@@ -122,7 +122,6 @@ class NormalizedRangeError(FloatOutsideRangeError):
 # Arcade, we make our own local type variables.
 _T = TypeVar('_T')
 _TType = TypeVar('_TType', bound=Type)
-_T2 = TypeVar('_T2')  # A second type var like T if we need it.
 
 
 class Chain(Generic[_T]):
@@ -216,13 +215,10 @@ def is_str_or_noniterable(item: Any) -> bool:
     return isinstance(item, str) or not is_iterable(item)
 
 
-# This uses _T2 to annotate append_if's argument because the predicate is
-# not guaranteed to take Any. In some cases, it may be desirable to take
-# a specific type for correctness and type safety reasons.
 def grow_sequence(
         destination: MutableSequence[_T],
-        source: Union[_T | Iterable[_T]],
-        append_if: Callable[[_T2], bool] = is_str_or_noniterable
+        source: _T | Iterable[_T],
+        append_if: Callable[[_T | Iterable[_T]], bool] = is_str_or_noniterable
 ) -> None:
     """Append when ``append_if(to_add)`` is ``True``, extend otherwise.
 
@@ -270,9 +266,9 @@ def grow_sequence(
             should be appended.
     """
     if append_if(source):
-        destination.append(source)
+        destination.append(source)  # type: ignore
     else:
-        destination.extend(source)
+        destination.extend(source)  # type: ignore
 
 
 def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
