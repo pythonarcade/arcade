@@ -9,9 +9,10 @@ from __future__ import annotations
 
 from enum import Enum, auto
 from sys import platform
-from typing import Type
+from typing import Type, TYPE_CHECKING
 
-from arcade.future.input.input_mapping import RawBindBase
+if TYPE_CHECKING:
+    from arcade.future.input.input_mapping import RawBindBase
 
 
 class InputType(Enum):
@@ -342,7 +343,7 @@ INPUT_TYPE_TO_CLASS: dict[InputType, Type[InputEnum]] = {
 }
 
 
-def parse_mapping_input_enum(raw: RawBindBase) -> InputEnum:
+def parse_mapping_input_enum(raw: "RawBindBase") -> InputEnum:
     """Parse the :py:class:`InputEnum` for a given raw value.
 
     See :py:class:`.RawBindBase` to learn more about required arguments.
