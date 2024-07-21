@@ -11,7 +11,7 @@ from typing_extensions import TypedDict
 import arcade
 from arcade.future.input import inputs
 from arcade.future.input.inputs import InputEnum, InputType
-from arcade.future.input.mapping import (
+from arcade.future.input.input_mapping import (
     Action,
     ActionMapping,
     Axis,

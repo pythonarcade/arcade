@@ -65,7 +65,7 @@ class Axis:
             pass
 
 
-class Mapping:
+class InputMapping:
 
     def __init__(self, input: inputs.InputEnum):
         try:
@@ -78,7 +78,7 @@ class Mapping:
         self._input = input
 
 
-class ActionMapping(Mapping):
+class ActionMapping(InputMapping):
 
     def __init__(
         self,
@@ -98,7 +98,7 @@ class ActionMapping(Mapping):
             self._modifiers.add(inputs.Keys.MOD_OPTION.value)
 
 
-class AxisMapping(Mapping):
+class AxisMapping(InputMapping):
 
     def __init__(self, input: inputs.InputEnum, scale: float):
         super().__init__(input)
