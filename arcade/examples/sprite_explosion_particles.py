@@ -77,8 +77,9 @@ class Smoke(arcade.SpriteCircle):
         self.change_y = SMOKE_RISE_RATE
         self.scale = SMOKE_START_SCALE
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         """Update this particle"""
+        # TODO: Take delta_time into account
         if self.alpha <= PARTICLE_FADE_RATE:
             # Remove faded out particles
             self.remove_from_sprite_lists()
@@ -105,8 +106,9 @@ class Particle(arcade.SpriteCircle):
         self.change_x = math.sin(math.radians(direction)) * speed
         self.change_y = math.cos(math.radians(direction)) * speed
 
-    def update(self):
-        """ Update the particle """
+    def update(self, delta_time: float = 1 / 60):
+        """Update the particle"""
+        # TODO: Take delta_time into account
         if self.alpha == 0:
             # Faded out, remove
             self.remove_from_sprite_lists()
@@ -254,8 +256,8 @@ class MyGame(arcade.Window):
         """ Movement and game logic """
 
         # Call update on bullet sprites
-        self.bullet_list.update()
-        self.explosions_list.update()
+        self.bullet_list.update(delta_time)
+        self.explosions_list.update(delta_time)
 
         # Loop through each bullet
         for bullet in self.bullet_list:

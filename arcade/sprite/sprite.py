@@ -336,11 +336,17 @@ class Sprite(BasicSprite, PymunkMixin):
             *args: Additional positional arguments
             **kwargs: Additional keyword arguments
         """
+        # NOTE: change_x and change_y (or velocity) are historically defined as
+        # the change in position per frame. To convert to change in position per
+        # second, we multiply by 60 (frames per second).
+        # Users can define these values in any unit they want, but this breaks
+        # compatibility with physics engines. Consider changing this in the future.
+        delta_time *= 60
         self.position = (
-            self._position[0] + self.change_x,
-            self._position[1] + self.change_y,
+            self._position[0] + self.change_x * delta_time,
+            self._position[1] + self.change_y * delta_time,
         )
-        self.angle += self.change_angle
+        self.angle += self.change_angle * delta_time
 
     # ----Utility Methods----
 

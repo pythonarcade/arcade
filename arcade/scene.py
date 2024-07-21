@@ -370,8 +370,8 @@ class Scene:
 
     def update(
         self,
-        delta_time: float = 1 / 60,
         names: Iterable[str] | None = None,
+        delta_time: float = 1 / 60,
         *args,
         **kwargs,
     ) -> None:
@@ -389,7 +389,13 @@ class Scene:
         :param delta_time: The time step to update by in seconds.
         :param names: Which layers & what order to update them in.
         """
-        if names:
+        if names is not None:
+            # Due to api changes in 3.0 we sanity check this input
+            if not isinstance(names, Iterable):
+                raise TypeError(
+                    f"Expected an iterable of layer names, but got {type(names)} instead."
+                )
+
             for name in names:
                 self._name_mapping[name].update(delta_time, *args, **kwargs)
             return

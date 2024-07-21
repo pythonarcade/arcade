@@ -36,8 +36,7 @@ class Explosion(arcade.Sprite):
         self.current_texture = 0
         self.textures = texture_list
 
-    def update(self):
-
+    def update(self, delta_time=1 / 60):
         # Update to the next frame of the animation. If we are at the end
         # of our frames, then delete this sprite.
         self.current_texture += 1
