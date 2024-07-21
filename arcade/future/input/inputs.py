@@ -9,10 +9,9 @@ from __future__ import annotations
 
 from enum import Enum, auto
 from sys import platform
-from typing import TYPE_CHECKING, Type
+from typing import Type
 
-if TYPE_CHECKING:
-    from arcade.future.input.input_mapping import RawBindBase
+from arcade.future.input.raw_dicts import RawBindBase
 
 
 class InputType(Enum):

@@ -15,11 +15,10 @@ from arcade.future.input.input_mapping import (
     ActionMapping,
     Axis,
     AxisMapping,
-    RawAction,
-    RawAxis,
     serialize_action,
     serialize_axis,
 )
+from arcade.future.input.raw_dicts import RawAction, RawAxis
 from arcade.future.input.inputs import InputEnum, InputType
 from arcade.types import OneOrIterableOf
 from arcade.utils import grow_sequence
