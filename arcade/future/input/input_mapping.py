@@ -43,10 +43,7 @@ class Action:
         self._mappings.add(mapping)
 
     def remove_mapping(self, mapping: ActionMapping) -> None:
-        try:
-            self._mappings.remove(mapping)
-        except KeyError:
-            pass
+        self._mappings.discard(mapping)
 
 
 class Axis:
@@ -59,10 +56,7 @@ class Axis:
         self._mappings.add(mapping)
 
     def remove_mapping(self, mapping: AxisMapping) -> None:
-        try:
-            self._mappings.remove(mapping)
-        except KeyError:
-            pass
+        self._mappings.discard(mapping)
 
 
 class InputMapping:
