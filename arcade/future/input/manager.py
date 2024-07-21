@@ -375,7 +375,7 @@ class InputManager:
             if hit:
                 self.dispatch_action(action_name, ActionState.PRESSED)
 
-    def on_key_press(self, key: int, modifiers) -> None:
+    def on_key_press(self, key: int, modifiers: int) -> None:
         if not self._allow_keyboard:
             return
 
@@ -410,7 +410,7 @@ class InputManager:
             if hit:
                 self.dispatch_action(action_name, ActionState.RELEASED)
 
-    def on_key_release(self, key: int, modifiers) -> None:
+    def on_key_release(self, key: int, modifiers: int) -> None:
         if not self._allow_keyboard:
             return
         # What, why are we doing any of this repeat tuple conversion in here?
@@ -438,7 +438,7 @@ class InputManager:
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
-    def on_stick_motion(self, controller, name, motion: pyglet.math.Vec2):
+    def on_stick_motion(self, controller: Controller, name: str, motion: pyglet.math.Vec2):
         x_value, y_value = motion.x, motion.y
         if name == "leftx":
             self.window.dispatch_event(
