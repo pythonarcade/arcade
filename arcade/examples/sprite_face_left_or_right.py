@@ -31,7 +31,7 @@ class Player(arcade.Sprite):
         super().__init__(left_texture, scale=SPRITE_SCALING)
         self.textures.append(right_texture)
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         self.center_x += self.change_x
         self.center_y += self.change_y
 
@@ -96,7 +96,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.player_sprite_list.update()
+        self.player_sprite_list.update(delta_time)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

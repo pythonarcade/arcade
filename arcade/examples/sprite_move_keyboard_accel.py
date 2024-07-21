@@ -33,7 +33,7 @@ FRICTION = 0.02
 
 class Player(arcade.Sprite):
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         self.center_x += self.change_x
         self.center_y += self.change_y
 
@@ -166,7 +166,7 @@ class MyGame(arcade.Window):
         # Call update to move the sprite
         # IMPORTANT: If using a physics engine, you need to call update
         # on it instead of the sprite list!
-        self.player_list.update()
+        self.player_list.update(delta_time)
 
         # Update the speed displays based on the final speed
         self.x_speed_display.text = f"X Speed: {self.player_sprite.change_x:6.3f}"

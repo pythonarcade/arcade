@@ -25,7 +25,7 @@ MOVEMENT_SPEED = 5
 class Player(arcade.Sprite):
     """ Player Class """
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         """ Move the player """
         # Move player.
         # Remove these lines if physics engine is moving player.
@@ -96,7 +96,7 @@ class MyGame(arcade.Window):
         """ Movement and game logic """
 
         # Move the player
-        self.player_list.update()
+        self.player_list.update(delta_time)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

@@ -65,7 +65,7 @@ class Bullet(arcade.Sprite):
             scale=SPRITE_SCALING_BULLET,
         )
 
-    def on_update(self, delta_time: float = 1 / 60) -> None:
+    def update(self, delta_time: float = 1 / 60) -> None:
         """Updates the bullet's position."""
         self.position = (
             self.center_x + self.change_x * delta_time,
@@ -319,7 +319,7 @@ class MyGame(arcade.Window):
         )
 
         # Call updates on bullet sprites
-        self.bullet_list.on_update(delta_time)
+        self.bullet_list.update(delta_time)
 
         # Check if the enemy can attack. If so, shoot a bullet from the
         # enemy towards the player
