@@ -316,12 +316,11 @@ class MouseButtons(InputEnum):
     MOUSE_5 = 1 << 4
 
 
-# .This is safe since:
+# This improves on if ladders since:
 # 1. Enum types with members are final
-# .2. Types are hashable
-# Hoever, we can probably make this much cleaner to set up since
-# we have repeated if ladders elsewhere which can be replaced with
-# smaller dicts.
+# 2. Types are hashable
+# It may be worth encapsulating this approach since we have other if
+# ladders without case-specific logic remaining in the controller code.
 CLASS_TO_INPUT_TYPE = {
     Keys: InputType.KEYBOARD,
     MouseButtons: InputType.MOUSE_BUTTON,
