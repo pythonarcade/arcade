@@ -6,13 +6,15 @@ These  should be standalone and not rely on any arcade imports
 """
 from __future__ import annotations
 
+
 import functools
 import platform
 import sys
 import warnings
 from itertools import chain
 from pathlib import Path
-from typing import Generator, Generic, Sequence, Type, TypeVar
+from collections.abc import MutableSequence
+from typing import Generator, Generic, Iterable, Sequence, Type, TypeVar, Union, Any, Callable
 
 _CT = TypeVar('_CT')  # Comparable type, ie supports the <= operator
 
@@ -116,6 +118,7 @@ class NormalizedRangeError(FloatOutsideRangeError):
 # Arcade, we make our own local type variables.
 _T = TypeVar('_T')
 _TType = TypeVar('_TType', bound=Type)
+_T2 = TypeVar('_T2')  # A second type var like T if we need it.
 
 
 class Chain(Generic[_T]):
@@ -137,6 +140,135 @@ class Chain(Generic[_T]):
     def __iter__(self) -> Generator[_T, None, None]:
         for item in chain.from_iterable(self.components):
             yield item
+
+
+def is_iterable(item: Any) -> bool:
+    """Use :py:func:`iter` to infer whether ``item`` is iterable.
+
+    .. tip:: An empty iterable still counts as an iterable.
+
+    This relies on the following:
+
+    #. Python's :py:func:`iter` raises a :py:class:`TypeError` if
+       ``item`` is not iterable
+    #. try/catch blocks are fast
+
+    If you are still concerned about performance, you may want to inline
+    the contents of this function locally since function calls may have
+    more overhead than try/catch blocks on your Python version.
+
+    Parameters:
+         item:
+            An object to pass to the built-in :py:func:`iter` function.
+
+    Returns:
+        ``True`` if the item appears to be iterable.
+    """
+    try:
+        _ = iter(item)
+        return True
+    except TypeError:
+        return False
+
+
+def is_nonstr_iterable(item: Any) -> bool:
+    """``True`` if ``item`` is an iterable other than a :py:class:`str`.
+
+    In addition to calling this function ``if`` and ``elif`` statements,
+    you can also pass it as an argument to other functions. These include:
+
+    * The :py:func:`.grow_sequence` utility function
+    * Python's built-in :py:func:`filter`
+
+    .. note:: This is the opposite of :py:func:`is_str_or_noniterable`.
+
+    Parameters:
+         item: Any object.
+
+    Returns:
+        Whether ``item`` is a non-string iterable.
+    """
+    return not isinstance(item, str) and is_iterable(item)
+
+
+def is_str_or_noniterable(item: Any) -> bool:
+    """``True`` if ``item`` is a string or non-iterable.
+
+    In addition to calling this function in ``if`` and ``elif`` statements,
+    you can also pass it as an argument to other functions. These include:
+
+    * The :py:func:`.grow_sequence` utility function
+    * Python's built-in :py:func:`filter` function
+
+    .. note:: This is the opposite of :py:func:`is_str_or_noniterable`.
+
+    Parameters:
+        item: Any object.
+
+    Returns:
+        ``True`` if ``item`` is a :py:class:`str` or a non-iterable
+        object.
+    """
+    return isinstance(item, str) or not is_iterable(item)
+
+
+# This uses _T2 to annotate append_if's argument because the predicate is
+# not guaranteed to take Any. In some cases, it may be desirable to take
+# a specific type for correctness and type safety reasons.
+def grow_sequence(
+        destination: MutableSequence[_T],
+        source: Union[_T | Iterable[_T]],
+        append_if: Callable[[_T2], bool] = is_str_or_noniterable
+) -> None:
+    """Append when ``append_if(to_add)`` is ``True``, extend otherwise.
+
+    If performance is critical, consider inlining this code. This function
+    is meant as:
+
+    * a companion to :py:data:`arcade.types.OneOrIterableOf`
+    * an abbreviation for repetitive if-blocks in config and settings menus
+
+    The default ``append_if`` value is the :py:func:`.is_str_or_noniterable`
+    function in this module. You can pass any :py:func:`~typing.Callable`
+    which returns:
+
+    * ``True`` if we should :py:meth:`append <list.append>`
+    * ``False`` if we should :py:meth:`extend <list.extend>`
+
+    This includes both the :py:class:`callable` function and your own custom
+    functions. For example:
+
+    .. code-block:: python
+
+       dest = []
+
+       def _validate_and_choose(item) -> bool:
+           \"\"\"Raises an exception if data is invalid or a bool if not.\"\"\"
+           ...
+
+       # Okay values
+       grow_sequence(dest, MyType(), append_when=_validate_and_choose)
+       grow_sequence(dest, [MyType(), MyType()], append_when=_validate_and_choose)
+
+       # Raises an exception
+       grow_sequence(dest, BadType(), append_when=_validate_and_choose)
+
+
+    Parameters:
+        destination:
+            A :py:func:`list` or other :py:class:`~typing.MutableSequence`
+            to append to or extend.
+        source:
+            A value source we'll use to grow the ``destination``
+            sequence.
+        append_if:
+            A :py:func:`callable` which returns ``True`` when ``source``
+            should be appended.
+    """
+    if append_if(source):
+        destination.append(source)
+    else:
+        destination.extend(source)
 
 
 def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
