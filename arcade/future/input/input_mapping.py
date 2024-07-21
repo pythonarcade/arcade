@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from arcade.future.input import inputs
-from arcade.future.input.raw_dicts import RawActionMapping, RawAxisMapping, RawAction, RawAxis
+from arcade.future.input.raw_dicts import RawAction, RawActionMapping, RawAxis, RawAxisMapping
 
 
 class Action:
