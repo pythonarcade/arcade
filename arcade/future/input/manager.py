@@ -3,14 +3,12 @@ from __future__ import annotations
 
 from enum import Enum
 from typing import Any, Callable, TypeVar
-from typing_extensions import TypedDict
 
 import pyglet
 from pyglet.input.base import Controller
+from typing_extensions import TypedDict
 
 import arcade
-from arcade.types import OneOrIterableOf
-
 from arcade.future.input import inputs
 from arcade.future.input.inputs import InputEnum, InputType
 from arcade.future.input.mapping import (
@@ -23,6 +21,8 @@ from arcade.future.input.mapping import (
     serialize_action,
     serialize_axis,
 )
+from arcade.types import OneOrIterableOf
+from arcade.utils import grow_sequence
 
 
 class RawInputManager(TypedDict):
@@ -31,8 +31,8 @@ class RawInputManager(TypedDict):
     controller_deadzone: float
 
 
-_K = TypeVar('_K')
-_V = TypeVar('_V')
+_K = TypeVar("_K")
+_V = TypeVar("_V")
 
 
 def _clean_dicts(to_remove: _V, *dicts_to_clean: dict[_K, set[_V]]) -> None:
@@ -93,10 +93,7 @@ class InputManager:
 
         self.window = arcade.get_window()
 
-        if isinstance(action_handlers, list):
-            self.on_action_listeners.extend(action_handlers)
-        else:
-            self.on_action_listeners.append(action_handlers)
+        self.register_action_handler(action_handlers)
 
         self._allow_keyboard = allow_keyboard
         if self._allow_keyboard:
@@ -303,17 +300,11 @@ class InputManager:
             self.keys_to_actions,
             self.controller_buttons_to_actions,
             self.controller_axes_to_actions,
-            self.mouse_buttons_to_actions
+            self.mouse_buttons_to_actions,
         )
 
-    def register_action_handler(
-        self,
-        handler: OneOrIterableOf[Callable[[str, ActionState], Any]]
-    ):
-        if callable(handler):
-            self.on_action_listeners.append(handler)
-        else:
-            self.on_action_listeners.extend(handler)
+    def register_action_handler(self, handler: OneOrIterableOf[Callable[[str, ActionState], Any]]):
+        grow_sequence(self.on_action_listeners, handler, append_if=callable)
 
     def subscribe_to_action(self, name: str, subscriber: Callable[[ActionState], Any]):
         old = self.action_subscribers.get(name, set())
@@ -348,10 +339,7 @@ class InputManager:
     def clear_axis_input(self, axis: str):
         self.axes[axis]._mappings.clear()
         _clean_dicts(
-            axis,
-            self.keys_to_axes,
-            self.controller_analog_to_axes,
-            self.controller_buttons_to_axes
+            axis, self.keys_to_axes, self.controller_analog_to_axes, self.controller_buttons_to_axes
         )
 
     def remove_axis(self, name: str):
