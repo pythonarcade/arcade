@@ -6,15 +6,14 @@ These  should be standalone and not rely on any arcade imports
 """
 from __future__ import annotations
 
-
 import functools
 import platform
 import sys
 import warnings
+from collections.abc import MutableSequence
 from itertools import chain
 from pathlib import Path
-from collections.abc import MutableSequence
-from typing import Generator, Generic, Iterable, Sequence, Type, TypeVar, Union, Any, Callable
+from typing import Any, Callable, Generator, Generic, Iterable, Sequence, Type, TypeVar, Union
 
 _CT = TypeVar('_CT')  # Comparable type, ie supports the <= operator
 

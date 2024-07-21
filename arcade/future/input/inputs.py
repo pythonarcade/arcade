@@ -24,6 +24,7 @@ class InputType(Enum):
 
 class InputEnum(Enum):
     """The base class for all input value :py:class:`enum.Enum` types."""
+
     pass
 
 

@@ -8,8 +8,6 @@ import pyglet
 from pyglet.input import Controller
 
 import arcade
-
-
 from arcade.future.input import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
 
 WINDOW_WIDTH = 1280
@@ -37,13 +35,9 @@ class Player(arcade.Sprite):
         center_x: float = 0.0,
         center_y: float = 0.0,
         x_max_speed: float = 300.0,
-        y_jump_speed: float = 20.0
+        y_jump_speed: float = 20.0,
     ):
-        super().__init__(
-            texture,
-            center_x=center_x,
-            center_y=center_y
-        )
+        super().__init__(texture, center_x=center_x, center_y=center_y)
         self.x_max_velocity = x_max_speed
         self.y_jump_speed = y_jump_speed
 
@@ -66,15 +60,13 @@ class Player(arcade.Sprite):
 class Game(arcade.Window):
 
     def __init__(
-            self,
-            player_textures: Sequence[str] = DEFAULT_TEXTURES,
-            max_players: int = 4,
-            randomize_textures: bool = True,
+        self,
+        player_textures: Sequence[str] = DEFAULT_TEXTURES,
+        max_players: int = 4,
+        randomize_textures: bool = True,
     ):
         if not (1 < max_players <= 4):
-            raise ValueError(
-                "max_players must between 1 and 4 (the maximum supported by XInput)"
-            )
+            raise ValueError("max_players must between 1 and 4 (the maximum supported by XInput)")
 
         super().__init__(title="Input Example")
 
@@ -82,12 +74,9 @@ class Game(arcade.Window):
         if randomize_textures:
             random.shuffle(self.player_textures)
 
-
         self._max_players = max_players
         self.key_to_player_index: dict[Keys, int] = {
-            getattr(Keys, f"KEY_{i + 1 }"):i
-            for i
-            in range(0, max_players)
+            getattr(Keys, f"KEY_{i + 1 }"): i for i in range(0, max_players)
         }
 
         self.players: list[Player | None] = []
@@ -134,12 +123,12 @@ class Game(arcade.Window):
         self.controller_manager.set_handlers(self.on_connect, self.on_disconnect)
 
         for index, controller in enumerate(self.controller_manager.get_controllers()):
-           self.add_player_for_controller(controller)
+            self.add_player_for_controller(controller)
 
     def _get_first_player_slot_free(self) -> int | None:
         for i, player in self.players:
-           if player is None:
-               return i
+            if player is None:
+                return i
 
         if len(self.players) < self._max_players:
             return len(self.players)
@@ -154,14 +143,24 @@ class Game(arcade.Window):
         # Put the player in a random location
         player = Player(
             texture,
-            center_x=random.randrange(0, self.width), center_y=128,
+            center_x=random.randrange(0, self.width),
+            center_y=128,
             walls=self.wall_list,
             input_manager_template=self.INPUT_TEMPLATE,
-            controller=controller)
+            controller=controller,
+        )
 
         label_text = f"Player {slot + 1}\n({controller.device.name})"
-        label = arcade.Text(label_text, player.center_x, player.center_y + FLOAT_HEIGHT,
-                    multiline=True, width=400, align="center", anchor_x="center", batch=self.device_labels_batch)
+        label = arcade.Text(
+            label_text,
+            player.center_x,
+            player.center_y + FLOAT_HEIGHT,
+            multiline=True,
+            width=400,
+            align="center",
+            anchor_x="center",
+            batch=self.device_labels_batch,
+        )
 
         if slot == len(self.players):
             self.players.append(player)

@@ -22,6 +22,7 @@ class RawBindBase(TypedDict):
     * :py:class:`RawActionMapping`
     * :py:class:`RawAxisMapping`
     """
+
     input_type: int
     input: Union[str, int]
 
@@ -38,12 +39,14 @@ class RawAxisMapping(RawBindBase):
 
 class RawAction(TypedDict):
     """Annotates the raw form for :py:class:`ActionMapping`."""
+
     name: str
     mappings: list[RawActionMapping]
 
 
 class RawAxis(TypedDict):
     """Annotates the raw form for :py:class:`AxisMapping`."""
+
     name: str
     mappings: list[RawAxisMapping]
 
