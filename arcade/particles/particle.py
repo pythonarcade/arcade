@@ -151,6 +151,6 @@ class FadeParticle(LifetimeParticle):
 
     def update(self, delta_time: float = 1 / 60):
         """Advance the Particle's simulation"""
-        super().update()
+        super().update(delta_time)
         a = lerp(self.start_alpha, self.end_alpha, self.lifetime_elapsed / self.lifetime_original)
         self.alpha = int(clamp(a, 0, 255))
