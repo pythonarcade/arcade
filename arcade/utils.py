@@ -13,7 +13,7 @@ import warnings
 from collections.abc import MutableSequence
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Generic, Iterable, Sequence, Type, TypeVar, Union
+from typing import Any, Callable, Generator, Generic, Iterable, Sequence, Type, TypeVar
 
 _CT = TypeVar('_CT')  # Comparable type, ie supports the <= operator
 
