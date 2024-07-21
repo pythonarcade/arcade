@@ -105,9 +105,9 @@ The minium for docstrings is covering all parameters in an `Args:` block.
 
 ```python
 Args:
-    width (int): The width of something
-    height (int): The height of something
-    title (str, optional): The title of something
+    width: The width of something
+    height: The height of something
+    title (optional): The title of something
 ```
 
 * `Args:` should be used for all parameters
@@ -117,11 +117,11 @@ Args:
 * `Raises:` can be used if the function raises exceptions that need to be documented
 * `Yields:` can be used if the function is a generator and yields values
 * `Attributes:` we should try to avoid and instead document the attributes in the code
-* Types are visible in the api docs. It's not mandatory to include complex types in the
-  docstring, however, simpler typing is easy enough to include.
+* Types are visible in the api docs. It's not mandatory to include types in docstring,
+  however, simple types like `int`, `str`, `float`, `bool` can be included.
 * Using `optional` is a good way to indicate that a parameter is optional.
-* Properties and attribute docs don't need a return type when the return type
-  is already clear from type annotation.
+* Properties and attribute docs don't need a type when this is already clear from
+  type or return annotation.
 
 Attribute docstring in module or class:
 
