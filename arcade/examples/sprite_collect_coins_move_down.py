@@ -35,8 +35,11 @@ class Coin(arcade.Sprite):
         self.center_x = random.randrange(SCREEN_WIDTH)
 
     def update(self, delta_time: float = 1/60):
-        # Move the coin
-        self.center_y -= 1
+        # Take frame time into account
+        time_step = delta_time * 60
+
+        # Move the coin 1 pixel down per 1/60th of a second
+        self.center_y -= 1 * time_step
 
         # See if the coin has fallen off the bottom of the screen.
         # If so, reset it.

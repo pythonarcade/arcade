@@ -79,16 +79,18 @@ class Smoke(arcade.SpriteCircle):
 
     def update(self, delta_time: float = 1/60):
         """Update this particle"""
-        # TODO: Take delta_time into account
+        # Take delta_time into account
+        time_step = 60 * delta_time
+
         if self.alpha <= PARTICLE_FADE_RATE:
             # Remove faded out particles
             self.remove_from_sprite_lists()
         else:
             # Update values
-            self.alpha -= SMOKE_FADE_RATE
-            self.center_x += self.change_x
-            self.center_y += self.change_y
-            self.scale += SMOKE_EXPANSION_RATE
+            self.alpha -= int(SMOKE_FADE_RATE * time_step)
+            self.center_x += self.change_x * time_step
+            self.center_y += self.change_y * time_step
+            self.scale += SMOKE_EXPANSION_RATE * time_step
 
 
 class Particle(arcade.SpriteCircle):
@@ -108,7 +110,9 @@ class Particle(arcade.SpriteCircle):
 
     def update(self, delta_time: float = 1 / 60):
         """Update the particle"""
-        # TODO: Take delta_time into account
+        # Take delta_time into account
+        time_step = 60 * delta_time
+
         if self.alpha == 0:
             # Faded out, remove
             self.remove_from_sprite_lists()
@@ -116,9 +120,9 @@ class Particle(arcade.SpriteCircle):
             # Gradually fade out the particle. Don't go below 0
             self.alpha = max(0, self.alpha - PARTICLE_FADE_RATE)
             # Move the particle
-            self.center_x += self.change_x
-            self.center_y += self.change_y
-            self.change_y -= PARTICLE_GRAVITY
+            self.center_x += self.change_x * time_step
+            self.center_y += self.change_y * time_step
+            self.change_y -= PARTICLE_GRAVITY * time_step
 
             # Should we sparkle this?
             if random.random() <= PARTICLE_SPARKLE_CHANCE:
