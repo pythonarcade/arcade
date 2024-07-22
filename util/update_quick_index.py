@@ -347,6 +347,12 @@ API_FILE_TO_TITLE_AND_MODULES = {
                 "arcade.exceptions"
             ],
     },
+    "start_finish_render.rst": {
+        "title": "Start/Finish Render",
+        "use_declarations_in": [
+            "arcade.start_finish_data",
+        ],
+    },
     "future.rst": {
        "title": "Future Features",
        "use_declarations_in": [
