@@ -168,7 +168,7 @@ html_baseurl = 'https://api.arcade.academy/'
 # Configuration for intersphinx enabling linking other projects
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'pyglet': ('https://pyglet.readthedocs.io/en/latest/', None),
+    'pyglet': ('https://pyglet.readthedocs.io/en/development/', None),
     'PIL': ('https://pillow.readthedocs.io/en/stable', None),
     'pymunk': ('https://www.pymunk.org/en/latest/', None),
 }
