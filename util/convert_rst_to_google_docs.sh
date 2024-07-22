@@ -27,9 +27,18 @@ https://pypi.org/project/docconvert/
 
 EOF
 requires
+cat <<EOF
+
+After setup, use as follows:
+
+1. $0 arcade/name.py
+2. ./make.py serve
+3. look at the pages in browser to make sure they're good
+
+EOF
 }
 
-if [ "$#" -eq 0 ]; then
+if [ "$#" -eq 0 ] || [ "$1" == "--help" ]; then
   Usage
   exit 0
 fi
