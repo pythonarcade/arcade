@@ -370,8 +370,8 @@ class Scene:
 
     def update(
         self,
+        delta_time: float,
         names: Iterable[str] | None = None,
-        delta_time: float = 1 / 60,
         *args,
         **kwargs,
     ) -> None:
@@ -389,8 +389,14 @@ class Scene:
         :param delta_time: The time step to update by in seconds.
         :param names: Which layers & what order to update them in.
         """
+        # Due to api changes in 3.0 we sanity check delta_time
+        if not isinstance(delta_time, (int, float)):
+            raise TypeError(
+                f"Expected a number for delta_time, but got {type(delta_time)} instead."
+            )
+
         if names is not None:
-            # Due to api changes in 3.0 we sanity check this input
+            # Due to api changes in 3.0 we sanity names
             if not isinstance(names, Iterable):
                 raise TypeError(
                     f"Expected an iterable of layer names, but got {type(names)} instead."
@@ -403,7 +409,9 @@ class Scene:
         for sprite_list in self._sprite_lists:
             sprite_list.update(delta_time, *args, **kwargs)
 
-    def update_animation(self, delta_time: float, names: Iterable[str] | None = None) -> None:
+    def update_animation(
+        self, delta_time: float, names: Iterable[str] | None = None, *args, **kwargs
+    ) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.update_animation` on the scene's sprite lists.
 
@@ -420,11 +428,11 @@ class Scene:
         """
         if names:
             for name in names:
-                self._name_mapping[name].update_animation(delta_time)
+                self._name_mapping[name].update_animation(delta_time, *args, **kwargs)
             return
 
         for sprite_list in self._sprite_lists:
-            sprite_list.update_animation(delta_time)
+            sprite_list.update_animation(delta_time, *args, **kwargs)
 
     def draw(
         self,
