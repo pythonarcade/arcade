@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Self
+from typing import TYPE_CHECKING, Literal
 
 from PIL import Image
 
@@ -47,7 +47,7 @@ class SpriteSheet:
         self._flip_flags = (False, False)
 
     @classmethod
-    def from_image(cls, image: Image.Image) -> Self:
+    def from_image(cls, image: Image.Image) -> SpriteSheet:
         """
         Create a sprite sheet from a PIL image.
 
