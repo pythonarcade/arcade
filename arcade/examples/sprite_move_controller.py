@@ -44,7 +44,7 @@ class Player(arcade.Sprite):
             # Required for the controller events to be called.
             self.controller.push_handlers(self)
 
-    def update(self):
+    def update(self, delta_time: float = 1 / 60):
         """ Move the player """
 
         # If there is a controller, grab the speed.
@@ -161,7 +161,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.all_sprites_list.update()
+        self.all_sprites_list.update(delta_time)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

@@ -866,27 +866,30 @@ class SpriteList(Generic[SpriteType]):
         for sprite in self.sprite_list:
             self.spatial_hash.add(sprite)
 
-    def update(self) -> None:
+    def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         Call the update() method on each sprite in the list.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         for sprite in self.sprite_list:
-            sprite.update()
+            sprite.update(delta_time, *args, **kwargs)
 
-    def on_update(self, delta_time: float = 1 / 60) -> None:
-        """
-        Update the sprite. Similar to update, but also takes a delta-time.
-        """
-        for sprite in self.sprite_list:
-            sprite.on_update(delta_time)
-
-    def update_animation(self, delta_time: float = 1 / 60) -> None:
+    def update_animation(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         Call the update_animation in every sprite in the sprite list.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         # NOTE: Can we limit this to animated sprites?
         for sprite in self.sprite_list:
-            sprite.update_animation(delta_time)
+            sprite.update_animation(delta_time, *args, **kwargs)
 
     def _get_center(self) -> tuple[float, float]:
         """Get the mean center coordinates of all sprites in the list."""

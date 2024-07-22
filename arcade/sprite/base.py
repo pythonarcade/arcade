@@ -576,30 +576,29 @@ class BasicSprite:
 
     # ---- Update methods ----
 
-    def update(self) -> None:
+    def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         Generic update method. It can be called manually
         or by the SpriteList's update method.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         pass
 
-    def on_update(self, delta_time: float = 1 / 60) -> None:
-        """
-        Update the sprite. Similar to update, but also takes a delta-time.
-        It can be called manually or by the SpriteList's on_update method.
-
-        :param delta_time: Time since last update.
-        """
-        pass
-
-    def update_animation(self, delta_time: float = 1 / 60) -> None:
+    def update_animation(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         Generic update animation method. Usually involves changing
         the active texture on the sprite.
 
         This can be called manually or by the SpriteList's update_animation method.
 
-        :param delta_time: Time since last update.
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         pass
 

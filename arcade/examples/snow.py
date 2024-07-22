@@ -37,7 +37,7 @@ class Snowflake(arcade.SpriteCircle):
             random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT + 100),
         )
 
-    def on_update(self, delta_time: float = 1/60) -> None:
+    def update(self, delta_time: float = 1/60) -> None:
         self.center_y -= self.speed * delta_time
 
         # Check if snowflake has fallen below screen
@@ -93,7 +93,7 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
         # Call update on all the snowflakes
-        self.snowflake_list.on_update(delta_time)
+        self.snowflake_list.update(delta_time)
 
 
 def main():

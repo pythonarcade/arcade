@@ -53,7 +53,7 @@ class Coin(arcade.BasicSprite):
         self.change_x = 0
         self.change_y = 0
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         """ Update the sprite. """
         # Setting the position is faster than setting x & y individually
         self.position = (

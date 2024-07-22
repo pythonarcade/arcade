@@ -715,9 +715,9 @@ def emitter_36():
             super().__init__(*args, **kwargs)
             self.elapsed = 0.0
 
-        def update(self):
-            super().update()
-            self.elapsed += 1 / 60
+        def update(self, delta_time: float = 1 / 60):
+            super().update(delta_time)
+            self.elapsed += delta_time
             self.center_x = sine_wave(self.elapsed, 0, SCREEN_WIDTH, SCREEN_WIDTH / 100)
             self.center_y = sine_wave(self.elapsed, 0, SCREEN_HEIGHT, SCREEN_HEIGHT / 100)
 
@@ -815,11 +815,11 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         if self.emitter:
             self.emitter_timeout += 1
-            self.emitter.update()
+            self.emitter.update(delta_time)
             if self.emitter.can_reap() or self.emitter_timeout > EMITTER_TIMEOUT:
                 pyglet.clock.schedule_once(self.next_emitter, QUIET_BETWEEN_SPAWNS)
                 self.emitter = None
-        self.obj.update()
+        self.obj.update(delta_time)
         if self.obj.center_x > SCREEN_WIDTH:
             self.obj.center_x = 0
 

@@ -45,7 +45,7 @@ class EasingCircle(arcade.SpriteCircle):
         self.easing_x_data = None
         self.easing_y_data = None
 
-    def on_update(self, delta_time: float = 1 / 60):
+    def update(self, delta_time: float = 1 / 60):
         if self.easing_x_data is not None:
             done, self.center_x = easing.ease_update(self.easing_x_data, delta_time)
             if done:
@@ -179,7 +179,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.ball_list.on_update(delta_time)
+        self.ball_list.update(delta_time)
 
 
 def main():
