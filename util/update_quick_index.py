@@ -222,6 +222,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.application",
             "arcade.window_commands",
             "arcade.sections",
+            "arcade.screenshot",
         ]
     },
     "sound.rst": {
