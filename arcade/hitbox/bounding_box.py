@@ -19,8 +19,7 @@ class BoundingHitBoxAlgorithm(HitBoxAlgorithm):
         Given an RGBA image, this returns points that make up a hit box around it
         without any attempt to trim out transparent pixels.
 
-        :param image: Image get hit box from.
-
-        :Returns: List of points
+        Args:
+            image: Image get hit box from.
         """
         return self.create_bounding_box(image)

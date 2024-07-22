@@ -25,9 +25,8 @@ def calculate_hit_box_points_simple(image: Image, *args) -> Point2List:
     Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
 
-    :param image: Image get hit box from.
-
-    :Returns: List of points
+    Args:
+        image: Image get hit box from.
     """
     return algo_simple.calculate(image)
 
@@ -40,11 +39,12 @@ def calculate_hit_box_points_detailed(
     Given an RGBA image, this returns points that make up a hit box around it. Attempts
     to trim out transparent pixels.
 
-    :param image: Image get hit box from.
-    :param hit_box_detail: How detailed to make the hit box. There's a
-                               trade-off in number of points vs. accuracy.
-
-    :Returns: List of points
+    Args:
+        image:
+            Image get hit box from.
+        hit_box_detail:
+            How detailed to make the hit box. There's a
+            trade-off in number of points vs. accuracy.
     """
     return algo_detailed.calculate(image, detail=hit_box_detail)
 
