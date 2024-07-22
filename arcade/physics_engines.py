@@ -37,7 +37,6 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
         walls:
             A list of walls to guess our way out of.
     """
-
     # Original x & y of the moving object
     o_x, o_y = colliding.position
 
@@ -106,7 +105,6 @@ def _move_sprite(
         A list of other individual sprites the ``moving_sprite``
         collided with.
     """
-
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
         _wiggle_until_free(moving_sprite, can_collide)
@@ -281,6 +279,7 @@ def _move_sprite(
 
 
 def _add_to_list(dest: list[SpriteList], source: SpriteList | Iterable[SpriteList] | None) -> None:
+    """Helper function to add a SpriteList or list of SpriteLists to a list."""
     if not source:
         return
     elif isinstance(source, SpriteList):
@@ -648,7 +647,7 @@ class PhysicsEnginePlatformer:
         .. warning:: This runs collisions **every** time it is called!
 
         If you are thinking of calling this repeatedly, first double-check
-        whether you can store the returne value to a local variable instead.
+        whether you can store the returned value to a local variable instead.
 
         The player can jump when at least one of the following are true:
         after updating state:
