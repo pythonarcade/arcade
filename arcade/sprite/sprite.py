@@ -95,37 +95,52 @@ class Sprite(BasicSprite, PymunkMixin):
         # Movement
         self._velocity = 0.0, 0.0
         self.change_angle: float = 0.0
+        """Change in angle per 1/60th of a second."""
 
         # Custom sprite properties
         self._properties: dict[str, Any] | None = None
 
         # Boundaries for moving platforms in tilemaps
-        #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
-        #: uses this as the left boundary for moving
-        #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
         self.boundary_left: float | None = None
-        #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
-        #: uses this as the right boundary for moving
-        #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        """
+        :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
+        uses this as the left boundary for moving
+        :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        """
+
         self.boundary_right: float | None = None
-        #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
-        #: uses this as the top boundary for moving
-        #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        """
+        :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
+        uses this as the right boundary for moving
+        :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        """
+
         self.boundary_top: float | None = None
-        #: :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
-        #: uses this as the top boundary for moving
-        #: :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        """
+        :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
+        uses this as the top boundary for moving
+        :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        """
+
         self.boundary_bottom: float | None = None
+        """
+        :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
+        uses this as the top boundary for moving
+        :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        """
 
         self.cur_texture_index: int = 0
+        """Current texture index for sprite animation."""
         self.textures: list[Texture] = _textures
+        """List of textures stored in the sprite."""
 
         self.physics_engines: list[Any] = []
+        """List of physics engines that have registered this sprite."""
 
         self._sprite_list: SpriteList | None = None
         # Debug properties
         self.guid: str | None = None
-        """str: A GUID for debugging purposes."""
+        """A unique id for debugging purposes."""
 
         self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(angle=self._angle)
 
