@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Sequence
-from arcade.utils import warning, ReplacementWarning
+from arcade.exceptions import warning, ReplacementWarning
 
 #: The absolute path to this directory
 RESOURCE_DIR = Path(__file__).parent.resolve()

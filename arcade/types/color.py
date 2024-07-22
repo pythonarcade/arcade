@@ -25,7 +25,7 @@ from typing import Iterable, TypeVar, Union
 
 from typing_extensions import Final, Self
 
-from arcade.utils import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
+from arcade.exceptions import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
 
 __all__ = (
     "Color",

@@ -66,11 +66,6 @@ def test_is_nonstr_or_iterable():
     fn_returns_expect_for_noniterables(utils.is_nonstr_iterable, False)
 
 
-def test_generate_uuid_from_kwargs():
-    value = utils.generate_uuid_from_kwargs(text="hi", size=32)
-    assert value == "text=hi|size=32"
-
-
 def test_is_raspberry_pi():
     assert isinstance(utils.is_raspberry_pi(), bool)
 
