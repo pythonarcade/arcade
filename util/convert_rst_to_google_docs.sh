@@ -68,7 +68,7 @@ cat <<EOF > $CONFIG_FILE
         "first_line": true,
         "remove_type_backticks": "false",
         "use_types": false
-    }   
+    }
 }
 EOF
 }
