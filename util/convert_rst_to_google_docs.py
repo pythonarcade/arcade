@@ -3,6 +3,8 @@ Attempt to convert the docstrings in the Arcade codebase from RST to Google Docs
 
 https://github.com/pythonarcade/arcade/issues/1797
 """
+print("Note: this is partially complete, use convert_rst_to_google_docs.sh instead!")
+exit(1)
 
 import glob
 import re
