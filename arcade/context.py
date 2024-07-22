@@ -34,15 +34,18 @@ class ArcadeContext(Context):
     This context is normally accessed through :py:attr:`arcade.Window.ctx`.
 
     Args:
-        window: The pyglet window
-        gc_mode: The garbage collection mode for OpenGL objects.
-                 ``auto`` is just what we would expect in python
-                 while ``context_gc`` (default) requires you to call ``Context.gc()``.
-                 The latter can be useful when using multiple threads when
-                 it's not clear what thread will gc the object.
-        gl_api: The OpenGL API to use. By default it's set to ``gl`` which is
-                the standard OpenGL API. If you want to use OpenGL ES you can
-                set it to ``gles``.
+        window:
+            The pyglet window
+        gc_mode:
+            The garbage collection mode for OpenGL objects. ``auto`` is just
+            what we would expect in python while ``context_gc`` (default)
+            requires you to call ``Context.gc()``. The latter can be useful
+            when using multiple threads when it's not clear what thread will
+            gc the object.
+        gl_api:
+            The OpenGL API to use. By default it's set to ``gl`` which is
+            the standard OpenGL API. If you want to use OpenGL ES you can
+            set it to ``gles``.
     """
 
     atlas_size: tuple[int, int] = 512, 512
@@ -352,17 +355,26 @@ class ArcadeContext(Context):
             )
 
         Args:
-            vertex_shader (str | Path): Path to the vertex shader.
-            fragment_shader (str | Path, optional): Path to the fragment shader (optional).
-            geometry_shader (str | Path, optional): Path to the geometry shader (optional).
-            tess_control_shader (str | Path, optional): Tessellation Control Shader.
-            tess_evaluation_shader (str | Path, optional): Tessellation Evaluation Shader.
-            common (Iterable[str], optional): Common files to be included in all shaders.
-            defines (dict[str, Any], optional): Substitute `#define` values in the source.
-            varyings (Sequence[str], optional): The name of the out attributes in a
-                transform shader. This is normally not necessary since we auto detect them,
+            vertex_shader:
+                Path to the vertex shader.
+            fragment_shader (optional):
+                Path to the fragment shader (optional).
+            geometry_shader (optional):
+                Path to the geometry shader (optional).
+            tess_control_shader (optional):
+                Tessellation Control Shader.
+            tess_evaluation_shader (optional):
+                Tessellation Evaluation Shader.
+            common (optional):
+                Common files to be included in all shaders.
+            defines (optional):
+                Substitute `#define` values in the source.
+            varyings (optional):
+                The name of the out attributes in a transform shader.
+                This is normally not necessary since we auto detect them,
                 but some more complex out structures we can't detect.
-            varyings_capture_mode (str, optional): The capture mode for transforms.
+            varyings_capture_mode (optional):
+                The capture mode for transforms.
 
                 Based on these settings, the `transform()` method will accept a single
                 buffer or a list of buffers.
@@ -420,8 +432,10 @@ class ArcadeContext(Context):
             ctx.load_compute_shader(":shader:compute/do_work.glsl")
 
         Args:
-            path: Path to texture
-            common (optional): Common sources injected into compute shader
+            path:
+                Path to texture
+            common (optional):
+                Common sources injected into compute shader
         """
         from arcade.resources import resolve
 
@@ -461,12 +475,17 @@ class ArcadeContext(Context):
             )
 
         Args:
-            path: Path to texture
-            flip (bool): Flips the image upside down. Default is ``True``.
-            build_mipmaps (bool): Build mipmaps for the texture. Default is ``False``.
-            internal_format (int, optional): The internal format of the texture. This can be used to
-                override the default internal format when using sRGBA or compressed textures.
-            compressed (bool, optional): If the internal format is a compressed format meaning your
+            path:
+                Path to texture
+            flip:
+                Flips the image upside down. Default is ``True``.
+            build_mipmaps:
+                Build mipmaps for the texture. Default is ``False``.
+            internal_format (optional):
+                The internal format of the texture. This can be used to override
+                the default internal format when using sRGBA or compressed textures.
+            compressed (optional):
+                If the internal format is a compressed format meaning your
                 texture will be compressed by the GPU.
         """
         from arcade.resources import resolve
@@ -502,7 +521,7 @@ class ArcadeContext(Context):
 
         Example::
 
-            #include :my_shader:lib/common.glsl
+            #include :my_resource_handle:lib/common.glsl
 
         Args:
             source: The shader source code
@@ -527,11 +546,14 @@ class ArcadeContext(Context):
         Shortcut method for reading data from a framebuffer and converting it to a PIL image.
 
         Args:
-            fbo (Framebuffer): Framebuffer to get image from
-            components (int): Number of components to read. Default is 4 (RGBA).
+            fbo:
+                Framebuffer to get image from
+            components:
+                Number of components to read. Default is 4 (RGBA).
                 Valid values are 1, 2, 3, 4.
-            flip (bool): Flip the image upside down. This is useful because OpenGL
-                has the origin at the bottom left corner while PIL has it at the top left.
+            flip:
+                Flip the image upside down. This is useful because OpenGL has the
+                origin at the bottom left corner while PIL has it at the top left.
         """
         mode = "RGBA"[:components]
         image = Image.frombuffer(

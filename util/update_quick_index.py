@@ -222,6 +222,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.application",
             "arcade.window_commands",
             "arcade.sections",
+            "arcade.screenshot",
         ]
     },
     "sound.rst": {
@@ -346,6 +347,12 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "use_declarations_in": [
                 "arcade.exceptions"
             ],
+    },
+    "start_finish_render.rst": {
+        "title": "Start/Finish Render",
+        "use_declarations_in": [
+            "arcade.start_finish_data",
+        ],
     },
     "future.rst": {
        "title": "Future Features",
