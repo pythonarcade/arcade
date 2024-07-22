@@ -10,10 +10,10 @@ from typing import Any, Union
 import pyglet
 
 import arcade
+from arcade.exceptions import PerformanceWarning, warning
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
 from arcade.types import Color, Point, RGBOrA255
-from arcade.utils import PerformanceWarning, warning
 
 __all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
 

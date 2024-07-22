@@ -6,10 +6,11 @@ from pyglet.math import Vec2
 
 import arcade
 from arcade.color import BLACK, WHITE
+from arcade.exceptions import ReplacementWarning, warning
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
 from arcade.types import LRBT, RGBA255, AsFloat, Color, Point, Point2, PointList, Rect, RGBOrA255
-from arcade.utils import ReplacementWarning, copy_dunders_unimplemented, warning
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList

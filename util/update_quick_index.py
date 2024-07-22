@@ -341,6 +341,12 @@ API_FILE_TO_TITLE_AND_MODULES = {
            "arcade.camera.static"
        ]
     },
+    "exceptions.rst": {
+         "title": "Exceptions",
+            "use_declarations_in": [
+                "arcade.exceptions"
+            ],
+    },
     "future.rst": {
        "title": "Future Features",
        "use_declarations_in": [
@@ -355,7 +361,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
            "arcade.future.light.lights",
            "arcade.future.video.video_player"
        ]
-    }
+    },
 }
 
 
