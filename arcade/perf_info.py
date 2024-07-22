@@ -3,6 +3,7 @@ Utility functions to keep performance information
 """
 
 from __future__ import annotations
+
 import time
 from collections import deque
 
