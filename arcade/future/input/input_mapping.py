@@ -2,35 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Union
-
-from typing_extensions import TypedDict
-
 from arcade.future.input import inputs
-
-
-class RawActionMapping(TypedDict):
-    input_type: int
-    input: Union[str, int]
-    mod_shift: bool
-    mod_ctrl: bool
-    mod_alt: bool
-
-
-class RawAxisMapping(TypedDict):
-    input_type: int
-    input: Union[str, int]
-    scale: float
-
-
-class RawAction(TypedDict):
-    name: str
-    mappings: list[RawActionMapping]
-
-
-class RawAxis(TypedDict):
-    name: str
-    mappings: list[RawAxisMapping]
+from arcade.future.input.raw_dicts import RawAction, RawActionMapping, RawAxis, RawAxisMapping
 
 
 class Action:
@@ -43,10 +16,7 @@ class Action:
         self._mappings.add(mapping)
 
     def remove_mapping(self, mapping: ActionMapping) -> None:
-        try:
-            self._mappings.remove(mapping)
-        except KeyError:
-            pass
+        self._mappings.discard(mapping)
 
 
 class Axis:
@@ -59,13 +29,15 @@ class Axis:
         self._mappings.add(mapping)
 
     def remove_mapping(self, mapping: AxisMapping) -> None:
-        try:
-            self._mappings.remove(mapping)
-        except KeyError:
-            pass
+        self._mappings.discard(mapping)
 
 
-class Mapping:
+class InputMapping:
+    """Base class for other mappings.
+
+    Without subclassing, it's still useful as a type annotation since we
+    we use type hashing a lot.
+    """
 
     def __init__(self, input: inputs.InputEnum):
         try:
@@ -78,7 +50,7 @@ class Mapping:
         self._input = input
 
 
-class ActionMapping(Mapping):
+class ActionMapping(InputMapping):
 
     def __init__(
         self,
@@ -98,7 +70,7 @@ class ActionMapping(Mapping):
             self._modifiers.add(inputs.Keys.MOD_OPTION.value)
 
 
-class AxisMapping(Mapping):
+class AxisMapping(InputMapping):
 
     def __init__(self, input: inputs.InputEnum, scale: float):
         super().__init__(input)
@@ -126,7 +98,7 @@ def serialize_action(action: Action) -> RawAction:
 def parse_raw_axis(raw_axis: RawAxis) -> Axis:
     axis = Axis(raw_axis["name"])
     for raw_mapping in raw_axis["mappings"]:
-        instance = inputs.parse_instance(raw_mapping)
+        instance = inputs.parse_mapping_input_enum(raw_mapping)
         axis.add_mapping(
             AxisMapping(
                 instance,

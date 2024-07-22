@@ -26,7 +26,7 @@ from __future__ import annotations
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar
+from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable
 
 from pytiled_parser import Properties
 
@@ -109,6 +109,7 @@ __all__ = [
     "PointList",
     "Point2List",
     "Point3List",
+    "OneOrIterableOf",
     "EMPTY_POINT_LIST",
     "AnchorPoint",
     "Rect",
@@ -139,6 +140,39 @@ __all__ = [
 
 
 _T = TypeVar("_T")
+
+
+OneOrIterableOf = Union[_T, Iterable[_T]]
+"""Either an instance of something or an iterable of them.
+
+When writing loading code which is not performance critical,
+you may also want to see the following:
+
+* :py:func:`arcade.utils.grow_sequence`
+* :py:func:`arcade.utils.is_iterable`
+* :py:func:`arcade.utils.is_nonstr_iterable`
+* :py:func:`arcade.utils.is_str_or_noniterable`
+
+.. tip:: You can inline the contents of these functions when
+         performance matters.
+
+You should avoid using this annotation with values which may include
+``None``. These include:
+
+* Pipe syntax such as ``OneOrIterable[MyType | None]``
+* :py:class:`typing.Optional` equivalents of pipe syntax
+
+Instead, consider one of the following when possible:
+
+.. code-block:: python
+
+   def annotated(argument: OneOrIterableOf[MyType] = tuple()):
+      ...
+
+   def annotated2(argument: OneOrIterableOf[MyType] | None = tuple()):
+      ...
+
+"""
 
 # --- Begin potentially obsolete annotations ---
 

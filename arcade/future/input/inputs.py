@@ -1,4 +1,3 @@
-# type: ignore
 """
 Enums used to map different input types to their common counterparts.
 
@@ -10,6 +9,9 @@ from __future__ import annotations
 
 from enum import Enum, auto
 from sys import platform
+from typing import Type
+
+from arcade.future.input.raw_dicts import RawBindBase
 
 
 class InputType(Enum):
@@ -21,6 +23,8 @@ class InputType(Enum):
 
 
 class InputEnum(Enum):
+    """The base class for all input value :py:class:`enum.Enum` types."""
+
     pass
 
 
@@ -316,13 +320,12 @@ class MouseButtons(InputEnum):
     MOUSE_5 = 1 << 4
 
 
-# .This is safe since:
+# This improves on if ladders since:
 # 1. Enum types with members are final
-# .2. Types are hashable
-# Hoever, we can probably make this much cleaner to set up since
-# we have repeated if ladders elsewhere which can be replaced with
-# smaller dicts.
-CLASS_TO_INPUT_TYPE = {
+# 2. Types are hashable
+# It may be worth encapsulating this approach since we have other if
+# ladders without case-specific logic remaining in the controller code.
+CLASS_TO_INPUT_TYPE: dict[Type[InputEnum], InputType] = {
     Keys: InputType.KEYBOARD,
     MouseButtons: InputType.MOUSE_BUTTON,
     MouseAxes: InputType.MOUSE_AXIS,
@@ -330,7 +333,7 @@ CLASS_TO_INPUT_TYPE = {
     ControllerAxes: InputType.CONTROLLER_AXIS,
 }
 
-INPUT_TYPE_TO_CLASS = {
+INPUT_TYPE_TO_CLASS: dict[InputType, Type[InputEnum]] = {
     InputType.KEYBOARD: Keys,
     InputType.MOUSE_BUTTON: MouseButtons,
     InputType.MOUSE_AXIS: MouseAxes,
@@ -339,11 +342,24 @@ INPUT_TYPE_TO_CLASS = {
 }
 
 
-# WIP cleanup, will be documented and named better and actually annotated later
-def parse_instance(_mapping):
-    _raw_input = _mapping["input"]
-    _input_type = InputType(_mapping["input_type"])
+def parse_mapping_input_enum(raw: "RawBindBase") -> InputEnum:
+    """Parse the :py:class:`InputEnum` for a given raw value.
 
-    if not (_input_class := INPUT_TYPE_TO_CLASS.get(_input_type, None)):
-        raise AttributeError("Tried to parse an unknown input type")
+    See :py:class:`.RawBindBase` to learn more about required arguments.
+
+    Args:
+        raw:
+            A dict with ``"input_type"`` and ``"input"`` corresponding
+            to :py:class:`InputEnum` values.
+
+    Returns:
+        An :py:class:`InputEnum`.
+    """
+    _raw_input = raw["input"]
+    _input_type = InputType(raw["input_type"])
+
+    _input_class = INPUT_TYPE_TO_CLASS.get(_input_type, None)
+    if _input_class is None:
+        raise AttributeError(f"Tried to parse an unknown input type {_input_type}")
+
     return _input_class(_raw_input)
