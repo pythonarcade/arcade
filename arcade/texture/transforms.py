@@ -15,9 +15,7 @@ from arcade.types import Point2List
 
 
 class VertexOrder(Enum):
-    """
-    Order for texture coordinates.
-    """
+    """Order for texture coordinates."""
 
     UPPER_LEFT = 0
     UPPER_RIGHT = 1
@@ -53,9 +51,15 @@ class Transform:
     @classmethod
     def transform_vertex_order(cls, order: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
         """
-        Transforms and exiting vertex order with this transform.
+        Transforms the vertex order with the incoming order.
+
         This gives us important metadata on how to quickly transform
         the texture coordinates without iterating all applied transforms.
+
+        Args:
+            order: The incoming order
+        Returns:
+            The new vertex order
         """
         return (
             order[cls.order[0]],
@@ -71,10 +75,13 @@ class Transform:
         order: tuple[int, int, int, int],
     ) -> tuple[float, float, float, float, float, float, float, float]:
         """
-        Change texture coordinates order.
+        Change texture coordinates order by a vertex order.
 
-        :param texture_coordinates: Texture coordinates to transform
-        :param order: The new order
+        Args:
+            texture_coordinates:
+                Texture coordinates to transform
+            order:
+                The new order
         """
         uvs = texture_coordinates
         return (
@@ -105,6 +112,9 @@ class Rotate90Transform(Transform):
     def transform_hit_box_points(
         points: Point2List,
     ) -> Point2List:
+        """
+        Transform hit box points by rotating them 90 degrees clockwise.
+        """
         return tuple(rotate_point(point[0], point[1], 0, 0, 90) for point in points)
 
 
@@ -124,6 +134,9 @@ class Rotate180Transform(Transform):
     def transform_hit_box_points(
         points: Point2List,
     ) -> Point2List:
+        """
+        Transform hit box points by rotating them 180 degrees clockwise.
+        """
         return tuple(rotate_point(point[0], point[1], 0, 0, 180) for point in points)
 
 
@@ -143,6 +156,9 @@ class Rotate270Transform(Transform):
     def transform_hit_box_points(
         points: Point2List,
     ) -> Point2List:
+        """
+        Transform hit box points by rotating them 270 degrees clockwise.
+        """
         return tuple(rotate_point(point[0], point[1], 0, 0, 270) for point in points)
 
 
@@ -162,6 +178,9 @@ class FlipLeftRightTransform(Transform):
     def transform_hit_box_points(
         points: Point2List,
     ) -> Point2List:
+        """
+        Transform hit box points by flipping them left to right.
+        """
         return tuple((-point[0], point[1]) for point in points)
 
 
@@ -181,6 +200,9 @@ class FlipTopBottomTransform(Transform):
     def transform_hit_box_points(
         points: Point2List,
     ) -> Point2List:
+        """
+        Transform hit box points by flipping them top to bottom.
+        """
         return tuple((point[0], -point[1]) for point in points)
 
 
@@ -200,6 +222,9 @@ class TransposeTransform(Transform):
     def transform_hit_box_points(
         points: Point2List,
     ) -> Point2List:
+        """
+        Transform hit box points by transposing them.
+        """
         points = FlipLeftRightTransform.transform_hit_box_points(points)
         points = Rotate270Transform.transform_hit_box_points(points)
         return points
@@ -221,6 +246,9 @@ class TransverseTransform(Transform):
     def transform_hit_box_points(
         points: Point2List,
     ) -> Point2List:
+        """
+        Transform hit box points by transversing them.
+        """
         points = FlipLeftRightTransform.transform_hit_box_points(points)
         points = Rotate90Transform.transform_hit_box_points(points)
         return points
