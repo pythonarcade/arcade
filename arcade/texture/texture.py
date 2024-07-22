@@ -411,7 +411,7 @@ class Texture:
         Create a texture with all pixels set to the given color.
 
         The hit box of the returned Texture will be set to a rectangle
-        with the dimensions in ``size` unless hit_box_points are provided.
+        with the dimensions in ``size`` unless hit_box_points are provided.
 
         Args:
             name:
