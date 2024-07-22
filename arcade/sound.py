@@ -1,6 +1,4 @@
-"""
-Sound Library.
-"""
+"""Sound Library."""
 
 from __future__ import annotations
 
@@ -57,13 +55,14 @@ class Sound:
         loop: bool = False,
         speed: float = 1.0,
     ) -> media.Player:
-        """
-        Play the sound.
+        """Play the sound.
 
-        :param volume: Volume, from 0=quiet to 1=loud
-        :param pan: Pan, from -1=left to 0=centered to 1=right
-        :param loop: Loop, false to play once, true to loop continuously
-        :param speed: Change the speed of the sound which also changes pitch, default 1.0
+        Args:
+            volume: Volume, from 0=quiet to 1=loud
+            pan: Pan, from -1=left to 0=centered to 1=right
+            loop: Loop, false to play once, true to loop continuously
+            speed: Change the speed of the sound which also changes
+                pitch, default 1.0
         """
         if isinstance(self.source, media.StreamingSource) and self.source.is_player_source:
             raise RuntimeError(
@@ -105,9 +104,7 @@ class Sound:
         return player
 
     def stop(self, player: media.Player) -> None:
-        """
-        Stop a currently playing sound.
-        """
+        """Stop a currently playing sound."""
         player.pause()
         player.delete()
         if player in media.Source._players:
@@ -124,53 +121,58 @@ class Sound:
         return player.time >= self.source.duration  # type: ignore
 
     def is_playing(self, player: media.Player) -> bool:
-        """
-        Return if the sound is currently playing or not
+        """Return if the sound is currently playing or not
 
-        :param player: Player returned from :func:`play_sound`.
-        :returns: A boolean, ``True`` if the sound is playing.
+        Args:
+            player: Player returned from :func:`play_sound`.
 
+        Returns:
+            A boolean, ``True`` if the sound is playing.
         """
         return player.playing
 
     def get_volume(self, player: media.Player) -> float:
-        """
-        Get the current volume.
+        """Get the current volume.
 
-        :param player: Player returned from :func:`play_sound`.
-        :returns: A float, 0 for volume off, 1 for full volume.
+        Args:
+            player: Player returned from :func:`play_sound`.
+
+        Returns:
+            A float, 0 for volume off, 1 for full volume.
         """
         return player.volume  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/847
 
     def set_volume(self, volume, player: media.Player) -> None:
-        """
-        Set the volume of a sound as it is playing.
+        """Set the volume of a sound as it is playing.
 
-        :param volume: Floating point volume. 0 is silent, 1 is full.
-        :param player: Player returned from :func:`play_sound`.
+        Args:
+            volume: Floating point volume. 0 is silent, 1 is full.
+            player: Player returned from :func:`play_sound`.
         """
         player.volume = volume
 
     def get_stream_position(self, player: media.Player) -> float:
-        """
-        Return where we are in the stream. This will reset back to
+        """Return where we are in the stream. This will reset back to
         zero when it is done playing.
 
-        :param player: Player returned from :func:`play_sound`.
-
+        Args:
+            player: Player returned from :func:`play_sound`.
         """
         return player.time
 
 
 def load_sound(path: str | Path, streaming: bool = False) -> Sound:
-    """
-    Load a sound.
+    """Load a sound.
 
-    :param path: Name of the sound file to load.
-    :param streaming: Boolean for determining if we stream the sound
-                           or load it all into memory. Set to ``True`` for long sounds to save
-                           memory, ``False`` for short sounds to speed playback.
-    :returns: Sound object which can be used by the  :func:`play_sound` function.
+    Args:
+        path: Name of the sound file to load.
+        streaming: Boolean for determining if we stream the sound or
+            load it all into memory. Set to ``True`` for long sounds to
+            save memory, ``False`` for short sounds to speed playback.
+
+    Returns:
+        Sound object which can be used by the  :func:`play_sound`
+        function.
     """
     # Initialize the audio driver if it hasn't been already.
     # This call is to avoid audio driver initialization
@@ -194,14 +196,16 @@ def play_sound(
     loop: bool = False,
     speed: float = 1.0,
 ) -> media.Player | None:
-    """
-    Play a sound.
+    """Play a sound.
 
-    :param sound: Sound loaded by :func:`load_sound`. Do NOT use a string here for the filename.
-    :param volume: Volume, from 0=quiet to 1=loud
-    :param pan: Pan, from -1=left to 0=centered to 1=right
-    :param loop: Should we loop the sound over and over?
-    :param speed: Change the speed of the sound which also changes pitch, default 1.0
+    Args:
+        sound: Sound loaded by :func:`load_sound`. Do NOT use a string
+            here for the filename.
+        volume: Volume, from 0=quiet to 1=loud
+        pan: Pan, from -1=left to 0=centered to 1=right
+        loop: Should we loop the sound over and over?
+        speed: Change the speed of the sound which also changes pitch,
+            default 1.0
     """
     if sound is None:
         logger.warning("Unable to play sound, no data passed in.")
@@ -222,10 +226,10 @@ def play_sound(
 
 
 def stop_sound(player: media.Player):
-    """
-    Stop a sound that is currently playing.
+    """Stop a sound that is currently playing.
 
-    :param player: Player returned from :func:`play_sound`.
+    Args:
+        player: Player returned from :func:`play_sound`.
     """
 
     if not isinstance(player, media.Player):
