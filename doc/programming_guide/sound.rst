@@ -74,39 +74,58 @@ Sound Basics
 Loading Sounds
 ^^^^^^^^^^^^^^
 
-Before you can play a sound, you need to load its data into memory.
+To play audio, you must first load its data into a :py:class:`~arcade.sound.Sound`
+object.
 
-Arcade provides two ways to do this. Both accept the same arguments and
-return an :py:class:`arcade.Sound` instance.
+Arcade has two ways to do this:
 
-The easiest way is to use :py:func:`arcade.load_sound`:
+* :py:func:`arcade.load_sound`
+* :py:class:`arcade.Sound`
+
+Both provide a :py:class:`arcade.Sound` instance and accept the same arguments:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Argument
+     - Type
+     - Meaning
+   * - ``path``
+     - :py:class:`str` **|** :py:class:`~pathlib.Path`
+     - A sound file (may use :ref:`resource_handles`)
+   * - ``streaming``
+     - :py:class:`bool`
+     - * ``True`` streams from disk
+       * ``False`` loads the whole file
+
+The simplest option is to use :py:func:`arcade.load_sound`:
 
 .. code-block:: python
 
+    from pathlib import Path
     import arcade
 
-    # You can pass strings containing a built-in resource handle,
-    hurt_sound = arcade.load_sound(":resources:sounds/hurt1.wav")
-    # a pathlib.Path,
-    pathlib_sound = arcade.load_sound(Path("imaginary\\windows\\path\\file.wav"))
-    # or an ordinary string describing a path.
-    string_path_sound = arcade.load_sound("imaginary/mac/style/path.wav")
+    # The path argument accepts paths prefixed with resources handle,
+    from_handle_prefix = arcade.load_sound(":resources:sounds/hurt1.wav")
+    # Windows-style backslash paths,
+    from_windows_path = arcade.load_sound(Path(r"sounds\windows\file.wav"))
+    # or pathlib.Path objects:
+    from_pathlib_path = arcade.load_sound(Path("imaginary/mac/style/path.wav"))
 
-If you prefer a more object-oriented style, you can create
-:py:class:`~arcade.Sound` instances directly:
+For an object-oriented approach, create :py:class:`~arcade.Sound` instances
+directly:
 
 .. code-block:: python
 
     from arcade import Sound  # You can also use arcade.Sound directly
 
-    # Although Sound accepts the same arguments as load_sound,
-    # only the built-in resource handle is shown here.
-    hurt_sound = Sound(":resources:sounds/hurt1.wav")
+    # For music files and ambiance tracks, streaming=True is usually best
+    streaming_music_file = Sound(":resources:music/1918.mp3", streaming=True)
 
-See the following to learn more:
+To learn more, please see the following:
 
 #. :ref:`resources`
-#. :py:mod:`pathlib`
+#. Python's built-in :py:class:`pathlib.Path`
 #. :ref:`sound-loading-modes`
 
 .. _sound-basics-playing:
@@ -114,98 +133,107 @@ See the following to learn more:
 Playing Sounds
 ^^^^^^^^^^^^^^
 
-There are two easy ways to play a :py:class:`~arcade.Sound` object.
+Arcade has two easy ways to play loaded :py:class:`~arcade.Sound` data.
 
-One is to call :py:meth:`Sound.play <arcade.Sound.play>` directly:
-
-.. code-block:: python
-
-    self.hurt_player = hurt_sound.play()
-
-The other is to pass a :py:class:`~arcade.Sound` instance as the first
-argument of :py:func:`arcade.play_sound`:
+Imagine you've loaded the following built-in sound file:
 
 .. code-block:: python
 
-    # Important: this *must* be a Sound instance, not a path or string!
-    self.hurt_player = arcade.play_sound(hurt_sound)
+    COIN_SOUND = arcade.load_sound(":resources:sounds/coin1.wav")
 
-Both return a :py:class:`pyglet.media.player.Player`. You should store
-it somewhere if you want to be able to stop or alter a specific playback of
-a :py:class:`~arcade.Sound`'s data.
+The first way to play it is passing it to :py:func:`arcade.play_sound`:
 
-``arcade.Sound`` vs pyglet's ``Player``
-"""""""""""""""""""""""""""""""""""""""
+.. code-block:: python
 
-This is a very important distinction:
+    self.coin_playback = arcade.play_sound(COIN_SOUND)
 
-* An :py:class:`arcade.Sound` is a source of audio data in memory
-* Starting a playback of audio data returns a new pyglet
-  :py:class:`~pyglet.media.player.Player` which controls that
-  specific playback
+We store the return value because it is a special object which lets us
+control this specific playback of the :py:class:`~arcade.Sound` data.
 
-Imagine you have two non-player characters (NPCs) in a game which
-both play the same selection of :py:class:`~arcade.Sound` data. Since
-they are separate characters in the world, their playbacks of the data
-must be independent. To do this, each NPC will keep the pyglet
-:py:class:`~pyglet.media.player.Player` returned when they start
-playing a sound.
+.. important:: You **must** pass a :py:class:`Sound`, not a path!
 
-For example, an NPC may get close enough to the user's character to
-talk, attack, or perform some other action which requires playing
-a different sound. You would handle this as follows:
+               If you pass :py:func:`arcade.play_sound` anything other
+               than a :py:class:`~arcade.sound.Sound` or ``None``, it
+               will raise a :py:class:`TypeError`.
 
-#. Use the approaching NPC's pyglet :py:class:`~pyglet.media.player.Player`
-   to stop its current playback
-#. If the NPC starts playing a different sound, store the returned
-   pyglet :py:class:`~pyglet.media.player.Player`
+To avoid making this mistake, you can call the :py:class:`~arcade.Sound`
+data's :py:meth:`~arcade.Sound.play` method instead:
 
-This is especially important when a dangerous NPC or other hazard can
-be invisible. Making invisible hazards play sounds is one of the easiest
-and most popular ways of making their gameplay feel balanced, fair, and
-fun.
+.. code-block:: python
 
-See the following to learn more:
+    self.coin_playback = COIN_SOUND.play()
 
-#. :ref:`sound-why-important`
-#. :ref:`sound_demo`
+
+In each case, the returned object allows stopping and changing a specific playback
+of a sound before it finishes. We'll cover this in depth below.
 
 .. _sound-basics-stopping:
 
 Stopping Sounds
 ^^^^^^^^^^^^^^^
 
-Arcade's helper functions are the easiest way to stop playback. To use them:
+.. _sound-basics-sound_vs_player:
 
-#. Do one of the following:
+Sound data vs Playbacks
+"""""""""""""""""""""""
 
-   * Pass the stored pyglet :py:class:`~pyglet.media.player.Player` to
-     :py:func:`arcade.stop_sound`:
+Arcade uses the :py:mod:`pyglet` multimedia library to handle sound.
 
-     .. code-block:: python
+Since pyglet allows playing multiple copies of the same non-streaming
+audio at once, each playback has a :py:class:`~pyglet.media.player.Player`
+object to control it:
 
-        arcade.stop_sound(self.current_playback)
+.. code-block:: python
 
-   * Pass the stored pyglet :py:class:`~pyglet.media.player.Player` to the
-     sound's :py:meth:`~arcade.Sound.stop` method:
+   # We can play the same Sound one, two, or many more times at once
+   self.coin_playback_1 = arcade.play_sound(COIN_SOUND)
+   self.coin_playback_2 = COIN_SOUND.play()
+   self.coin_playback_3 = COIN_SOUND.play()
+   ...
 
-     .. code-block:: python
 
-        self.hurt_sound.stop(self.current_playback)
+We can create and control a very large number of separate playbacks.
+The specific upper limit is usually high enough to be irrelevant.
 
-#. Clear any references to the player to allow its memory to be freed:
+Stopping a Specific Playback
+""""""""""""""""""""""""""""
 
-   .. code-block:: python
+There are two easy ways of stopping a playback of a :py:class:`~arcade.Sound`.
 
-      # For each object, Python tracks how many other objects use it. If
-      # nothing else uses an object, it will be marked as garbage which
-      # Python can delete automatically to free memory.
-      self.current_playback = None
+The first is to choose which function we'll pass its
+:py:class:`~pyglet.media.player.Player` object to:
 
-See the following to learn more:
+* :py:func:`arcade.stop_sound`:
+
+  .. code-block:: python
+
+     arcade.stop_sound(self.coin_playback_1)
+
+
+* The :py:class:`~arcade.sound.Sound` data's :py:meth:`~arcade.Sound.stop`
+  method:
+
+  .. code-block:: python
+
+     self.COIN_SOUND.stop(self.coin_playback_1)
+
+The last step is to clean up by removing all remaining references to it:
+
+.. code-block:: python
+
+   # Overwriting them with None is the clearest option
+   self.current_playback = None
+
+By default, Python automatically counts how many places use an object.
+When there are zero of these "references" left, Python will mark an
+object as "garbage" and delete it automatically. This is called "garbage
+collection." We'll cover it further in the advanced sections below.
+
+To learn more about playback limits and stopping, please see the following:
 
 * :ref:`sound-compat-easy`
 * :ref:`sound-advanced-playback`
+* :ref:`sound_demo`
 
 .. _sound-loading-modes:
 
@@ -213,6 +241,8 @@ Streaming or Static Loading?
 ----------------------------
 
 .. _keyword argument: https://docs.python.org/3/glossary.html#term-argument
+
+The streaming option is important for music and ambiance tracks.
 
 .. list-table::
    :header-rows: 1
@@ -232,10 +262,11 @@ Streaming or Static Loading?
      - Predicted data
      - 1 copy & file at a time, long, uninterrupted
 
-By default, Arcade decompresses the entirety of each sound into memory.
-
-This is the best option for most game sound effects. It's called
-"static" [#staticsourcefoot]_ audio because the data never changes.
+By default, Arcade uses **static** loading: it decompresses the whole
+sound file into memory. This is called static [#staticsourcefoot]_ audio'
+because the data in memory never changes. It is the default because it
+offers multiple benefits to games, especially multiple playbacks at the
+same time.
 
 The alternative is streaming. Enable it by passing ``True`` through the
 ``streaming`` `keyword argument`_  when you :ref:`load a sound
@@ -248,7 +279,7 @@ The alternative is streaming. Enable it by passing ``True`` through the
 
 For an interactive example, see the :ref:`music_control_demo`.
 
-The following subheadings will explain each option in detail.
+The subheadings below will explain each option in detail.
 
 .. [#meaningbestformatheader]
    See :ref:`sound-compat-easy` to learn more.
@@ -311,11 +342,13 @@ time. Even on the slowest recent hardware, this usually works if:
 
 When to Stream
 """"""""""""""
-The best way to use streaming is to only use it when you need it.
+In general, avoid streaming things other than music and ambiance.
 
-Advanced users may be able to handle streaming multiple tracks at a
-time. However, issues with synchronization & interruptions will grow
-with the quantity and quality of the audio tracks involved.
+In addition to disabling features you may need for other types of
+audio, it can also introduce complications when streaming multiple
+tracks. For example, you may face issues with synchronization and
+interruptions. These may worsen as the quantity and quality of the
+audio tracks involved increases.
 
 If you're unsure, avoid streaming unless you can say yes to all of the
 following:
@@ -360,16 +393,24 @@ Advanced Playback Control
 .. _pyglet_controlling_playback: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#controlling-playback
 .. _inconsistency_loop_issue: https://github.com/pythonarcade/arcade/issues/1915
 
-Arcade's functions for :ref:`sound-basics-stopping` are convenience
-wrappers around the passed pyglet :py:class:`~pyglet.media.player.Player`.
+Arcade's :ref:`sound-basics-stopping` functions are imprecise wrappers
+around pyglet :py:class:`~pyglet.media.player.Player` features.
 
-You can alter a playback of :py:class:`~arcade.Sound` data with more precision
-by:
+If you need better control over :py:class:`~arcade.Sound` playback, multiple
+aspects can be controlled in the following ways:
 
-* Using the properties and methods of its :py:class:`~pyglet.media.player.Player`
-  any time before playback has finished
-* Passing keyword arguments with the same (or similar) names as the
-  Player's properties when :ref:`playing the sound <sound-basics-playing>`.
+.. list-table::
+   :header-rows: 1
+
+   * - How
+     - When
+
+   * - Properties and methods
+     - Any time before a :py:class:`~pyglet.media.player.Player` finishes
+
+   * - Keyword arguments
+     - When starting to :ref:`play the sound <sound-basics-playing>`
+
 
 Stopping via the Player Object
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -409,6 +450,8 @@ After you've paused a player, you can stop playback permanently:
 
       # Python will delete the pyglet Player once there are 0 references to it
       self.current_player = None
+
+.. note:: This is how :py:class:`Sound.stop <arcade.Sound.stop>` works internally.
 
 For a more in-depth explanation of references and auto-deletion, skim
 the start of Python's page on `garbage collection`_. Reading the Abstract
