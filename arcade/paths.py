@@ -57,14 +57,20 @@ class _AStarGraph(object):
     """
     A grid which tracks 2 barriers and a moving sprite.
 
-
     Args:
-        barriers: Barriers to use in the AStarSearch Algorithm
+        barriers:
+            Barriers to use in the AStarSearch Algorithm.
             These are turned into a set.
-        left (int): Far left side x value
-        right (int): Far right side x value
-        bottom (int): Far bottom side y value
-        top (int): Far top side y value
+        left (int):
+            Far left side x value
+        right (int):
+            Far right side x value
+        bottom (int):
+            Far bottom side y value
+        top (int):
+            Far top side y value
+        diagonal_movement (bool):
+            Whether or not to use diagonals in the AStarSearch Algorithm
     """
 
     def __init__(
@@ -102,9 +108,10 @@ class _AStarGraph(object):
 
         These are not guaranteed to be reachable or valid points.
 
-        :param pos: Which position to search around
-
-        :return: Returns vertexes around the point
+        Args:
+            pos: Which position to search around
+        Returns:
+            Vertices around the point
         """
         n = []
         # Moves allow link a chess king
@@ -124,13 +131,14 @@ class _AStarGraph(object):
         A barrier's cost is float("inf) so that that
         the Algorithm will never go on it
 
-        :param a: The 1st point to compare
-        :param b: The 2nd point to compare
-
-        :return: The move cost of moving between of the 2 points
+        Args:
+            a: The 1st point to compare
+            b: The 2nd point to compare
+        Returns:
+            The move cost of moving between of the 2 points
         """
         if b in self.barriers:
-            return float("inf")  # Infitely high cost to enter barrier squares
+            return float("inf")  # Infinitely high cost to enter barrier squares
 
         elif a[0] == b[0] or a[1] == b[1]:
             return 1  # Normal movement cost
@@ -144,10 +152,12 @@ def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> list[Point2]
 
     Graph is used to check for barriers.
 
-    :param start: point to start at
-    :param end: point to end at
-
-    :return: The path from start to end. Returns None if is path is not found
+    Args:
+        start: point to start at
+        end: point to end at
+        graph: Graph to use
+    Returns:
+        The path from start to end. Returns ``None`` if is path is not found
     """
     G: dict[Point2, float] = dict()  # Actual movement cost to each position from the start position
     F: dict[Point2, float] = (
@@ -230,26 +240,42 @@ class AStarBarrierList:
     A* path finding.
 
     Args:
-        moving_sprite (Sprite): Sprite that will be moving
-        blocking_sprites (SpriteList): Sprites that can block movement
-        grid_size (int): Size of the grid, in pixels
-        left (int): Left border of playing field
-        right (int): Right border of playing field
-        bottom (int): Bottom of playing field
-        top (int): Top of playing field
-        barrier_list (SpriteList): SpriteList of barriers to use in _AStarSearch,
-            None if not recalculated
+        moving_sprite:
+            Sprite that will be moving
+        blocking_sprites:
+            Sprites that can block movement
+        grid_size (int):
+            Size of the grid, in pixels
+        left (int):
+            Left border of playing field
+        right (int):
+            Right border of playing field
+        bottom (int):
+            Bottom of playing field
+        top (int):
+            Top of playing field
+        barrier_list:
+            SpriteList of barriers to use in _AStarSearch,
+            ``None`` if not recalculated
 
     Attributes:
-        grid_size (int): Grid size
-        bottom (int): Bottom of playing field
-        top (int): Top of playing field
-        left (int): Left border of playing field
-        right (int): Right border of playing field
-        moving_sprite (Sprite): Sprite that will be moving
-        blocking_sprites (SpriteList): Sprites that can block movement
-        barrier_list (SpriteList): SpriteList of barriers to use in _AStarSearch,
-            None if not recalculated
+        grid_size:
+            Grid size
+        bottom:
+            Bottom of playing field
+        top:
+            Top of playing field
+        left:
+            Left border of playing field
+        right:
+            Right border of playing field
+        moving_sprite:
+            Sprite that will be moving
+        blocking_sprites:
+            Sprites that can block movement
+        barrier_list:
+            SpriteList of barriers to use in _AStarSearch,
+            ``None`` if not recalculated
     """
 
     def __init__(
@@ -312,14 +338,17 @@ def astar_calculate_path(
     Calculates the path using AStarSearch Algorithm and returns the path
 
     Args:
-        start_point (Point): Where it starts
-        end_point (Point): Where it ends
-        astar_barrier_list (AStarBarrierList): AStarBarrierList with the boundaries to use in
-            the AStarSearch Algorithm
-        diagonal_movement (bool): Whether of not to use diagonals in the AStarSearch Algorithm
+        start_point:
+            Where it starts
+        end_point:
+            Where it ends
+        astar_barrier_list:
+            AStarBarrierList with the boundaries to use in the AStarSearch Algorithm
+        diagonal_movement:
+            Whether of not to use diagonals in the AStarSearch Algorithm
 
     Returns:
-        List[Point] or None: List of points (the path), or None if no path is found
+        List of points (the path), or ``None`` if no path is found
     """
 
     grid_size = astar_barrier_list.grid_size
@@ -362,11 +391,16 @@ def has_line_of_sight(
         very slowly!
 
     Args:
-        observer: Start position
-        target: End position position
-        walls: List of all blocking sprites
-        max_distance: Max distance point 1 can see
-        check_resolution: Check every x pixels for a sprite.
+        observer:
+            Start position
+        target:
+            End position position
+        walls:
+            List of all blocking sprites
+        max_distance:
+            Max distance point 1 can see
+        check_resolution:
+            Check every x pixels for a sprite.
             Trade-off between accuracy and speed.
 
     Returns:
