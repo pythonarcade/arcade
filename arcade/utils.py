@@ -159,7 +159,7 @@ def is_iterable(item: Any) -> bool:
     the contents of this function locally since function calls may have
     more overhead than try/catch blocks on your Python version.
 
-    Parameters:
+    Args:
          item:
             An object to pass to the built-in :py:func:`iter` function.
 
@@ -184,7 +184,7 @@ def is_nonstr_iterable(item: Any) -> bool:
 
     .. note:: This is the opposite of :py:func:`is_str_or_noniterable`.
 
-    Parameters:
+    Args:
          item: Any object.
 
     Returns:
@@ -204,7 +204,7 @@ def is_str_or_noniterable(item: Any) -> bool:
 
     .. note:: This is the opposite of :py:func:`is_str_or_noniterable`.
 
-    Parameters:
+    Args:
         item: Any object.
 
     Returns:
@@ -253,7 +253,7 @@ def grow_sequence(
        grow_sequence(dest, BadType(), append_when=_validate_and_choose)
 
 
-    Parameters:
+    Args:
         destination:
             A :py:func:`list` or other :py:class:`~typing.MutableSequence`
             to append to or extend.

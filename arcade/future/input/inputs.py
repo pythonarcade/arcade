@@ -347,7 +347,7 @@ def parse_mapping_input_enum(raw: "RawBindBase") -> InputEnum:
 
     See :py:class:`.RawBindBase` to learn more about required arguments.
 
-    Parameters:
+    Args:
         raw:
             A dict with ``"input_type"`` and ``"input"`` corresponding
             to :py:class:`InputEnum` values.
