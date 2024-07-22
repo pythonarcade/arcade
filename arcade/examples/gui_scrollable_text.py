@@ -8,6 +8,9 @@ from arcade import load_texture
 from arcade.gui import UIManager, UIInputText, UITextArea
 from arcade.gui.nine_patch import NinePatchTexture
 
+# This is a special "nine-patch" texture that will stretch in the middle, but
+# always keep the corners the same size. This is useful for making panels that
+# can be any size.
 TEX_GREY_PANEL = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
 
 LOREM_IPSUM = (
@@ -38,12 +41,16 @@ class MyView(arcade.View):
         super().__init__()
         self.ui = UIManager()
 
+        # The specific configuration for grey_panel.png
+        # 5 x 5 pixel corners that won't be stretched.
         bg_tex = NinePatchTexture(
             left=5,
             right=5,
             top=5,
             bottom=5,
-            texture=TEX_GREY_PANEL)
+            texture=TEX_GREY_PANEL,
+        )
+
         text_area = UITextArea(
             x=100,
             y=400,
