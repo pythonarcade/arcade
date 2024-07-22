@@ -38,14 +38,18 @@ class ImageData:
     This information is used internally by the texture atlas to identify unique textures.
 
     If a hash is not provided, it will be calculated.
-    It's important that all hashes are of the same type.
     By default, the hash is calculated using the sha256 algorithm.
 
     The ability to provide a hash directly is mainly there
-    for ensuring we can load and save texture atlases to disk.
+    for ensuring we can load and save texture atlases to disk
+    and for users to be able to allocate named regions in
+    texture atlases.
 
-    :param image: The image for this texture
-    :param hash: The hash of the image
+    Args:
+        image:
+            The image for this texture
+        hash:
+            The hash of the image
     """
 
     __slots__ = ("image", "hash", "__weakref__")
@@ -61,6 +65,9 @@ class ImageData:
         Calculates the hash of an image.
 
         The algorithm used is defined by the ``hash_func`` class variable.
+
+        Args:
+            image: The Pillow image to calculate the hash for
         """
         hash = hashlib.new(cls.hash_func)
         hash.update(image.tobytes())
@@ -68,23 +75,17 @@ class ImageData:
 
     @property
     def width(self) -> int:
-        """
-        The width of the image
-        """
+        """Width of the image in pixels."""
         return self.image.width
 
     @property
     def height(self) -> int:
-        """
-        The height of the image
-        """
+        """Height of the image in pixels."""
         return self.image.height
 
     @property
     def size(self) -> tuple[int, int]:
-        """
-        The size of the image
-        """
+        """The size of the image in pixels."""
         return self.image.size
 
     # ImageData uniqueness is based on the hash
@@ -114,15 +115,26 @@ class ImageData:
 
 class Texture:
     """
-    An arcade.Texture is simply a wrapper for image data as a Pillow image
-    and the hit box data for this image used in collision detection.
+    A Texture is wrapper for image data as a Pillow image,
+    hit box data for this image used in collision detection
+    and transformations like rotation and flipping if applied.
 
-    :param image: The image or ImageData for this texture
-    :param hit_box_algorithm: The algorithm to use for calculating the hit box.
-    :param hit_box_points: A list of hitbox points for the texture to use (Optional).
-                                     Completely overrides the hit box algorithm.
-    :param hash: Optional unique name for the texture. Can be used to make this texture
-                     globally unique. By default the hash of the pixel data is used.
+    Textures are by definition immutable. If you want to change
+    the image data, you should create a new texture with the
+    desired changes. There are some exceptions to this rule
+    if you know the inner workings of the library.
+
+    Args:
+        image:
+            The image or ImageData for this texture
+        hit_box_algorithm:
+            The algorithm to use for calculating the hit box.
+        hit_box_points:
+            A list of hitbox points for the texture to use (Optional).
+            Completely overrides the hit box algorithm.
+        hash:
+            Optional unique name for the texture. Can be used to make this texture
+            globally unique. By default the hash of the pixel data is used.
     """
 
     __slots__ = (
@@ -192,8 +204,6 @@ class Texture:
         """
         A dictionary of properties for this texture.
         This can be used to store any data you want.
-
-        :return: Dict[str, Any]
         """
         return self._properties
 
@@ -201,8 +211,6 @@ class Texture:
     def cache_name(self) -> str:
         """
         The name of the texture used for caching (read only).
-
-        :return: str
         """
         return self._cache_name
 
@@ -210,7 +218,7 @@ class Texture:
     def image_cache_name(self) -> str | None:
         """
         Get the image cache name for this texture.
-        Returns None if file_path is not set.
+        Returns ``None`` if not loaded from a file.
         """
         if self.file_path is None:
             return None
@@ -231,11 +239,13 @@ class Texture:
         """
         Create a cache name for the texture.
 
-        :param image_data: The image data
-        :param hit_box_algorithm: The hit box algorithm
-        :param hit_box_args: The hit box algorithm arguments
-        :param Tuple[int, int, int, int] vertex_order: The vertex order
-        :return: str
+        Args:
+            hash:
+                The hash of the image data
+            hit_box_algorithm:
+                The hit box algorithm for this texture
+            vertex_order:
+                The current vertex order of the texture
         """
         if not isinstance(hash, str):
             raise TypeError(f"Expected str, got {type(hash)}")
@@ -249,9 +259,7 @@ class Texture:
         return f"{hash}|{vertex_order}"
 
     def _update_cache_names(self):
-        """
-        Update the internal cache names.
-        """
+        """Update the internal cache names."""
         self._cache_name = self.create_cache_name(
             hash=self._hash or self._image_data.hash,
             hit_box_algorithm=self._hit_box_algorithm,
@@ -272,17 +280,13 @@ class Texture:
     def atlas_name(self) -> str:
         """
         The name of the texture used for the texture atlas (read only).
-
-        :return: str
         """
         return self._atlas_name
 
     @property
     def file_path(self) -> Path | None:
         """
-        A Path object to the file this texture was loaded from
-
-        :return: Path
+        A Path to the file this texture was loaded from
         """
         return self._file_path
 
@@ -293,9 +297,8 @@ class Texture:
     @property
     def crop_values(self) -> tuple[int, int, int, int] | None:
         """
-        The crop values used to create this texture in the referenced file
-
-        :return: Tuple[int, int, int, int]
+        The crop values used to create this texture,
+        This is used to track the real origin of the pixel data.
         """
         return self._crop_values
 
@@ -314,8 +317,6 @@ class Texture:
             you know the consequences of changing the image.
             It can cause problems with the texture atlas and
             hit box points.
-
-        :param image: The image to set
         """
         return self._image_data.image
 
@@ -331,12 +332,8 @@ class Texture:
         """
         The image data of the texture (read only).
 
-        This is a simple wrapper around the image
-        containing metadata like hash and is used
-        to determine the uniqueness of the image
-        in texture atlases.
-
-        :return: ImageData
+        This is a simple wrapper around the image containing metadata like hash
+        and is used to determine the uniqueness of the image in texture atlases.
         """
         return self._image_data
 
@@ -344,10 +341,10 @@ class Texture:
     def width(self) -> int:
         """
         The virtual width of the texture in pixels.
-        This can be different from the actual width
-        if the texture has been transformed or the
-        size have been set manually.
 
+        This can be different from the actual width of the image
+        if set manually. It can be used to trick sprites into
+        believing the texture us much larger than it is.
         """
         return self._size[0]
 
@@ -360,10 +357,9 @@ class Texture:
         """
         The virtual width of the texture in pixels.
 
-        This can be different from the actual width
-        if the texture has been transformed or the
-        size have been set manually.
-
+        This can be different from the actual height of the image
+        if set manually. It can be used to trick sprites into
+        believing the texture us much larger than it is.
         """
         return self._size[1]
 
@@ -376,10 +372,9 @@ class Texture:
         """
         The virtual size of the texture in pixels.
 
-        This can be different from the actual width
-        if the texture has been transformed or the
-        size have been set manually.
-
+        This can be different from the actual size of the image
+        if set manually. It can be used to trick sprites into
+        believing the texture us much larger than it is.
         """
         return self._size
 
@@ -390,12 +385,10 @@ class Texture:
     @property
     def hit_box_points(self) -> Point2List:
         """
-        Get the hit box points for this texture.
+        Get the hit box points for this texture (read only).
 
         Custom hit box points must be supplied during texture creation
         and should ideally not be changed after creation.
-
-        :return: PointList
         """
         return self._hit_box_points
 
@@ -407,181 +400,122 @@ class Texture:
         return self._hit_box_algorithm
 
     @classmethod
-    def create_filled(cls, name: str, size: tuple[int, int], color: RGBA255) -> "Texture":
-        """
-        Create a filled texture. This is an alias for :py:meth:`create_empty`.
-
-        :param name: Name of the texture
-        :param Tuple[int, int] size: Size of the texture
-        :param color: Color of the texture
-        :return: Texture
-        """
-        return cls.create_empty(name, size, color)
-
-    @classmethod
     def create_empty(
         cls,
         name: str,
         size: tuple[int, int],
         color: RGBA255 = TRANSPARENT_BLACK,
-    ) -> "Texture":
+        hit_box_points: Point2List | None = None,
+    ) -> Texture:
         """
-        Create a texture with all pixels set to transparent black.
+        Create a texture with all pixels set to the given color.
 
         The hit box of the returned Texture will be set to a rectangle
-        with the dimensions in ``size`` because there is no non-blank
-        pixel data to calculate a hit box.
+        with the dimensions in ``size`` unless hit_box_points are provided.
 
-        :param name: The unique name for this texture
-        :param size: The xy size of the internal image
-
-        This function has multiple uses, including:
-
-            - Allocating space in texture atlases
-            - Generating custom cached textures from component images
-
-        The internal image can be altered with Pillow draw commands and
-        then written/updated to a texture atlas. This works best for
-        infrequent changes such as generating custom cached sprites.
-        For frequent texture changes, you should instead render directly
-        into the texture atlas.
-
-        .. warning::
-
-           If you plan to alter images using Pillow, read its
-           documentation thoroughly! Some of the functions can have
-           unexpected behavior.
-
-           For example, if you want to draw one or more images that
-           contain transparency onto a base image that also contains
-           transparency, you will likely need to use
-           `PIL.Image.alpha_composite`_ as part of your solution.
-           Otherwise, blending may behave in unexpected ways.
-
-           This is especially important for customizable characters.
-
-        .. _PIL.Image.alpha_composite: https://pillow.readthedocs.io/en/stable/\
-                                       reference/Image.html#PIL.Image.alpha_composite
-
-        Be careful of your RAM usage when using this function. The
-        Texture this method returns will have a new internal RGBA
-        Pillow image which uses 4 bytes for every pixel in it.
-        This will quickly add up if you create many large Textures.
-
-        If you want to create more than one blank texture with the same
-        dimensions, you can save CPU time and RAM by calling this
-        function once, then passing the ``image`` attribute of the
-        resulting Texture object to the class constructor for each
-        additional blank Texture instance you would like to create.
-        This can be especially helpful if you are creating multiple
-        large Textures.
-
+        Args:
+            name:
+                The unique name for this texture. This is used for caching
+                and uniqueness in texture atlases.
+            size:
+                The xy size of the internal image
+            color (optional):
+                The color to fill the texture with
+            hit_box_points (optional):
+                A list of hitbox points for the texture
         """
         return Texture(
             image=PIL.Image.new("RGBA", size, color),
             hash=name,
             hit_box_algorithm=hitbox.algo_bounding_box,
+            hit_box_points=hit_box_points,
         )
 
     # ----- Transformations -----
 
-    def flip_left_right(self) -> "Texture":
+    def flip_left_right(self) -> Texture:
         """
-        Flip the texture left to right / horizontally.
+        Create a new texture that is flipped left to right from this texture.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.transform(FlipLeftRightTransform)
 
-    def flip_top_bottom(self) -> "Texture":
+    def flip_top_bottom(self) -> Texture:
         """
-        Flip the texture top to bottom / vertically.
+        Create a new texture that is flipped top to bottom from this texture.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.transform(FlipTopBottomTransform)
 
-    def flip_horizontally(self) -> "Texture":
+    def flip_horizontally(self) -> Texture:
         """
-        Flip the texture left to right / horizontally.
+        Create a new texture that is flipped horizontally from this texture.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.flip_left_right()
 
-    def flip_vertically(self) -> "Texture":
+    def flip_vertically(self) -> Texture:
         """
-        Flip the texture top to bottom / vertically.
+        Create a new texture that is flipped vertically from this texture.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.flip_top_bottom()
 
-    def flip_diagonally(self) -> "Texture":
+    def flip_diagonally(self) -> Texture:
         """
-        Returns a new texture that is flipped diagonally from this texture.
+        Creates a new texture that is flipped diagonally from this texture.
         This is an alias for :func:`transpose`.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.transpose()
 
-    def transpose(self) -> "Texture":
+    def transpose(self) -> Texture:
         """
-        Returns a new texture that is transposed from this texture.
+        Creates a new texture that is transposed from this texture.
         This flips the texture diagonally from lower right to upper left.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.transform(TransposeTransform)
 
-    def transverse(self) -> "Texture":
+    def transverse(self) -> Texture:
         """
-        Returns a new texture that is transverse from this texture.
+        Creates a new texture that is transverse from this texture.
         This flips the texture diagonally from lower left to upper right.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.transform(TransverseTransform)
 
-    def rotate_90(self, count: int = 1) -> "Texture":
+    def rotate_90(self, count: int = 1) -> Texture:
         """
-        Rotate the texture by a given number of 90 degree steps.
+        Create a new texture that is rotated 90 degrees from this texture.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
 
-        :param count: Number of 90 degree steps to rotate.
-        :return: Texture
+        Args:
+            count: Number of 90 degree steps to rotate.
         """
         angles = [None, Rotate90Transform, Rotate180Transform, Rotate270Transform]
         count = count % 4
@@ -590,39 +524,35 @@ class Texture:
             return self
         return self.transform(transform)
 
-    def rotate_180(self) -> "Texture":
+    def rotate_180(self) -> Texture:
         """
-        Rotate the texture 180 degrees.
+        Create a new texture that is rotated 180 degrees from this texture.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.transform(Rotate180Transform)
 
-    def rotate_270(self) -> "Texture":
+    def rotate_270(self) -> Texture:
         """
-        Rotate the texture 270 degrees.
+        Create a new texture that is rotated 270 degrees from this texture.
 
         This returns a new texture with the same image data, but
         has updated hit box data and a transform that will be
         applied to the image when it's drawn (GPU side).
-
-        :return: Texture
         """
         return self.transform(Rotate270Transform)
 
     def transform(
         self,
         transform: type[Transform],
-    ) -> "Texture":
+    ) -> Texture:
         """
         Create a new texture with the given transform applied.
 
-        :param transform: Transform to apply
-        :return: New texture
+        Args:
+            transform: Transform to apply
         """
         new_hit_box_points = transform.transform_hit_box_points(self._hit_box_points)
         texture = Texture(
@@ -654,7 +584,7 @@ class Texture:
         y: int,
         width: int,
         height: int,
-    ) -> "Texture":
+    ) -> Texture:
         """
         Create a new texture from a sub-section of this texture.
 
@@ -662,12 +592,15 @@ class Texture:
         the crop is 0 width or height, the original texture is
         returned.
 
-        :param x: X position to start crop
-        :param y: Y position to start crop
-        :param width: Width of crop
-        :param height: Height of crop
-        :param cache: If True, the cropped texture will be cached
-        :return: Texture
+        Args:
+            x:
+                X position to start crop
+            y:
+                Y position to start crop
+            width:
+                Width of crop
+            height:
+                Height of crop
         """
         # Return self if the crop is the same size as the original image
         if width == self.image.width and height == self.image.height and x == 0 and y == 0:
@@ -695,6 +628,18 @@ class Texture:
     def validate_crop(image: PIL.Image.Image, x: int, y: int, width: int, height: int) -> None:
         """
         Validate the crop values for a given image.
+
+        Args:
+            image:
+                The image to crop
+            x:
+                X position to start crop
+            y:
+                Y position to start crop
+            width:
+                Width of crop
+            height:
+                Height of crop
         """
         if x < 0 or y < 0 or width < 0 or height < 0:
             raise ValueError(f"crop values must be positive: {x}, {y}, {width}, {height}")

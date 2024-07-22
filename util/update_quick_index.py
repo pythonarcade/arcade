@@ -354,6 +354,15 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.start_finish_data",
         ],
     },
+    "cache.rst": {
+        "title": "Cache",
+        "use_declarations_in": [
+            "arcade.cache",
+            "arcade.cache.hit_box",
+            "arcade.cache.texture",
+            "arcade.cache.image_data",
+        ],
+    },
     "future.rst": {
        "title": "Future Features",
        "use_declarations_in": [

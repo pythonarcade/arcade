@@ -29,12 +29,20 @@ class ImageDataRefCounter:
         self._num_decref = 0
 
     def inc_ref(self, image_data: "ImageData") -> None:
-        """Increment the reference counter for an image."""
+        """
+        Increment the reference counter for an image.
+
+        Args:
+            image_data: The image to increment the reference counter for
+        """
         self._data[image_data.hash] = self._data.get(image_data.hash, 0) + 1
 
     def dec_ref(self, image_data: "ImageData") -> int:
         """
         Decrement the reference counter for an image returning the new value.
+
+        Args:
+            image_data: The image to decrement the reference counter for
         """
         return self.dec_ref_by_hash(image_data.hash)
 
@@ -45,6 +53,9 @@ class ImageDataRefCounter:
         Raises ``RuntimeError`` if the hash is no longer tracked meaning it doesn't exist
         and/or the reference count is already zero. Otherwise the updated ref counter
         is returned. When 0 is returned we removed the last reference to the image.
+
+        Args:
+            hash: The hash of the image to decrement the reference counter for
         """
         val = self._data.get(hash, 0) - 1
         if val < 0:
@@ -63,12 +74,12 @@ class ImageDataRefCounter:
         Get the reference count for an image.
 
         Args:
-            image_data (ImageData): The image to get the reference count for
+            image_data: The image to get the reference count for
         """
         return self._data.get(image_data.hash, 0)
 
     def count_all_refs(self) -> int:
-        """Helper function to count the total number of references."""
+        """Count the total number of references."""
         return sum(self._data.values())
 
     def get_total_decref(self, reset=True) -> int:
@@ -80,7 +91,7 @@ class ImageDataRefCounter:
         purposes.
 
         Args:
-            reset (bool): Reset the decref counter after getting the value
+            reset: Reset the decref counter after getting the value
         """
         num_decref = self._num_decref
         if reset:
@@ -118,12 +129,20 @@ class UniqueTextureRefCounter:
         self._num_decref = 0
 
     def inc_ref(self, image_data: "Texture") -> None:
-        """Increment the reference count for an image."""
+        """
+        Increment the reference count for an image.
+
+        Args:
+            image_data: The image to increment the reference counter for
+        """
         self._data[image_data.atlas_name] = self._data.get(image_data.atlas_name, 0) + 1
 
     def dec_ref(self, image_data: "Texture") -> int:
         """
         Decrement the reference counter for an image returning the new value.
+
+        Args:
+            image_data: The image to decrement the reference counter for
         """
         return self.dec_ref_by_atlas_name(image_data.atlas_name)
 
@@ -134,6 +153,9 @@ class UniqueTextureRefCounter:
         Raises ``RuntimeError`` if the atlas name is no longer tracked meaning it doesn't exist
         and/or the reference count is already zero. Otherwise the updated ref counter
         is returned. When 0 is returned we removed the last reference to the texture.
+
+        Args:
+            atlas_name: The name of the texture to decrement the reference counter
         """
         val = self._data.get(atlas_name, 0) - 1
         if val < 0:
@@ -152,7 +174,7 @@ class UniqueTextureRefCounter:
         Get the reference counter for an image.
 
         Args:
-            image_data (ImageData): The image to get the reference count for
+            image_data: The image to get the reference count for
         """
         return self._data.get(image_data.hash, 0)
 
@@ -168,7 +190,7 @@ class UniqueTextureRefCounter:
         either for functional or debugging purposes.
 
         Args:
-            reset (bool): Reset the counter after getting the value
+            reset: Reset the counter after getting the value
         """
         num_decref = self._num_decref
         if reset:

@@ -46,6 +46,7 @@ for the Python Arcade library. See also:
     gl/index
     api/exceptions
     api/start_finish_render
+    api/cache
     api/future
 
 .. _arcade-api-gui:

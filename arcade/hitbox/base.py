@@ -49,9 +49,11 @@ class HitBoxAlgorithm:
                      when initialized, subclasses use them to alter how
                      a specific instance handles image data by default.
 
-        :param image: The image to calculate hitbox points for
-        :param kwargs: keyword arguments
-        :return: A list of hit box points.
+        Args:
+            image:
+                The image to calculate hitbox points for
+            kwargs:
+                keyword arguments
         """
         raise NotImplementedError
 
@@ -59,9 +61,13 @@ class HitBoxAlgorithm:
         """
         Shorthand allowing any instance to be used identically to the base type.
 
-        :param args: The same positional arguments as `__init__`
-        :param kwds: The same keyword arguments as `__init__`
-        :return: A new HitBoxAlgorithm instance
+        Args:
+            args:
+                The same positional arguments as `__init__`
+           kwds:
+                The same keyword arguments as `__init__`
+        Returns:
+            A new HitBoxAlgorithm instance
         """
         return self.__class__(*args, **kwds)  # type: ignore
 
@@ -72,8 +78,8 @@ class HitBoxAlgorithm:
         doesn't manage to figure out any reasonable points for
         an image.
 
-        :param image: The image to create a bounding box for.
-        :return: A tuple of hit box points.
+        Args:
+            image: The image to create a bounding box for.
         """
         size = image.size
         return (
@@ -93,10 +99,13 @@ class HitBox:
     use :py:meth:`.create_rotatable` to create an instance of
     :py:class:`RotatableHitBox`.
 
-    :param points: The unmodified points bounding the hit box
-    :param position: The center around which the points will be offset
-    :param scale: The X and Y scaling factors to use when offsetting the
-        points
+    Args:
+        points:
+            The unmodified points bounding the hit box
+        position:
+            The center around which the points will be offset
+        scale:
+            The X and Y scaling factors to use when offsetting the points
     """
 
     def __init__(
@@ -128,7 +137,6 @@ class HitBox:
     def position(self) -> Point2:
         """
         The center point used to offset the final adjusted positions.
-        :return:
         """
         return self._position
 
@@ -199,11 +207,11 @@ class HitBox:
         Create a rotatable instance of this hit box.
 
         The internal ``PointList`` is transferred directly instead of
-        deepcopied, so care should be taken if using a mutable internal
+        deep copied, so care should be taken if using a mutable internal
         representation.
 
-        :param angle: The angle to rotate points by (0 by default)
-        :return:
+        Args:
+            angle: The angle to rotate points by (0 by default)
         """
         return RotatableHitBox(
             self._points, position=self._position, scale=self._scale, angle=angle
@@ -241,6 +249,16 @@ class RotatableHitBox(HitBox):
 
     Rotation is separated from the basic hitbox because it is much
     slower than offsetting and scaling.
+
+    Args:
+        points:
+            The unmodified points bounding the hit box
+        position:
+            The translation to apply to the points
+        angle:
+            The angle to rotate the points by
+        scale:
+            The X and Y scaling factors
     """
 
     def __init__(
@@ -272,7 +290,6 @@ class RotatableHitBox(HitBox):
 
         As with :py:meth:`.HitBox.get_adjusted_points`, this method only
         recalculates the adjusted values when necessary.
-        :return:
         """
         if not self._adjusted_cache_dirty:
             return self._adjusted_points

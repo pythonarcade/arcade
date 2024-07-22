@@ -41,9 +41,16 @@ def load_texture(
             hit_box_algorithm=arcade.hitbox.algo_detailed.
         )
 
-    :param file_path: Path to the image file
-    :param hit_box_algorithm: The hit box algorithm to use for this texture
-    :param hash: (advanced) Optional custom hash for the loaded image
+    Args:
+        file_path:
+            Path to the image file
+        hit_box_algorithm (optional):
+            The hit box algorithm to use for this texture. If not specified
+            the global default will be used.
+        hash:
+            (advanced) Optional custom hash/name for the loaded image.
+            This is used for texture caching and global uniqueness
+            in texture atlases.
     """
     # LOG.info("load_texture: %s ", file_path)
     if isinstance(file_path, str):
@@ -74,8 +81,11 @@ def load_image(
     Note that arcade mainly works with RGBA images. If you override
     the mode you might need to convert the final image to RGBA.
 
-    :param file_path: Path to the image file
-    :param mode: The desired mode for the image (default: "RGBA")
+    Args:
+        file_path:
+            Path to the image file
+        mode:
+            The desired mode for the image (default: "RGBA")
     """
     # LOG.info("load_image: %s ", file_path)
     if isinstance(file_path, str):
@@ -90,9 +100,10 @@ def load_image(
 def load_spritesheet(file_name: str | Path) -> SpriteSheet:
     """
     Loads an image from disk returning a sprite sheet that can
-    further be used to crop out smaller images.
+    further be used to slice out smaller images.
 
-    :param file_name: Path to the image file
+    Args:
+        file_name: Path to the image file
     """
     # LOG.info("load_spritesheet: %s ", file_name)
     if isinstance(file_name, str):

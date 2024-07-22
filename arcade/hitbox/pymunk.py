@@ -38,11 +38,10 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         """
         Given an RGBA image, this returns points that make up a hit box around it.
 
-        :param image: Image get hit box from.
-        :param detail: How detailed to make the hit box. There's a
-                           trade-off in number of points vs. accuracy.
-
-        :Returns: List of points
+        Args:
+            image: Image get hit box from.
+            detail: How detailed to make the hit box. There's a
+                trade-off in number of points vs. accuracy.
         """
         hit_box_detail = detail or self.detail
 
@@ -69,8 +68,9 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
 
         Coordinates are offset so ``(0,0)`` is the center of the image.
 
-        :param image: Image to trace.
-        :param line_set: Line set to convert.
+        Args:
+            image: Image to trace.
+            line_set: Line set to convert.
         """
         # Convert to normal points, offset fo 0,0 is center, flip the y
         hh = image.height / 2.0
@@ -98,8 +98,8 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         holes in the image. If more than one line set is returned it's important
         to pick the one that covers the most of the image.
 
-        :param image: Image to trace.
-        :return: Line sets
+        Args:
+            image: Image to trace.
         """
 
         def sample_func(sample_point: Point2) -> int:
@@ -153,8 +153,8 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
         """
         Given a list of line sets, return the one that covers the most of the image.
 
-        :param line_sets: List of line sets.
-        :return: List of points that make up the line set.
+        Args:
+            line_sets: List of line sets.
         """
         if len(line_sets) == 1:
             return line_sets[0]

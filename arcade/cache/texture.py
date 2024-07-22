@@ -19,12 +19,39 @@ class TextureBucket:
         self._entries: dict[str, Texture] = {}
 
     def put(self, name: str, texture: Texture) -> None:
+        """
+        Add a texture to the cache.
+
+        Args:
+            name:
+                The cache name of the texture
+            texture:
+                The texture to add
+        """
         self._entries[name] = texture
 
     def get(self, name: str) -> Texture | None:
+        """
+        Get a texture from the cache by cache name.
+
+        Args:
+            name:
+                The cache name of the texture
+        Returns:
+            The texture if found, otherwise ``None``
+        """
         return self._entries.get(name)
 
     def delete(self, name: str, raise_if_not_exist: bool = True) -> None:
+        """
+        Delete a texture from the cache by cache name.
+
+        Args:
+            name:
+                The cache name of the texture
+            raise_if_not_exist:
+                If ``True``, raises ``KeyError`` if the entry does not exist
+        """
         try:
             del self._entries[name]
         except KeyError:
@@ -32,12 +59,19 @@ class TextureBucket:
                 raise
 
     def delete_by_value(self, texture: "Texture") -> None:
+        """
+        Delete a texture from the cache by texture instance.
+
+        Args:
+            texture: The texture instance to delete
+        """
         for name, value in self._entries.items():
             if value is texture:
                 del self._entries[name]
                 return
 
     def flush(self) -> None:
+        """Clear the cache"""
         self._entries.clear()
 
     def __len__(self) -> int:
@@ -72,7 +106,8 @@ class TextureCache:
         and file path are correctly set on the texture before adding it to
         the cache.
 
-        :param texture: The texture to add
+        Args:
+            texture: The texture to add
         """
         self._entries.put(texture.cache_name, texture)
 
@@ -87,8 +122,10 @@ class TextureCache:
         """
         Get a texture from the cache by cache name
 
-        :param name: The cache name of the texture
-        :return: The texture if found, otherwise None
+        Args:
+            name: The cache name of the texture
+        Returns:
+            The texture if found, otherwise ``None``
         """
         return self._entries.get(name)
 
@@ -96,9 +133,13 @@ class TextureCache:
         """
         Attempts to find a texture with a specific configuration.
 
-        :param hash: The image hash
-        :param hit_box_algorithm: The hit box algorithm to search for
-        :return: The texture if found, otherwise None
+        Args:
+            hash:
+                The image hash
+            hit_box_algorithm:
+                The hit box algorithm to search for
+        Returns:
+            The texture if found, otherwise ``None``
         """
         from arcade import Texture
 
@@ -116,7 +157,9 @@ class TextureCache:
         """
         Get a texture from the cache by file path and crop values.
 
-        :param file_path: The path to the file the texture was loaded from
+        Args:
+            file_path: The path to the file the texture was loaded from
+            crop: The crop values used when creating the texture
         """
         from arcade import Texture
 
@@ -127,8 +170,11 @@ class TextureCache:
         """
         Delete a texture from the cache by cache name.
 
-        :param texture_or_name: The texture or cache name to delete
-        :param ignore_error: If True, ignore errors when deleting
+        Args:
+            texture_or_name:
+                The texture or cache name to delete
+            raise_if_not_exist:
+                If ``True``, ignore errors when deleting
         """
         if isinstance(texture_or_name, Texture):
             texture = texture_or_name
