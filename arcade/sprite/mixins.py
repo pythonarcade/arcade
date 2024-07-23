@@ -35,6 +35,7 @@ class PyMunk:
 
 
 class PymunkMixin:
+    """A mixin class that adds Pymunk physics to a sprite."""
 
     def __init__(self) -> None:
         self.pymunk = PyMunk()
