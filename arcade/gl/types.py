@@ -128,11 +128,17 @@ class AttribFormat:
     This is attribute metadata used when attempting to map vertex
     shader inputs.
 
-    :param name: Name of the attribute
-    :param gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
-    :param bytes_per_component: Number of bytes for a single component
-    :param offset: (Optional) Offset for BufferDescription
-    :param location: (Optional) Location for program attribute
+    Args:
+        name:
+            Name of the attribute
+        gl_type:
+            The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+        bytes_per_component:
+            Number of bytes for a single component
+        offset (optional):
+            Offset for BufferDescription
+        location (optional):
+            Location for program attribute
     """
 
     __slots__ = (
