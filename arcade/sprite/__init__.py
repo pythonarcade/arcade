@@ -26,11 +26,13 @@ def load_animated_gif(resource_name) -> TextureAnimationSprite:
     """
     Attempt to load an animated GIF as an :class:`TextureAnimationSprite`.
 
-    Many older GIFs will load with incorrect transparency for every
-    frame but the first. Until the Pillow library handles the quirks of
-    the format better, loading animated GIFs will be pretty buggy. A
-    good workaround is loading GIFs in another program and exporting them
-    as PNGs, either as sprite sheets or a frame per file.
+    .. note::
+
+        Many older GIFs will load with incorrect transparency for every
+        frame but the first. Until the Pillow library handles the quirks of
+        the format better, loading animated GIFs will be pretty buggy. A
+        good workaround is loading GIFs in another program and exporting them
+        as PNGs, either as sprite sheets or a frame per file.
     """
 
     file_name = resolve(resource_name)

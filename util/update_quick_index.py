@@ -420,9 +420,12 @@ def get_file_declarations(
     re.Pattern instances are applied in the same order as passed
     in kind_to_regex.
 
-    :param filepath: A file path to read.
-    :param kind_to_regex: An mapping of kind names to the re.Pattern
-        instances used to parse each.
+    Args:
+        filepath:
+            A file path to read.
+        kind_to_regex:
+            An mapping of kind names to the re.Pattern
+            instances used to parse each.
     """
 
     # print("Parsing: ", filepath)
@@ -462,8 +465,11 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     3rd party module like griffe... it's badly reassembling the module name
     from a collection of tables and unnamed sequences.
 
-    :param api_file_name: The name of the file in the API directory
-    :param vfs: The vfs object to use
+    Args:
+        api_file_name:
+            The name of the file in the API directory
+        vfs:
+            The vfs object to use
     """
     page_config = API_FILE_TO_TITLE_AND_MODULES.get(api_file_name, None)
 

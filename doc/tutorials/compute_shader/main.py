@@ -36,10 +36,12 @@ def gen_initial_data(
     2. GLSL's vec3 is actually a vec4 with compiler-side restrictions,
        so we have to use 4-length vectors anyway.
 
-    :param screen_size: A (width, height) of the area to generate stars in
-    :param num_stars: How many stars to generate
-    :param use_color: Whether to generate white or randomized pastel stars
-    :return: an array of star position data
+    Args:
+        screen_size: A (width, height) of the area to generate stars in
+        num_stars: How many stars to generate
+        use_color: Whether to generate white or randomized pastel stars
+    Returns:
+     An array of star position data
     """
     width, height = screen_size
     color_channel_min = 0.5 if use_color else 1.0

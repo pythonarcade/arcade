@@ -42,10 +42,14 @@ class OrthographicProjector(Projector):
     Initialize a Projector which produces an orthographic projection matrix using
     a CameraData and PerspectiveProjectionData PoDs.
 
-    :param window: The window to bind the camera to. Defaults to the currently active camera.
-    :param view: The CameraData PoD. contains the viewport, position, up, forward, and zoom.
-    :param projection: The OrthographicProjectionData PoD.
-                contains the left, right, bottom top, near, and far planes.
+    Args:
+        window:
+            The window to bind the camera to. Defaults to the currently active camera.
+        view:
+            The CameraData PoD. contains the viewport, position, up, forward, and zoom.
+        projection:
+            The OrthographicProjectionData PoD.
+            contains the left, right, bottom top, near, and far planes.
     """
 
     def __init__(

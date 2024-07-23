@@ -55,31 +55,31 @@ class Camera2D:
     Replacing the camera data and projection data may break controllers. Their
     contents are exposed via properties rather than directly to prevent this.
 
-    :param viewport: A 4-int tuple which defines the pixel bounds which the camera
-        will project to.
-    :param position: The 2D position of the camera in the XY plane.
-    :param up: A 2D vector which describes which direction is up
-        (defines the +Y-axis of the camera space).
-    :param zoom: A scalar value which is inversely proportional to the size of the
-        camera projection. i.e. a zoom of 2.0 halves the size of the projection,
-        doubling the perceived size of objects.
-    :param projection: A 4-float tuple which defines the world space
-                bounds which the camera projects to the viewport.
-    :param near: The near clipping plane of the camera.
-    :param far: The far clipping plane of the camera.
-    :param render_target: The FrameBuffer that the camera uses. Defaults to the screen.
-        If the framebuffer is not the default screen nothing drawn after this camera is used will
-        show up. The FrameBuffer's internal viewport is ignored.
-    :param window: The Arcade Window to bind the camera to.
-        Defaults to the currently active window.
-
-    :attributes:
-        * render_target - An optional framebuffer to activate at the same time as
-            the projection data, could be the screen, or an offscreen texture
-        * viewport - A rect which describes how the final projection should be mapped
-            from unit-space. defaults to the size of the render_target or window
-        * scissor - An optional rect which describes what pixels of the active render
-            target should be drawn to when undefined the viewport rect is used.
+    Args:
+        viewport:
+            A 4-int tuple which defines the pixel bounds which the camera will project to.
+        position:
+            The 2D position of the camera in the XY plane.
+        up:
+            A 2D vector which describes which direction is up
+            (defines the +Y-axis of the camera space).
+        zoom:
+            A scalar value which is inversely proportional to the size of the
+            camera projection. i.e. a zoom of 2.0 halves the size of the projection,
+            doubling the perceived size of objects.
+        projection:
+            A 4-float tuple which defines the world space
+            bounds which the camera projects to the viewport.
+        near:
+            The near clipping plane of the camera.
+        far:
+            The far clipping plane of the camera.
+        render_target:
+            The FrameBuffer that the camera uses. Defaults to the screen.
+            If the framebuffer is not the default screen nothing drawn after this camera
+            is used will show up. The FrameBuffer's internal viewport is ignored.
+        window:
+            The Arcade Window to bind the camera to. Defaults to the currently active window.
     """
 
     def __init__(
@@ -98,6 +98,10 @@ class Camera2D:
     ):
         self._window: Window = window or get_window()
         self.render_target: Framebuffer | None = render_target
+        """
+        An optional framebuffer to activate at the same time as
+        the projection data, could be the screen, or an offscreen texture
+        """
 
         # We don't want to force people to use a render target,
         # but we need to have some form of default size.
@@ -140,7 +144,16 @@ class Camera2D:
         )
 
         self.viewport: Rect = viewport or LRBT(0, 0, width, height)
+        """
+        A rect which describes how the final projection should be mapped
+        from unit-space. defaults to the size of the render_target or window
+        """
+
         self.scissor: Rect | None = scissor
+        """
+        An optional rect which describes what pixels of the active render
+        target should be drawn to when undefined the viewport rect is used.
+        """
 
     @classmethod
     def from_camera_data(
@@ -178,26 +191,28 @@ class Camera2D:
           * - ``render_target``
             - Complex rendering setups
 
-        :param camera_data: A :py:class:`~arcade.camera.data.CameraData`
-            describing the position, up, forward and zoom.
-        :param projection_data:
-            A :py:class:`~arcade.camera.data.OrthographicProjectionData`
-            which describes the left, right, top, bottom, far, near
-            planes and the viewport for an orthographic projection.
-        :param render_target: A non-screen
-            :py:class:`~arcade.gl.framebuffer.Framebuffer` for this
-            camera to draw into. When specified,
+        Args:
+            camera_data:
+                A :py:class:`~arcade.camera.data.CameraData`
+                describing the position, up, forward and zoom.
+            projection_data:
+                A :py:class:`~arcade.camera.data.OrthographicProjectionData`
+                which describes the left, right, top, bottom, far, near
+                planes and the viewport for an orthographic projection.
+            render_target:
+                A non-screen :py:class:`~arcade.gl.framebuffer.Framebuffer` for this
+                camera to draw into. When specified,
 
-            * nothing will draw directly to the screen
-            * the buffer's internal viewport will be ignored
+                * nothing will draw directly to the screen
+                * the buffer's internal viewport will be ignored
 
-        :param viewport:
-            A viewport as a :py:class:`~arcade.types.rect.Rect`.
-            This overrides any viewport the ``render_target`` may have.
-        :param scissor:
-            The OpenGL scissor box to use when drawing.
-        :param window: The Arcade Window to bind the camera to.
-            Defaults to the currently active window.
+            viewport:
+                A viewport as a :py:class:`~arcade.types.rect.Rect`.
+                This overrides any viewport the ``render_target`` may have.
+            scissor:
+                The OpenGL scissor box to use when drawing.
+            window: The Arcade Window to bind the camera to.
+                Defaults to the currently active window.
         """
 
         if projection_data:

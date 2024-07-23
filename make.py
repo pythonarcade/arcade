@@ -119,8 +119,8 @@ def cd_context(directory: PathLike) -> Generator[Path, None, None]:
     a FileNotFoundError will be raised. If the path exists but is a file,
     a ValueError will be raised.
 
-    :param directory: The directory to cd into.
-    :return:
+    Args:
+        directory: The directory to cd into.
     """
 
     # Raise FileNotFoundError if path doesn't exist
@@ -148,9 +148,9 @@ def run(args: str | list[str], cd: PathLike | None = None) -> None:
     Switching back out should occur regardless of any exceptions, unless the
     interpreter crashes.
 
-    :param args: the command to run.
-    :param cd: a directory to switch into beforehand, if any.
-    :return:
+    Args:
+        args: the command to run.
+        cd: a directory to switch into beforehand, if any.
     """
     if cd is not None:
         with cd_context(_resolve(cd, strict=True)):

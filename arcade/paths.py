@@ -433,9 +433,6 @@ def has_line_of_sight(
 #     """
 #     Bresenham's line algorithm
 
-#     :param start:
-#     :param end:
-#     :return: List of points
 #     """
 #     x1, y1 = start
 #     x2, y2 = end

@@ -11,9 +11,9 @@ class BloomFilter:
     """
     CRT Filter
 
-    :param width:
-    :param height:
-
+    Args:
+        width: Width of the filter
+        height: Height of the filter
     """
 
     def __init__(self, width: int, height: int, intensity: float):

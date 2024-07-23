@@ -107,7 +107,8 @@ class DefaultProjector(ViewportProjector):
     here to act as the default camera used internally by arcade. There should be
     no instance where a developer would want to use this class.
 
-    :param window: The window to bind the camera to. Defaults to the currently active window.
+    Args:
+        window: The window to bind the camera to. Defaults to the currently active window.
     """
 
     def __init__(self, *, context: ArcadeContext | None = None):

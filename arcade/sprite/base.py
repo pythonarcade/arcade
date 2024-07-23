@@ -28,10 +28,15 @@ class BasicSprite:
     after creation. For more built-in features, please see
     :py:class:`~arcade.Sprite`.
 
-    :param texture: The texture data to use for this sprite.
-    :param scale: The scaling factor for drawing the texture.
-    :param center_x: Location of the sprite along the X axis in pixels.
-    :param center_y: Location of the sprite along the Y axis in pixels.
+    Args:
+        texture:
+            The texture data to use for this sprite.
+        scale:
+            The scaling factor for drawing the texture.
+        center_x:
+            Location of the sprite along the X axis in pixels.
+        center_y:
+            Location of the sprite along the Y axis in pixels.
     """
 
     __slots__ = (
@@ -78,12 +83,7 @@ class BasicSprite:
 
     @property
     def position(self) -> Point2:
-        """
-        Get or set the center x and y position of the sprite.
-
-        Returns:
-            (center_x, center_y)
-        """
+        """Get or set the center x and y position of the sprite."""
         return self._position
 
     @position.setter
@@ -456,7 +456,6 @@ class BasicSprite:
 
         * The new color's alpha value will be ignored
         * The old alpha value will be preserved
-
         """
         return self._color[:3]
 
@@ -710,11 +709,12 @@ class BasicSprite:
         If ``point`` equals the sprite's :py:attr:`~position`,
         the distance will be zero and the sprite will not move.
 
-        :param point: The reference point for rescaling.
-        :param factors_xy: A 2-length iterable containing x and y
-                           multipliers for ``scale`` & distance to
-                           ``point``.
-        :return:
+        Args:
+            point:
+                The reference point for rescaling.
+            factors_xy:
+                A 2-length iterable containing x and y
+                multipliers for ``scale`` & distance to ``point``.
         """
         self.rescale_relative_to_point(point, factors_xy)  # type: ignore
 
@@ -725,24 +725,21 @@ class BasicSprite:
         return self._hit_box
 
     def update_spatial_hash(self) -> None:
-        """
-        Update the sprites location in the spatial hash if present.
-        """
+        """Update the sprites location in the spatial hash if present."""
         for sprite_list in self.sprite_lists:
             if sprite_list.spatial_hash is not None:
                 sprite_list.spatial_hash.move(self)
 
-    def register_sprite_list(self, new_list: "SpriteList") -> None:
+    def register_sprite_list(self, new_list: SpriteList) -> None:
         """
-        Register this sprite as belonging to a list. We will automatically
-        remove ourselves from the list when kill() is called.
+        Register this sprite as belonging to a list.
+
+        We will automatically remove ourselves from the list when kill() is called.
         """
         self.sprite_lists.append(new_list)
 
     def remove_from_sprite_lists(self) -> None:
-        """
-        Remove the sprite from all sprite lists.
-        """
+        """Remove the sprite from all sprite lists."""
         while len(self.sprite_lists) > 0:
             self.sprite_lists[0].remove(self)
 
@@ -754,8 +751,11 @@ class BasicSprite:
         """
         Draw a sprite's hit-box. This is useful for debugging.
 
-        :param color: Color of box
-        :param line_thickness: How thick the box should be
+        Args:
+            color:
+                Color of box
+            line_thickness:
+                How thick the box should be
         """
         points: PointList = self.hit_box.get_adjusted_points()
         # NOTE: This is a COPY operation. We don't want to modify the points.
@@ -774,8 +774,10 @@ class BasicSprite:
         """
         Check if point is within the current sprite.
 
-        :param point: Point to check.
-        :return: True if the point is contained within the sprite's boundary.
+        Args:
+            point: Point to check.
+        Returns:
+            ``True`` if the point is contained within the sprite's boundary.
         """
         from arcade.geometry import is_point_in_polygon
 
@@ -785,8 +787,10 @@ class BasicSprite:
     def collides_with_sprite(self: SpriteType, other: SpriteType) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
 
-        :param other: the other sprite to check against.
-        :return: True or False, whether or not they are overlapping.
+        Args:
+            other: the other sprite to check against.
+        Returns:
+            ``True`` or ``False``, whether or not they are overlapping.
         """
         from arcade import check_for_collision
 
@@ -795,8 +799,10 @@ class BasicSprite:
     def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> list[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
-        :param sprite_list: SpriteList to check against
-        :return: List of all overlapping Sprites from the original SpriteList
+        Args:
+            sprite_list: SpriteList to check against
+        Returns:
+            List of all overlapping Sprites from the original SpriteList
         """
         from arcade import check_for_collision_with_list
 

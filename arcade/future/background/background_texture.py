@@ -124,7 +124,9 @@ class BackgroundTexture:
 
     def use(self, unit: int = 0) -> None:
         """Bind the texture to a channel,
-        :param unit: The texture unit to bind the texture.
+
+        Args:
+            unit: The texture unit to bind the texture.
         """
         self.texture.use(unit)
 

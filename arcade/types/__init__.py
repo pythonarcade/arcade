@@ -188,8 +188,9 @@ Instead, consider one of the following when possible:
 #:       ``size`` argument is how you can mark texture sizes, while
 #:       you can use ``Size2D[float]`` to denote float regions.
 #:
-#:       :param size: A made-up hypothetical argument.
-#:       :param color: Hypothetical texture-related argument.
+#        Args:
+#:           size: A made-up hypothetical argument.
+#:           color: Hypothetical texture-related argument.
 #:       """
 #:       ...  # No function definition
 #:

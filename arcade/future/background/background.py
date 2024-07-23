@@ -97,19 +97,19 @@ class Background:
         This will generate a Background from an input image source.
         The generated texture is not stored in the texture cache or any texture atlas.
 
-        :param tex_src: The image source.
-        :param pos: The position of the Background (Bottom Left Corner by default).
-        :param size: The width and height of the Background.
-        :param offset: The BackgroundTexture offset.
-        :param scale: The BackgroundTexture Scale.
-        :param angle: The BackgroundTexture angle.
-        :param filters: The OpenGl Texture filters (gl.Nearest by default).
-        :param color: This is a color defined from 0-255. Priorities color_norm
-        :param color_norm: This is a color defined from 0.0-1.0. Priorities color_norm
-                           assumed to be in the range 0.0-1.0.
-        :param shader: The shader used for rendering.
-        :param geometry: The geometry used for rendering (a rectangle equal to the size by default).
-        :return: The generated Background.
+        Args:
+            tex_src: The image source.
+            pos: The position of the Background (Bottom Left Corner by default).
+            size: The width and height of the Background.
+            offset: The BackgroundTexture offset.
+            scale: The BackgroundTexture Scale.
+            angle: The BackgroundTexture angle.
+            filters: The OpenGl Texture filters (gl.Nearest by default).
+            color: This is a color defined from 0-255. Priorities color_norm
+            color_norm: This is a color defined from 0.0-1.0. Priorities color_norm
+                            assumed to be in the range 0.0-1.0.
+            shader: The shader used for rendering.
+            geometry: The geometry used for rendering (a rectangle equal to the size by default).
         """
         background_texture = BackgroundTexture.from_file(tex_src, offset, scale, angle, filters)
         if size is None:

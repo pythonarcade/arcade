@@ -84,8 +84,9 @@ class ByteRangeError(IntOutsideRangeError):
     """
     An int was outside the range of 0 to 255 inclusive
 
-    :param var_name: the name of the variable or argument
-    :param value: the value to fall outside the expected range
+    Args:
+        var_name: the name of the variable or argument
+        value: the value to fall outside the expected range
     """
 
     def __init__(self, var_name: str, value: int) -> None:
@@ -103,8 +104,9 @@ class NormalizedRangeError(FloatOutsideRangeError):
     especially when it is cheaper to bound check two floats than call
     clamping functions.
 
-    :param var_name: the name of the variable or argument
-    :param value: the value to fall outside the expected range
+    Args:
+        var_name: the name of the variable or argument
+        value: the value to fall outside the expected range
     """
 
     def __init__(self, var_name: str, value: float) -> None:

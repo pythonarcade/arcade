@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import hashlib
-import logging
 from pathlib import Path
 from typing import Any
 
@@ -28,8 +27,6 @@ from arcade.types import RGBA255, Point2List
 # from arcade.types.rect import Rect
 
 __all__ = ["ImageData", "Texture"]
-
-LOG = logging.getLogger(__name__)
 
 
 class ImageData:
