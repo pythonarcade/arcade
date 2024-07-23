@@ -17,15 +17,6 @@ class SpatialHash(Generic[SpriteType]):
     same as removing and adding it. Although moving a few can be okay, it
     can quickly add up and slow down a game.
 
-    .. _classic gamedev.net article: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/  # noqa
-    .. _redblob_hashing: https://www.redblobgames.com/x/1730-spatial-hash/
-
-    To learn more about spatial hashing, please see the following:
-
-    * A `RedBlob Games interactive demo <redblobl_hashing>`_ (see top panel)
-    * Arcade's tips on :ref:`collision_detection_performance`
-    * For an in-depth look, see this `classic gamedev.net article`_
-
     Args:
         cell_size:
             The width and height of each square in the grid.
