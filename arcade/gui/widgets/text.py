@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Optional
+from typing_extensions import override
 
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
@@ -39,35 +40,37 @@ class UILabel(UIWidget):
     If the text changes frequently, ensure to set a background color or texture, which will
     prevent a full rendering of the whole UI and only render the label itself.
 
-    :param text: Text displayed on the label.
-    :param x: x position (default anchor is bottom-left).
-    :param y: y position (default anchor is bottom-left).
-    :param width: Width of the label. Defaults to text width if not
-                        specified. See
-                        :py:meth:`~pyglet.text.layout.TextLayout.content_width`.
-    :param height: Height of the label. Defaults to text height if not
-                         specified. See
-                         :py:meth:`~pyglet.text.layout.TextLayout.content_height`.
-    :param font_name: A list of fonts to use. Arcade will start at the beginning
-                      of the tuple and keep trying to load fonts until success.
-    :param font_size: Font size of font.
-    :param text_color: Color of the text.
-    :param bold: If enabled, the label's text will be in a **bold** style.
-    :param italic: If enabled, the label's text will be in an *italic*
-                        style.
-    :param stretch: Stretch font style.
-    :param align: Horizontal alignment of text on a line. This only applies
-                      if a width is supplied. Valid options include ``"left"``,
-                      ``"center"`` or ``"right"``.
-    :param dpi: Resolution of the fonts in the layout. Defaults to 96.
-    :param multiline: If enabled, a ``\\n`` will start a new line. Changing text or
-        font will require a manual call of :py:meth:`~arcade.gui.UILabel.fit_content`
-        to prevent text line wrap.
-    :param size_hint: A tuple of floats between 0 and 1 defining the amount of
-        space of the parent should be requested. Default (0, 0) which fits the content.
-    :param size_hint_max: Maximum size hint width and height in pixel.
-    :param style: Not used. Labels will have no need for a style; they are too
-                  simple (just a text display).
+    Args:
+        text: Text displayed on the label.
+        x: x position (default anchor is bottom-left).
+        y: y position (default anchor is bottom-left).
+        width: Width of the label. Defaults to text width if not
+            specified. See
+            :py:meth:`~pyglet.text.layout.TextLayout.content_width`.
+        height: Height of the label. Defaults to text height if not
+            specified. See
+            :py:meth:`~pyglet.text.layout.TextLayout.content_height`.
+        font_name: A list of fonts to use. Arcade will start at the
+            beginning of the tuple and keep trying to load fonts until
+            success.
+        font_size: Font size of font.
+        text_color: Color of the text.
+        bold: If enabled, the label's text will be in a **bold** style.
+        italic: If enabled, the label's text will be in an *italic*
+            style.
+        stretch: Stretch font style.
+        align: Horizontal alignment of text on a line. This only applies
+            if a width is supplied. Valid options include ``"left"``,
+            ``"center"`` or ``"right"``.
+        dpi: Resolution of the fonts in the layout. Defaults to 96.
+        multiline: If enabled, a ``\\n`` will start a new line. Changing
+            text or font will require a manual call of
+            :py:meth:`~arcade.gui.UILabel.fit_content` to prevent text
+            line wrap.
+        size_hint: A tuple of floats between 0 and 1 defining the amount
+            of space of the parent should be requested. Default (0, 0)
+            which fits the content.
+        size_hint_max: Maximum size hint width and height in pixel.
     """
 
     ADAPTIVE_MULTILINE_WIDTH = 999999
@@ -149,8 +152,7 @@ class UILabel(UIWidget):
         self._update_size_hint_min()
 
     def fit_content(self):
-        """
-        Manually set the width and height of the label to contain the whole text.
+        """Manually set the width and height of the label to contain the whole text.
         Based on the size_hint_min.
 
         If multiline is enabled, the width will be calculated based on longest line of the text.
@@ -174,8 +176,7 @@ class UILabel(UIWidget):
 
     @text.setter
     def text(self, value):
-        """
-        Update text of the label.
+        """Update text of the label.
 
         This triggers a full render to ensure that previous text is cleared out.
         """
@@ -190,8 +191,7 @@ class UILabel(UIWidget):
                 self.trigger_full_render()
 
     def _update_label(self):
-        """
-        Update the position and size of the label.
+        """Update the position and size of the label.
 
         So it fits into the content area of the widget.
         Should always be called after the content area changed.
@@ -206,6 +206,7 @@ class UILabel(UIWidget):
             label.height = int(self.content_height)
 
     def _update_size_hint_min(self):
+        """Update the minimum size hint based on the label content size."""
         min_width = self._label.content_width + 1  # +1 required to prevent line wrap
         min_width += self._padding_left + self._padding_right + 2 * self._border_width
 
@@ -220,8 +221,14 @@ class UILabel(UIWidget):
         font_size: Optional[float] = None,
         font_color: Optional[Color] = None,
     ):
-        """
-        Update font of the label.
+        """Update font of the label.
+
+        Args:
+            font_name: A list of fonts to use. Arcade will start at the
+                beginning of the tuple and keep trying to load fonts until
+                success.
+            font_size: Font size of font.
+            font_color: Color of the text.
         """
         font_name = font_name or self._label.font_name
         font_size = font_size or self._label.font_size
@@ -250,6 +257,7 @@ class UILabel(UIWidget):
         return self._label.multiline
 
     def do_render(self, surface: Surface):
+        """Render the label via py:class:`~arcade.Text`."""
         self.prepare_render(surface)
 
         # pyglet rendering automatically applied by arcade.Text
@@ -257,13 +265,24 @@ class UILabel(UIWidget):
 
 
 class UITextWidget(UIAnchorLayout):
-    """
-    Adds the ability to add text to a widget.
+    """Adds the ability to add text to a widget.
     Use this to create subclass widgets, which have text.
 
     The text can be placed within the widget using
     :py:class:`~arcade.gui.UIAnchorLayout` parameters with
     :py:meth:`~arcade.gui.UITextWidget.place_text`.
+
+    The widget holds reference to one primary :py:class:`~arcade.gui.UILabel`, which is placed in
+    the widget's layout. This label can be accessed
+    via :py:attr:`~arcade.gui.UITextWidget.ui_label`.
+
+    To change font, font size, or text color, use py:meth:`~arcade.gui.UILabel.update_font`.
+
+    Args:
+        text: Text displayed on the label.
+        multiline: If enabled, a ``\\n`` will start a new line.
+        **kwargs: passed to :py:class:`~arcade.gui.UIWidget`.
+
     """
 
     def __init__(self, *, text: str, multiline: bool = False, **kwargs):
@@ -280,13 +299,21 @@ class UITextWidget(UIAnchorLayout):
         anchor_y: Optional[str] = None,
         align_y: float = 0,
         **kwargs,
-    ):
-        """
-        Place widget's text within the widget using
+    ) -> UILabel:
+        """Place widget's text within the widget using
         :py:class:`~arcade.gui.UIAnchorLayout` parameters.
+
+        Args:
+            anchor_x: Horizontal anchor. Valid options are ``left``,
+                ``right``, and ``center``.
+            align_x: Offset or padding for the horizontal anchor.
+            anchor_y: Vertical anchor. Valid options are ``top``,
+                ``center``, and ``bottom``.
+            align_y: Offset or padding for the vertical anchor.
+        **kwargs: Additional keyword arguments passed to the layout function.
         """
         self.remove(self._label)
-        self.add(
+        return self.add(
             child=self._label,
             anchor_x=anchor_x,
             align_x=align_x,
@@ -297,8 +324,7 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def text(self):
-        """
-        Text of the widget. Modifying this repeatedly will cause significant
+        """Text of the widget. Modifying this repeatedly will cause significant
         lag; calculating glyph position is very expensive.
         """
         return self.ui_label.text
@@ -310,8 +336,7 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def multiline(self):
-        """
-        Get or set the multiline mode.
+        """Get or set the multiline mode.
 
         Newline characters (``"\\n"``) will only be honored when this is set to ``True``.
         If you want a scrollable text widget, please use :py:class:`~arcade.gui.UITextArea`
@@ -321,15 +346,14 @@ class UITextWidget(UIAnchorLayout):
 
     @property
     def ui_label(self) -> UILabel:
-        """
-        Internal py:class:`~arcade.gui.UILabel` used for rendering the text.
-        """
+        """Internal py:class:`~arcade.gui.UILabel` used for rendering the text."""
         return self._label
 
 
 class UIInputText(UIWidget):
-    """
-    An input field the user can type text into. This is useful in returning
+    """An input field the user can type text into.
+
+    This is useful in returning
     string input from the user. A caret is displayed, which the user can move
     around with a mouse or keyboard.
 
@@ -337,28 +361,30 @@ class UIInputText(UIWidget):
     around the caret. Arcade confirms that the field is active before allowing
     users to type, so it is okay to have multiple of these.
 
-    :param x: x position (default anchor is bottom-left).
-    :param y: y position (default anchor is bottom-left).
-    :param width: Width of the text field.
-    :param height: Height of the text field.
-    :param text: Initial text displayed. This can be modified later
-                 programmatically or by the user's interaction with the caret.
-    :param font_name: A list of fonts to use. Arcade will start at the beginning
-                      of the tuple and keep trying to load fonts until success.
-    :param font_size: Font size of font.
-    :param text_color: Color of the text.
-    :param multiline: If enabled, a ``\\n`` will start a new line. A
-                      :py:class:`~arcade.gui.UITextWidget`  ``multiline`` of
-                      True is the same thing as
-                      a :py:class:`~arcade.gui.UITextArea`.
-    :param caret_color: An RGBA or RGB color for the caret with each
-        channel between 0 and 255, inclusive.
-    :param size_hint: A tuple of floats between 0 and 1 defining the amount of
-                      space of the parent should be requested.
-    :param size_hint_min: Minimum size hint width and height in pixel.
-    :param size_hint_max: Maximum size hint width and height in pixel.
-    :param style: Style has not been implemented for this widget, however it
-                  will be added in the near future.
+    Args:
+        x: x position (default anchor is bottom-left).
+        y: y position (default anchor is bottom-left).
+        width: Width of the text field.
+        height: Height of the text field.
+        text: Initial text displayed. This can be modified later
+            programmatically or by the user's interaction with the
+            caret.
+        font_name: A list of fonts to use. Arcade will start at the
+            beginning of the tuple and keep trying to load fonts until
+            success.
+        font_size: Font size of font.
+        text_color: Color of the text.
+        multiline: If enabled, a ``\\n`` will start a new line. A
+            :py:class:`~arcade.gui.UITextWidget`  ``multiline`` of True
+            is the same thing as a :py:class:`~arcade.gui.UITextArea`.
+        caret_color: An RGBA or RGB color for the caret with each
+            channel between 0 and 255, inclusive.
+        size_hint: A tuple of floats between 0 and 1 defining the amount
+            of space of the parent should be requested.
+        size_hint_min: Minimum size hint width and height in pixel.
+        size_hint_max: Maximum size hint width and height in pixel.
+        **kwargs: passed to :py:class:`~arcade.gui.UIWidget`.
+
     """
 
     # Move layout one pixel into the scissor box so the caret is also shown at
@@ -395,7 +421,7 @@ class UIInputText(UIWidget):
         )
 
         self._active = False
-        self._text_color = text_color if len(text_color) == 4 else (*text_color, 255)
+        self._text_color = Color.from_iterable(text_color)
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
         self.doc.set_style(
@@ -422,6 +448,7 @@ class UIInputText(UIWidget):
         """Check whether or not the caret is currently blinking or not."""
         return self.caret.visible and self._active and self.caret._blink_visible
 
+    @override
     def on_update(self, dt):
         # Only trigger render if blinking state changed
         current_state = self._get_caret_blink_state()
@@ -429,6 +456,7 @@ class UIInputText(UIWidget):
             self._blink_state = current_state
             self.trigger_full_render()
 
+    @override
     def on_event(self, event: UIEvent) -> Optional[bool]:
         # If not active, check to activate, return
         if not self._active and isinstance(event, UIMousePressEvent):
@@ -510,6 +538,7 @@ class UIInputText(UIWidget):
 
     @property
     def text(self):
+        """Text of the input field."""
         return self.doc.text
 
     @text.setter
@@ -517,6 +546,7 @@ class UIInputText(UIWidget):
         self.doc.text = value
         self.trigger_full_render()
 
+    @override
     def do_render(self, surface: Surface):
         self._update_layout()
         self.prepare_render(surface)
@@ -525,27 +555,26 @@ class UIInputText(UIWidget):
 
 
 class UITextArea(UIWidget):
-    """
-    A text area that allows users to view large documents of text by scrolling
+    """A text area that allows users to view large documents of text by scrolling
     the mouse.
 
-    :param x: x position (default anchor is bottom-left).
-    :param y: y position (default anchor is bottom-left).
-    :param width: Width of the text area.
-    :param height: Height of the text area.
-    :param text: Initial text displayed.
-    :param font_name: A list of fonts to use. Arcade will start at the beginning
-                      of the tuple and keep trying to load fonts until success.
-    :param font_size: Font size of font.
-    :param text_color: Color of the text.
-    :param multiline: If enabled, a ``\\n`` will start a new line.
-    :param scroll_speed: Speed of mouse scrolling.
-    :param size_hint: A tuple of floats between 0 and 1 defining the amount of
-                      space of the parent should be requested.
-    :param size_hint_min: Minimum size hint width and height in pixel.
-    :param size_hint_max: Maximum size hint width and height in pixel.
-    :param style: Style has not been implemented for this widget, however it
-                  will be added in the near future.
+    Args:
+        x: x position (default anchor is bottom-left).
+        y: y position (default anchor is bottom-left).
+        width: Width of the text area.
+        height: Height of the text area.
+        text: Initial text displayed.
+        font_name: A list of fonts to use. Arcade will start at the
+            beginning of the tuple and keep trying to load fonts until
+            success.
+        font_size: Font size of font.
+        text_color: Color of the text.
+        multiline: If enabled, a ``\\n`` will start a new line.
+        scroll_speed: Speed of mouse scrolling.
+        size_hint: A tuple of floats between 0 and 1 defining the amount
+            of space of the parent should be requested.
+        size_hint_min: Minimum size hint width and height in pixel.
+        size_hint_max: Maximum size hint width and height in pixel.
     """
 
     def __init__(
@@ -602,9 +631,7 @@ class UITextArea(UIWidget):
         # bind(self, "rect", self._update_layout)
 
     def fit_content(self):
-        """
-        Set the width and height of the text area to contain the whole text.
-        """
+        """Set the width and height of the text area to contain the whole text."""
         self.rect = LBWH(
             self.left,
             self.bottom,
@@ -614,6 +641,7 @@ class UITextArea(UIWidget):
 
     @property
     def text(self):
+        """Text of the text area."""
         return self.doc.text
 
     @text.setter
@@ -634,11 +662,13 @@ class UITextArea(UIWidget):
             layout.height = content_height
             layout.end_update()
 
+    @override
     def do_render(self, surface: Surface):
         self._update_layout()
         self.prepare_render(surface)
         self.layout.draw()
 
+    @override
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.point_in_rect(event.pos):

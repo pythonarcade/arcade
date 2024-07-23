@@ -1,5 +1,4 @@
-"""
-Create custom scalable UI themes with NinePatchTexture
+"""Create custom scalable UI themes with NinePatchTexture
 
 Nine-patch textures are a technique for scalable custom borders and
 frames for UI elements. Widgets which support a background texture can

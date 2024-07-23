@@ -1,5 +1,4 @@
-"""
-Positioning UI elements with UIAnchorLayout
+"""Positioning UI elements with UIAnchorLayout
 
 UIAnchorLayout aligns widgets added to it to directional anchors, which
 include  "left", "center_x", or "top". Dummy widgets react to click events

@@ -1,5 +1,4 @@
-"""
-Create a slider using textures.
+"""Create a slider using textures.
 
 The initial theme is a 90s sci-fi style, but you can replace the textures
 in this example to match the theme of your project.

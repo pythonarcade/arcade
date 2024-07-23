@@ -1,5 +1,4 @@
-"""
-Customizing buttons with text & textures.
+"""Customizing buttons with text & textures.
 
 This example showcases arcade's range of different built-in button types
 and how they can be used to customize a UI. A UIGridLayout is used to

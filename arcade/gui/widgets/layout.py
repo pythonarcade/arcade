@@ -11,8 +11,7 @@ W = TypeVar("W", bound="UIWidget")
 
 
 class UIAnchorLayout(UILayout):
-    """
-    Places children based on anchor values.
+    """Places children based on anchor values.
 
     Defaults to ``size_hint = (1, 1)``.
 
@@ -44,6 +43,17 @@ class UIAnchorLayout(UILayout):
     - ``align_y``: ``float`` = 0
 
       Vertical alignement for the layout.
+
+    Args:
+        x: ``x`` coordinate of the bottom left corner.
+        y: ``y`` coordinate of the bottom left corner.
+        width: Width of the layout.
+        height: Height of the layout.
+        children: Initial list of children. More can be added later.
+        size_hint: Size hint for :py:class:`~arcade.gui.UILayout`
+        size_hint_min: Minimum width and height in pixels.
+        size_hint_max: Maximum width and height in pixels.
+        **kwargs: Additional keyword arguments passed to UILayout.
     """
 
     default_anchor_x = "center"
@@ -88,23 +98,24 @@ class UIAnchorLayout(UILayout):
         align_y: float = 0,
         **kwargs,
     ) -> W:
-        """
-        Add a widget to the layout as a child. Added widgets will receive
+        """Add a widget to the layout as a child. Added widgets will receive
         all user-interface events and be rendered.
 
         By default, the latest added widget will receive events first and will
         be rendered on top of others. The widgets will be automatically placed
         within this widget.
 
-        :param child: Specified child widget to add.
-        :param anchor_x: Horizontal anchor. Valid options are ``left``,
-                         ``right``, and ``center``.
-        :param align_x: Offset or padding for the horizontal anchor.
-        :param anchor_y: Vertical anchor. Valid options are ``top``,
-                         ``center``, and ``bottom``.
-        :param align_y: Offset or padding for the vertical anchor.
+        Args:
+            child: Specified child widget to add.
+            anchor_x: Horizontal anchor. Valid options are ``left``,
+                ``right``, and ``center``.
+            align_x: Offset or padding for the horizontal anchor.
+            anchor_y: Vertical anchor. Valid options are ``top``,
+                ``center``, and ``bottom``.
+            align_y: Offset or padding for the vertical anchor.
 
-        :return: Given child that was just added to the layout.
+        Returns:
+            Given child that was just added to the layout.
         """
         return super().add(
             child=child,
@@ -171,8 +182,7 @@ class UIAnchorLayout(UILayout):
 
 
 class UIBoxLayout(UILayout):
-    """
-    Place widgets next to each other. Depending on the
+    """Place widgets next to each other. Depending on the
     :py:class:`~arcade.gui.UIBoxLayout.vertical` attribute, the widgets are
     placed top to bottom or left to right.
 
@@ -196,18 +206,19 @@ class UIBoxLayout(UILayout):
     children) will be distributed to the child widgets based on their
     ``size_hint``.
 
-    :param x: ``x`` coordinate of the bottom left corner.
-    :param y: ``y`` coordinate of the bottom left corner.
-    :param vertical: Layout children vertical (True) or horizontal (False).
-    :param align: Align children in orthogonal direction::
-                  - ``x``: ``left``, ``center``, and ``right``
-                  - ``y``: ``top``, ``center``, and ``bottom``
-    :param children: Initial list of children. More can be added later.
-    :param size_hint: Size hint for the :py:class:`~arcade.gui.UILayout` if
-                      the widget would like to grow. Defaults to ``0, 0`` ->
-                      minimal size to contain children.
-    :param size_hint_max: Maximum width and height in pixels.
-    :param space_between: Space in pixels between the children.
+    Args:
+        x: ``x`` coordinate of the bottom left corner.
+        y: ``y`` coordinate of the bottom left corner.
+        vertical: Layout children vertical (True) or horizontal (False).
+        align: Align children in orthogonal direction:: - ``x``:
+            ``left``, ``center``, and ``right`` - ``y``: ``top``,
+            ``center``, and ``bottom``
+        children: Initial list of children. More can be added later.
+        size_hint: Size hint for the :py:class:`~arcade.gui.UILayout` if
+            the widget would like to grow. Defaults to ``0, 0`` ->
+            minimal size to contain children.
+        size_hint_max: Maximum width and height in pixels.
+        space_between: Space in pixels between the children.
     """
 
     def __init__(
@@ -300,9 +311,7 @@ class UIBoxLayout(UILayout):
         self.size_hint_min = base_width + width, base_height + height
 
     def fit_content(self):
-        """
-        Resize the layout to fit the content. This will take the minimal required size into account.
-        """
+        """Resize the layout to fit the content. This will take the minimal required size into account."""
         self._update_size_hints()
         self.rect = self.rect.resize(self.size_hint_min[0], self.size_hint_min[1])
 
@@ -450,8 +459,7 @@ class UIBoxLayout(UILayout):
 
 
 class UIGridLayout(UILayout):
-    """
-    Place widgets in a grid layout. This is similar to tkinter's ``grid``
+    """Place widgets in a grid layout. This is similar to tkinter's ``grid``
     layout geometry manager.
 
     Defaults to ``size_hint = (0, 0)``.
@@ -463,24 +471,23 @@ class UIGridLayout(UILayout):
     ``size_hint``s only take effect if a ``size_hint`` is given. ``size_hint_min`` is automatically
     updated based on the minimal required space by children.
 
-    :param x: ``x`` coordinate of bottom left corner.
-    :param y: ``y`` coordinate of bottom left corner.
-    :param align_horizontal: Align children in orthogonal direction.
-                                 Options include ``left``, ``center``, and
-                                 ``right``.
-    :param align_vertical: Align children in orthogonal direction. Options
-                               include ``top``, ``center``, and ``bottom``.
-    :param children: Initial list of children. More can be
-                                        added later.
-    :param size_hint: A size hint for :py:class:`~arcade.gui.UILayout`, if the
-                      :py:class:`~arcade.gui.UIWidget` would like to grow.
-    :param size_hint_max: Maximum width and height in pixels.
-    :param horizontal_spacing: Space between columns.
-    :param vertical_spacing: Space between rows.
-    :param column_count: Number of columns in the grid. This can be changed
-                             later.
-    :param row_count: Number of rows in the grid. This can be changed
-                          later.
+    Args:
+        x: ``x`` coordinate of bottom left corner.
+        y: ``y`` coordinate of bottom left corner.
+        align_horizontal: Align children in orthogonal direction.
+            Options include ``left``, ``center``, and ``right``.
+        align_vertical: Align children in orthogonal direction. Options
+            include ``top``, ``center``, and ``bottom``.
+        children: Initial list of children. More can be added later.
+        size_hint: A size hint for :py:class:`~arcade.gui.UILayout`, if
+            the :py:class:`~arcade.gui.UIWidget` would like to grow.
+        size_hint_max: Maximum width and height in pixels.
+        horizontal_spacing: Space between columns.
+        vertical_spacing: Space between rows.
+        column_count: Number of columns in the grid. This can be changed
+            later.
+        row_count: Number of rows in the grid. This can be changed
+            later.
     """
 
     def __init__(
@@ -541,16 +548,16 @@ class UIGridLayout(UILayout):
         row_span: int = 1,
         **kwargs,
     ) -> W:
-        """
-        Add a widget to the grid layout.
+        """Add a widget to the grid layout.
 
-        :param child: Specified widget to add as a child of the layout.
-        :param col_num: Column index in which the widget is to be added.
-            The first column at the left of the widget starts at 0.
-        :param row_num: The row number in which the widget is to be added.
-            The first row at the top of the layout is numbered 0.
-        :param col_span: Number of columns the widget will stretch for.
-        :param row_span: Number of rows the widget will stretch for.
+        Args:
+            child: Specified widget to add as a child of the layout.
+            col_num: Column index in which the widget is to be added.
+                The first column at the left of the widget starts at 0.
+            row_num: The row number in which the widget is to be added.
+                The first row at the top of the layout is numbered 0.
+            col_span: Number of columns the widget will stretch for.
+            row_span: Number of rows the widget will stretch for.
         """
         # subscribe to child's changes, which might affect the own size hint
         bind(child, "_children", self._trigger_size_hint_update)
@@ -702,9 +709,11 @@ class UIGridLayout(UILayout):
         )
 
         def ratio(dimensions: list) -> list:
-            """
-            Used to calculate ratio of the elements based on the minimum value in the parameter.
-            :param dimension: List containing max height or width of the cells.
+            """Used to calculate ratio of the elements based on the minimum value in the parameter.
+
+            Args:
+                dimension: List containing max height or width of the
+                    cells.
             """
             ratio_value = sum(dimensions) or 1
             return [dimension / ratio_value for dimension in dimensions]

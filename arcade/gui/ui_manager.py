@@ -1,5 +1,4 @@
-"""
-The better gui for arcade
+"""The better gui for arcade
 
 - Improved events, now fully typed
 - UIElements are now called Widgets (like everywhere else)
@@ -18,6 +17,7 @@ from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
 
 import arcade
+from arcade.gui import UIEvent
 from arcade.gui.events import (
     UIKeyPressEvent,
     UIKeyReleaseEvent,
@@ -82,6 +82,8 @@ class UIManager(EventDispatcher):
 
                 manager.draw() # draws the UI on screen
 
+    Args:
+        window: The window to bind the UIManager to, if None the current window is used.
     """
 
     _enabled = False
@@ -102,21 +104,22 @@ class UIManager(EventDispatcher):
         self.register_event_type("on_event")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
-        """
-        Add a widget to the :class:`UIManager`.
+        """Add a widget to the :class:`UIManager`.
+
         Added widgets will receive ui events and be rendered.
 
-        By default the latest added widget will receive ui events first and will
+        By default, the latest added widget will receive ui events first and will
         be rendered on top of others.
 
         The UIManager supports layered setups, widgets added to a higher layer are
         drawn above lower layers and receive events first.
         The layer 10 is reserved for overlaying components like dropdowns or tooltips.
 
-        :param widget: widget to add
-        :param index: position a widget is added, None has the highest priority
-        :param layer: layer which the widget should be added to, higher layer are above
-        :return: the widget
+        Args:
+            widget: widget to add
+            index: position a widget is added, None has the highest priority
+            layer: layer which the widget should be added to, higher layer are above
+
         """
         if index is None:
             self.children[layer].append(widget)
@@ -127,10 +130,10 @@ class UIManager(EventDispatcher):
         return widget
 
     def remove(self, child: UIWidget):
-        """
-        Removes the given widget from UIManager.
+        """Removes the given widget from UIManager.
 
-        :param child: widget to remove
+        Args:
+            child: widget to remove
         """
         for children in self.children.values():
             if child in children:
@@ -139,11 +142,11 @@ class UIManager(EventDispatcher):
                 self.trigger_render()
 
     def walk_widgets(self, *, root: Optional[UIWidget] = None, layer=0) -> Iterable[UIWidget]:
-        """
-        walks through widget tree, in reverse draw order (most top drawn widget first)
+        """Walks through widget tree, in reverse draw order (most top drawn widget first)
 
-        :param root: root widget to start from, if None, the layer is used
-        :param layer: layer to search, None will search through all layers
+        Args:
+            root: root widget to start from, if None, the layer is used
+            layer: layer to search, None will search through all layers
         """
         if layer is None:
             layers = sorted(self.children.keys(), reverse=True)
@@ -157,22 +160,21 @@ class UIManager(EventDispatcher):
                 yield child
 
     def clear(self):
-        """
-        Remove all widgets from UIManager
-        """
+        """Remove all widgets from UIManager"""
         for layer in self.children.values():
             for widget in layer[:]:
                 self.remove(widget)
 
     def get_widgets_at(self, pos: Point2, cls: type[W] = UIWidget, layer=0) -> Iterable[W]:
-        """
-        Yields all widgets containing a position, returns first top laying widgets
+        """Yields all widgets containing a position, returns first top laying widgets
         which is instance of cls.
 
-        :param pos: Pos within the widget bounds
-        :param cls: class which the widget should be an instance of
-        :param layer: layer to search, None will search through all layers
-        :return: iterator of widgets of given type at position
+        Args:
+            pos: Pos within the widget bounds
+            cls: class which the widget should be an instance of
+            layer: layer to search, None will search through all layers
+
+        Returns: iterator of widgets of given type at position
         """
 
         def check_type(widget) -> TypeGuard[W]:
@@ -195,14 +197,11 @@ class UIManager(EventDispatcher):
         return self._surfaces[layer]
 
     def trigger_render(self):
-        """
-        Request rendering of all widgets before next draw
-        """
+        """Request rendering of all widgets before next draw"""
         self._requires_render = True
 
     def execute_layout(self):
-        """
-        Execute layout process for all widgets.
+        """Execute layout process for all widgets.
 
         This is automatically called during :py:meth:`UIManager.draw()`.
         """
@@ -261,8 +260,7 @@ class UIManager(EventDispatcher):
         self._requires_render = False
 
     def enable(self) -> None:
-        """
-        Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
+        """Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
 
         on_draw is not registered, to provide full control about draw order,
         so it has to be called by the devs themselves.
@@ -287,8 +285,7 @@ class UIManager(EventDispatcher):
             )
 
     def disable(self) -> None:
-        """
-        Remove handler functions (`on_...`) from :py:attr:`arcade.Window`
+        """Remove handler functions (`on_...`) from :py:attr:`arcade.Window`
 
         If every :py:class:`arcade.View` uses its own :py:class:`arcade.gui.UIManager`,
         this method should be called in :py:meth:`arcade.View.on_hide_view()`.
@@ -314,8 +311,7 @@ class UIManager(EventDispatcher):
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self) -> None:
-        """
-        Will draw all widgets to the window.
+        """Will draw all widgets to the window.
 
         UIManager caches all rendered widgets into a framebuffer (something like a
         window sized image) and only updates the framebuffer if a widget requests
@@ -345,8 +341,7 @@ class UIManager(EventDispatcher):
                     self._get_surface(layer).draw()
 
     def adjust_mouse_coordinates(self, x: float, y: float) -> tuple[float, float]:
-        """
-        This method is used, to translate mouse coordinates to coordinates
+        """This method is used, to translate mouse coordinates to coordinates
         respecting the viewport and projection of cameras.
 
         It uses the internal camera's map_coordinate methods, and should work with
@@ -356,6 +351,7 @@ class UIManager(EventDispatcher):
         return x_, y_
 
     def on_event(self, event) -> Union[bool, None]:
+        """Forwards an event to all widgets in the UIManager."""
         layers = sorted(self.children.keys(), reverse=True)
         for layer in layers:
             for child in reversed(self.children[layer]):
@@ -364,7 +360,13 @@ class UIManager(EventDispatcher):
                     return EVENT_HANDLED
         return EVENT_UNHANDLED
 
-    def dispatch_ui_event(self, event):
+    def dispatch_ui_event(self, event: UIEvent):
+        """Dispatch a UI event to all widgets in the UIManager,
+        by triggering py:meth:`on_event()`.
+
+        Args:
+            event: The event to dispatch.
+        """
         return self.dispatch_event("on_event", event)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):

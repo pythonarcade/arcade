@@ -1,5 +1,4 @@
-"""
-Arrange elements in line with grid tiles with UIGridLayout
+"""Arrange elements in line with grid tiles with UIGridLayout
 
 UIGridLayout allows you to place elements to cover one or more
 cells of a grid. To assign an element more than one grid square,

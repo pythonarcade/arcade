@@ -1,5 +1,4 @@
-"""
-Creating a hidden password field
+"""Creating a hidden password field
 
 This example demonstrates how to create a custom text input
 which hides the contents behind a custom character, as often

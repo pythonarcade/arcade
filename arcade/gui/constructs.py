@@ -1,6 +1,4 @@
-"""
-Constructs, are prepared widget combinations, you can use for common use-cases
-"""
+"""Constructs, are prepared widget combinations, you can use for common use-cases"""
 
 from __future__ import annotations
 
@@ -16,8 +14,7 @@ from arcade.gui.widgets.text import UITextArea
 
 
 class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
-    """
-    A simple dialog box that pops up a message with buttons to close.
+    """A simple dialog box that pops up a message with buttons to close.
     Subclass this class or overwrite the 'on_action' event handler with
 
     .. code-block:: python
@@ -27,11 +24,12 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         def on_action(event: UIOnActionEvent):
             pass
 
+    Args:
+      width: Width of the message box
+      height: Height of the message box
+      message_text: Text to show as message to the user
+      buttons: List of strings, which are shown as buttons
 
-    :param width: Width of the message box
-    :param height: Height of the message box
-    :param message_text: Text to show as message to the user
-    :param buttons: List of strings, which are shown as buttons
     """
 
     def __init__(
@@ -100,19 +98,20 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
 
 
 class UIButtonRow(UIBoxLayout):
-    """
-    Places buttons in a row.
+    """Places buttons in a row.
 
-    :param vertical: Whether the button row is vertical or not.
-    :param align: Where to align the button row.
-    :param size_hint: Tuple of floats (0.0 - 1.0) of how much space of the parent
-        should be requested.
-    :param size_hint_min: Min width and height in pixel.
-    :param size_hint_max: Max width and height in pixel.
-    :param space_between: The space between the children.
-    :param style: Not used.
-    :param Tuple[str, ...] button_labels: The labels for the buttons.
-    :param callback: The callback function which will receive the text of the clicked button.
+    Args:
+        vertical: Whether the button row is vertical or not.
+        align: Where to align the button row.
+        size_hint: Tuple of floats (0.0 - 1.0) of how much space of the
+            parent should be requested.
+        size_hint_min: Min width and height in pixel.
+        size_hint_max: Max width and height in pixel.
+        space_between: The space between the children.
+        callback: The callback function which will receive the text of
+            the clicked button.
+        button_factory: The factory to create the buttons. Default is py:class:`UIFlatButton`.
+        **kwargs: Passed to UIBoxLayout
     """
 
     def __init__(
@@ -124,8 +123,8 @@ class UIButtonRow(UIBoxLayout):
         size_hint_min: Optional[Any] = None,
         size_hint_max: Optional[Any] = None,
         space_between: int = 10,
-        style: Optional[Any] = None,
         button_factory: type = UIFlatButton,
+        **kwargs,
     ):
         super().__init__(
             vertical=vertical,
@@ -134,7 +133,7 @@ class UIButtonRow(UIBoxLayout):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             space_between=space_between,
-            style=style,
+            **kwargs,
         )
         self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
 
@@ -147,6 +146,13 @@ class UIButtonRow(UIBoxLayout):
         style=None,
         multiline=False,
     ):
+        """Add a button to the row.
+
+        Args:
+            label: The text of the button.
+            style: The style of the button.
+            multiline: Whether the button is multiline or not.
+        """
         button = self.button_factory(text=label, style=style, multiline=multiline)
         button.on_click = self._on_click  # type: ignore
         self.add(button)

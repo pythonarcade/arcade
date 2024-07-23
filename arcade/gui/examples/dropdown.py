@@ -1,5 +1,4 @@
-"""
-Creating a dropdown menu with UIDropDown
+"""Creating a dropdown menu with UIDropDown
 
 When an option in the UIDropDown is chosen, this example will respond
 by changing the text displayed on screen to reflect it.
