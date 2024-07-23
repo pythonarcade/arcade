@@ -40,8 +40,11 @@ from arcade.types import RGBA255, Color
 class DepthOfField:
     """A depth-of-field effect we can use as a render context manager.
 
-    :param size: The size of the buffers.
-    :param clear_color: The color which will be used as the background.
+    Args:
+        size:
+            The size of the buffers.
+        clear_color:
+            The color which will be used as the background.
     """
 
     def __init__(
@@ -171,10 +174,14 @@ class DepthOfField:
 class App(Window):
     """Window subclass to hold sprites and rendering helpers.
 
-    :param text_color: The color of the focus indicator.
-    :param focus_range: The range the focus value will oscillate between.
-    :param focus_change_speed: How fast the focus bounces back and forth
-        between the ``-focus_range`` and ``focus_range``.
+    Args:
+        text_color:
+            The color of the focus indicator.
+        focus_range:
+            The range the focus value will oscillate between.
+        focus_change_speed:
+            How fast the focus bounces back and forth
+            between the ``-focus_range`` and ``focus_range``.
     """
 
     def __init__(

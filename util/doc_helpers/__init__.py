@@ -51,9 +51,12 @@ _VALID_MODULE_SEGMENT = re.compile(r"[_a-zA-Z][_a-z0-9]*")
 def get_module_path(module: str, root = SharedPaths.REPO_ROOT) -> Path:
     """Quick-n-dirty module path estimation relative to the repo root.
 
-    :param module: A module path in the project.
-    :raises ValueError: When a can't be computed.
-    :return: An absolute file path to the module
+    Args:
+        module: A module path in the project.
+    Raises:
+        ValueError: When a can't be computed.
+    Returns:
+        An absolute file path to the module
     """
     # Convert module.name.here to module/name/here
     current = root
@@ -153,9 +156,11 @@ class Import:
 def build_import_tree(root: Path) -> ImportNode:
     """
     Build a tree of all the modules in a package.
-    
-    :param root: The root of the package to build the tree from.
-    :return: The root node of the tree.
+
+    Args:
+        root: The root of the package to build the tree from.
+    Returns:
+        The root node of the tree.
     """
     node = _parse_import_node_recursive(root, parent=None)
     if node is None:

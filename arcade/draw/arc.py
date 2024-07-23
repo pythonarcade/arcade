@@ -21,16 +21,26 @@ def draw_arc_filled(
     """
     Draw a filled in arc. Useful for drawing pie-wedges, or Pac-Man.
 
-    :param center_x: x position that is the center of the arc.
-    :param center_y: y position that is the center of the arc.
-    :param width: width of the arc.
-    :param height: height of the arc.
-    :param color: A 3 or 4 length tuple of 0-255 channel values
-        or a :py:class:`~arcade.types.Color` instance.
-    :param start_angle: start angle of the arc in degrees.
-    :param end_angle: end angle of the arc in degrees.
-    :param tilt_angle: angle the arc is tilted (clockwise).
-    :param num_segments: Number of line segments used to draw arc.
+    Args:
+        center_x:
+            x position that is the center of the arc.
+        center_y:
+            y position that is the center of the arc.
+        width:
+            width of the arc.
+        height:
+            height of the arc.
+        color:
+            A 3 or 4 length tuple of 0-255 channel values or a
+            :py:class:`~arcade.types.Color` instance.
+        start_angle:
+            start angle of the arc in degrees.
+        end_angle:
+            end angle of the arc in degrees.
+        tilt_angle:
+            angle the arc is tilted (clockwise).
+        num_segments:
+            Number of line segments used to draw arc.
     """
     unrotated_point_list = [(0.0, 0.0)]
 
@@ -72,18 +82,29 @@ def draw_arc_outline(
     """
     Draw the outside edge of an arc. Useful for drawing curved lines.
 
-    :param center_x: x position that is the center of the arc.
-    :param center_y: y position that is the center of the arc.
-    :param width: width of the arc.
-    :param height: height of the arc.
-    :param color: A 3 or 4 length tuple of 0-255 channel values
-        or a :py:class:`~arcade.types.Color` instance.
-    :param start_angle: start angle of the arc in degrees.
-    :param end_angle: end angle of the arc in degrees.
-    :param border_width: width of line in pixels.
-    :param tilt_angle: angle the arc is tilted (clockwise).
-    :param num_segments: float of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
+    Args:
+        center_x:
+            x position that is the center of the arc.
+        center_y:
+            y position that is the center of the arc.
+        width:
+            width of the arc.
+        height:
+            height of the arc.
+        color:
+            A 3 or 4 length tuple of 0-255 channel values or a
+            :py:class:`~arcade.types.Color` instance.
+        start_angle:
+            Start angle of the arc in degrees.
+        end_angle:
+            End angle of the arc in degrees.
+        border_width:
+            width of line in pixels.
+        tilt_angle:
+            Angle the arc is tilted (clockwise).
+        num_segments:
+            Number of triangle segments that make up this circle.
+            Higher is better quality, but slower render time.
     """
     unrotated_point_list = []
 

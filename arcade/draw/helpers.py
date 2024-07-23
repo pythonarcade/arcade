@@ -49,10 +49,13 @@ def _generic_draw_line_strip(
     Draw a line strip. A line strip is a set of continuously connected
     line segments.
 
-    :param point_list: List of points making up the line. Each point is
-         in a list. So it is a list of lists.
-    :param color: A color, specified as an RGBA tuple or a
-        :py:class:`~arcade.types.Color` instance.
+    Args:
+        point_list:
+            List of points making up the line. Each point is in a list.
+            So it is a list of lists.
+        color:
+            A color, specified as an RGBA tuple or a
+            :py:class:`~arcade.types.Color` instance.
     """
     # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()

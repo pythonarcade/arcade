@@ -9,9 +9,12 @@ def draw_polygon_filled(point_list: Point2List, color: RGBOrA255) -> None:
     """
     Draw a polygon that is filled in.
 
-    :param point_list: List of points making up the lines. Each point is
-         in a list. So it is a list of lists.
-    :param color: The color, specified in RGB or RGBA format.
+    Args:
+        point_list:
+            List of points making up the lines. Each point is
+            in a list. So it is a list of lists.
+        color:
+            The color, specified in RGB or RGBA format.
     """
     triangle_points = earclip(point_list)
     flattened_list = tuple(i for g in triangle_points for i in g)
@@ -22,11 +25,15 @@ def draw_polygon_outline(point_list: Point2List, color: RGBOrA255, line_width: f
     """
     Draw a polygon outline. Also known as a "line loop."
 
-    :param point_list: List of points making up the lines. Each point is
-         in a list. So it is a list of lists.
-    :param color: The color of the outline as an RGBA :py:class:`tuple` or
-        :py:class:`~arcade.types.Color` instance.
-    :param line_width: Width of the line in pixels.
+    Args:
+        point_list:
+            List of points making up the lines. Each point is
+            in a list. So it is a list of lists.
+        color:
+            The color of the outline as an RGBA :py:class:`tuple` or
+            :py:class:`~arcade.types.Color` instance.
+        line_width:
+            Width of the line in pixels.
     """
     # Convert to modifiable list & close the loop
     new_point_list = list(point_list)

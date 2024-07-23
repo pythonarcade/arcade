@@ -77,16 +77,25 @@ class IndicatorBar:
     """
     Represents a bar which can display information about a sprite.
 
-    :param owner: The owner of this indicator bar.
-    :param sprite_list: The sprite list used to draw the indicator
-        bar components.
-    :param Tuple[float, float] position: The initial position of the bar.
-    :param full_color: The color of the bar.
-    :param background_color: The background color of the bar.
-    :param width: The width of the bar.
-    :param height: The height of the bar.
-    :param border_size: The size of the bar's border.
-    :param scale: The scale of the indicator bar.
+    Args:
+        owner:
+            The owner of this indicator bar.
+        sprite_list:
+            The sprite list used to draw the indicator bar components.
+        position:
+            The initial position of the bar.
+        full_color:
+            The color of the bar.
+        background_color:
+            The background color of the bar.
+        width:
+            The width of the bar.
+        height:
+            The height of the bar.
+        border_size:
+            The size of the bar's border.
+        scale:
+            The scale of the indicator bar.
     """
 
     def __init__(

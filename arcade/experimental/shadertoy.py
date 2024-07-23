@@ -51,8 +51,11 @@ class ShadertoyBase:
         uniform sampler2D iChannel2;
         uniform sampler2D iChannel3;
 
-    :param size: screen/area size
-    :param source: The mainImage shader source
+    Args:
+        size:
+            screen/area size
+        source:
+            The mainImage shader source
     """
 
     def __init__(self, size: tuple[int, int], source: str):
@@ -264,11 +267,17 @@ class ShadertoyBase:
         """
         Render the shadertoy project to the screen.
 
-        :param time: Override the time
-        :param time_delta: Override the time delta
-        :param mouse_position: Override mouse position
-        :param size: Override the size
-        :param frame: Override frame
+        Args:
+            time:
+                Override the time
+            time_delta:
+                Override the time delta
+            mouse_position:
+                Override mouse position
+            size:
+                Override the size
+            frame:
+                Override frame
         """
         self._time = time if time is not None else self._time
         self._time_delta = time_delta if time_delta is not None else self._time_delta
@@ -285,7 +294,8 @@ class ShadertoyBase:
         """
         Update the shader source code.
 
-        :param source: New mainImage shader source
+        Args:
+            source: New mainImage shader source
         """
         self._set_source(source)
 
@@ -350,9 +360,13 @@ class ShadertoyBuffer(ShadertoyBase):
     An offscreen framebuffer we can render to with the supplied
     shader or render any other content into.
 
-    :param size: Size of framebuffer / texture
-    :param source: mainImage shader source
-    :param repeat: Repeat/wrap mode for the underlying texture
+    Args:
+        size:
+            Size of framebuffer / texture
+        source:
+            mainImage shader source
+        repeat:
+            Repeat/wrap mode for the underlying texture
     """
 
     def __init__(self, size: tuple[int, int], source: str, repeat: bool = False):
@@ -409,7 +423,8 @@ class ShadertoyBuffer(ShadertoyBase):
         """
         Change the internal buffer size.
 
-        :param size: New size
+        Args:
+            size: New size
         """
         if self._size == size:
             return
@@ -428,13 +443,13 @@ class Shadertoy(ShadertoyBase):
         void mainImage( out vec4 fragColor, in vec2 fragCoord ) {
             fragColor = vec4(fragCoord, 0.0, 1.0);
         }
+
+    Args:
+        size: pixel size if the output
+        main_source: The main glsl source with mainImage function
     """
 
     def __init__(self, size: tuple[int, int], main_source: str):
-        """
-        :param [int, int] size: pixel size if the output
-        :param main_source: The main glsl source with mainImage function
-        """
         super().__init__(size, main_source)
 
         self._buffer_a: ShadertoyBuffer | None = None
@@ -483,8 +498,9 @@ class Shadertoy(ShadertoyBase):
         """
         Create a Shadertoy from a mainImage shader file.
 
-        :param size: Size of shadertoy in pixels
-        :param path: Path to mainImage shader file
+        Args:
+            size: Size of shadertoy in pixels
+            path: Path to mainImage shader file
         """
         path = arcade.resources.resolve(path)
         with open(path) as fd:
@@ -495,8 +511,9 @@ class Shadertoy(ShadertoyBase):
         """
         Shortcut for creating a buffer from mainImage shader file.
 
-        :param source: Path to shader file
-        :param repeat: Buffer/texture repeat at borders
+        Args:
+            source: Path to shader file
+            repeat: Buffer/texture repeat at borders
         """
         return ShadertoyBuffer(self._size, source, repeat=repeat)
 
@@ -505,7 +522,8 @@ class Shadertoy(ShadertoyBase):
         Shortcut for creating a ShadertoyBuffer from shaders source.
         The size of the framebuffer will be the same as the Shadertoy.
 
-        :param path: Path to shader source
+        Args:
+            path: Path to shader source
         """
         path = arcade.resources.resolve(path)
         with open(path) as fd:
@@ -516,7 +534,8 @@ class Shadertoy(ShadertoyBase):
         """
         Resize the internal buffers
 
-        :param size: The new size in pixels
+        Args:
+            size: The new size in pixels
         """
         self._size = size
 

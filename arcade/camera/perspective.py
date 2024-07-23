@@ -43,10 +43,14 @@ class PerspectiveProjector(Projector):
     Initialize a Projector which produces a perspective projection matrix using
     a CameraData and PerspectiveProjectionData PoDs.
 
-    :param window: The window to bind the camera to. Defaults to the currently active camera.
-    :param view: The CameraData PoD. contains the viewport, position, up, forward, and zoom.
-    :param projection: The PerspectiveProjectionData PoD.
-                contains the field of view, aspect ratio, and then near and far planes.
+    Args:
+        window:
+            The window to bind the camera to. Defaults to the currently active camera.
+        view:
+            The CameraData PoD. contains the viewport, position, up, forward, and zoom.
+        projection:
+            The PerspectiveProjectionData PoD. contains the field of view, aspect ratio,
+            and then near and far planes.
     """
 
     def __init__(

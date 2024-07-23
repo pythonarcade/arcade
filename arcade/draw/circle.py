@@ -16,16 +16,23 @@ def draw_circle_filled(
     """
     Draw a filled-in circle.
 
-    :param center_x: x position that is the center of the circle.
-    :param center_y: y position that is the center of the circle.
-    :param radius: width of the circle.
-    :param color: A 3 or 4 length tuple of 0-255 channel values
-        or a :py:class:`~arcade.types.Color` instance.
-    :param tilt_angle: Angle in degrees to tilt the circle. Useful for low segment count circles
-    :param num_segments: Number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
-         The default value of -1 means arcade will try to calculate a reasonable
-         amount of segments based on the size of the circle.
+    Args:
+        center_x:
+            x position that is the center of the circle.
+        center_y:
+            y position that is the center of the circle.
+        radius:
+            width of the circle.
+        color:
+            A 3 or 4 length tuple of 0-255 channel values
+            or a :py:class:`~arcade.types.Color` instance.
+        tilt_angle:
+            Angle in degrees to tilt the circle. Useful for low segment count circles
+        num_segments:
+            Number of triangle segments that make up this circle.
+            Higher is better quality, but slower render time.
+            The default value of -1 means arcade will try to calculate a reasonable
+            amount of segments based on the size of the circle.
     """
     draw_ellipse_filled(
         center_x,
@@ -50,18 +57,26 @@ def draw_circle_outline(
     """
     Draw the outline of a circle.
 
-    :param center_x: x position that is the center of the circle.
-    :param center_y: y position that is the center of the circle.
-    :param radius: width of the circle.
-    :param color: A 3 or 4 length tuple of 0-255 channel values
-        or a :py:class:`~arcade.types.Color` instance.
-    :param border_width: Width of the circle outline in pixels.
-    :param tilt_angle: Angle in degrees to tilt the circle (clockwise).
-                             Useful for low segment count circles
-    :param num_segments: Number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
-         The default value of -1 means arcade will try to calculate a reasonable
-         amount of segments based on the size of the circle.
+    Args:
+        center_x:
+            x position that is the center of the circle.
+        center_y:
+            y position that is the center of the circle.
+        radius:
+            width of the circle.
+        color:
+            A 3 or 4 length tuple of 0-255 channel values
+            or a :py:class:`~arcade.types.Color` instance.
+        border_width:
+            Width of the circle outline in pixels.
+        tilt_angle:
+            Angle in degrees to tilt the circle (clockwise).
+            Useful for low segment count circles
+        num_segments:
+            Number of triangle segments that make up this circle.
+            Higher is better quality, but slower render time.
+            The default value of -1 means arcade will try to calculate a reasonable
+            amount of segments based on the size of the circle.
     """
     draw_ellipse_outline(
         center_x=center_x,
@@ -87,20 +102,29 @@ def draw_ellipse_filled(
     """
     Draw a filled in ellipse.
 
-    :param center_x: x position that is the center of the circle.
-    :param center_y: y position that is the center of the circle.
-    :param width: width of the ellipse.
-    :param height: height of the ellipse.
-    :param color: A 3 or 4 length tuple of 0-255 channel values
-        or a :py:class:`~arcade.types.Color` instance.
-    :param color: Either a :py:class:`~arcade.types.Color` instance
-        or an RGBA :py:class:`tuple` of 4 byte values (0 to 255).
-    :param tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
-         Useful when drawing a circle with a low segment count, to make an octagon for example.
-    :param num_segments: Number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
-         The default value of -1 means arcade will try to calculate a reasonable
-         amount of segments based on the size of the circle.
+    Args:
+        center_x:
+            x position that is the center of the circle.
+        center_y:
+            y position that is the center of the circle.
+        width:
+            width of the ellipse.
+        height:
+            height of the ellipse.
+        color:
+            A 3 or 4 length tuple of 0-255 channel values
+            or a :py:class:`~arcade.types.Color` instance.
+        color:
+            Either a :py:class:`~arcade.types.Color` instance
+            or an RGBA :py:class:`tuple` of 4 byte values (0 to 255).
+        tilt_angle:
+            Angle in degrees to tilt the ellipse (clockwise).
+            Useful when drawing a circle with a low segment count, to make an octagon for example.
+        num_segments:
+            Number of triangle segments that make up this circle.
+            Higher is better quality, but slower render time.
+            The default value of -1 means arcade will try to calculate a reasonable
+            amount of segments based on the size of the circle.
     """
     # Fail immediately if we have no window or context
     window = get_window()
@@ -138,19 +162,28 @@ def draw_ellipse_outline(
     """
     Draw the outline of an ellipse.
 
-    :param center_x: x position that is the center of the circle.
-    :param center_y: y position that is the center of the circle.
-    :param width: width of the ellipse.
-    :param height: height of the ellipse.
-    :param color: A 3 or 4 length tuple of 0-255 channel values
-        or a :py:class:`~arcade.types.Color` instance.
-    :param border_width: Width of the circle outline in pixels.
-    :param tilt_angle: Angle in degrees to tilt the ellipse (clockwise).
-         Useful when drawing a circle with a low segment count, to make an octagon for example.
-    :param num_segments: Number of triangle segments that make up this
-         circle. Higher is better quality, but slower render time.
-         The default value of -1 means arcade will try to calculate a reasonable
-         amount of segments based on the size of the circle.
+    Args:
+        center_x:
+            x position that is the center of the circle.
+        center_y:
+            y position that is the center of the circle.
+        width:
+            width of the ellipse.
+        height:
+            height of the ellipse.
+        color:
+            A 3 or 4 length tuple of 0-255 channel values
+            or a :py:class:`~arcade.types.Color` instance.
+        border_width:
+            Width of the circle outline in pixels.
+        tilt_angle:
+            Angle in degrees to tilt the ellipse (clockwise).
+            Useful when drawing a circle with a low segment count, to make an octagon for example.
+        num_segments:
+            Number of triangle segments that make up this circle.
+            Higher is better quality, but slower render time.
+            The default value of -1 means arcade will try to calculate a reasonable
+            amount of segments based on the size of the circle.
     """
     # Fail immediately if we have no window or context
     window = get_window()

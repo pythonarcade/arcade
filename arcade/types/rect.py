@@ -361,11 +361,15 @@ class Rect(NamedTuple):
         * It will be positioned at the current position using the passed
           ``anchor``
 
-        :param min_width: An optional minimum width.
-        :param max_width: An optional maximum width.
-        :param anchor: A :py:class:`~pyglet.math.Vec2` of the fractional
-            percentage of the rectangle's total :py:attr:`.size` along
-            both axes. It defaults to the center.
+        Args:
+            min_width:
+                An optional minimum width.
+            max_width:
+                An optional maximum width.
+            anchor:
+                A :py:class:`~pyglet.math.Vec2` of the fractional
+                percentage of the rectangle's total :py:attr:`.size` along
+                both axes. It defaults to the center.
         """
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         return self.resize(width, self.height, anchor)
@@ -398,7 +402,8 @@ class Rect(NamedTuple):
     def __or__(self, other: Rect) -> Rect:
         """Shorthand for :py:meth:`rect.union(other) <union>`.
 
-        :param other: Another :py:class:`Rect` instance.
+        Args:
+            other: Another :py:class:`Rect` instance.
         """
         return self.union(other)
 
@@ -408,7 +413,8 @@ class Rect(NamedTuple):
         If the two :py:class:`Rect` instances do not intersect, this
         method will return ``None`` instead.
 
-        :param other: Another :py:class:`Rect` instance.
+        Args:
+            other: Another :py:class:`Rect` instance.
         """
         intersecting = self.overlaps(other)
         if not intersecting:
@@ -422,14 +428,16 @@ class Rect(NamedTuple):
     def __and__(self, other: Rect) -> Rect | None:
         """Shorthand for :py:meth:`rect.intersection(other) <interesection>`.
 
-        :param other: Another :py:class:`Rect` instance.
+        Args:
+            other: Another :py:class:`Rect` instance.
         """
         return self.intersection(other)
 
     def overlaps(self, other: Rect) -> bool:
         """Returns ``True`` if `other` overlaps with ``self``.
 
-        :param other: Another :py:class:`Rect` instance.
+        Args:
+            other: Another :py:class:`Rect` instance.
         """
 
         return (other.width + self.width) / 2.0 > abs(self.x - other.x) and (
@@ -439,7 +447,8 @@ class Rect(NamedTuple):
     def point_in_rect(self, point: Point2) -> bool:
         """Returns ``True`` if ``point`` is inside this rectangle.
 
-        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        Args:
+            point: A tuple of :py:class:`int` or :py:class:`float` values.
         """
         px, py = point
         return (self.left <= px <= self.right) and (self.bottom <= py <= self.top)
@@ -447,7 +456,8 @@ class Rect(NamedTuple):
     def point_in_bounds(self, point: Point2) -> bool:
         """Returns ``True`` if ``point`` is inside this rectangle excluding the boundaries.
 
-        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        Args:
+            point: A tuple of :py:class:`int` or :py:class:`float` values.
         """
         px, py = point
         return (self.left < px < self.right) and (self.bottom < py < self.top)
@@ -455,7 +465,8 @@ class Rect(NamedTuple):
     def __contains__(self, point: Point2) -> bool:
         """Shorthand for :py:meth:`rect.point_in_rect(point) <point_in_rect>`.
 
-        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        Args:
+            point: A tuple of :py:class:`int` or :py:class:`float` values.
         """
         return self.point_in_rect(point)
 
@@ -474,7 +485,8 @@ class Rect(NamedTuple):
         The ``point``'s distance from the bounds is computed by through
         :py:meth:`distance_from_bounds`.
 
-        :param point:
+        Args:
+            point: The point to check.
         """
         return abs(self.distance_from_bounds(point)) < tolerance
 
@@ -522,9 +534,8 @@ class Rect(NamedTuple):
            |
            O----- x -----|
 
-        :param point: A point relative to the rectangle's
-            :py:meth:`bottom_left` corner.
-
+        Args:
+            point: A point relative to the rectangle's :py:meth:`bottom_left` corner.
         """
         x, y = point
         return Vec2(
@@ -552,10 +563,11 @@ class Rect(NamedTuple):
         #. Returned values from :py:meth:`position_to_uv`
         #. Rescaled input data from controllers
 
-        :param uv: A pair of ratio values describing how far a
-            a point falls from a rectangle's :py:attr:`bottom_left`
-            toward its :py:attr:`top_right`.
-
+        Args:
+            uv:
+                A pair of ratio values describing how far a
+                a point falls from a rectangle's :py:attr:`bottom_left`
+                toward its :py:attr:`top_right`.
         """
         x, y = uv
         return Vec2(self.left + x * self.width, self.bottom + y * self.height)

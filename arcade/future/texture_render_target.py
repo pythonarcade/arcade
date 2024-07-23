@@ -12,8 +12,9 @@ class RenderTargetTexture:
     An alternative render target to the default window/screen.
     This can be used in creative ways.
 
-        :param width: Width of the render target in pixels
-        :param height: Height of the render target in pixels
+    Args:
+        width: Width of the render target in pixels
+        height: Height of the render target in pixels
     """
 
     def __init__(self, width: int, height: int):

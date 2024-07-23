@@ -86,8 +86,9 @@ def constrain_camera_data(data: CameraData, forward_priority: bool = False):
     Ensure that the camera data forward and up vectors are length one,
     and are perpendicular
 
-    :param data: the camera data to constrain
-    :param forward_priority: whether up or forward gets constrained
+    Args:
+        data: the camera data to constrain
+        forward_priority: whether up or forward gets constrained
     """
     forward_vec = Vec3(*data.forward).normalize()
     up_vec = Vec3(*data.up).normalize()
