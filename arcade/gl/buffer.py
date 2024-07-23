@@ -252,14 +252,15 @@ class Buffer:
         Args:
             size: (optional)
                 New size of buffer. -1 will retain the current size.
+                Takes precedence over ``double`` parameter if specified.
             double (optional):
                 Is passed in with `True` the buffer size will be doubled
-                from its current size. Takes precedence over `size` parameter.
+                from its current size.
         """
-        if double:
+        if size > 0:
+            self._size = size
+        elif double is True:
             self._size *= 2
-        elif size > 0:
-            size = self._size
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, None, self._usage)
