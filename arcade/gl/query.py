@@ -24,6 +24,16 @@ class Query:
         print('samples_passed:', query.samples_passed)
         print('time_elapsed:', query.time_elapsed)
         print('primitives_generated:', query.primitives_generated)
+
+    Args:
+        ctx:
+            The context this query object belongs to
+        samples:
+            Enable counting written samples
+        time:
+            Enable measuring time elapsed
+        primitives:
+            Enable counting primitives
     """
 
     __slots__ = (
@@ -40,9 +50,9 @@ class Query:
         "_primitives",
     )
 
-    def __init__(self, ctx: "Context", samples=True, time=True, primitives=True):
+    def __init__(self, ctx: Context, samples=True, time=True, primitives=True):
         # TODO: Support querying a subset of these queries (faster)
-        # TODO: Evalute of this query should be included
+        # TODO: Evaluate of this query should be included
         # gl.GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN
         # gl.GL_ANY_SAMPLES_PASSED
         self._ctx = ctx
@@ -82,12 +92,8 @@ class Query:
             self._ctx.objects.append(self)
 
     @property
-    def ctx(self) -> "Context":
-        """
-        The context this query object belongs to
-
-        :type: :py:class:`arcade.gl.Context`
-        """
+    def ctx(self) -> Context:
+        """The context this query object belongs to"""
         return self._ctx
 
     @property
@@ -95,27 +101,22 @@ class Query:
         """
         How many samples was written. These are per component (RGBA)
 
-        :type: int
+        If one RGBA pixel is written, this will be 4.
         """
         return self._samples
 
     @property
     def time_elapsed(self) -> int:
-        """
-        The time elapsed in nanoseconds
-
-        :type: int
-        """
+        """The time elapsed in nanoseconds"""
         return self._time
 
     @property
     def primitives_generated(self) -> int:
         """
         How many primitives a vertex or geometry shader processed.
+
         When using a geometry shader this only counts
         the primitives actually emitted.
-
-        :type: int
         """
         return self._primitives
 
@@ -151,6 +152,7 @@ class Query:
     def delete(self):
         """
         Destroy the underlying OpenGL resource.
+
         Don't use this unless you know exactly what you are doing.
         """
         Query.delete_glo(
@@ -165,8 +167,9 @@ class Query:
     @staticmethod
     def delete_glo(ctx, glos) -> None:
         """
-        Delete this query object. This is automatically called
-        when the object is garbage collected.
+        Delete this query object.
+
+        This is automatically called when the object is garbage collected.
         """
         if gl.current_context is None:
             return

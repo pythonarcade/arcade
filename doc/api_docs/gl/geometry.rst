@@ -1,11 +1,8 @@
 
 .. py:currentmodule:: arcade
 
-Geometry
-========
-
 Geometry Methods
-----------------
+================
 
 .. autofunction:: arcade.gl.geometry.quad_2d_fs
 .. autofunction:: arcade.gl.geometry.quad_2d
@@ -13,7 +10,7 @@ Geometry Methods
 .. autofunction:: arcade.gl.geometry.cube
 
 Geometry
---------
+========
 
 .. autoclass:: arcade.gl.Geometry
    :members:
@@ -22,7 +19,7 @@ Geometry
    :member-order: bysource
 
 VertexArray
------------
+===========
 
 .. autoclass:: arcade.gl.VertexArray
    :members:

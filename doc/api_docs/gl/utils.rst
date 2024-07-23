@@ -1,10 +1,9 @@
-
 .. py:currentmodule:: arcade
 
-Texture2D
-=========
+utils
+=====
 
-.. autoclass:: arcade.gl.Texture2D
+.. automodule:: arcade.gl.utils
    :members:
    :undoc-members:
    :show-inheritance:

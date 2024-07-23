@@ -29,16 +29,21 @@ DST_COLOR = 0x0306
 ONE_MINUS_DST_COLOR = 0x0307
 
 # Blend equations
-#: source + destination
+
 FUNC_ADD = 0x8006
-#: source - destination
+"""source + destination"""
+
 FUNC_SUBTRACT = 0x800A
-#: destination - source
+"""source - destination"""
+
 FUNC_REVERSE_SUBTRACT = 0x800B
-#: Minimum of source and destination
+"""destination - source"""
+
 MIN = 0x8007
-#: Maximum of source and destination
+"""Minimum of source and destination"""
+
 MAX = 0x8008
+"""Maximum of source and destination"""
 
 BLEND_DEFAULT = SRC_ALPHA, ONE_MINUS_SRC_ALPHA
 BLEND_ADDITIVE = ONE, ONE

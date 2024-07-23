@@ -57,7 +57,9 @@ class ImageData:
 
     def __init__(self, image: PIL.Image.Image, hash: str | None = None, **kwargs):
         self.image = image
+        """The pillow image"""
         self.hash = hash or self.calculate_hash(image)
+        """The hash of the image"""
 
     @classmethod
     def calculate_hash(cls, image: PIL.Image.Image) -> str:
@@ -256,6 +258,15 @@ class Texture:
 
     @classmethod
     def create_atlas_name(cls, hash: str, vertex_order: tuple[int, int, int, int] = (0, 1, 2, 3)):
+        """
+        Create a name for the texture in a texture atlas.
+
+        Args:
+            hash:
+                The hash of the image data
+            vertex_order:
+                The current vertex order of the texture
+        """
         return f"{hash}|{vertex_order}"
 
     def _update_cache_names(self):
@@ -274,6 +285,15 @@ class Texture:
     def create_image_cache_name(
         cls, path: str | Path, crop: tuple[int, int, int, int] = (0, 0, 0, 0)
     ):
+        """
+        Create a cache name for an image.
+
+        Args:
+            path:
+                The path to the image file
+            crop:
+                The crop values used to create the texture
+        """
         return f"{str(path)}|{crop}"
 
     @property

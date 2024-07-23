@@ -31,6 +31,18 @@ class VertexArray:
     Use :py:class:`arcade.gl.Geometry` instead. It will create VAO instances for you
     automatically. There is a lot of complex interaction between programs
     and vertex arrays that will be done for you automatically.
+
+    Args:
+        ctx:
+            The context this object belongs to
+        program:
+            The program to use
+        content (optional):
+            List of BufferDescriptions
+        index_buffer (optional):
+            Index/element buffer
+        index_element_size (optional):
+            Byte size of the index buffer datatype.
     """
 
     __slots__ = (
@@ -47,7 +59,7 @@ class VertexArray:
 
     def __init__(
         self,
-        ctx: "Context",
+        ctx: Context,
         program: Program,
         content: Sequence[BufferDescription],
         index_buffer: Buffer | None = None,
@@ -56,8 +68,10 @@ class VertexArray:
         self._ctx = ctx
         self._program = program
         self._content = content
-        #: The OpenGL resource ID
+
         self.glo = glo = gl.GLuint()
+        """The OpenGL resource ID"""
+
         self._num_vertices = -1
         self._ibo = index_buffer
         self._index_element_size = index_element_size
@@ -79,45 +93,39 @@ class VertexArray:
             self._ctx.objects.append(self)
 
     @property
-    def ctx(self) -> "Context":
-        """
-        The Context this object belongs to
-        """
+    def ctx(self) -> Context:
+        """The Context this object belongs to."""
         return self._ctx
 
     @property
     def program(self) -> Program:
-        """
-        The assigned program
-        """
+        """The assigned program."""
         return self._program
 
     @property
     def ibo(self) -> Buffer | None:
-        """
-        Element/index buffer
-        """
+        """Element/index buffer."""
         return self._ibo
 
     @property
     def num_vertices(self) -> int:
-        """
-        The number of vertices
-        """
+        """The number of vertices."""
         return self._num_vertices
 
     def delete(self) -> None:
         """
         Destroy the underlying OpenGL resource.
+
         Don't use this unless you know exactly what you are doing.
         """
         VertexArray.delete_glo(self._ctx, self.glo)
         self.glo.value = 0
 
     @staticmethod
-    def delete_glo(ctx: "Context", glo: gl.GLuint) -> None:
+    def delete_glo(ctx: Context, glo: gl.GLuint) -> None:
         """
-        Delete this object.
+        Delete the OpenGL resource.
+
         This is automatically called when this object is garbage collected.
         """
         # If we have no context, then we are shutting down, so skip this
@@ -133,7 +141,20 @@ class VertexArray:
     def _build(
         self, program: Program, content: Sequence[BufferDescription], index_buffer: Buffer | None
     ) -> None:
-        """Build a vertex array compatible with the program passed in"""
+        """
+        Build a vertex array compatible with the program passed in.
+
+        This method will bind the vertex array and set up all the vertex attributes
+        according to the program's attribute specifications.
+
+        Args:
+            program:
+                The program to use
+            content:
+                List of BufferDescriptions
+            index_buffer:
+                Index/element buffer
+        """
         gl.glGenVertexArrays(1, byref(self.glo))
         gl.glBindVertexArray(self.glo)
 
@@ -244,12 +265,18 @@ class VertexArray:
     def render(
         self, mode: GLenumLike, first: int = 0, vertices: int = 0, instances: int = 1
     ) -> None:
-        """Render the VertexArray to the currently active framebuffer.
+        """
+        Render the VertexArray to the currently active framebuffer.
 
-        :param mode: Primitive type to render. TRIANGLES, LINES etc.
-        :param first: The first vertex to render from
-        :param vertices: Number of vertices to render
-        :param instances: OpenGL instance, used in using vertices over and over
+        Args:
+            mode:
+                Primitive type to render. TRIANGLES, LINES etc.
+            first:
+                The first vertex to render from
+            vertices:
+                Number of vertices to render
+            instances:
+                OpenGL instance, used in using vertices over and over
         """
         gl.glBindVertexArray(self.glo)
         if self._ibo is not None:
@@ -272,12 +299,18 @@ class VertexArray:
 
         .. Warning:: This requires OpenGL 4.3
 
-        :param buffer: The buffer containing one or multiple draw parameters
-        :param mode: Primitive type to render. TRIANGLES, LINES etc.
-        :param count: The number if indirect draw calls to run
-        :param first: The first indirect draw call to start on
-        :param stride: The byte stride of the draw command buffer.
-                           Keep the default (0) if the buffer is tightly packed.
+        Args:
+            buffer:
+                The buffer containing one or multiple draw parameters
+            mode:
+                Primitive type to render. TRIANGLES, LINES etc.
+            count:
+                The number if indirect draw calls to run
+            first:
+                The first indirect draw call to start on
+            stride:
+                The byte stride of the draw command buffer.
+                Keep the default (0) if the buffer is tightly packed.
         """
         # The default buffer stride for array and indexed
         _stride = 20 if self._ibo is not None else 16
@@ -316,15 +349,24 @@ class VertexArray:
         instances: int = 1,
         buffer_offset=0,
     ) -> None:
-        """Run a transform feedback.
+        """
+        Run a transform feedback.
 
-        :param buffer: The buffer to write the output
-        :param mode: The input primitive mode
-        :param output_mode: The output primitive mode
-        :param first: Offset start vertex
-        :param vertices: Number of vertices to render
-        :param instances: Number of instances to render
-        :param buffer_offset: Byte offset for the buffer (target)
+        Args:
+            buffer:
+                The buffer to write the output
+            mode:
+                The input primitive mode
+            output_mode:
+                The output primitive mode
+            first:
+                Offset start vertex
+            vertices:
+                Number of vertices to render
+            instances:
+                Number of instances to render
+            buffer_offset:
+                Byte offset for the buffer (target)
         """
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
@@ -372,13 +414,21 @@ class VertexArray:
         """
         Run a transform feedback writing to separate buffers.
 
-        :param buffers: The buffers to write the output
-        :param mode: The input primitive mode
-        :param output_mode: The output primitive mode
-        :param first: Offset start vertex
-        :param vertices: Number of vertices to render
-        :param instances: Number of instances to render
-        :param buffer_offset: Byte offset for the buffer (target)
+        Args:
+            buffers:
+                The buffers to write the output
+            mode:
+                The input primitive mode
+            output_mode:
+                The output primitive mode
+            first:
+                Offset start vertex
+            vertices:
+                Number of vertices to render
+            instances:
+                Number of instances to render
+            buffer_offset:
+                Byte offset for the buffer (target)
         """
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
@@ -424,14 +474,24 @@ class Geometry:
     It generates VertexArray instances on the fly internally matching the incoming
     program. This means we can render the same geometry with different programs
     as long as the :py:class:`~arcade.gl.Program` and :py:class:`~arcade.gl.BufferDescription`
-    have compatible attributes.
+    have compatible attributes. This is an extremely powerful concept that allows
+    for very flexible rendering pipelines and saves the user from a lot of manual
+    bookkeeping.
 
     Geometry objects should be created through :py:meth:`arcade.gl.Context.geometry`
 
-    :param ctx: The context this object belongs to
-    :param content: List of BufferDescriptions
-    :param index_buffer: Index/element buffer
-    :param mode: The default draw mode
+    Args:
+        ctx:
+            The context this object belongs to
+        content:
+            List of BufferDescriptions
+        index_buffer:
+            Index/element buffer
+        mode:
+            The default draw mode
+        index_element_size:
+            Byte size of the index buffer datatype.
+            Can be 1, 2 or 4 (8, 16 or 32bit integer)
     """
 
     __slots__ = (
@@ -460,14 +520,7 @@ class Geometry:
         self._mode = mode if mode is not None else ctx.TRIANGLES
         self._vao_cache: dict[str, VertexArray] = {}
         self._num_vertices: int = -1
-        """
-        :param ctx: The context this object belongs to
-        :param content: (optional) List of BufferDescriptions
-        :param index_buffer: (optional) Index/element buffer
-        :param mode: (optional) The default draw mode
-        :param index_element_size: Byte size of the index buffer datatype.
-            Can be 1, 2 or 4 (8, 16 or 32bit integer)
-        """
+
         if self._index_buffer and self._index_element_size not in (1, 2, 4):
             raise ValueError("index_element_size must be 1, 2, or 4")
 
@@ -488,30 +541,21 @@ class Geometry:
 
     @property
     def ctx(self) -> "Context":
-        """
-        The context this geometry belongs to.
-
-        :type: :py:class:`~arcade.gl.Geometry`
-        """
+        """The context this geometry belongs to."""
         return self._ctx
 
     @property
     def index_buffer(self) -> Buffer | None:
-        """
-        Index/element buffer if supplied at creation.
-
-        :type: :py:class:`~arcade.gl.Buffer`
-        """
+        """Index/element buffer if supplied at creation."""
         return self._index_buffer
 
     @property
     def num_vertices(self) -> int:
         """
         Get or set the number of vertices.
+
         Be careful when modifying this properly
         and be absolutely sure what you are doing.
-
-        :type: int
         """
         # TODO: Calculate this better...
         return self._num_vertices
@@ -523,7 +567,8 @@ class Geometry:
     def append_buffer_description(self, descr: BufferDescription):
         """
         Append a new BufferDescription to the existing Geometry.
-        .. Warning:: a Geometry cannot contain two BufferDescriptions which share an attribute name.
+
+        .. Warning:: Geometry cannot contain two BufferDescriptions which share an attribute name.
         """
         for other_descr in self._content:
             if other_descr == descr:
@@ -535,7 +580,7 @@ class Geometry:
 
     def instance(self, program: Program) -> VertexArray:
         """
-        Get the :py:class:`arcade.gl.VertexArray` compatible with this program
+        Get the :py:class:`arcade.gl.VertexArray` compatible with this program.
         """
         vao = self._vao_cache.get(program.attribute_key)
         if vao:
@@ -558,11 +603,17 @@ class Geometry:
         so overriding vertices is not needed unless you have a special case
         or have resized the buffers after the geometry instance was created.
 
-        :param program: The Program to render with
-        :param mode: Override what primitive mode should be used
-        :param first: Offset start vertex
-        :param vertices: Override the number of vertices to render
-        :param instances: Number of instances to render
+        Args:
+            program:
+                The Program to render with
+            mode:
+                Override what primitive mode should be used
+            first:
+                Offset start vertex
+            vertices:
+                Override the number of vertices to render
+            instances:
+                Number of instances to render
         """
         program.use()
         vao = self.instance(program)
@@ -648,18 +699,25 @@ class Geometry:
                 GLuint  baseInstance;
             } DrawElementsIndirectCommand;
 
-        The ``stride`` is the byte stride between every redering command
+        The ``stride`` is the byte stride between every rendering command
         in the buffer. By default we assume this is 16 for array rendering
         (no index buffer) and 20 for indexed rendering (with index buffer)
 
-        :param program: The program to execute
-        :param buffer: The buffer containing one or multiple draw parameters
-        :param mode: Primitive type to render. TRIANGLES, LINES etc.
-        :param count: The number if indirect draw calls to run.
-                          If omitted all draw commands in the buffer will be executed.
-        :param first: The first indirect draw call to start on
-        :param stride: The byte stride of the draw command buffer.
-                           Keep the default (0) if the buffer is tightly packed.
+        Args:
+            program:
+                The program to execute
+            buffer:
+                The buffer containing one or multiple draw parameters
+            mode:
+                Primitive type to render. TRIANGLES, LINES etc.
+            count:
+                The number if indirect draw calls to run.
+                If omitted all draw commands in the buffer will be executed.
+            first:
+                The first indirect draw call to start on
+            stride:
+                The byte stride of the draw command buffer.
+                Keep the default (0) if the buffer is tightly packed.
         """
         program.use()
         vao = self.instance(program)
@@ -677,19 +735,27 @@ class Geometry:
         instances: int = 1,
         buffer_offset: int = 0,
     ) -> None:
-        """Render with transform feedback. Instead of rendering to the screen
+        """
+        Render with transform feedback. Instead of rendering to the screen
         or a framebuffer the result will instead end up in the ``buffer`` we supply.
 
         If a geometry shader is used the output primitive mode is automatically detected.
 
-        :param program: The Program to render with
-        :param Buffer | Sequence[Buffer] buffer: The buffer(s) we transform into.
-            This depends on the programs ``varyings_capture_mode``. We can transform
-            into one buffer interleaved or transform each attribute into separate buffers.
-        :param first: Offset start vertex
-        :param vertices: Number of vertices to render
-        :param instances: Number of instances to render
-        :param buffer_offset: Byte offset for the buffer
+        Args:
+            program:
+                The Program to render with
+            buffer:
+                The buffer(s) we transform into.
+                This depends on the programs ``varyings_capture_mode``. We can transform
+                into one buffer interleaved or transform each attribute into separate buffers.
+            first:
+                Offset start vertex
+            vertices:
+                Number of vertices to render
+            instances:
+                Number of instances to render
+            buffer_offset:
+                Byte offset for the buffer
         """
         program.use()
         vao = self.instance(program)
@@ -736,14 +802,19 @@ class Geometry:
 
         The Geometry instance will store a VertexArray
         for every unique set of input attributes it
-        stumbles over when redering and transform calls
+        stumbles over when rendering and transform calls
         are issued. This data is usually pretty light weight
         and usually don't need flushing.
         """
         self._vao_cache = {}
 
     def _generate_vao(self, program: Program) -> VertexArray:
-        """Here we do the VertexArray building"""
+        """
+        Create a new VertexArray for the given program.
+
+        Args:
+            program: The program to use
+        """
         # print(f"Generating vao for key {program.attribute_key}")
 
         vao = VertexArray(
