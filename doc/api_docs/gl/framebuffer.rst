@@ -4,9 +4,6 @@
 Framebuffer
 ===========
 
-FrameBuffer
------------
-
 .. autoclass:: arcade.gl.Framebuffer
    :members:
    :undoc-members:
@@ -14,7 +11,7 @@ FrameBuffer
    :member-order: bysource
 
 DefaultFrameBuffer
-------------------
+==================
 
 .. autoclass:: arcade.gl.framebuffer.DefaultFrameBuffer
    :members:

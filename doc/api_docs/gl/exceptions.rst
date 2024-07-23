@@ -2,7 +2,7 @@
 .. py:currentmodule:: arcade
 
 Exceptions
-----------
+==========
 
 .. autoclass:: arcade.gl.ShaderException
    :members:

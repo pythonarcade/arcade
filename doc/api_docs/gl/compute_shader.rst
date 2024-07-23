@@ -1,6 +1,6 @@
 
-Compute Shader
-==============
+ComputeShader
+=============
 
 .. autoclass:: arcade.gl.ComputeShader
    :members:
