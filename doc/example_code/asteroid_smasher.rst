@@ -1,5 +1,3 @@
-:orphan:
-
 .. _asteroid_smasher:
 
 Asteroid Smasher

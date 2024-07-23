@@ -1,5 +1,3 @@
-:orphan:
-
 .. _normal_mapping:
 
 Normal Mapping

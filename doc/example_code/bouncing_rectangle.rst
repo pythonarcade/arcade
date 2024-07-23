@@ -1,5 +1,3 @@
-:orphan:
-
 .. _bouncing_rectangle:
 
 Bouncing Rectangle

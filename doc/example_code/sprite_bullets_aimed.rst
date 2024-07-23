@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_bullets_aimed:
 
 Aim and Shoot Bullets

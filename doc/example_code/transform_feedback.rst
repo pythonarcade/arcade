@@ -1,5 +1,3 @@
-:orphan:
-
 .. _transform_feedback:
 
 Transform Feedback

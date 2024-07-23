@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_scrollable_text:
 
 GUI Scrollable Text

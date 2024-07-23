@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_slider:
 
 GUI Slider

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _camera_platform:
 
 Camera Use in a Platformer

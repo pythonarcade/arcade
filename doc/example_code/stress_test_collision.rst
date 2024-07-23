@@ -1,5 +1,3 @@
-:orphan:
-
 .. _stress_test_collision:
 
 Collision Stress Test

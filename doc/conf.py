@@ -122,7 +122,7 @@ html_theme_options = {
     'display_version': True,
     'logo_only': False,
     'sticky_navigation': True,
-    'navigation_depth': 3,
+    'navigation_depth': 4,
     'collapse_navigation': False,
 }
 

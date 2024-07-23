@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_bullets:
 
 Shoot Bullets Upwards

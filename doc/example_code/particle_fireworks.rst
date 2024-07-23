@@ -1,5 +1,3 @@
-:orphan:
-
 .. _particle_fireworks:
 
 Particle System - Fireworks

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_move_animation:
 
 Move with a Sprite Animation

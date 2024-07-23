@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_move_scrolling_box:
 
 Move with a Scrolling Screen - Margins

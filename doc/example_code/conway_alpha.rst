@@ -1,5 +1,3 @@
-:orphan:
-
 .. _conway_alpha:
 
 Conway's Game of Life

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sound_speed_demo:
 
 Sound Speed Demo

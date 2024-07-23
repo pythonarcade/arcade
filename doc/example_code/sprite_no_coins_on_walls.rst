@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_no_coins_on_walls:
 
 Randomly Place Coins, But Away From Walls And Other Coins

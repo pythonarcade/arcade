@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_moving_platforms:
 
 Moving Platforms

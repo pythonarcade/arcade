@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_rotate_around_point:
 
 Sprite Rotation Around a Point

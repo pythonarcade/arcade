@@ -1,5 +1,3 @@
-:orphan:
-
 .. _snow:
 
 Falling Snow

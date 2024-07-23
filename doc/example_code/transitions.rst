@@ -1,5 +1,3 @@
-:orphan:
-
 .. _transitions:
 
 Fade In/Out of Views

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_enemies_in_platformer:
 
 Platformer With Enemies

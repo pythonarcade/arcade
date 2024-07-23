@@ -1,5 +1,3 @@
-:orphan:
-
 .. _drawing_text_objects_batch:
 
 The Fastest Text Drawing: pyglet Batches
