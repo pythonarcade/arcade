@@ -202,11 +202,12 @@ class BufferDescription:
             ['in_pos', 'in_uv'],
         )
 
-    :param buffer: The buffer to describe
-    :param formats: The format of each attribute
-    :param attributes: List of attributes names (strings)
-    :param normalized: list of attribute names that should be normalized
-    :param instanced: ``True`` if this is per instance data
+    Args:
+        buffer: The buffer to describe
+        formats: The format of each attribute
+        attributes: List of attributes names (strings)
+        normalized: list of attribute names that should be normalized
+        instanced: ``True`` if this is per instance data
     """
 
     # Describe all variants of a format string to simplify parsing (single component)
@@ -350,11 +351,17 @@ class TypeInfo:
     """
     Describes an opengl type
 
-    :param name: the string representation of this type
-    :param enum: The enum of this type
-    :param gl_type: the base enum of this type
-    :param gl_size: byte size if the gl_type
-    :param components: Number of components for this enum
+    Args:
+        name:
+            The string representation of this type
+        enum:
+            The enum of this type
+        gl_type:
+            The base enum of this type
+        gl_size:
+            byte size if the gl_type
+        components:
+            Number of components for this enum
     """
 
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
@@ -381,12 +388,27 @@ class TypeInfo:
 
 class GLTypes:
     """
-    Get information about an attribute type.
+    Detailed Information about all attribute type.
+
     During introspection we often just get integers telling us what type is used.
-    This can for example be `35664` telling us it's a `GL_FLOAT_VEC2`.
-    We want to know this is a `gl.GLfloat` with 2 components so we can compare
-    that to the types in the `BufferDescription`.
-    These an also be used for uniform introspection.
+    This can for example be ``35664`` telling us it's a ``GL_FLOAT_VEC2``.
+
+    During introspection we need to know the exact datatype of the attribute.
+    It's not enough to know it's a float, we need to know if it's a vec2, vec3, vec4
+    or any other type that OpenGL supports.
+
+    Examples of types are::
+
+        GL_FLOAT_VEC2
+        GL_DOUBLE_VEC4
+        GL_INT_VEC3
+        GL_UNSIGNED_INT_VEC2
+        GL_UNSIGNED_BYTE
+        GL_FLOAT
+        GL_DOUBLE
+        GL_INT
+        GL_UNSIGNED_INT
+        ...
     """
 
     types = {
