@@ -68,8 +68,10 @@ class VertexArray:
         self._ctx = ctx
         self._program = program
         self._content = content
-        #: The OpenGL resource ID
+
         self.glo = glo = gl.GLuint()
+        """The OpenGL resource ID"""
+
         self._num_vertices = -1
         self._ibo = index_buffer
         self._index_element_size = index_element_size
