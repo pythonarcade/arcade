@@ -17,7 +17,7 @@ class SpatialHash(Generic[SpriteType]):
     same as removing and adding it. Although moving a few can be okay, it
     can quickly add up and slow down a game.
 
-    .. _classic gamedev.net article: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/
+    .. _classic gamedev.net article: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/spatial-hashing-r2697/  # noqa
     .. _redblob_hashing: https://www.redblobgames.com/x/1730-spatial-hash/
 
     To learn more about spatial hashing, please see the following:
@@ -60,9 +60,7 @@ class SpatialHash(Generic[SpriteType]):
         )
 
     def reset(self):
-        """
-        Clear all the sprites from the spatial hash.
-        """
+        """Clear all the sprites from the spatial hash."""
         self.contents.clear()
         self.buckets_for_sprite.clear()
 
@@ -70,7 +68,8 @@ class SpatialHash(Generic[SpriteType]):
         """
         Add a sprite to the spatial hash.
 
-        :param sprite: The sprite to add
+        Args:
+            sprite: The sprite to add
         """
         min_point = trunc(sprite.left), trunc(sprite.bottom)
         max_point = trunc(sprite.right), trunc(sprite.top)
@@ -95,7 +94,8 @@ class SpatialHash(Generic[SpriteType]):
         """
         Shortcut to remove and re-add a sprite.
 
-        :param sprite: The sprite to move
+        Args:
+            sprite: The sprite to move
         """
         self.remove(sprite)
         self.add(sprite)
@@ -104,7 +104,8 @@ class SpatialHash(Generic[SpriteType]):
         """
         Remove a Sprite.
 
-        :param sprite: The sprite to remove
+        Args:
+            sprite: The sprite to remove
         """
         # Remove the sprite from all the buckets it is in
         for bucket in self.buckets_for_sprite[sprite]:
@@ -117,8 +118,8 @@ class SpatialHash(Generic[SpriteType]):
         """
         Get all the sprites that are in the same buckets as the given sprite.
 
-        :param sprite: The sprite to check
-        :return: A set of close-by sprites
+        Args:
+            sprite: The sprite to check
         """
         min_point = trunc(sprite.left), trunc(sprite.bottom)
         max_point = trunc(sprite.right), trunc(sprite.top)
@@ -139,9 +140,8 @@ class SpatialHash(Generic[SpriteType]):
         """
         Return sprites in the same bucket as the given point.
 
-        :param point: The point to check
-
-        :return: A set of close-by sprites
+        Args:
+            point: The point to check
         """
         hash_point = self.hash((trunc(point[0]), trunc(point[1])))
         # Return a copy of the set.
@@ -151,8 +151,8 @@ class SpatialHash(Generic[SpriteType]):
         """
         Return sprites in the same buckets as the given rectangle.
 
-        :param rect: The rectangle to check (left, right, bottom, top)
-        :return: A set of sprites in the rectangle
+        Args:
+            rect: The rectangle to check (left, right, bottom, top)
         """
         left, right, bottom, top = rect.lrbt
         min_point = trunc(left), trunc(bottom)
