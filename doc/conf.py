@@ -55,6 +55,7 @@ extensions = [
     'sphinx.ext.viewcode',  # display code with line numbers and line highlighting
     'sphinx_copybutton',  # Adds a copy button to code blocks
     'sphinx_sitemap',  # sitemap.xml generation
+    'doc.extensions.prettyspecialmethods',  # Forker plugin for prettifying special methods
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -264,26 +265,21 @@ def generate_color_table(filename, source):
     source[0] += append_text
 
 
-def source_read_handler(_app, docname, source):
+def source_read_handler(_app, doc_name: str, source):
     """
     Event handler for source-read event.
     Where we can modify the source of a document before it is parsed.
     """
-    file_path = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(file_path)
-
-    # Transform source for arcade.color and arcade.csscolor
-    if docname == "api_docs/arcade.color":
-        generate_color_table("../arcade/color/__init__.py", source)
-    elif docname == "api_docs/arcade.csscolor":
-        generate_color_table("../arcade/csscolor/__init__.py", source)
+    # Inject the color tables into the source
+    if doc_name == "api_docs/arcade.color":
+        generate_color_table("arcade/color/__init__.py", source)
+    elif doc_name == "api_docs/arcade.csscolor":
+        generate_color_table("arcade/csscolor/__init__.py", source)
 
 
 def on_autodoc_process_bases(app, name, obj, options, bases):
     """We don't care about the `object` base class, so remove it from the list of bases."""
     bases[:] = [base for base in bases if base is not object]
-
-
 
 
 def setup(app):
