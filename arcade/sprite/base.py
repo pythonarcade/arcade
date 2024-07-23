@@ -73,6 +73,7 @@ class BasicSprite:
         self._visible = bool(visible)
         self._color: Color = WHITE
         self.sprite_lists: list["SpriteList"] = []
+        """The sprite lists this sprite is a member of"""
 
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
@@ -403,6 +404,7 @@ class BasicSprite:
 
     @property
     def rect(self) -> Rect:
+        """A rectangle with with the sprites left, right, bottom, and top values."""
         return LRBT(self.left, self.right, self.bottom, self.top)
 
     @property
@@ -722,6 +724,7 @@ class BasicSprite:
 
     @property
     def hit_box(self) -> HitBox:
+        """The hit box for this sprite."""
         return self._hit_box
 
     def update_spatial_hash(self) -> None:

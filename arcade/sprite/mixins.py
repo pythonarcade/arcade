@@ -14,16 +14,31 @@ class PyMunk:
 
     def __init__(self):
         self.damping: float | None = None
+        """
+        Natural damping.
+
+        Damping is applied to objects to simulate the natural deceleration of
+        objects due to friction.
+        """
+
         self.gravity: tuple[float, float] | None = None
+        """Gravity applied to the object."""
+
         self.max_velocity: float | None = None
+        """Maximum velocity allowed."""
+
         self.max_horizontal_velocity: float | None = None
+        """Maximum horizontal velocity allowed."""
+
         self.max_vertical_velocity: float | None = None
+        """Maximum vertical velocity allowed."""
 
 
 class PymunkMixin:
 
     def __init__(self) -> None:
         self.pymunk = PyMunk()
+        """Object used to hold pymunk info for a sprite."""
         self.force = [0.0, 0.0]
         """force vector used by pymunk"""
 
