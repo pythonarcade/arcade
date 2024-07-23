@@ -105,6 +105,15 @@ def static_from_orthographic(
     *,
     window: Window | None = None,
 ) -> _StaticCamera:
+    """
+    Create a static camera from a CameraData and OrthographicProjectionData
+
+    Args:
+        view: The view matrix to use
+        orthographic: The orthographic projection to use
+        viewport: The viewport to use
+        window: The window to use
+    """
     return _StaticCamera(
         generate_view_matrix(view),
         generate_orthographic_matrix(orthographic, view.zoom),
@@ -122,6 +131,15 @@ def static_from_perspective(
     *,
     window: Window | None = None,
 ) -> _StaticCamera:
+    """
+    Create a static camera from a CameraData and PerspectiveProjectionData
+
+    Args:
+        view: The view matrix to use
+        perspective: The perspective projection to use
+        viewport: The viewport to use
+        window: The window
+    """
     return _StaticCamera(
         generate_view_matrix(view),
         generate_orthographic_matrix(perspective, view.zoom),
@@ -144,6 +162,20 @@ def static_from_raw_orthographic(
     *,
     window: Window | None = None,
 ) -> _StaticCamera:
+    """
+    Create a static camera from raw orthographic data.
+
+    Args:
+        projection: The orthographic projection to use
+        near: The near plane
+        far: The far plane
+        zoom: The zoom level
+        position: The position of the camera
+        up: The up vector
+        forward: The forward vector
+        viewport: The viewport
+        window: The window
+    """
     view = generate_view_matrix(CameraData(position, up, forward, zoom))
     proj = generate_orthographic_matrix(
         OrthographicProjectionData(
@@ -174,6 +206,21 @@ def static_from_raw_perspective(
     *,
     window: Window | None = None,
 ) -> _StaticCamera:
+    """
+    Create a static camera from raw perspective data.
+
+    Args:
+        aspect: The aspect ratio
+        fov: The field of view
+        near: The near plane
+        far: The far plane
+        zoom: The zoom level
+        position: The position of the camera
+        up: The up vector
+        forward: The forward vector
+        viewport: The viewport
+        window: The window
+    """
     view = generate_view_matrix(CameraData(position, up, forward, zoom))
     proj = generate_perspective_matrix(PerspectiveProjectionData(aspect, fov, near, far), zoom)
 
@@ -196,6 +243,17 @@ def static_from_matrices(
     project_method: Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec2] | None = None,
     unproject_method: Callable[[Point, tuple[int, int, int, int], Mat4, Mat4], Vec3] | None = None,
 ) -> _StaticCamera:
+    """
+    Create a static camera from raw matrices.
+
+    Args:
+        view: The view matrix
+        projection: The projection matrix
+        viewport: The viewport
+        window: The window
+        project_method: The project method
+        unproject_method: The unproject method
+    """
     return _StaticCamera(
         view,
         projection,
