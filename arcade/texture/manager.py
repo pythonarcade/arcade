@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 
 import PIL.Image
@@ -17,8 +16,6 @@ from arcade.cache import (
 from arcade.texture import ImageData, SpriteSheet
 
 from .texture import Texture
-
-LOG = logging.getLogger(__name__)
 
 
 class TextureCacheManager:
@@ -242,7 +239,6 @@ class TextureCacheManager:
                 The hit box algorithm to use for this texture. If not specified,
                 the global default will be used.
         """
-        # LOG.info("load_texture: %s ", file_path)
         real_path = self._get_real_path(file_path)
 
         return self._load_or_get_texture(

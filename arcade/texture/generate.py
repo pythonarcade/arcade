@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import logging
-
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageOps
@@ -13,8 +11,6 @@ from arcade.math import lerp
 from arcade.types import RGBA255
 
 from .texture import ImageData, Texture
-
-LOG = logging.getLogger(__name__)
 
 
 def make_circle_texture(

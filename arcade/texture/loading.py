@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 
 import PIL.Image
@@ -10,8 +9,6 @@ from arcade.resources import resolve
 
 from .spritesheet import SpriteSheet
 from .texture import ImageData, Texture
-
-LOG = logging.getLogger(__name__)
 
 
 def load_texture(
@@ -52,7 +49,6 @@ def load_texture(
             This is used for texture caching and global uniqueness
             in texture atlases.
     """
-    # LOG.info("load_texture: %s ", file_path)
     if isinstance(file_path, str):
         file_path = resolve(file_path)
 
@@ -87,7 +83,6 @@ def load_image(
         mode:
             The desired mode for the image (default: "RGBA")
     """
-    # LOG.info("load_image: %s ", file_path)
     if isinstance(file_path, str):
         file_path = resolve(file_path)
 
@@ -105,7 +100,6 @@ def load_spritesheet(file_name: str | Path) -> SpriteSheet:
     Args:
         file_name: Path to the image file
     """
-    # LOG.info("load_spritesheet: %s ", file_name)
     if isinstance(file_name, str):
         file_name = resolve(file_name)
 

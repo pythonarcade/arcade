@@ -7,7 +7,7 @@ individual sprites.
 
 from __future__ import annotations
 
-import logging
+# import logging
 import random
 from array import array
 from collections import deque
@@ -41,7 +41,7 @@ if TYPE_CHECKING:
     from arcade import DefaultTextureAtlas, Texture
     from arcade.texture_atlas import TextureAtlasBase
 
-LOG = logging.getLogger(__name__)
+# LOG = logging.getLogger(__name__)
 
 # The slot index that makes a sprite invisible.
 # 2^31-1 is usually reserved for primitive restart

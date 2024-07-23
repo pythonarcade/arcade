@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import contextlib
 import copy
-import logging
-import time
+
+# import logging
+# import time
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -44,7 +45,7 @@ RESIZE_STEP = 128
 # texture anyway, so more rows can be added.
 UV_TEXTURE_WIDTH = 4096
 
-LOG = logging.getLogger(__name__)
+# LOG = logging.getLogger(__name__)
 # LOG.handlers = [logging.StreamHandler()]
 # LOG.setLevel(logging.INFO)
 
@@ -641,7 +642,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
             force:
                 Force a resize even if the size is the same
         """
-        LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
+        # LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
         # print("Resizing atlas from", self._size, "to", size)
 
         # Only resize if the size actually changed
@@ -649,7 +650,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
             return
 
         self._check_size(size)
-        resize_start = time.perf_counter()
+        # resize_start = time.perf_counter()
 
         # Keep a reference to the old atlas texture so we can copy it into the new one
         atlas_texture_old = self._texture
@@ -710,8 +711,8 @@ class DefaultTextureAtlas(TextureAtlasBase):
                     vertices=self.max_width,
                 )
 
-        duration = time.perf_counter() - resize_start
-        LOG.info("[%s] Atlas resize took %s seconds", id(self), duration)
+        # duration = time.perf_counter() - resize_start
+        # LOG.info("[%s] Atlas resize took %s seconds", id(self), duration)
 
     def rebuild(self) -> None:
         """
