@@ -947,7 +947,7 @@ class Context:
                 Depth texture
         """
         return Framebuffer(
-            self, color_attachments=color_attachments, depth_attachment=depth_attachment
+            self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
         )
 
     def texture(

@@ -69,7 +69,7 @@ class Framebuffer:
         self,
         ctx: "Context",
         *,
-        color_attachments: Texture2D | list[Texture2D] | None = None,
+        color_attachments: Texture2D | list[Texture2D],
         depth_attachment: Texture2D | None = None,
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
@@ -478,10 +478,18 @@ class Framebuffer:
 
     def _detect_size(self) -> tuple[int, int]:
         """Detect the size of the framebuffer based on the attachments"""
-        expected_size = (
-            self._color_attachments[0] if self._color_attachments else self._depth_attachment
-        ).size
-        for layer in [*self._color_attachments, self._depth_attachment]:
+        attachments = []
+
+        if self._color_attachments:
+            attachments.extend(self._color_attachments)
+        elif self._depth_attachment:
+            attachments.append(self._depth_attachment)
+
+        if not attachments:
+            raise RuntimeError("Framebuffer has no attachments")
+
+        expected_size = attachments[0].size
+        for layer in attachments:
             if layer and layer.size != expected_size:
                 raise ValueError("All framebuffer attachments should have the same size")
         return expected_size
