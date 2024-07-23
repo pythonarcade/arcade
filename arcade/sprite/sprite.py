@@ -36,13 +36,19 @@ class Sprite(BasicSprite, PymunkMixin):
 
     .. tip:: Advanced users should see :py:class:`~arcade.BasicSprite`
 
-             It uses fewer resources at the cost of having fewer features.
+        It uses fewer resources at the cost of having fewer features.
 
-    :param path_or_texture: Path to an image file, or a texture object.
-    :param center_x: Location of the sprite in pixels.
-    :param center_y: Location of the sprite in pixels.
-    :param scale: Show the image at this many times its original size.
-    :param angle: The initial rotation of the sprite in degrees
+    Args:
+        path_or_texture:
+            Path to an image file, or a texture object.
+        center_x:
+            Location of the sprite in pixels.
+        center_y:
+            Location of the sprite in pixels.
+        scale:
+            Show the image at this many times its original size.
+        angle:
+            The initial rotation of the sprite in degrees
     """
 
     __slots__ = (
@@ -195,9 +201,6 @@ class Sprite(BasicSprite, PymunkMixin):
         Example::
 
             sprite.velocity = 1.0, 0.0
-
-        Returns:
-            Tuple[float, float]
         """
         return self._velocity
 
@@ -225,9 +228,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @property
     def hit_box(self) -> HitBox:
-        """
-        Get or set the hit box for this sprite.
-        """
+        """Get or set the hit box for this sprite."""
         return self._hit_box
 
     @hit_box.setter
@@ -273,10 +274,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @property
     def properties(self) -> dict[str, Any]:
-        """
-        Get or set custom sprite properties.
-
-        """
+        """Get or set custom sprite properties."""
         if self._properties is None:
             self._properties = {}
         return self._properties
@@ -291,7 +289,8 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Adjusts a Sprites forward.
 
-        :param speed: speed
+        Args:
+            speed: The speed at which the sprite moves.
         """
         angle_rad = math.radians(self.angle)
         self.center_x += math.sin(angle_rad) * speed
@@ -301,7 +300,8 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Adjusts a Sprite backwards.
 
-        :param speed: speed
+        Args:
+            speed: The speed at which the sprite moves.
         """
         self.forward(-speed)
 
@@ -309,7 +309,8 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Adjusts a Sprite sideways.
 
-        :param speed: speed
+        Args:
+            speed: The speed at which the sprite moves.
         """
         angle_rad = math.radians(self.angle + 90)
         self.center_x += math.sin(angle_rad) * speed
@@ -319,7 +320,8 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Rotate the sprite right by the passed number of degrees.
 
-        :param theta: change in angle, in degrees
+        Args:
+            theta: Change in angle, in degrees
         """
         self.angle = self._angle + theta
 
@@ -327,7 +329,8 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Rotate the sprite left by the passed number of degrees.
 
-        :param theta: change in angle, in degrees
+        Args:
+            theta: Change in angle, in degrees
         """
         self.angle = self._angle - theta
 
@@ -336,7 +339,7 @@ class Sprite(BasicSprite, PymunkMixin):
         Stop the Sprite's motion by setting the velocity and angle change to 0.
         """
         self.velocity = 0, 0
-        self.change_angle = 0
+        self.change_angle = 0.0
 
     # ----Update Methods ----
 
@@ -380,8 +383,8 @@ class Sprite(BasicSprite, PymunkMixin):
         Appends a new texture to the list of textures that can be
         applied to this sprite.
 
-        :param texture: Texture to add to the list of available textures
-
+        Args:
+            texture: Texture to add to the list of available textures
         """
         self.textures.append(texture)
 
@@ -390,7 +393,8 @@ class Sprite(BasicSprite, PymunkMixin):
         Set the current texture by texture number.
         The number is the index into ``self.textures``.
 
-        :param texture_no: Index into ``self.textures``
+        Args:
+            texture_no: Index into ``self.textures``
         """
         texture = self.textures[texture_no]
         self.texture = texture
@@ -418,6 +422,9 @@ class Sprite(BasicSprite, PymunkMixin):
 
         It can for example be the pymunk physics engine
         or a custom one you made.
+
+        Args:
+            physics_engine: The physics engine to register
         """
         self.physics_engines.append(physics_engine)
 
