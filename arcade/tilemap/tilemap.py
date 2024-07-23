@@ -361,6 +361,14 @@ class TileMap:
         return x, y
 
     def get_tilemap_layer(self, layer_path: str) -> pytiled_parser.Layer | None:
+        """
+        Given a path to a layer, this will attempt to return the layer.
+
+        Args:
+            layer_path:
+                A string representing the path to the layer. For example,
+                "Layer Group 1/Layer Group 2/Tile Layer 1"
+        """
         assert isinstance(layer_path, str)
 
         def _get_tilemap_layer(my_path, layers):
