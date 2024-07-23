@@ -47,6 +47,7 @@ directory (git).
    query
    program
    compute_shader
+   utils
    exceptions
 
 .. _ModernGL: https://github.com/moderngl/moderngl
