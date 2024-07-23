@@ -27,3 +27,12 @@ UniformBlock
    :undoc-members:
    :show-inheritance:
    :member-order: bysource
+
+ShaderSource
+============
+
+.. autoclass:: arcade.gl.glsl.ShaderSource
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :member-order: bysource
