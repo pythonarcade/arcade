@@ -27,7 +27,7 @@ class MyView(arcade.View):
         # Create a text label
         ui_text_label = arcade.gui.widgets.text.UITextArea(
             text="This is a Text Widget",
-            width=450,
+            width=600,
             height=40,
             font_size=24,
             font_name="Kenney Future",
