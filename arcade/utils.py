@@ -12,7 +12,6 @@ from itertools import chain
 from pathlib import Path
 from typing import Any, Callable, Generator, Generic, Iterable, Sequence, Type, TypeVar
 
-
 __all__ = [
     "as_type",
     "type_name",
