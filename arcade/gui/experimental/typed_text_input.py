@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Generic, Optional, Type, TypeVar
+from typing import Callable, Generic, Optional, Type, TypeVar, cast
 
 import arcade
 from arcade.color import BLACK, RED, WHITE
@@ -125,7 +125,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
         self._valid_color = text_color
         self._parsed_type: Type[T] = parsed_type
         self._to_str = to_str
-        self._from_str = from_str or parsed_type
+        self._from_str: Callable[[str], T] = cast(Callable[[str], T], from_str or parsed_type)
         self._parsed_value: T = self._from_str(self.text)
 
     def _set_current_color(self, new_color: RGBOrA255) -> None:
@@ -159,12 +159,12 @@ class UITypedTextInput(UIInputText, Generic[T]):
         return handled
 
     @property
-    def parsed_type(self) -> type:
+    def parsed_type(self) -> Type[T]:
         """Get the type this input field expects to parse.
 
         .. note:: This is not meant to be changed after creation.
         """
-        return self._parsed_value
+        return self._parsed_type
 
     @property
     def value(self) -> T:
