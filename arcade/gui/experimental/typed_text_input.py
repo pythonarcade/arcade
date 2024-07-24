@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-from typing import Generic, Type, Callable, TypeVar, Optional
-
+from typing import Callable, Generic, Optional, Type, TypeVar
 
 import arcade
-from arcade.utils import type_name
-from arcade.gui import UIInputText, UIEvent, UITextEvent, UILabel
-from arcade.types import RGBOrA255, Color
 from arcade.color import BLACK, RED, WHITE
+from arcade.gui import UIEvent, UIInputText, UILabel, UITextEvent
+from arcade.types import Color, RGBOrA255
+from arcade.utils import type_name
 
 __all__ = ("UITypedTextInput",)
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 # This is almost certainly doing at least one thing wrong
@@ -80,6 +79,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
         size_hint_min:  See :py:class:`.UIInputText`.
         size_hint_max: See :py:class:`.UIInputText`.
     """
+
     def __init__(
         self,
         parsed_type: Type[T],
@@ -118,7 +118,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            **kwargs
+            **kwargs,
         )
         self.emit_parse_exceptions = emit_parse_exceptions
         self._error_color = error_color
@@ -135,9 +135,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
 
         self._text_color = validated
         self.caret.color = validated
-        self.doc.set_style(
-            0, len(self.text), dict(color=validated)
-        )
+        self.doc.set_style(0, len(self.text), dict(color=validated))
         self.trigger_full_render()
 
     def _checked_parse(self, text: str):
@@ -208,19 +206,22 @@ class UITypedTextInput(UIInputText, Generic[T]):
 if __name__ == "__main__":
     width, height = 400, 400
     center = width / 2
-    from arcade.gui import UIView, NinePatchTexture
-
+    from arcade.gui import NinePatchTexture, UIView
 
     class MyView(UIView):
         def __init__(self):
             super().__init__()
             self.ninepatch = NinePatchTexture(
-               left=5,right=5,top=5,bottom=5,
-               texture=arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png")
+                left=5,
+                right=5,
+                top=5,
+                bottom=5,
+                texture=arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
             )
-            self.instructions=UILabel(
+            self.instructions = UILabel(
                 text="Valid float values -> black text\nNon-float values -> red text",
-                x = center - 150 , height = center + 80,
+                x=center - 150,
+                height=center + 80,
                 text_color=WHITE,
                 multiline=True,
                 font_size=16,
@@ -230,16 +231,16 @@ if __name__ == "__main__":
             self.ui.add(self.instructions)
 
             self.float_box = UITypedTextInput(
-                float, text="0.0",
-                x=center - 100, y=height / 2,
+                float,
+                text="0.0",
+                x=center - 100,
+                y=height / 2,
                 width=200,
                 font_size=16,
                 height=30,
-                emit_parse_exceptions=False
+                emit_parse_exceptions=False,
             ).with_background(texture=self.ninepatch)
-            self.ui.add(
-               self.float_box
-            )
+            self.ui.add(self.float_box)
 
         def on_show_view(self):
             super().on_show_view()
