@@ -10,7 +10,7 @@ import arcade.gui.widgets.buttons
 import arcade.gui.widgets.layout
 import arcade.gui.widgets.text
 
-# Load fonts bumbled with arcade such as the Kenney fonts
+# Load fonts bundled with arcade such as the Kenney fonts
 arcade.resources.load_system_fonts()
 
 
@@ -27,7 +27,7 @@ class MyView(arcade.View):
         # Create a text label
         ui_text_label = arcade.gui.widgets.text.UITextArea(
             text="This is a Text Widget",
-            width=450,
+            width=600,
             height=40,
             font_size=24,
             font_name="Kenney Future",
