@@ -10,7 +10,7 @@ import arcade.gui.widgets.buttons
 import arcade.gui.widgets.layout
 import arcade.gui.widgets.text
 
-# Load fonts bumbled with arcade such as the Kenney fonts
+# Load fonts bundled with arcade such as the Kenney fonts
 arcade.resources.load_system_fonts()
 
 
