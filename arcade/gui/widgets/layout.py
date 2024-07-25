@@ -324,7 +324,8 @@ class UIBoxLayout(UILayout):
         self.size_hint_min = base_width + width, base_height + height
 
     def fit_content(self):
-        """Resize the layout to fit the content. This will take the minimal required size into account."""
+        """Resize the layout to fit the content.
+        This will take the minimal required size into account."""
         self._update_size_hints()
         self.rect = self.rect.resize(self.size_hint_min[0], self.size_hint_min[1])
 
