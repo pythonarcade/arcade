@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
 from functools import cache
+from textwrap import dedent
 from typing import Any, NamedTuple
 import docutils.nodes
 import os
@@ -174,6 +175,14 @@ intersphinx_mapping = {
     'PIL': ('https://pillow.readthedocs.io/en/stable', None),
     'pymunk': ('https://www.pymunk.org/en/latest/', None),
 }
+
+
+# These will be joined as one block and prepended to every source file.
+# Substitutions for |version| and |release| are predefined by Sphinx.
+rst_prolog = dedent(f"""
+    .. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.Player`
+    """.strip())
+
 
 def strip_init_return_typehint(app, what, name, obj, options, signature, return_annotation):
     # Prevent a the `-> None` annotation from appearing after classes.
