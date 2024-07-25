@@ -29,7 +29,7 @@ class MyView(arcade.View):
         self.dropdown.center_on_screen()
         self.ui.add(self.dropdown)
 
-        self.label = self.ui.add(UILabel(text=" ", text_color=(0, 0, 0)))
+        self.label = self.ui.add(UILabel(text=" ", text_color=arcade.color.BLACK))
 
         @self.dropdown.event()
         def on_change(event: UIOnChangeEvent):

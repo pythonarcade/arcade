@@ -389,7 +389,7 @@ class UIWidget(EventDispatcher, ABC):
         """
         self.rect = self.rect.resize(width=width, height=height, anchor=anchor)
 
-    def with_border(self, *, width=2, color=(0, 0, 0)) -> Self:
+    def with_border(self, *, width=2, color=arcade.color.GRAY) -> Self:
         """Sets border properties
 
         Args:

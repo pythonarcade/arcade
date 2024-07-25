@@ -29,8 +29,8 @@ class UIImage(UIWidget):
         self,
         *,
         texture: Union[Texture, NinePatchTexture],
-        width: float = None,
-        height: float = None,
+        width: float | None = None,
+        height: float | None = None,
         **kwargs,
     ):
         self.texture = texture
