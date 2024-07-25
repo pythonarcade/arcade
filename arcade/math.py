@@ -81,7 +81,7 @@ def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> tuple[float, float]:
         v2 (tuple[float, float]): The second point
         u (float): The interpolation value `(0.0 to 1.0)`
     """
-    return (lerp(v1[0], v2[0], u), lerp(v2[1], v2[1], u))
+    return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u))
 
 
 def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> tuple[float, float, float]:
