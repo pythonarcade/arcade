@@ -342,8 +342,8 @@ def stop_sound(player: media.Player) -> None:
 
     Args:
         player: A pyglet :py:class:`~pyglet.media.player.Player`
-            returned from :py:meth:`Sound.play <.Sound.play>` or
-            :func:`play_sound`.
+            returned from :py:meth:`Sound.play` or
+            :py:func:`arcade.play_sound`.
     """
 
     if not isinstance(player, media.Player):
