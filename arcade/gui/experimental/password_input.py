@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import Optional
 
-from arcade.gui import Surface, UIEvent, UIInputText, UITextEvent
+from arcade.gui import Surface, UIEvent, UIInputText, UITextInputEvent
 
 
 class UIPasswordInput(UIInputText):
     """A password input field. The text is hidden with asterisks."""
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
-        if isinstance(event, UITextEvent):
+        if isinstance(event, UITextInputEvent):
             event.text = event.text.replace("\n", "").replace("\r", "")  # remove new lines!
         return super().on_event(event)
 

@@ -4,7 +4,7 @@ from typing import Callable, Generic, Optional, Type, TypeVar, cast
 
 import arcade
 from arcade.color import BLACK, RED, WHITE
-from arcade.gui import UIEvent, UIInputText, UILabel, UITextEvent
+from arcade.gui import UIEvent, UIInputText, UILabel, UITextInputEvent
 from arcade.types import Color, RGBOrA255
 from arcade.utils import type_name
 
@@ -150,7 +150,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         # print(f"In {type_name(event)}")
-        if isinstance(event, UITextEvent) and self._active:
+        if isinstance(event, UITextInputEvent) and self._active:
             text = event.text.replace("\r", "").replace("\r", "")
             event.text = text
 

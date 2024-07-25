@@ -14,7 +14,7 @@ from arcade.gui.events import (
     UIMouseEvent,
     UIMousePressEvent,
     UIMouseScrollEvent,
-    UITextEvent,
+    UITextInputEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,
 )
@@ -449,7 +449,7 @@ class UIInputText(UIWidget):
         # If active pass all non press events to caret
         if self._active:
             # Act on events if active
-            if isinstance(event, UITextEvent):
+            if isinstance(event, UITextInputEvent):
                 self.caret.on_text(event.text)
                 self.trigger_full_render()
             elif isinstance(event, UITextMotionEvent):
