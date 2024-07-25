@@ -172,6 +172,7 @@ class UILabel(UIWidget):
 
     @property
     def text(self):
+        """Text of the label."""
         return self._label.text
 
     @text.setter
@@ -310,7 +311,7 @@ class UITextWidget(UIAnchorLayout):
             anchor_y: Vertical anchor. Valid options are ``top``,
                 ``center``, and ``bottom``.
             align_y: Offset or padding for the vertical anchor.
-        **kwargs: Additional keyword arguments passed to the layout function.
+            **kwargs: Additional keyword arguments passed to the layout function.
         """
         self.remove(self._label)
         return self.add(
@@ -450,6 +451,7 @@ class UIInputText(UIWidget):
 
     @override
     def on_update(self, dt):
+        """Update the caret blink state."""
         # Only trigger render if blinking state changed
         current_state = self._get_caret_blink_state()
         if self._blink_state != current_state:
@@ -458,11 +460,14 @@ class UIInputText(UIWidget):
 
     @override
     def on_event(self, event: UIEvent) -> Optional[bool]:
+        """Handle events for the text input field.
+
+        Text input is only active when the user clicks on the input field."""
         # If not active, check to activate, return
         if not self._active and isinstance(event, UIMousePressEvent):
             if self.rect.point_in_rect(event.pos):
                 self.activate()
-                return EVENT_UNHANDLED
+                return EVENT_HANDLED
 
         # If active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
@@ -506,6 +511,9 @@ class UIInputText(UIWidget):
 
     @property
     def active(self) -> bool:
+        """Return if the text input field is active.
+
+        An active text input field will show a caret and accept text input."""
         return self._active
 
     def activate(self):
@@ -548,6 +556,7 @@ class UIInputText(UIWidget):
 
     @override
     def do_render(self, surface: Surface):
+        """Render the text input field."""
         self._update_layout()
         self.prepare_render(surface)
 
@@ -664,12 +673,14 @@ class UITextArea(UIWidget):
 
     @override
     def do_render(self, surface: Surface):
+        """Render the text area."""
         self._update_layout()
         self.prepare_render(surface)
         self.layout.draw()
 
     @override
     def on_event(self, event: UIEvent) -> Optional[bool]:
+        """Handle scrolling of the widget."""
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.point_in_rect(event.pos):
                 self.layout.view_y += event.scroll_y * self.scroll_speed  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/916

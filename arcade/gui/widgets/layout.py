@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Iterable, Optional, TypeVar, cast
+from typing_extensions import override
 
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UILayout, UIWidget
@@ -85,6 +86,9 @@ class UIAnchorLayout(UILayout):
         )
 
     def do_layout(self):
+        """Executes the layout algorithm.
+
+        Children are placed based on their anchor values."""
         for child, data in self._children:
             self._place_child(child, **data)
 
@@ -265,7 +269,13 @@ class UIBoxLayout(UILayout):
 
         self._update_size_hints()
 
+    @override
     def add(self, child: W, **kwargs) -> W:
+        """Add a widget to this layout
+
+        Args:
+            child: The widget to add to the layout.
+        """
         # subscribe to child's changes, which might affect the own size hint
         bind(child, "_children", self._trigger_size_hint_update)
         bind(child, "rect", self._trigger_size_hint_update)
@@ -275,7 +285,9 @@ class UIBoxLayout(UILayout):
 
         return super().add(child, **kwargs)
 
+    @override
     def remove(self, child: "UIWidget"):
+        """Remove a child from the layout."""
         # unsubscribe from child's changes
         unbind(child, "_children", self._trigger_size_hint_update)
         unbind(child, "rect", self._trigger_size_hint_update)
@@ -323,6 +335,13 @@ class UIBoxLayout(UILayout):
             self._update_size_hints()
 
     def do_layout(self):
+        """Executes the layout algorithm.
+
+        This method is called by the parent layout to place the children, after the rect was set.
+
+        The layout algorithm will place the children based on the size hints next to each other.
+        Depending on the vertical attribute, the children are placed top to bottom or left to right.
+        """
         start_y = self.content_rect.top
         start_x = self.content_rect.left
 
@@ -576,6 +595,7 @@ class UIGridLayout(UILayout):
         )
 
     def remove(self, child: "UIWidget"):
+        """Remove a child from the layout."""
         # unsubscribe from child's changes
         unbind(child, "_children", self._trigger_size_hint_update)
         unbind(child, "rect", self._trigger_size_hint_update)
@@ -643,6 +663,9 @@ class UIGridLayout(UILayout):
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
     def do_layout(self):
+        """Executes the layout algorithm.
+
+        Children are placed in a grid layout based on the size hints."""
         initial_left_x = self.content_rect.left
         start_y = self.content_rect.top
 

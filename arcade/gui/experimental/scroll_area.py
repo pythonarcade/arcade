@@ -19,7 +19,22 @@ from arcade.types import LBWH
 
 
 class UIScrollArea(UIWidget):
-    """A widget that can scroll its children."""
+    """A widget that can scroll its children.
+
+    This widget is highly experimental and only provides a proof of concept.
+
+    Args:
+        x: x position of the widget
+        y: y position of the widget
+        width: width of the widget
+        height: height of the widget
+        children: children of the widget
+        size_hint: size hint of the widget
+        size_hint_min: minimum size hint of the widget
+        size_hint_max: maximum size hint of the widget
+        canvas_size: size of the canvas, which is scrollable
+        **kwargs: passed to UIWidget
+    """
 
     scroll_x = Property[float](default=0.0)
     scroll_y = Property[float](default=0.0)
@@ -60,6 +75,7 @@ class UIScrollArea(UIWidget):
         bind(self, "scroll_y", self.trigger_full_render)
 
     def remove(self, child: "UIWidget"):
+        """Remove a child from the widget."""
         super().remove(child)
         self.trigger_full_render()
 
@@ -87,6 +103,7 @@ class UIScrollArea(UIWidget):
         return rendered
 
     def do_render(self, surface: Surface):
+        """Renders the scolled surface into the given surface."""
         self.prepare_render(surface)
         # draw the whole surface, the scissor box, will limit the visible area on screen
         width, height = self.surface.size
@@ -94,6 +111,7 @@ class UIScrollArea(UIWidget):
         self.surface.draw(LBWH(0, 0, width, height))
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
+        """Handle scrolling of the widget."""
         if isinstance(event, UIMouseDragEvent) and not self.rect.point_in_rect(event.pos):
             return EVENT_UNHANDLED
 

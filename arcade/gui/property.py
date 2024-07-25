@@ -49,6 +49,11 @@ class Property(Generic[P]):
 
     __slots__ = ("name", "default_factory", "obs")
     name: str
+    """Attribute name of the property"""
+    default_factory: Callable[[Any, Any], P]
+    """Default factory to create the initial value"""
+    obs: WeakKeyDictionary[Any, _Obs]
+    """Weak dictionary to hold the value and listeners"""
 
     def __init__(
         self,
@@ -69,10 +74,12 @@ class Property(Generic[P]):
         return obs
 
     def get(self, instance) -> P:
+        """Get value for owner instance"""
         obs = self._get_obs(instance)
         return obs.value
 
     def set(self, instance, value):
+        """Set value for owner instance"""
         obs = self._get_obs(instance)
         if obs.value != value:
             obs.value = value
@@ -251,6 +258,7 @@ class DictProperty(Property):
 
     @override
     def set(self, instance, value: dict):
+        """Set value for owner instance, wraps the dict into an observable dict."""
         value = _ObservableDict(self, instance, value)
         super().set(instance, value)
 
@@ -299,42 +307,50 @@ class _ObservableList(list):
 
     @override
     def append(self, *args):
+        """Proxy for list.append() which dispatches the change event."""
         list.append(self, *args)
         self.dispatch()
 
     @override
     def clear(self):
+        """Proxy for list.clear() which dispatches the change event."""
         list.clear(self)
         self.dispatch()
 
     @override
     def remove(self, *args):
+        """Proxy for list.remove() which dispatches the change event."""
         list.remove(self, *args)
         self.dispatch()
 
     @override
     def insert(self, *args):
+        """Proxy for list.insert() which dispatches the change event."""
         list.insert(self, *args)
         self.dispatch()
 
     @override
     def pop(self, *args):
+        """Proxy for list.pop() which dispatches the change"""
         result = list.pop(self, *args)
         self.dispatch()
         return result
 
     @override
     def extend(self, *args):
+        """Proxy for list.extend() which dispatches the change event."""
         list.extend(self, *args)
         self.dispatch()
 
     @override
     def sort(self, **kwargs):
+        """Proxy for list.sort() which dispatches the change event."""
         list.sort(self, **kwargs)
         self.dispatch()
 
     @override
     def reverse(self):
+        """Proxy for list.reverse() which dispatches the change event."""
         list.reverse(self)
         self.dispatch()
 
@@ -349,5 +365,6 @@ class ListProperty(Property):
 
     @override
     def set(self, instance, value: dict):
+        """Set value for owner instance, wraps the list into an observable list."""
         value = _ObservableList(self, instance, value)  # type: ignore
         super().set(instance, value)

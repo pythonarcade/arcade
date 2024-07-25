@@ -304,28 +304,33 @@ class UIWidget(EventDispatcher, ABC):
         self.rect = self.rect.scale(new_scale=factor, anchor=anchor)
 
     @property
-    def left(self):
+    def left(self) -> float:
+        """Left coordinate of the widget"""
         return self.rect.left
 
     @property
-    def right(self):
+    def right(self) -> float:
+        """Right coordinate of the widget"""
         return self.rect.right
 
     @property
-    def bottom(self):
+    def bottom(self) -> float:
+        """Bottom coordinate of the widget"""
         return self.rect.bottom
 
     @property
-    def top(self):
+    def top(self) -> float:
+        """Top coordinate of the widget"""
         return self.rect.top
 
     @property
-    def position(self):
+    def position(self) -> Vec2:
         """Returns bottom left coordinates"""
         return self.rect.bottom_left
 
     @property
-    def center(self):
+    def center(self) -> Vec2:
+        """Returns center coordinates"""
         return self.rect.center
 
     @center.setter
@@ -333,15 +338,18 @@ class UIWidget(EventDispatcher, ABC):
         self.rect = self.rect.align_center(value)
 
     @property
-    def center_x(self):
+    def center_x(self) -> float:
+        """Center x coordinate"""
         return self.rect.x
 
     @property
-    def center_y(self):
+    def center_y(self) -> float:
+        """Center y coordinate"""
         return self.rect.y
 
     @property
     def padding(self):
+        """Returns padding as tuple (top, right, bottom, left)"""
         return (
             self._padding_top,
             self._padding_right,
@@ -365,12 +373,20 @@ class UIWidget(EventDispatcher, ABC):
 
     @property
     def children(self) -> List["UIWidget"]:
+        """Provides all child widgets."""
         return [child for child, data in self._children]
 
     def __iter__(self):
         return iter(self.children)
 
     def resize(self, *, width=None, height=None, anchor: Vec2 = AnchorPoint.CENTER):
+        """Resizes the widget.
+
+        Args:
+            width (optional): new width
+            height (optional): new height
+            anchor (optional): anchor point for resizing, default is center
+        """
         self.rect = self.rect.resize(width=width, height=height, anchor=anchor)
 
     def with_border(self, *, width=2, color=(0, 0, 0)) -> Self:
@@ -395,7 +411,7 @@ class UIWidget(EventDispatcher, ABC):
         bottom: Optional[int] = None,
         left: Optional[int] = None,
         all: Optional[int] = None,
-    ) -> "UIWidget":
+    ) -> Self:
         """Changes the padding to the given values if set. Returns itself
 
         Returns:
@@ -418,7 +434,7 @@ class UIWidget(EventDispatcher, ABC):
         *,
         color: Union[None, Color] = ...,  # type: ignore
         texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
-    ) -> "UIWidget":
+    ) -> Self:
         """Set widgets background.
 
         A color or texture can be used for background,
@@ -440,19 +456,27 @@ class UIWidget(EventDispatcher, ABC):
         return self
 
     @property
-    def content_size(self):
+    def content_size(self) -> Tuple[float, float]:
+        """Returns the size of the content area,
+        which is the size of the widget minus padding and border."""
         return self.content_width, self.content_height
 
     @property
-    def content_width(self):
+    def content_width(self) -> float:
+        """Returns the width of the content area,
+        which is the width of the widget minus padding and border."""
         return self.rect.width - 2 * self._border_width - self._padding_left - self._padding_right
 
     @property
-    def content_height(self):
+    def content_height(self) -> float:
+        """Returns the height of the content area,
+        which is the height of the widget minus padding and border."""
         return self.rect.height - 2 * self._border_width - self._padding_top - self._padding_bottom
 
     @property
-    def content_rect(self):
+    def content_rect(self) -> Rect:
+        """Returns the content area as a rect.
+        The content area is the area of the widget minus padding and border."""
         return LBWH(
             self.left + self._border_width + self._padding_left,
             self.bottom + self._border_width + self._padding_bottom,
@@ -461,19 +485,28 @@ class UIWidget(EventDispatcher, ABC):
         )
 
     @property
-    def width(self):
+    def width(self) -> float:
+        """Width of the widget."""
         return self.rect.width
 
     @property
-    def height(self):
+    def height(self) -> float:
+        """Height of the widget."""
         return self.rect.height
 
     @property
     def size(self) -> Vec2:
+        """Size of the widget."""
         return Vec2(self.width, self.height)
 
     def center_on_screen(self: W) -> W:
-        """Places this widget in the center of the current window."""
+        """Places this widget in the center of the current window.
+
+        This is a convenience method for simple centering of widgets without using
+        a layout.
+
+        In general, it is recommended to use layouts for more complex UIs.
+        """
         center = arcade.get_window().center
         self.rect = self.rect.align_center(center)
         return self
@@ -499,8 +532,11 @@ class UIInteractiveWidget(UIWidget):
 
     # States
     hovered = Property(False)
+    """True if the mouse is over the widget"""
     pressed = Property(False)
+    """True if the widget is pressed"""
     disabled = Property(False)
+    """True if the widget is disabled"""
 
     def __init__(
         self,
@@ -534,6 +570,10 @@ class UIInteractiveWidget(UIWidget):
         bind(self, "disabled", self.trigger_render)
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
+        """Handles mouse events and triggers on_click event if the widget is clicked.
+
+        This also sets the hovered and pressed state of the widget.
+        """
         if super().on_event(event):
             return EVENT_HANDLED
 
@@ -572,6 +612,7 @@ class UIInteractiveWidget(UIWidget):
         return EVENT_UNHANDLED
 
     def on_click(self, event: UIOnClickEvent):
+        """Triggered when the widget is clicked."""
         pass
 
 
@@ -624,14 +665,17 @@ class UIDummy(UIInteractiveWidget):
         self.border_width = 0
 
     def on_click(self, event: UIOnClickEvent):
+        """Prints the rect and changes the color"""
         print("UIDummy.rect:", self.rect)
         self.color = Color.random(a=255)
 
     def on_update(self, dt):
+        """Update the border of the widget if hovered"""
         self.border_width = 2 if self.hovered else 0
         self.border_color = arcade.color.WHITE if self.pressed else arcade.color.BATTLESHIP_GREY
 
     def do_render(self, surface: Surface):
+        """Render solid color"""
         self.prepare_render(surface)
         surface.clear(self.color)
 
@@ -678,12 +722,14 @@ class UISpriteWidget(UIWidget):
         self._sprite = sprite
 
     def on_update(self, dt):
+        """Pass update event to sprite"""
         if self._sprite:
             self._sprite.update()
             self._sprite.update_animation(dt)
             self.trigger_render()
 
     def do_render(self, surface: Surface):
+        """Render the sprite"""
         self.prepare_render(surface)
         surface.clear(color=TRANSPARENT_BLACK)
         if self._sprite is not None:
@@ -768,7 +814,7 @@ class UISpace(UIWidget):
             parent should be requested
         size_hint_min: min width and height in pixel
         size_hint_max: max width and height in pixel
-        style: not used
+        **kwargs: passed to UIWidget
     """
 
     def __init__(
@@ -792,11 +838,13 @@ class UISpace(UIWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
         self._color = color
 
     @property
     def color(self):
+        """Color of the widget"""
         return self._color
 
     @color.setter
@@ -805,6 +853,7 @@ class UISpace(UIWidget):
         self.trigger_render()
 
     def do_render(self, surface: Surface):
+        """Render the widget, mainly the background color"""
         self.prepare_render(surface)
         if self._color:
             surface.clear(self._color)

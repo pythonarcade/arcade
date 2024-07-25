@@ -159,6 +159,7 @@ class UIButtonRow(UIBoxLayout):
         return button
 
     def on_action(self, event: UIOnActionEvent):
+        """Called when button was pressed, override this method to handle button presses."""
         pass
 
     def _on_click(self, event: UIOnClickEvent):

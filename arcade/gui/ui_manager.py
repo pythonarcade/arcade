@@ -308,6 +308,7 @@ class UIManager(EventDispatcher):
             )
 
     def on_update(self, time_delta):
+        """Dispatches an update event to all widgets in the UIManager."""
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
     def draw(self) -> None:
@@ -370,49 +371,60 @@ class UIManager(EventDispatcher):
         return self.dispatch_event("on_event", event)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+        """Converts mouse motion event to UI event and dispatches it."""
         x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(UIMouseMovementEvent(self, round(x_), round(y_), dx, dy))
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        """Converts mouse press event to UI event and dispatches it."""
         x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(
             UIMousePressEvent(self, round(x_), round(y_), button, modifiers)
         )
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int):
+        """Converts mouse drag event to UI event and dispatches it."""
         x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(
             UIMouseDragEvent(self, round(x_), round(y_), dx, dy, buttons, modifiers)
         )
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
+        """Converts mouse release event to UI event and dispatches it."""
         x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(
             UIMouseReleaseEvent(self, round(x_), round(y_), button, modifiers)
         )
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        """Converts mouse scroll event to UI event and dispatches it."""
         x_, y_ = self.adjust_mouse_coordinates(x, y)
         return self.dispatch_ui_event(
             UIMouseScrollEvent(self, round(x_), round(y_), scroll_x, scroll_y)
         )
 
     def on_key_press(self, symbol: int, modifiers: int):
+        """Converts key press event to UI event and dispatches it."""
         return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore
 
     def on_key_release(self, symbol: int, modifiers: int):
+        """Converts key release event to UI event and dispatches it."""
         return self.dispatch_ui_event(UIKeyReleaseEvent(self, symbol, modifiers))  # type: ignore
 
     def on_text(self, text):
+        """Converts text event to UI event and dispatches it."""
         return self.dispatch_ui_event(UITextEvent(self, text))
 
     def on_text_motion(self, motion):
+        """Converts text motion event to UI event and dispatches it."""
         return self.dispatch_ui_event(UITextMotionEvent(self, motion))
 
     def on_text_motion_select(self, motion):
+        """Converts text motion select event to UI event and dispatches it."""
         return self.dispatch_ui_event(UITextMotionSelectEvent(self, motion))
 
     def on_resize(self, width, height):
+        """Resize the UIManager and all of its surfaces."""
         # resize ui camera
         bottom_left = self.camera.bottom_left
         self.camera.match_screen()
@@ -431,6 +443,7 @@ class UIManager(EventDispatcher):
 
     @property
     def rect(self) -> Rect:  # type: ignore
+        """The rect of the UIManager, which is the window size."""
         return LBWH(0, 0, *self.window.get_size())
 
     def debug(self):

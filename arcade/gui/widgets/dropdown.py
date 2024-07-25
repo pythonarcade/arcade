@@ -170,6 +170,8 @@ class UIDropdown(UILayout):
         self._overlay.hide()
 
     def do_layout(self):
+        """Position the overlay, this is not a common thing to do in do_layout,
+        but is required for the dropdown."""
         self._default_button.rect = self.rect
 
         # resize layout to contain widgets

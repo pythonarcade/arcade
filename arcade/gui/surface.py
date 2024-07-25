@@ -86,16 +86,17 @@ class Surface:
 
     @property
     def pixel_ratio(self) -> float:
+        """The pixel ratio of the surface"""
         return self._pixel_ratio
 
     @property
     def width(self) -> int:
-        """Width of the surface."""
+        """Width of the surface"""
         return self._size[0]
 
     @property
     def height(self) -> int:
-        """Height of the surface."""
+        """Height of the surface"""
         return self._size[1]
 
     def clear(self, color: RGBA255 = TRANSPARENT_BLACK):

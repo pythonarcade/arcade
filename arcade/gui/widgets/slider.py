@@ -312,6 +312,11 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
 
     @override
     def get_current_state(self) -> str:
+        """Get the current state of the slider.
+
+        Returns:
+            ""normal"", ""hover"", ""press"" or ""disabled"".
+        """
         if self.disabled:
             return "disabled"
         elif self.pressed:

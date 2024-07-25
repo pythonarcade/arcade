@@ -105,10 +105,12 @@ class UITextureToggle(UIInteractiveWidget):
 
     @override
     def on_click(self, event: UIOnClickEvent):
+        """Change the value of the button on click."""
         self.value = not self.value
 
     @override
     def do_render(self, surface: Surface):
+        """Render the button, using texture depending on the state."""
         self.prepare_render(surface)
         tex = self.normal_on_tex if self.value else self.normal_off_tex
         if self.disabled:

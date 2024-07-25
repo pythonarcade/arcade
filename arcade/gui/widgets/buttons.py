@@ -315,6 +315,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
             return "normal"
 
     def do_render(self, surface: Surface):
+        """Render a flat button, graphical representation depends on the current state."""
         self.prepare_render(surface)
         style: UIFlatButton.UIStyle = self.get_current_style()
 

@@ -45,6 +45,7 @@ class UIDraggableMixin(UILayout):
 
     @override
     def on_event(self, event) -> Optional[bool]:
+        """Handle dragging of the widget."""
         if isinstance(event, UIMouseDragEvent) and self.rect.point_in_rect(event.pos):
             self.rect = self.rect.move(event.dx, event.dy)
             self.trigger_full_render()
@@ -65,6 +66,7 @@ class UIMouseFilterMixin(UIWidget):
 
     @override
     def on_event(self, event) -> Optional[bool]:
+        """Catch all mouse events, that are inside this widget."""
         if super().on_event(event):
             return EVENT_HANDLED
 
