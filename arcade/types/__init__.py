@@ -208,11 +208,16 @@ Velocity = tuple[AsFloat, AsFloat]
 # --- End potentially obsolete annotations ---
 
 
-class Lerpable(Protocol):
+_T_contra = TypeVar("_T_contra", contravariant=True)
+_R_co = TypeVar("_R_co", covariant=True)
+
+
+class Lerpable(Protocol[_T_contra, _R_co]):
     """Matches types which work with :py:func:`arcade.math.lerp`."""
-    def __add__(self, other) -> Self: ...
-    def __sub__(self, other) -> Self: ...
-    def __mul__(self, other) -> Self: ...
+
+    def __add__(self, value: _T_contra, /) -> _R_co: ...
+    def __sub__(self, value: _T_contra, /) -> _R_co: ...
+    def __mul__(self, value: _T_contra, /) -> _R_co: ...
 
 
 # Path handling
