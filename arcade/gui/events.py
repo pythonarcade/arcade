@@ -160,7 +160,6 @@ class UITextInputEvent(UITextEvent):
 
 
 @dataclass
-
 class UITextMotionEvent(UITextEvent):
     """Triggered when text cursor moves."""
 
