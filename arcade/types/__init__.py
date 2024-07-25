@@ -214,8 +214,8 @@ _R_co = TypeVar("_R_co", covariant=True)
 class Lerpable(Protocol[_T_contra, _R_co]):
     """Matches types which work with :py:func:`arcade.math.lerp`."""
 
-    # The / is necessary for pyright to be happy since float's
-    # implementations of these functions are positional only.
+    # The / matches float and similar operations to keep pyright
+    # happy since built-in arithmetic makes them positional only.
     # See https://peps.python.org/pep-0570/
     def __add__(self, value: _T_contra, /) -> _R_co: ...
     def __sub__(self, value: _T_contra, /) -> _R_co: ...
