@@ -26,7 +26,8 @@ from __future__ import annotations
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable
+from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable, Protocol
+from typing_extensions import Self
 
 from pytiled_parser import Properties
 
@@ -124,6 +125,7 @@ __all__ = [
     "Box",
     "LRBTNF",
     "XYZWHD",
+    "Lerpable",
     "RGB",
     "RGBA",
     "RGBOrA",
@@ -204,6 +206,13 @@ IPoint = tuple[int, int]
 Velocity = tuple[AsFloat, AsFloat]
 
 # --- End potentially obsolete annotations ---
+
+
+class Lerpable(Protocol):
+    """Matches types which work with :py:func:`arcade.math.lerp`."""
+    def __add__(self, other) -> Self: ...
+    def __sub__(self, other) -> Self: ...
+    def __mul__(self, other) -> Self: ...
 
 
 # Path handling
