@@ -41,7 +41,7 @@ class Sound:
     please see:
 
     * :ref:`sound-loading-modes-streaming`
-    * The py:class:`pyglet.media.codes.base.StreamingSource` class used
+    * The :py:class:`pyglet.media.codecs.base.StreamingSource` class used
       internally
 
     To learn about cross-platform loading and file format concerns,
