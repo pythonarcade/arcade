@@ -27,7 +27,7 @@ from arcade.gui.events import (
     UIMouseReleaseEvent,
     UIMouseScrollEvent,
     UIOnUpdateEvent,
-    UITextEvent,
+    UITextInputEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,
 )
@@ -413,7 +413,7 @@ class UIManager(EventDispatcher):
 
     def on_text(self, text):
         """Converts text event to UI event and dispatches it."""
-        return self.dispatch_ui_event(UITextEvent(self, text))
+        return self.dispatch_ui_event(UITextInputEvent(self, text))
 
     def on_text_motion(self, motion):
         """Converts text motion event to UI event and dispatches it."""

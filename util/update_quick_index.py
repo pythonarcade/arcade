@@ -328,7 +328,8 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "title": "GUI Experimental Features",
         "use_declarations_in": [
             "arcade.gui.experimental.password_input",
-            "arcade.gui.experimental.scroll_area"
+            "arcade.gui.experimental.scroll_area",
+            "arcade.gui.experimental.typed_text_input"
         ]
     },
     "advanced_cameras.rst": {

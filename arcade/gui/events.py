@@ -135,33 +135,41 @@ class UIKeyReleaseEvent(UIKeyEvent):
 
 @dataclass
 class UITextEvent(UIEvent):
-    """Covers all the text cursor event.
+    """Base class for text-related events.
 
-    Args:
-        text: The text entered.
+    It holds no data of its own.
+    """
+
+    pass
+
+
+@dataclass
+class UITextInputEvent(UITextEvent):
+    """Triggered whenever the user inputs any text.
+
+    Usually, this will be after :py:class:`UIKeyPressEvent` and before a
+    :py:class:`UIKeyReleaseEvent`. It may also occur when:
+
+    * the user holds down a key to repeat letters or spaces
+    * a platform-specific input method, such as pen input on a tablet PC
+
+    To learn more, see pyglet's `relevant documentation <https://pyglet.readthedocs.io/en/development/modules/window.html#pyglet.window.Window.on_text>`_.
     """
 
     text: str
 
 
 @dataclass
-class UITextMotionEvent(UIEvent):
-    """Triggered when text cursor moves.
 
-    Args:
-        motion: The motion of the cursor.
-    """
+class UITextMotionEvent(UITextEvent):
+    """Triggered when text cursor moves."""
 
     motion: Any
 
 
 @dataclass
-class UITextMotionSelectEvent(UIEvent):
-    """Triggered when the text cursor moves selecting the text with it.
-
-    Args:
-        selection: The motion of the selection.
-    """
+class UITextMotionSelectEvent(UITextEvent):
+    """Triggered when the text cursor moves selecting the text with it."""
 
     selection: Any
 

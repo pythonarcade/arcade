@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
-from typing import Any
+from functools import cache
+from typing import Any, NamedTuple
 import docutils.nodes
 import os
 import re
@@ -55,6 +56,7 @@ extensions = [
     'sphinx.ext.viewcode',  # display code with line numbers and line highlighting
     'sphinx_copybutton',  # Adds a copy button to code blocks
     'sphinx_sitemap',  # sitemap.xml generation
+    'doc.extensions.prettyspecialmethods',  # Forker plugin for prettifying special methods
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -264,19 +266,35 @@ def generate_color_table(filename, source):
     source[0] += append_text
 
 
-def source_read_handler(_app, docname, source):
+@cache
+def get_module_root(doc_confdir):  # pending: revert #2304 or figure out a better solution
+    """Temp fix since RTD doesn't use our make.py and offers no clean way to set build dir
+
+    1. https://github.com/pythonarcade/arcade/pull/2304/ tried to change the build dir in make.py
+    2. The readthedocs config does not use make.py
+    3. They don't seem to offer any support for non-default build locations
+    4. Instead, the options seem to be:
+       * Weird environment variable API that's managed from their admin console (bus factor++)
+       * Overwrite the entire build process https://blog.readthedocs.com/build-customization/
+    """
+    return doc_confdir.parent / "arcade"
+
+
+def source_read_handler(_app, doc_name: str, source):
     """
     Event handler for source-read event.
     Where we can modify the source of a document before it is parsed.
     """
-    file_path = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(file_path)
+    def _get_dir(app, path):
+        path = get_module_root(_app.confdir) / path
+        print(f"Generated corrected module path: {path!r}")
+        return path
 
-    # Transform source for arcade.color and arcade.csscolor
-    if docname == "api_docs/arcade.color":
-        generate_color_table("../arcade/color/__init__.py", source)
-    elif docname == "api_docs/arcade.csscolor":
-        generate_color_table("../arcade/csscolor/__init__.py", source)
+    # Inject the color tables into the source
+    if doc_name == "api_docs/arcade.color":
+        generate_color_table(_get_dir(_app, "color/__init__.py"), source)
+    elif doc_name == "api_docs/arcade.csscolor":
+        generate_color_table(_get_dir(_app, "csscolor/__init__.py"), source)
 
 
 def on_autodoc_process_bases(app, name, obj, options, bases):
@@ -285,8 +303,26 @@ def on_autodoc_process_bases(app, name, obj, options, bases):
 
 
 
+class A(NamedTuple):
+    dirname: str
+    comment: str = ""
+
+
+APP_CONFIG_DIRS = (
+    A('outdir'),
+    A('srcdir', 'NOTE: This is reST source, not Python source!'),
+    A('confdir'),
+    A('doctreedir'),
+)
 
 def setup(app):
+    print("Diagnostic info since readthedocs doesn't use our make.py:")
+    for attr, comment in APP_CONFIG_DIRS:
+        val = getattr(app, attr, None)
+        print(f"  {attr}: {val!r}")
+        if comment:
+            print(f"    {comment}")
+
     # Separate stylesheets loosely by category.
     app.add_css_file("css/colors.css")
     app.add_css_file("css/layout.css")
