@@ -154,6 +154,9 @@ class UITextInputEvent(UITextEvent):
     * a platform-specific input method, such as pen input on a tablet PC
 
     To learn more, see pyglet's `relevant documentation <https://pyglet.readthedocs.io/en/development/modules/window.html#pyglet.window.Window.on_text>`_.
+
+    Args:
+        text: The text inputted. Often a single character.
     """
 
     text: str
@@ -161,14 +164,22 @@ class UITextInputEvent(UITextEvent):
 
 @dataclass
 class UITextMotionEvent(UITextEvent):
-    """Triggered when text cursor moves."""
+    """Triggered when text cursor moves.
+
+    Args:
+        motion: The motion of the cursor
+    """
 
     motion: Any
 
 
 @dataclass
 class UITextMotionSelectEvent(UITextEvent):
-    """Triggered when the text cursor moves selecting the text with it."""
+    """Triggered when the text cursor moves selecting the text with it.
+
+    Args:
+        selection: The selection of the cursor
+    """
 
     selection: Any
 
