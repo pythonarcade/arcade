@@ -27,7 +27,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable, Protocol
-from typing_extensions import Self
 
 from pytiled_parser import Properties
 
