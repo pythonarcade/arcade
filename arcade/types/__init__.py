@@ -124,7 +124,7 @@ __all__ = [
     "Box",
     "LRBTNF",
     "XYZWHD",
-    "Lerpable",
+    "HasAddSubMul",
     "RGB",
     "RGBA",
     "RGBOrA",
@@ -211,7 +211,7 @@ _T_contra = TypeVar("_T_contra", contravariant=True)
 _R_co = TypeVar("_R_co", covariant=True)
 
 
-class Lerpable(Protocol[_T_contra, _R_co]):
+class HasAddSubMul(Protocol[_T_contra, _R_co]):
     """Matches types which work with :py:func:`arcade.math.lerp`."""
 
     # The / matches float and similar operations to keep pyright

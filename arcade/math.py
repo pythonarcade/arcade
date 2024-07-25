@@ -6,7 +6,7 @@ from typing import Sequence, TypeVar, Union
 
 from pyglet.math import Vec2
 
-from arcade.types import AsFloat, Lerpable, Point, Point2
+from arcade.types import AsFloat, HasAddSubMul, Point, Point2
 from arcade.types.rect import Rect
 from arcade.types.vector_like import Point3
 
@@ -50,7 +50,7 @@ V_2D = Union[tuple[AsFloat, AsFloat], Sequence[AsFloat]]
 V_3D = Union[tuple[AsFloat, AsFloat, AsFloat], Sequence[AsFloat]]
 
 
-L = TypeVar("L", bound=Lerpable)
+L = TypeVar("L", bound=HasAddSubMul)
 
 
 def lerp(v1: L, v2: L, u: float) -> L:
@@ -65,8 +65,8 @@ def lerp(v1: L, v2: L, u: float) -> L:
     * A custom :py:class:`Lerpable` object
 
     Args:
-        v1 (Lerpable): The first value
-        v2 (Lerpable): The second value
+        v1 (HasAddSubMul): The first value
+        v2 (HasAddSubMul): The second value
         u: The interpolation value `(0.0 to 1.0)`
     """
     return v1 + ((v2 - v1) * u)
