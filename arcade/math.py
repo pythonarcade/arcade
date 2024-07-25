@@ -4,7 +4,7 @@ import math
 import random
 from typing import Sequence, TypeVar, Union
 
-from pyglet.math import Vec2
+from pyglet.math import Vec2, Vec3
 
 from arcade.types import AsFloat, HasAddSubMul, Point, Point2
 from arcade.types.rect import Rect
@@ -54,15 +54,23 @@ L = TypeVar("L", bound=HasAddSubMul)
 
 
 def lerp(v1: L, v2: L, u: float) -> L:
-    """Linearly interpolate two :py:class:`~arcade.types.Lerpable` values.
+    """Linearly interpolate two values which support arithmetic operators.
 
-    .. tip:: For angles, use :py:func:`lerp_angle`.
+    Both ``v1`` and ``v2`` must be of compatible types and support
+    the following operators:
 
-    The values must be of compatible types:
+    * ``+`` (:py:meth:`~object.__add__`)
+    * ``-`` (:py:meth:`~object.__sub__`)
+    * ``*`` (:py:meth:`~object.__mul__`)
 
-    * Two scalar values such as :py:class:`float`
-    * A two :py:mod:`pyglet.math` vectors of the same size
-    * A custom :py:class:`Lerpable` object
+    This means that in certain cases, you may want to use another
+    function:
+
+    * For angles, use :py:func:`lerp_angle`.
+    * To convert points as arbitary sequences, use:
+
+      * :py:func:`lerp_2d`
+      * :py:func:`lerp_3d`
 
     Args:
         v1 (HasAddSubMul): The first value
@@ -72,28 +80,32 @@ def lerp(v1: L, v2: L, u: float) -> L:
     return v1 + ((v2 - v1) * u)
 
 
-def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> tuple[float, float]:
-    """
-    Linearly interpolate between two 2D points.
+def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> Vec2:
+    """Linearly interpolate between two 2D points passed as sequences.
+
+    .. tip:: This function returns a :py:class:`Vec2` you can use
+             with :py:func`lerp` .
 
     Args:
-        v1 (tuple[float, float]): The first point
-        v2 (tuple[float, float]): The second point
+        v1: The first point as a sequence of 2 values.
+        v2: The second point as a sequence of 2 values.
         u (float): The interpolation value `(0.0 to 1.0)`
     """
-    return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u))
+    return Vec2(lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u))
 
 
-def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> tuple[float, float, float]:
-    """
-    Linearly interpolate between two 3D points.
+def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> Vec3:
+    """Linearly interpolate between two 3D points passed as sequences.
+
+    .. tip:: This function returns a :py:class:`Vec2` you can use
+             with :py:func`lerp`.
 
     Args:
-        v1 (tuple[float, float, float]): The first point
-        v2 (tuple[float, float, float]): The second point
+        v1: The first point as a sequence of 3 values.
+        v2: The second point as a sequence of 3 values.
         u (float): The interpolation value `(0.0 to 1.0)`
     """
-    return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
+    return Vec3(lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
 
 
 def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:
