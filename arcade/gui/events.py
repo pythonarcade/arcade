@@ -94,7 +94,7 @@ class UIKeyReleaseEvent(UIKeyEvent):
 
 
 @dataclass
-class UITextEvent(UIEvent):
+class UITextInputEvent(UIEvent):
     """Triggered whenever the user inputs any text.
 
     Usually, this will be after :py:class:`UIKeyPressEvent` and before a
