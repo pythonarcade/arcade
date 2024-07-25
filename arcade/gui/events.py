@@ -95,7 +95,16 @@ class UIKeyReleaseEvent(UIKeyEvent):
 
 @dataclass
 class UITextEvent(UIEvent):
-    """Covers all the text cursor event."""
+    """Triggered whenever the user inputs any text.
+
+    Usually, this will be after :py:class:`UIKeyPressEvent` and before a
+    :py:class:`UIKeyReleaseEvent`. It may also occur when:
+
+    * the user holds down a key to repeat letters or spaces
+    * a platform-specific input method, such as pen input on a tablet PC
+
+    To learn more, see pyglet's `relevant documentation <https://pyglet.readthedocs.io/en/development/modules/window.html#pyglet.window.Window.on_text>`_.
+    """
 
     text: str
 
