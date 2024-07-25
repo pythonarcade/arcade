@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import math
 import random
-from typing import Sequence, Union
+from typing import Sequence, Union, TypeVar
 
 from pyglet.math import Vec2
 
-from arcade.types import AsFloat, Point, Point2
+from arcade.types import AsFloat, Point, Point2, Lerpable
 from arcade.types.rect import Rect
 from arcade.types.vector_like import Point3
 
@@ -35,6 +35,7 @@ __all__ = [
 ]
 
 
+
 def clamp(a, low: float, high: float) -> float:
     """Clamp a number between a range.
 
@@ -50,13 +51,16 @@ V_2D = Union[tuple[AsFloat, AsFloat], Sequence[AsFloat]]
 V_3D = Union[tuple[AsFloat, AsFloat, AsFloat], Sequence[AsFloat]]
 
 
-def lerp(v1: AsFloat, v2: AsFloat, u: float) -> float:
+L = TypeVar('L', bound=Lerpable)
+
+
+def lerp(v1: L, v2: L, u: float) -> L:
     """linearly interpolate between two values
 
     Args:
-        v1 (float): The first value
-        v2 (float): The second value
-        u (float): The interpolation value `(0.0 to 1.0)`
+        v1: The first value
+        v2: The second value
+        u: The interpolation value `(0.0 to 1.0)`
     """
     return v1 + ((v2 - v1) * u)
 
@@ -83,6 +87,7 @@ def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> tuple[float, float, float]:
         u (float): The interpolation value `(0.0 to 1.0)`
     """
     return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
+
 
 
 def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:
