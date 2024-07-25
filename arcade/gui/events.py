@@ -92,13 +92,15 @@ class UIKeyReleaseEvent(UIKeyEvent):
 
     pass
 
+
 @dataclass
 class UITextEvent(UIEvent):
     """Base class for text-related events.
 
     It holds no data of its own.
     """
-    ...
+
+    pass
 
 
 @dataclass
