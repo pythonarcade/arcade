@@ -92,9 +92,17 @@ class UIKeyReleaseEvent(UIKeyEvent):
 
     pass
 
+@dataclass
+class UITextEvent(UIEvent):
+    """Base class for text-related events.
+
+    It holds no data of its own.
+    """
+    ...
+
 
 @dataclass
-class UITextInputEvent(UIEvent):
+class UITextInputEvent(UITextEvent):
     """Triggered whenever the user inputs any text.
 
     Usually, this will be after :py:class:`UIKeyPressEvent` and before a
@@ -110,14 +118,14 @@ class UITextInputEvent(UIEvent):
 
 
 @dataclass
-class UITextMotionEvent(UIEvent):
+class UITextMotionEvent(UITextEvent):
     """Triggered when text cursor moves."""
 
     motion: Any
 
 
 @dataclass
-class UITextMotionSelectEvent(UIEvent):
+class UITextMotionSelectEvent(UITextEvent):
     """Triggered when the text cursor moves selecting the text with it."""
 
     selection: Any
