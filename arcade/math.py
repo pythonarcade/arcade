@@ -35,7 +35,6 @@ __all__ = [
 ]
 
 
-
 def clamp(a, low: float, high: float) -> float:
     """Clamp a number between a range.
 
@@ -55,14 +54,23 @@ L = TypeVar('L', bound=Lerpable)
 
 
 def lerp(v1: L, v2: L, u: float) -> L:
-    """linearly interpolate between two values
+    """Linearly interpolate two :py:class:`~arcade.types.Lerpable` values.
+
+    .. tip:: For angles, use :py:func:`lerp_angle`.
+
+    The values must be of compatible types:
+
+    * Two scalar values such as :py:class:`float`
+    * A two :py:mod:`pyglet.math` vectors of the same size
+    * A custom :py:class:`Lerpable` object
 
     Args:
-        v1: The first value
-        v2: The second value
+        v1 (Lerpable): The first value
+        v2 (Lerpable): The second value
         u: The interpolation value `(0.0 to 1.0)`
     """
     return v1 + ((v2 - v1) * u)
+
 
 
 def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> tuple[float, float]:
@@ -87,7 +95,6 @@ def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> tuple[float, float, float]:
         u (float): The interpolation value `(0.0 to 1.0)`
     """
     return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
-
 
 
 def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:
