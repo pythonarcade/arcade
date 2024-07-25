@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Iterable, Optional, TypeVar, cast
+
 from typing_extensions import override
 
 from arcade.gui.property import bind, unbind

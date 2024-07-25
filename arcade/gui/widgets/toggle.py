@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from typing import Optional
-from typing_extensions import override
 
 from PIL import ImageEnhance
+from typing_extensions import override
 
 from arcade import Texture
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent

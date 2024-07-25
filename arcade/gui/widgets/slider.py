@@ -3,9 +3,9 @@ from __future__ import annotations
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 from typing import Mapping, Optional, Union
-from typing_extensions import override
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
+from typing_extensions import override
 
 import arcade
 from arcade import Texture

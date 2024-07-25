@@ -3,8 +3,9 @@ from __future__ import annotations
 import sys
 import traceback
 from typing import Any, Callable, Generic, Optional, TypeVar, cast
-from typing_extensions import override
 from weakref import WeakKeyDictionary, ref
+
+from typing_extensions import override
 
 P = TypeVar("P")
 

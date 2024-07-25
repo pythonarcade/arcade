@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from typing import Optional
-from typing_extensions import override
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
+from typing_extensions import override
 
 from arcade.gui.events import UIMouseDragEvent, UIMouseEvent
 from arcade.gui.widgets import UILayout, UIWidget

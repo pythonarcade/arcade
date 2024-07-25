@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from typing import Optional
-from typing_extensions import override
 
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
+from typing_extensions import override
 
 import arcade
 from arcade.gui.events import (
