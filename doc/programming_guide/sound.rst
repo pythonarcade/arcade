@@ -74,7 +74,9 @@ Sound Basics
 Loading Sounds
 ^^^^^^^^^^^^^^
 
-To play audio, you must first load its data into a :py:class:`~arcade.sound.Sound`
+.. py:currentmodule:: arcade.sound
+
+To play audio, you must first load its data into a :py:class:`Sound`
 object.
 
 Arcade has two ways to do this:
@@ -82,7 +84,7 @@ Arcade has two ways to do this:
 * :py:func:`arcade.load_sound`
 * :py:class:`arcade.Sound`
 
-Both provide a :py:class:`arcade.Sound` instance and accept the same arguments:
+Both provide a :py:class:`Sound` instance and accept the same arguments:
 
 .. list-table::
    :header-rows: 1
@@ -112,7 +114,7 @@ The simplest option is to use :py:func:`arcade.load_sound`:
     # or pathlib.Path objects:
     from_pathlib_path = arcade.load_sound(Path("imaginary/mac/style/path.wav"))
 
-For an object-oriented approach, create :py:class:`~arcade.Sound` instances
+For an object-oriented approach, create :py:class:`Sound` instances
 directly:
 
 .. code-block:: python
@@ -133,7 +135,7 @@ To learn more, please see the following:
 Playing Sounds
 ^^^^^^^^^^^^^^
 
-Arcade has two easy ways to play loaded :py:class:`~arcade.Sound` data.
+Arcade has two easy ways to play loaded :py:class:`Sound` data.
 
 Imagine you've loaded the following built-in sound file:
 
@@ -148,16 +150,16 @@ The first way to play it is passing it to :py:func:`arcade.play_sound`:
     self.coin_playback = arcade.play_sound(COIN_SOUND)
 
 We store the return value because it is a special object which lets us
-control this specific playback of the :py:class:`~arcade.Sound` data.
+control this specific playback of the :py:class:`Sound` data.
 
 .. important:: You **must** pass a :py:class:`Sound`, not a path!
 
                If you pass :py:func:`arcade.play_sound` anything other
-               than a :py:class:`~arcade.sound.Sound` or ``None``, it
-               will raise a :py:class:`TypeError`.
+               than a :py:class:`Sound` or ``None``, it will raise a
+               :py:class:`TypeError`.
 
-To avoid making this mistake, you can call the :py:class:`~arcade.Sound`
-data's :py:meth:`~arcade.Sound.play` method instead:
+To avoid making this mistake, you can call the :py:class:`Sound`
+data's :py:meth:`Sound.play` method instead:
 
 .. code-block:: python
 
@@ -198,7 +200,7 @@ The specific upper limit is usually high enough to be irrelevant.
 Stopping a Specific Playback
 """"""""""""""""""""""""""""
 
-There are two easy ways of stopping a playback of a :py:class:`~arcade.Sound`.
+There are two easy ways of stopping a playback of a :py:class:`Sound`.
 
 The first is to choose which function we'll pass its
 :py:class:`~pyglet.media.player.Player` object to:
@@ -210,7 +212,7 @@ The first is to choose which function we'll pass its
      arcade.stop_sound(self.coin_playback_1)
 
 
-* The :py:class:`~arcade.sound.Sound` data's :py:meth:`~arcade.Sound.stop`
+* The :py:class:`Sound` data's :py:meth:`Sound.stop`
   method:
 
   .. code-block:: python
@@ -353,7 +355,7 @@ audio tracks involved increases.
 If you're unsure, avoid streaming unless you can say yes to all of the
 following:
 
-#. The :py:class:`~arcade.Sound` will have at most one playback at a time.
+#. The :py:class:`Sound` will have at most one playback at a time.
 
 #. The file is long enough to make it worth it.
 
@@ -396,7 +398,7 @@ Advanced Playback Control
 Arcade's :ref:`sound-basics-stopping` functions are imprecise wrappers
 around pyglet :py:class:`~pyglet.media.player.Player` features.
 
-If you need better control over :py:class:`~arcade.Sound` playback, multiple
+If you need better control over :py:class:`Sound` playback, multiple
 aspects can be controlled in the following ways:
 
 .. list-table::
@@ -539,7 +541,7 @@ these keywords are similar or identical to those of properties on
 more:
 
 * :py:func:`arcade.play_sound`
-* :py:meth:`Sound.play() <arcade.Sound.play>`
+* :py:meth:`Sound.play`
 * :ref:`sound_speed_demo`
 
 .. _sound-compat:
@@ -755,7 +757,7 @@ The most obvious external library for audio handling is pyglet:
 * It offers far better control over media than Arcade
 * You may have already used parts of it directly for :ref:`sound-advanced-playback`
 
-Note that :py:attr:`arcade.Sound`'s ``source`` attribute holds a
+Note that :py:class:`Sound`'s :py:attr:`~Sound.source` attribute holds a
 :py:class:`pyglet.media.Source`. This means you can start off by cleanly
 using Arcade's resource and sound loading with pyglet features as needed.
 
