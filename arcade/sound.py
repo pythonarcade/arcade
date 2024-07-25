@@ -338,7 +338,7 @@ def play_sound(
 
 
 def stop_sound(player: media.Player) -> None:
-    """Stop a pyglet player for a which is currently playing.
+    """Stop a pyglet :py:class:`~pyglet.media.player.Player` currently playing.
 
     Args:
         player: A pyglet :py:class:`~pyglet.media.player.Player`
