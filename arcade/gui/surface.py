@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Optional
+from typing import Optional, Generator
+from typing_extensions import Self
 
 import arcade
 from arcade import Texture
@@ -157,11 +158,16 @@ class Surface:
         arcade.draw_sprite(sprite)
 
     @contextmanager
-    def activate(self):
-        """Save and restore projection and activate Surface buffer to draw on.
-        Also resets the limit of the surface (viewport).
+    def activate(self) -> Generator[Self, None, None]:
+        """Context manager for rendering safely to this :py:class:`Surface`.
 
-        Use as a context manager:
+        It does the following:
+
+        #. Apply this surface's viewport, projection, and blend settings
+        #. Allow any rendering to take place
+        #. Restore the old OpenGL context settings
+
+        Use it in ``with`` blocks like other managers:
 
         .. code-block:: python
 
