@@ -15,6 +15,7 @@ from arcade.gui.events import UIOnActionEvent
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.events import UIOnClickEvent
 from arcade.gui.events import UIOnUpdateEvent
+from arcade.gui.events import UITextEvent
 from arcade.gui.events import UITextInputEvent
 from arcade.gui.events import UITextMotionEvent
 from arcade.gui.events import UITextMotionSelectEvent
@@ -87,6 +88,7 @@ __all__ = [
     "UISpace",
     "UISpriteWidget",
     "UITextArea",
+    "UITextEvent",
     "UITextInputEvent",
     "UITextMotionEvent",
     "UITextMotionSelectEvent",
