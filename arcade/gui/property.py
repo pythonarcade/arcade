@@ -93,7 +93,6 @@ class Property(Generic[P]):
             instance: Property instance
             value: new value to set
 
-
         """
         obs = self._get_obs(instance)
         for listener in obs.listeners:
