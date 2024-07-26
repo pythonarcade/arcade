@@ -1,5 +1,4 @@
-"""
-Creating sidebar-like layouts with UIBoxLayout
+"""Creating sidebar-like layouts with UIBoxLayout
 
 This example creates left, right, top, and bottom bars by combining the following:
 

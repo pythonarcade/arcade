@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Optional
+from typing import Generator, Optional
+
+from typing_extensions import Self
 
 import arcade
 from arcade import Texture
@@ -13,9 +15,15 @@ from arcade.types import LBWH, RGBA255, Point, Rect
 
 
 class Surface:
-    """
-    Holds a :class:`arcade.gl.Framebuffer` and abstracts the drawing on it.
-    Used internally for rendering widgets.
+    """Internal abstraction for widget rendering.
+
+    Holds a :class:`arcade.gl.Framebuffer` and provides helper methods
+    and properties for drawing to it.
+
+    Args:
+        size: The size of the surface in window coordinates
+        position: The position of the surface in window
+        pixel_ratio: The pixel scale of the window
     """
 
     def __init__(
@@ -82,14 +90,17 @@ class Surface:
 
     @property
     def pixel_ratio(self) -> float:
+        """The pixel ratio of the surface"""
         return self._pixel_ratio
 
     @property
     def width(self) -> int:
+        """Width of the surface"""
         return self._size[0]
 
     @property
     def height(self) -> int:
+        """Height of the surface"""
         return self._size[1]
 
     def clear(self, color: RGBA255 = TRANSPARENT_BLACK):
@@ -106,6 +117,17 @@ class Surface:
         angle: float = 0.0,
         alpha: int = 255,
     ):
+        """Draw a texture to the surface.
+
+        Args:
+            x: The x coordinate of the texture.
+            y: The y coordinate of the texture.
+            width: The width of the texture.
+            height: The height of the texture.
+            tex: The texture to draw, also supports NinePatchTexture.
+            angle: The angle of the texture.
+            alpha: The alpha value of the texture.
+        """
         if isinstance(tex, NinePatchTexture):
             if angle != 0.0:
                 raise NotImplementedError(
@@ -122,17 +144,37 @@ class Surface:
             arcade.draw_texture_rect(tex, LBWH(x, y, width, height), angle=angle, alpha=alpha)
 
     def draw_sprite(self, x: float, y: float, width: float, height: float, sprite: arcade.Sprite):
-        """Draw a sprite to the surface"""
+        """Draw a sprite to the surface
+
+        Args:
+            x: The x coordinate of the sprite.
+            y: The y coordinate of the sprite.
+            width: The width of the sprite.
+            height: The height of the sprite.
+            sprite: The sprite to draw.
+        """
         sprite.position = x + width // 2, y + height // 2
         sprite.width = width
         sprite.height = height
         arcade.draw_sprite(sprite)
 
     @contextmanager
-    def activate(self):
-        """
-        Save and restore projection and activate Surface buffer to draw on.
-        Also resets the limit of the surface (viewport).
+    def activate(self) -> Generator[Self, None, None]:
+        """Context manager for rendering safely to this :py:class:`Surface`.
+
+        It does the following:
+
+        #. Apply this surface's viewport, projection, and blend settings
+        #. Allow any rendering to take place
+        #. Restore the old OpenGL context settings
+
+        Use it in ``with`` blocks like other managers:
+
+        .. code-block:: python
+
+           with surface.activate():
+               # draw stuff here
+
         """
         # Set viewport and projection
         self.limit(LBWH(0, 0, *self.size))
@@ -147,7 +189,7 @@ class Surface:
             # Restore blend function.
             self.ctx.blend_func = prev_blend_func
 
-    def limit(self, rect: Rect):  # TODO track limit usage
+    def limit(self, rect: Rect):
         """Reduces the draw area to the given rect"""
 
         l, b, w, h = rect.lbwh
@@ -171,13 +213,14 @@ class Surface:
         self,
         area: Optional[Rect] = None,
     ) -> None:
-        """
-        Draws the contents of the surface.
+        """Draws the contents of the surface.
 
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
-        :param area: Limit the area in the surface we're drawing (l, b, w, h)
+        Args:
+            area: Limit the area in the surface we're drawing
+                (l, b, w, h)
         """
         # Set blend function
         blend_func = self.ctx.blend_func
@@ -193,11 +236,11 @@ class Surface:
         self.ctx.blend_func = blend_func
 
     def resize(self, *, size: tuple[int, int], pixel_ratio: float) -> None:
-        """
-        Resize the internal texture by re-allocating a new one
+        """Resize the internal texture by re-allocating a new one
 
-        :param size: The new size in pixels (xy)
-        :param pixel_ratio: The pixel scale of the window
+        Args:
+            size: The new size in pixels (xy)
+            pixel_ratio: The pixel scale of the window
         """
         # Texture re-allocation is expensive so we should block unnecessary calls.
         if self._size == size and self._pixel_ratio == pixel_ratio:

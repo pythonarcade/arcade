@@ -1,5 +1,4 @@
-"""
-Creating a dropdown menu with UIDropDown
+"""Creating a dropdown menu with UIDropDown
 
 When an option in the UIDropDown is chosen, this example will respond
 by changing the text displayed on screen to reflect it.
@@ -30,7 +29,7 @@ class MyView(arcade.View):
         self.dropdown.center_on_screen()
         self.ui.add(self.dropdown)
 
-        self.label = self.ui.add(UILabel(text=" ", text_color=(0, 0, 0)))
+        self.label = self.ui.add(UILabel(text=" ", text_color=arcade.color.BLACK))
 
         @self.dropdown.event()
         def on_change(event: UIOnChangeEvent):

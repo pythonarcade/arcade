@@ -1,5 +1,4 @@
-"""
-Use a custom texture for a toggle button.
+"""Use a custom texture for a toggle button.
 
 The current theme is a 90s sci-fi style, but you can replace the textures
 to match the theme of your game.

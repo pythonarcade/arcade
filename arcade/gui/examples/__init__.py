@@ -1,5 +1,4 @@
-"""
-This package contains GUI specific examples.
+"""This package contains GUI specific examples.
 
 These show explicit GUI examples, and are not part of the main examples.
 

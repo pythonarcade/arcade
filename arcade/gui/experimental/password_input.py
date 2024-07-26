@@ -9,11 +9,13 @@ class UIPasswordInput(UIInputText):
     """A password input field. The text is hidden with asterisks."""
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
+        """Remove new lines from the input, which are not allowed in passwords."""
         if isinstance(event, UITextInputEvent):
-            event.text = event.text.replace("\n", "").replace("\r", "")  # remove new lines!
+            event.text = event.text.replace("\n", "").replace("\r", "")
         return super().on_event(event)
 
     def do_render(self, surface: Surface):
+        """Override to render the text as asterisks."""
         self.layout.begin_update()
         position = self.caret.position
         text = self.text

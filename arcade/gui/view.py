@@ -29,8 +29,7 @@ class UIView(View):
         self.ui.disable()
 
     def on_draw(self):
-        """
-        To subclass UIView and add custom drawing, override on_draw_before_ui
+        """To subclass UIView and add custom drawing, override on_draw_before_ui
         and on_draw_after_ui.
         """
         self.clear()

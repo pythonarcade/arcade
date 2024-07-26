@@ -1,5 +1,4 @@
-"""
-This example is a proof-of-concept for a UIScrollArea.
+"""This example is a proof-of-concept for a UIScrollArea.
 
 You can currently scroll through the UIScrollArea in the following ways:
 

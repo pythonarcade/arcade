@@ -7,8 +7,7 @@ import arcade.gl as gl
 
 
 class NinePatchTexture:
-    """
-    Keeps borders & corners at constant widths while stretching the middle.
+    """Keeps borders & corners at constant widths while stretching the middle.
 
     It can be used with new or existing :py:class:`~arcade.gui.UIWidget`
     subclasses wherever an ordinary :py:class:`arcade.Texture` is
@@ -54,17 +53,15 @@ class NinePatchTexture:
     * Areas ``(2)`` and ``(8)`` only stretch horizontally.
     * Areas ``(4)`` and ``(6)`` only stretch vertically.
 
-    :param left: The width of the left border of the 9-patch
-        (in pixels)
-    :param right: The width of the right border of the 9-patch
-        (in pixels)
-    :param bottom: The height of the bottom border of the 9-patch
-        (in pixels)
-    :param top: The height of the top border of the 9-patch
-        (in pixels)
-    :param texture: The raw texture to use for the 9-patch
-    :param atlas: Specify an atlas other than arcade's default
-        texture atlas
+    Args:
+        left: The width of the left border of the 9-patch (in pixels)
+        right: The width of the right border of the 9-patch (in pixels)
+        bottom: The height of the bottom border of the 9-patch (in
+            pixels)
+        top: The height of the top border of the 9-patch (in pixels)
+        texture: The raw texture to use for the 9-patch
+        atlas: Specify an atlas other than arcade's default texture
+            atlas
     """
 
     def __init__(
@@ -122,8 +119,7 @@ class NinePatchTexture:
 
     @property
     def program(self) -> gl.program.Program:
-        """
-        Get or set the shader program.
+        """Get or set the shader program.
 
         Returns the default shader if no other shader is assigned.
         """
@@ -134,8 +130,7 @@ class NinePatchTexture:
         self._program = program
 
     def _add_to_atlas(self, texture: arcade.Texture):
-        """
-        Internal method for setting the texture.
+        """Internal method for setting the texture.
 
         It ensures the texture is added to the global atlas.
         """
@@ -201,17 +196,18 @@ class NinePatchTexture:
         blend: bool = True,
         **kwargs,
     ):
-        """
-        Draw the 9-patch texture with a specific size.
+        """Draw the 9-patch texture with a specific size.
 
-        .. warning:: This method assumes the passed dimensions are proper!
+        Warning:
+            This method assumes the passed dimensions are proper!
 
-                     Unexpected behavior may occur if you specify a size
-                     smaller than the total size of the border areas.
+            Unexpected behavior may occur if you specify a size
+            smaller than the total size of the border areas.
 
-
-        :param rect: Rectangle to draw the 9-patch texture in
-        :param pixelated: Whether to draw with nearest neighbor interpolation
+        Args:
+            rect: Rectangle to draw the 9-patch texture in
+            pixelated: Whether to draw with nearest neighbor
+                interpolation
         """
         if blend:
             self._ctx.enable_only(self._ctx.BLEND)

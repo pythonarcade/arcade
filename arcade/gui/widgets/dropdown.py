@@ -15,8 +15,7 @@ from arcade.gui.widgets.layout import UIBoxLayout
 
 
 class _UIDropdownOverlay(UIBoxLayout):
-    """
-    Represents the dropdown options overlay.
+    """Represents the dropdown options overlay.
 
     Currently only handles closing the overlay when clicked outside of the options.
     """
@@ -40,8 +39,7 @@ class _UIDropdownOverlay(UIBoxLayout):
 
 
 class UIDropdown(UILayout):
-    """
-    A dropdown layout. When clicked displays a list of options provided.
+    """A dropdown layout. When clicked displays a list of options provided.
 
     Triggers an event when an option is clicked, the event can be read by
 
@@ -53,13 +51,14 @@ class UIDropdown(UILayout):
         def on_change(event: UIOnChangeEvent):
             print(event.old_value, event.new_value)
 
-    :param x: x coordinate of bottom left
-    :param y: y coordinate of bottom left
-    :param width: Width of each of the option.
-    :param height: Height of each of the option.
-    :param default: The default value shown.
-    :param options: The options displayed when the layout is clicked.
-    :param style: Used to style the dropdown.
+    Args:
+        x: x coordinate of bottom left
+        y: y coordinate of bottom left
+        width: Width of each of the option.
+        height: Height of each of the option.
+        default: The default value shown.
+        options: The options displayed when the layout is clicked.
+        style: Used to style the dropdown.
     """
 
     DIVIDER = None
@@ -171,6 +170,8 @@ class UIDropdown(UILayout):
         self._overlay.hide()
 
     def do_layout(self):
+        """Position the overlay, this is not a common thing to do in do_layout,
+        but is required for the dropdown."""
         self._default_button.rect = self.rect
 
         # resize layout to contain widgets
@@ -182,8 +183,7 @@ class UIDropdown(UILayout):
         self._overlay.rect = rect.align_top(self.bottom - 2).align_left(self._default_button.left)
 
     def on_change(self, event: UIOnChangeEvent):
-        """
-        To be implemented by the user, triggered when the current selected value
+        """To be implemented by the user, triggered when the current selected value
         is changed to a different option.
         """
         pass
