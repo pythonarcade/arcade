@@ -92,16 +92,10 @@ class Sound:
     ) -> media.Player:
         """Try to play this :py:class:`Sound` and return a |pyglet Player|.
 
-        .. important:: Any :py:class:`Sound` with ``streaming=True`` loses features!
+        .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
 
-                       ``loop`` will not work and simultaneous playbacks raise
-                       a :py:class:`RuntimeError`.
-
-        See the following to learn more about the keywords and restrictions:
-
-        * :py:class:`Sound`
-        * :ref:`sound-advanced-playback-change-aspects-ongoing`
-        * :ref:`sound-advanced-playback-change-aspects-new`
+                       Neither ``loop`` nor simultaneous playbacks will work. See
+                       :py;class:`Sound` and :ref:`sound-loading-modes`.
 
         Args:
             volume: Volume (``0.0`` is silent, ``1.0`` is loudest).
@@ -224,10 +218,10 @@ class Sound:
 def load_sound(path: str | Path, streaming: bool = False) -> Sound:
     """Load a file as a :py:class:`Sound` data object.
 
-    .. important:: Using ``streaming=True`` disables certain features!
+    .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
 
-                   These include looping and multiple playbacks. Please
-                   see :py:class:`Sound` to learn more.
+                   Neither ``loop`` nor simultaneous playbacks will work. See
+                   :py;class:`Sound` and :ref:`sound-loading-modes`.
 
     Args:
         path: a path which may be prefixed with a
@@ -264,9 +258,14 @@ def play_sound(
 ) -> media.Player | None:
     """Try to play the ``sound`` and return a |pyglet Player|.
 
-    .. note:: The ``sound`` must be a loaded :py:class:`Sound` object!
+    The ``sound`` must be a loaded :py:class:`Sound` object. If you
+    pass a path or :py:class:`str`, the function will raise a
+    :py:class:`TypeError.`
 
-              See the :ref:`sound-basics-loading` to learn more.
+    .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
+
+                   Neither ``loop`` nor simultaneous playbacks will work. See
+                   :py;class:`Sound` and :ref:`sound-loading-modes`.
 
     The output and return value depend on whether playback succeeded:
     .. # Note: substitutions don't really work inside tables, so the
@@ -287,21 +286,11 @@ def play_sound(
          - N/A
          - A pyglet :py:class:`~pyglet.media.player.Player`
 
-    See the following to learn more:
-
-    * :ref:`sound-basics-sound_vs_player`
-    * :ref:`sound-advanced-playback`
-
-    .. important:: Any :py:class:`Sound` with ``streaming=True`` loses features!
-
-                   ``loop`` will not work and simultaneous playbacks raise
-                   a :py:class:`RuntimeError`.
-
     To learn more about the ``streaming`` keyword and restrictions, please see:
 
     * :py:class:`Sound`
-    * :ref:`sound-advanced-playback-change-aspects-ongoing`
-    * :ref:`sound-advanced-playback-change-aspects-new`
+    * :ref:`sound-intermediate-playback-change-aspects-ongoing`
+    * :ref:`sound-intermediate-playback-change-aspects-new`
 
     Args:
         sound: A :py:class:`Sound` instance or ``None``.
