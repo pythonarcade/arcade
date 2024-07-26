@@ -523,8 +523,7 @@ class UIInteractiveWidget(UIWidget):
         size_hint: Tuple of floats (0.0-1.0), how much space of the
             parent should be requested
         size_hint_min: min width and height in pixel
-        size_hint_max: max width and height in pixel:param x: center x
-            of widget
+        size_hint_max: max width and height in pixel
         interaction_buttons: defines, which mouse buttons should trigger
             the interaction (default: left mouse button)
         style: not used
