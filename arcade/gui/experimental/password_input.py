@@ -75,7 +75,7 @@ class UIPasswordInput(UIInputText):
                 anchor_x="left",
                 anchor_y="bottom",
                 align="left",
-                width=self.width,
+                width=int(self.width),
                 font_name=self._font_name,
                 font_size=self._font_size,
                 color=self._asterisk_color,
