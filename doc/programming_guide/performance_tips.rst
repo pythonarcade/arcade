@@ -73,14 +73,14 @@ Which should I use?
      - N > 100 mostly non-moving sprites [#]_
      - :ref:`line_of_sight`
 
-   * - :py:class:`~arcade.pymunk_physics_engine.PyMunkPhysicsEngine`
+   * - :py:class:`~arcade.pymunk_physics_engine.PymunkPhysicsEngine`
      - You need forces, torque, joints, or springs
      - :ref:`example-code-pymunk`
 
 .. [#]
    Arcade's non-PyMunk physics both engines assume it will be enabled
-   for any :py:class:`~arcade.SpriteList` provided via their ``walls``
-   argument.
+   for any :py:class:`~arcade.sprite_list.SpriteList` provided via their
+   ``walls`` argument.
 
 .. _collision_detection_performance_hashing:
 
@@ -88,7 +88,8 @@ Spatial Hashing
 ^^^^^^^^^^^^^^^
 
 **Spatial hashing** is meant for collision checking sprites
-against a :py:class:`SpriteList` of **non-moving** sprites:
+against a :py:class:`~arcade.sprite_list.SpriteList` of
+**non-moving** sprites:
 
 * checking collisions against hashed sprites becomes much faster
 * moving or resizing any sprite in the hash becomes much slower
@@ -98,15 +99,14 @@ uses a **hash map** (:py:class:`dict`) of grid square coordinates to lists
 of :py:class:`~arcade.Sprite` objects in each square.
 
 How does this help us? We may need as few as zero hitbox checks to collide
-a given sprite against a :py:class:`SpriteList`. Yes, **zero.**
-
-Here's how:
+a given sprite against a :py:class:`~arcade.sprite_list.SpriteList`. Yes,
+**zero**:
 
 .. image:: images/spatial_hash_grid_mockup.png
    :alt: A blue bird is alone in its own grid square.
 
 #. The sand-colored ground consists of sprites in a
-   :py:class:`~arcade.SpriteList` with spatial hashing enabled
+   :py:class:`~arcade.sprite_list.SpriteList` with spatial hashing enabled
 #. The bright green lines show the grid square boundaries
 #. The moving sprites are the blue bird and the red angry faces
 
@@ -130,12 +130,13 @@ hitbox checks against terrain than if spatial hashing was not enabled.
 Enabling Spatial Hashing
 """"""""""""""""""""""""
 
-The best way to enable spatial hashing on a :py:class:`~arcade.SpriteList`
-is before anything else, especially before gameplay.
+The best way to enable spatial hashing on a
+:py:class:`~arcade.sprite_list.SpriteList` is before anything else,
+especially before gameplay.
 
 The simplest way is passing ``use_spatial_hash=True`` when creating
 and storing the list inside a :py:class:`~arcade.Window` or
-:py:class:`View`:
+:py:class:`~arcade.view.View`:
 
 .. code-block:: python
 
@@ -182,16 +183,6 @@ When in doubt, test it and see if it works for your specific use case.
 Further Example Code
 """"""""""""""""""""
 
-a ``use_spatial_hash=True`` key/value pair in the options dictioonary
-of every layer you want to enable i
-
-Arcade's non-Pymunk physics engines assume non-moving sprites passed via
-their ``walls`` keyword argument each have spatial hashing enabled.
-the
-
-There is also a way to use spatial hashing when loading Tiled maps. The
-:ref:`camera_platform` example demonstrates how.
-
 For detailed step-by-step tutorial steps on using spatial hashing,
 please see:
 
@@ -202,9 +193,9 @@ For detailed API notes, please see:
 
 * :py:class:`arcade.SpriteList`
 * :py:meth:`arcade.SpriteList.enable_spatial_hashing`
-* :py:class:`arcade.spatial_hash.SpatialHash`
-* :py:class:`arcade.physics_engines.SimplePhysicsEngine`
-* :py:class:`arcade.physics_engines.PlatformerPhysicsEngine`
+* :py:class:`arcade.sprite_list.spatial_hash.SpatialHash`
+* :py:class:`arcade.physics_engines.PhysicsEngineSimple`
+* :py:class:`arcade.physics_engines.PhysicsEnginePlatformer`
 
 
 Spatial Hashing Implementation Details
@@ -212,8 +203,8 @@ Spatial Hashing Implementation Details
 
 .. note:: Many readers can skip this section.
 
-The hash map is a Python :py:class:`dict` mapping :py:class:`tuple` pairs
-to :py:class:`list` instances.
+The hash map is a Python :py:class:`dict` mapping :py:class:`tuple`
+coordinate pairs to :py:class:`list` instances.
 
 "Hashing" works like this for any given sprite:
 
@@ -242,9 +233,9 @@ offer, this may be the right choice.
 
 To get started, please see the following:
 
-* :ref:`example-code-pymunk`
-* :ref:`pymunk_platformer_tutorial`
-* :py:class:`arcade.pymunk_physics_engine.PyMunkPhysicsEngine`
+* The :ref:`example-code-pymunk` Example
+* Arcade's :ref:`pymunk_platformer_tutorial` tutorial
+* :py:class:`arcade.pymunk_physics_engine.PymunkPhysicsEngine`
 * The :py:mod:`pymunk` documentation
 
 Compute Shader
@@ -438,7 +429,7 @@ quantity and quality of the audio tracks involved increases.
 If you're unsure, avoid streaming unless you can say yes to all of the
 following:
 
-#. The :py:class:`Sound` will have at most one playback at a time.
+#. The :py:class:`~arcade.sound.Sound` will have at most one playback at a time.
 
 #. The file is long enough to make it worth it.
 
