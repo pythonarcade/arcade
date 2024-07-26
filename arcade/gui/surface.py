@@ -13,8 +13,10 @@ from arcade.types import LBWH, RGBA255, Point, Rect
 
 
 class Surface:
-    """Holds a :class:`arcade.gl.Framebuffer` and abstracts the drawing on it.
-    Used internally for rendering widgets.
+    """Internal abstraction for widget rendering.
+
+    Holds a :class:`arcade.gl.Framebuffer` and provides helper methods
+    and properties for drawing to it.
 
     Args:
         size: The size of the surface in window coordinates
