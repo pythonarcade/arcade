@@ -127,7 +127,12 @@ class Property(Generic[P]):
         obs.listeners.add(callback)
 
     def unbind(self, instance, callback):
-        """Unbinds a function from the change event of the property."""
+        """Unbinds a function from the change event of the property.
+
+        Args:
+            instance: The target instance.
+            callback: The callback to unbind.
+        """
         obs = self._get_obs(instance)
         obs.listeners.remove(callback)
 
