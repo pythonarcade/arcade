@@ -207,19 +207,21 @@ Velocity = tuple[AsFloat, AsFloat]
 # --- End potentially obsolete annotations ---
 
 
-_T_contra = TypeVar("_T_contra", contravariant=True)
-_R_co = TypeVar("_R_co", covariant=True)
+# These are for the argument type + return type. They're separate TypeVars
+# to handle cases which take tuple but return Vec2 (e.g. pyglet.math.Vec2).
+_T_contra = TypeVar("_T_contra", contravariant=True)  # Same or more general than T
+_T_co = TypeVar("_T_co", covariant=True)  # Same or more specific than T
 
 
-class HasAddSubMul(Protocol[_T_contra, _R_co]):
+class HasAddSubMul(Protocol[_T_contra, _T_co]):
     """Matches types which work with :py:func:`arcade.math.lerp`."""
 
     # The / matches float and similar operations to keep pyright
     # happy since built-in arithmetic makes them positional only.
     # See https://peps.python.org/pep-0570/
-    def __add__(self, value: _T_contra, /) -> _R_co: ...
-    def __sub__(self, value: _T_contra, /) -> _R_co: ...
-    def __mul__(self, value: _T_contra, /) -> _R_co: ...
+    def __add__(self, value: _T_contra, /) -> _T_co: ...
+    def __sub__(self, value: _T_contra, /) -> _T_co: ...
+    def __mul__(self, value: _T_contra, /) -> _T_co: ...
 
 
 # Path handling
