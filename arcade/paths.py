@@ -5,11 +5,10 @@ Classic A-star algorithm for path finding.
 from __future__ import annotations
 
 import math
-from typing import cast
 
 from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point
 from arcade.math import get_distance, lerp_2d
-from arcade.types import Point, Point2
+from arcade.types import Point2
 
 __all__ = ["AStarBarrierList", "astar_calculate_path", "has_line_of_sight"]
 
@@ -33,13 +32,13 @@ def _spot_is_blocked(position: Point2, moving_sprite: Sprite, blocking_sprites: 
     return len(hit_list) > 0
 
 
-def _heuristic(start: Point, goal: Point) -> float:
+def _heuristic(start: Point2, goal: Point2) -> float:
     """
     Returns a heuristic value for the passed points.
 
     Args:
-        start (Point): The 1st point to compare
-        goal (Point): The 2nd point to compare
+        start (Point2): The 1st point to compare
+        goal (Point2): The 2nd point to compare
 
     Returns:
         float: The heuristic of the 2 points
@@ -102,7 +101,7 @@ class _AStarGraph(object):
         else:
             self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)  # type: ignore
 
-    def get_vertex_neighbours(self, pos: Point) -> list[tuple[float, float]]:
+    def get_vertex_neighbours(self, pos: Point2) -> list[tuple[float, float]]:
         """
         Return neighbors for this point according to ``self.movement_directions``
 
@@ -123,7 +122,7 @@ class _AStarGraph(object):
             n.append((x2, y2))
         return n
 
-    def move_cost(self, a: Point, b: Point) -> float:
+    def move_cost(self, a: Point2, b: Point2) -> float:
         """
         Returns a float of the cost to move
 
@@ -224,12 +223,12 @@ def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> list[Point2]
     return None
 
 
-def _collapse(pos: Point, grid_size: float):
+def _collapse(pos: Point2, grid_size: float) -> tuple[int, int]:
     """Makes Point pos smaller by grid_size"""
     return int(pos[0] // grid_size), int(pos[1] // grid_size)
 
 
-def _expand(pos: Point, grid_size: float):
+def _expand(pos: Point2, grid_size: float) -> tuple[int, int]:
     """Makes Point pos larger by grid_size"""
     return int(pos[0] * grid_size), int(pos[1] * grid_size)
 
@@ -329,11 +328,11 @@ class AStarBarrierList:
 
 
 def astar_calculate_path(
-    start_point: Point,
-    end_point: Point,
+    start_point: Point2,
+    end_point: Point2,
     astar_barrier_list: AStarBarrierList,
     diagonal_movement: bool = True,
-) -> list[Point] | None:
+) -> list[Point2] | None:
     """
     Calculates the path using AStarSearch Algorithm and returns the path
 
@@ -371,13 +370,13 @@ def astar_calculate_path(
 
     # Currently 'result' is in grid locations. We need to convert them to pixel
     # locations.
-    revised_result = [_expand(p, grid_size) for p in result]
-    return cast(list[Point], revised_result)
+    revised_result: list[Point2] = [_expand(p, grid_size) for p in result]
+    return revised_result
 
 
 def has_line_of_sight(
-    observer: Point,
-    target: Point,
+    observer: Point2,
+    target: Point2,
     walls: SpriteList,
     max_distance: float = float("inf"),
     check_resolution: int = 2,
@@ -429,7 +428,7 @@ def has_line_of_sight(
 
 
 # NOTE: Rewrite this
-# def dda_step(start: Point, end: Point):
+# def dda_step(start: Point2, end: Point2):
 #     """
 #     Bresenham's line algorithm
 
