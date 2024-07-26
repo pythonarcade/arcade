@@ -441,7 +441,7 @@ following:
 
 See the following to learn more:
 
-* :ref:`sound-advanced-playback-change-aspects-ongoing`
+* :ref:`sound-intermediate-playback-change-aspects-ongoing`
 * The :py:class:`pyglet.media.StreamingSource` class used to implement
   streaming
 
