@@ -8,9 +8,17 @@ from pyglet.math import Vec2
 
 @dataclass
 class UIEvent:
-    """An event created by the GUI system. Can be passed using widget.dispatch("on_event", event).
-    An event always has a source, which is the UIManager for general input events,
-    but will be the specific widget in case of events like on_click events.
+    """An event created by the GUI system.
+
+    Can be passed as follows:
+
+    .. code-block:: python
+
+       widget.dispatch("on_event", event)
+
+    An event always has a source. This is the UIManager for general input
+    events, but will be the specific widget in case of events like click
+    events.
 
     Args:
         source: The source of the event.
