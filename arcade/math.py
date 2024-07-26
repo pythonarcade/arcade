@@ -46,6 +46,8 @@ def clamp(a, low: float, high: float) -> float:
     return high if a > high else max(a, low)
 
 
+# This TypeVar helps match v1 and v2 as the same type below in lerp's
+# signature. If we used HasAddSubMul, they could be different.
 L = TypeVar("L", bound=HasAddSubMul)
 
 
