@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import math
 import random
-from typing import Sequence, TypeVar, Union
+from typing import TypeVar
 
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import AsFloat, HasAddSubMul, Point, Point2
+from arcade.types import HasAddSubMul, Point, Point2
 from arcade.types.rect import Rect
 from arcade.types.vector_like import Point3
 
@@ -46,10 +46,6 @@ def clamp(a, low: float, high: float) -> float:
     return high if a > high else max(a, low)
 
 
-V_2D = Union[tuple[AsFloat, AsFloat], Sequence[AsFloat]]
-V_3D = Union[tuple[AsFloat, AsFloat, AsFloat], Sequence[AsFloat]]
-
-
 L = TypeVar("L", bound=HasAddSubMul)
 
 
@@ -80,7 +76,7 @@ def lerp(v1: L, v2: L, u: float) -> L:
     return v1 + ((v2 - v1) * u)
 
 
-def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> Vec2:
+def lerp_2d(v1: Point2, v2: Point2, u: float) -> Vec2:
     """Linearly interpolate between two 2D points passed as sequences.
 
     .. tip:: This function returns a :py:class:`Vec2` you can use
@@ -94,7 +90,7 @@ def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> Vec2:
     return Vec2(lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u))
 
 
-def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> Vec3:
+def lerp_3d(v1: Point3, v2: Point3, u: float) -> Vec3:
     """Linearly interpolate between two 3D points passed as sequences.
 
     .. tip:: This function returns a :py:class:`Vec2` you can use
