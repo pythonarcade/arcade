@@ -375,6 +375,7 @@ class _ObservableList(list):
 
 class ListProperty(Property):
     """Property that represents a list.
+
     Only list are allowed. Any other classes are forbidden.
     """
 
