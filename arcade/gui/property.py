@@ -149,10 +149,12 @@ class Property(Generic[P]):
 
 
 def bind(instance, property: str, callback):
-    """Binds a function to the change event of the property.
+    """Bind a function to the change event of the property.
 
-    A reference to the function will be kept,
-    so that it will be still invoked, even if it would normally have been garbage collected.
+    A reference to the function will be kept, so that it will be still
+    invoked even if it would normally have been garbage collected:
+
+    .. code-block:: python
 
         def log_change(instance, value):
             print(f"Value of {instance} changed to {value}")
@@ -165,6 +167,7 @@ def bind(instance, property: str, callback):
 
         my_obj.name = "Hans"
         # > Value of <__main__.MyObject ...> changed to Hans
+
 
     Args:
         instance: Instance owning the property
