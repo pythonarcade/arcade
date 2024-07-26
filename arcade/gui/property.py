@@ -185,6 +185,8 @@ def bind(instance, property: str, callback):
 def unbind(instance, property: str, callback):
     """Unbinds a function from the change event of the property.
 
+    .. code-block:: python
+
         def log_change(instance, value):
             print("Something changed")
 
