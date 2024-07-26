@@ -163,8 +163,8 @@ class Surface:
 
         .. code-block:: python
 
-            with surface.activate():
-                # draw stuff here
+           with surface.activate():
+               # draw stuff here
 
         """
         # Set viewport and projection
