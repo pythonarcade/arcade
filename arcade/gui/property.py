@@ -113,7 +113,13 @@ class Property(Generic[P]):
 
     def bind(self, instance, callback):
         """Binds a function to the change event of the property.
-        A reference to the function will be kept."""
+
+        A reference to the function will be kept.
+
+        Args:
+             instance: The instance to bind the callback to.
+             callback: The callback to bind.
+        """
         obs = self._get_obs(instance)
         # Instance methods are bound methods, which can not be referenced by normal `ref()`
         # if listeners would be a WeakSet, we would have to add listeners as WeakMethod
