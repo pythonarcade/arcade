@@ -267,6 +267,7 @@ class _ObservableDict(dict):
 
 class DictProperty(Property):
     """Property that represents a dict.
+
     Only dict are allowed. Any other classes are forbidden.
     """
 
