@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Optional, Generator
+from typing import Generator, Optional
+
 from typing_extensions import Self
 
 import arcade
