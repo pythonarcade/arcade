@@ -4,31 +4,31 @@ from typing import Optional
 
 import arcade.color
 from arcade.gui import Surface, UIEvent, UIInputText, UITextInputEvent
-from arcade.types import RGBOrA255, Color
+from arcade.types import Color, RGBOrA255
 
 
 class UIPasswordInput(UIInputText):
     """A password input field. The text is hidden with asterisks."""
 
     def __init__(
-            self,
-            *,
-            x: float = 0,
-            y: float = 0,
-            width: float = 100,
-            height: float = 24,
-            text: str = "",
-            font_name=("Arial",),
-            font_size: float = 12,
-            text_color: RGBOrA255 = (0, 0, 0, 255),
-            multiline=False,
-            caret_color: RGBOrA255 = (0, 0, 0, 255),
-            size_hint=None,
-            size_hint_min=None,
-            size_hint_max=None,
-            **kwargs,
+        self,
+        *,
+        x: float = 0,
+        y: float = 0,
+        width: float = 100,
+        height: float = 24,
+        text: str = "",
+        font_name=("Arial",),
+        font_size: float = 12,
+        text_color: RGBOrA255 = (0, 0, 0, 255),
+        multiline=False,
+        caret_color: RGBOrA255 = (0, 0, 0, 255),
+        size_hint=None,
+        size_hint_min=None,
+        size_hint_max=None,
+        **kwargs,
     ):
-        replaced = '*' * len(text)
+        replaced = "*" * len(text)
         super().__init__(
             x=x,
             y=y,
@@ -43,10 +43,10 @@ class UIPasswordInput(UIInputText):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            **kwargs
+            **kwargs,
         )
-        self._font_name=font_name
-        self._font_size=font_size
+        self._font_name = font_name
+        self._font_size = font_size
         self._asterisk_color = Color.from_iterable(text_color)
 
     @property
@@ -81,4 +81,3 @@ class UIPasswordInput(UIInputText):
                 color=self._asterisk_color,
             )
         super().do_render(surface)
-
