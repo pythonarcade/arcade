@@ -168,7 +168,6 @@ def bind(instance, property: str, callback):
         my_obj.name = "Hans"
         # > Value of <__main__.MyObject ...> changed to Hans
 
-
     Args:
         instance: Instance owning the property
         property: Name of the property
