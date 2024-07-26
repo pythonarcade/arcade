@@ -29,7 +29,7 @@ class UIEvent:
 
 @dataclass
 class UIMouseEvent(UIEvent):
-    """Covers all mouse event.
+    """Base class for all UI mouse events.
 
     Args:
         x: The x coordinate of the mouse.
@@ -116,7 +116,7 @@ class UIMouseScrollEvent(UIMouseEvent):
 
 @dataclass
 class UIKeyEvent(UIEvent):
-    """Covers all keyboard event.
+    """Base class for all keyboard-centric UI events.
 
     Args:
         symbol: The key pressed.
