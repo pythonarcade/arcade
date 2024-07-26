@@ -29,7 +29,7 @@ code and documentation.
    * :ref:`sound-basics-stopping`
 
 #. :ref:`sound-loading-modes`
-#. :ref:`sound-advanced-playback`
+#. :ref:`sound-intermediate-playback`
 #. :ref:`sound-compat`
 #. :ref:`sound-other-libraries` (for advanced users)
 
@@ -181,9 +181,8 @@ Sound data vs Playbacks
 
 Arcade uses the :py:mod:`pyglet` multimedia library to handle sound.
 
-Since pyglet allows playing multiple copies of the same non-streaming
-audio at once, each playback has a :py:class:`~pyglet.media.player.Player`
-object to control it:
+Each playback of a :py:class:`Sound` has its own |pyglet Player| object
+to control it:
 
 .. code-block:: python
 
@@ -195,7 +194,8 @@ object to control it:
 
 
 We can create and control a very large number of separate playbacks.
-The specific upper limit is usually high enough to be irrelevant.
+Although there is a platform-dependent upper limit, it is high enough
+to be irrelevant for most games.
 
 Stopping a Specific Playback
 """"""""""""""""""""""""""""
@@ -234,17 +234,26 @@ collection." We'll cover it further in the advanced sections below.
 To learn more about playback limits and stopping, please see the following:
 
 * :ref:`sound-compat-easy`
-* :ref:`sound-advanced-playback`
+* :ref:`sound-intermediate-playback`
 * :ref:`sound_demo`
+
+
+Intermediate Loading and Playback
+---------------------------------
+
+Arcade also offers more advanced options for controlling loading and playback.
+
+These allow loading files in special modes best used for music. They also allow
+controlling volume, speed, and spatial aspects of playback.
 
 .. _sound-loading-modes:
 
 Streaming or Static Loading?
-----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. _keyword argument: https://docs.python.org/3/glossary.html#term-argument
 
-The streaming option is important for music and ambiance tracks.
+The streaming option is best for long-playing music and ambiance tracks.
 
 .. list-table::
    :header-rows: 1
@@ -264,24 +273,32 @@ The streaming option is important for music and ambiance tracks.
      - Predicted data
      - 1 copy & file at a time, long, uninterrupted
 
-By default, Arcade uses **static** loading: it decompresses the whole
-sound file into memory. This is called static [#staticsourcefoot]_ audio'
-because the data in memory never changes. It is the default because it
-offers multiple benefits to games, especially multiple playbacks at the
-same time.
+Arcade uses **static** loading by default. It is called static loading
+because it decompresses the whole audio file into memory once and then
+never changes the data. Since the data never changes, it has multiple
+benefits like allowing multiple playbacks at once.
 
-The alternative is streaming. Enable it by passing ``True`` through the
-``streaming`` `keyword argument`_  when you :ref:`load a sound
-<sound-basics-loading>`::
+The alternative is streaming. Although it saves memory for long music and
+ambiance tracks, it has downsides:
+
+* Only one playback of the :py:class:`Sound` permitted
+* Moving around in the file can cause buffering issues
+* Looping is not supported
+
+Enable it by passing ``True`` through the ``streaming`` `keyword argument`_
+when :ref:`loading sounds <sound-basics-loading>`:
+
+.. code-block:: python
 
     # Both loading approaches accept the streaming keyword.
     classical_music_track = arcade.load_sound(":resources:music/1918.mp3", streaming=True)
     funky_music_track = arcade.Sound(":resources:music/funkyrobot.mp3", streaming=True)
 
 
-For an interactive example, see the :ref:`music_control_demo`.
+To learn more about streaming, please see:
 
-The subheadings below will explain each option in detail.
+* The :ref:`music_control_demo` for runnable example code
+* The :ref:`loading_performance_sound` guide for extensive discussion
 
 .. [#meaningbestformatheader]
    See :ref:`sound-compat-easy` to learn more.
@@ -289,152 +306,36 @@ The subheadings below will explain each option in detail.
 .. [#staticsourcefoot]
    See the :py:class:`pyglet.media.StaticSource` class used by Arcade.
 
-.. _sound-loading-modes-static:
+.. _sound-intermediate-playback:
 
-Static Sounds are for Speed
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Static sounds can help your game run smoothly by preloading
-data before gameplay.
-
-This is because disk access is one of the slowest things a computer
-can do. Waiting for sounds to load during gameplay can make the
-your game run slowly or stutter. The best way to prevent this is to
-load your sound data ahead of time. Popular approaches for this
-include:
-
-* Loading screens
-* Small inter-level "rooms"
-* Multi-threading (best used by experienced programmers)
-
-Unless music is a central part of your gameplay, you should avoid storing
-fully decompressed albums of music in RAM. Each decompressed minute of CD
-quality audio uses slightly over 10 MB of RAM. This adds up quickly, and
-can slow down or freeze a computer if it fills RAM completely.
-
-For music and long background audio, you should strongly consider
-:ref:`streaming <sound-loading-modes-streaming>` from compressed files
-instead.
-
-When to Use Static Sounds
-"""""""""""""""""""""""""
-
-If an audio file meets one or more of the following conditions, you may
-want to load it as static audio:
-
-* You need to start playback quickly in response to gameplay.
-* Two or more "copies" of the sound can be playing at the same time.
-* You will unpredictably skip to different times in the file.
-* You will unpredictably restart playback.
-* You need to automatically loop playback.
-* The file is a short clip.
-
-.. _sound-loading-modes-streaming:
-
-Streaming Saves Memory
-^^^^^^^^^^^^^^^^^^^^^^
-
-Streaming audio from files is very similar to streaming video online.
-
-Both save memory by keeping only part of a file into memory at any given
-time. Even on the slowest recent hardware, this usually works if:
-
-* You only stream one media source at a time.
-* You don't need to synchronize it closely with anything else.
-
-When to Stream
-""""""""""""""
-In general, avoid streaming things other than music and ambiance.
-
-In addition to disabling features you may need for other types of
-audio, it can also introduce complications when streaming multiple
-tracks. For example, you may face issues with synchronization and
-interruptions. These may worsen as the quantity and quality of the
-audio tracks involved increases.
-
-If you're unsure, avoid streaming unless you can say yes to all of the
-following:
-
-#. The :py:class:`Sound` will have at most one playback at a time.
-
-#. The file is long enough to make it worth it.
-
-#. Seeking (skipping to different parts) will be infrequent.
-
-   * Ideally, you will never seek or restart playback suddenly.
-   * If you do seek, the jumps will ideally be close enough to
-     land in the same or next chunk.
-
-See the following to learn more:
-
-* :ref:`sound-advanced-playback-change-aspects-ongoing`
-* The :py:class:`pyglet.media.StreamingSource` class used to implement
-  streaming
-
-.. _sound-loading-modes-streaming-freezes:
-
-Streaming Can Cause Freezes
-"""""""""""""""""""""""""""
-Failing to meet the requirements above can cause buffering issues.
-
-Good compression on files can help, but it can't fully overcome it. Each
-skip outside the currently loaded data requires reading and decompressing
-a replacement.
-
-In the worst-case scenario, frequent skipping will mean constantly
-buffering instead of playing. Although video streaming sites can
-downgrade quality, your game will be at risk of stuttering or freezing.
-
-The best way to handle this is to only use streaming when necessary.
-
-.. _sound-advanced-playback:
-
-Advanced Playback Control
--------------------------
-
-.. _pyglet_controlling_playback: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#controlling-playback
-.. _inconsistency_loop_issue: https://github.com/pythonarcade/arcade/issues/1915
-
-Arcade's :ref:`sound-basics-stopping` functions are imprecise wrappers
-around pyglet :py:class:`~pyglet.media.player.Player` features.
-
-If you need better control over :py:class:`Sound` playback, multiple
-aspects can be controlled in the following ways:
-
-.. list-table::
-   :header-rows: 1
-
-   * - How
-     - When
-
-   * - Properties and methods
-     - Any time before a :py:class:`~pyglet.media.player.Player` finishes
-
-   * - Keyword arguments
-     - When starting to :ref:`play the sound <sound-basics-playing>`
-
+Intermediate-Level Playback Control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Stopping via the Player Object
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""
 
-The simplest form of advanced control is pausing and resuming playback.
+.. _pyglet_controlling_playback: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#controlling-playback
 
-Pausing
-"""""""
-There is no stop method. Instead, call the :py:meth:`Player.pause()
-<pyglet.media.player.Player.pause>` method:
+Arcade's :ref:`sound-basics-stopping` functions wrap |pyglet Player| features.
+
+For additional finesse or less functional call overhead, some users
+may want to access its functionality directly.
+
+.. rubric:: Pausing
+
+There is no stop method. Instead, call
+:py:meth:`Player.pause() <pyglet.media.player.Player.pause>`:
 
 .. code-block:: python
 
-   # Assume this is inside an Enemy class subclassing arcade.Sprite
+   # Assume this is inside a class which stores a pyglet Player
    self.current_player.pause()
 
-Stopping Permanently
-""""""""""""""""""""
+.. rubric:: Stopping Permanently
 
 .. _garbage collection: https://devguide.python.org/internals/garbage-collector/
 
-After you've paused a player, you can stop playback permanently:
+After you've paused a player, you can stop playback permanently as follows:
 
 #. Call the player's :py:meth:`~pyglet.media.player.Player.delete` method:
 
@@ -459,14 +360,54 @@ For a more in-depth explanation of references and auto-deletion, skim
 the start of Python's page on `garbage collection`_. Reading the Abstract
 section of this page should be enough to get started.
 
-Changing Aspects of Playback
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. _sound-intermediate-playback-arguments:
+
+Advanced Playback Arguments
+"""""""""""""""""""""""""""
 There are more ways to alter playback than stopping. Some are more
 qualitative. Many of them can be applied to both new and ongoing sound
 data playbacks, but in different ways.
 
-.. _sound-advanced-playback-change-aspects-ongoing:
+Both :py:func:`play_sound` and :py:meth:`Sound.play` support the
+following advanced arguments:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Argument
+     - Values
+     - Meaning
+
+   * - :py:attr:`~pyglet.media.player.Player.volume`
+     - :py:class:`float` between ``0.0`` (silent) and
+       ``1.0`` (full volume)
+     - A scaling factor for the original audio file.
+
+   * - :py:attr:`~pyglet.media.player.Player.pan`
+     - A :py:class:`float` between ``-1.0`` (left)
+       and ``1.0`` (right)
+     - The left / right channel balance
+
+   * - ``loop``
+     - :py:class:`bool` (``True`` / ``False``)
+     - Whether to restart playback automatically after finishing.
+       [#streamingnoloop]_
+
+   * - ``speed``
+     - :py:class:`float` greater than ``0.0``
+     - The scaling factor for playback speed (and pitch)
+
+       * Lower than ``1.0`` slows speed and lowers pitch
+       * Exactly ``1.0`` is the original speed (default)
+       * Higher than ``1.0`` plays faster with higher pitch
+
+.. [#streamingnoloop]
+   Looping is unavailable for :ref:`streaming <sound-loading-modes>`
+   :py:class:`Sound` objects.
+
+
+.. _sound-intermediate-playback-change-aspects-ongoing:
 
 Change Ongoing Playbacks via Player Objects
 """""""""""""""""""""""""""""""""""""""""""
@@ -510,27 +451,27 @@ arguments to Arcade functions.
    * - :py:attr:`~pyglet.media.player.Player.volume`
      - :py:class:`float` property
      - ``1.0``
-     - The scaling factor to apply to the original audio's volume. Must
-       be between ``0.0`` (silent) and ``1.0`` (full volume).
+     - A scaling factor for playing the audio between
+       ``0.0`` (silent) and ``1.0`` (full volume).
 
    * - :py:attr:`~pyglet.media.player.Player.loop`
      - :py:class:`bool` property
      - ``False``
-     - Whether to restart playback automatically after finishing. [#streamingnoloop]_
+     - Whether to restart playback automatically after finishing. [#streamingnoloop2]_
 
    * - :py:attr:`~pyglet.media.player.Player.pitch` [#inconsistencyspeed]_
      - :py:class:`float` property
      - ``1.0``
      - How fast to play the sound data; also affects pitch.
 
-.. [#streamingnoloop]
+.. [#streamingnoloop2]
    Looping is unavailable when ``streaming=True``; see `pyglet's guide to
    controlling playback <pyglet_controlling_playback_>`_.
 
 .. [#inconsistencyspeed]
    Arcade's equivalent keyword for :ref:`sound-basics-playing` is ``speed``
 
-.. _sound-advanced-playback-change-aspects-new:
+.. _sound-intermediate-playback-change-aspects-new:
 
 Configure New Playbacks via Keyword Arguments
 """""""""""""""""""""""""""""""""""""""""""""
@@ -574,7 +515,7 @@ basic features should work:
 
 #. :ref:`sound-basics-loading` sound effects from Wave files
 #. :ref:`sound-basics-playing` and :ref:`sound-basics-stopping`
-#. :ref:`Adjusting playback volume and speed of playback <sound-advanced-playback>`
+#. :ref:`Adjusting playback volume and speed of playback <sound-intermediate-playback>`
 
 Advanced functionality or subsets of it may not, especially
 :ref:`positional audio <sound-other-libraries-pyglet-positional>`.
@@ -755,7 +696,7 @@ The most obvious external library for audio handling is pyglet:
 
 * It's guaranteed to work wherever Arcade's sound support does.
 * It offers far better control over media than Arcade
-* You may have already used parts of it directly for :ref:`sound-advanced-playback`
+* You may have already used parts of it directly for :ref:`sound-intermediate-playback`
 
 Note that :py:class:`Sound`'s :py:attr:`~Sound.source` attribute holds a
 :py:class:`pyglet.media.Source`. This means you can start off by cleanly
