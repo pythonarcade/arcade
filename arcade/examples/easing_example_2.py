@@ -94,7 +94,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.player_list.update(delta_time)
+        self.player_list.update()
 
     def on_key_press(self, key, modifiers):
         x = self.mouse["x"]
