@@ -180,6 +180,10 @@ intersphinx_mapping = {
 # These will be joined as one block and prepended to every source file.
 # Substitutions for |version| and |release| are predefined by Sphinx.
 rst_prolog = dedent(f"""
+    .. _Pymunk: https://www.pymunk.org/en/latest/index.html
+
+    .. _Chipmunk2D: https://chipmunk-physics.net/
+
     .. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.Player`
     """.strip())
 

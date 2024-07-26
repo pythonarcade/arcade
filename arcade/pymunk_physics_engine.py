@@ -39,10 +39,6 @@ class PymunkException(Exception):
 class PymunkPhysicsEngine:
     """An Arcade-specific adapter for Pymunk.
 
-    .. _Pymunk: https://www.pymunk.org/en/latest/index.html
-    .. _Chipmunk2D:  https://chipmunk-physics.net/
-    .. _CONTRIBUTING.md: https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md
-
     `Pymunk`_ is itself a Python adapter for the professional-grade
     `Chipmunk2D`_ engine. However, Arcade's ``PymunkPhysicsEngine``
     and its doc are currently in need of improvement.
@@ -50,7 +46,7 @@ class PymunkPhysicsEngine:
      .. note:: Arcade would welcome assistance with improving it.
 
                If you are interested, please see Arcade's
-               `CONTRIBUTING.md`_.
+               `CONTRIBUTING.md <CONTRIBUTING.md: https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md>`_
 
     Args:
         gravity:
