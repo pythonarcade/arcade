@@ -93,7 +93,7 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
         # Call update on all the snowflakes
-        self.snowflake_list.update(delta_time)
+        self.snowflake_list.update()
 
 
 def main():
