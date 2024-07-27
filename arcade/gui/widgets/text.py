@@ -410,7 +410,7 @@ class UIInputText(UIWidget):
         text_color: RGBOrA255 = arcade.color.WHITE,
         multiline=False,
         caret_color: RGBOrA255 = arcade.color.WHITE,
-        border_color: RGBOrA255 | None = arcade.color.WHITE,
+        border_color: Color | None = arcade.color.WHITE,
         border_width: int = 2,
         size_hint=None,
         size_hint_min=None,
@@ -427,9 +427,8 @@ class UIInputText(UIWidget):
             size_hint_max=size_hint_max,
             **kwargs,
         )
-        self.with_border(
-            color=Color.from_iterable(border_color) if border_color else None, width=border_width
-        )
+
+        self.with_border(color=border_color, width=border_width)
 
         self._active = False
         self._text_color = Color.from_iterable(text_color)
