@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC
-from random import randint
 from typing import NamedTuple, Iterable, Optional, Union, TYPE_CHECKING, TypeVar, Tuple, List, Dict
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
@@ -22,7 +21,7 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color, AnchorPoint, AsFloat
+from arcade.types import Color, AnchorPoint, AsFloat
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
