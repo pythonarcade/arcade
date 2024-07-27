@@ -494,6 +494,8 @@ class UIInputText(UIWidget):
         if self._active:
             # Act on events if active
             if isinstance(event, UITextInputEvent):
+                if not self.layout.multiline:
+                    event.text = event.text.replace("\r", "").replace("\n", "")
                 self.caret.on_text(event.text)
                 self.trigger_full_render()
             elif isinstance(event, UITextMotionEvent):
