@@ -300,7 +300,12 @@ class DefaultTextureAtlas(TextureAtlasBase):
                 self.write_image(texture.image_data.image, x, y)
             except AllocatorException:
                 if not self._auto_resize:
-                    raise
+                    raise AllocatorException(
+                        f"No more space for image {texture.image_data.hash} "
+                        f"size={texture.image.size}. "
+                        f"Curr size: {self._size}. "
+                        f"Max size: {self._max_size}"
+                    )
 
                 # If we have lost regions/images we can try to rebuild the atlas
                 removed_image_count = self._image_ref_count.get_total_decref()
