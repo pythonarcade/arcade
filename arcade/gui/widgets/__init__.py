@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC
-from random import randint
 from typing import NamedTuple, Iterable, Optional, Union, TYPE_CHECKING, TypeVar, Tuple, List, Dict
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
@@ -22,7 +21,7 @@ from arcade.gui.events import (
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
 from arcade.gui.surface import Surface
-from arcade.types import RGBA255, Color, AnchorPoint, AsFloat
+from arcade.types import Color, AnchorPoint, AsFloat
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
@@ -389,7 +388,7 @@ class UIWidget(EventDispatcher, ABC):
         """
         self.rect = self.rect.resize(width=width, height=height, anchor=anchor)
 
-    def with_border(self, *, width=2, color=arcade.color.GRAY) -> Self:
+    def with_border(self, *, width=2, color: Color | None = arcade.color.GRAY) -> Self:
         """Sets border properties
 
         Args:
@@ -526,7 +525,6 @@ class UIInteractiveWidget(UIWidget):
         size_hint_max: max width and height in pixel
         interaction_buttons: defines, which mouse buttons should trigger
             the interaction (default: left mouse button)
-        style: not used
     """
 
     # States
@@ -616,8 +614,9 @@ class UIInteractiveWidget(UIWidget):
 
 
 class UIDummy(UIInteractiveWidget):
-    """Solid color widget used for testing & examples
+    """Solid color widget used for testing & examples.
 
+    Starts with a random color.
     It should not be subclassed for real-world usage.
 
     When clicked, it does the following:
@@ -628,14 +627,13 @@ class UIDummy(UIInteractiveWidget):
     Args:
         x: x coordinate of bottom left
         y: y coordinate of bottom left
-        color: fill color for the widget
         width: width of widget
         height: height of widget
         size_hint: Tuple of floats (0.0-1.0), how much space of the
             parent should be requested
         size_hint_min: min width and height in pixel
         size_hint_max: max width and height in pixel
-        style: not used
+        **kwargs: passed to UIWidget
     """
 
     def __init__(
@@ -658,25 +656,22 @@ class UIDummy(UIInteractiveWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            **kwargs,
         )
-        self.color: RGBA255 = (randint(0, 255), randint(0, 255), randint(0, 255), 255)
-        self.border_color = arcade.color.BATTLESHIP_GREY
-        self.border_width = 0
+        self.with_background(color=Color.random(a=255))
+        self.with_border(color=arcade.color.BATTLESHIP_GREY, width=0)
 
     def on_click(self, event: UIOnClickEvent):
         """Prints the rect and changes the color"""
         print("UIDummy.rect:", self.rect)
-        self.color = Color.random(a=255)
+        self.with_background(color=Color.random(a=255))
 
     def on_update(self, dt):
         """Update the border of the widget if hovered"""
-        self.border_width = 2 if self.hovered else 0
-        self.border_color = arcade.color.WHITE if self.pressed else arcade.color.BATTLESHIP_GREY
-
-    def do_render(self, surface: Surface):
-        """Render solid color"""
-        self.prepare_render(surface)
-        surface.clear(self.color)
+        self.with_border(
+            width=2 if self.hovered else 0,
+            color=arcade.color.WHITE if self.pressed else arcade.color.BATTLESHIP_GREY,
+        )
 
 
 class UISpriteWidget(UIWidget):
@@ -692,7 +687,6 @@ class UISpriteWidget(UIWidget):
             parent should be requested
         size_hint_min: min width and height in pixel
         size_hint_max: max width and height in pixel
-        style: not used
     """
 
     def __init__(
@@ -748,7 +742,6 @@ class UILayout(UIWidget):
             parent should be requested
         size_hint_min: min width and height in pixel
         size_hint_max: max width and height in pixel
-        style: not used
     """
 
     @staticmethod
@@ -808,7 +801,8 @@ class UISpace(UIWidget):
         y: y coordinate of bottom left
         width: width of widget
         height: height of widget
-        color: Color for widget area
+        color: Color for widget area, if None, it will be transparent
+            (this will set the background color)
         size_hint: Tuple of floats (0.0-1.0), how much space of the
             parent should be requested
         size_hint_min: min width and height in pixel
@@ -839,20 +833,13 @@ class UISpace(UIWidget):
             size_hint_max=size_hint_max,
             **kwargs,
         )
-        self._color = color
+        self.with_background(color=color)
 
     @property
     def color(self):
-        """Color of the widget"""
-        return self._color
+        """Color of the widget, alias for background color"""
+        return self._bg_color
 
     @color.setter
     def color(self, value):
-        self._color = value
-        self.trigger_render()
-
-    def do_render(self, surface: Surface):
-        """Render the widget, mainly the background color"""
-        self.prepare_render(surface)
-        if self._color:
-            surface.clear(self._color)
+        self.with_background(color=value)
