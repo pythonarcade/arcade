@@ -362,6 +362,8 @@ class UIInputText(UIWidget):
     around the caret. Arcade confirms that the field is active before allowing
     users to type, so it is okay to have multiple of these.
 
+    By default, a border is drawn around the input field.
+
     Args:
         x: x position (default anchor is bottom-left).
         y: y position (default anchor is bottom-left).
@@ -380,6 +382,9 @@ class UIInputText(UIWidget):
             is the same thing as a :py:class:`~arcade.gui.UITextArea`.
         caret_color: An RGBA or RGB color for the caret with each
             channel between 0 and 255, inclusive.
+        border_color: An RGBA or RGB color for the border with each
+            channel between 0 and 255, inclusive, can be None to remove border.
+        border_width: Width of the border in pixels.
         size_hint: A tuple of floats between 0 and 1 defining the amount
             of space of the parent should be requested.
         size_hint_min: Minimum size hint width and height in pixel.
@@ -398,13 +403,15 @@ class UIInputText(UIWidget):
         x: float = 0,
         y: float = 0,
         width: float = 100,
-        height: float = 24,
+        height: float = 23,  # required height for font size 12 + border width 1
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
         text_color: RGBOrA255 = arcade.color.WHITE,
         multiline=False,
         caret_color: RGBOrA255 = arcade.color.WHITE,
+        border_color: RGBOrA255 | None = arcade.color.WHITE,
+        border_width: float = 2,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -420,6 +427,7 @@ class UIInputText(UIWidget):
             size_hint_max=size_hint_max,
             **kwargs,
         )
+        self.with_border(color=border_color, width=border_width)
 
         self._active = False
         self._text_color = Color.from_iterable(text_color)
@@ -467,7 +475,8 @@ class UIInputText(UIWidget):
         if not self._active and isinstance(event, UIMousePressEvent):
             if self.rect.point_in_rect(event.pos):
                 self.activate()
-                return EVENT_HANDLED
+                # return unhandled to allow other widgets to deactivate
+                return EVENT_UNHANDLED
 
         # If active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
@@ -477,6 +486,7 @@ class UIInputText(UIWidget):
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self.deactivate()
+                # return unhandled to allow other widgets to activate
                 return EVENT_UNHANDLED
 
         # If active pass all non press events to caret

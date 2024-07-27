@@ -3,6 +3,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from typing import Generator, Optional
 
+from PIL import Image
 from typing_extensions import Self
 
 import arcade
@@ -251,3 +252,7 @@ class Surface:
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo = self.ctx.framebuffer(color_attachments=[self.texture])
         self.fbo.clear()
+
+    def to_image(self) -> Image.Image:
+        """Convert the surface to an PIL image"""
+        return self.ctx.get_framebuffer_image(self.fbo)
