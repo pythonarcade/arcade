@@ -9,7 +9,10 @@ from timeit import Timer
 from time import perf_counter_ns
 from itertools import cycle
 from random import random
-from arcade import Vec2, Sprite, SpriteList, Window
+from pyglet.math import Vec2
+from arcade.sprite import Sprite
+from arcade.application import Window
+from arcade.sprite_list.sprite_list import SpriteList
 
 win = Window()
 sprite_list = SpriteList(capacity=2)
@@ -18,12 +21,12 @@ sprite = Sprite()
 sprite_list.append(sprite)
 sprite_list.initialize()
 
-is_vec_sprite = isinstance(Sprite._position, Vec2)
+is_vec_sprite = isinstance(sprite._velocity, Vec2)
 
 # pre-generate a tuple of random values to void the call cost of random
 value_cycle = cycle(tuple(random() for _ in range(10000)))
 
-print(sprite._position)
+
 if is_vec_sprite:
     print('USING VECTOR METHODS')
     def scale():
