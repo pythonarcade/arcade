@@ -240,10 +240,19 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         # Grab the first texture from each set
         textures: list[Texture] = []
-        for tex_set in self._unique_textures.values():
+        # NOTE: keys can drop out of the dict during iteration.
+        #       Copy they keys and look up each set to avoid this.
+        for key in list(self._unique_textures.keys()):
+            tex_set = self._unique_textures.get(key, None)
+            # Entry was GCed during iteration
+            if tex_set is None:
+                continue
+            # Corrupt data
             if len(tex_set) == 0:
                 raise RuntimeError("Empty set in unique textures")
+
             textures.append(next(iter(tex_set)))
+
         return textures
 
     @property
