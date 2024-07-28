@@ -479,9 +479,19 @@ class UIInputText(UIWidget):
     def on_event(self, event: UIEvent) -> Optional[bool]:
         """Handle events for the text input field.
 
-        Text input is only active when the user clicks on the input field."""
-        # Handle mouse presses to active, deactivate, or move the caret. All other
-        # mouse events are handled in the if self._active block after this one.
+        Text input and other editing events only work after a user clicks
+        inside the field (:py:class:`~arcade.gui.events.UIMousePress`).
+        Dragging to select works as expected because it is handled by a separate
+        event class (:py:class:`~arcade.gui.events.UIMouseEventDrag`).
+
+        Args:
+            event: The UI event to be handled here or in a superclass.
+        Returns:
+            ``True`` if the event was handled.
+        """
+
+        # Handle mouse presses to activate or deactivate the caret. All other mouse
+        # events, including dragging and scrolling, are handled in the next if block.
         if isinstance(event, UIMousePressEvent):
             inside_xy = self._event_pos_relative_to_self(event)
             if self._active:
@@ -498,7 +508,8 @@ class UIInputText(UIWidget):
                 # return unhandled to allow other widgets to deactivate
                 return EVENT_UNHANDLED
 
-        # If active, then pass all supported non-press events to caret
+        # When active, handle any supported non-press events by passing them
+        # to the caret object.
         if self._active:
             # Act on events if active
             if isinstance(event, UITextInputEvent):
@@ -511,8 +522,8 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and (xy := self._event_pos_relative_to_self(event)):
-                x, y = map(int, xy)
+            if isinstance(event, UIMouseEvent) and (inside_xy := self._event_pos_relative_to_self(event)):
+                x, y = map(int, inside_xy)
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
                         x, y, event.dx, event.dy, event.buttons, event.modifiers
