@@ -133,58 +133,58 @@ change_y_time = Timer(change_y, timer=perf_counter_ns).timeit(timit_count)
 
 print('WITHOUT GPU WRITE')
 
-print(f'call count: {timit_count}, total calls: {timit_count * 12}, total_elaped: {sum((scale_time, size_time, position_time, velocity_time, scale_x_time, scale_y_time, width_time, height_time ,center_x_time, center_y_time, change_x_time, change_y_time)) * 1e-6} ms')
+print(f'call count: {timit_count}, total calls: {timit_count * 12}, total_elaped: {sum((scale_time, size_time, position_time, velocity_time, scale_x_time, scale_y_time, width_time, height_time ,center_x_time, center_y_time, change_x_time, change_y_time)) * 1e-6:.3g} ms')
 
-print(f'scale    - elapsed: {scale_time * 1e-6} ms, avg: {scale_time / timit_count * 1e-6} ms')
-print(f'| - x    - elapsed: {scale_x_time * 1e-6} ms, avg: {scale_x_time / timit_count * 1e-6} ms')
-print(f'| - y    - elapsed: {scale_y_time * 1e-6} ms, avg: {scale_y_time / timit_count * 1e-6} ms')
+print(f'scale    - elapsed: {scale_time * 1e-6:#.3g} ms, avg: {scale_time / timit_count * 1e-6:#.3g} ms')
+print(f'| - x    - elapsed: {scale_x_time * 1e-6:#.3g} ms, avg: {scale_x_time / timit_count * 1e-6:#.3g} ms')
+print(f'| - y    - elapsed: {scale_y_time * 1e-6:#.3g} ms, avg: {scale_y_time / timit_count * 1e-6:#.3g} ms')
 
-print(f'size     - elapsed: {size_time * 1e-6} ms, avg: {size_time / timit_count * 1e-6} ms')
-print(f'| - x    - elapsed: {width_time * 1e-6} ms, avg: {width_time / timit_count * 1e-6} ms')
-print(f'| - y    - elapsed: {height_time * 1e-6} ms, avg: {height_time / timit_count * 1e-6} ms')
+print(f'size     - elapsed: {size_time * 1e-6:#.3g} ms, avg: {size_time / timit_count * 1e-6:#.3g} ms')
+print(f'| - x    - elapsed: {width_time * 1e-6:#.3g} ms, avg: {width_time / timit_count * 1e-6:#.3g} ms')
+print(f'| - y    - elapsed: {height_time * 1e-6:#.3g} ms, avg: {height_time / timit_count * 1e-6:#.3g} ms')
 
-print(f'position - elapsed: {position_time * 1e-6} ms, avg: {position_time / timit_count * 1e-6} ms')
-print(f'| - x    - elapsed: {center_x_time * 1e-6} ms, avg: {center_x_time / timit_count * 1e-6} ms')
-print(f'| - y    - elapsed: {center_y_time * 1e-6} ms, avg: {center_y_time / timit_count * 1e-6} ms')
+print(f'position - elapsed: {position_time * 1e-6:#.3g} ms, avg: {position_time / timit_count * 1e-6:#.3g} ms')
+print(f'| - x    - elapsed: {center_x_time * 1e-6:#.3g} ms, avg: {center_x_time / timit_count * 1e-6:#.3g} ms')
+print(f'| - y    - elapsed: {center_y_time * 1e-6:#.3g} ms, avg: {center_y_time / timit_count * 1e-6:#.3g} ms')
 
-print(f'velocity - elapsed: {velocity_time * 1e-6} ms, avg: {velocity_time / timit_count * 1e-6} ms')
-print(f'| - x    - elapsed: {change_x_time * 1e-6} ms, avg: {change_x_time / timit_count * 1e-6} ms')
-print(f'| - y    - elapsed: {change_y_time * 1e-6} ms, avg: {change_y_time / timit_count * 1e-6} ms')
+print(f'velocity - elapsed: {velocity_time * 1e-6:#.3g} ms, avg: {velocity_time / timit_count * 1e-6:#.3g} ms')
+print(f'| - x    - elapsed: {change_x_time * 1e-6:#.3g} ms, avg: {change_x_time / timit_count * 1e-6:#.3g} ms')
+print(f'| - y    - elapsed: {change_y_time * 1e-6:#.3g} ms, avg: {change_y_time / timit_count * 1e-6:#.3g} ms')
 
-write = True
-
-# -- Time paired properties --
-scale_time = Timer(scale, timer=perf_counter_ns).timeit(timit_count)
-size_time = Timer(size, timer=perf_counter_ns).timeit(timit_count)
-position_time = Timer(position, timer=perf_counter_ns).timeit(timit_count)
-velocity_time = Timer(velocity, timer=perf_counter_ns).timeit(timit_count)
-
-# -- TIme individual properties --
-scale_x_time = Timer(scale_x, timer=perf_counter_ns).timeit(timit_count)
-scale_y_time = Timer(scale_y, timer=perf_counter_ns).timeit(timit_count)
-width_time = Timer(width, timer=perf_counter_ns).timeit(timit_count)
-height_time = Timer(height, timer=perf_counter_ns).timeit(timit_count)
-center_x_time = Timer(center_x, timer=perf_counter_ns).timeit(timit_count)
-center_y_time = Timer(center_y, timer=perf_counter_ns).timeit(timit_count)
-change_x_time = Timer(change_x, timer=perf_counter_ns).timeit(timit_count)
-change_y_time = Timer(change_y, timer=perf_counter_ns).timeit(timit_count)
-
-print('WITH GPU WRITE')
-
-print(f'call count: {timit_count}, total calls: {timit_count * 12}, total_elaped: {sum((scale_time, size_time, position_time, velocity_time, scale_x_time, scale_y_time, width_time, height_time ,center_x_time, center_y_time, change_x_time, change_y_time)) * 1e-6} ms')
-
-print(f'scale    - elapsed: {scale_time * 1e-6} ms, avg: {scale_time / timit_count * 1e-6} ms')
-print(f'| - x    - elapsed: {scale_x_time * 1e-6} ms, avg: {scale_x_time / timit_count * 1e-6} ms')
-print(f'| - y    - elapsed: {scale_y_time * 1e-6} ms, avg: {scale_y_time / timit_count * 1e-6} ms')
-
-print(f'size     - elapsed: {size_time * 1e-6} ms, avg: {size_time / timit_count * 1e-6} ms')
-print(f'| - x    - elapsed: {width_time * 1e-6} ms, avg: {width_time / timit_count * 1e-6} ms')
-print(f'| - y    - elapsed: {height_time * 1e-6} ms, avg: {height_time / timit_count * 1e-6} ms')
-
-print(f'position - elapsed: {position_time * 1e-6} ms, avg: {position_time / timit_count * 1e-6} ms')
-print(f'| - x    - elapsed: {center_x_time * 1e-6} ms, avg: {center_x_time / timit_count * 1e-6} ms')
-print(f'| - y    - elapsed: {center_y_time * 1e-6} ms, avg: {center_y_time / timit_count * 1e-6} ms')
-
-print(f'velocity - elapsed: {velocity_time * 1e-6} ms, avg: {velocity_time / timit_count * 1e-6} ms')
-print(f'| - x    - elapsed: {change_x_time * 1e-6} ms, avg: {change_x_time / timit_count * 1e-6} ms')
-print(f'| - y    - elapsed: {change_y_time * 1e-6} ms, avg: {change_y_time / timit_count * 1e-6} ms')
+# write = True
+# 
+# # -- Time paired properties --
+# scale_time = Timer(scale, timer=perf_counter_ns).timeit(timit_count)
+# size_time = Timer(size, timer=perf_counter_ns).timeit(timit_count)
+# position_time = Timer(position, timer=perf_counter_ns).timeit(timit_count)
+# velocity_time = Timer(velocity, timer=perf_counter_ns).timeit(timit_count)
+# 
+# # -- TIme individual properties --
+# scale_x_time = Timer(scale_x, timer=perf_counter_ns).timeit(timit_count)
+# scale_y_time = Timer(scale_y, timer=perf_counter_ns).timeit(timit_count)
+# width_time = Timer(width, timer=perf_counter_ns).timeit(timit_count)
+# height_time = Timer(height, timer=perf_counter_ns).timeit(timit_count)
+# center_x_time = Timer(center_x, timer=perf_counter_ns).timeit(timit_count)
+# center_y_time = Timer(center_y, timer=perf_counter_ns).timeit(timit_count)
+# change_x_time = Timer(change_x, timer=perf_counter_ns).timeit(timit_count)
+# change_y_time = Timer(change_y, timer=perf_counter_ns).timeit(timit_count)
+# 
+# print('WITH GPU WRITE')
+# 
+# print(f'call count: {timit_count}, total calls: {timit_count * 12}, total_elaped: {sum((scale_time, size_time, position_time, velocity_time, scale_x_time, scale_y_time, width_time, height_time ,center_x_time, center_y_time, change_x_time, change_y_time)) * 1e-6:.3g} ms')
+# 
+# print(f'scale    - elapsed: {scale_time * 1e-6:.3g} ms, avg: {scale_time / timit_count * 1e-6:.3g} ms')
+# print(f'| - x    - elapsed: {scale_x_time * 1e-6:.3g} ms, avg: {scale_x_time / timit_count * 1e-6:.3g} ms')
+# print(f'| - y    - elapsed: {scale_y_time * 1e-6:.3g} ms, avg: {scale_y_time / timit_count * 1e-6:.3g} ms')
+# 
+# print(f'size     - elapsed: {size_time * 1e-6:.3g} ms, avg: {size_time / timit_count * 1e-6:.3g} ms')
+# print(f'| - x    - elapsed: {width_time * 1e-6:.3g} ms, avg: {width_time / timit_count * 1e-6:.3g} ms')
+# print(f'| - y    - elapsed: {height_time * 1e-6:.3g} ms, avg: {height_time / timit_count * 1e-6:.3g} ms')
+# 
+# print(f'position - elapsed: {position_time * 1e-6:.3g} ms, avg: {position_time / timit_count * 1e-6:.3g} ms')
+# print(f'| - x    - elapsed: {center_x_time * 1e-6:.3g} ms, avg: {center_x_time / timit_count * 1e-6:.3g} ms')
+# print(f'| - y    - elapsed: {center_y_time * 1e-6:.3g} ms, avg: {center_y_time / timit_count * 1e-6:.3g} ms')
+# 
+# print(f'velocity - elapsed: {velocity_time * 1e-6:.3g} ms, avg: {velocity_time / timit_count * 1e-6:.3g} ms')
+# print(f'| - x    - elapsed: {change_x_time * 1e-6:.3g} ms, avg: {change_x_time / timit_count * 1e-6:.3g} ms')
+# print(f'| - y    - elapsed: {change_y_time * 1e-6:.3g} ms, avg: {change_y_time / timit_count * 1e-6:.3g} ms')
