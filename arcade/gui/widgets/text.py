@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Final, Optional
 
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
+from pyglet.math import Vec2
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 from typing_extensions import override
@@ -396,6 +397,7 @@ class UIInputText(UIWidget):
     # Move layout one pixel into the scissor box so the caret is also shown at
     # position 0.
     LAYOUT_OFFSET = 1
+    LAYOUT_OFFSET_VEC2: Final[Vec2] = Vec2(0.0, LAYOUT_OFFSET)
 
     def __init__(
         self,
@@ -468,6 +470,12 @@ class UIInputText(UIWidget):
             self.trigger_full_render()
 
     @override
+    def _event_pos_relative_to_self(self, mouse_event: UIMouseEvent) -> Vec2 | None:
+        if result := super()._event_pos_relative_to_self(mouse_event):
+            return result - self.LAYOUT_OFFSET_VEC2
+        return result
+
+    @override
     def on_event(self, event: UIEvent) -> Optional[bool]:
         """Handle events for the text input field.
 
@@ -482,8 +490,7 @@ class UIInputText(UIWidget):
         # If active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
             if self.rect.point_in_rect(event.pos):
-                x = int(event.x - self.left - self.LAYOUT_OFFSET)
-                y = int(event.y - self.bottom)
+                x, y = map(int, self._event_pos_relative_to_self(event))
                 self.caret.on_mouse_press(x, y, event.button, event.modifiers)
             else:
                 self.deactivate()
@@ -503,9 +510,8 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and self.rect.point_in_rect(event.pos):
-                x = int(event.x - self.left - self.LAYOUT_OFFSET)
-                y = int(event.y - self.bottom)
+            if isinstance(event, UIMouseEvent) and (xy := self._event_pos_relative_to_self(event)):
+                x, y = map(int, xy)
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
                         x, y, event.dx, event.dy, event.buttons, event.modifiers

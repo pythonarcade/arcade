@@ -1,7 +1,18 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import NamedTuple, Iterable, Optional, Union, TYPE_CHECKING, TypeVar, Tuple, List, Dict
+from typing import (
+    NamedTuple,
+    Iterable,
+    Optional,
+    Union,
+    TYPE_CHECKING,
+    TypeVar,
+    Tuple,
+    List,
+    Dict,
+    Type,
+)
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Vec2
@@ -17,6 +28,7 @@ from arcade.gui.events import (
     UIMouseReleaseEvent,
     UIOnClickEvent,
     UIOnUpdateEvent,
+    UIMouseEvent,
 )
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import Property, bind, ListProperty
@@ -166,6 +178,20 @@ class UIWidget(EventDispatcher, ABC):
     def on_update(self, dt):
         """Custom logic which will be triggered."""
         pass
+
+    def _event_pos_relative_to_self(self, mouse_event: UIMouseEvent) -> Vec2 | None:
+        """Gets coords relative to bottom left if inside the widget.
+
+        Args:
+            mouse_event: Any :py:class:`UIMouseEvent`.
+        Returns:
+            ``None`` if outside the widget or coords relative to
+             the widget's bottom left.
+        """
+        pos = mouse_event.pos
+        if not self.rect.point_in_rect(pos):
+            return None
+        return Vec2(pos[0] - self.left, pos[1] - self.bottom)
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         """Passes :class:`UIEvent` s through the widget tree."""
