@@ -480,24 +480,25 @@ class UIInputText(UIWidget):
         """Handle events for the text input field.
 
         Text input is only active when the user clicks on the input field."""
-        # If not active, check to activate, return
-        if not self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.point_in_rect(event.pos):
+        # Handle mouse presses to active, deactivate, or move the caret. All other
+        # mouse events are handled in the if self._active block after this one.
+        if isinstance(event, UIMousePressEvent):
+            inside_xy = self._event_pos_relative_to_self(event)
+            if self._active:
+                if inside_xy:
+                    x, y = map(int, inside_xy)
+                    self.caret.on_mouse_press(x, y, event.button, event.modifiers)
+                else:
+                    self.deactivate()
+                    # return unhandled to allow other widgets to activate
+                    return EVENT_UNHANDLED
+
+            elif not self._active and inside_xy:
                 self.activate()
                 # return unhandled to allow other widgets to deactivate
                 return EVENT_UNHANDLED
 
-        # If active check to deactivate
-        if self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.point_in_rect(event.pos):
-                x, y = map(int, self._event_pos_relative_to_self(event))
-                self.caret.on_mouse_press(x, y, event.button, event.modifiers)
-            else:
-                self.deactivate()
-                # return unhandled to allow other widgets to activate
-                return EVENT_UNHANDLED
-
-        # If active pass all non press events to caret
+        # If active, then pass all supported non-press events to caret
         if self._active:
             # Act on events if active
             if isinstance(event, UITextInputEvent):
