@@ -18,13 +18,14 @@ sprite = Sprite()
 sprite_list.append(sprite)
 sprite_list.initialize()
 
-is_vec_sprite = isinstance(Sprite.position, Vec2)
+is_vec_sprite = isinstance(Sprite._position, Vec2)
 
 # pre-generate a tuple of random values to void the call cost of random
 value_cycle = cycle(tuple(random() for _ in range(10000)))
 
-
+print(sprite._position)
 if is_vec_sprite:
+    print('USING VECTOR METHODS')
     def scale():
         sprite.scale = Vec2(next(value_cycle), next(value_cycle))
         sprite_list.write_sprite_buffers_to_gpu()
@@ -41,6 +42,7 @@ if is_vec_sprite:
         sprite.velocity = Vec2(next(value_cycle), next(value_cycle))
         sprite_list.write_sprite_buffers_to_gpu()
 else:
+    print('USING TUPLE METHODS')
     def scale():
         sprite.scale = next(value_cycle), next(value_cycle)
         sprite_list.write_sprite_buffers_to_gpu()
