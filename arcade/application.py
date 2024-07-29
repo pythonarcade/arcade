@@ -1213,6 +1213,7 @@ def open_window(
     window_title: str | None = None,
     resizable: bool = False,
     antialiasing: bool = True,
+    **kwargs,
 ) -> Window:
     """
     Shortcut for opening/creating a window with less options.
@@ -1231,9 +1232,13 @@ def open_window(
             Whether the user can resize the window.
         antialiasing:
             Whether to use antialiasing
+        **kwargs:
+            Additional keyword arguments to pass to the window constructor.
     """
     global _window
-    _window = Window(width, height, window_title, resizable=resizable, antialiasing=antialiasing)
+    _window = Window(
+        width, height, window_title, resizable=resizable, antialiasing=antialiasing, **kwargs
+    )
     _window.invalid = False
     return _window
 
