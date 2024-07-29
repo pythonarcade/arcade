@@ -25,7 +25,7 @@ class ArcadeSplash(UIView):
         super().__init__()
         self.view = view
         self.duration = duration
-        self._time = 0
+        self._time = 0.0
 
         anchor = self.ui.add(UIAnchorLayout())
         box = anchor.add(UIBoxLayout(space_between=20))
@@ -39,7 +39,7 @@ class ArcadeSplash(UIView):
         """Set background color and reset time."""
         super().on_show_view()
         arcade.set_background_color(arcade.color.WHITE_SMOKE)
-        self._time = 0
+        self._time = 0.0
 
     def on_update(self, delta_time: float):
         """Update the time and switch to the next view after the duration."""
