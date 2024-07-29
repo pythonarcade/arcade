@@ -11,7 +11,6 @@ from typing import (
     Tuple,
     List,
     Dict,
-    Type,
 )
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
