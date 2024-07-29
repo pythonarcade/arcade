@@ -562,8 +562,14 @@ class UIInputText(UIWidget):
 
     @text.setter
     def text(self, value):
-        self.doc.text = value
-        self.trigger_full_render()
+        if value != self.doc.text:
+            self.doc.text = value
+
+            # if bg color or texture is set, render this widget only
+            if self._bg_color or self._bg_tex:
+                self.trigger_render()
+            else:
+                self.trigger_full_render()
 
     @override
     def do_render(self, surface: Surface):
