@@ -522,7 +522,9 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and (inside_xy := self._event_pos_relative_to_self(event)):
+            if isinstance(event, UIMouseEvent) and (
+                inside_xy := self._event_pos_relative_to_self(event)
+            ):
                 x, y = map(int, inside_xy)
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
