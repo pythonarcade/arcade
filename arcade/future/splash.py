@@ -31,7 +31,7 @@ class ArcadeSplash(View):
         _text_color = (255, 255, 255, 255) if dark_mode else (0, 0, 0, 255)
         self._bg_color = (0, 0, 0, 255) if dark_mode else arcade.color.WHITE_SMOKE
 
-        self._sprites = SpriteList()
+        self._sprites: SpriteList[Sprite] = SpriteList()
         self._logo = Sprite(
             arcade.load_texture(":system:/logo.png"),
             center_x=self.window.center_x,
