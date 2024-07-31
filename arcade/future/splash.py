@@ -9,7 +9,7 @@ python -m arcade.gui.experimental.splash
 """
 
 import arcade
-from arcade import View, Sprite, SpriteList, Text
+from arcade import Sprite, SpriteList, Text, View
 
 
 class ArcadeSplash(View):
