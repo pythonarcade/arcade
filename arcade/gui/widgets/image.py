@@ -24,6 +24,10 @@ class UIImage(UIWidget):
     """
 
     texture: Union[Texture, NinePatchTexture] = Property()  # type: ignore
+    """Texture to show"""
+    alpha: int = Property(255)  # type: ignore
+    """Alpha value of the texture, value between 0 and 255.
+    0 is fully transparent, 255 is fully visible."""
 
     def __init__(
         self,
@@ -41,6 +45,7 @@ class UIImage(UIWidget):
             **kwargs,
         )
         bind(self, "texture", self.trigger_render)
+        bind(self, "alpha", self.trigger_full_render)
 
     @override
     def do_render(self, surface: Surface):
@@ -53,4 +58,5 @@ class UIImage(UIWidget):
                 width=self.content_width,
                 height=self.content_height,
                 tex=self.texture,
+                alpha=self.alpha,
             )
