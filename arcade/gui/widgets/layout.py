@@ -702,8 +702,8 @@ class UIGridLayout(UILayout):
 
             max_height_per_row[row_num][col_num] = (child.height, row_span)
 
-            for row in child_sorted_row_wise[row_num : row_num + row_span]:  # noqa: E203
-                row[col_num : col_num + col_span] = [child] * col_span  # noqa: E203
+            for row in child_sorted_row_wise[row_num : row_num + row_span]:
+                row[col_num : col_num + col_span] = [child] * col_span
 
         principal_height_ratio_list = []
         principal_width_ratio_list = []
