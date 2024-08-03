@@ -1,6 +1,6 @@
 :hide-toc:
 
-.. image:: images/arcade-logo.svg
+.. image:: images/logo/arcade-logo.svg
     :width: 10%
     :class: right-image
 
@@ -123,7 +123,7 @@ Arcade is developed by volunteers.
    :caption: Community
 
    community/how_to_get_help
-   games/index
+   community/games/index
 
 .. toctree::
    :hidden:
