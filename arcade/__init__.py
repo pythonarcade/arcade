@@ -57,7 +57,6 @@ if sys.platform == "darwin" or sys.platform.startswith("linux"):
 else:
     os.environ["PATH"] += str(lib_location)
 
-# noinspection PyPep8
 import pyglet
 
 

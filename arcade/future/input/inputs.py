@@ -272,14 +272,12 @@ class Keys(InputEnum):
     F = 102
     G = 103
     H = 104
-    # noinspection PyPep8
     I = 105
     J = 106
     K = 107
     L = 108
     M = 109
     N = 110
-    # noinspection PyPep8
     O = 111
     P = 112
     Q = 113
