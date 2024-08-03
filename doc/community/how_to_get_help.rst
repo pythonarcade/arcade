@@ -7,7 +7,7 @@ The best places to get help are the help channels on the
 `the Discord server <https://discord.gg/ZjGDqMp>`_. They are located
 in the 3rd category from the top in the channel list:
 
-.. figure:: ./images/discord_help_channels.png
+.. figure:: /images/community/how_to_get_help/discord_help_channels.png
     :scale: 50%
     :alt: A screenshot of the Discord server's channel categories with
           an arrow pointing to the help channels.
@@ -32,7 +32,7 @@ information:
 Here's an example as a series of Discord messages (click or tap to
 enlarge):
 
-.. figure:: ./images/discord_help_example.png
+.. figure:: /images/community/how_to_get_help/discord_help_example.png
     :scale: 75%
     :alt: An example of a good series of messages requesting help,
           including all the point above.
@@ -100,7 +100,7 @@ above to your clipboard. For convenience, clicking the icon at the top
 right of the example box will copy it for you. You can paste it into
 Discord's message box as shown below:
 
-.. figure:: ./images/discord_code_entry_desktop.png
+.. figure:: /images/community/how_to_get_help/discord_code_entry_desktop.png
     :alt: The example code block from above pasted into Discord's
           message entry field.
 

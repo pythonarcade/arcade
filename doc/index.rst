@@ -115,14 +115,14 @@ Arcade is developed by volunteers.
    :maxdepth: 1
    :caption: Contributing
 
-   contributing_guide/index
+   contributing/index
 
 .. toctree::
    :hidden:
    :maxdepth: 1
    :caption: Community
 
-   get_started/how_to_get_help
+   community/how_to_get_help
    games/index
 
 .. toctree::
