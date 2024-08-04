@@ -155,14 +155,17 @@ def are_lines_intersecting(p1: Point2, q1: Point2, p2: Point2, q2: Point2) -> bo
     return False
 
 
-def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
+def is_point_in_polygon(x: float, y: float, polygon: Point2List) -> bool:
     """
     Checks if a point is inside a polygon of three or more points.
 
-    :param x: X coordinate of point
-    :param y: Y coordinate of point
-    :param polygon_point_list: List of points that define the polygon.
-    :Returns: True or false depending if point is inside polygon
+    Args:
+        x: X coordinate of point
+        y: Y coordinate of point
+        polygon: List of points that define the polygon.
+
+    Returns:
+        bool: ``True`` or ``False`` depending if point is inside polygon
     """
     p = x, y
     n = len(polygon)
