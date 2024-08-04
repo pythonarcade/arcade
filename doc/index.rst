@@ -122,6 +122,7 @@ Arcade is developed by volunteers.
    :maxdepth: 1
    :caption: Community
 
+   community/community_locations
    community/how_to_get_help
    community/games/index
 

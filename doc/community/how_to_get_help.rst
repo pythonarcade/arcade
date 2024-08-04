@@ -1,11 +1,12 @@
+.. include:: /links.rst
+
 .. _how-to-get-help:
 
 How to Get Help
 ===============
 
-The best places to get help are the help channels on the
-`the Discord server <https://discord.gg/ZjGDqMp>`_. They are located
-in the 3rd category from the top in the channel list:
+The best places to get help are the help channels on the `discord`_ server.
+They are located in the 3rd category from the top in the channel list:
 
 .. figure:: /images/community/how_to_get_help/discord_help_channels.png
     :scale: 50%
