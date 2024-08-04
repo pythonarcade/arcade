@@ -5,7 +5,7 @@
 Community Locations
 ===================
 
-Most of the community interaction happens on `Discord`_ and `Github`_.
+Most of the community interaction happens on the  `Arcade Discord`_ and `Arcade Github`_.
 The discord server is the best place to ask questions and get help.
 We have help channels, various topic channels, and a place to share
 your projects. This is also where most of the development discussion

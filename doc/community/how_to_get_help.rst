@@ -5,7 +5,7 @@
 How to Get Help
 ===============
 
-The best places to get help are the help channels on the `discord`_ server.
+The best places to get help are the help channels on the `Arcade Discord`_ server.
 They are located in the 3rd category from the top in the channel list:
 
 .. figure:: /images/community/how_to_get_help/discord_help_channels.png
