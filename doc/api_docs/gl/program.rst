@@ -1,8 +1,8 @@
 
 .. py:currentmodule:: arcade
 
-Program
-=======
+Shader / Program
+================
 
 .. autoclass:: arcade.gl.Program
    :members:
@@ -10,8 +10,11 @@ Program
    :show-inheritance:
    :member-order: bysource
 
-Uniform
-=======
+.. autoclass:: arcade.gl.ComputeShader
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :member-order: bysource
 
 .. autoclass:: arcade.gl.uniform.Uniform
    :members:
@@ -19,17 +22,11 @@ Uniform
    :show-inheritance:
    :member-order: bysource
 
-UniformBlock
-============
-
 .. autoclass:: arcade.gl.uniform.UniformBlock
    :members:
    :undoc-members:
    :show-inheritance:
    :member-order: bysource
-
-ShaderSource
-============
 
 .. autoclass:: arcade.gl.glsl.ShaderSource
    :members:
