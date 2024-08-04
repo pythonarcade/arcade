@@ -155,17 +155,14 @@ def are_lines_intersecting(p1: Point2, q1: Point2, p2: Point2, q2: Point2) -> bo
     return False
 
 
-def is_point_in_polygon(x: float, y: float, polygon: Point2List) -> bool:
+def is_point_in_polygon(x: float, y: float, polygon: PointList) -> bool:
     """
     Checks if a point is inside a polygon of three or more points.
 
-    Args:
-        x: X coordinate of point
-        y: Y coordinate of point
-        polygon: List of points that define the polygon.
-
-    Returns:
-        bool: ``True`` or ``False`` depending if point is inside polygon
+    :param x: X coordinate of point
+    :param y: Y coordinate of point
+    :param polygon_point_list: List of points that define the polygon.
+    :Returns: True or false depending if point is inside polygon
     """
     p = x, y
     n = len(polygon)
@@ -190,6 +187,16 @@ def is_point_in_polygon(x: float, y: float, polygon: Point2List) -> bool:
 
         if polygon[i][1] == p[1]:
             decrease += 1
+
+        # Check if the point is exactly on a horizontal edge
+        if polygon[i][1] == y and polygon[next_item][1] == y:
+            # Check if the point is on the line segment
+            if (polygon[i][0] <= x <= polygon[next_item][0]) or (
+                polygon[next_item][0] <= x <= polygon[i][0]
+            ):
+                return True
+            else:
+                return False
 
         # Check if the line segment from 'p' to
         # 'extreme' intersects with the line
