@@ -132,7 +132,7 @@ Arcade is developed by volunteers.
    :caption: API Reference
 
    api_docs/quick_index
-   Reference<api_docs/arcade>
+   api_docs/arcade
 
 
 .. Indices and tables

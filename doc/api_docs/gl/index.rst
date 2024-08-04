@@ -41,12 +41,10 @@ directory (git).
    context
    texture
    buffer
-   buffer_description
    geometry
    framebuffer
    query
    program
-   compute_shader
    utils
    exceptions
 
