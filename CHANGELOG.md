@@ -17,11 +17,18 @@ easy reference. There may be other behavior changes that could break specific
 scenarios, but this section is limited to changes which directly changed the
 API in a way that is not compatible with how it was used in 2.6.
 
+* Texture management has completely changed in arcade 3.0. In the past we have
+  cached absolutely everything, something that caused major issues for larger
+  projects needing to manage memory. Functions like `arcade.load_texture` no
+  longer cache the texture. See the texture section for more details
+* The `Sprite` initializer is greatly simplified. It's no longer possible to
+  slice or transform textures through parameters in the sprite initializer.
+  All texture manipulation should now be done through the `Texture` class.
+  It supports transforms like rotating, scaling, flipping, and slicing.
 * `Sprite.angle` has changed to clockwise. So everything rotates different now.
 * `Sprite.on_update` has been removed. Use `Sprite.update` instead. This now
   also has a `delta_time` parameter and accept/forwards `*args` and `**kwargs`
   to support custom parameters. The same applies to `SpriteList`.
-* Signature for Sprite creation has changed.
 * The deprecated `update()` function has been removed from the
   `arcade.Window`, `arcade.View`,
   `arcade.Section`, and `arcade.SectionManager` classes.
