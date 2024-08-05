@@ -17,8 +17,18 @@ easy reference. There may be other behavior changes that could break specific
 scenarios, but this section is limited to changes which directly changed the
 API in a way that is not compatible with how it was used in 2.6.
 
-* `arcade.Sprite.angle` has changed to clockwise. So everything rotates different now.
-* Signature for Sprite creation has changed.
+* Texture management has completely changed in arcade 3.0. In the past we have
+  cached absolutely everything, something that caused major issues for larger
+  projects needing to manage memory. Functions like `arcade.load_texture` no
+  longer cache the texture. See the texture section for more details
+* The `Sprite` initializer is greatly simplified. It's no longer possible to
+  slice or transform textures through parameters in the sprite initializer.
+  All texture manipulation should now be done through the `Texture` class.
+  It supports transforms like rotating, scaling, flipping, and slicing.
+* `Sprite.angle` has changed to clockwise. So everything rotates different now.
+* `Sprite.on_update` has been removed. Use `Sprite.update` instead. This now
+  also has a `delta_time` parameter and accept/forwards `*args` and `**kwargs`
+  to support custom parameters. The same applies to `SpriteList`.
 * The deprecated `update()` function has been removed from the
   `arcade.Window`, `arcade.View`,
   `arcade.Section`, and `arcade.SectionManager` classes.
@@ -60,17 +70,20 @@ API in a way that is not compatible with how it was used in 2.6.
 
 ### Featured Updates
 
-* Arcade now supports mixing Pyglet and Arcade drawing. This means
-  you can, for example, use Pyglet batches. Pyglet batches can draw thousands
-  of Pyglet objects with the cost and performance time of only a few.
-* The code behind the texture atlas Arcade creates for each SpriteList  has
-  been reworked to be faster and more efficient. Reversed/flipped sprites are
-  no longer duplicated.
-* Added a new system for handling background textures (ADD MORE INFO)
+* The texture atlas has been heavily reworked to be more efficient.
+* Alpha blending (handling of transparency) is no longer globally enabled.
+  This is now enabled by the objects and functions doing the drawing.
+  Additional arguments have been added to draw functions and/or objects like
+  `SpriteList` and `ShapeElementList` to toggle blending states. Blending
+  states will always be reset after drawing.
 * Arcade now supports OpenGL ES 3.1/3.2 and have been
-  tested on the Raspberry Pi 4. Any model using the Cortex-A72
-  CPU should work. Note that you need fairly new Mesa drivers
-  to get the new V3D drivers.
+  tested on the Raspberry Pi 4 and 5. Any model using the Cortex-A72
+  or Cortex-A76 CPU should work. Use images from 2024 or later for best
+  results.
+* Arcade now supports freely mixing Pyglet and Arcade code. This means you
+  can freely use pyglet batches, Labels when preferred over arcade's types.
+  Note that texture/image handling are still separate systems. This is
+  however a solvable problem for intermediate and advanced users.
 
 ### Changes
 
@@ -83,6 +96,8 @@ API in a way that is not compatible with how it was used in 2.6.
     `arcade.Window.on_draw()` function is called at. This can be used
     with the pre-existing `update_rate` parameter which controls
     `arcade.Window.on_update()` to achieve separate draw and update rates.
+  * `open_window()` now accepts `**kwargs` to pass additional parameters to the
+    `arcade.Window` constructor.
 
 * `arcade.View`
   * Removal of the ``update`` function in favor of `arcade.View.on_update()`
@@ -90,6 +105,9 @@ API in a way that is not compatible with how it was used in 2.6.
 * `arcade.Section` and `arcade.SectionManager`
 
   * Removal of the ``update`` function in favor of `arcade.Section.on_update()`
+
+* Textures
+  * `arcade.load_texture`
 
 * GUI
 
@@ -209,7 +227,7 @@ API in a way that is not compatible with how it was used in 2.6.
     `view` and `projection` attributes. Arcade shaders is also using Pyglet's
     `WindowBlock` UBO.
   * Uniforms are now set using `glProgramUniform` instead of `glUniform` when the
-    extension is available.
+    extension is available for better performance.
   * Fixed many implicit type conversions in the shader code for wider support.
   * Added `front_face` property on the context for configuring front face winding
     order of triangles
@@ -253,6 +271,12 @@ API in a way that is not compatible with how it was used in 2.6.
   * Example code page has been reorganized
   * [CONTRIBUTING.md](https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md) page has been updated
   * Improve `background_parallax` example
+
+* Experimental
+  * Started on a system for drawing large background textures with parallax scrolling.
+    This is still experimental and may change in the future.
+  * Started on an experimental event based input system for controllers
+  * Started an experiment with vector based sprites
 
 Special thanks to
 [Einar Forselv](https://github.com/einarf),
