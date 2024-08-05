@@ -17,7 +17,10 @@ easy reference. There may be other behavior changes that could break specific
 scenarios, but this section is limited to changes which directly changed the
 API in a way that is not compatible with how it was used in 2.6.
 
-* `arcade.Sprite.angle` has changed to clockwise. So everything rotates different now.
+* `Sprite.angle` has changed to clockwise. So everything rotates different now.
+* `Sprite.on_update` has been removed. Use `Sprite.update` instead. This now
+  also has a `delta_time` parameter and accept/forwards `*args` and `**kwargs`
+  to support custom parameters. The same applies to `SpriteList`.
 * Signature for Sprite creation has changed.
 * The deprecated `update()` function has been removed from the
   `arcade.Window`, `arcade.View`,
@@ -60,17 +63,21 @@ API in a way that is not compatible with how it was used in 2.6.
 
 ### Featured Updates
 
-* Arcade now supports mixing Pyglet and Arcade drawing. This means
+* Arcade now supports mixing Pyglet and Arcade drawing . This means
   you can, for example, use Pyglet batches. Pyglet batches can draw thousands
   of Pyglet objects with the cost and performance time of only a few.
 * The code behind the texture atlas Arcade creates for each SpriteList  has
   been reworked to be faster and more efficient. Reversed/flipped sprites are
   no longer duplicated.
-* Added a new system for handling background textures (ADD MORE INFO)
 * Arcade now supports OpenGL ES 3.1/3.2 and have been
-  tested on the Raspberry Pi 4. Any model using the Cortex-A72
-  CPU should work. Note that you need fairly new Mesa drivers
-  to get the new V3D drivers.
+  tested on the Raspberry Pi 4 and 5. Any model using the Cortex-A72
+  or Cortex-A76 CPU should work. Use images from 2024 or later for best
+  results.
+* Alpha blending (handling of transparency) is no longer globally enabled.
+  This is now enabled by the objects and functions doing the drawing.
+  Additional arguments have been added to draw functions and/or objects like
+  `SpriteList` and `ShapeElementList` to toggle blending states. Blending
+  states will always be reset after drawing.
 
 ### Changes
 
@@ -83,6 +90,8 @@ API in a way that is not compatible with how it was used in 2.6.
     `arcade.Window.on_draw()` function is called at. This can be used
     with the pre-existing `update_rate` parameter which controls
     `arcade.Window.on_update()` to achieve separate draw and update rates.
+  * `open_window()` now accepts `**kwargs` to pass additional parameters to the
+    `arcade.Window` constructor.
 
 * `arcade.View`
   * Removal of the ``update`` function in favor of `arcade.View.on_update()`
@@ -253,6 +262,12 @@ API in a way that is not compatible with how it was used in 2.6.
   * Example code page has been reorganized
   * [CONTRIBUTING.md](https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md) page has been updated
   * Improve `background_parallax` example
+
+* Experimental
+  * Started on a system for drawing large background textures with parallax scrolling.
+    This is still experimental and may change in the future.
+  * Started on an experimental event based input system for controllers
+  * Started an experiment with vector based sprites
 
 Special thanks to
 [Einar Forselv](https://github.com/einarf),
