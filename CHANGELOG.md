@@ -278,19 +278,62 @@ API in a way that is not compatible with how it was used in 2.6.
   * Started on an experimental event based input system for controllers
   * Started an experiment with vector based sprites
 
-Special thanks to
-[Einar Forselv](https://github.com/einarf),
-[Darren Eberly](https://github.com/Cleptomania),
-[pushfoo](https://github.com/pushfoo),
-[Maic Siemering](https://github.com/eruvanos),
-[Cleptomania](https://github.com/Cleptomania),
-[Aspect1103](https://github.com/Aspect1103),
-[Alejandro Casanovas](https://github.com/janscas),
-[Ibrahim](https://github.com/Ibrahim2750mi),
-[Andrew](https://github.com/cspotcode),
-[Alexander](https://github.com/ccntrq),
-[kosvitko](https://github.com/kosvitko),
-and
-[pvcraven](https://github.com/pvcraven)
-for their contributions to this release. Also, thanks to everyone on the
-[Pyglet](https://github.com/pyglet/pyglet) team! We depend heavily on Pyglet's continued development.
+### Contributors
+
+Contributing to a release comes in many forms. It can be code, documentation,
+testing, or even just providing feedback. It's hard to keep track of all the
+people involved in a release, but we want to thank everyone who has helped
+in any shape or form. We appreciate all of you!
+
+The main arcade team:
+
+* [Einar Forselv](https://github.com/einarf)
+* [pushfoo](https://github.com/pushfoo)
+* [pvcraven](https://github.com/pvcraven)
+* [Maic Siemering](https://github.com/eruvanos)
+* [Cleptomania](https://github.com/Cleptomania)
+* [A. J. Andrews](https://github.com/DragonMoffon)
+* [Andrew Bradley](https://github.com/cspotcode)
+* [DigiDuncan](https://github.com/DigiDuncan)
+* [Alejandro Casanovas](https://github.com/janscas)
+
+Notable contributions:
+
+* [Mohammad Ibrahim](https://github.com/Ibrahim2750mi) helping with the GUI and
+  various other parts of the library.
+* [ryyst](https://github.com/ryyst) helping to kickstart the new documentation.
+
+Also thanks to the smaller contributors taking their time to solve
+smaller issues, bugs and documentation. We appreciate your help!
+
+* [Grant Hur](https://github.com/gran4)
+* [Rich Saupe](https://github.com/sabadam32)
+* [FriendlyGecko](https://github.com/FriendlyGecko)
+* [Jack Ashwell](https://github.com/JackAshwell11)
+* [Rémi Vanicat](https://github.com/vanicat)
+* [MrWardKKHS](https://github.com/MrWardKKHS)
+* [Miles Curry](https://github.com/MiCurry)
+* [L Cai](https://github.com/lbcai)
+* [Natalie Fearnley](https://github.com/nfearnley)
+* [Ian Currie](https://github.com/iansedano)
+* [Aizen](https://github.com/feiyuhuahuo)
+* [Snipy7374](https://github.com/Snipy7374)
+* [Wilson (Fengchi) Wang](https://github.com/FengchiW)
+* [Tiffany Xiao](https://github.com/tiffanyxiao)
+* [Code Apprentice](https://github.com/codeguru42)
+* [Brian Stormont](https://github.com/MostTornBrain)
+* [kosvitko](https://github.com/kosvitko)
+* [Omar Mohammed](https://github.com/osm3000)
+* [Shadow](https://github.com/shadow7412)
+* [Aurelio Lopez](https://github.com/Aurelioghs)
+* [Ethan Chan](https://github.com/eschan147)
+* [cacheguy](https://github.com/cacheguy)
+* [Shivani Arbat](https://github.com/shivaniarbat)
+* [Raccoon](https://github.com/bandit-masked)
+* [Dominik](https://github.com/NotYou404)
+* [BrettskiPy](https://github.com/BrettskiPy)
+
+ Also, thanks to everyone on the [Pyglet](https://github.com/pyglet/pyglet) team!
+ We depend heavily on Pyglet's continued development.
+
+3.0.0 changes span from Mar 12, 2022 – Aug, 2024
