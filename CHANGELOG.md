@@ -63,21 +63,20 @@ API in a way that is not compatible with how it was used in 2.6.
 
 ### Featured Updates
 
-* Arcade now supports mixing Pyglet and Arcade drawing . This means
-  you can, for example, use Pyglet batches. Pyglet batches can draw thousands
-  of Pyglet objects with the cost and performance time of only a few.
-* The code behind the texture atlas Arcade creates for each SpriteList  has
-  been reworked to be faster and more efficient. Reversed/flipped sprites are
-  no longer duplicated.
-* Arcade now supports OpenGL ES 3.1/3.2 and have been
-  tested on the Raspberry Pi 4 and 5. Any model using the Cortex-A72
-  or Cortex-A76 CPU should work. Use images from 2024 or later for best
-  results.
+* The texture atlas has been heavily reworked to be more efficient.
 * Alpha blending (handling of transparency) is no longer globally enabled.
   This is now enabled by the objects and functions doing the drawing.
   Additional arguments have been added to draw functions and/or objects like
   `SpriteList` and `ShapeElementList` to toggle blending states. Blending
   states will always be reset after drawing.
+* Arcade now supports OpenGL ES 3.1/3.2 and have been
+  tested on the Raspberry Pi 4 and 5. Any model using the Cortex-A72
+  or Cortex-A76 CPU should work. Use images from 2024 or later for best
+  results.
+* Arcade now supports freely mixing Pyglet and Arcade code. This means you
+  can freely use pyglet batches, Labels when preferred over arcade's types.
+  Note that texture/image handling are still separate systems. This is
+  however a solvable problem for intermediate and advanced users.
 
 ### Changes
 
@@ -99,6 +98,9 @@ API in a way that is not compatible with how it was used in 2.6.
 * `arcade.Section` and `arcade.SectionManager`
 
   * Removal of the ``update`` function in favor of `arcade.Section.on_update()`
+
+* Textures
+  * `arcade.load_texture`
 
 * GUI
 
@@ -218,7 +220,7 @@ API in a way that is not compatible with how it was used in 2.6.
     `view` and `projection` attributes. Arcade shaders is also using Pyglet's
     `WindowBlock` UBO.
   * Uniforms are now set using `glProgramUniform` instead of `glUniform` when the
-    extension is available.
+    extension is available for better performance.
   * Fixed many implicit type conversions in the shader code for wider support.
   * Added `front_face` property on the context for configuring front face winding
     order of triangles
