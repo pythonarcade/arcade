@@ -99,7 +99,7 @@ class UIDropdown(UILayout):
         # add children after super class setup
         self.add(self._default_button)
 
-        self.register_event_type("on_change")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_change")
 
         self.with_border(color=arcade.color.RED)
 

@@ -44,7 +44,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
             raise ValueError("At least a single value has to be available for `buttons`")
 
         super().__init__(size_hint=(1, 1))
-        self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_action")
 
         space = 20
 
@@ -79,7 +79,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
             button_group.add(button)
-            button.on_click = self._on_choice  # type: ignore
+            button.on_click = self._on_choice
 
         frame.add(
             child=button_group,
@@ -135,7 +135,7 @@ class UIButtonRow(UIBoxLayout):
             space_between=space_between,
             **kwargs,
         )
-        self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_action")
 
         self.button_factory = button_factory
 
@@ -154,7 +154,7 @@ class UIButtonRow(UIBoxLayout):
             multiline: Whether the button is multiline or not.
         """
         button = self.button_factory(text=label, style=style, multiline=multiline)
-        button.on_click = self._on_click  # type: ignore
+        button.on_click = self._on_click
         self.add(button)
         return button
 
