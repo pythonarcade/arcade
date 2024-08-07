@@ -4,7 +4,8 @@ Event Loop
 Introduction
 ------------
 
-Python Arcade provides a simple three event loop to build off. All three methods are exposed to be overridden in :py:class:`arcade.Window`
+Python Arcade provides a simple three event loop to build off.
+All three methods are exposed to be overridden in :py:class:`arcade.Window`
 and :py:class:`arcade.View`. You may also register your own handlers
 to these events using :py:func:`arcade.Window.push_handlers`, but this is
 not recommended for beginners.
