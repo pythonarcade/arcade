@@ -7,16 +7,22 @@ def test_sprites_at_point():
 
     coin_list = arcade.SpriteList()
     sprite = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
+    # an adjacent sprite with the same level horizontal bottom edge
+    sprite2 = arcade.SpriteSolidColor(50, 50, center_x=50, center_y=0, color=arcade.csscolor.RED)
+    
     coin_list.append(sprite)
+    coin_list.append(sprite2)
 
-    # print()
-    # print(sprite.points)
     sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
     assert len(sprite_list) == 1
 
+    sprite_list = arcade.get_sprites_at_point((0, 50), coin_list)
+    assert len(sprite_list) == 1
+
+    sprite_list = arcade.get_sprites_at_point((0, -25), coin_list)
+    assert len(sprite_list) == 1
+
     sprite.position = (130, 130)
-    # print()
-    # print(sprite.points)
 
     sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
     assert len(sprite_list) == 0
@@ -25,8 +31,6 @@ def test_sprites_at_point():
     assert len(sprite_list) == 1
 
     sprite.angle = 90
-    # print()
-    # print(sprite.points)
 
     sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
     assert len(sprite_list) == 0
