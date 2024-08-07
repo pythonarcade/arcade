@@ -19,11 +19,11 @@ class Clock:
     only certain elements rather than everything.
 
     Args:
-        initial_elapsed (float, optional): The amount of time the clock should assume has
+        initial_elapsed: The amount of time the clock should assume has
             already occurred. Defaults to 0.0
-        initial_tick (int, optional): The number of ticks the clock should assume has already
+        initial_tick: The number of ticks the clock should assume has already
             occurred. Defaults to 0.
-        tick_speed (float, optional): A multiplier on how the 'speed' of time.
+        tick_speed: A multiplier on how the 'speed' of time.
             i.e. a value of 0.5 means time elapsed half as fast for this clock. Defaults to 1.0.
     """
 
@@ -40,7 +40,7 @@ class Clock:
         Update the clock with the time that has passed since the last tick.
 
         Args:
-            delta_time (float): The amount of time that has passed since the last tick.
+            delta_time: The amount of time that has passed since the last tick.
         """
         self._tick_delta_time = delta_time * self._tick_speed
         self._elapsed_time += self._tick_delta_time
@@ -51,7 +51,7 @@ class Clock:
         Set the speed of time for this clock.
 
         Args:
-            new_tick_speed (float): A multiplier on the 'speed' of time.
+            new_tick_speed: A multiplier on the 'speed' of time.
                 i.e. a value of 0.5 means time elapsed half as fast for this clock.
         """
         self._tick_speed = new_tick_speed
@@ -61,7 +61,7 @@ class Clock:
         Calculate the amount of time that has passed since the given time.
 
         Args:
-            time (float): The time to compare against.
+            time: The time to compare against.
         """
         return self._elapsed_time - time
 
@@ -70,7 +70,7 @@ class Clock:
         Calculate the number of ticks that have occurred since the given tick.
 
         Args:
-            tick (int): The tick to compare against.
+            tick: The tick to compare against.
         """
         return self._tick - tick
 
@@ -123,7 +123,7 @@ class FixedClock(Clock):
     Arcade provides a global fixed clock which is automatically ticked every update
 
     Args:
-        sibling (Clock): The unfixed clock which this clock will sync with.
+        sibling: The unfixed clock which this clock will sync with.
         fixed_tick_rate (float, optional): The fixed number of seconds that pass
             for this clock every tick. Defaults to ``1.0 / 60.0``.
     """
@@ -138,7 +138,7 @@ class FixedClock(Clock):
         Set the speed of time for this clock.
 
         Args:
-            new_tick_speed (float): A multiplier on the 'speed' of time.
+            new_tick_speed: A multiplier on the 'speed' of time.
                 i.e. a value of 0.5 means time elapsed half as fast for this clock
         """
         raise ValueError(
@@ -150,7 +150,7 @@ class FixedClock(Clock):
         Update the clock with the time that has passed since the last tick.
 
         Args:
-            delta_time (float): The amount of time that has passed since the last tick.
+            delta_time: The amount of time that has passed since the last tick.
         """
         if delta_time != self._fixed_rate:
             raise ValueError(
@@ -184,11 +184,11 @@ def _setup_clock(initial_elapsed: float = 0.0, initial_tick: int = 0, tick_speed
     Private method used by the arcade window to setup the global clock post initialization.
 
     Args:
-        initial_elapsed (float, optional): The amount of time the clock should assume
+        initial_elapsed: The amount of time the clock should assume
             has already occurred. Defaults to 0.0
-        initial_tick (int, optional): The number of ticks the clock should assume has
+        initial_tick: The number of ticks the clock should assume has
             already occurred. Defaults to 0.
-        tick_speed (float, optional): A multiplier on the 'speed' of time.
+        tick_speed: A multiplier on the 'speed' of time.
             i.e. a value of 0.5 means time elapsed half as fast for this clock.
             Defaults to 1.0.
     """
@@ -203,7 +203,7 @@ def _setup_fixed_clock(fixed_tick_rate: float = 1.0 / 60.0):
     post initialization.
 
     Args:
-        fixed_tick_rate (float, optional): The fixed number of seconds that pass
+        fixed_tick_rate: The fixed number of seconds that pass
             for this clock every tick. Defaults to 1.0 / 60.0
     """
     GLOBAL_FIXED_CLOCK._elapsed_time = GLOBAL_CLOCK.time  # noqa: SLF001

@@ -101,6 +101,7 @@ Arcade is developed by volunteers.
    programming_guide/sound
    programming_guide/textures
    programming_guide/event_loop
+   programming_guide/camera
    programming_guide/sections
    programming_guide/gui/index
    programming_guide/texture_atlas
@@ -108,7 +109,6 @@ Arcade is developed by volunteers.
    programming_guide/opengl_notes
    programming_guide/performance_tips
    programming_guide/headless
-   programming_guide/vsync
 
 .. toctree::
    :hidden:
