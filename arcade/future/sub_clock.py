@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 from typing import Optional, Union
 
-from arcade.clock import Clock, GLOBAL_CLOCK
+from arcade.clock import GLOBAL_CLOCK, Clock
 
-def boot_strap_clock(clock: Optional[Clock] = None):
+
+def boot_strap_clock(clock: Optional[Clock] = None) -> Clock:
     """
     Because the sub_clock is not a fully featured part of arcade we have to
     manipulate the clocks before the can be used with sub_clocks.
@@ -19,22 +21,26 @@ def boot_strap_clock(clock: Optional[Clock] = None):
     """
     clock = clock or GLOBAL_CLOCK
 
-    if hasattr(clock, 'children'):
-        raise ValueError(f'The clock {clock} has already been bootstrapped.')
+    if hasattr(clock, "children"):
+        raise ValueError(f"The clock {clock} has already been bootstrapped.")
 
-    clock.children = [] # type: ignore -- No type check will ever like this, but we do what we must.
+    # No type check will ever like this, but we do what we must.
+    clock.children = []  # type: ignore
 
     def recursive_tick(delta_time: float) -> None:
         clock.tick(delta_time)
-        for child in clock.children:  # type: ignore -- we know the clock will have .children
+        for child in clock.children:  # type: ignore
             child.tick(clock._tick_delta_time)
 
-    clock.tick = recursive_tick
+    # Hey we did a decorator manually! what a time to be alive.
+    clock.tick = recursive_tick  # type: ignore
 
-    def add_child(child: SubClock):
-        clock.children.append(child)  # type: ignore -- we know the clock will have .children
+    def add_child(child: SubClock) -> None:
+        clock.children.append(child)  # type: ignore
 
-    clock.add_child = add_child  # type: ignore -- we know the clock will have .children
+    clock.add_child = add_child  # type: ignore
+
+    return clock
 
 
 class SubClock(Clock):
@@ -49,20 +55,22 @@ class SubClock(Clock):
             i.e. a value of 0.5 means time elapsed half as fast for this clock. Defaults to 1.0.
     """
 
-    def __init__(self, parent: Union[Clock, SubClock, None] = None, tick_speed: float = 1):
+    def __init__(self, parent: Union[Clock, SubClock, None] = None, tick_speed: float = 1) -> None:
         parent = parent or GLOBAL_CLOCK
         super().__init__(parent._elapsed_time, parent._tick, tick_speed)
         self.children: list[SubClock] = []
         try:
-            parent.add_child(self)  # type: ignore -- we know the clock will have .children (or if not we want it to yell)
+            parent.add_child(self)  # type: ignore
         except AttributeError:
-            raise AttributeError(f'The clock {parent} has not been bootstrapped properly'
-                                 f'call boot_strap_clock({parent}) before adding children')
+            raise AttributeError(
+                f"The clock {parent} has not been bootstrapped properly"
+                f"call boot_strap_clock({parent}) before adding children"
+            )
 
-    def add_child(self, child: SubClock):
+    def add_child(self, child: SubClock) -> None:
         self.children.append(child)
 
-    def tick(self, delta_time: float):
+    def tick(self, delta_time: float) -> None:
         super().tick(delta_time)
 
         for child in self.children:
