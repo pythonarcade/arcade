@@ -21,17 +21,19 @@ class Section:
     A Section represents a rectangular portion of the viewport
     Events are dispatched to the section based on it's position on the screen.
 
+    A section can only be added to a single SectionManager.
+
     Args:
         left: the left position of this section
         bottom: the bottom position of this section
         width: the width of this section
         height: the height of this section
         name: the name of this section
-        bool | Iterable accept_keyboard_keys: whether or not this section
+        bool | Iterable accept_keyboard_keys: whether this section
             captures keyboard keys through. keyboard events. If the param is an iterable
             means the keyboard keys that are captured in press/release events:
             for example: ``[arcade.key.UP, arcade.key.DOWN]`` will only capture this two keys
-        bool  Iterable accept_mouse_events: whether or not this section
+        bool  Iterable accept_mouse_events: whether this section
             captures mouse events. If the param is an iterable means the mouse events
             that are captured. for example: ``['on_mouse_press', 'on_mouse_release']``
             will only capture this two events.
@@ -75,6 +77,7 @@ class Section:
         # parent view: set by the SectionManager. Protected, you should not change
         # section.view manually
         self._view: View | None = None
+        self._section_manager: SectionManager | None = None
 
         # section options
         self._enabled: bool = enabled  # enables or disables this section
@@ -134,8 +137,8 @@ class Section:
 
     @property
     def section_manager(self) -> SectionManager | None:
-        """Returns the section manager"""
-        return self._view.section_manager if self._view else None
+        """Returns the section manager this section is added to"""
+        return self._section_manager
 
     @property
     def enabled(self) -> bool:
@@ -167,16 +170,6 @@ class Section:
         The lower the number the earlier this section will get draw
         """
         return self._draw_order
-
-    @draw_order.setter
-    def draw_order(self, value: int) -> None:
-        """
-        Sets this section draw order
-        The lower the number the earlier this section will get draw
-        """
-        self._draw_order = value
-        if self.section_manager is not None:
-            self.section_manager.sort_sections_draw_order()
 
     @property
     def left(self) -> int:
@@ -514,14 +507,23 @@ class SectionManager:
         Disable all sections
         Disabling a section will trigger section.on_hide_section
         """
+        self.view.window.remove_handlers(self)
+
         for section in self._sections:
             section.enabled = False
 
     def enable(self) -> None:
         """
-        Enables all sections
+        Registers event handlers to the window and enables all sections.
+
         Enabling a section will trigger section.on_show_section
         """
+        section_handlers = {
+            event_type: getattr(self, event_type, None) for event_type in self.managed_events
+        }
+        if section_handlers:
+            self.view.window.push_handlers(**section_handlers)
+
         for section in self._sections:
             section.enabled = True
 
@@ -558,7 +560,13 @@ class SectionManager:
         """
         if not isinstance(section, Section):
             raise ValueError("You can only add Section instances")
-        section._view = self.view  # modify view param from section
+        if section.section_manager is not None:
+            raise ValueError("Section is already added to a SectionManager")
+
+        # set the view and section manager
+        section._view = self.view
+        section._section_manager = self
+
         if at_index is None:
             self._sections.append(section)
         else:
@@ -568,7 +576,8 @@ class SectionManager:
         if at_draw_order is None:
             self.sort_sections_draw_order()
         else:
-            section.draw_order = at_draw_order  # this will trigger self.sort_section_draw_order
+            section._draw_order = at_draw_order  # this will trigger self.sort_section_draw_order
+            self.sort_sections_draw_order()
 
         # trigger on_show_section if the view is the current one and section is enabled:
         if self.is_current_view and section.enabled:
@@ -617,7 +626,7 @@ class SectionManager:
         self._sections = []
         self._sections_draw = []
 
-    def on_update(self, delta_time: float) -> None:
+    def on_update(self, delta_time: float) -> bool:
         """
         Called on each event loop.
 
@@ -635,14 +644,19 @@ class SectionManager:
         if self.view_update_first is False:
             self.view.on_update(delta_time)
 
-    def on_draw(self) -> None:
+        # prevent further event dispatch to the view, which was already invoked
+        return True
+
+    def on_draw(self) -> bool:
         """
         Called on each event loop to draw.
 
         It automatically calls camera.use() for each section that has a camera and
         resets the camera effects by calling the default SectionManager camera
-        afterwards if needed. The SectionManager camera defaults to a camera that
+        afterward if needed. The SectionManager camera defaults to a camera that
         has the viewport and projection for the whole screen.
+
+        This method will consume the on_draw event, to prevent further on_draw calls on the view.
         """
         if self.view_draw_first is True:
             self.view.on_draw()
@@ -659,7 +673,10 @@ class SectionManager:
         if self.view_draw_first is False:
             self.view.on_draw()
 
-    def on_resize(self, width: int, height: int) -> None:
+        # prevent further event dispatch to the view, which was already invoked
+        return True
+
+    def on_resize(self, width: int, height: int) -> bool:
         """
         Called when the window is resized.
 
@@ -675,6 +692,9 @@ class SectionManager:
                 section.on_resize(width, height)
         if self.view_resize_first is False:
             self.view.on_resize(width, height)  # call resize on the view
+
+        # prevent further event dispatch to the view, which was already invoked
+        return True
 
     def disable_all_keyboard_events(self) -> None:
         """Removes the keyboard event handling from all sections"""
@@ -799,6 +819,7 @@ class SectionManager:
             if method:
                 # call the view method
                 prevent_dispatch_view = method(x, y, *args, **kwargs)
+
         return prevent_dispatch_view or prevent_dispatch
 
     def dispatch_keyboard_event(self, event: str, *args, **kwargs) -> bool | None:
@@ -1048,21 +1069,3 @@ class SectionManager:
             ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         return self.dispatch_keyboard_event("on_key_release", *args, **kwargs)
-
-    def on_show_view(self) -> None:
-        """
-        Called when the view is shown. The :py:meth:`View.on_show_view` is called before
-        this by the :py:meth:`Window.show_view` method.
-        """
-        for section in self.sections:
-            if section.enabled:
-                section.on_show_section()
-
-    def on_hide_view(self) -> None:
-        """
-        Called when the view is hide
-        The View.on_hide_view is called before this by the Window.hide_view method
-        """
-        for section in self.sections:
-            if section.enabled:
-                section.on_hide_section()
