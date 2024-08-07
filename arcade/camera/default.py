@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Generator
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
 
-from arcade.types import Point
+from arcade.types import Point, Rect, LBWH
 from arcade.window_commands import get_window
 
 if TYPE_CHECKING:
@@ -29,28 +29,28 @@ class ViewportProjector:
 
     def __init__(
         self,
-        viewport: tuple[int, int, int, int] | None = None,
+        viewport: Rect | None = None,
         *,
         context: ArcadeContext | None = None,
     ):
-        self._ctx = context or get_window().ctx
-        self._viewport = viewport or self._ctx.viewport
+        self._ctx: ArcadeContext = context or get_window().ctx
+        self._viewport: LBWH = viewport or LBWH(*self._ctx.viewport)
         self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
-            0.0, self._viewport[2], 0.0, self._viewport[3], -100, 100
+            0.0, self._viewport.width, 0.0, self._viewport.height, -100, 100
         )
 
     @property
-    def viewport(self) -> tuple[int, int, int, int]:
+    def viewport(self) -> Rect:
         """
         The viewport use to derive projection and view matrix.
         """
         return self._viewport
 
     @viewport.setter
-    def viewport(self, viewport: tuple[int, int, int, int]) -> None:
+    def viewport(self, viewport: Rect) -> None:
         self._viewport = viewport
         self._projection_matrix = Mat4.orthogonal_projection(
-            0, viewport[2], 0, viewport[3], -100, 100
+            0, viewport.width, 0, viewport.height, -100, 100
         )
 
     def use(self) -> None:
@@ -60,7 +60,7 @@ class ViewportProjector:
         """
         self._ctx.current_camera = self
 
-        self._ctx.viewport = self._viewport
+        self._ctx.viewport = self.viewport.viewport  # get the integer 4-tuple LBWH
 
         self._ctx.view_matrix = Mat4()
         self._ctx.projection_matrix = self._projection_matrix
@@ -123,16 +123,16 @@ class DefaultProjector(ViewportProjector):
 
         # If the viewport is correct and the default camera is in use,
         # then don't waste time resetting the view and projection matrices
-        if self._ctx.viewport == self.viewport and self._ctx.current_camera == self:
+        if self._ctx.viewport == self.viewport.viewport and self._ctx.current_camera == self:
             return
 
         # If the viewport has changed while the default camera is active then the
         # default needs to update itself.
         # If it was another camera's viewport being used the default camera should not update.
         if self._ctx.viewport != self.viewport and self._ctx.current_camera == self:
-            self.viewport = self._ctx.viewport
+            self.viewport = LBWH(*self._ctx.viewport)
         else:
-            self._ctx.viewport = self.viewport
+            self._ctx.viewport = self.viewport.viewport
 
         self._ctx.current_camera = self
 
