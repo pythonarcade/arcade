@@ -34,7 +34,7 @@ class ViewportProjector:
         context: ArcadeContext | None = None,
     ):
         self._ctx: ArcadeContext = context or get_window().ctx
-        self._viewport: LBWH = viewport or LBWH(*self._ctx.viewport)
+        self._viewport: Rect = viewport or LBWH(*self._ctx.viewport)
         self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
             0.0, self._viewport.width, 0.0, self._viewport.height, -100, 100
         )
