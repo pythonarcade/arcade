@@ -79,7 +79,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         for button_text in buttons:
             button = UIFlatButton(text=button_text)
             button_group.add(button)
-            button.on_click = self._on_choice
+            button.on_click = self._on_choice  # type: ignore
 
         frame.add(
             child=button_group,
