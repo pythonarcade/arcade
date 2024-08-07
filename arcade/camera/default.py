@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Generator
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
 
-from arcade.types import Point, Rect, LBWH
+from arcade.types import LBWH, Point, Rect
 from arcade.window_commands import get_window
 
 if TYPE_CHECKING:
