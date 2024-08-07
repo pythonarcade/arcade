@@ -1,5 +1,4 @@
-"""
-Changing UI styles in response to events
+"""Changing UI styles in response to events
 
 This example has a button which cycles its appearance through a
 repeating list of different styles when pressed, except when it

@@ -2,26 +2,26 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Callable, Union
+from typing import Any, Callable, TypeVar
 
 import pyglet
 from pyglet.input.base import Controller
 from typing_extensions import TypedDict
 
 import arcade
-
-from . import inputs
-from .inputs import InputEnum, InputType
-from .mapping import (
+from arcade.future.input import inputs
+from arcade.future.input.input_mapping import (
     Action,
     ActionMapping,
     Axis,
     AxisMapping,
-    RawAction,
-    RawAxis,
     serialize_action,
     serialize_axis,
 )
+from arcade.future.input.inputs import InputEnum, InputType
+from arcade.future.input.raw_dicts import RawAction, RawAxis
+from arcade.types import OneOrIterableOf
+from arcade.utils import grow_sequence
 
 
 class RawInputManager(TypedDict):
@@ -30,9 +30,27 @@ class RawInputManager(TypedDict):
     controller_deadzone: float
 
 
-def _set_discard(set: set, element: Any) -> set:
-    set.discard(element)
-    return set
+_K = TypeVar("_K")
+_V = TypeVar("_V")
+
+
+def _clean_dicts(to_remove: _V, *dicts_to_clean: dict[_K, set[_V]]) -> None:
+    """Clean a dictionary in-place.
+
+    This helps simplify serialization code for controller config.
+    """
+    to_discard = []
+    for to_clean in dicts_to_clean:
+        if to_discard:
+            to_discard.clear()
+
+        for key, set_value in to_clean.items():
+            set_value.discard(to_remove)
+            if len(set_value) == 0:
+                to_discard.append(key)
+
+        for key in to_discard:
+            del to_clean[key]
 
 
 class ActionState(Enum):
@@ -51,16 +69,20 @@ class InputManager:
         self,
         controller: Controller | None = None,
         allow_keyboard: bool = True,
-        action_handlers: Union[
-            Callable[[str, ActionState], Any], list[Callable[[str, ActionState], Any]]
-        ] = [],
+        action_handlers: OneOrIterableOf[Callable[[str, ActionState], Any]] = tuple(),
         controller_deadzone: float = 0.1,
     ):
         self.actions: dict[str, Action] = {}
+
+        # We don't use defaultdict here since:
+        # 1. These attributes are unprotected
+        # 2. That means sets would be created on *any* access by the user
+        # 2. Those leftover sets would complicate serialization
         self.keys_to_actions: dict[int, set[str]] = {}
         self.controller_buttons_to_actions: dict[str, set[str]] = {}
         self.controller_axes_to_actions: dict[str, set[str]] = {}
         self.mouse_buttons_to_actions: dict[int, set[str]] = {}
+
         self.on_action_listeners: list[Callable[[str, ActionState], Any]] = []
         self.action_subscribers: dict[str, set[Callable[[ActionState], Any]]] = {}
 
@@ -72,10 +94,7 @@ class InputManager:
 
         self.window = arcade.get_window()
 
-        if isinstance(action_handlers, list):
-            self.on_action_listeners.extend(action_handlers)
-        else:
-            self.on_action_listeners.append(action_handlers)
+        self.register_action_handler(action_handlers)
 
         self._allow_keyboard = allow_keyboard
         if self._allow_keyboard:
@@ -169,14 +188,8 @@ class InputManager:
             controller=controller,
             controller_deadzone=existing.controller_deadzone,
         )
+        new.copy_existing(existing)
         new.actions = existing.actions.copy()
-        new.keys_to_actions = existing.keys_to_actions.copy()
-        new.controller_buttons_to_actions = existing.controller_buttons_to_actions.copy()
-        new.mouse_buttons_to_actions = existing.mouse_buttons_to_actions.copy()
-        new.axes = existing.axes.copy()
-        new.axes_state = existing.axes_state.copy()
-        new.controller_buttons_to_axes = existing.controller_buttons_to_axes.copy()
-        new.controller_analog_to_axes = existing.controller_analog_to_axes.copy()
 
         return new
 
@@ -276,48 +289,17 @@ class InputManager:
             self.controller_axes_to_actions[input.value].add(action)
 
     def clear_action_input(self, action: str):
-        self.actions[action]._mappings = set()
+        self.actions[action]._mappings.clear()
+        _clean_dicts(
+            action,
+            self.keys_to_actions,
+            self.controller_buttons_to_actions,
+            self.controller_axes_to_actions,
+            self.mouse_buttons_to_actions,
+        )
 
-        to_discard = []
-        for key, value in self.keys_to_actions.items():
-            new_set = _set_discard(value, action)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.keys_to_actions[key]
-
-        to_discard = []
-        for key, value in self.controller_buttons_to_actions.items():
-            new_set = _set_discard(value, action)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.controller_buttons_to_actions[key]
-
-        to_discard = []
-        for key, value in self.controller_axes_to_actions.items():
-            new_set = _set_discard(value, action)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.controller_axes_to_actions[key]
-
-        to_discard = []
-        for key, value in self.mouse_buttons_to_actions.items():
-            new_set = _set_discard(value, action)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.mouse_buttons_to_actions[key]
-
-    def register_action_handler(
-        self,
-        handler: Union[Callable[[str, ActionState], Any], list[Callable[[str, ActionState], Any]]],
-    ):
-        if isinstance(handler, list):
-            self.on_action_listeners.extend(handler)
-        else:
-            self.on_action_listeners.append(handler)
+    def register_action_handler(self, handler: OneOrIterableOf[Callable[[str, ActionState], Any]]):
+        grow_sequence(self.on_action_listeners, handler, append_if=callable)
 
     def subscribe_to_action(self, name: str, subscriber: Callable[[ActionState], Any]):
         old = self.action_subscribers.get(name, set())
@@ -350,31 +332,10 @@ class InputManager:
             self.controller_analog_to_axes[input.value].add(axis)
 
     def clear_axis_input(self, axis: str):
-        self.axes[axis]._mappings = set()
-
-        to_discard = []
-        for key, value in self.keys_to_axes.items():
-            new_set = _set_discard(value, axis)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.keys_to_axes[key]
-
-        to_discard = []
-        for key, value in self.controller_analog_to_axes.items():
-            new_set = _set_discard(value, axis)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.controller_analog_to_axes[key]
-
-        to_discard = []
-        for key, value in self.controller_buttons_to_axes.items():
-            new_set = _set_discard(value, axis)
-            if len(new_set) == 0:
-                to_discard.append(key)
-        for key in to_discard:
-            del self.controller_buttons_to_axes[key]
+        self.axes[axis]._mappings.clear()
+        _clean_dicts(
+            axis, self.keys_to_axes, self.controller_analog_to_axes, self.controller_buttons_to_axes
+        )
 
     def remove_axis(self, name: str):
         self.clear_axis_input(name)
@@ -413,7 +374,7 @@ class InputManager:
             if hit:
                 self.dispatch_action(action_name, ActionState.PRESSED)
 
-    def on_key_press(self, key: int, modifiers) -> None:
+    def on_key_press(self, key: int, modifiers: int) -> None:
         if not self._allow_keyboard:
             return
 
@@ -448,7 +409,7 @@ class InputManager:
             if hit:
                 self.dispatch_action(action_name, ActionState.RELEASED)
 
-    def on_key_release(self, key: int, modifiers) -> None:
+    def on_key_release(self, key: int, modifiers: int) -> None:
         if not self._allow_keyboard:
             return
         # What, why are we doing any of this repeat tuple conversion in here?
@@ -476,7 +437,7 @@ class InputManager:
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
-    def on_stick_motion(self, controller, name, motion: pyglet.math.Vec2):
+    def on_stick_motion(self, controller: Controller, name: str, motion: pyglet.math.Vec2):
         x_value, y_value = motion.x, motion.y
         if name == "leftx":
             self.window.dispatch_event(

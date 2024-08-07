@@ -21,34 +21,35 @@ class Section:
     A Section represents a rectangular portion of the viewport
     Events are dispatched to the section based on it's position on the screen.
 
-    :param left: the left position of this section
-    :param bottom: the bottom position of this section
-    :param width: the width of this section
-    :param height: the height of this section
-    :param name: the name of this section
-    :param bool | Iterable accept_keyboard_keys: whether or not this section
-        captures keyboard keys through. keyboard events. If the param is an iterable
-        means the keyboard keys that are captured in press/release events:
-        for example: ``[arcade.key.UP, arcade.key.DOWN]`` will only capture this two keys
-    :param bool  Iterable accept_mouse_events: whether or not this section
-        captures mouse events. If the param is an iterable means the mouse events
-        that are captured. for example: ``['on_mouse_press', 'on_mouse_release']``
-        will only capture this two events.
-    :param prevent_dispatch: a list of event names that will not be dispatched to subsequent
-        sections. You can pass None (default) or {True} to prevent the dispatch of all events.
-    :param prevent_dispatch_view: a list of event names that will not be dispatched to the view.
-        You can pass None (default) or {True} to prevent the dispatch of all events to the view.
-    :param local_mouse_coordinates: if True the section mouse events will receive x, y
-        coordinates section related to the section dimensions and position (not related
-        to the screen)
-    :param enabled: if False the section will not capture any events
-    :param modal: if True the section will be a modal section: will prevent updates
-        and event captures on other sections. Will also draw last (on top) but capture
-        events first.
-    :param draw_order: The order this section will have when on_draw is called.
-        The lower the number the earlier this will get draw.
-        This can be different from the event capture order or the on_update order which
-        is defined by the insertion order.
+    Args:
+        left: the left position of this section
+        bottom: the bottom position of this section
+        width: the width of this section
+        height: the height of this section
+        name: the name of this section
+        bool | Iterable accept_keyboard_keys: whether or not this section
+            captures keyboard keys through. keyboard events. If the param is an iterable
+            means the keyboard keys that are captured in press/release events:
+            for example: ``[arcade.key.UP, arcade.key.DOWN]`` will only capture this two keys
+        bool  Iterable accept_mouse_events: whether or not this section
+            captures mouse events. If the param is an iterable means the mouse events
+            that are captured. for example: ``['on_mouse_press', 'on_mouse_release']``
+            will only capture this two events.
+        prevent_dispatch: a list of event names that will not be dispatched to subsequent
+            sections. You can pass None (default) or {True} to prevent the dispatch of all events.
+        prevent_dispatch_view: a list of event names that will not be dispatched to the view.
+            You can pass None (default) or {True} to prevent the dispatch of all events to the view.
+        local_mouse_coordinates: if True the section mouse events will receive x, y
+            coordinates section related to the section dimensions and position (not related
+            to the screen)
+        enabled: if False the section will not capture any events
+        modal: if True the section will be a modal section: will prevent updates
+            and event captures on other sections. Will also draw last (on top) but capture
+            events first.
+        draw_order: The order this section will have when on_draw is called.
+            The lower the number the earlier this will get draw.
+            This can be different from the event capture order or the on_update order which
+            is defined by the insertion order.
     """
 
     def __init__(
@@ -68,8 +69,8 @@ class Section:
         modal: bool = False,
         draw_order: int = 1,
     ):
-        # name of the section
         self.name: str | None = name
+        """The name of this section"""
 
         # parent view: set by the SectionManager. Protected, you should not change
         # section.view manually
@@ -83,20 +84,23 @@ class Section:
         # set draw_order: the lower the number the earlier this section will get draw
         self._draw_order: int = draw_order
 
-        # if True 'update' and 'on_update' will not trigger in this section
         self.block_updates: bool = False
+        """if True 'update' and 'on_update' will not trigger in this section"""
 
-        # arcade keyboard keys to accept.
         self.accept_keyboard_keys: bool | Iterable = accept_keyboard_keys
-        # arcade mouse events to accept.
-        self.accept_mouse_events: bool | Iterable = accept_mouse_events
+        """arcade keyboard keys to accept."""
 
-        # prevents events to propagate
+        self.accept_mouse_events: bool | Iterable = accept_mouse_events
+        """arcade mouse events to accept."""
+
         self.prevent_dispatch: Iterable = prevent_dispatch or {True}
-        # prevents events to propagate to the view
+        """prevents events to propagate"""
+
         self.prevent_dispatch_view: Iterable = prevent_dispatch_view or {True}
-        # mouse coordinates relative to section
+        """prevents events to propagate to the view"""
+
         self.local_mouse_coordinates: bool = local_mouse_coordinates
+        """mouse coordinates relative to section"""
 
         # section position into the current viewport
         # if screen is resized it's upto the user to move or resize each section
@@ -115,8 +119,8 @@ class Section:
         self._ec_bottom: int = 0 if self._modal else self._bottom
         self._ec_top: int = self.window.height if self._modal else self._top
 
-        # optional section camera
         self.camera: Projector | None = None
+        """optional section camera"""
 
     def __repr__(self):
         name = f"Section {self.name}" if self.name else "Section"
@@ -246,6 +250,7 @@ class Section:
 
     @property
     def rect(self) -> Rect:
+        """The section rectangle of this view"""
         return LRBT(self.left, self.right, self.bottom, self.top)
 
     @property
@@ -257,7 +262,11 @@ class Section:
             return self._view.window
 
     def overlaps_with(self, section: "Section") -> bool:
-        """Checks if this section overlaps with another section"""
+        """Checks if this section overlaps with another section
+
+        Args:
+            section: The section to check for overlap
+        """
         return not (
             self.right < section.left
             or self.left > section.right
@@ -266,68 +275,166 @@ class Section:
         )
 
     def mouse_is_on_top(self, x: int, y: int) -> bool:
-        """Check if the current mouse position is on top of this section"""
+        """Check if the current mouse position is on top of this section
+
+        Args:
+            x: The x position of the mouse
+            y: The y position of the mouse
+        """
         test_x = self._left <= x <= self._right
         test_y = self._bottom <= y <= self._top
         return test_x and test_y
 
     def should_receive_mouse_event(self, x: int, y: int) -> bool:
-        """Check if the current section should receive a mouse event at a given position"""
+        """Check if the current section should receive a mouse event at a given position
+
+        Args:
+            x: The x position of the mouse
+            y: The y position of the mouse
+        """
         test_x = self._ec_left <= x <= self._ec_right
         test_y = self._ec_bottom <= y <= self._ec_top
         return test_x and test_y
 
     def get_xy_screen_relative(self, section_x: int, section_y: int):
-        """Returns screen coordinates from section coordinates"""
+        """Returns screen coordinates from section coordinates
+
+        Args:
+            section_x: The x position of the section
+            section_y: The y position of the section
+        """
         return self.left + section_x, self.bottom + section_y
 
     def get_xy_section_relative(self, screen_x: int, screen_y: int):
-        """returns section coordinates from screen coordinates"""
+        """returns section coordinates from screen coordinates
+
+        Args:
+            screen_x: The x position of the screen
+            screen_y: The y position of the screen
+        """
         return screen_x - self.left, screen_y - self.bottom
 
     # Following methods are just the usual view methods
     #  + on_mouse_enter / on_mouse_leave / on_show_section / on_hide_section
 
     def on_draw(self):
+        """Override this method with your custom drawing code."""
         pass
 
     def on_update(self, delta_time: float):
+        """Override this method with your custom update code."""
         pass
 
     def on_resize(self, width: int, height: int):
+        """Override this method with your custom resize code."""
         pass
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        """
+        Called when the user presses a mouse button.
+
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+            button: the button pressed
+            modifiers: the modifiers pressed
+        """
         pass
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int):
+        """
+        Called when the user releases a mouse button.
+
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+            button: the button released
+            modifiers: the modifiers pressed
+        """
         pass
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+        """
+        Called when the user moves the mouse.
+
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+            dx: change in x position
+            dy: change in y position
+        """
         pass
 
     def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
+        """
+        Called when the user scrolls the mouse wheel.
+
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+            scroll_x: change in x position
+            scroll_y: change in y position
+        """
         pass
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, _buttons: int, _modifiers: int):
+        """
+        Called when the user moves the mouse with a button pressed.
+
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+            dx: change in x position
+            dy: change in y position
+        """
         self.on_mouse_motion(x, y, dx, dy)
 
     def on_mouse_enter(self, x: int, y: int):
+        """
+        Called when the mouse enters the section
+
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+        """
         pass
 
     def on_mouse_leave(self, x: int, y: int):
+        """
+        Called when the mouse leaves the section
+
+        Args:
+            x: x position of the mouse
+            y: y position of the mouse
+        """
         pass
 
     def on_key_press(self, symbol: int, modifiers: int):
+        """
+        Called when the user presses a key.
+
+        Args:
+            symbol: the key pressed
+            modifiers: the modifiers pressed
+        """
         pass
 
     def on_key_release(self, _symbol: int, _modifiers: int):
+        """
+        Called when the user releases a key.
+
+        Args:
+            symbol: the key released
+            modifiers: the modifiers pressed
+        """
         pass
 
     def on_show_section(self):
+        """Called when the section is shown"""
         pass
 
     def on_hide_section(self):
+        """Called when the section is hidden"""
         pass
 
 
@@ -335,10 +442,13 @@ class SectionManager:
     """
     This manages the different Sections a View has.
     Actions such as dispatching the events to the correct Section, draw order, etc.
+
+    Args:
+        view: the view this section manager belongs to
     """
 
-    def __init__(self, view: "View"):
-        self.view: "View" = view  # the view this section manager belongs to
+    def __init__(self, view: View):
+        self.view = view  # the view this section manager belongs to
 
         # store sections in update/event order and in draw order
         # a list of the current sections for this in update/event order
@@ -418,8 +528,11 @@ class SectionManager:
     def get_section_by_name(self, name: str) -> Section | None:
         """
         Returns the first section with the given name
-        :param name: the name of the section you want
-        :return: the first section with the provided name. None otherwise
+
+        Args:
+            name: The name of the section you want
+        Returns:
+            The first section with the provided name. None otherwise
         """
         for section in self._sections:
             if section.name == name:
@@ -428,7 +541,7 @@ class SectionManager:
 
     def add_section(
         self,
-        section: "Section",
+        section: Section,
         at_index: int | None = None,
         at_draw_order: int | None = None,
     ) -> None:
@@ -436,11 +549,12 @@ class SectionManager:
         Adds a section to this Section Manager
         Will trigger section.on_show_section if section is enabled
 
-        :param section: The section to add to this section manager
-        :param at_index: Inserts the section at that index for event capture and update events.
-                         If None at the end
-        :param at_draw_order: Inserts the section in a specific draw order.
-                              Overwrites section.draw_order
+        Args:
+            section: The section to add to this section manager
+            at_index: Inserts the section at that index for event capture and update events.
+                If None at the end
+            at_draw_order: Inserts the section in a specific draw order.
+                Overwrites section.draw_order
         """
         if not isinstance(section, Section):
             raise ValueError("You can only add Section instances")
@@ -464,7 +578,8 @@ class SectionManager:
         """
         Removes a section from this section manager
 
-        :param section: the section to remove
+        Args:
+            section: The section to remove
         """
 
         # trigger on_hide_section if the view is the current one and section is enabled
@@ -506,7 +621,8 @@ class SectionManager:
         """
         Called on each event loop.
 
-        :param delta_time: the delta time since this method was called last time
+        Args:
+            delta_time: the delta time since this method was called last time
         """
         modal_present = False
         if self.view_update_first is True:
@@ -547,8 +663,9 @@ class SectionManager:
         """
         Called when the window is resized.
 
-        :param width: the new width of the screen
-        :param height: the new height of the screen
+        Args:
+            width: the new width of the screen
+            height: the new height of the screen
         """
         # The Default camera auto-resizes.
         if self.view_resize_first is True:
@@ -568,11 +685,13 @@ class SectionManager:
         """
         Returns the first section based on x,y position
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param event_capture: True will use event capture dimensions,
-                              False will use section draw size
-        :return: a section if match the params otherwise None
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            event_capture: True will use event capture dimensions,
+                False will use section draw size
+        Returns:
+            A section if match the params otherwise None
         """
         for section in self._sections:
             if section.enabled:
@@ -588,11 +707,13 @@ class SectionManager:
         """
         Returns a list of sections based on x,y position
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param event_capture: True will use event capture dimensions,
-                              False will use section draw size
-        :return: a generator with the sections that match the params
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            event_capture: True will use event capture dimensions,
+                False will use section draw size
+        Returns:
+            A generator with the sections that match the params
         """
         for section in self._sections:
             if section.enabled:
@@ -613,15 +734,17 @@ class SectionManager:
         """
         Generic method to dispatch mouse events to the correct Sections
 
-        :param event: the mouse event name to dispatch
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param current_section: the section this mouse event should be delivered to.
-                                If None, will retrieve all
-                                sections that should receive this event based on x, y coordinates
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            event: the mouse event name to dispatch
+            x: the x axis coordinate
+            y: the y axis coordinate
+            args: any other position arguments that should be delivered to the dispatched event
+            current_section: the section this mouse event should be delivered to.
+                If None, will retrieve all
+                sections that should receive this event based on x, y coordinates
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
 
         sections: list | Generator
@@ -682,10 +805,12 @@ class SectionManager:
         """
         Generic method to dispatch keyboard events to the correct sections
 
-        :param event: the keyboard event name to dispatch
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            event: the keyboard event name to dispatch
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         propagate_to_view = True
         prevent_dispatch = EVENT_UNHANDLED
@@ -729,11 +854,13 @@ class SectionManager:
         """
         Triggers the on_mouse_press event on the appropriate sections or view
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         return self.dispatch_mouse_event("on_mouse_press", x, y, *args, **kwargs)
 
@@ -741,11 +868,13 @@ class SectionManager:
         """
         Triggers the on_mouse_release event on the appropriate sections or view
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         return self.dispatch_mouse_event("on_mouse_release", x, y, *args, **kwargs)
 
@@ -757,13 +886,15 @@ class SectionManager:
         based on 'on_mouse_motion' and 'on_mouse_drag' events.
         Will also dispatch the event (event_origin) that called this method
 
-        :param event_origin: The mouse event name that called this method.
-                             This event will be called here.
-        :param x: The x axis coordinate
-        :param y: The y axis coordinate
-        :param args: Any other position arguments that should be delivered to the dispatched event
-        :param kwargs: Any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            event_origin: The mouse event name that called this method.
+                This event will be called here.
+            x: The x axis coordinate
+            y: The y axis coordinate
+            args: Any other position arguments that should be delivered to the dispatched event
+            kwargs: Any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         before_sections = self.mouse_over_sections
         current_sections = list(self.get_sections(x, y))  # consume the generator
@@ -804,11 +935,13 @@ class SectionManager:
         This method dispatches the on_mouse_motion and also calculates if
         on_mouse_enter/leave should be fired.
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param args: any other position arguments that should be deliverd to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         return self.dispatch_mouse_enter_leave_events("on_mouse_motion", x, y, *args, **kwargs)
 
@@ -817,11 +950,13 @@ class SectionManager:
         This method dispatches the on_mouse_drag and also calculates if
         on_mouse_enter/leave should be fired.
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         return self.dispatch_mouse_enter_leave_events("on_mouse_drag", x, y, *args, **kwargs)
 
@@ -829,11 +964,13 @@ class SectionManager:
         """
         Triggers the on_mouse_scroll event on the appropriate sections or view
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param args: any other position arguments that should be deliverd to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         return self.dispatch_mouse_event("on_mouse_scroll", x, y, *args, **kwargs)
 
@@ -842,11 +979,13 @@ class SectionManager:
         Triggered when the mouse enters the window space
         Will trigger on_mouse_enter on the appropriate sections or view
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         current_sections = list(self.get_sections(x, y))  # consume the generator
 
@@ -867,11 +1006,13 @@ class SectionManager:
         Triggered when the mouse leaves the window space
         Will trigger on_mouse_leave on the appropriate sections or view
 
-        :param x: the x axis coordinate
-        :param y: the y axis coordinate
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            x: the x axis coordinate
+            y: the y axis coordinate
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         prevent_dispatch = EVENT_UNHANDLED
         for section in self.mouse_over_sections:
@@ -888,9 +1029,11 @@ class SectionManager:
         """
         Triggers the on_key_press event on the appropriate sections or view
 
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         return self.dispatch_keyboard_event("on_key_press", *args, **kwargs)
 
@@ -898,16 +1041,18 @@ class SectionManager:
         """
         Triggers the on_key_release event on the appropriate sections or view
 
-        :param args: any other position arguments that should be delivered to the dispatched event
-        :param kwargs: any other keyword arguments that should be delivered to the dispatched event
-        :return: EVENT_HANDLED or EVENT_UNHANDLED, or whatever the dispatched method returns
+        Args:
+            args: any other position arguments that should be delivered to the dispatched event
+            kwargs: any other keyword arguments that should be delivered to the dispatched event
+        Returns:
+            ``EVENT_HANDLED`` or ``EVENT_UNHANDLED``, or whatever the dispatched method returns
         """
         return self.dispatch_keyboard_event("on_key_release", *args, **kwargs)
 
     def on_show_view(self) -> None:
         """
-        Called when the view is shown
-        The View.on_show_view is called before this by the Window.show_view method
+        Called when the view is shown. The :py:meth:`View.on_show_view` is called before
+        this by the :py:meth:`Window.show_view` method.
         """
         for section in self.sections:
             if section.enabled:

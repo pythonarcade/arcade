@@ -1,5 +1,4 @@
-"""
-Arrange widgets in vertical or horizontal lines with UIBoxLayout
+"""Arrange widgets in vertical or horizontal lines with UIBoxLayout
 
 The direction UIBoxLayout follows is controlled by the `vertical` keyword
 argument. It is True by default. Pass False to it to arrange elements in

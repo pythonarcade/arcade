@@ -7,7 +7,7 @@ individual sprites.
 
 from __future__ import annotations
 
-import logging
+# import logging
 import random
 from array import array
 from collections import deque
@@ -41,7 +41,7 @@ if TYPE_CHECKING:
     from arcade import DefaultTextureAtlas, Texture
     from arcade.texture_atlas import TextureAtlasBase
 
-LOG = logging.getLogger(__name__)
+# LOG = logging.getLogger(__name__)
 
 # The slot index that makes a sprite invisible.
 # 2^31-1 is usually reserved for primitive restart
@@ -76,22 +76,28 @@ class SpriteList(Generic[SpriteType]):
     For the advanced options check the advanced section in the
     arcade documentation.
 
-    :param use_spatial_hash: If set to True, this will make creating a sprite, and
-            moving a sprite
+    Args:
+        use_spatial_hash:
+            If set to True, this will make creating a sprite, and moving a sprite
             in the SpriteList slower, but it will speed up collision detection
             with items in the SpriteList. Great for doing collision detection
             with static walls/platforms in large maps.
-    :param spatial_hash_cell_size: The cell size of the spatial hash (default: 128)
-    :param atlas: (Advanced) The texture atlas for this sprite list. If no
+        spatial_hash_cell_size:
+            The cell size of the spatial hash (default: 128)
+        atlas:
+            (Advanced) The texture atlas for this sprite list. If no
             atlas is supplied the global/default one will be used.
-    :param capacity: (Advanced) The initial capacity of the internal buffer.
+        capacity:
+            (Advanced) The initial capacity of the internal buffer.
             It's a suggestion for the maximum amount of sprites this list
             can hold. Can normally be left with default value.
-    :param lazy: (Advanced) ``True`` delays creating OpenGL resources
+        lazy:
+            (Advanced) ``True`` delays creating OpenGL resources
             for the sprite list until either its :py:meth:`~SpriteList.draw`
             or :py:meth:`~SpriteList.initialize` method is called. See
             :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
-    :param visible: Setting this to False will cause the SpriteList to not
+        visible:
+            Setting this to False will cause the SpriteList to not
             be drawn. When draw is called, the method will just return without drawing.
     """
 
@@ -198,6 +204,7 @@ class SpriteList(Generic[SpriteType]):
     def _init_deferred(self) -> None:
         """
         Since spritelist can be created before the window we need to defer initialization.
+
         It also makes us able to support lazy loading.
         """
         if self._initialized:
@@ -240,7 +247,6 @@ class SpriteList(Generic[SpriteType]):
 
         # Load all the textures and write texture coordinates into buffers.
         for sprite in self.sprite_list:
-            # noinspection PyProtectedMember
             if sprite._texture is None:
                 raise ValueError("Attempting to use a sprite without a texture")
             self._update_texture(sprite)
@@ -305,8 +311,8 @@ class SpriteList(Generic[SpriteType]):
     def visible(self) -> bool:
         """
         Get or set the visible flag for this spritelist.
-        If visible is ``False`` the ``draw()`` has no effect.
 
+        If visible is ``False`` the ``draw()`` has no effect.
         """
         return self._visible
 
@@ -316,9 +322,7 @@ class SpriteList(Generic[SpriteType]):
 
     @property
     def blend(self) -> bool:
-        """
-        Flag for enabling or disabling alpha blending for the spritelist.
-        """
+        """Enable or disable alpha blending for the spritelist."""
         return self._blend
 
     @blend.setter
@@ -348,7 +352,6 @@ class SpriteList(Generic[SpriteType]):
         1. Convert the sampled texture, sprite, and list colors into normalized floats (0.0 to 1.0)
         2. Multiply the color channels together: ``texture_color * sprite_color * spritelist_color``
         3. Multiply the floating point values by 255 and round the result
-
         """
         return Color.from_normalized(self._color)
 
@@ -360,6 +363,7 @@ class SpriteList(Generic[SpriteType]):
     def color_normalized(self) -> RGBANormalized:
         """
         Get or set the spritelist color in normalized form (0.0 -> 1.0 floats).
+
         This property works the same as :py:attr:`~arcade.SpriteList.color`.
         """
         return self._color
@@ -378,6 +382,7 @@ class SpriteList(Generic[SpriteType]):
     def alpha(self) -> int:
         """
         Get or set the alpha/transparency of the entire spritelist.
+
         This is a byte value from 0 to 255 were 0 is completely
         transparent/invisible and 255 is opaque.
         """
@@ -392,11 +397,11 @@ class SpriteList(Generic[SpriteType]):
     def alpha_normalized(self) -> float:
         """
         Get or set the alpha/transparency of all the sprites in the list.
+
         This is a floating point number from 0.0 to 1.0 were 0.0 is completely
         transparent/invisible and 1.0 is opaque.
 
         This is a shortcut for setting the alpha value in the spritelist color.
-
         """
         return self._color[3]
 
@@ -557,8 +562,8 @@ class SpriteList(Generic[SpriteType]):
         """
         Return the index of a sprite in the spritelist
 
-        :param sprite: Sprite to find and return the index of
-
+        Args:
+            sprite: Sprite to find and return the index of
         """
         return self.sprite_list.index(sprite)
 
@@ -568,14 +573,16 @@ class SpriteList(Generic[SpriteType]):
         to it's initial state.
 
         The complexity of this method is ``O(N)`` with a deep clear (default).
-        If ALL the sprites in the list gets garbage collected
-        with the list itself you can do an ``O(1)``` clear using
-        ``deep=False``. **Make sure you know exactly what you are doing before
-        using this option.** Any lingering sprite reference will
-        cause a massive memory leak. The ``deep`` option will
-        iterate all the sprites and remove their references to
-        this spritelist. Sprite and SpriteList have a circular
-        reference for performance reasons.
+
+        If ALL the sprites in the list gets garbage collected with the list itself
+        you can do an ``O(1)``` clear using ``deep=False``. **Make sure you know
+        exactly what you are doing before using this option.** Any lingering sprite
+        reference will cause a massive memory leak. The ``deep`` option will
+        iterate all the sprites and remove their references to this spritelist.
+        Sprite and SpriteList have a circular reference for performance reasons.
+
+        Args:
+            deep: Wether to do a deep clear or not. Default is ``True``.
         """
         from .spatial_hash import SpatialHash
 
@@ -622,8 +629,9 @@ class SpriteList(Generic[SpriteType]):
         #. If no ``index`` is passed, try to pop the last
            :py:class:`Sprite` in the list
 
-        :param index: Index of sprite to remove (defaults to ``-1`` for
-            the last item)
+        Args:
+            index:
+                Index of sprite to remove (defaults to ``-1`` for the last item)
         """
         if len(self.sprite_list) == 0:
             raise IndexError("pop from empty list")
@@ -636,7 +644,8 @@ class SpriteList(Generic[SpriteType]):
         """
         Add a new sprite to the list.
 
-        :param sprite: Sprite to add to the list.
+        Args:
+            sprite: Sprite to add to the list.
         """
         # print(f"{id(self)} : {id(sprite)} append")
         if sprite in self.sprite_slot:
@@ -670,9 +679,11 @@ class SpriteList(Generic[SpriteType]):
 
     def swap(self, index_1: int, index_2: int) -> None:
         """
-        Swap two sprites by index
-        :param index_1: Item index to swap
-        :param index_2: Item index to swap
+        Swap two sprites by index.
+
+        Args:
+            index_1: Item index to swap
+            index_2: Item index to swap
         """
         # Swap order in python spritelist
         sprite_1 = self.sprite_list[index_1]
@@ -693,7 +704,9 @@ class SpriteList(Generic[SpriteType]):
     def remove(self, sprite: SpriteType) -> None:
         """
         Remove a specific sprite from the list.
-        :param sprite: Item to remove from the list
+
+        Args:
+            sprite: Item to remove from the list
         """
         # print(f"{id(self)} : {id(sprite)} remove")
         try:
@@ -726,7 +739,8 @@ class SpriteList(Generic[SpriteType]):
         """
         Extends the current list with the given iterable
 
-        :param sprites: Iterable of Sprites to add to the list
+        Args:
+            sprites: Iterable of Sprites to add to the list
         """
         for sprite in sprites:
             self.append(sprite)
@@ -735,8 +749,9 @@ class SpriteList(Generic[SpriteType]):
         """
         Inserts a sprite at a given index.
 
-        :param index: The index at which to insert
-        :param sprite: The sprite to insert
+        Args:
+            index: The index at which to insert
+            sprite: The sprite to insert
         """
         if sprite in self.sprite_list:
             raise ValueError("Sprite is already in list")
@@ -763,9 +778,7 @@ class SpriteList(Generic[SpriteType]):
             self.spatial_hash.add(sprite)
 
     def reverse(self) -> None:
-        """
-        Reverses the current list in-place
-        """
+        """Reverses the current list in-place"""
         # Ensure the index buffer is normalized
         self._normalize_index_buffer()
 
@@ -779,9 +792,7 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_index_changed = True
 
     def shuffle(self) -> None:
-        """
-        Shuffles the current list in-place
-        """
+        """Shuffles the current list in-place"""
         # The only thing we need to do when shuffling is
         # to shuffle the sprite_list and index buffer in
         # in the same operation. We don't change the sprite buffers
@@ -825,8 +836,11 @@ class SpriteList(Generic[SpriteType]):
 
             spritelist.sort(key=create_y_pos_comparison)
 
-        :param key: A function taking a sprite as an argument returning a comparison key
-        :param reverse: If set to ``True`` the sprites will be sorted in reverse
+        Args:
+            key:
+                A function taking a sprite as an argument returning a comparison key
+            reverse:
+                If set to ``True`` the sprites will be sorted in reverse
         """
         # Ensure the index buffer is normalized
         self._normalize_index_buffer()
@@ -840,13 +854,16 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_index_changed = True
 
     def disable_spatial_hashing(self) -> None:
-        """
-        Deletes the internal spatial hash object
-        """
+        """Deletes the internal spatial hash object."""
         self.spatial_hash = None
 
     def enable_spatial_hashing(self, spatial_hash_cell_size: int = 128) -> None:
-        """Turn on spatial hashing."""
+        """
+        Turn on spatial hashing unless it is already enabled with the same cell size.
+
+        Args:
+            spatial_hash_cell_size: The size of the cell in the spatial hash.
+        """
         if self.spatial_hash is None or self.spatial_hash.cell_size != spatial_hash_cell_size:
             # LOG.debug("Enabled spatial hashing with cell size %s", spatial_hash_cell_size)
             from .spatial_hash import SpatialHash
@@ -866,27 +883,30 @@ class SpriteList(Generic[SpriteType]):
         for sprite in self.sprite_list:
             self.spatial_hash.add(sprite)
 
-    def update(self) -> None:
+    def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         Call the update() method on each sprite in the list.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         for sprite in self.sprite_list:
-            sprite.update()
+            sprite.update(delta_time, *args, **kwargs)
 
-    def on_update(self, delta_time: float = 1 / 60) -> None:
-        """
-        Update the sprite. Similar to update, but also takes a delta-time.
-        """
-        for sprite in self.sprite_list:
-            sprite.on_update(delta_time)
-
-    def update_animation(self, delta_time: float = 1 / 60) -> None:
+    def update_animation(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         Call the update_animation in every sprite in the sprite list.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         # NOTE: Can we limit this to animated sprites?
         for sprite in self.sprite_list:
-            sprite.update_animation(delta_time)
+            sprite.update_animation(delta_time, *args, **kwargs)
 
     def _get_center(self) -> tuple[float, float]:
         """Get the mean center coordinates of all sprites in the list."""
@@ -907,8 +927,9 @@ class SpriteList(Generic[SpriteType]):
         This can be a very expensive operation depending on the
         size of the sprite list.
 
-        :param change_x: Amount to change all x values by
-        :param change_y: Amount to change all y values by
+        Args:
+            change_x: Amount to change all x values by
+            change_y: Amount to change all y values by
         """
         for sprite in self.sprite_list:
             sprite.center_x += change_x
@@ -919,7 +940,8 @@ class SpriteList(Generic[SpriteType]):
         Preload a set of textures that will be used for sprites in this
         sprite list.
 
-        :param texture_list: List of textures.
+        Args:
+            texture_list: List of textures.
         """
         if not self.ctx:
             raise ValueError("Cannot preload textures before the window is created")
@@ -930,18 +952,17 @@ class SpriteList(Generic[SpriteType]):
 
     def write_sprite_buffers_to_gpu(self) -> None:
         """
-        Ensure buffers are resized and fresh sprite data
-        is written into the internal sprite buffers.
+        Ensure buffers are resized and fresh sprite data is written into the internal
+        sprite buffers.
 
-        This is automatically called in :py:meth:`SpriteList.draw`,
-        but there are instances when using custom shaders
-        we need to force this to happen since we might
-        have not called :py:meth:`SpriteList.draw` since the
-        spritelist was modified.
+        This is automatically called in :py:meth:`SpriteList.draw`, but there are
+        instances when using custom shaders we need to force this to happen since
+        we might have not called :py:meth:`SpriteList.draw` since the spritelist
+        was modified.
 
-        If you have added, removed, moved or changed ANY
-        sprite property this method will synchronize the
-        data on the gpu side (buffer resizing and writing in new data).
+        If you have added, removed, moved or changed ANY sprite property this method
+        will synchronize the data on the gpu side (buffer resizing and writing in
+        new data).
         """
         self._write_sprite_buffers_to_gpu()
 
@@ -1026,14 +1047,18 @@ class SpriteList(Generic[SpriteType]):
 
         See :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
 
-        :param filter: Optional parameter to set OpenGL filter, such as
-                       `gl.GL_NEAREST` to avoid smoothing.
-        :param pixelated: ``True`` for pixelated and ``False`` for smooth interpolation.
-                          Shortcut for setting filter to GL_NEAREST for a pixelated look.
-                          The filter parameter have precedence over this.
-        :param blend_function: Optional parameter to set the OpenGL blend function used for drawing
-                               the sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or
-                               'arcade.Window.ctx.BLEND_DEFAULT'
+        Args:
+            filter:
+                Optional parameter to set OpenGL filter, such as
+                `gl.GL_NEAREST` to avoid smoothing.
+            pixelated:
+                ``True`` for pixelated and ``False`` for smooth interpolation.
+                Shortcut for setting filter to GL_NEAREST for a pixelated look.
+                The filter parameter have precedence over this.
+            blend_function:
+                Optional parameter to set the OpenGL blend function used for drawing
+                the sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or
+                'arcade.Window.ctx.BLEND_DEFAULT'
         """
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return
@@ -1095,7 +1120,15 @@ class SpriteList(Generic[SpriteType]):
                 self.ctx.blend_func = prev_blend_func
 
     def draw_hit_boxes(self, color: RGBA255 = (0, 0, 0, 255), line_thickness: float = 1.0) -> None:
-        """Draw all the hit boxes in this list"""
+        """
+        Draw all the hit boxes in this list.
+
+        .. warning:: This method is slow and should only be used for debugging.
+
+        Args:
+            color: The color of the hit boxes
+            line_thickness: The thickness of the lines
+        """
         # NOTE: Find a way to efficiently draw this
         for sprite in self.sprite_list:
             sprite.draw_hit_box(color, line_thickness)
@@ -1189,6 +1222,9 @@ class SpriteList(Generic[SpriteType]):
         """
         Update all sprite data. This is faster when adding and moving sprites.
         This duplicate code, but reduces call overhead, dict lookups etc.
+
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         # position
@@ -1226,8 +1262,12 @@ class SpriteList(Generic[SpriteType]):
         self._sprite_texture_changed = True
 
     def _update_texture(self, sprite: SpriteType) -> None:
-        """Make sure we update the texture for this sprite for the next batch
-        drawing"""
+        """
+        Make sure we update the texture for this sprite for the next batch drawing.
+
+        Args:
+            sprite: Sprite to update.
+        """
         # We cannot interact with texture atlases unless the context
         # is created. We defer all texture initialization for later
         if not self._initialized:
@@ -1257,7 +1297,8 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3] = sprite._position[0]
@@ -1272,7 +1313,8 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3] = sprite._position[0]
@@ -1286,7 +1328,8 @@ class SpriteList(Generic[SpriteType]):
         ``update_location`` should be called to move them
         once the sprites are in the list.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3 + 1] = sprite._position[1]
@@ -1297,7 +1340,8 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the depth of the specified sprite.
         Necessary for batch drawing of items.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_pos_data[slot * 3 + 2] = sprite._depth
@@ -1309,7 +1353,8 @@ class SpriteList(Generic[SpriteType]):
         of the specified sprite.
         Necessary for batch drawing of items.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_color_data[slot * 4] = int(sprite._color[0])
@@ -1323,7 +1368,8 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2] = sprite._width
@@ -1335,7 +1381,8 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2] = sprite._width
@@ -1346,7 +1393,8 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the size/scale in this sprite.
         Necessary for batch drawing of items.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2 + 1] = sprite._height
@@ -1357,7 +1405,8 @@ class SpriteList(Generic[SpriteType]):
         Called by the Sprite class to update the angle in this sprite.
         Necessary for batch drawing of items.
 
-        :param sprite: Sprite to update.
+        Args:
+            sprite: Sprite to update.
         """
         slot = self.sprite_slot[sprite]
         self._sprite_angle_data[slot] = sprite._angle

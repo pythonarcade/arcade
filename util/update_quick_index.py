@@ -222,6 +222,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.application",
             "arcade.window_commands",
             "arcade.sections",
+            "arcade.screenshot",
         ]
     },
     "sound.rst": {
@@ -327,7 +328,8 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "title": "GUI Experimental Features",
         "use_declarations_in": [
             "arcade.gui.experimental.password_input",
-            "arcade.gui.experimental.scroll_area"
+            "arcade.gui.experimental.scroll_area",
+            "arcade.gui.experimental.typed_text_input"
         ]
     },
     "advanced_cameras.rst": {
@@ -341,20 +343,42 @@ API_FILE_TO_TITLE_AND_MODULES = {
            "arcade.camera.static"
        ]
     },
+    "exceptions.rst": {
+         "title": "Exceptions",
+            "use_declarations_in": [
+                "arcade.exceptions"
+            ],
+    },
+    "start_finish_render.rst": {
+        "title": "Start/Finish Render",
+        "use_declarations_in": [
+            "arcade.start_finish_data",
+        ],
+    },
+    "cache.rst": {
+        "title": "Cache",
+        "use_declarations_in": [
+            "arcade.cache",
+            "arcade.cache.hit_box",
+            "arcade.cache.texture",
+            "arcade.cache.image_data",
+        ],
+    },
     "future.rst": {
        "title": "Future Features",
        "use_declarations_in": [
            "arcade.future.texture_render_target",
            "arcade.future.input.inputs",
            "arcade.future.input.manager",
-           "arcade.future.input.mapping",
+           "arcade.future.input.input_mapping",
+           "arcade.future.input.raw_dicts",
            "arcade.future.background.background_texture",
            "arcade.future.background.background",
            "arcade.future.background.groups",
            "arcade.future.light.lights",
            "arcade.future.video.video_player"
        ]
-    }
+    },
 }
 
 
@@ -397,9 +421,12 @@ def get_file_declarations(
     re.Pattern instances are applied in the same order as passed
     in kind_to_regex.
 
-    :param filepath: A file path to read.
-    :param kind_to_regex: An mapping of kind names to the re.Pattern
-        instances used to parse each.
+    Args:
+        filepath:
+            A file path to read.
+        kind_to_regex:
+            An mapping of kind names to the re.Pattern
+            instances used to parse each.
     """
 
     # print("Parsing: ", filepath)
@@ -439,8 +466,11 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     3rd party module like griffe... it's badly reassembling the module name
     from a collection of tables and unnamed sequences.
 
-    :param api_file_name: The name of the file in the API directory
-    :param vfs: The vfs object to use
+    Args:
+        api_file_name:
+            The name of the file in the API directory
+        vfs:
+            The vfs object to use
     """
     page_config = API_FILE_TO_TITLE_AND_MODULES.get(api_file_name, None)
 

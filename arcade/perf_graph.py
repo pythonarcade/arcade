@@ -33,20 +33,29 @@ class PerfGraph(arcade.Sprite):
     :class:`Texture <arcade.Texture>` every ``update_rate`` seconds.
 
     Args:
-        width (int): The width of the chart texture in pixels
-        height (int): The height of the chart texture in pixels
-        graph_data (str): The pyglet event handler or statistic to track
-        update_rate (float): How often the graph updates, in seconds
-        background_color (RGBA255): The background color of the chart
-        data_line_color (RGBA255): Color of the line tracking drawn
-        axis_color (RGBA255): The color to draw the x & y axes in
-        font_color (RGBA255): The color of the label font
-        font_size (int): The size of the label font in points
-        y_axis_num_lines (int): How many grid lines should be used to
-                                divide the y scale of the graph.
-        view_y_scale_step (float): The graph's view area will be scaled to a
-                                   multiple of this value to fit to the data
-                                   currently displayed.
+        width (int):
+            The width of the chart texture in pixels
+        height (int):
+            The height of the chart texture in pixels
+        graph_data (str):
+            The pyglet event handler or statistic to track
+        update_rate (float):
+            How often the graph updates, in seconds
+        background_color (RGBA255):
+            The background color of the chart
+        data_line_color (RGBA255):
+            Color of the line tracking drawn
+        axis_color (RGBA255):
+            The color to draw the x & y axes in
+        font_color (RGBA255):
+            The color of the label font
+        font_size (int):
+            The size of the label font in points
+        y_axis_num_lines (int):
+            How many grid lines should be used to divide the y scale of the graph.
+        view_y_scale_step (float):
+            The graph's view area will be scaled to a multiple of this value to
+            fit to the data currently displayed.
     """
 
     def __init__(
@@ -73,6 +82,7 @@ class PerfGraph(arcade.Sprite):
         # not cache vertices, so there is no need to make this attribute
         # a property that updates geometry when set.
         self.line_color = Color.from_iterable(data_line_color)
+        """The color of the line tracking the data."""
 
         # Store visual style info for cached pyglet shape geometry
         self._background_color = Color.from_iterable(background_color)
@@ -86,6 +96,8 @@ class PerfGraph(arcade.Sprite):
 
         # Variables for rendering the data line
         self.graph_data = graph_data
+        """The graphed data type, either "FPS" or a pyglet event handler name."""
+
         self._data_to_graph: list[float] = []
         self._view_max_value = 0.0  # We'll calculate this once we have data
         self._view_y_scale_step = view_y_scale_step
@@ -227,7 +239,7 @@ class PerfGraph(arcade.Sprite):
         # garbage collection.
         pyglet.clock.unschedule(self.update)
 
-    def update_graph(self, delta_time: float):
+    def update_graph(self, delta_time: float) -> None:
         """
         Update the graph by redrawing the internal texture data.
 

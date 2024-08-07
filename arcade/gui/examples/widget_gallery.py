@@ -1,5 +1,4 @@
-"""
-A combination of multiple widgets from other examples
+"""A combination of multiple widgets from other examples
 
 See the other GUI examples for more information.
 

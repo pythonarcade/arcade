@@ -101,7 +101,7 @@ def test_sound_play_sound_type_errors(window):
         arcade.play_sound(object())
         assert ctx.value.args[0].endswith("arcade.Sound.")
 
-    #Pathlike raises and provides full loading guidance.
+    # Pathlike raises and provides full loading guidance.
     with pytest.raises(TypeError) as ctx:
         arcade.play_sound("file.wav")
         assert ctx.value.args[0].endswidth("play_sound.")

@@ -45,9 +45,9 @@ ASTERIOD_TYPE_TINY = 1
 
 class TurningSprite(arcade.Sprite):
     """ Sprite that sets its angle to the direction it is traveling in. """
-    def update(self):
+    def update(self, delta_time=1 / 60):
         """ Move the sprite """
-        super().update()
+        super().update(delta_time)
         self.angle = -math.degrees(math.atan2(self.change_y, self.change_x))
 
 
@@ -82,7 +82,7 @@ class ShipSprite(arcade.Sprite):
         self.center_y = SCREEN_HEIGHT / 2
         self.angle = 0
 
-    def update(self):
+    def update(self, delta_time=1 / 60):
         """ Update our position and other particulars. """
 
         # Is the user spawning
@@ -145,9 +145,9 @@ class AsteroidSprite(arcade.Sprite):
         super().__init__(image_file_name, scale=scale)
         self.type = type
 
-    def update(self):
+    def update(self, delta_time=1 / 60):
         """ Move the asteroid around. """
-        super().update()
+        super().update(delta_time)
         if self.center_x < LEFT_LIMIT:
             self.center_x = RIGHT_LIMIT
         if self.center_x > RIGHT_LIMIT:

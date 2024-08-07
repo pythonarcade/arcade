@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 
 import PIL.Image
@@ -18,25 +17,40 @@ from arcade.texture import ImageData, SpriteSheet
 
 from .texture import Texture
 
-LOG = logging.getLogger(__name__)
-
 
 class TextureCacheManager:
     """
     A simple manager wrapping texture, image data and hit box caches
-    with convenience methods for loading textures and sprite sheets.
+    with convenient methods for loading textures and sprite sheets.
+
+    Args:
+        hit_box_cache:
+            Optional hit box cache to use. If not specified, a new cache will be created.
+        image_data_cache:
+            Optional image data cache to use. If not specified, a new cache will be created.
+        texture_cache:
+            Optional texture cache to use. If not specified, a new cache will be created
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        hit_box_cache: HitBoxCache | None = None,
+        image_data_cache: ImageDataCache | None = None,
+        texture_cache: TextureCache | None = None,
+    ):
         self._sprite_sheets: dict[str, SpriteSheet] = {}
-        self._hit_box_cache = HitBoxCache()
-        self._image_data_cache = ImageDataCache()
-        self._texture_cache = TextureCache()
+        self._hit_box_cache = hit_box_cache or HitBoxCache()
+        self._image_data_cache = image_data_cache or ImageDataCache()
+        self._texture_cache = texture_cache or TextureCache()
 
     @property
     def hit_box_cache(self) -> HitBoxCache:
-        """Cache for hit boxes."""
+        """Get or set the current hit box cache."""
         return self._hit_box_cache
+
+    @hit_box_cache.setter
+    def hit_box_cache(self, value: HitBoxCache):
+        self._hit_box_cache = value
 
     @property
     def image_data_cache(self) -> ImageDataCache:
@@ -58,10 +72,15 @@ class TextureCacheManager:
         """
         Remove contents from the texture manager.
 
-        :param sprite_sheets: If ``True``, sprite sheets will be flushed.
-        :param textures: If ``True``, textures will be flushed.
-        :param image_data: If ``True``, image data will be flushed.
-        :param hit_boxes: If ``True``, hit boxes will be flushed.
+        Args:
+            sprite_sheets:
+                If ``True``, sprite sheets will be flushed.
+            textures:
+                If ``True``, textures will be flushed.
+            image_data:
+                If ``True``, image data will be flushed.
+            hit_boxes:
+                If ``True``, hit boxes will be flushed.
         """
         if sprite_sheets:
             self._sprite_sheets.clear()
@@ -73,7 +92,12 @@ class TextureCacheManager:
             self._hit_box_cache.flush()
 
     def _get_real_path(self, path: str | Path) -> Path:
-        """Resolve the path to the file."""
+        """
+        Resolve the path to the file.
+
+        Args:
+            path: Path to the file
+        """
         if isinstance(path, str):
             return arcade.resources.resolve(path)
         elif isinstance(path, Path):
@@ -87,6 +111,9 @@ class TextureCacheManager:
 
         Note that any texture sliced from the sprite sheet will be cached.
         if this is not the desirable behavior, use :meth:`load_or_get_spritesheet_texture`.
+
+        Args:
+            path: Path to the sprite sheet image
         """
         real_path = self._get_real_path(path)
         real_path_str = str(real_path)
@@ -112,6 +139,20 @@ class TextureCacheManager:
 
         * If the spritesheet is not already loaded, it will be loaded and cached.
         * If the sliced texture is already cached, it will be returned instead.
+
+        Args:
+            path:
+                Path to the sprite sheet image
+            x:
+                X position of the texture in the sprite sheet
+            y:
+                Y position of the texture in the sprite sheet
+            width:
+                Width of the texture
+            height:
+                Height of the texture
+            hit_box_algorithm (optional):
+                Hit box algorithm to use. If not specified, the global default will be used.
         """
         real_path = self._get_real_path(path)
         texture = self._texture_cache.get_texture_by_filepath(real_path, crop=(x, y, width, height))
@@ -142,13 +183,18 @@ class TextureCacheManager:
         mode="RGBA",
     ) -> ImageData:
         """
-        Loads a complete image from disk.
+        Loads a complete image from disk or return a cached version.
 
-        :param path: Path of the file to load.
-        :param hash: Optional override for image hash
-        :param cache: If ``True``, the image will be cached. If ``False``, the
-            image will not be cached or returned from the cache.
-        :param mode: The mode to use for the image. Default is "RGBA".
+        Args:
+            path:
+                Path of the file to load.
+            hash:
+                Optional override for image hash
+            cache:
+                If ``True``, the image will be cached. If ``False``, the
+                image will not be cached or returned from the cache.
+            mode:
+                The mode to use for the image. Default is "RGBA".
         """
         real_path = self._get_real_path(path)
         name = Texture.create_image_cache_name(real_path)
@@ -171,20 +217,28 @@ class TextureCacheManager:
         hit_box_algorithm: hitbox.HitBoxAlgorithm | None = None,
     ) -> Texture:
         """
-        Load an image from disk and create a texture.
+        Load an image from disk and create a texture. If the image is already
+        loaded, return the cached version.
 
         The ``x``, ``y``, ``width``, and ``height`` parameters are used to
         specify a sub-rectangle of the image to load. If not specified, the
         entire image is loaded.
 
-        :param file_name: Name of the file to that holds the texture.
-        :param x: X coordinate of the texture in the image.
-        :param y: Y coordinate of the texture in the image.
-        :param width: Width of the texture in the image.
-        :param height: Height of the texture in the image.
-        :param hit_box_algorithm:
+        Args:
+            file_name:
+                Path to the image file.
+            x (optional):
+                X coordinate of the texture in the image.
+            y (optional):
+                Y coordinate of the texture in the image.
+            width (optional):
+                Width of the texture in the image.
+            height (optional):
+                Height of the texture in the image.
+            hit_box_algorithm (optional):
+                The hit box algorithm to use for this texture. If not specified,
+                the global default will be used.
         """
-        # LOG.info("load_texture: %s ", file_path)
         real_path = self._get_real_path(file_path)
 
         return self._load_or_get_texture(
@@ -249,11 +303,17 @@ class TextureCacheManager:
         """
         Load an image, or return a cached version
 
-        :param file_path: Path to image
-        :param hash: Hash of the image
-        :param mode: The image mode to use (RGBA, RGB, etc.)
-        :return: Tuple of image data and a boolean indicating if the image
-                was fetched from cache
+        Args:
+            file_path:
+                Path to image
+            hash:
+                Hash of the image
+            mode:
+                The image mode to use (RGBA, RGB, etc.)
+
+        Returns:
+            Tuple of image data and a boolean indicating if the
+            image was fetched from cache
         """
         file_path_str = str(file_path)
         cached = True

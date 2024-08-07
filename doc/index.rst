@@ -1,6 +1,6 @@
 :hide-toc:
 
-.. image:: images/arcade-logo.svg
+.. image:: images/logo/arcade-logo.svg
     :width: 10%
     :class: right-image
 
@@ -115,15 +115,16 @@ Arcade is developed by volunteers.
    :maxdepth: 1
    :caption: Contributing
 
-   contributing_guide/index
+   contributing/index
 
 .. toctree::
    :hidden:
    :maxdepth: 1
    :caption: Community
 
-   get_started/how_to_get_help
-   games/index
+   community/community_locations
+   community/how_to_get_help
+   community/games/index
 
 .. toctree::
    :hidden:
@@ -131,7 +132,7 @@ Arcade is developed by volunteers.
    :caption: API Reference
 
    api_docs/quick_index
-   Reference<api_docs/arcade>
+   api_docs/arcade
 
 
 .. Indices and tables

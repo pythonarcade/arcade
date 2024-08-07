@@ -4,7 +4,7 @@ from arcade.gui.events import (
     UIMouseScrollEvent,
     UIMouseMovementEvent,
     UIKeyPressEvent,
-    UITextEvent,
+    UITextInputEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,
 )
@@ -100,7 +100,7 @@ def test_on_text_passes_an_event(uimanager):
         uimanager.on_text("a")
 
     event = records[-1]
-    assert isinstance(event, UITextEvent)
+    assert isinstance(event, UITextInputEvent)
     assert event.text == "a"
 
 

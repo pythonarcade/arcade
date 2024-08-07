@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import logging
-
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageOps
@@ -14,24 +12,27 @@ from arcade.types import RGBA255
 
 from .texture import ImageData, Texture
 
-LOG = logging.getLogger(__name__)
-
 
 def make_circle_texture(
     diameter: int,
     color: RGBA255,
     name: str | None = None,
-    hitbox_algorithm: HitBoxAlgorithm | None = None,
+    hit_box_algorithm: HitBoxAlgorithm | None = None,
 ) -> Texture:
     """
-    Return a Texture of a circle with the given diameter and color.
+    Creates a :class:`Texture` of a circle with the given diameter and color.
 
-    :param diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
-    :param color: Color of the circle as a
-        :py:class:`~arcade.types.Color` instance a 3 or 4 tuple.
-    :param name: Custom or pre-chosen name for this texture
-
-    :returns: New :class:`Texture` object.
+    Args:
+        diameter:
+            Diameter of the circle and dimensions of the square :class:`Texture` returned.
+        color:
+            Color of the circle as a :py:class:`~arcade.types.Color` instance a 3 or 4 tuple.
+        name (optional):
+            A unique name for the texture. If not provided, a name will be generated.
+            This is used for caching and unique identifier for texture atlases.
+        hit_box_algorithm (optional):
+            The hit box algorithm to use for this texture. If not provided, the default
+            hit box algorithm will be used.
     """
     name = name or cache.crate_str_from_values(
         "circle_texture", diameter, color[0], color[1], color[2]
@@ -40,7 +41,7 @@ def make_circle_texture(
     img = PIL.Image.new("RGBA", (diameter, diameter), bg_color)
     draw = PIL.ImageDraw.Draw(img)
     draw.ellipse((0, 0, diameter - 1, diameter - 1), fill=color)
-    return Texture(ImageData(img, hash=name), hit_box_algorithm=hitbox_algorithm)
+    return Texture(ImageData(img, hash=name), hit_box_algorithm=hit_box_algorithm)
 
 
 def make_soft_circle_texture(
@@ -55,15 +56,21 @@ def make_soft_circle_texture(
     Creates a :class:`Texture` of a circle with the given diameter and color,
     fading out at its edges.
 
-    :param diameter: Diameter of the circle and dimensions of the square :class:`Texture` returned.
-    :param color: Color of the circle as a 4-length tuple or
-        :py:class:`~arcade.types.Color` instance.
-    :param center_alpha: Alpha value of the circle at its center.
-    :param outer_alpha: Alpha value of the circle at its edges.
-    :param name: Custom or pre-chosen name for this texture
-    :param hit_box_algorithm: The hit box algorithm
-
-    :returns: New :class:`Texture` object.
+    Args:
+        diameter:
+            Diameter of the circle and dimensions of the square :class:`Texture` returned.
+        color:
+            Color of the circle as a 4-length tuple or :py:class:`~arcade.types.Color` instance.
+        center_alpha:
+            Alpha value of the circle at its center.
+        outer_alpha:
+            Alpha value of the circle at its edges.
+        name (optional):
+            A unique name for the texture. If not provided, a name will be generated.
+            This is used for caching and unique identifier for texture atlases.
+        hit_box_algorithm (optional):
+            The hit box algorithm to use for this texture. If not provided, the default
+            hit box algorithm will be used.
     """
     # Name must be unique for caching
     name = cache.crate_str_from_values(
@@ -109,13 +116,18 @@ def make_soft_square_texture(
     Creates a :class:`Texture` of a square with the given diameter and color,
     fading out at its edges.
 
-    :param size: Diameter of the square and dimensions of the square Texture returned.
-    :param color: Color of the square.
-    :param center_alpha: Alpha value of the square at its center.
-    :param outer_alpha: Alpha value of the square at its edges.
-    :param name: Custom or pre-chosen name for this texture
-
-    :returns: New :class:`Texture` object.
+    Args:
+        size:
+            Diameter of the square and dimensions of the square Texture returned.
+        color:
+            Color of the square.
+        center_alpha:
+            Alpha value of the square at its center.
+        outer_alpha:
+            Alpha value of the square at its edges.
+        name (optional):
+            A unique name for the texture. If not provided, a name will be generated.
+            This is used for caching and unique identifier for texture atlases.
     """
     # Build name used for caching
     name = name or cache.crate_str_from_values(

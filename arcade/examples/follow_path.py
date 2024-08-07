@@ -33,7 +33,7 @@ class Enemy(arcade.Sprite):
         self.cur_position = 0
         self.speed = ENEMY_SPEED
 
-    def update(self):
+    def update(self, delta_time: float = 1 / 60):
         """Have a sprite follow a path"""
         # Where are we
         start_x = self.center_x

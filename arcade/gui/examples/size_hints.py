@@ -1,5 +1,4 @@
-"""
-Sizing widgets using size hint keyword arguments
+"""Sizing widgets using size hint keyword arguments
 
 The following keyword arguments can be used to set preferred size
 information for layouts which arrange widgets

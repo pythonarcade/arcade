@@ -1,5 +1,4 @@
-"""
-Displaying stats in the window's top left corner
+"""Displaying stats in the window's top left corner
 
 This example displays numerical stats with labels by using the following:
 

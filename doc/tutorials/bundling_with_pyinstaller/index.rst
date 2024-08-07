@@ -264,4 +264,3 @@ reading, here are links to the official PyInstaller documentation and GitHub pag
 
 .. _Arcade: http://arcade.academy
 .. _PyInstaller: https://pyinstaller.readthedocs.io/en/stable/
-.. _Pymunk: http://www.pymunk.org/en/latest/

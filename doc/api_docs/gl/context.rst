@@ -20,10 +20,10 @@ ContextStats
    :members:
    :member-order: bysource
 
-Limits
+GLInfo
 ------
 
-.. autoclass:: arcade.gl.context.Limits
+.. autoclass:: arcade.gl.context.GLInfo
    :members:
    :undoc-members:
    :member-order: bysource

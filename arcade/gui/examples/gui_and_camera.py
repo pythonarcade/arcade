@@ -1,5 +1,4 @@
-"""
-This example shows how to use arcade.gui with a camera.
+"""This example shows how to use arcade.gui with a camera.
 It is a simple game where the player can move around and collect coins.
 The player can upgrade their speed and the spawn rate of the coins.
 The game has a timer and ends after 60 seconds.
@@ -23,8 +22,7 @@ from arcade.gui.widgets.layout import UIAnchorLayout
 
 
 class MyCoinGame(UIView):
-    """
-    Main view of the game. This class is a subclass of UIView, which provides
+    """Main view of the game. This class is a subclass of UIView, which provides
     basic GUI setup. We add UIManager to the view under `self.ui`.
 
     The example showcases how to:

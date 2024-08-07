@@ -403,7 +403,7 @@ class GameView(arcade.View):
             ]
         )
 
-        self.scene.update(["Enemies", "Bullets"])
+        self.scene.update(delta_time, ["Enemies", "Bullets"])
 
         # Keep enemies walking within their boundaries configured in Tiled
         for enemy in self.scene["Enemies"]:

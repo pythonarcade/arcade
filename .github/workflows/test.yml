@@ -83,12 +83,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         # python-version in must be kept in sync with .readthedocs.yaml
-        #
-        # Why 3.9?
-        #  1. It's the lowest version compatible w/ Sphinx 7.2.2, a doc build dependency
-        #  2. Better doc build accessibility for contributors who may have trouble
-        #     setting up newer Python versions (Debian, etc).
-        python-version: ['3.9']
+        python-version: ['3.10']  # July 2024 | Match our contributor dev version; see pyproject.toml
         architecture: ['x64']
 
     steps:

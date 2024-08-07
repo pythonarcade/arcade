@@ -16,11 +16,12 @@ class Light:
     Note: It's important to separate lights that don't change properties
     and static ones with the ``usage`` parameter.
 
-    :param center_x: X position of the light
-    :param center_y: Y position of the light
-    :param radius: Radius of the light
-    :param color: Color of the light
-    :param mode: 'hard' or 'soft' light
+    Args:
+        center_x: X position of the light
+        center_y: Y position of the light
+        radius: Radius of the light
+        color: Color of the light
+        mode: 'hard' or 'soft' light
     """
 
     HARD = 1.0
@@ -85,7 +86,8 @@ class LightLayer(RenderTargetTexture):
 
     The size of a layer should ideally be of the same size and the screen.
 
-    :param Tuple[int, int] size: Width and height of light layer
+    Args:
+        size: Width and height of light layer
     """
 
     def __init__(self, width: int, height: int):
@@ -180,9 +182,11 @@ class LightLayer(RenderTargetTexture):
         ambient_color: RGBOrA255 = (64, 64, 64),
     ):
         """Draw the lights
-        :param Tuple[float, float] position: Position offset (scrolling)
-        :param target: The window or framebuffer we want to render to (default is window)
-        :param ambient_color: The ambient light color
+
+        Args:
+            position: Position offset (scrolling)
+            target: The window or framebuffer we want to render to (default is window)
+            ambient_color: The ambient light color
         """
         if target is None:
             target = self.window

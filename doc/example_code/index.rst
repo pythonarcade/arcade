@@ -660,6 +660,8 @@ Grid-Based Games
 Advanced
 --------
 
+.. _example-code-pymunk:
+
 Using PyMunk for Physics
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

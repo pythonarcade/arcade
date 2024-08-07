@@ -25,9 +25,15 @@ if TYPE_CHECKING:
 class ComputeShader:
     """
     A higher level wrapper for an OpenGL compute shader.
+
+    Args:
+        ctx:
+            The context this shader belongs to.
+        glsl_source:
+            The GLSL source code for the compute shader.
     """
 
-    def __init__(self, ctx: "Context", glsl_source: str) -> None:
+    def __init__(self, ctx: Context, glsl_source: str) -> None:
         self._ctx = ctx
         self._source = glsl_source
         self._uniforms: dict[str, UniformBlock | Uniform] = dict()
@@ -95,7 +101,7 @@ class ComputeShader:
         """The name/id of the OpenGL resource"""
         return self._glo
 
-    def use(self):
+    def _use(self) -> None:
         """
         Use/activate the compute shader.
 
@@ -105,7 +111,7 @@ class ComputeShader:
             since ``run()`` already does this for you.
         """
         gl.glUseProgram(self._glo)
-        # self._ctx.active_program = self
+        self._ctx.active_program = self
 
     def run(self, group_x=1, group_y=1, group_z=1) -> None:
         """
@@ -128,11 +134,12 @@ class ComputeShader:
         a size for a dimension or uses ``1`` as size you don't have to supply
         this parameter.
 
-        :param group_x: The number of work groups to be launched in the X dimension.
-        :param group_y: The number of work groups to be launched in the y dimension.
-        :param group_z: The number of work groups to be launched in the z dimension.
+        Args:
+            group_x: The number of work groups to be launched in the X dimension.
+            group_y: The number of work groups to be launched in the y dimension.
+            group_z: The number of work groups to be launched in the z dimension.
         """
-        self.use()
+        self._use()
         gl.glDispatchCompute(group_x, group_y, group_z)
 
     def __getitem__(self, item) -> Uniform | UniformBlock:
@@ -164,18 +171,25 @@ class ComputeShader:
         if self._ctx.gc_mode == "context_gc" and self._glo > 0:
             self._ctx.objects.append(self)
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Destroy the internal compute shader object.
+
         This is normally not necessary, but depends on the
-        garbage collection more configured in the context.
+        garbage collection configured in the context.
         """
         ComputeShader.delete_glo(self._ctx, self._glo)
         self._glo = 0
 
     @staticmethod
     def delete_glo(ctx, prog_id):
-        """Low level method for destroying a compute shader by id"""
+        """
+        Low level method for destroying a compute shader by id.
+
+        Args:
+            ctx: The context this program belongs to.
+            prog_id: The OpenGL id of the program.
+        """
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
         if gl.current_context is None:

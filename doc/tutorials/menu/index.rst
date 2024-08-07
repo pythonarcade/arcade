@@ -201,7 +201,7 @@ later why are those parameters needed.
 
 We also need to change accordingly the places where we have used this class i.e
 options and volume ``on_click`` event listener. The layer parameter being set
-1, means that this layer is always drawn on top i.e its the first layer.
+1, means that this layer is always drawn on top i.e.its the first layer.
 
 .. literalinclude:: menu_05.py
     :caption: Editing arguments

@@ -31,14 +31,20 @@ class SpriteSolidColor(Sprite):
     Different texture configurations (width, height) are weakly cached internally
     to avoid creating multiple textures with the same configuration.
 
-    :param width: Width of the sprite in pixels
-    :param height: Height of the sprite in pixels
-    :param center_x: Initial x position of the sprite
-    :param center_y: Initial y position of the sprite
-    :param color: The color of the sprite as a
-        :py:class:`~arcade.types.Color`, an RGBA tuple, or an RGB
-        tuple.
-    :param angle: Initial angle of the sprite in degrees
+    Args:
+        width:
+            Width of the sprite in pixels
+        height:
+            Height of the sprite in pixels
+        center_x:
+            Initial x position of the sprite
+        center_y:
+            Initial y position of the sprite
+        color:
+            The color of the sprite as a :py:class:`~arcade.types.Color`,
+            an RGBA tuple, or an RGB tuple.
+        angle:
+            Initial angle of the sprite in degrees
     """
 
     __slots__ = ()
@@ -83,7 +89,18 @@ class SpriteSolidColor(Sprite):
 
     @classmethod
     def from_rect(cls, rect: Rect, color: Color, angle: float = 0.0) -> SpriteSolidColor:
-        """Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`."""
+        """
+        Construct a new SpriteSolidColor from a :py:class:`~arcade.types.rect.Rect`.
+
+        Args:
+            rect:
+                The rectangle to use for the sprite's dimensions and position.
+            color:
+                The color of the sprite as a :py:class:`~arcade.types.Color`,
+                an RGBA tuple, or an RGB tuple.
+            angle:
+                The angle of the sprite in degrees.
+        """
         return cls(int(rect.width), int(rect.height), rect.x, rect.y, color, angle)
 
     def _get_default_image(self) -> ImageData:
@@ -114,10 +131,14 @@ class SpriteCircle(Sprite):
     ``True``. The circle will fade from an opaque center to transparent
     at the edges.
 
-    :param radius: Radius of the circle in pixels
-    :param color: The Color of the sprite as an RGB or RGBA tuple
-    :param soft: If ``True``, the circle will fade from an opaque
-                      center to transparent edges.
+    Args:
+        radius:
+            Radius of the circle in pixels
+        color:
+            The Color of the sprite as an RGB or RGBA tuple
+        soft:
+            If ``True``, the circle will fade from an opaque
+            center to transparent edges.
     """
 
     # Local weak cache for textures to avoid creating multiple instances with the same configuration

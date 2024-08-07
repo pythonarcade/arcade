@@ -1,13 +1,13 @@
 """
-A wrapper over OpenGL 3.3 core making OpenGL more reasonable to work with and easier to learn.
-The API is based on `ModernGL <https://github.com/moderngl/moderngl>`_ implementing
-a subset of the features.
-We use pyglet's OpenGL bindings based on ctypes.
+A wrapper over OpenGL 3.3 core making OpenGL more reasonable to work with and easier
+to learn. The API is based on `ModernGL <https://github.com/moderngl/moderngl>`_
+implementing a subset of the features. We use pyglet's OpenGL bindings based on ctypes.
 
 Creating OpenGL resources such as buffers, framebuffers, programs (shaders) and textures
 should be done through methods in a context.
 
-* Arcade users should access :py:attr:`arcade.Window.ctx` exposing an :py:class:`arcade.ArcadeContext`
+* Arcade users should access :py:attr:`arcade.Window.ctx` exposing an
+  :py:class:`arcade.ArcadeContext`
 * Pyglet users can instantiate an :py:class:`arcade.gl.Context` for the window or
   extend this class with more features if needed.
 
@@ -17,12 +17,11 @@ should be done through methods in a context.
 
 from __future__ import annotations
 
-# flake8: noqa
 from .context import Context
 from .types import BufferDescription
 from .compute_shader import ComputeShader
 from .exceptions import ShaderException
-from .enums import *
+from .enums import *  # noqa
 from .buffer import Buffer
 from .vertex_array import Geometry, VertexArray
 from .texture import Texture2D

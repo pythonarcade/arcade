@@ -18,7 +18,7 @@ MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
 RESOURCE_DIR = ARCADE_ROOT / "arcade" / "resources"
 OUT_FILE = ARCADE_ROOT / "doc" / "api_docs" / "resources.rst"
-RESOURCE_URL = "https://github.com/pythonarcade/arcade/blob/development/arcade/{}?raw=true"
+RESOURCE_URL = "https://github.com/pythonarcade/arcade/blob/development/{}?raw=true"
 
 COLUMNS = 3
 # Metadata for the resource list: utils\create_resource_list.py

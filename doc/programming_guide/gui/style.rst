@@ -179,7 +179,7 @@ Your own stylable widget
         }
 
         def get_current_state(self) -> str:
-            """Returns the current state of the widget i.e disabled, press, hover or normal."""
+            """Returns the current state of the widget i.e.disabled, press, hover or normal."""
             if self.disabled:
                 return "disabled"
             elif self.pressed:

@@ -221,8 +221,10 @@ class MyGame(arcade.Window):
         """
         Manage Scrolling
 
-        :param panning_fraction: Number from 0 to 1. Higher the number, faster we
-                                 pan the camera to the user.
+        Args:
+            panning_fraction:
+                Number from 0 to 1. Higher the number, faster we
+                pan the camera to the user.
         """
 
         # This spot would center on the user

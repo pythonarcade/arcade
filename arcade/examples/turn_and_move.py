@@ -43,7 +43,7 @@ class Player(arcade.Sprite):
         self.change_x = 0.0
         self.change_y = 0.0
 
-    def on_update(self, delta_time: float = 1 / 60):
+    def update(self, delta_time: float = 1 / 60):
         """ Update the player """
 
         # If we have no destination, don't go anywhere.
@@ -137,7 +137,7 @@ class MyGame(arcade.Window):
         """
         All the logic to move, and the game logic goes here.
         """
-        self.player_list.on_update(delta_time)
+        self.player_list.update(delta_time)
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """

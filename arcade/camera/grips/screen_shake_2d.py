@@ -25,27 +25,21 @@ class ScreenShake2D:
     the equation rises using a inverse exponential equation, before decreasing
     using a modified smooth-step sigmoid.
 
-    Attributes:
-        max_amplitude: The largest possible world space offset.
-        falloff_duration: The length of time in seconds it takes the shaking
-                          to reach 0 after reaching the maximum. Can be set
-                          to a negative number to disable falloff.
-        shake_frequency: The number of peaks per second. Avoid making it
-                         a multiple of half the target frame-rate.
-                         (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
-
-    :param camera_data: The CameraData PoD that the controller modifies.
-                        Should not be changed once initialized.
-    :param max_amplitude: The largest possible world space offset.
-    :param falloff_time: The length of time in seconds it takes the shaking
-                        to reach 0 after reaching the maximum. Can be set
-                        to a negative number to disable falloff.
-    :param acceleration_duration: The length of time in seconds it takes the
-                                shaking to reach max amplitude. Can be set
-                                to 0.0 to start at max amplitude.
-    :param shake_frequency: The number of peaks per second. Avoid making it
-                            a multiple of half the target frame-rate.
-                            (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
+    Args:
+        camera_data:
+            The CameraData PoD that the controller modifies. Should not be
+            changed once initialized.
+        max_amplitude:
+            The largest possible world space offset.
+        falloff_time:
+            The length of time in seconds it takes the shaking to reach 0 after
+            reaching the maximum. Can be set to a negative number to disable falloff.
+        acceleration_duration:
+            The length of time in seconds it takes the shaking to reach max
+            amplitude. Can be set to 0.0 to start at max amplitude.
+        shake_frequency:
+            The number of peaks per second. Avoid making it a multiple of half
+            the target frame-rate. (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
     """
 
     def __init__(
@@ -60,8 +54,20 @@ class ScreenShake2D:
         self._data: CameraData = camera_data
 
         self.max_amplitude: float = max_amplitude
+        """The largest possible world space offset."""
+
         self.falloff_duration: float = falloff_time
+        """
+        The length of time in seconds it takes the shaking to reach 0
+        after reaching the maximum.
+        """
+
         self.shake_frequency: float = shake_frequency
+        """
+        The number of peaks per second. Avoid making it a multiple of
+        half the target frame-rate.
+        """
+
         self._acceleration_duration: float = acceleration_duration
 
         self._shaking: bool = False
@@ -169,7 +175,8 @@ class ScreenShake2D:
         The equation for the growing half of the amplitude equation.
         It uses 1.0001 so that at _t = 1.0 the amplitude equals 1.0.
 
-        :param _t: The scaled time. Should be between 0.0 and 1.0
+        Args:
+            _t: The scaled time. Should be between 0.0 and 1.0
         """
         return 1.0001 - 1.0001 * exp(log(0.0001 / 1.0001) * _t)
 
@@ -178,7 +185,8 @@ class ScreenShake2D:
         The equation for the falloff half of the amplitude equation.
         It is based on the 'smootherstep' function.
 
-        :param _t: The scaled time. Should be between 0.0 and 1.0
+        Args:
+            _t: The scaled time. Should be between 0.0 and 1.0
         """
         return 1 - _t**3 * (_t * (_t * 6.0 - 15.0) + 10.0)
 
@@ -241,9 +249,10 @@ class ScreenShake2D:
         Does not actually set the camera position.
         Should not be called more than once an update cycle.
 
-        :param delta_time: the length of time in seconds between update calls.
-                        Generally pass in the delta_time provided by the
-                        arcade.Window's on_update method.
+        Args:
+            delta_time:
+                the length of time in seconds between update calls. Generally pass
+                in the delta_time provided by the arcade.Window's on_update method.
         """
         if not self._shaking:
             return

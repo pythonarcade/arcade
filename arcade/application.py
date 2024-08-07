@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 import pyglet
 import pyglet.gl as gl
 import pyglet.window.mouse
-from pyglet.display.base import ScreenMode
+from pyglet.display.base import Screen, ScreenMode
 from pyglet.window import MouseCursor
 
 import arcade
@@ -51,7 +51,7 @@ __all__ = [
 ]
 
 
-def get_screens() -> list:
+def get_screens() -> list[Screen]:
     """
     Return a list of screens. So for a two-monitor setup, this should return
     a list of two screens. Can be used with :class:`arcade.Window` to select which
@@ -61,7 +61,7 @@ def get_screens() -> list:
         List of screens, one for each monitor.
     """
     display = pyglet.display.get_display()
-    return display.get_screens()
+    return display.get_screens()  # type: ignore  # pending: https://github.com/pyglet/pyglet/pull/1176  # noqa
 
 
 class NoOpenGLException(Exception):
@@ -89,24 +89,33 @@ class Window(pyglet.window.Window):
     ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
 
     Args:
-        width (int, optional): Window width. Defaults to 1280.
-        height (int, optional): Window height. Defaults to 720.
-        title (str, optional): The title/caption of the window
-        fullscreen (bool, optional): Should this be full screen?
-        resizable (bool, optional): Can the user resize the window?
-        update_rate (float, optional): How frequently to run the on_update event.
-        draw_rate (float, optional): How frequently to run the on_draw event.
-            (this is the FPS limit)
-        fixed_rate (float, optional): How frequently should the fixed_updates run,
+        width (optional):
+            Window width. Defaults to 1280.
+        height (optional):
+            Window height. Defaults to 720.
+        title (optional):
+            The title/caption of the window
+        fullscreen (optional):
+            Should this be full screen?
+        resizable (optional):
+            Can the user resize the window?
+        update_rate (optional):
+            How frequently to run the on_update event.
+        draw_rate (optional):
+            How frequently to run the on_draw event. (this is the FPS limit)
+        fixed_rate (optional):
+            How frequently should the fixed_updates run,
             fixed updates will always run at this rate.
-        fixed_frame_cap (float, optional): The maximum number of fixed updates that
-            can occur in one update loop.defaults to infinite. If large lag spikes
-            cause your game to freeze, try setting this to a smaller number. This
-            may cause your physics to lag behind temporarily.
-        antialiasing (bool, optional): Use multisampling framebuffer (antialiasing)
-        samples (int): Number of samples used in antialiasing (default 4).
+        fixed_frame_cap (optional):
+            The maximum number of fixed updates that can occur in one update loop.
+            defaults to infinite. If large lag spikes cause your game to freeze,
+            try setting this to a smaller number. This may cause your physics to
+            lag behind temporarily.
+        antialiasing (optional):
+            Use multisampling framebuffer (antialiasing)
+        samples: Number of samples used in antialiasing (default 4).
             Usually this is 2, 4, 8 or 16.
-        gl_version (tuple[int, int], optional): What OpenGL version to request.
+        gl_version (optional): What OpenGL version to request.
             This is ``(3, 3)`` by default and can be overridden when using more
             advanced OpenGL features.
         screen (optional): Pass a pyglet :py:class:`~pyglet.display.Screen` to
@@ -115,13 +124,17 @@ class Window(pyglet.window.Window):
         style (optional): Request a non-default window style, such as borderless.
             Some styles only work in certain situations. See `pyglet's guide
             to window style <pyglet_pg_window_style_>`_ to learn more.
-        visible (bool, optional): Should the window be visible immediately
-        vsync (bool, optional): Wait for vertical screen refresh before swapping buffer
+        visible (optional):
+            Should the window be visible immediately
+        vsync (optional):
+            Wait for vertical screen refresh before swapping buffer
             This can make animations and movement look smoother.
-        gc_mode (str, optional): Decides how OpenGL objects should be garbage collected
+        gc_mode (optional): Decides how OpenGL objects should be garbage collected
             ("context_gc" (default) or "auto")
-        center_window (bool, optional): If true, will center the window.
-        enable_polling (bool, optional): Enabled input polling capability.
+        center_window (optional):
+            If true, will center the window.
+        enable_polling (optional):
+            Enabled input polling capability.
             This makes the :py:attr:`keyboard` and :py:attr:`mouse` attributes available for use.
 
     Raises:
@@ -339,18 +352,18 @@ class Window(pyglet.window.Window):
         set through :py:attr:`~arcade.Window.background_color`.
 
         Args:
-            color (optional): Override the current background color
-                with one of the following:
+            color (optional):
+                Override the current background color with one of the following:
 
                 1. A :py:class:`~arcade.types.Color` instance
                 2. A 3 or 4-length RGB/RGBA :py:class:`tuple` of byte values (0 to 255)
 
-            color_normalized (RGBANormalized, optional): override the current background color
-                using normalized values (0.0 to 1.0). For example, (1.0, 0.0, 0.0, 1.0)
-                making the window contents red.
+            color_normalized (optional):
+                override the current background color using normalized values (0.0 to 1.0).
+                For example, (1.0, 0.0, 0.0, 1.0) making the window contents red.
 
-            viewport (Tuple[int, int, int, int], optional): The area of the window to clear.
-                By default, the entire window is cleared.
+            viewport (optional):
+                The area of the window to clear. By default, the entire window is cleared.
                 The viewport format is ``(x, y, width, height)``.
         """
         # Use the configured background color if none is provided
@@ -433,16 +446,19 @@ class Window(pyglet.window.Window):
         to the size it was before entering fullscreen mode.
 
         Args:
-            fullscreen (bool): Should we enter or leave fullscreen mode?
-            screen (optional): Which screen should we display on? See :func:`get_screens`
-            mode (optional): The screen will be switched to the given mode.  The mode must
+            fullscreen (optional):
+                Should we enter or leave fullscreen mode?
+            screen (optional):
+                Which screen should we display on? See :func:`get_screens`
+            mode (optional):
+                The screen will be switched to the given mode.  The mode must
                 have been obtained by enumerating `Screen.get_modes`.  If
                 None, an appropriate mode will be selected from the given
                 `width` and `height`.
-            width: Override the width of the window. Will be rounded to
-                :py:attr:`int`.
-            height: Override the height of the window. Will be rounded to
-                :py:attr:`int`.
+            width (optional):
+                Override the width of the window. Will be rounded to :py:attr:`int`.
+            height (optional):
+                Override the height of the window. Will be rounded to :py:attr:`int`.
         """
         # fmt: off
         super().set_fullscreen(
@@ -471,7 +487,7 @@ class Window(pyglet.window.Window):
         speed, no matter the frame rate.
 
         Args:
-            delta_time (float): Time interval since the last time the function was
+            delta_time: Time interval since the last time the function was
                 called in seconds.
         """
         pass
@@ -482,7 +498,7 @@ class Window(pyglet.window.Window):
         and other systems that should update at a constant rate.
 
         Args:
-            delta_time (float): Time interval since the last time the function was
+            delta_time: Time interval since the last time the function was
                 called in seconds.
         """
         pass
@@ -496,7 +512,7 @@ class Window(pyglet.window.Window):
         up to the global clock
 
         Args:
-            delta_time (float): Time interval since the last time the function was
+            delta_time: Time interval since the last time the function was
                 called in seconds.
         """
         GLOBAL_CLOCK.tick(delta_time)
@@ -517,7 +533,8 @@ class Window(pyglet.window.Window):
             # Set the update rate to 60 times per second.
             self.set_update_rate(1 / 60)
 
-        :param rate: Update frequency in seconds
+        Args:
+            rate: Update frequency in seconds
         """
         self._update_rate = rate
         pyglet.clock.unschedule(self._dispatch_updates)
@@ -542,10 +559,10 @@ class Window(pyglet.window.Window):
         Override this function to respond to changes in mouse position.
 
         Args:
-            x (int): x position of mouse within the window in pixels
-            y (int): y position of mouse within the window in pixels
-            dx (int): Change in x since the last time this method was called
-            dy (int): Change in y since the last time this method was called
+            x: x position of mouse within the window in pixels
+            y: y position of mouse within the window in pixels
+            dx: Change in x since the last time this method was called
+            dy: Change in y since the last time this method was called
         """
         pass
 
@@ -558,17 +575,20 @@ class Window(pyglet.window.Window):
         bullets <sprite_bullets_aimed>` demo.
 
         Args:
-            x (int): x position of the mouse
-            y (int): y position of the mouse
-            button (int): What button was pressed.
-                This will always be one of the following:
+            x:
+                x position of the mouse
+            y:
+                y position of the mouse
+            button:
+                What button was pressed. This will always be one of the following:
 
                 - ``arcade.MOUSE_BUTTON_LEFT``
                 - ``arcade.MOUSE_BUTTON_RIGHT``
                 - ``arcade.MOUSE_BUTTON_MIDDLE``
 
-            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                      active during this event. See :ref:`keyboard_modifiers`.
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -581,13 +601,19 @@ class Window(pyglet.window.Window):
         Override this function to handle dragging.
 
         Args:
-            x (int): x position of mouse
-            y (int): y position of mouse
-            dx (int): Change in x since the last time this method was called
-            dy (int): Change in y since the last time this method was called
-            buttons (int): Which button is pressed
-            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              active during this event. See :ref:`keyboard_modifiers`.
+            x:
+                x position of mouse
+            y:
+                y position of mouse
+            dx:
+                Change in x since the last time this method was called
+            dy:
+                Change in y since the last time this method was called
+            buttons:
+                Which button is pressed
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                active during this event. See :ref:`keyboard_modifiers`.
         """
         return self.on_mouse_motion(x, y, dx, dy)
 
@@ -600,15 +626,18 @@ class Window(pyglet.window.Window):
         to affect gameplay.
 
         Args:
-            x (int): x position of mouse
-            y (int): y position of mouse
-            button (int): What button was hit. One of:
+            x:
+                x position of mouse
+            y:
+                y position of mouse
+            button:
+                What button was hit. One of:
 
                 - ``arcade.MOUSE_BUTTON_LEFT``
                 - ``arcade.MOUSE_BUTTON_RIGHT``
                 - ``arcade.MOUSE_BUTTON_MIDDLE``
-
-            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                 active during this event. See :ref:`keyboard_modifiers`.
         """
         return False
@@ -636,12 +665,14 @@ class Window(pyglet.window.Window):
                  game!
 
         Args:
-            x (int): x position of mouse
-            y (int): y position of mouse
-            scroll_x (int): number of steps scrolled horizontally
-                     since the last call of this function
-            scroll_y (int): number of steps scrolled vertically since
-                     the last call of this function
+            x:
+                x position of mouse
+            y:
+                y position of mouse
+            scroll_x:
+                Number of steps scrolled horizontally since the last call of this function
+            scroll_y:
+                Number of steps scrolled vertically since the last call of this function
         """
         return False
 
@@ -674,18 +705,20 @@ class Window(pyglet.window.Window):
                  for more information.
 
         Args:
-            visible (bool): Whether to hide the system mouse cursor
+            visible: Whether to hide the system mouse cursor
         """
         super().set_mouse_visible(visible)
 
     def on_action(self, action_name: str, state) -> None:
         """
         Called when an action is dispatched.
-        This is related to the input manager.
+        This is related to the input manager / controller support.
 
         Args:
-            action_name (str): The name of the action
-            state: The state of the action
+            action_name:
+                The name of the action
+            state:
+                The state of the action
         """
         pass
 
@@ -700,10 +733,11 @@ class Window(pyglet.window.Window):
                  :meth:`~.Window.on_key_release`.
 
         Args:
-            symbol (int): Key that was just pushed down
-            modifiers (int): Bitwise 'and' of all modifiers (shift,
-                      ctrl, num lock) active during this event.
-                      See :ref:`keyboard_modifiers`.
+            symbol:
+                Key that was just pushed down
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                active during this event. See :ref:`keyboard_modifiers`.
         """
         return False
 
@@ -757,8 +791,8 @@ class Window(pyglet.window.Window):
         called first.
 
         Args:
-            width (int): New width of the window
-            height (int): New height of the window
+            width: New width of the window
+            height: New height of the window
         """
         # Retain viewport
         self.viewport = (0, 0, width, height)
@@ -774,8 +808,8 @@ class Window(pyglet.window.Window):
         ```super().on_resize(width, height)```.
 
         Args:
-            width (int): New width of the window
-            height (int): New height of the window
+            width: New width of the window
+            height: New height of the window
         """
         pass
 
@@ -786,8 +820,8 @@ class Window(pyglet.window.Window):
         This will limit how small the window can be resized.
 
         Args:
-            width (int): Minimum width
-            height (int): Minimum height
+            width: Minimum width
+            height: Minimum height
         """
         super().set_minimum_size(width, height)
 
@@ -798,8 +832,8 @@ class Window(pyglet.window.Window):
         This will limit how large the window can be resized.
 
         Args:
-            width (int): Maximum width
-            height (int): Maximum height
+            width: Maximum width
+            height: Maximum height
         """
         super().set_maximum_size(width, height)
 
@@ -808,8 +842,8 @@ class Window(pyglet.window.Window):
         Resize the window.
 
         Args:
-            width (int): New width of the window
-            height (int): New height of the window
+            width: New width of the window
+            height: New height of the window
         """
         super().set_size(width, height)
 
@@ -889,7 +923,8 @@ class Window(pyglet.window.Window):
         """
         Used by unit test cases. Runs the event loop a few times and stops.
 
-        :param frames:
+        Args:
+            frames: How many frames to run the event loop for.
         """
         start_time = time.time()
         for _ in range(frames):
@@ -905,7 +940,7 @@ class Window(pyglet.window.Window):
                 time.sleep(sleep_time)
             self._dispatch_updates(1 / 60)
 
-    def show_view(self, new_view: "View") -> None:
+    def show_view(self, new_view: View) -> None:
         """
         Set the currently active view.
 
@@ -919,7 +954,7 @@ class Window(pyglet.window.Window):
         :py:attr:`arcade.Window.current_view` attribute.
 
         Args:
-            new_view (View): The view to activate.
+            new_view: The view to activate.
         """
         if not isinstance(new_view, View):
             raise TypeError(
@@ -1095,8 +1130,8 @@ class Window(pyglet.window.Window):
         dragged.
 
         Args:
-            x (int): The x position the mouse entered the window
-            y (int): The y position the mouse entered the window
+            x: The x position the mouse entered the window
+            y: The y position the mouse entered the window
         """
         pass
 
@@ -1109,8 +1144,8 @@ class Window(pyglet.window.Window):
         outside of the window rectangle.
 
         Args:
-            x (int): The x position the mouse entered the window
-            y (int): The y position the mouse entered the window
+            x: The x position the mouse entered the window
+            y: The y position the mouse entered the window
         """
         pass
 
@@ -1178,6 +1213,7 @@ def open_window(
     window_title: str | None = None,
     resizable: bool = False,
     antialiasing: bool = True,
+    **kwargs,
 ) -> Window:
     """
     Shortcut for opening/creating a window with less options.
@@ -1186,15 +1222,23 @@ def open_window(
     instance directly.
 
     Args:
-        width (int): Width of the window.
-        height (int): Height of the window.
-        window_title (str): Title/caption of the window.
-        resizable (bool): Whether the user can resize the window.
-        antialiasing (bool): Whether to use antialiasing
+        width:
+            Width of the window.
+        height:
+            Height of the window.
+        window_title:
+            Title/caption of the window.
+        resizable:
+            Whether the user can resize the window.
+        antialiasing:
+            Whether to use antialiasing
+        **kwargs:
+            Additional keyword arguments to pass to the window constructor.
     """
-
     global _window
-    _window = Window(width, height, window_title, resizable=resizable, antialiasing=antialiasing)
+    _window = Window(
+        width, height, window_title, resizable=resizable, antialiasing=antialiasing, **kwargs
+    )
     _window.invalid = False
     return _window
 
@@ -1210,8 +1254,9 @@ class View:
     and a game over screen. Each of these could be a different view.
 
     Args:
-        window (Window, optional): The window this view is associated with. If None,
-            the current window is used. (Normally you don't need to provide this).
+        window (optional):
+            The window this view is associated with. If None, the current
+            window is used. (Normally you don't need to provide this).
     """
 
     def __init__(self, window: Window | None = None) -> None:
@@ -1247,11 +1292,13 @@ class View:
         Adds a section to the view Section Manager.
 
         Args:
-            section (arcade.Section): The section to add to this section manager
-            at_index (int, optional): The index to insert the section for event capture and
+            section:
+                The section to add to this section manager
+            at_index (optional):
+                The index to insert the section for event capture and
                 update events. If ``None`` it will be added at the end.
-            at_draw_order (int, optional): Inserts the section in a specific draw order.
-                Overwrites section.draw_order
+            at_draw_order (optional):
+                Inserts the section in a specific draw order. Overwrites section.draw_order
         """
         self.section_manager.add_section(section, at_index, at_draw_order)
 
@@ -1265,17 +1312,17 @@ class View:
         Clears the window with the configured background color
         set through :py:attr:`arcade.Window.background_color`.
 
-        :param color: (Optional) override the current background color
-            with one of the following:
+        Args:
+            color(optional):
+                override the current background color with one of the following:
 
-            1. A :py:class:`~arcade.types.Color` instance
-            2. A 3 or 4-length RGB/RGBA :py:class:`tuple` of byte values (0 to 255)
-
-        :param color_normalized: (Optional) override the current background color
-            using normalized values (0.0 to 1.0). For example, (1.0, 0.0, 0.0, 1.0)
-            making the window contents red.
-
-        :param Tuple[int, int, int, int] viewport: The viewport range to clear
+                1. A :py:class:`~arcade.types.Color` instance
+                2. A 3 or 4-length RGB/RGBA :py:class:`tuple` of byte values (0 to 255)
+            color_normalized (optional):
+                Override the current background color using normalized values (0.0 to 1.0).
+                For example, (1.0, 0.0, 0.0, 1.0) making the window contents red.
+            viewport (optional):
+                The viewport range to clear
         """
         self.window.clear(color=color, color_normalized=color_normalized, viewport=viewport)
 
@@ -1289,8 +1336,8 @@ class View:
         speed, no matter the frame rate.
 
         Args:
-            delta_time (float): Time interval since the last time the function was
-                called in seconds.
+            delta_time:
+                Time interval since the last time the function was called in seconds.
         """
         pass
 
@@ -1300,8 +1347,8 @@ class View:
         and other systems that should update at a constant rate.
 
         Args:
-            delta_time (float): Time interval since the last time the function was
-                called in seconds.
+            delta_time:
+                Time interval since the last time the function was called in seconds.
         """
         pass
 
@@ -1336,10 +1383,10 @@ class View:
         Override this function to respond to changes in mouse position.
 
         Args:
-            x (int): x position of mouse within the window in pixels
-            y (int): y position of mouse within the window in pixels
-            dx (int): Change in x since the last time this method was called
-            dy (int): Change in y since the last time this method was called
+            x: x position of mouse within the window in pixels
+            y: y position of mouse within the window in pixels
+            dx: Change in x since the last time this method was called
+            dy: Change in y since the last time this method was called
         """
         pass
 
@@ -1352,17 +1399,20 @@ class View:
         bullets <sprite_bullets_aimed>` demo.
 
         Args:
-            x (int): x position of the mouse
-            y (int): y position of the mouse
-            button (int): What button was pressed.
-                This will always be one of the following:
+            x:
+                x position of the mouse
+            y:
+                y position of the mouse
+            button:
+                What button was pressed. This will always be one of the following:
 
                 - ``arcade.MOUSE_BUTTON_LEFT``
                 - ``arcade.MOUSE_BUTTON_RIGHT``
                 - ``arcade.MOUSE_BUTTON_MIDDLE``
 
-            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                      active during this event. See :ref:`keyboard_modifiers`.
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
 
@@ -1375,13 +1425,19 @@ class View:
         Override this function to handle dragging.
 
         Args:
-            x (int): x position of mouse
-            y (int): y position of mouse
-            dx (int): Change in x since the last time this method was called
-            dy (int): Change in y since the last time this method was called
-            buttons (int): Which button is pressed
-            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                              active during this event. See :ref:`keyboard_modifiers`.
+            x:
+                x position of mouse
+            y:
+                y position of mouse
+            dx:
+                Change in x since the last time this method was called
+            dy:
+                Change in y since the last time this method was called
+            buttons:
+                Which button is pressed
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+                active during this event. See :ref:`keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
         return False
@@ -1395,15 +1451,19 @@ class View:
         to affect gameplay.
 
         Args:
-            x (int): x position of mouse
-            y (int): y position of mouse
-            button (int): What button was hit. One of:
+            x:
+                x position of mouse
+            y:
+                y position of mouse
+            button:
+                What button was hit. One of:
 
                 - ``arcade.MOUSE_BUTTON_LEFT``
                 - ``arcade.MOUSE_BUTTON_RIGHT``
                 - ``arcade.MOUSE_BUTTON_MIDDLE``
 
-            modifiers (int): Bitwise 'and' of all modifiers (shift, ctrl, num lock)
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                 active during this event. See :ref:`keyboard_modifiers`.
         """
         pass
@@ -1431,12 +1491,16 @@ class View:
             game!
 
         Args:
-            x (int): x position of mouse
-            y (int): y position of mouse
-            scroll_x (int): number of steps scrolled horizontally
-                     since the last call of this function
-            scroll_y (int): number of steps scrolled vertically since
-                     the last call of this function
+            x:
+                x position of mouse
+            y:
+                y position of mouse
+            scroll_x:
+                number of steps scrolled horizontally
+                since the last call of this function
+            scroll_y:
+                number of steps scrolled vertically since
+                the last call of this function
         """
         pass
 
@@ -1451,10 +1515,11 @@ class View:
                  :meth:`~.Window.on_key_release`.
 
         Args:
-            symbol (int): Key that was just pushed down
-            modifiers (int): Bitwise 'and' of all modifiers (shift,
-                      ctrl, num lock) active during this event.
-                      See :ref:`keyboard_modifiers`.
+            symbol:
+                Key that was just pushed down
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock) active
+                during this event. See :ref:`keyboard_modifiers`.
         """
         return False
 
@@ -1473,10 +1538,11 @@ class View:
         * Showing which keys are currently pressed down
 
         Args:
-            symbol (int): Key that was released
-            modifiers (int): Bitwise 'and' of all modifiers (shift,
-                      ctrl, num lock) active during this event.
-                      See :ref:`keyboard_modifiers`.
+            symbol:
+                Key that was released
+            modifiers:
+                Bitwise 'and' of all modifiers (shift, ctrl, num lock) active
+                during this event. See :ref:`keyboard_modifiers`.
         """
         return False
 
@@ -1489,8 +1555,8 @@ class View:
         ```super().on_resize(width, height)```.
 
         Args:
-            width (int): New width of the window
-            height (int): New height of the window
+            width: New width of the window
+            height: New height of the window
         """
         pass
 
@@ -1502,8 +1568,8 @@ class View:
         dragged.
 
         Args:
-            x (int): The x position the mouse entered the window
-            y (int): The y position the mouse entered the window
+            x: The x position the mouse entered the window
+            y: The y position the mouse entered the window
         """
         pass
 
@@ -1516,7 +1582,7 @@ class View:
         outside of the window rectangle.
 
         Args:
-            x (int): The x position the mouse entered the window
-            y (int): The y position the mouse entered the window
+            x: The x position the mouse entered the window
+            y: The y position the mouse entered the window
         """
         pass

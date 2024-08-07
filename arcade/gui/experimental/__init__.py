@@ -1,5 +1,4 @@
-"""
-Contains experimental GUI elements.
+"""Contains experimental GUI elements.
 
 The API of these components may change within minor version updates.
 No Deprecation warnings are given for changes in this module.

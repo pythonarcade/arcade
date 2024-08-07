@@ -9,12 +9,13 @@ class CRTFilter:
     """
     CRT Filter
 
-    :param width:
-    :param height:
-    :param resolution_down_scale:
-    :param hard_scan: -8.0 soft, -16.0 medium
-    :param hard_pix: Hardness of pixels in the scan line. -2.0 soft, -4.0 medium
-    :param display_warp: Display warp. 0 = None, 1.0/8.0 = extreme
+    Args:
+        width: Width of the screen
+        height: Height of the screen
+        resolution_down_scale:
+        hard_scan: -8.0 soft, -16.0 medium
+        hard_pix: Hardness of pixels in the scan line. -2.0 soft, -4.0 medium
+        display_warp: Display warp. 0 = None, 1.0/8.0 = extreme
     """
 
     def __init__(

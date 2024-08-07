@@ -52,121 +52,162 @@ class Context:
         gl_api: The OpenGL api. Default is "gl"
     """
 
-    #: The active context
     active: Context | None = None
+    """The active context"""
 
     #: The OpenGL api. Usually "gl" or "gles".
     gl_api: str = "gl"
 
     # --- Store the most commonly used OpenGL constants
     # Texture
-    #: Texture interpolation - Nearest pixel
-    NEAREST = 0x2600
-    #: Texture interpolation - Linear interpolate
-    LINEAR = 0x2601
-    #: Texture interpolation - Minification filter for mipmaps
-    NEAREST_MIPMAP_NEAREST = 0x2700
-    #: Texture interpolation - Minification filter for mipmaps
-    LINEAR_MIPMAP_NEAREST = 0x2701
-    #: Texture interpolation - Minification filter for mipmaps
-    NEAREST_MIPMAP_LINEAR = 0x2702
-    #: Texture interpolation - Minification filter for mipmaps
-    LINEAR_MIPMAP_LINEAR = 0x2703
 
-    #: Texture wrap mode - Repeat
+    NEAREST = 0x2600
+    """Texture interpolation - Nearest pixel"""
+
+    LINEAR = 0x2601
+    """Texture interpolation - Linear interpolate"""
+
+    NEAREST_MIPMAP_NEAREST = 0x2700
+    """Texture interpolation - Minification filter for mipmaps"""
+
+    LINEAR_MIPMAP_NEAREST = 0x2701
+    """Texture interpolation - Minification filter for mipmaps"""
+
+    NEAREST_MIPMAP_LINEAR = 0x2702
+    """Texture interpolation - Minification filter for mipmaps"""
+
+    LINEAR_MIPMAP_LINEAR = 0x2703
+    """Texture interpolation - Minification filter for mipmaps"""
+
     REPEAT = gl.GL_REPEAT
-    # Texture wrap mode - Clamp to border pixel
+    """Texture wrap mode - Repeat"""
+
     CLAMP_TO_EDGE = gl.GL_CLAMP_TO_EDGE
-    # Texture wrap mode - Clamp to border color
+    """Texture wrap mode - Clamp to border pixel"""
+
     CLAMP_TO_BORDER = gl.GL_CLAMP_TO_BORDER
-    # Texture wrap mode - Repeat mirrored
+    """Texture wrap mode - Clamp to border color"""
+
     MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
+    """Texture wrap mode - Repeat mirrored"""
 
     # Flags
-    #: Context flag - Blending
+
     BLEND = gl.GL_BLEND
-    #: Context flag - Depth testing
+    """Context flag - Blending"""
+
     DEPTH_TEST = gl.GL_DEPTH_TEST
-    #: Context flag - Face culling
+    """Context flag - Depth testing"""
+
     CULL_FACE = gl.GL_CULL_FACE
-    #: Context flag - Enables ``gl_PointSize`` in vertex or geometry shaders.
-    #:
-    #: When enabled we can write to ``gl_PointSize`` in the vertex shader to specify the point size
-    #: for each individual point.
-    #:
-    #: If this value is not set in the shader the behavior is undefined. This means the points may
-    #: or may not appear depending if the drivers enforce some default value for ``gl_PointSize``.
-    #:
-    #: When disabled :py:attr:`point_size` is used.
+    """Context flag - Face culling"""
+
     PROGRAM_POINT_SIZE = gl.GL_PROGRAM_POINT_SIZE
+    """
+    Context flag - Enables ``gl_PointSize`` in vertex or geometry shaders.
+
+    When enabled we can write to ``gl_PointSize`` in the vertex shader to specify the point size
+    for each individual point.
+
+    If this value is not set in the shader the behavior is undefined. This means the points may
+    or may not appear depending if the drivers enforce some default value for ``gl_PointSize``.
+
+    When disabled :py:attr:`point_size` is used.
+    """
 
     # Blend functions
-    #: Blend function
     ZERO = 0x0000
-    #: Blend function
+    """Blend function"""
+
     ONE = 0x0001
-    #: Blend function
+    """Blend function"""
+
     SRC_COLOR = 0x0300
-    #: Blend function
+    """Blend function"""
+
     ONE_MINUS_SRC_COLOR = 0x0301
-    #: Blend function
+    """Blend function"""
+
     SRC_ALPHA = 0x0302
-    #: Blend function
+    """Blend function"""
+
     ONE_MINUS_SRC_ALPHA = 0x0303
-    #: Blend function
+    """Blend function"""
+
     DST_ALPHA = 0x0304
-    #: Blend function
+    """Blend function"""
+
     ONE_MINUS_DST_ALPHA = 0x0305
-    #: Blend function
+    """Blend function"""
+
     DST_COLOR = 0x0306
-    #: Blend function
+    """Blend function"""
+
     ONE_MINUS_DST_COLOR = 0x0307
+    """Blend function"""
 
     # Blend equations
-    #: source + destination
     FUNC_ADD = 0x8006
-    #: Blend equations - source - destination
+    """Blend equation - source + destination"""
+
     FUNC_SUBTRACT = 0x800A
-    #: Blend equations - destination - source
+    """Blend equation - source - destination"""
+
     FUNC_REVERSE_SUBTRACT = 0x800B
-    #: Blend equations - Minimum of source and destination
+    """Blend equation - destination - source"""
+
     MIN = 0x8007
-    #: Blend equations - Maximum of source and destination
+    """Blend equation - Minimum of source and destination"""
+
     MAX = 0x8008
+    """Blend equation - Maximum of source and destination"""
 
     # Blend mode shortcuts
-    #: Blend mode shortcut for default blend mode - ``SRC_ALPHA, ONE_MINUS_SRC_ALPHA``
     BLEND_DEFAULT = 0x0302, 0x0303
-    #: Blend mode shortcut for additive blending - ``ONE, ONE``
+    """Blend mode shortcut for default blend mode - ``SRC_ALPHA, ONE_MINUS_SRC_ALPHA``"""
+
     BLEND_ADDITIVE = 0x0001, 0x0001
-    #: Blend mode shortcut for pre-multiplied alpha - ``SRC_ALPHA, ONE``
+    """Blend mode shortcut for additive blending - ``ONE, ONE``"""
+
     BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
+    """Blend mode shortcut for pre-multiplied alpha - ``SRC_ALPHA, ONE``"""
 
     # VertexArray: Primitives
-    #: Primitive mode
     POINTS = gl.GL_POINTS  # 0
-    #: Primitive mode
+    """Primitive mode - points"""
+
     LINES = gl.GL_LINES  # 1
-    #: Primitive mode
+    """Primitive mode - lines"""
+
     LINE_LOOP = gl.GL_LINE_LOOP  # 2
-    #: Primitive mode
+    """Primitive mode - line loop"""
+
     LINE_STRIP = gl.GL_LINE_STRIP  # 3
-    #: Primitive mode
+    """Primitive mode - line strip"""
+
     TRIANGLES = gl.GL_TRIANGLES  # 4
-    #: Primitive mode
+    """Primitive mode - triangles"""
+
     TRIANGLE_STRIP = gl.GL_TRIANGLE_STRIP  # 5
-    #: Primitive mode
+    """Primitive mode - triangle strip"""
+
     TRIANGLE_FAN = gl.GL_TRIANGLE_FAN  # 6
-    #: Primitive mode
+    """Primitive mode - triangle fan"""
+
     LINES_ADJACENCY = gl.GL_LINES_ADJACENCY  # 10
-    #: Primitive mode
+    """Primitive mode - lines with adjacency"""
+
     LINE_STRIP_ADJACENCY = gl.GL_LINE_STRIP_ADJACENCY  # 11
-    #: Primitive mode
+    """Primitive mode - line strip with adjacency"""
+
     TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY  # 12
-    #: Primitive mode
+    """Primitive mode - triangles with adjacency"""
+
     TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
-    #: Patch mode (tessellation)
+    """Primitive mode - triangle strip with adjacency"""
+
     PATCHES = gl.GL_PATCHES
+    """Primitive mode - Patch (tessellation)"""
 
     # The most common error enums
     _errors = {
@@ -190,17 +231,17 @@ class Context:
         if gl_api not in self._valid_apis:
             raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
         self.gl_api = gl_api
-        self._limits = Limits(self)
-        self._gl_version = (self._limits.MAJOR_VERSION, self._limits.MINOR_VERSION)
+        self._info = GLInfo(self)
+        self._gl_version = (self._info.MAJOR_VERSION, self._info.MINOR_VERSION)
         Context.activate(self)
         # Texture unit we use when doing operations on textures to avoid
         # affecting currently bound textures in the first units
-        self.default_texture_unit: int = self._limits.MAX_TEXTURE_IMAGE_UNITS - 1
+        self.default_texture_unit: int = self._info.MAX_TEXTURE_IMAGE_UNITS - 1
 
         # Detect the default framebuffer
         self._screen = DefaultFrameBuffer(self)
         # Tracking active program
-        self.active_program: Program | None = None
+        self.active_program: Program | ComputeShader | None = None
         # Tracking active framebuffer. On context creation the window is the default render target
         self.active_framebuffer: Framebuffer = self._screen
         self._stats: ContextStats = ContextStats(warn_threshold=1000)
@@ -254,10 +295,10 @@ class Context:
         self.objects: Deque[Any] = deque()
 
     @property
-    def info(self) -> "Limits":
+    def info(self) -> GLInfo:
         """
-        Get the Limits object for this context containing information
-        about hardware/driver limits and other context information.
+        Get the info object for this context containing information
+        about hardware/driver limits and other information.
 
         Example::
 
@@ -268,50 +309,33 @@ class Context:
             >> ctx.info.RENDERER
             NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
         """
-        return self._limits
+        return self._info
 
     @property
-    def limits(self) -> "Limits":
-        """
-        Get the Limits object for this context containing information
-        about hardware/driver limits and other context information.
-
-        .. Warning::
-
-            This an old alias for :py:attr:`~arcade.gl.Context.info`
-            and is only around for backwards compatibility.
-
-        Example::
-
-            >> ctx.limits.MAX_TEXTURE_SIZE
-            (16384, 16384)
-            >> ctx.limits.VENDOR
-            NVIDIA Corporation
-            >> ctx.limits.RENDERER
-            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
-        """
-        return self._limits
-
-    @property
-    def stats(self) -> "ContextStats":
+    def stats(self) -> ContextStats:
         """
         Get the stats instance containing runtime information
         about creation and destruction of OpenGL objects.
 
+        This can be useful for debugging and profiling.
+        Creating and throwing away OpenGL objects can be detrimental
+        to performance.
+
         Example::
 
-            >> ctx.limits.MAX_TEXTURE_SIZE
-            (16384, 16384)
-            >> ctx.limits.VENDOR
-            NVIDIA Corporation
-            >> ctx.limits.RENDERER
-            NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2
+            # Show the created and freed resource count
+            >> ctx.stats.texture
+            (100, 10)
+            >> ctx.framebuffer
+            (1, 0)
+            >> ctx.buffer
+            (10, 0)
         """
         return self._stats
 
     @property
     def window(self) -> Window:
-        """The window this context belongs to."""
+        """The window this context belongs to (read only)."""
         window_ref = self._window_ref()
         if window_ref is None:
             raise Exception("Window not available, lost reference.")
@@ -319,14 +343,13 @@ class Context:
 
     @property
     def screen(self) -> Framebuffer:
-        """The framebuffer for the window."""
+        """The framebuffer for the window (read only)"""
         return self._screen
 
     @property
     def fbo(self) -> Framebuffer:
         """
-        Get the currently active framebuffer.
-        This property is read-only
+        Get the currently active framebuffer (read only).
         """
         return self.active_framebuffer
 
@@ -346,7 +369,8 @@ class Context:
         Run garbage collection of OpenGL objects for this context.
         This is only needed when ``gc_mode`` is ``context_gc``.
 
-        :return: The number of resources destroyed
+        Returns:
+            The number of resources destroyed
         """
         # Loop the array until all objects are gone.
         # Deleting one object might add new ones so we need
@@ -405,11 +429,14 @@ class Context:
         return self._errors.get(err, "GL_UNKNOWN_ERROR")
 
     @classmethod
-    def activate(cls, ctx: "Context"):
+    def activate(cls, ctx: Context):
         """
         Mark a context as the currently active one.
 
         .. Warning:: Never call this unless you know exactly what you are doing.
+
+        Args:
+            ctx: The context to activate
         """
         cls.active = ctx
 
@@ -421,6 +448,9 @@ class Context:
             ctx.enable(ctx.BLEND)
             # Multiple flags
             ctx.enable(ctx.DEPTH_TEST, ctx.CULL_FACE)
+
+        Args:
+            *flags: The flags to enable
         """
         self._flags.update(flags)
 
@@ -439,6 +469,9 @@ class Context:
             ctx.enable_only(ctx.BLEND)
             # Make sure only depth test and culling is enabled
             ctx.enable_only(ctx.DEPTH_TEST, ctx.CULL_FACE)
+
+        Args:
+            *args: The flags to enable
         """
         self._flags = set(args)
 
@@ -491,9 +524,8 @@ class Context:
         """
         Temporarily change enabled flags.
 
-        Only the supplied flags with be enabled in
-        in the context. When exiting the context
-        the old flags will be restored.
+        Only the supplied flags with be enabled in in the context. When exiting
+        the context the old flags will be restored.
 
         Example::
 
@@ -523,7 +555,14 @@ class Context:
 
     def is_enabled(self, flag) -> bool:
         """
-        Check if a context flag is enabled
+        Check if a context flag is enabled.
+
+        .. Warning::
+
+            This only tracks states set through this context instance.
+            It does not query the actual OpenGL state. If you change context
+            flags by calling ``glEnable`` or ``glDisable`` directly you
+            are on your own.
         """
         return flag in self._flags
 
@@ -632,6 +671,7 @@ class Context:
             ValueError("blend_func takes a tuple of 2 or 4 values")
 
     # def blend_equation(self)
+    # Default is FUNC_ADD
 
     @property
     def front_face(self) -> str:
@@ -681,7 +721,9 @@ class Context:
     def wireframe(self) -> bool:
         """
         Get or set the wireframe mode.
-        When enabled all primitives will be rendered as lines.
+
+        When enabled all primitives will be rendered as lines
+        by changing the polygon mode.
         """
         return self._wireframe
 
@@ -697,6 +739,7 @@ class Context:
     def patch_vertices(self) -> int:
         """
         Get or set number of vertices that will be used to make up a single patch primitive.
+
         Patch primitives are consumed by the tessellation control shader (if present)
         and subsequently used for tessellation.
         """
@@ -727,7 +770,8 @@ class Context:
         .. Note::
 
             Using a geometry shader to create triangle strips from points is often a safer
-            way to render large points since you don't have have any size restrictions.
+            way to render large points since you don't have have any size restrictions
+            and it offers more flexibility.
         """
         return self._point_size
 
@@ -741,6 +785,7 @@ class Context:
     def primitive_restart_index(self) -> int:
         """
         Get or set the primitive restart index. Default is ``-1``.
+
         The primitive restart index can be used in index buffers
         to restart a primitive. This is for example useful when you
         use triangle strips or line strips and want to start on
@@ -765,11 +810,12 @@ class Context:
 
     def flush(self) -> None:
         """
-        A suggestion to the driver to execute all the queued
-        drawing calls even if the queue is not full yet.
-        This is not a blocking call and only a suggestion.
-        This can potentially be used for speedups when
-        we don't have anything else to render.
+        Flush the OpenGL command buffer.
+
+        This will send all queued commands to the GPU but will not wait
+        until they are completed. This is useful when you want to
+        ensure that all commands are sent to the GPU before doing
+        something else.
         """
         gl.glFlush()
 
@@ -795,10 +841,15 @@ class Context:
         * Only the source framebuffer can be multisampled
         * Framebuffers cannot have integer attachments
 
-        :param src: The framebuffer to copy from
-        :param dst: The framebuffer we copy to
-        :param src_attachment_index: The color attachment to copy from
-        :param depth: Also copy depth attachment if present
+        Args:
+            src:
+                The framebuffer to copy from
+            dst:
+                The framebuffer we copy to
+            src_attachment_index:
+                The color attachment to copy from
+            depth:
+                Also copy depth attachment if present
         """
         # Set source and dest framebuffer
         gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src._glo)
@@ -847,7 +898,6 @@ class Context:
             # Create a buffer with 1000 random 32 bit floats using numpy
             self.ctx.buffer(data=np.random.random(1000).astype("f4"))
 
-
         The ``data`` parameter can be anything that implements the
         `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
 
@@ -860,6 +910,7 @@ class Context:
         decisions that may impact buffer object performance. It does not add any restrictions.
         If in doubt, skip this parameter and revisit when optimizing. The result
         are likely to be different between vendors/drivers or may not have any effect.
+        Always use the default static usage for buffers that don't change.
 
         The available values mean the following::
 
@@ -870,10 +921,14 @@ class Context:
             dynamic
                 The data contents will be modified repeatedly and used many times.
 
-        :param data: The buffer data. This can be a ``bytes`` instance or any
-                                    any other object supporting the buffer protocol.
-        :param reserve: The number of bytes to reserve
-        :param usage: Buffer usage. 'static', 'dynamic' or 'stream'
+        Args:
+            data:
+                The buffer data. This can be a ``bytes`` instance or any
+                any other object supporting the buffer protocol.
+            reserve:
+                The number of bytes to reserve
+            usage:
+                Buffer usage. 'static', 'dynamic' or 'stream'
         """
         return Buffer(self, data, reserve=reserve, usage=usage)
 
@@ -885,11 +940,14 @@ class Context:
     ) -> Framebuffer:
         """Create a Framebuffer.
 
-        :param color_attachments: List of textures we want to render into
-        :param depth_attachment: Depth texture
+        Args:
+            color_attachments:
+                List of textures we want to render into
+            depth_attachment:
+                Depth texture
         """
         return Framebuffer(
-            self, color_attachments=color_attachments, depth_attachment=depth_attachment
+            self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
         )
 
     def texture(
@@ -946,23 +1004,36 @@ class Context:
 
         Magnifying filters: ``GL_NEAREST``, ``GL_LINEAR``
 
-        :param Tuple[int, int] size: The size of the texture
-        :param components: Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
-        :param dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-        :param data: The texture data (optional). Can be ``bytes``
-                                    or any object supporting the buffer protocol.
-        :param wrap_x: How the texture wraps in x direction
-        :param wrap_y: How the texture wraps in y direction
-        :param filter: Minification and magnification filter
-        :param samples: Creates a multisampled texture for values > 0
-        :param immutable: Make the storage (not the contents) immutable. This can sometimes be
-                               required when using textures with compute shaders.
-        :param internal_format: The internal format of the texture. This can be used to
-                                enable sRGB or texture compression.
-        :param compressed: Set to True if you want the texture to be compressed.
-                           This assumes you have set a internal_format to a compressed format.
-        :param compressed_data: Set to True if you are passing in raw compressed pixel data.
-                                This implies ``compressed=True``.
+        Args:
+            size:
+                The size of the texture
+            components:
+                Number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+            dtype:
+                The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
+            data:
+                The texture data (optional). Can be ``bytes``
+                or any object supporting the buffer protocol.
+            wrap_x:
+                How the texture wraps in x direction
+            wrap_y:
+                How the texture wraps in y direction
+            filter:
+                Minification and magnification filter
+            samples:
+                Creates a multisampled texture for values > 0
+            immutable:
+                Make the storage (not the contents) immutable. This can sometimes be
+                required when using textures with compute shaders.
+            internal_format:
+                The internal format of the texture. This can be used to
+                enable sRGB or texture compression.
+            compressed:
+                Set to True if you want the texture to be compressed.
+                This assumes you have set a internal_format to a compressed format.
+            compressed_data:
+                Set to True if you are passing in raw compressed pixel data.
+                This implies ``compressed=True``.
         """
         compressed = compressed or compressed_data
 
@@ -989,10 +1060,12 @@ class Context:
         Create a 2D depth texture. Can be used as a depth attachment
         in a :py:class:`~arcade.gl.Framebuffer`.
 
-        :param Tuple[int, int] size: The size of the texture
-        :param data: The texture data (optional). Can be
-                                    ``bytes`` or any object supporting
-                                    the buffer protocol.
+        Args:
+            size:
+                The size of the texture
+            data (optional):
+                The texture data. Can be``bytes`` or any object
+                supporting the buffer protocol.
         """
         return Texture2D(self, size, data=data, depth=True)
 
@@ -1013,7 +1086,7 @@ class Context:
         programs as long as your shader is using one or more of the input attribute.
         This means geometry with positions and colors can be rendered with a program
         only using the positions. We will automatically map what is necessary and
-        cache these mappings internally for performace.
+        cache these mappings internally for performance.
 
         In short, the geometry object is a light object that describes what buffers
         contains and automatically negotiate with shaders/programs. This is a very
@@ -1035,7 +1108,7 @@ class Context:
             # Single buffer geometry with a vec2 vertex position attribute
             ctx.geometry([BufferDescription(buffer, '2f', ["in_vert"])], mode=ctx.TRIANGLES)
 
-            # Single interlaved buffer with two attributes. A vec2 position and vec2 velocity
+            # Single interleaved buffer with two attributes. A vec2 position and vec2 velocity
             ctx.geometry([
                     BufferDescription(buffer, '2f 2f', ["in_vert", "in_velocity"])
                 ],
@@ -1065,13 +1138,19 @@ class Context:
                 mode=ctx.POINTS,
             )
 
-        :param content: List of :py:class:`~arcade.gl.BufferDescription` (optional)
-        :param index_buffer: Index/element buffer (optional)
-        :param mode: The default draw mode (optional)
-        :param mode: The default draw mode (optional)
-        :param index_element_size: Byte size of a single index/element in the index buffer.
-            In other words, the index buffer can be 8, 16 or 32 bit integers.
-            Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
+        Args:
+            content (optional):
+                List of :py:class:`~arcade.gl.BufferDescription`
+            index_buffer (optional):
+                Index/element buffer
+            mode (optional):
+                The default draw mode
+            mode (optional):
+                The default draw mode
+            index_element_size:
+                Byte size of a single index/element in the index buffer.
+                In other words, the index buffer can be 1, 2 or 4 byte integers.
+                Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
         return Geometry(
             self,
@@ -1094,23 +1173,37 @@ class Context:
         varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
-        """Create a :py:class:`~arcade.gl.Program` given the vertex, fragment and geometry shader.
+        """
+        Create a :py:class:`~arcade.gl.Program` given shader sources
+        and other settings.
 
-        :param vertex_shader: vertex shader source
-        :param fragment_shader: fragment shader source (optional)
-        :param geometry_shader: geometry shader source (optional)
-        :param tess_control_shader: tessellation control shader source (optional)
-        :param tess_evaluation_shader: tessellation evaluation shader source (optional)
-        :param common: Common shader sources injected into all shaders
-        :param defines: Substitute #defines values in the source (optional)
-        :param varyings: The name of the out attributes in a transform shader.
-            This is normally not necessary since we auto detect them,
-            but some more complex out structures we can't detect.
-        :param varyings_capture_mode: The capture mode for transforms.
-            ``"interleaved"`` means all out attribute will be written to a single buffer.
-            ``"separate"`` means each out attribute will be written separate buffers.
-            Based on these settings the `transform()` method will accept a single
-            buffer or a list of buffer.
+        Args:
+            vertex_shader:
+                vertex shader source
+            fragment_shader (optional):
+                fragment shader source
+            geometry_shader (optional):
+                geometry shader source
+            tess_control_shader (optional):
+                tessellation control shader source
+            tess_evaluation_shader (optional):
+                tessellation evaluation shader source
+            common (optional):
+                Common shader sources injected into all shaders
+            defines (optional):
+                Substitute #defines values in the source
+            varyings (optional):
+                The name of the out attributes in a transform shader.
+                This is normally not necessary since we auto detect them,
+                but some more complex out structures we can't detect.
+            varyings_capture_mode (optional):
+                The capture mode for transforms.
+
+                - ``"interleaved"`` means all out attribute will be written to a single buffer.
+                - ``"separate"`` means each out attribute will be written separate buffers.
+
+                Based on these settings the ``transform()`` method will accept a single
+                buffer or a list of buffer.
         """
         source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
@@ -1158,10 +1251,10 @@ class Context:
         """
         Create a query object for measuring rendering calls in opengl.
 
-        :param samples: Collect written samples
-        :param time: Measure rendering duration
-        :param primitives: Collect the number of primitives emitted
-
+        Args:
+            samples: Collect written samples
+            time: Measure rendering duration
+            primitives: Collect the number of primitives emitted
         """
         return Query(self, samples=samples, time=time, primitives=primitives)
 
@@ -1169,8 +1262,11 @@ class Context:
         """
         Create a compute shader.
 
-        :param source: The glsl source
-        :param common: Common / library source injected into compute shader
+        Args:
+            source:
+                The glsl source
+            common (optional):
+                Common / library source injected into compute shader
         """
         src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)
         return ComputeShader(self, src.get_source())
@@ -1183,28 +1279,37 @@ class ContextStats:
 
     def __init__(self, warn_threshold=100):
         self.warn_threshold = warn_threshold
-        #: Textures (created, freed)
+
         self.texture = (0, 0)
-        #: Framebuffers (created, freed)
+        """Textures (created, freed)"""
+
         self.framebuffer = (0, 0)
-        #: Buffers (created, freed)
+        """Framebuffers (created, freed)"""
+
         self.buffer = (0, 0)
-        #: Programs (created, freed)
+        """Buffers (created, freed)"""
+
         self.program = (0, 0)
-        #: Vertex Arrays (created, freed)
+        """Programs (created, freed)"""
+
         self.vertex_array = (0, 0)
-        #: Geometry (created, freed)
+        """Vertex Arrays (created, freed)"""
+
         self.geometry = (0, 0)
-        #: Compute Shaders (created, freed)
+        """Geometry (created, freed)"""
+
         self.compute_shader = (0, 0)
-        #: Queries (created, freed)
+        """Compute Shaders (created, freed)"""
+
         self.query = (0, 0)
+        """Queries (created, freed)"""
 
     def incr(self, key: str) -> None:
         """
         Increments a counter.
 
-        :param key: The attribute name / counter to increment.
+        Args:
+            key: The attribute name / counter to increment.
         """
         created, freed = getattr(self, key)
         setattr(self, key, (created + 1, freed))
@@ -1222,143 +1327,223 @@ class ContextStats:
         """
         Decrement a counter.
 
-        :param key: The attribute name / counter to decrement.
+        Args:
+            key: The attribute name / counter to decrement.
         """
         created, freed = getattr(self, key)
         setattr(self, key, (created, freed + 1))
 
 
-class Limits:
-    """OpenGL Limitations"""
+class GLInfo:
+    """OpenGL info and capabilities"""
 
     def __init__(self, ctx):
         self._ctx = ctx
-        #: Minor version number of the OpenGL API supported by the current context
+
         self.MINOR_VERSION = self.get(gl.GL_MINOR_VERSION)
-        #: Major version number of the OpenGL API supported by the current context.
+        """Minor version number of the OpenGL API supported by the current context"""
+
         self.MAJOR_VERSION = self.get(gl.GL_MAJOR_VERSION)
-        #: The vendor string. For example "NVIDIA Corporation"
+        """Major version number of the OpenGL API supported by the current context."""
+
         self.VENDOR = self.get_str(gl.GL_VENDOR)
-        #: The renderer things. For example "NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2"
+        """The vendor string. For example 'NVIDIA Corporation'"""
+
         self.RENDERER = self.get_str(gl.GL_RENDERER)
-        #: Value indicating the number of sample buffers associated with the framebuffer
+        """The renderer things. For example "NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2"""
+
         self.SAMPLE_BUFFERS = self.get(gl.GL_SAMPLE_BUFFERS)
-        #: An estimate of the number of bits of subpixel resolution
-        #: that are used to position rasterized geometry in window coordinates
+        """Value indicating the number of sample buffers associated with the framebuffer"""
+
         self.SUBPIXEL_BITS = self.get(gl.GL_SUBPIXEL_BITS)
-        #: Minimum required alignment for uniform buffer sizes and offset
+        """
+        An estimate of the number of bits of subpixel resolution
+        that are used to position rasterized geometry in window coordinates
+        """
+
         self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT)
-        #: Value indicates the maximum number of layers allowed in an array texture,
-        #: and must be at least 256
+        """Minimum required alignment for uniform buffer sizes and offset"""
+
         self.MAX_ARRAY_TEXTURE_LAYERS = self.get(gl.GL_MAX_ARRAY_TEXTURE_LAYERS)
-        #: A rough estimate of the largest 3D texture that the GL can handle.
-        #: The value must be at least 64
+        """
+        Value indicates the maximum number of layers allowed in an array texture,
+        and must be at least 256
+        """
+
         self.MAX_3D_TEXTURE_SIZE = self.get(gl.GL_MAX_3D_TEXTURE_SIZE)
-        #: Maximum number of color attachments in a framebuffer
+        """
+        A rough estimate of the largest 3D texture that the GL can handle.
+        The value must be at least 64
+        """
+
         self.MAX_COLOR_ATTACHMENTS = self.get(gl.GL_MAX_COLOR_ATTACHMENTS)
-        #: Maximum number of samples in a color multisample texture
+        """Maximum number of color attachments in a framebuffer"""
+
         self.MAX_COLOR_TEXTURE_SAMPLES = self.get(gl.GL_MAX_COLOR_TEXTURE_SAMPLES)
-        #: the number of words for fragment shader uniform variables in all uniform blocks
+        """Maximum number of samples in a color multisample texture"""
+
         self.MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS = self.get(
             gl.GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS
         )
-        #: Number of words for geometry shader uniform variables in all uniform blocks
+        """the number of words for fragment shader uniform variables in all uniform blocks"""
+
         self.MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS = self.get(
             gl.GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS
         )
-        #: Maximum supported texture image units that can be used to access texture
-        #: maps from the vertex shader
+        """Number of words for geometry shader uniform variables in all uniform blocks"""
+
         self.MAX_COMBINED_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
-        #: Maximum number of uniform blocks per program
+        """
+        Maximum supported texture image units that can be used to access texture
+        maps from the vertex shader
+        """
+
         self.MAX_COMBINED_UNIFORM_BLOCKS = self.get(gl.GL_MAX_COMBINED_UNIFORM_BLOCKS)
-        #: Number of words for vertex shader uniform variables in all uniform blocks
+        """Maximum number of uniform blocks per program"""
+
         self.MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS = self.get(
             gl.GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS
         )
-        #: A rough estimate of the largest cube-map texture that the GL can handle
+        """Number of words for vertex shader uniform variables in all uniform blocks"""
+
         self.MAX_CUBE_MAP_TEXTURE_SIZE = self.get(gl.GL_MAX_CUBE_MAP_TEXTURE_SIZE)
-        #: Maximum number of samples in a multisample depth or depth-stencil texture
+        """A rough estimate of the largest cube-map texture that the GL can handle"""
+
         self.MAX_DEPTH_TEXTURE_SAMPLES = self.get(gl.GL_MAX_DEPTH_TEXTURE_SAMPLES)
-        #: Maximum number of simultaneous outputs that may be written in a fragment shader
+        """Maximum number of samples in a multisample depth or depth-stencil texture"""
+
         self.MAX_DRAW_BUFFERS = self.get(gl.GL_MAX_DRAW_BUFFERS)
-        #: Recommended maximum number of vertex array indices
+        """Maximum number of simultaneous outputs that may be written in a fragment shader"""
+
         self.MAX_ELEMENTS_INDICES = self.get(gl.GL_MAX_ELEMENTS_INDICES)
-        #: Recommended maximum number of vertex array vertices
+        """Recommended maximum number of vertex array indices"""
+
         self.MAX_ELEMENTS_VERTICES = self.get(gl.GL_MAX_ELEMENTS_VERTICES)
-        #: Maximum number of components of the inputs read by the fragment shader
+        """Recommended maximum number of vertex array vertices"""
+
         self.MAX_FRAGMENT_INPUT_COMPONENTS = self.get(gl.GL_MAX_FRAGMENT_INPUT_COMPONENTS)
-        #: Maximum number of individual floating-point, integer, or boolean values that can be
-        #: held in uniform variable storage for a fragment shader
+        """Maximum number of components of the inputs read by the fragment shader"""
+
         self.MAX_FRAGMENT_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)
-        #: maximum number of individual 4-vectors of floating-point, integer,
-        #: or boolean values that can be held in uniform variable storage for a fragment shader
+        """
+        Maximum number of individual floating-point, integer, or boolean values that can be
+        held in uniform variable storage for a fragment shader
+        """
+
         self.MAX_FRAGMENT_UNIFORM_VECTORS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_VECTORS)
-        #: Maximum number of uniform blocks per fragment shader.
+        """
+        Maximum number of individual 4-vectors of floating-point, integer,
+        or boolean values that can be held in uniform variable storage for a fragment shader
+        """
+
         self.MAX_FRAGMENT_UNIFORM_BLOCKS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_BLOCKS)
-        #: Maximum number of components of inputs read by a geometry shader
+        """Maximum number of uniform blocks per fragment shader."""
+
         self.MAX_GEOMETRY_INPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_INPUT_COMPONENTS)
-        #: Maximum number of components of outputs written by a geometry shader
+        """Maximum number of components of inputs read by a geometry shader"""
+
         self.MAX_GEOMETRY_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_OUTPUT_COMPONENTS)
-        #: Maximum supported texture image units that can be used to access texture
-        #: maps from the geometry shader
+        """Maximum number of components of outputs written by a geometry shader"""
+
         self.MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS)
-        #: Maximum number of uniform blocks per geometry shader
+        """
+        Maximum supported texture image units that can be used to access texture
+        maps from the geometry shader
+        """
+
         self.MAX_GEOMETRY_UNIFORM_BLOCKS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_BLOCKS)
-        #: Maximum number of individual floating-point, integer, or boolean values that can
-        #: be held in uniform variable storage for a geometry shader
+        """Maximum number of uniform blocks per geometry shader"""
+
         self.MAX_GEOMETRY_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_COMPONENTS)
-        #: Maximum number of samples supported in integer format multisample buffers
+        """
+        Maximum number of individual floating-point, integer, or boolean values that can
+        be held in uniform variable storage for a geometry shader
+        """
+
         self.MAX_INTEGER_SAMPLES = self.get(gl.GL_MAX_INTEGER_SAMPLES)
-        #: Maximum samples for a framebuffer
+        """Maximum number of samples supported in integer format multisample buffers"""
+
         self.MAX_SAMPLES = self.get(gl.GL_MAX_SAMPLES)
-        #: Maximum supported size for renderbuffers
+        """Maximum samples for a framebuffer"""
+
         self.MAX_RENDERBUFFER_SIZE = self.get(gl.GL_MAX_RENDERBUFFER_SIZE)
-        #: Maximum number of sample mask words
+        """Maximum supported size for renderbuffers"""
+
         self.MAX_SAMPLE_MASK_WORDS = self.get(gl.GL_MAX_SAMPLE_MASK_WORDS)
-        #: Maximum number of uniform buffer binding points on the context
+        """Maximum number of sample mask words"""
+
         self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
-        #: Maximum number of uniform buffer binding points on the context
+        """Maximum number of uniform buffer binding points on the context"""
+
         self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
-        #: The value gives a rough estimate of the largest texture that the GL can handle
+        """Maximum number of uniform buffer binding points on the context"""
+
         self.MAX_TEXTURE_SIZE = self.get(gl.GL_MAX_TEXTURE_SIZE)
-        #: Maximum number of uniform buffer binding points on the context
+        """The value gives a rough estimate of the largest texture that the GL can handle"""
+
         self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
-        #: Maximum size in basic machine units of a uniform block
+        """Maximum number of uniform buffer binding points on the context"""
+
         self.MAX_UNIFORM_BLOCK_SIZE = self.get(gl.GL_MAX_UNIFORM_BLOCK_SIZE)
-        #: The number 4-vectors for varying variables
+        """Maximum size in basic machine units of a uniform block"""
+
         self.MAX_VARYING_VECTORS = self.get(gl.GL_MAX_VARYING_VECTORS)
-        #: Maximum number of 4-component generic vertex attributes accessible to a vertex shader.
+        """The number 4-vectors for varying variables"""
+
         self.MAX_VERTEX_ATTRIBS = self.get(gl.GL_MAX_VERTEX_ATTRIBS)
-        #: Maximum supported texture image units that can be used to access texture
-        #: maps from the vertex shader.
+        """Maximum number of 4-component generic vertex attributes accessible to a vertex shader."""
+
         self.MAX_VERTEX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS)
-        #: Maximum number of individual floating-point, integer, or boolean values that
-        #: can be held in uniform variable storage for a vertex shader
+        """
+        Maximum supported texture image units that can be used to access texture
+        maps from the vertex shader.
+        """
+
         self.MAX_VERTEX_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_VERTEX_UNIFORM_COMPONENTS)
-        #: Maximum number of 4-vectors that may be held in uniform variable storage
-        #: for the vertex shader
+        """
+        Maximum number of individual floating-point, integer, or boolean values that
+        can be held in uniform variable storage for a vertex shader
+        """
+
         self.MAX_VERTEX_UNIFORM_VECTORS = self.get(gl.GL_MAX_VERTEX_UNIFORM_VECTORS)
-        #: Maximum number of components of output written by a vertex shader
+        """
+        Maximum number of 4-vectors that may be held in uniform variable storage
+        for the vertex shader
+        """
+
         self.MAX_VERTEX_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_VERTEX_OUTPUT_COMPONENTS)
-        #: Maximum number of uniform blocks per vertex shader.
+        """Maximum number of components of output written by a vertex shader"""
+
         self.MAX_VERTEX_UNIFORM_BLOCKS = self.get(gl.GL_MAX_VERTEX_UNIFORM_BLOCKS)
+        """Maximum number of uniform blocks per vertex shader."""
+
         # self.MAX_VERTEX_ATTRIB_RELATIVE_OFFSET = self.get(
         #     gl.GL_MAX_VERTEX_ATTRIB_RELATIVE_OFFSET
         # )
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
+
         self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
-        #: The highest supported anisotropy value. Usually 8.0 or 16.0.
+        """Number of texture units"""
+
         self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY, 1.0)
-        #: The maximum support window or framebuffer viewport.
-        #: This is usually the same as the maximum texture size
+        """The highest supported anisotropy value. Usually 8.0 or 16.0."""
+
         self.MAX_VIEWPORT_DIMS: Tuple[int, int] = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
-        #: How many buffers we can have as output when doing a transform(feedback).
-        #: This is usually 4
+        """
+        The maximum support window or framebuffer viewport.
+        This is usually the same as the maximum texture size
+        """
+
         self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(
             gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS
         )
-        #: The minimum and maximum point size
+        """
+        How many buffers we can have as output when doing a transform(feedback).
+        This is usually 4.
+        """
+
         self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
+        """The minimum and maximum point size"""
 
         err = self._ctx.error
         if err:
@@ -1373,7 +1558,13 @@ class Limits:
     def get_int_tuple(self, enum: GLenumLike, length: int) -> Tuple[int, ...]: ...
 
     def get_int_tuple(self, enum: GLenumLike, length: int):
-        """Get an enum as an int tuple"""
+        """
+        Get an enum as an int tuple
+
+        Args:
+            enum: The enum to query
+            length: The length of the tuple
+        """
         try:
             values = (c_int * length)()
             gl.glGetIntegerv(enum, values)
@@ -1382,7 +1573,13 @@ class Limits:
             return tuple([0] * length)
 
     def get(self, enum: GLenumLike, default=0) -> int:
-        """Get an integer limit"""
+        """
+        Get an integer limit.
+
+        Args:
+            enum: The enum to query
+            default: The default value if the query fails
+        """
         try:
             value = c_int()
             gl.glGetIntegerv(enum, value)
@@ -1391,7 +1588,13 @@ class Limits:
             return default
 
     def get_float(self, enum: GLenumLike, default=0.0) -> float:
-        """Get a float limit"""
+        """
+        Get a float limit
+
+        Args:
+            enum: The enum to query
+            default: The default value if the query fails
+        """
         try:
             value = c_float()
             gl.glGetFloatv(enum, value)
@@ -1400,7 +1603,12 @@ class Limits:
             return default
 
     def get_str(self, enum: GLenumLike) -> str:
-        """Get a string limit"""
+        """
+        Get a string limit.
+
+        Args:
+            enum: The enum to query
+        """
         try:
             return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
         except pyglet.gl.lib.GLException:

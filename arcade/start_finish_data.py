@@ -7,11 +7,29 @@ from arcade.window_commands import get_window
 class StartFinishRenderData:
     """
     State data for offscreen rendering with :py:meth:`arcade.start_render` and
-    :py:meth:`arcade.finish_render`. This is only meant for simply module level
-    drawing like creating a static image we display on the screen.
+    :py:meth:`arcade.finish_render`. This is only meant for simple module level
+    drawing like creating a static image we display repeatedly once the module
+    has executed.
 
-    :param pixelated: Should the image be pixelated or smooth when scaled?
-    :param blend: Should we draw with alpha blending enabled?
+    Example::
+
+        import arcade
+        arcade.open_window(500, 500, "Picture")
+        arcade.set_background_color(arcade.color.WHITE)
+        # This renderer is permanently enabled here
+        arcade.start_render()
+        arcade.draw_text("Hello World", 190, 50, arcade.color.BLACK, 20)
+        arcade.draw_circle_filled(250, 250, 100, arcade.color.RED)
+        arcade.finish_render()
+        # Repeatedly display the image produced between start and finish render
+        arcade.run()
+
+    This renderer is enabled by calling :py:meth:`arcade.start_render`. It's
+    an irreversible action.
+
+    Args:
+        pixelated: Should the image be pixelated or smooth when scaled?
+        blend: Should we draw with alpha blending enabled?
     """
 
     def __init__(self, pixelated: bool = False, blend: bool = True):
@@ -29,7 +47,11 @@ class StartFinishRenderData:
         self.completed = False
 
     def begin(self):
-        """Enable rendering into the buffer"""
+        """
+        Enable rendering into the buffer.
+
+        Should only be called once followed by a call to :py:meth:`end`.
+        """
         self.generator_func = self.atlas.render_into(self.texture)
         fbo = self.generator_func.__enter__()
         fbo.clear(color=self.window.background_color)
@@ -43,7 +65,9 @@ class StartFinishRenderData:
         self.completed = True
 
     def draw(self):
-        """Draw the buffer to the screen"""
+        """
+        Draw the buffer to the screen attempting to preserve the aspect ratio.
+        """
         # Stretch the texture to the window size with black bars if needed
         w, h = self.window.get_size()
         min_factor = min(w / self.texture.width, h / self.texture.height)

@@ -11,14 +11,15 @@ def draw_triangle_filled(
     """
     Draw a filled in triangle.
 
-    :param x1: x value of first coordinate.
-    :param y1: y value of first coordinate.
-    :param x2: x value of second coordinate.
-    :param y2: y value of second coordinate.
-    :param x3: x value of third coordinate.
-    :param y3: y value of third coordinate.
-    :param color: Color of the triangle as an RGBA :py:class:`tuple` or
-        :py:class:`~arcade.types.Color` instance.
+    Args:
+        x1: x value of first coordinate.
+        y1: y value of first coordinate.
+        x2: x value of second coordinate.
+        y2: y value of second coordinate.
+        x3: x value of third coordinate.
+        y3: y value of third coordinate.
+        color: Color of the triangle as an RGBA :py:class:`tuple` or
+            :py:class:`~arcade.types.Color` instance.
     """
     point_list = (
         (x1, y1),
@@ -41,15 +42,16 @@ def draw_triangle_outline(
     """
     Draw a the outline of a triangle.
 
-    :param x1: x value of first coordinate.
-    :param y1: y value of first coordinate.
-    :param x2: x value of second coordinate.
-    :param y2: y value of second coordinate.
-    :param x3: x value of third coordinate.
-    :param y3: y value of third coordinate.
-    :param color: RGBOrA255 of triangle as an RGBA
-        :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
-    :param border_width: Width of the border in pixels. Defaults to 1.
+    Args:
+        x1: x value of first coordinate.
+        y1: y value of first coordinate.
+        x2: x value of second coordinate.
+        y2: y value of second coordinate.
+        x3: x value of third coordinate.
+        y3: y value of third coordinate.
+        color: RGBOrA255 of triangle as an RGBA
+            :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+        border_width: Width of the border in pixels. Defaults to 1.
     """
     point_list = (
         (x1, y1),
