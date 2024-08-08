@@ -84,7 +84,7 @@ class UITextureToggle(UIInteractiveWidget):
         )
 
         self.value = value
-        self.register_event_type("on_change")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_change")
 
         bind(self, "value", self.trigger_render)
         bind(self, "value", self._dispatch_on_change_event)

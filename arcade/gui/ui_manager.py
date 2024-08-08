@@ -405,11 +405,11 @@ class UIManager(EventDispatcher):
 
     def on_key_press(self, symbol: int, modifiers: int):
         """Converts key press event to UI event and dispatches it."""
-        return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))  # type: ignore
+        return self.dispatch_ui_event(UIKeyPressEvent(self, symbol, modifiers))
 
     def on_key_release(self, symbol: int, modifiers: int):
         """Converts key release event to UI event and dispatches it."""
-        return self.dispatch_ui_event(UIKeyReleaseEvent(self, symbol, modifiers))  # type: ignore
+        return self.dispatch_ui_event(UIKeyReleaseEvent(self, symbol, modifiers))
 
     def on_text(self, text):
         """Converts text event to UI event and dispatches it."""
@@ -442,7 +442,7 @@ class UIManager(EventDispatcher):
         self.trigger_render()
 
     @property
-    def rect(self) -> Rect:  # type: ignore
+    def rect(self) -> Rect:
         """The rect of the UIManager, which is the window size."""
         return LBWH(0, 0, *self.window.get_size())
 
