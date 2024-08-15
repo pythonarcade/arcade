@@ -165,9 +165,6 @@ class UIAnchorLayout(UILayout):
             if shmx_h:
                 new_child_rect = new_child_rect.max_size(height=shmx_h)
 
-        # Stay in bounds
-        new_child_rect = new_child_rect.max_size(*self.content_size)
-
         # Calculate position
         content_rect = self.content_rect
 
@@ -525,7 +522,6 @@ class UIGridLayout(UILayout):
         vertical_spacing: int = 0,
         column_count: int = 1,
         row_count: int = 1,
-        style=None,
         **kwargs,
     ):
         super(UIGridLayout, self).__init__(
@@ -536,7 +532,6 @@ class UIGridLayout(UILayout):
             children=children,
             size_hint=size_hint,
             size_hint_max=size_hint_max,
-            style=style,
             **kwargs,
         )
         self._size_hint_requires_update = True
