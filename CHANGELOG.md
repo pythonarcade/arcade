@@ -131,6 +131,10 @@ API in a way that is not compatible with how it was used in 2.6.
   * Update and add example code.
   * Iterable (providing direct children)
 
+* Updated widgets
+  * `arcade.gui.widgets.text.UIInputText` emits `on_change` event when new text input or set
+  * `arcade.gui.widgets.slider.UITextureSlider` texture names changed to fit general naming pattern
+
 * New widgets:
 
   * `arcade.gui.widgets.dropdown.UIDropdown`

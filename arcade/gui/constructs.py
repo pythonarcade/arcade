@@ -139,21 +139,16 @@ class UIButtonRow(UIBoxLayout):
 
         self.button_factory = button_factory
 
-    def add_button(
-        self,
-        label: str,
-        *,
-        style=None,
-        multiline=False,
-    ):
+    def add_button(self, label: str, *, style=None, multiline=False, **kwargs):
         """Add a button to the row.
 
         Args:
             label: The text of the button.
             style: The style of the button.
             multiline: Whether the button is multiline or not.
+            **kwargs: Passed to the button factory.
         """
-        button = self.button_factory(text=label, style=style, multiline=multiline)
+        button = self.button_factory(text=label, style=style, multiline=multiline, **kwargs)
         button.on_click = self._on_click
         self.add(button)
         return button

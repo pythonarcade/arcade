@@ -315,8 +315,8 @@ def test_vertical_resize_children_according_size_hint(window):
     box._do_layout()
 
     assert box.size == Vec2(300, 400)
-    assert dummy_1.size == Vec2(300, approx(100 + 200 / 3 * 2))
-    assert dummy_2.size == Vec2(150, approx(100 + 200 / 3 * 1))
+    assert dummy_1.size == Vec2(300, approx(400 / 3 * 2))
+    assert dummy_2.size == Vec2(150, approx(400 / 3 * 1))
 
 
 def test_vertical_ignores_size_hint_none(window):
@@ -369,8 +369,8 @@ def test_horizontal_resize_children_according_size_hint(window):
     box._do_layout()
 
     assert box.size == Vec2(300, 400)
-    assert dummy_1.size == Vec2(approx(100 + 100 / 3 * 2), 400)
-    assert dummy_2.size == Vec2(approx(100 + 100 / 3 * 1), 200)
+    assert dummy_1.size == Vec2(box.width * 2 / 3, 400)
+    assert dummy_2.size == Vec2(box.width * 1 / 3, 200)
 
 
 def test_horizontal_ignores_size_hint_none(window):
@@ -432,3 +432,73 @@ def test_children_change_size_hint_min(window):
 
 
 # TODO test size hint < 1 (do not take full width)
+
+
+def test_children_size_hint_sum_below_1(window):
+    ui = UIManager()
+    box1 = UIBoxLayout(width=100, height=100, vertical=False, size_hint=None)
+    dummy_1 = UIDummy(width=10, height=10, size_hint=(0.2, 1))
+    dummy_2 = UIDummy(width=10, height=10, size_hint=(0.5, 1))
+
+    ui.add(box1)
+    box1.add(dummy_1)
+    box1.add(dummy_2)
+
+    ui.execute_layout()
+
+    assert box1.size == Vec2(100, 100)
+    assert dummy_1.size == Vec2(20, 100)
+    assert dummy_2.size == Vec2(50, 100)
+
+
+def test_children_size_hint_sum_below_1_with_shm(window):
+    ui = UIManager()
+    box1 = UIBoxLayout(width=100, height=100, vertical=False, size_hint=None)
+    dummy_1 = UIDummy(width=10, height=10, size_hint=(0.2, 1))
+    dummy_2 = UIDummy(width=10, height=10, size_hint=(0.5, 1), size_hint_min=(40, 100))
+
+    ui.add(box1)
+    box1.add(dummy_1)
+    box1.add(dummy_2)
+
+    ui.execute_layout()
+
+    assert box1.size == Vec2(100, 100)
+    assert dummy_1.size == Vec2(20, 100)
+    assert dummy_2.size == Vec2(50, 100)
+
+
+def test_children_size_hint_sum_below_1_with_shm_to_big(window):
+    """size_hint_min of second child requests more space, then would be available."""
+    ui = UIManager()
+    box1 = UIBoxLayout(width=100, height=100, vertical=False, size_hint=None)
+    dummy_1 = UIDummy(width=10, height=10, size_hint=(0.2, 1))
+    dummy_2 = UIDummy(width=10, height=10, size_hint=(0.5, 1), size_hint_min=(90, 100))
+
+    ui.add(box1)
+    box1.add(dummy_1)
+    box1.add(dummy_2)
+
+    ui.execute_layout()
+
+    assert box1.size == Vec2(100, 100)
+    assert dummy_1.size == Vec2(10, 100)
+    assert dummy_2.size == Vec2(90, 100)
+
+
+def test_children_size_hint_sum_above_1(window):
+    """Children get less space than requested. but relative to their size hints."""
+    ui = UIManager()
+    box1 = UIBoxLayout(width=100, height=100, vertical=False, size_hint=None)
+    dummy_1 = UIDummy(width=10, height=10, size_hint=(0.5, 1))
+    dummy_2 = UIDummy(width=10, height=10, size_hint=(0.6, 1))
+
+    ui.add(box1)
+    box1.add(dummy_1)
+    box1.add(dummy_2)
+
+    ui.execute_layout()
+
+    assert box1.size == Vec2(100, 100)
+    assert dummy_1.width == approx(45.45, rel=0.01)
+    assert dummy_2.width == approx(54.55, rel=0.01)

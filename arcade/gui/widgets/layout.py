@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional, TypeVar, cast
+from dataclasses import dataclass
+from typing import Iterable, Optional, TypeVar, cast, List
 
-from typing_extensions import override
+from typing_extensions import override, Literal
 
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UILayout, UIWidget
@@ -347,51 +348,41 @@ class UIBoxLayout(UILayout):
         if not self.children:
             return
 
-        if self.vertical:
-            available_width = self.content_width
+        # main axis
+        constraints = [
+            _C.from_widget_height(child) if self.vertical else _C.from_widget_width(child)
+            for child, _ in self._children
+        ]
 
-            # Determine if some space is available for children to grow
-            available_height = max(0, self.height - self.size_hint_min[1])
-            total_size_hint_height = (
-                sum(child.size_hint[1] or 0 for child in self.children if child.size_hint) or 1
-            )  # Prevent division by zero
+        available_space = (
+            self.content_height if self.vertical else self.content_width
+        ) - self._space_between * (len(self.children) - 1)
+        main_sizes = _box_axis_algorithm(constraints, available_space)
 
-            for child in self.children:
-                new_rect = child.rect
+        # orthogonal axis
+        constraints = [
+            _C.from_widget_width(child) if self.vertical else _C.from_widget_height(child)
+            for child, _ in self._children
+        ]
+        orthogonal_sizes = _box_orthogonal_algorithm(
+            constraints, self.content_width if self.vertical else self.content_height
+        )
 
-                # Collect all size hints
-                sh_w, sh_h = child.size_hint or (None, None)
-                shmn_w, shmn_h = child.size_hint_min or (None, None)
-                shmx_w, shmx_h = child.size_hint_max or (None, None)
+        for (child, data), main_size, ortho_size in zip(
+            self._children, main_sizes, orthogonal_sizes
+        ):
+            new_rect = child.rect.resize(
+                height=main_size if self.vertical else ortho_size,
+                width=ortho_size if self.vertical else main_size,
+            )
+            new_rect = (
+                new_rect.align_x(start_x + self.content_width / 2)
+                if self.vertical
+                else new_rect.align_y(start_y - self.content_height // 2)
+            )
 
-                # Apply y-axis
-                if sh_h is not None:
-                    min_height_value = shmn_h or 0
-
-                    # Maximal growth to parent.width * shw
-                    available_growth_height = min_height_value + available_height * (
-                        sh_h / total_size_hint_height
-                    )
-                    max_growth_height = self.height * sh_h
-                    new_rect = new_rect.resize(
-                        height=min(available_growth_height, max_growth_height)
-                    )
-
-                    if shmn_h is not None:
-                        new_rect = new_rect.min_size(height=shmn_h)
-                    if shmx_h is not None:
-                        new_rect = new_rect.max_size(height=shmx_h)
-
-                # Apply x-axis
-                if sh_w is not None:
-                    new_rect = new_rect.resize(width=max(available_width * sh_w, shmn_w or 0))
-
-                    if shmn_w is not None:
-                        new_rect = new_rect.min_size(width=shmn_w)
-                    if shmx_w is not None:
-                        new_rect = new_rect.max_size(width=shmx_w)
-
-                # Align the children
+            # align on main and orthogonal axis and update start position
+            if self.vertical:
                 if self.align == "left":
                     new_rect = new_rect.align_left(start_x)
                 elif self.align == "right":
@@ -399,81 +390,21 @@ class UIBoxLayout(UILayout):
                 else:
                     center_x = start_x + self.content_width // 2
                     new_rect = new_rect.align_x(center_x)
-
                 new_rect = new_rect.align_top(start_y)
-                child.rect = new_rect
-
-                start_y -= child.height
-                start_y -= self._space_between
-        else:
-            center_y = start_y - self.content_height // 2
-
-            available_height = self.content_height
-
-            # Calculate if some space is available for children to grow.
-            available_width = max(0, self.width - self.size_hint_min[0])
-            total_size_hint_width = (
-                sum(child.size_hint[0] or 0 for child in self.children if child.size_hint) or 1
-            )  # Prevent division by zero
-
-            # 0. check if any hint given, if not, continue with step 4.
-            #   1. change size to minimal
-            #   2. grow using size_hint
-            #   3. ensure size_hint_max
-            # 4. place child
-
-            for child in self.children:
-                new_rect = child.rect
-
-                # Collect all size hints
-                sh_w, sh_h = child.size_hint or (None, None)
-                shmn_w, shmn_h = child.size_hint_min or (None, None)
-                shmx_w, shmx_h = child.size_hint_max or (None, None)
-
-                # Apply x-axis
-                if sh_w is not None:
-                    min_width_value = shmn_w or 0
-
-                    # Maximal growth to parent.width * shw
-                    available_growth_width = min_width_value + available_width * (
-                        sh_w / total_size_hint_width
-                    )
-                    max_growth_width = self.width * sh_w
-                    new_rect = new_rect.resize(
-                        width=min(
-                            available_growth_width, max_growth_width
-                        )  # This does not enforce the minimum width
-                    )
-
-                    if shmn_w is not None:
-                        new_rect = new_rect.min_size(width=shmn_w)
-
-                    if shmx_w is not None:
-                        new_rect = new_rect.max_size(width=shmx_w)
-
-                # Apply vertical axis
-                if sh_h is not None:
-                    new_rect = new_rect.resize(height=max(available_height * sh_h, shmn_h or 0))
-
-                    if shmn_h is not None:
-                        new_rect = new_rect.min_size(height=shmn_h)
-
-                    if shmx_h is not None:
-                        new_rect = new_rect.max_size(height=shmx_h)
-
-                # Align all children
+                start_y -= main_size + self._space_between
+            else:
                 if self.align == "top":
                     new_rect = new_rect.align_top(start_y)
                 elif self.align == "bottom":
                     new_rect = new_rect.align_bottom(start_y - self.content_height)
                 else:
+                    center_y = start_y - self.content_height // 2
                     new_rect = new_rect.align_y(center_y)
-
                 new_rect = new_rect.align_left(start_x)
-                child.rect = new_rect
+                start_x += main_size + self._space_between
 
-                start_x += child.width
-                start_x += self._space_between
+            # update child rect
+            child.rect = new_rect
 
 
 class UIGridLayout(UILayout):
@@ -558,9 +489,9 @@ class UIGridLayout(UILayout):
     def add(
         self,
         child: W,
-        col_num: int = 0,
-        row_num: int = 0,
-        col_span: int = 1,
+        column: int = 0,
+        row: int = 0,
+        column_span: int = 1,
         row_span: int = 1,
         **kwargs,
     ) -> W:
@@ -568,11 +499,11 @@ class UIGridLayout(UILayout):
 
         Args:
             child: Specified widget to add as a child of the layout.
-            col_num: Column index in which the widget is to be added.
+            column: Column index in which the widget is to be added.
                 The first column at the left of the widget starts at 0.
-            row_num: The row number in which the widget is to be added.
+            row: The row number in which the widget is to be added.
                 The first row at the top of the layout is numbered 0.
-            col_span: Number of columns the widget will stretch for.
+            column_span: Number of columns the widget will stretch for.
             row_span: Number of rows the widget will stretch for.
         """
         # subscribe to child's changes, which might affect the own size hint
@@ -584,9 +515,9 @@ class UIGridLayout(UILayout):
 
         return super().add(
             child,
-            col_num=col_num,
-            row_num=row_num,
-            col_span=col_span,
+            column=column,
+            row=row,
+            column_span=column_span,
             row_span=row_span,
             **kwargs,
         )
@@ -623,9 +554,9 @@ class UIGridLayout(UILayout):
         ]
 
         for child, data in self._children:
-            col_num = data["col_num"]
-            row_num = data["row_num"]
-            col_span = data["col_span"]
+            col_num = data["column"]
+            row_num = data["row"]
+            col_span = data["column_span"]
             row_span = data["row_span"]
 
             shmn_w, shmn_h = UILayout.min_size_of(child)
@@ -682,9 +613,9 @@ class UIGridLayout(UILayout):
         ]
 
         for child, data in self._children:
-            col_num = data["col_num"]
-            row_num = data["row_num"]
-            col_span = data["col_span"]
+            col_num = data["column"]
+            row_num = data["row"]
+            col_span = data["column_span"]
             row_span = data["row_span"]
 
             for i in range(col_num, col_span + col_num):
@@ -809,3 +740,116 @@ class UIGridLayout(UILayout):
                         max_height_row = actual_row_height
 
             start_y -= max_height_row
+
+
+@dataclass
+class _C:
+    """Constrain values for the box algorithm"""
+
+    min: float | None
+    max: float | None
+    hint: float | None
+    final_size: float = 0
+    """The final size of the entry which will be returned by the algorithm"""
+
+    @staticmethod
+    def from_widget(widget: UIWidget, dimension: Literal["width", "height"]) -> _C:
+        index = 0 if dimension == "width" else 1
+        shmin = widget.size_hint_min[index] if widget.size_hint_min else None
+        shmax = widget.size_hint_max[index] if widget.size_hint_max else None
+        sh = widget.size_hint[index] if widget.size_hint else None
+        return _C(
+            min=widget.size[index] if sh is None else shmin,
+            max=widget.size[index] if sh is None else shmax,
+            hint=sh,
+        )
+
+    @staticmethod
+    def from_widget_width(widget: UIWidget) -> _C:
+        return _C.from_widget(widget, "width")
+
+    @staticmethod
+    def from_widget_height(widget: UIWidget) -> _C:
+        return _C.from_widget(widget, "height")
+
+
+def _box_orthogonal_algorithm(constraints: list[_C], container_size: float) -> List[float]:
+    """Calculate the 1 dimensional size of each entry based on the hint value and the available
+    space in the container.
+
+    This calculation is done for the orthogonal axis of the box layout, which only applies the size
+    hint to the orthogonal axis.
+
+    Args:
+        constraints: List of constraints with hint, min and max values
+        container_size: The total size of the container
+    """
+    # fix hint when None
+    for c in constraints:
+        c.hint = c.hint or 0
+
+    # calculate the width of each entry based on the hint
+    for c in constraints:
+        size = container_size * c.hint
+        c.min = c.min or 0
+        c.max = container_size if c.max is None else c.max
+
+        c.final_size = min(max(c.min, size), c.max)  # clamp width to min and max values
+
+    return [c.final_size for c in constraints]
+
+
+def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[float]:
+    """
+    The box algorithm calculates the 1 dimensional size of each entry based on the hint value and
+    the available space in the container.
+
+    Args:
+        constraints: List of constraints with hint, min and max values
+        container_size: The total size of the container
+
+    Returns:
+        List of tuples with the sizes of each element
+    """
+    # fix hint when None
+    for c in constraints:
+        c.hint = c.hint or 0
+
+    # normalize hint - which will cover cases, where the sum of the hints is greater than 1
+    # children will get a relative size based on their hint
+    total_hint = sum(c.hint for c in constraints)
+    if total_hint > 1:
+        for c in constraints:
+            c.hint /= total_hint
+
+    # calculate the width of each entry based on the hint
+    for c in constraints:
+        size = container_size * c.hint
+        c.min = c.min or 0
+        c.max = container_size if c.max is None else c.max
+
+        c.final_size = min(max(c.min, size), c.max)  # clamp width to min and max values
+
+    # ---- Constantin
+    # calculate scaling factor
+    total_size = sum(c.final_size for c in constraints)
+    growth_diff = total_size - sum(c.min for c in constraints)  # calculate available space
+    total_adjustable_size = container_size - sum(c.min for c in constraints)
+
+    if growth_diff != 0:
+        scaling_factor = total_adjustable_size / growth_diff
+
+        # adjust final_width based on scaling factor if scaling factor is less than 1
+        if scaling_factor < 1:
+            for c in constraints:
+                c.final_size *= scaling_factor
+
+    # recheck min constraints
+    for c in constraints:
+        c.final_size = max(c.final_size, c.min)
+
+    # recheck max constraints
+    for c in constraints:
+        c.final_size = min(c.final_size, c.max)
+
+    return [c.final_size for c in constraints]

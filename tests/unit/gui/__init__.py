@@ -11,26 +11,34 @@ class InteractionMixin:
         super().__init__(*args, **kwargs)
         self.event_history: List[UIEvent] = []
 
-    def move_mouse(self, x: int, y: int):
+    def move_mouse(self, x: int | float, y: int | float):
         self.on_mouse_motion(x, y, 0, 0)
 
-    def click_and_hold(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
+    def click_and_hold(self, x: int | float, y: int | float, button=arcade.MOUSE_BUTTON_LEFT):
         self.on_mouse_press(x=x, y=y, button=button, modifiers=0)
 
-    def drag(self, x: int, y: int, dx=0.0, dy=0.0, buttons=arcade.MOUSE_BUTTON_LEFT, modifiers=0):
+    def drag(
+        self,
+        x: int | float,
+        y: int | float,
+        dx=0.0,
+        dy=0.0,
+        buttons=arcade.MOUSE_BUTTON_LEFT,
+        modifiers=0,
+    ):
         self.on_mouse_drag(x=x, y=y, dx=dx, dy=dy, buttons=buttons, modifiers=modifiers)
 
-    def release(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
+    def release(self, x: int | float, y: int | float, button=arcade.MOUSE_BUTTON_LEFT):
         self.on_mouse_release(x=x, y=y, button=button, modifiers=0)
 
     def type_text(self, text: str):
         self.on_text(text)
 
-    def click(self, x: int, y: int, button=arcade.MOUSE_BUTTON_LEFT):
+    def click(self, x: int | float, y: int | float, button=arcade.MOUSE_BUTTON_LEFT):
         self.click_and_hold(x, y, button=button)
         self.release(x, y, button=button)
 
-    def right_click(self, x: int, y: int):
+    def right_click(self, x: int | float, y: int | float):
         self.click_and_hold(x, y, button=arcade.MOUSE_BUTTON_RIGHT)
         self.release(x, y, button=arcade.MOUSE_BUTTON_RIGHT)
 

@@ -387,24 +387,30 @@ class UITextureSlider(UISlider):
 
     You can copy this as-is into your own project, or you can modify
     the class to have more features as needed.
+
+    Args:
+        track_texture: Texture for the track.
+        thumb_texture: Texture for the thumb.
+        style: Used to style the slider for different states.
+        **kwargs: Passed to UISlider.
     """
 
     def __init__(
         self,
-        track: Union[Texture, NinePatchTexture],
-        thumb: Union[Texture, NinePatchTexture],
+        track_texture: Union[Texture, NinePatchTexture],
+        thumb_texture: Union[Texture, NinePatchTexture],
         style=None,
         **kwargs,
     ):
-        self._track = track
-        self._thumb = thumb
+        self._track_tex = track_texture
+        self._thumb_tex = thumb_texture
 
         super().__init__(style=style or UISlider.DEFAULT_STYLE, **kwargs)
 
     @override
     def _render_track(self, surface: Surface):
         style: UISliderStyle = self.get_current_style()  # type: ignore
-        surface.draw_texture(0, 0, self.width, self.height, self._track)
+        surface.draw_texture(0, 0, self.width, self.height, self._track_tex)
 
         # TODO accept these as constructor params
         slider_height = self.height // 4
@@ -427,9 +433,9 @@ class UITextureSlider(UISlider):
         cursor_center_x = self._thumb_x
         rel_cursor_x = cursor_center_x - self.left
         surface.draw_texture(
-            x=rel_cursor_x - self._thumb.width // 4 + 2,
+            x=rel_cursor_x - self._thumb_tex.width // 4 + 2,
             y=0,
-            width=self._thumb.width // 2,
+            width=self._thumb_tex.width // 2,
             height=self.height,
-            tex=self._thumb,
+            tex=self._thumb_tex,
         )

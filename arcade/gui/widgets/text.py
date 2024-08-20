@@ -6,11 +6,12 @@ import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
-from typing_extensions import override
+from typing_extensions import override, Literal
 
 import arcade
 from arcade.gui.events import (
     UIEvent,
+    UIOnChangeEvent,
     UIMouseDragEvent,
     UIMouseEvent,
     UIMousePressEvent,
@@ -364,6 +365,8 @@ class UIInputText(UIWidget):
 
     By default, a border is drawn around the input field.
 
+    The widget emits a :py:class:`~arcade.gui.UIOnChangeEvent` event when the text changes.
+
     Args:
         x: x position (default anchor is bottom-left).
         y: y position (default anchor is bottom-left).
@@ -454,6 +457,8 @@ class UIInputText(UIWidget):
 
         self._blink_state = self._get_caret_blink_state()
 
+        self.register_event_type("on_change")
+
     def _get_caret_blink_state(self):
         """Check whether or not the caret is currently blinking or not."""
         return self.caret.visible and self._active and self.caret._blink_visible
@@ -492,6 +497,7 @@ class UIInputText(UIWidget):
 
         # If active pass all non press events to caret
         if self._active:
+            old_text = self.text
             # Act on events if active
             if isinstance(event, UITextInputEvent):
                 self.caret.on_text(event.text)
@@ -514,6 +520,9 @@ class UIInputText(UIWidget):
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
                     self.trigger_full_render()
+
+            if old_text != self.text:
+                self.dispatch_event("on_change", UIOnChangeEvent(self, old_text, self.text))
 
         if super().on_event(event):
             return EVENT_HANDLED
@@ -563,7 +572,9 @@ class UIInputText(UIWidget):
     @text.setter
     def text(self, value):
         if value != self.doc.text:
+            old_text = self.doc.text
             self.doc.text = value
+            self.dispatch_event("on_change", UIOnChangeEvent(self, old_text, self.text))
 
             # if bg color or texture is set, render this widget only
             if self._bg_color or self._bg_tex:
@@ -578,6 +589,10 @@ class UIInputText(UIWidget):
         self.prepare_render(surface)
 
         self.layout.draw()
+
+    def on_change(self, event: UIOnChangeEvent):
+        """Event handler for text change."""
+        pass
 
 
 class UITextArea(UIWidget):
@@ -601,6 +616,10 @@ class UITextArea(UIWidget):
             of space of the parent should be requested.
         size_hint_min: Minimum size hint width and height in pixel.
         size_hint_max: Maximum size hint width and height in pixel.
+        document_mode: Mode of the document. Can be "PLAIN", "ATTRIBUTED", or "HTML".
+            PLAIN will decode the text as plain text, ATTRIBUTED and HTML will decode the text as pyglet documents here
+            https://pyglet.readthedocs.io/en/latest/programming_guide/text.html
+        **kwargs: passed to :py:class:`~arcade.gui.UIWidget`.
     """
 
     def __init__(
@@ -619,6 +638,7 @@ class UITextArea(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
+        document_mode: Literal["PLAIN", "ATTRIBUTED", "HTML"] = "PLAIN",
         **kwargs,
     ):
         super().__init__(
@@ -636,10 +656,17 @@ class UITextArea(UIWidget):
         # Measured in pixels per 'click'
         self.scroll_speed = scroll_speed if scroll_speed is not None else font_size
 
-        self.doc: AbstractDocument = pyglet.text.decode_text(text)
+        self.doc: AbstractDocument
+        if document_mode == "PLAIN":
+            self.doc = pyglet.text.decode_text(text)
+        elif document_mode == "ATTRIBUTED":
+            self.doc = pyglet.text.decode_attributed(text)
+        elif document_mode == "HTML":
+            self.doc = pyglet.text.decode_html(text)
+
         self.doc.set_style(
             0,
-            12,
+            len(text),
             dict(
                 font_name=font_name,
                 font_size=font_size,

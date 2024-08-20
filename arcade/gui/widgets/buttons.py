@@ -318,6 +318,8 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         """Render a flat button, graphical representation depends on the current state."""
         self.prepare_render(surface)
         style: UIFlatButton.UIStyle = self.get_current_style()
+        if style is None:
+            raise ValueError(f"No style found for state {self.get_current_state()}")
 
         # update label
         # this might trigger another render run, due to label size change
