@@ -4,9 +4,9 @@ from arcade.gui.widgets.layout import _C, _box_axis_algorithm, _box_orthogonal_a
 def test_simple_values(window):
     # GIVEN
     entries = [
-        _C(hint=0.1, min=None, max=None),
-        _C(hint=0.1, min=None, max=None),
-        _C(hint=0.5, min=None, max=None),
+        _C(hint=0.1, min=0, max=None),
+        _C(hint=0.1, min=0, max=None),
+        _C(hint=0.5, min=0, max=None),
     ]
 
     # WHEN
@@ -19,8 +19,8 @@ def test_simple_values(window):
 def test_issue_example_with_min_value():
     # GIVEN
     entries = [
-        _C(hint=0.2, min=None, max=None),
-        _C(hint=0.2, min=None, max=None),
+        _C(hint=0.2, min=0, max=None),
+        _C(hint=0.2, min=0, max=None),
         _C(hint=0.3, min=40, max=None),
     ]
 
@@ -34,9 +34,9 @@ def test_issue_example_with_min_value():
 def test_issue_example_with_max_value():
     # GIVEN
     entries = [
-        _C(hint=0.2, min=None, max=None),
-        _C(hint=0.2, min=None, max=None),
-        _C(hint=1, min=None, max=50),
+        _C(hint=0.2, min=0, max=None),
+        _C(hint=0.2, min=0, max=None),
+        _C(hint=1, min=0, max=50),
     ]
 
     # WHEN
