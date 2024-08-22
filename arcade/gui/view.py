@@ -17,7 +17,8 @@ class UIView(View):
     This class provides two draw callbacks: on_draw_before_ui and on_draw_after_ui.
     Use these to draw custom elements before or after the UI elements are drawn.
 
-    The screen is cleared before on_draw_before_ui is called with the background color of the window.
+    The screen is cleared before on_draw_before_ui is called
+    with the background color of the window.
 
     If you override ``on_show_view`` or ``on_show_view``,
     don't forget to call super().on_show_view() or super().on_hide_view().

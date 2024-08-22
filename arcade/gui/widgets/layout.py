@@ -61,6 +61,10 @@ class UIAnchorLayout(UILayout):
 
     default_anchor_x = "center"
     default_anchor_y = "center"
+    _restrict_child_size = False
+    """Whether to restrict the child size to the layout size.
+    For scroll use cases this is not wanted, but for UITextWidgets it is.
+    """
 
     def __init__(
         self,
@@ -158,6 +162,9 @@ class UIAnchorLayout(UILayout):
             if shmx_w:
                 new_child_rect = new_child_rect.max_size(width=shmx_w)
 
+            if self._restrict_child_size:
+                new_child_rect = new_child_rect.max_size(width=self.content_width)
+
         if sh_h is not None:
             new_child_rect = new_child_rect.resize(height=self.content_height * sh_h)
 
@@ -165,6 +172,9 @@ class UIAnchorLayout(UILayout):
                 new_child_rect = new_child_rect.min_size(height=shmn_h)
             if shmx_h:
                 new_child_rect = new_child_rect.max_size(height=shmx_h)
+
+            if self._restrict_child_size:
+                new_child_rect = new_child_rect.max_size(height=self.content_height)
 
         # Calculate position
         content_rect = self.content_rect
@@ -744,23 +754,37 @@ class UIGridLayout(UILayout):
 
 @dataclass
 class _C:
-    """Constrain values for the box algorithm"""
+    """Constrain values for the box algorithm.
 
-    min: float | None
+    size_hint and min values of None are resolved to 0.0.
+    """
+
+    min: float
     max: float | None
-    hint: float | None
-    final_size: float = 0
+    hint: float
+    final_size: float = 0.0
     """The final size of the entry which will be returned by the algorithm"""
 
     @staticmethod
     def from_widget(widget: UIWidget, dimension: Literal["width", "height"]) -> _C:
         index = 0 if dimension == "width" else 1
-        shmin = widget.size_hint_min[index] if widget.size_hint_min else None
-        shmax = widget.size_hint_max[index] if widget.size_hint_max else None
+
+        # get hint values from different formats None and (float|None, float|None)
         sh = widget.size_hint[index] if widget.size_hint else None
+        sh_min = widget.size_hint_min[index] if widget.size_hint_min else None
+        sh_max = widget.size_hint_max[index] if widget.size_hint_max else None
+
+        # resolve min and max values if no size hint is given
+        min_value = widget.size[index] if sh is None else sh_min
+        max_value = widget.size[index] if sh is None else sh_max
+
+        # clean up None values
+        min_value = min_value or 0
+        sh = sh or 0.0
+
         return _C(
-            min=widget.size[index] if sh is None else shmin,
-            max=widget.size[index] if sh is None else shmax,
+            min=min_value,
+            max=max_value,
             hint=sh,
         )
 
@@ -784,14 +808,9 @@ def _box_orthogonal_algorithm(constraints: list[_C], container_size: float) -> L
         constraints: List of constraints with hint, min and max values
         container_size: The total size of the container
     """
-    # fix hint when None
-    for c in constraints:
-        c.hint = c.hint or 0
-
     # calculate the width of each entry based on the hint
     for c in constraints:
         size = container_size * c.hint
-        c.min = c.min or 0
         c.max = container_size if c.max is None else c.max
 
         c.final_size = min(max(c.min, size), c.max)  # clamp width to min and max values
@@ -811,11 +830,7 @@ def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[fl
     Returns:
         List of tuples with the sizes of each element
     """
-    # fix hint when None
-    for c in constraints:
-        c.hint = c.hint or 0
-
-    # normalize hint - which will cover cases, where the sum of the hints is greater than 1
+    # normalize hint - which will cover cases, where the sum of the hints is greater than 1.
     # children will get a relative size based on their hint
     total_hint = sum(c.hint for c in constraints)
     if total_hint > 1:
@@ -826,9 +841,9 @@ def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[fl
     for c in constraints:
         size = container_size * c.hint
         c.min = c.min or 0
-        c.max = container_size if c.max is None else c.max
+        max_value = container_size if c.max is None else c.max
 
-        c.final_size = min(max(c.min, size), c.max)  # clamp width to min and max values
+        c.final_size = min(max(c.min, size), max_value)  # clamp width to min and max values
 
     # ---- Constantin
     # calculate scaling factor
@@ -850,6 +865,7 @@ def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[fl
 
     # recheck max constraints
     for c in constraints:
-        c.final_size = min(c.final_size, c.max)
+        max_value = container_size if c.max is None else c.max
+        c.final_size = min(c.final_size, max_value)
 
     return [c.final_size for c in constraints]

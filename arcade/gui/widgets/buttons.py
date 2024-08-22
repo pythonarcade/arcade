@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Optional, Union
 
 import arcade
-from arcade import Texture
+from arcade import Texture, uicolor, color
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import DictProperty, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
@@ -25,9 +25,8 @@ class UITextureButtonStyle(UIStyleBase):
     """
 
     font_size: int = 12
-    font_name: FontNameOrNames = ("calibri", "arial")
-    font_color: RGBA255 = arcade.color.WHITE
-    border_width: int = 2
+    font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
+    font_color: RGBA255 = uicolor.WHITE_CLOUDS
 
 
 class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget):
@@ -64,22 +63,13 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-            font_size=12,
-            font_name=("calibri", "arial"),
-            font_color=arcade.color.WHITE,
-            border_width=2,
+            font_color=uicolor.WHITE_CLOUDS,
         ),
         "press": UIStyle(
-            font_size=12,
-            font_name=("calibri", "arial"),
-            font_color=arcade.color.BLACK,
-            border_width=2,
+            font_color=uicolor.DARK_BLUE_MIDNIGHT_BLUE,
         ),
         "disabled": UIStyle(
-            font_size=12,
-            font_name=("calibri", "arial"),
-            font_color=arcade.color.WHITE,
-            border_width=2,
+            font_color=uicolor.WHITE_SILVER,
         ),
     }
 
@@ -240,38 +230,68 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         """
 
         font_size: int = 12
-        font_name: FontNameOrNames = ("calibri", "arial")
-        font_color: RGBA255 = arcade.color.WHITE
-        bg: RGBA255 = (21, 19, 21, 255)
+        font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
+        font_color: RGBA255 = color.WHITE
+        bg: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
         border: Optional[RGBA255] = None
         border_width: int = 0
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-            font_size=12,
-            font_name=("calibri", "arial"),
-            font_color=arcade.color.WHITE,
-            bg=(21, 19, 21, 255),
-            border=(77, 81, 87, 255),
+            font_color=color.WHITE,
+            bg=uicolor.DARK_BLUE_WET_ASPHALT,
+            border=uicolor.GRAY_CONCRETE,
+        ),
+        "press": UIStyle(
+            font_color=uicolor.DARK_BLUE_MIDNIGHT_BLUE,
+            bg=uicolor.WHITE_CLOUDS,
+            border=uicolor.GRAY_CONCRETE,
+        ),
+        "disabled": UIStyle(
+            font_color=uicolor.WHITE_SILVER,
+            bg=uicolor.GRAY_ASBESTOS,
+        ),
+    }
+
+    STYLE_RED = {
+        "normal": UIStyle(
+            font_color=uicolor.WHITE_CLOUDS,
+            bg=uicolor.RED_ALIZARIN,
+            border=uicolor.RED_POMEGRANATE,
+        ),
+        "hover": UIStyle(
+            bg=uicolor.RED_ALIZARIN,
+            font_color=uicolor.WHITE_CLOUDS,
+            border=uicolor.WHITE_SILVER,
             border_width=2,
         ),
         "press": UIStyle(
-            font_size=12,
-            font_name=("calibri", "arial"),
-            font_color=arcade.color.BLACK,
-            bg=arcade.color.WHITE,
-            border=arcade.color.WHITE,
+            bg=uicolor.RED_POMEGRANATE,
+            font_color=uicolor.WHITE_CLOUDS,
+            border=uicolor.WHITE_SILVER,
             border_width=2,
         ),
         "disabled": UIStyle(
-            font_size=12,
-            font_name=("calibri", "arial"),
-            font_color=arcade.color.WHITE,
-            bg=arcade.color.GRAY,
-            border=None,
+            bg=uicolor.GRAY_ASBESTOS,
+        ),
+    }
+
+    STYLE_BLUE = {
+        "normal": UIStyle(bg=uicolor.BLUE_PETER_RIVER, font_color=uicolor.WHITE_CLOUDS),
+        "hover": UIStyle(
+            bg=uicolor.BLUE_BELIZE_HOLE,
+            font_color=uicolor.WHITE_CLOUDS,
+            border=uicolor.WHITE_SILVER,
             border_width=2,
         ),
+        "press": UIStyle(
+            bg=uicolor.DARK_BLUE_MIDNIGHT_BLUE,
+            font_color=uicolor.WHITE_CLOUDS,
+            border=uicolor.WHITE_SILVER,
+            border_width=2,
+        ),
+        "disabled": UIStyle(bg=uicolor.GRAY_ASBESTOS),
     }
 
     def __init__(

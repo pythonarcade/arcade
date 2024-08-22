@@ -84,7 +84,7 @@ class UILabel(UIWidget):
         y: float = 0,
         width: Optional[float] = None,
         height: Optional[float] = None,
-        font_name=("Arial",),
+        font_name=("calibri", "arial"),
         font_size: float = 12,
         text_color: RGBOrA255 = arcade.color.WHITE,
         bold=False,
@@ -289,6 +289,7 @@ class UITextWidget(UIAnchorLayout):
 
     def __init__(self, *, text: str, multiline: bool = False, **kwargs):
         super().__init__(text=text, **kwargs)
+        self._restrict_child_size = True
         self._label = UILabel(
             text=text, multiline=multiline
         )  # UILabel supports width=None for multiline
@@ -617,7 +618,8 @@ class UITextArea(UIWidget):
         size_hint_min: Minimum size hint width and height in pixel.
         size_hint_max: Maximum size hint width and height in pixel.
         document_mode: Mode of the document. Can be "PLAIN", "ATTRIBUTED", or "HTML".
-            PLAIN will decode the text as plain text, ATTRIBUTED and HTML will decode the text as pyglet documents here
+            PLAIN will decode the text as plain text, ATTRIBUTED and HTML will
+            decode the text as pyglet documents here
             https://pyglet.readthedocs.io/en/latest/programming_guide/text.html
         **kwargs: passed to :py:class:`~arcade.gui.UIWidget`.
     """
@@ -630,7 +632,7 @@ class UITextArea(UIWidget):
         width: float = 400,
         height: float = 40,
         text: str = "",
-        font_name=("Arial",),
+        font_name=("arial", "calibri"),
         font_size: float = 12,
         text_color: RGBA255 = arcade.color.WHITE,
         multiline: bool = True,
