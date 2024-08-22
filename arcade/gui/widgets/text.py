@@ -6,16 +6,16 @@ import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
-from typing_extensions import override, Literal
+from typing_extensions import Literal, override
 
 import arcade
 from arcade.gui.events import (
     UIEvent,
-    UIOnChangeEvent,
     UIMouseDragEvent,
     UIMouseEvent,
     UIMousePressEvent,
     UIMouseScrollEvent,
+    UIOnChangeEvent,
     UITextInputEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Optional, Union
 
 import arcade
-from arcade import Texture, uicolor, color
+from arcade import Texture, color, uicolor
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import DictProperty, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget

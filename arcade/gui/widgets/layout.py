@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Optional, TypeVar, cast, List
+from typing import Iterable, List, Optional, TypeVar, cast
 
-from typing_extensions import override, Literal
+from typing_extensions import Literal, override
 
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UILayout, UIWidget
