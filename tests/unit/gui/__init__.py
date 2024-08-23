@@ -1,3 +1,5 @@
+from __future__ import annotations  # allow |-type hinting in Python 3.9
+
 from abc import abstractmethod
 from contextlib import contextmanager
 from typing import List
