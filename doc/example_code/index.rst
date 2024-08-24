@@ -611,6 +611,12 @@ Graphical User Interface
    :ref:`gui_3_buttons`
 
 
+.. figure:: images/thumbs/gui_5_uicolor_picker.png
+   :figwidth: 170px
+   :target: gui_5_uicolor_picker.html
+
+   :ref:`gui_5_uicolor_picker`
+
 .. note::
 
     Not all existing examples made it into this section. You can find more under `Arcade GUI Examples <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gui>`_

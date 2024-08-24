@@ -222,6 +222,8 @@ class UILabel(UIWidget):
         font_name: Optional[FontNameOrNames] = None,
         font_size: Optional[float] = None,
         font_color: Optional[Color] = None,
+        bold: Optional[bool | str] = None,
+        italic: Optional[bool] = None,
     ):
         """Update font of the label.
 
@@ -231,20 +233,34 @@ class UILabel(UIWidget):
                 success.
             font_size: Font size of font.
             font_color: Color of the text.
+            bold: If enabled, the label's text will be in a **bold** style.
+            italic: If enabled, the label's text will be in an *italic*
         """
         font_name = font_name or self._label.font_name
         font_size = font_size or self._label.font_size
         font_color = font_color or self._label.color
+        font_bold = bold if bold is not None else self._label.bold
+        font_italic = italic if italic is not None else self._label.italic
 
         # Check if values actually changed, if then update and trigger render
         font_name_changed = self._label.font_name != font_name
         font_size_changed = self._label.font_size != font_size
         font_color_changed = self._label.color != font_color
-        if font_name_changed or font_size_changed or font_color_changed:
+        font_bold_changed = self._label.bold != font_bold
+        font_italic_changed = self._label.italic != font_italic
+        if (
+            font_name_changed
+            or font_size_changed
+            or font_color_changed
+            or font_bold_changed
+            or font_italic_changed
+        ):
             with self._label:
                 self._label.font_name = font_name
                 self._label.font_size = font_size
                 self._label.color = font_color
+                self._label.bold = font_bold
+                self._label.italic = font_italic
             self._update_size_hint_min()
 
             # Optimised render behaviour
