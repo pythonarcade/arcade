@@ -4,12 +4,11 @@ Click on a color to select
 it and copy the arcade reference to the clipboard.
 
 If arcade and Python are properly installed, you can run this example with:
-python -m arcade.examples.gui.5_color_picker
+python -m arcade.examples.gui.5_uicolor_picker
 
 """
 
 from dataclasses import dataclass
-
 
 import arcade
 from arcade.gui import (
@@ -45,7 +44,8 @@ class Toast(arcade.gui.UILabel):
 
 
 class ColorButton(UITextWidget, UIInteractiveWidget):
-    """Button which shows a color and color name and emits a ChooseColorEvent event when clicked."""
+    """Button which shows a color and color name and
+    emits a ChooseColorEvent event when clicked."""
 
     def __init__(
         self,
@@ -145,7 +145,8 @@ class ColorView(arcade.gui.UIView):
                     color_name=name,
                     color=color,
                     # giving width and height is a workaround for a bug in the grid layout
-                    # we would want to set size_hint=(1, 1) and let the grid layout handle the size
+                    # we would want to set size_hint=(1, 1) and let
+                    # the grid layout handle the size
                     width=self.window.width // 5,
                     height=self.window.height // 4,
                     size_hint=None,
