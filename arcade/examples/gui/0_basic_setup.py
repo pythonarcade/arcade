@@ -15,7 +15,6 @@ from arcade.gui import (
     UITextureButton,
     UIAnchorLayout,
 )
-from arcade.types import Color
 
 # Preload textures, because they are mostly used multiple times, so they are not
 # loaded multiple times
@@ -60,7 +59,7 @@ class GreenView(arcade.View):
 
     def on_draw(self):
         # Clear the screen
-        self.clear(color=Color(46, 204, 113))
+        self.clear(color=arcade.uicolor.GREEN_EMERALD)
 
         # Add draw commands that should be below the UI
         # ...
@@ -76,7 +75,7 @@ class BlueView(arcade.gui.UIView):
 
     def __init__(self):
         super().__init__()
-        self.background_color = Color(52, 152, 219)
+        self.background_color = arcade.uicolor.BLUE_PETER_RIVER
 
         # Create a anchor layout, which can be used to position widgets on screen
         anchor = self.add_widget(UIAnchorLayout())

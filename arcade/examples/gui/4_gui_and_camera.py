@@ -262,6 +262,6 @@ class MyCoinGame(UIView):
 
 if __name__ == "__main__":
     window = arcade.Window(1280, 720, "GUI Example: Coin Game (Camera)", resizable=False)
-    window.background_color = arcade.color.DARK_BLUE_GRAY
+    window.background_color = arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE
     window.show_view(MyCoinGame())
     window.run()

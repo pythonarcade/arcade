@@ -15,7 +15,6 @@ from datetime import datetime
 
 import arcade
 from arcade.gui import UIAnchorLayout
-from arcade.types import Color
 
 arcade.resources.load_system_fonts()
 
@@ -66,7 +65,7 @@ class LayoutView(arcade.gui.UIView):
 
     def __init__(self):
         super().__init__()
-        self.background_color = Color(52, 152, 219)
+        self.background_color = arcade.uicolor.BLUE_PETER_RIVER
 
         # Create a anchor layout, which can be used to position widgets on screen
         self.anchor = self.add_widget(UIAnchorLayout())
@@ -74,14 +73,14 @@ class LayoutView(arcade.gui.UIView):
         # Add describing text in center
         text_area = arcade.gui.UITextArea(
             text=DESCRIPTION,
-            text_color=Color(236, 240, 241),
+            text_color=arcade.uicolor.WHITE_CLOUDS,
             font_name=("Lato", "proxima-nova", "Helvetica Neue", "Arial", "sans-serif"),
             font_size=12,
             size_hint=(0.5, 0.8),
         )
         self.anchor.add(text_area, anchor_x="center_x", anchor_y="center_y")
-        text_area.with_border(color=Color(149, 165, 166))
-        text_area.with_background(color=Color(149, 165, 166, 125))
+        text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE)
+        text_area.with_background(color=arcade.uicolor.GRAY_CONCRETE.replace(a=125))
         text_area.with_padding(left=5)
 
         # add a grid layout with the window and grid size and grid position
@@ -90,8 +89,8 @@ class LayoutView(arcade.gui.UIView):
             row_count=2,
             align_horizontal="left",
         )
-        self.grid.with_background(color=Color(149, 165, 166))
-        self.grid.with_border(color=Color(127, 140, 141))
+        self.grid.with_background(color=arcade.uicolor.GRAY_CONCRETE)
+        self.grid.with_border(color=arcade.uicolor.GRAY_ASBESTOS)
         self.grid.with_padding(all=10)
         self.anchor.add(self.grid, anchor_x="left", anchor_y="top", align_x=10, align_y=-10)
         self.grid.add(
