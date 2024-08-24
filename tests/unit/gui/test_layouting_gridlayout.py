@@ -101,7 +101,7 @@ def test_place_widgets_with_col_row_span(window):
     subject.add(dummy2, 0, 1)
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
-    subject.add(dummy5, 0, 2, col_span=2)
+    subject.add(dummy5, 0, 2, column_span=2)
     subject.add(dummy6, 2, 0, row_span=3)
 
     subject.rect = LBWH(0, 0, *subject.size_hint_min)
@@ -132,7 +132,7 @@ def test_place_widgets_with_col_row_span_and_spacing(window):
     subject.add(dummy2, 0, 1)
     subject.add(dummy3, 1, 0)
     subject.add(dummy4, 1, 1)
-    subject.add(dummy5, 0, 2, col_span=2)
+    subject.add(dummy5, 0, 2, column_span=2)
 
     subject.rect = LBWH(0, 0, *subject.size_hint_min)
     subject.do_layout()

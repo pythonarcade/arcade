@@ -3,6 +3,7 @@ Menu.
 
 Shows the usage of almost every gui widget, switching views and making a modal.
 """
+
 import arcade
 import arcade.gui
 
@@ -43,14 +44,14 @@ class MainView(arcade.View):
         self.manager.disable()
 
     def on_show_view(self):
-        """ This is run once when we switch to this view """
+        """This is run once when we switch to this view"""
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         # Enable the UIManager when the view is showm.
         self.manager.enable()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear the screen
         self.clear()
 
@@ -74,14 +75,16 @@ class MenuView(arcade.View):
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=320)
 
         # Initialise a grid in which widgets can be arranged.
-        self.grid = arcade.gui.UIGridLayout(column_count=2, row_count=3, horizontal_spacing=20, vertical_spacing=20)
+        self.grid = arcade.gui.UIGridLayout(
+            column_count=2, row_count=3, horizontal_spacing=20, vertical_spacing=20
+        )
 
         # Adding the buttons to the layout.
-        self.grid.add(resume_button, col_num=0, row_num=0)
-        self.grid.add(start_new_game_button, col_num=1, row_num=0)
-        self.grid.add(volume_button, col_num=0, row_num=1)
-        self.grid.add(options_button, col_num=1, row_num=1)
-        self.grid.add(exit_button, col_num=0, row_num=2, col_span=2)
+        self.grid.add(resume_button, column=0, row=0)
+        self.grid.add(start_new_game_button, column=1, row=0)
+        self.grid.add(volume_button, column=0, row=1)
+        self.grid.add(options_button, column=1, row=1)
+        self.grid.add(exit_button, column=0, row=2, column_span=2)
 
         self.anchor = self.manager.add(arcade.gui.UIAnchorLayout())
 
@@ -111,25 +114,19 @@ class MenuView(arcade.View):
         @volume_button.event("on_click")
         def on_click_volume_button(event):
             volume_menu = SubMenu()
-            self.manager.add(
-                volume_menu,
-                layer=1
-            )
+            self.manager.add(volume_menu, layer=1)
 
         @options_button.event("on_click")
         def on_click_options_button(event):
             options_menu = SubMenu()
-            self.manager.add(
-                options_menu,
-                layer=1
-            )
+            self.manager.add(options_menu, layer=1)
 
     def on_hide_view(self):
         # Disable the UIManager when the view is hidden.
         self.manager.disable()
 
     def on_show_view(self):
-        """ This is run once when we switch to this view """
+        """This is run once when we switch to this view"""
 
         # Makes the background darker
         arcade.set_background_color([rgb - 50 for rgb in arcade.color.DARK_BLUE_GRAY])
@@ -138,7 +135,7 @@ class MenuView(arcade.View):
         self.manager.enable()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear the screen
         self.clear()
         self.manager.draw()
@@ -147,7 +144,9 @@ class MenuView(arcade.View):
 class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
     """Acts like a fake view/window."""
 
-    def __init__(self, ):
+    def __init__(
+        self,
+    ):
         super().__init__(size_hint=(1, 1))
 
         # Setup frame which will act like the window.
@@ -155,15 +154,17 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         frame.with_padding(all=20)
 
         # Add a background to the window.
-        frame.with_background(texture=arcade.gui.NinePatchTexture(
-            left=7,
-            right=7,
-            bottom=7,
-            top=7,
-            texture=arcade.load_texture(
-                ":resources:gui_basic_assets/window/dark_blue_gray_panel.png"
+        frame.with_background(
+            texture=arcade.gui.NinePatchTexture(
+                left=7,
+                right=7,
+                bottom=7,
+                top=7,
+                texture=arcade.load_texture(
+                    ":resources:gui_basic_assets/window/dark_blue_gray_panel.png"
+                ),
             )
-        ))
+        )
 
         back_button = arcade.gui.UIFlatButton(text="Back", width=250)
         # The type of event listener we used earlier for the button will not work here.

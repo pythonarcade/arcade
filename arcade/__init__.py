@@ -228,6 +228,7 @@ from .types.rect import Rect, LRBT, LBWH, XYWH
 # Module imports
 from arcade import color as color
 from arcade import csscolor as csscolor
+from arcade import uicolor as uicolor
 from arcade import camera as camera
 from arcade import key as key
 from arcade import resources as resources
@@ -387,6 +388,7 @@ __all__ = [
     "rect",
     "color",
     "csscolor",
+    "uicolor",
     "key",
     "resources",
     "types",

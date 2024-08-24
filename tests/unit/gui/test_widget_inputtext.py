@@ -1,4 +1,4 @@
-from arcade.gui import UIInputText
+from arcade.gui import UIInputText, UIOnChangeEvent
 
 
 def test_deactivated_by_default(uimanager):
@@ -57,3 +57,48 @@ def test_does_not_capture_text_when_inactive(uimanager):
 
     # THEN
     assert widget.text == ""
+
+
+def test_dispatches_on_change_event(uimanager):
+    # GIVEN
+    widget = UIInputText()
+    uimanager.add(widget)
+
+    recorded = []
+
+    @widget.event("on_change")
+    def on_change(event):
+        recorded.append(event)
+
+    # WHEN
+    widget.activate()
+    uimanager.type_text("Hello")
+
+    # THEN
+    assert len(recorded) == 1
+
+    recorded_event = recorded[0]
+    assert isinstance(recorded_event, UIOnChangeEvent)
+    assert recorded_event.new_value == "Hello"
+
+
+def test_setting_text_dispatches_on_change_event(uimanager):
+    # GIVEN
+    widget = UIInputText()
+    uimanager.add(widget)
+
+    recorded = []
+
+    @widget.event("on_change")
+    def on_change(event):
+        recorded.append(event)
+
+    # WHEN
+    widget.text = "Hello"
+
+    # THEN
+    assert len(recorded) == 1
+
+    recorded_event = recorded[0]
+    assert isinstance(recorded_event, UIOnChangeEvent)
+    assert recorded_event.new_value == "Hello"
