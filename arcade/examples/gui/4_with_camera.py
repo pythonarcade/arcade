@@ -37,6 +37,7 @@ class MyCoinGame(UIView):
 
     def __init__(self):
         super().__init__()
+        self.bg_color = arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE
 
         # basic camera setup
         self.keys = set()
@@ -262,6 +263,5 @@ class MyCoinGame(UIView):
 
 if __name__ == "__main__":
     window = arcade.Window(1280, 720, "GUI Example: Coin Game (Camera)", resizable=False)
-    window.background_color = arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE
     window.show_view(MyCoinGame())
     window.run()

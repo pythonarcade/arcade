@@ -785,8 +785,9 @@ class UILayout(UIWidget):
         super()._do_layout()
 
     def do_layout(self):
-        """Triggered by the UIManager before rendering, :class:`UILayout` s should place
-        themselves and/or children. Do layout will be triggered on children afterward.
+        """do_layout is triggered by the UIManager before rendering.
+         :class:`UILayout` should position their children.
+         Afterward, do_layout of child widgets will be triggered.
 
         Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next
         frame, this will happen automatically if the position or size of this widget changed.
