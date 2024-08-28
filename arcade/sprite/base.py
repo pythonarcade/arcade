@@ -42,8 +42,9 @@ class BasicSprite:
     __slots__ = (
         "_position",
         "_depth",
-        "_width",
-        "_height",
+        "_size",
+        # "_width",
+        # "_height",
         "_scale",
         "_color",
         "_texture",
@@ -63,13 +64,16 @@ class BasicSprite:
         visible: bool = True,
         **kwargs: Any,
     ) -> None:
-        self._position = (center_x, center_y)
+
+        position = Vec2(center_x, center_y)  # Will be used below
+        self._position: Vec2 = position
         self._depth = 0.0
         self._texture = texture
-        width, height = texture.size
-        self._width = width * scale
-        self._height = height * scale
-        self._scale = (scale, scale)
+
+        scale_vec2 = Vec2(scale, scale)  # Will be used below
+        self._scale: Vec2 = scale_vec2
+        self._size: Vec2 = scale_vec2 * texture.size
+
         self._visible = bool(visible)
         self._color: Color = WHITE
         self.sprite_lists: list["SpriteList"] = []
@@ -78,13 +82,27 @@ class BasicSprite:
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
 
-        self._hit_box = HitBox(self._texture.hit_box_points, self._position, self._scale)
+        self._hit_box = HitBox(self._texture.hit_box_points, position, scale_vec2)
 
     # --- Core Properties ---
 
+    # Temp Vec2 test compat stubs for things which expect them
     @property
-    def position(self) -> Point2:
-        """Get or set the center x and y position of the sprite."""
+    def _width(self) -> float:
+        return self._size[0]
+
+    @property
+    def _height(self) -> float:
+        return self._size[1]
+
+    @property
+    def position(self) -> Vec2:
+        """
+        Get or set the center x and y position of the sprite.
+
+        Returns:
+            (center_x, center_y)
+        """
         return self._position
 
     @position.setter
@@ -92,8 +110,9 @@ class BasicSprite:
         if new_value == self._position:
             return
 
-        self._position = new_value
-        self._hit_box.position = new_value
+        new_value_vec2 = Vec2(*new_value)
+        self._position = new_value_vec2
+        self._hit_box.position = new_value_vec2
         self.update_spatial_hash()
 
         for sprite_list in self.sprite_lists:
@@ -106,10 +125,18 @@ class BasicSprite:
 
     @center_x.setter
     def center_x(self, new_value: float):
-        if new_value == self._position[0]:
+        position = self._position
+        if new_value == position[0]:
             return
 
-        self.position = (new_value, self._position[1])
+        new_position = Vec2(new_value, position[1])
+
+        self._position = new_position
+        self._hit_box.position = new_position
+        self.update_spatial_hash()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_position(self)
 
     @property
     def center_y(self) -> float:
@@ -118,10 +145,18 @@ class BasicSprite:
 
     @center_y.setter
     def center_y(self, new_value: float):
-        if new_value == self._position[1]:
+        position = self._position
+        if new_value == position[1]:
             return
 
-        self.position = (self._position[0], new_value)
+        new_position = Vec2(position[0], new_value)
+
+        self._position = new_position
+        self._hit_box.position = new_position
+        self.update_spatial_hash()
+
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_position(self)
 
     @property
     def depth(self) -> float:
@@ -144,43 +179,52 @@ class BasicSprite:
     @property
     def width(self) -> float:
         """Get or set width or the sprite in pixels"""
-        return self._width
+        return self._size[0]
 
     @width.setter
     def width(self, new_value: float):
-        if new_value != self._width:
-            self._scale = new_value / self._texture.width, self._scale[1]
-            self._hit_box.scale = self._scale
-            self._width = new_value
+        size = self._size
+        if new_value == size[0]:
+            return
 
-            self.update_spatial_hash()
-            for sprite_list in self.sprite_lists:
-                sprite_list._update_width(self)
+        new_scale = Vec2(new_value / self._texture.width, self._scale[1])
+        self._scale = new_scale
+        self._hit_box.scale = new_scale
+        self._size = Vec2(new_value, size[1])
+
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_width(self)
 
     @property
     def height(self) -> float:
         """Get or set the height of the sprite in pixels."""
-        return self._height
+        return self._size[1]
 
     @height.setter
     def height(self, new_value: float):
-        if new_value != self._height:
-            self._scale = self._scale[0], new_value / self._texture.height
-            self._hit_box.scale = self._scale
-            self._height = new_value
+        size = self._size
 
-            self.update_spatial_hash()
-            for sprite_list in self.sprite_lists:
-                sprite_list._update_height(self)
+        if new_value == size[1]:
+            return
+
+        new_scale = Vec2(self._scale[0], new_value / self._texture.height)
+        self._scale = new_scale
+        self._hit_box.scale = new_scale
+        self._size = Vec2(size[0], new_value)
+
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_height(self)
 
     @property
-    def size(self) -> Point:
+    def size(self) -> Vec2:
         """
         Get or set the size of the sprite as a pair of values.
 
         This is faster than getting or setting width and height separately.
         """
-        return self._width, self._height
+        return self._size
 
     @size.setter
     def size(self, new_value: Point2):
@@ -194,17 +238,19 @@ class BasicSprite:
             raise TypeError(
                 "size must be a tuple-like object which unpacks to exactly 2 coordinates"
             )
+        old_size = self._size
+        if old_size[0] == width and old_size[1] == height:
+            return
 
-        if width != self._width or height != self._height:
-            texture_width, texture_height = self._texture.size
-            self._scale = width / texture_width, height / texture_height
-            self._width = width
-            self._height = height
+        texture_size = self._texture.size
+        new_size = Vec2(width, height)
+        self._scale = new_size / texture_size
+        self._size = new_size
 
-            self.update_spatial_hash()
+        self.update_spatial_hash()
 
-            for sprite_list in self.sprite_lists:
-                sprite_list._update_size(self)
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
 
     @property
     def scale_x(self) -> float:
@@ -218,16 +264,16 @@ class BasicSprite:
 
     @scale_x.setter
     def scale_x(self, new_scale_x: AsFloat):
-        old_scale_x, old_scale_y = self._scale
-        if new_scale_x == old_scale_x:
+        old_scale = self._scale
+        if new_scale_x == old_scale[0]:
             return
 
-        new_scale = (new_scale_x, old_scale_y)
+        new_scale = Vec2(new_scale_x, old_scale[1])
 
         # Apply scale to hitbox first to raise any exceptions quickly
         self._hit_box.scale = new_scale
         self._scale = new_scale
-        self._width = self._texture.width * new_scale_x
+        self._size = Vec2(self._texture.width * new_scale_x, self._size[1])
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
@@ -249,12 +295,12 @@ class BasicSprite:
         if new_scale_y == old_scale_y:
             return
 
-        new_scale = (old_scale_x, new_scale_y)
+        new_scale = Vec2(old_scale_x, new_scale_y)
 
         # Apply scale to hitbox first to raise any exceptions quickly
         self._hit_box.scale = new_scale
         self._scale = new_scale
-        self._height = self._texture.height * new_scale_y
+        self._size = Vec2(self._size[0], self._texture.height * new_scale_y)
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
@@ -303,7 +349,7 @@ class BasicSprite:
                   and height instead of negatives.
 
         """
-        return Vec2(*self._scale)
+        return self._scale
 
     @scale.setter
     def scale(self, new_scale: Point2 | AsFloat):
@@ -324,15 +370,14 @@ class BasicSprite:
                     "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
                 )
 
-        new_scale = scale_x, scale_y
-        if new_scale == self._scale:
+        old_scale = self._scale
+        if scale_x == old_scale[0] and scale_y == old_scale[1]:
             return
 
-        self._hit_box.scale = new_scale
-        tex_width, tex_height = self._texture.size
-        self._scale = new_scale
-        self._width = tex_width * scale_x
-        self._height = tex_height * scale_y
+        processed_scale: Vec2 = Vec2(scale_x, scale_y)
+        self._hit_box.scale = processed_scale
+        self._scale = processed_scale
+        self._size = processed_scale * self._texture.size
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
@@ -570,8 +615,7 @@ class BasicSprite:
             )
 
         self._texture = texture
-        self._width = texture.width * self._scale[0]
-        self._height = texture.height * self._scale[1]
+        self._size = self._scale * texture.size
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:
             sprite_list._update_texture(self)
@@ -646,6 +690,7 @@ class BasicSprite:
                 factor_x, factor_y = scale_by
                 if factor_x == 1.0 and factor_y == 1.0:
                     return
+
             except ValueError:
                 raise ValueError(
                     "factor must be a float, int, or tuple-like "
@@ -657,14 +702,9 @@ class BasicSprite:
                 )
 
         # set the scale and, if this sprite has a texture, the size data
-        old_scale_x, old_scale_y = self._scale
-        new_scale_x = old_scale_x * factor_x
-        new_scale_y = old_scale_y * factor_y
-        self._scale = new_scale_x, new_scale_y
-
-        tex_width, tex_height = self._texture.size
-        self._width = tex_width * new_scale_x
-        self._height = tex_height * new_scale_y
+        scale_vec2 = Vec2(factor_x, factor_y) * self._scale
+        self._scale = scale_vec2
+        self._size = scale_vec2 * self._texture.size
 
         # If the scaling point is the sprite's center, it doesn't move
         old_position = self._position
@@ -678,6 +718,10 @@ class BasicSprite:
                 (old_x - point_x) * factor_x + point_x,
                 (old_y - point_y) * factor_y + point_y,
             )
+
+        # TODO: this seems potentially redundant given we use .position above
+        # It's a setter which already rebuilds things, so we probably should
+        # only rebuild once.
 
         # rebuild all spatial metadata
         self.update_spatial_hash()
