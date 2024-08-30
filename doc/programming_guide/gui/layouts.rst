@@ -16,6 +16,9 @@ Layouts apply their layouting right before the rendering phase,
 so the layout is always up-to-date for the rendering,
 but will not be consistent after instantiation in your ``__init__()`` method.
 
+To circumvent this, you can trigger a layout run by calling the `UIManager.execute_layout()`.
+
+
 The following layouts are available:
 
 - :class:`arcade.gui.UIBoxLayout`
