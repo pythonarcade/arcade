@@ -610,6 +610,11 @@ Graphical User Interface
 
    :ref:`gui_3_buttons`
 
+.. figure:: images/thumbs/gui_4_with_camera.png
+   :figwidth: 170px
+   :target: gui_4_with_camera.html
+
+   :ref:`gui_4_with_camera`
 
 .. figure:: images/thumbs/gui_5_uicolor_picker.png
    :figwidth: 170px

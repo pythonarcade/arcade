@@ -12,9 +12,11 @@ Using those classes is way easier if the general concepts are known.
 It is recommended to read through them.
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 2
 
-   concept
-   style
+    concept
+    layouts
+    style
+
 
 

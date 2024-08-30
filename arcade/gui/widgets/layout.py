@@ -381,6 +381,8 @@ class UIBoxLayout(UILayout):
         for (child, data), main_size, ortho_size in zip(
             self._children, main_sizes, orthogonal_sizes
         ):
+            # apply calculated sizes, condition regarding existing size_hint
+            # are already covered in calculation input
             new_rect = child.rect.resize(
                 height=main_size if self.vertical else ortho_size,
                 width=ortho_size if self.vertical else main_size,
@@ -418,17 +420,24 @@ class UIBoxLayout(UILayout):
 
 
 class UIGridLayout(UILayout):
-    """Place widgets in a grid layout. This is similar to tkinter's ``grid``
-    layout geometry manager.
+    """Place widgets in a grid.
 
-    Defaults to ``size_hint = (0, 0)``.
+    Widgets can span multiple columns and rows.
+    By default, the layout will only use the minimal required space (``size_hint = (0, 0)``).
 
-    Supports the options ``size_hint``, ``size_hint_min``, and
-    ``size_hint_max``.
+    Widgets can provide a ``size_hint`` to request dynamic space relative to the layout size.
+    A size_hint of ``(1, 1)`` will fill the available space, while ``(0.1, 0.1)``
+    will use maximum 10% of the layouts total size.
 
     Children are resized based on ``size_hint``. Maximum and minimum
-    ``size_hint``s only take effect if a ``size_hint`` is given. ``size_hint_min`` is automatically
-    updated based on the minimal required space by children.
+    ``size_hint``s only take effect if a ``size_hint`` is given.
+
+    The layouts ``size_hint_min`` is automatically
+    updated based on the minimal required space by children, after layouting.
+
+    The width of columns and height of rows are calculated based on the size hints of the children.
+    The highest size_hint_min of a child in a column or row is used. If a child has no size_hint,
+    the actual size is considered.
 
     Args:
         x: ``x`` coordinate of bottom left corner.
@@ -454,6 +463,8 @@ class UIGridLayout(UILayout):
         *,
         x=0,
         y=0,
+        width=1,
+        height=1,
         align_horizontal="center",
         align_vertical="center",
         children: Iterable[UIWidget] = tuple(),
@@ -468,8 +479,8 @@ class UIGridLayout(UILayout):
         super(UIGridLayout, self).__init__(
             x=x,
             y=y,
-            width=1,
-            height=1,
+            width=width,
+            height=height,
             children=children,
             size_hint=size_hint,
             size_hint_max=size_hint_max,
@@ -485,15 +496,16 @@ class UIGridLayout(UILayout):
         self.align_horizontal = align_horizontal
         self.align_vertical = align_vertical
 
-        bind(self, "_children", self._update_size_hints)
-        bind(self, "_border_width", self._update_size_hints)
+        bind(self, "_children", self._trigger_size_hint_update)
+        bind(self, "_border_width", self._trigger_size_hint_update)
 
-        bind(self, "_padding_left", self._update_size_hints)
-        bind(self, "_padding_right", self._update_size_hints)
-        bind(self, "_padding_top", self._update_size_hints)
-        bind(self, "_padding_bottom", self._update_size_hints)
+        bind(self, "_padding_left", self._trigger_size_hint_update)
+        bind(self, "_padding_right", self._trigger_size_hint_update)
+        bind(self, "_padding_top", self._trigger_size_hint_update)
+        bind(self, "_padding_bottom", self._trigger_size_hint_update)
 
         # initially update size hints
+        # TODO is this required?
         self._update_size_hints()
 
     def add(
@@ -555,7 +567,88 @@ class UIGridLayout(UILayout):
 
     def _update_size_hints(self):
         self._size_hint_requires_update = False
+        if self.legacy_mode:
+            self._update_size_hints_v1()
+        else:
+            self._update_size_hints_v2()
 
+    def _update_size_hints_v2(self):
+        if not self.children:
+            self.size_hint_min = (0, 0)
+            return
+
+        # 0. generate list for all rows and columns
+        columns = []
+        for i in range(self.column_count):
+            columns.append([])
+        rows = []
+        for i in range(self.row_count):
+            rows.append([])
+
+        for entry in self._children:
+            col_num = entry.data["column"]
+            row_num = entry.data["row"]
+            col_span = entry.data["column_span"]
+            row_span = entry.data["row_span"]
+
+            # we put the entry in all columns and rows it spans
+            for c in range(col_span):
+                columns[col_num + c].append(entry)
+
+                for r in range(row_span):
+                    rows[row_num + r].append(entry)
+
+        # 1.a per column, collect max of size_hint_min and max size_hint
+        minimal_width_per_column = []
+        for col in columns:
+            min_width = 0
+            max_sh = 0
+            for entry in col:
+                col_span = entry.data["column_span"]
+                # if the cell spans multiple columns,
+                # we need to reduce the minimal required width by the horizontal spacing
+                consumed_space = self._horizontal_spacing if col_span > 1 else 0
+
+                min_w, _ = UILayout.min_size_of(entry.child)
+                min_width = max(min_width, min_w / col_span - consumed_space)
+
+                shw, _ = entry.child.size_hint or (0, 0)
+                max_sh = max(max_sh, shw) if shw else max_sh
+
+            minimal_width_per_column.append(min_width)
+
+        # 1.b per row, collect max of size_hint_min and max size_hint
+        minimal_height_per_row = []
+        for row in rows:
+            min_height = 0
+            max_sh = 0
+            for entry in row:
+                row_span = entry.data["row_span"]
+                # if the cell spans multiple rows,
+                # we need to reduce the minimal required height by the vertical spacing
+                consumed_space = self._vertical_spacing if row_span > 1 else 0
+
+                _, min_h = UILayout.min_size_of(entry.child)
+                min_height = max(min_height, min_h / row_span - consumed_space)
+
+                _, shh = entry.child.size_hint or (0, 0)
+                max_sh = max(max_sh, shh) if shh else max_sh
+
+            minimal_height_per_row.append(min_height)
+
+        base_width = self._padding_left + self._padding_right + 2 * self._border_width
+        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
+
+        self.size_hint_min = (
+            base_width
+            + sum(minimal_width_per_column)
+            + (self.column_count - 1) * self._horizontal_spacing,
+            base_height
+            + sum(minimal_height_per_row)
+            + (self.row_count - 1) * self._vertical_spacing,
+        )
+
+    def _update_size_hints_v1(self):
         max_width_per_column: list[list[tuple[int, int]]] = [
             [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
         ]
@@ -600,10 +693,191 @@ class UIGridLayout(UILayout):
 
         self.size_hint_min = (base_width + content_width, base_height + content_height)
 
+    legacy_mode = False
+
     def do_layout(self):
+        if self.legacy_mode:
+            self.do_layout_v1()
+        else:
+            self.do_layout_v2()
+
+    def do_layout_v2(self):
         """Executes the layout algorithm.
 
         Children are placed in a grid layout based on the size hints."""
+        # grid layout algorithm
+        # 0.  generate list for all rows and columns
+        # 1.a per column, collect max of size_hint_min and max size_hint
+        # 1.b per row, collect max of size_hint_min and max size_hint
+        # 2.  use box layout algorithm to distribute space
+        # 3.  place widgets in grid layout
+
+        # skip if no children
+        if not self.children:
+            return
+
+        # 0. generate list for all rows and columns
+        columns = []
+        for i in range(self.column_count):
+            columns.append([])
+        rows = []
+        for i in range(self.row_count):
+            rows.append([])
+
+        lookup = {}
+        for entry in self._children:
+            col_num = entry.data["column"]
+            row_num = entry.data["row"]
+            col_span = entry.data["column_span"]
+            row_span = entry.data["row_span"]
+
+            # we put the entry in all columns and rows it spans
+            for c in range(col_span):
+                columns[col_num + c].append(entry)
+
+                for r in range(row_span):
+                    rows[row_num + r].append(entry)
+
+            lookup[(col_num, row_num)] = entry
+
+        # 1.a per column, collect max of size_hint_min and max size_hint
+        minimal_width_per_column = []
+        max_size_hint_per_column = []
+        for col in columns:
+            min_width = 0
+            max_sh = 0
+            for entry in col:
+                col_span = entry.data["column_span"]
+                # if the cell spans multiple columns,
+                # we need to reduce the minimal required width by the horizontal spacing
+                consumed_space = self._horizontal_spacing if col_span > 1 else 0
+
+                min_w, _ = UILayout.min_size_of(entry.child)
+                min_width = max(min_width, min_w / col_span - consumed_space)
+
+                shw, _ = entry.child.size_hint or (0, 0)
+                max_sh = max(max_sh, shw) if shw else max_sh
+
+            minimal_width_per_column.append(min_width)
+            max_size_hint_per_column.append(max_sh)
+
+        # 1.b per row, collect max of size_hint_min and max size_hint
+        minimal_height_per_row = []
+        max_size_hint_per_row = []
+        for row in rows:
+            min_height = 0
+            max_sh = 0
+            for entry in row:
+                row_span = entry.data["row_span"]
+                # if the cell spans multiple rows,
+                # we need to reduce the minimal required height by the vertical spacing
+                consumed_space = self._vertical_spacing if row_span > 1 else 0
+
+                _, min_h = UILayout.min_size_of(entry.child)
+                min_height = max(min_height, min_h / row_span - consumed_space)
+
+                _, shh = entry.child.size_hint or (0, 0)
+                max_sh = max(max_sh, shh) if shh else max_sh
+
+            minimal_height_per_row.append(min_height)
+            max_size_hint_per_row.append(max_sh)
+
+        # 2. use box layout algorithm to distribute space
+        column_constraints = [
+            _C(minimal_width_per_column[i], None, max_size_hint_per_column[i])
+            for i in range(self.column_count)
+        ]
+        column_sizes = _box_axis_algorithm(
+            column_constraints,
+            self.content_width - (self.column_count - 1) * self._horizontal_spacing,
+        )
+
+        row_constraints = [
+            _C(minimal_height_per_row[i], None, max_size_hint_per_row[i])
+            for i in range(self.row_count)
+        ]
+        row_sizes = _box_axis_algorithm(
+            row_constraints, self.content_height - (self.row_count - 1) * self._vertical_spacing
+        )
+
+        # 3. place widgets in grid layout
+        start_y = self.content_rect.top
+        for row_num in range(self.row_count):
+            start_x = self.content_rect.left
+            for col_num in range(self.column_count):
+                entry = lookup.get((col_num, row_num))
+                if not entry:
+                    # still need to update start_x
+                    start_x += column_sizes[col_num] + self._horizontal_spacing
+                    continue
+
+                # TODO handle row_span and col_span
+                child = entry.child
+                new_rect = child.rect
+
+                # combine size of cells this entry spans and add spacing
+                column_span = entry.data["column_span"]
+                cell_width: float = sum(column_sizes[col_num : col_num + column_span])
+                cell_width += (column_span - 1) * self._horizontal_spacing
+
+                row_span = entry.data["row_span"]
+                cell_height: float = sum(row_sizes[row_num : row_num + row_span])
+                cell_height += (row_span - 1) * self._vertical_spacing
+
+                # apply calculated sizes, when size_hint is given
+                shw, shh = child.size_hint or (None, None)
+                shmn_w, shmn_h = child.size_hint_min or (None, None)
+                shmx_w, shmx_h = child.size_hint_max or (None, None)
+
+                new_width = child.width
+                if shw is not None:
+                    shw: float
+                    new_width = min(cell_width, shw * self.content_width)
+                    new_width = max(new_width, shmn_w or 0)
+                    if shmx_w is not None:
+                        shmx_w: float
+                        new_width = min(new_width, shmx_w)
+
+                new_height = child.height
+                if shh is not None:
+                    shh: float
+                    new_height = min(cell_height, shh * self.content_height)
+                    new_height = max(new_height, shmn_h or 0)
+                    if shmx_h is not None:
+                        shmx_h: float
+                        new_height = min(new_height, shmx_h)
+
+                new_rect = new_rect.resize(width=new_width, height=new_height)
+
+                # align within cell
+                center_y = start_y - (cell_height / 2)
+                center_x = start_x + (cell_width / 2)
+
+                if self.align_vertical == "top":
+                    new_rect = new_rect.align_top(start_y)
+                elif self.align_vertical == "bottom":
+                    new_rect = new_rect.align_bottom(start_y - row_sizes[row_num])
+                else:
+                    new_rect = new_rect.align_y(center_y)
+
+                if self.align_horizontal == "left":
+                    new_rect = new_rect.align_left(start_x)
+                elif self.align_horizontal == "right":
+                    new_rect = new_rect.align_right(start_x + cell_width)
+                else:
+                    new_rect = new_rect.align_x(center_x)
+
+                # update child rect
+                child.rect = new_rect
+
+                start_x += column_sizes[col_num] + self._horizontal_spacing
+            start_y -= row_sizes[row_num] + self._vertical_spacing
+
+    def do_layout_v1(self):
+        """Executes the layout algorithm.
+
+        Children are placed in a grid layout based on the size hints."""
+
         initial_left_x = self.content_rect.left
         start_y = self.content_rect.top
 
@@ -628,6 +902,7 @@ class UIGridLayout(UILayout):
             col_span = data["column_span"]
             row_span = data["row_span"]
 
+            # resolve max_with per column, also handle span
             for i in range(col_num, col_span + col_num):
                 max_width_per_column[i][row_num] = (0, 0)
 

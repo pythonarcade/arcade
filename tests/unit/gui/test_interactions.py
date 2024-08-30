@@ -7,42 +7,42 @@ from arcade.gui.widgets import UIDummy
 from . import record_ui_events
 
 
-def test_hover_on_widget(uimanager):
+def test_hover_on_widget(ui):
     # GIVEN
     widget = UIDummy()
-    uimanager.add(widget)
+    ui.add(widget)
 
     # WHEN
-    uimanager.move_mouse(widget.center_x, widget.center_y)
+    ui.move_mouse(widget.center_x, widget.center_y)
 
     # THEN
     assert widget.hovered is True
 
 
-def test_overlapping_hover_on_widget(uimanager):
+def test_overlapping_hover_on_widget(ui):
     # GIVEN
     widget1 = UIDummy()
     widget2 = UIDummy()
-    uimanager.add(widget1)
-    uimanager.add(widget2)
+    ui.add(widget1)
+    ui.add(widget2)
 
     # WHEN
-    uimanager.move_mouse(widget1.center_x, widget1.center_y)
+    ui.move_mouse(widget1.center_x, widget1.center_y)
 
     # THEN
     assert widget1.hovered is True
     assert widget2.hovered is True
 
 
-def test_left_click_on_widget(uimanager):
+def test_left_click_on_widget(ui):
     # GIVEN
     widget1 = UIDummy()
     widget1.on_click = Mock()
-    uimanager.add(widget1)
+    ui.add(widget1)
 
     # WHEN
     with record_ui_events(widget1, "on_event", "on_click") as records:
-        uimanager.click(widget1.center_x, widget1.center_y, button=arcade.MOUSE_BUTTON_LEFT)
+        ui.click(widget1.center_x, widget1.center_y, button=arcade.MOUSE_BUTTON_LEFT)
 
     # THEN
     records: List[UIEvent]
@@ -61,15 +61,15 @@ def test_left_click_on_widget(uimanager):
     assert widget1.on_click.called
 
 
-def test_ignores_right_click_on_widget(uimanager):
+def test_ignores_right_click_on_widget(ui):
     # GIVEN
     widget1 = UIDummy()
     widget1.on_click = Mock()
-    uimanager.add(widget1)
+    ui.add(widget1)
 
     # WHEN
     with record_ui_events(widget1, "on_event", "on_click") as records:
-        uimanager.click(widget1.center_x, widget1.center_y, button=arcade.MOUSE_BUTTON_RIGHT)
+        ui.click(widget1.center_x, widget1.center_y, button=arcade.MOUSE_BUTTON_RIGHT)
 
     # THEN
     records: List[UIEvent]
@@ -79,16 +79,16 @@ def test_ignores_right_click_on_widget(uimanager):
     assert not widget1.on_click.called
 
 
-def test_click_on_widget_if_disabled(uimanager):
+def test_click_on_widget_if_disabled(ui):
     # GIVEN
     widget1 = UIDummy()
     widget1.disabled = True
     widget1.on_click = Mock()
-    uimanager.add(widget1)
+    ui.add(widget1)
 
     # WHEN
     with record_ui_events(widget1, "on_event", "on_click") as records:
-        uimanager.click(widget1.center_x, widget1.center_y)
+        ui.click(widget1.center_x, widget1.center_y)
 
     # THEN
     records: List[UIEvent]
@@ -99,17 +99,17 @@ def test_click_on_widget_if_disabled(uimanager):
     assert not widget1.on_click.called
 
 
-def test_click_on_overlay_widget_consumes_events(uimanager):
+def test_click_on_overlay_widget_consumes_events(ui):
     # GIVEN
     widget1 = UIDummy()
     widget2 = UIDummy()
-    uimanager.add(widget1)
-    uimanager.add(widget2)
+    ui.add(widget1)
+    ui.add(widget2)
 
     # WHEN
     with record_ui_events(widget1, "on_click") as w1_records:
         with record_ui_events(widget2, "on_click") as w2_records:
-            uimanager.click(widget1.center_x, widget1.center_y)
+            ui.click(widget1.center_x, widget1.center_y)
 
     # THEN
     # events are consumed before they get to underlying widget
@@ -126,17 +126,17 @@ def test_click_on_overlay_widget_consumes_events(uimanager):
     assert click_event.y == widget2.center_y
 
 
-def test_click_consumed_by_nested_widget(uimanager):
+def test_click_consumed_by_nested_widget(ui):
     # GIVEN
     widget1 = UIDummy()
     widget2 = UIDummy()
     widget1.add(widget2)
-    uimanager.add(widget1)
+    ui.add(widget1)
 
     # WHEN
     with record_ui_events(widget1, "on_click") as w1_records:
         with record_ui_events(widget2, "on_click") as w2_records:
-            uimanager.click(widget1.center_x, widget1.center_y)
+            ui.click(widget1.center_x, widget1.center_y)
 
     # THEN
     # events are consumed before they get to underlying widget

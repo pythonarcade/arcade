@@ -510,6 +510,9 @@ class UIWidget(EventDispatcher, ABC):
         self.rect = self.rect.align_center(center)
         return self
 
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {self.rect.lbwh}>"
+
 
 class UIInteractiveWidget(UIWidget):
     """Base class for widgets which use mouse interaction (hover, pressed, clicked)
