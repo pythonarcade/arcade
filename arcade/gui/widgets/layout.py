@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, List, Optional, TypeVar, cast
+from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, cast
 
 from typing_extensions import Literal, override
 
 from arcade.gui.property import bind, unbind
-from arcade.gui.widgets import UILayout, UIWidget
+from arcade.gui.widgets import UILayout, UIWidget, _ChildEntry
 
 __all__ = ["UILayout", "UIAnchorLayout", "UIBoxLayout", "UIGridLayout"]
 
@@ -724,7 +724,7 @@ class UIGridLayout(UILayout):
         for i in range(self.row_count):
             rows.append([])
 
-        lookup = {}
+        lookup: Dict[Tuple[int, int], _ChildEntry] = {}
         for entry in self._children:
             col_num = entry.data["column"]
             row_num = entry.data["row"]
@@ -831,20 +831,16 @@ class UIGridLayout(UILayout):
 
                 new_width = child.width
                 if shw is not None:
-                    shw: float
                     new_width = min(cell_width, shw * self.content_width)
                     new_width = max(new_width, shmn_w or 0)
                     if shmx_w is not None:
-                        shmx_w: float
                         new_width = min(new_width, shmx_w)
 
                 new_height = child.height
                 if shh is not None:
-                    shh: float
                     new_height = min(cell_height, shh * self.content_height)
                     new_height = max(new_height, shmn_h or 0)
                     if shmx_h is not None:
-                        shmx_h: float
                         new_height = min(new_height, shmx_h)
 
                 new_rect = new_rect.resize(width=new_width, height=new_height)
