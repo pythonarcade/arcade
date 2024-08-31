@@ -144,12 +144,7 @@ class ColorView(arcade.gui.UIView):
                 ColorButton(
                     color_name=name,
                     color=color,
-                    # giving width and height is a workaround for a bug in the grid layout
-                    # we would want to set size_hint=(1, 1) and let
-                    # the grid layout handle the size
-                    width=self.window.width // 5,
-                    height=self.window.height // 4,
-                    size_hint=None,
+                    size_hint=(1, 1),
                 )
             )
             self.grid.add(button, row=i // 5, column=i % 5)

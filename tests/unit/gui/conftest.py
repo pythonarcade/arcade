@@ -11,5 +11,5 @@ class InteractionUIManager(UIManager, InteractionMixin):
 
 
 @fixture
-def uimanager(window) -> InteractionUIManager:
+def ui(window) -> InteractionUIManager:
     return InteractionUIManager()

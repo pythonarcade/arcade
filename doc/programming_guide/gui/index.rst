@@ -6,15 +6,22 @@ GUI
 
 Arcade's GUI module provides you classes to interact with the user using buttons, labels and much more.
 
-You can find examples for the GUI module in the :ref:`gui_examples_overview`.
+Behind the scenes the GUI uses a different rendering system than the rest of the engine.
+The GUI is especially designed to allow resizing and scaling of the widgets,
+which can cause problems with the normal rendering system.
 
-Using those classes is way easier if the general concepts are known.
-It is recommended to read through them.
+Usage examples are listed under :ref:`gui_examples_overview`.
+
+We recommend to read the :ref:`gui_concepts`, to get a better understanding of the
+GUI module and its components.
+
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 2
 
-   concept
-   style
+    concepts
+    layouts
+    style
+
 
 

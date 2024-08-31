@@ -610,6 +610,11 @@ Graphical User Interface
 
    :ref:`gui_3_buttons`
 
+.. figure:: images/thumbs/gui_4_with_camera.png
+   :figwidth: 170px
+   :target: gui_4_with_camera.html
+
+   :ref:`gui_4_with_camera`
 
 .. figure:: images/thumbs/gui_5_uicolor_picker.png
    :figwidth: 170px
@@ -620,6 +625,23 @@ Graphical User Interface
 .. note::
 
     Not all existing examples made it into this section. You can find more under `Arcade GUI Examples <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gui>`_
+
+Experimental Widgets
+^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: images/thumbs/gui_exp_hidden_password.png
+   :figwidth: 170px
+   :target: gui_exp_hidden_password.html
+
+   :ref:`gui_exp_hidden_password`
+
+
+.. note::
+
+    Experimental widgets are not yet part of the official release.
+    They are subject to change and may not be fully functional.
+
+    Feedback is very welcome, please let us know what you think about them.
 
 
 
