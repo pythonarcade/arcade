@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional, Tuple, TypeVar, cast
+from typing import Dict, Iterable, List, Optional, Tuple, TypeVar
 
 from typing_extensions import Literal, override
 
@@ -442,6 +442,8 @@ class UIGridLayout(UILayout):
     Args:
         x: ``x`` coordinate of bottom left corner.
         y: ``y`` coordinate of bottom left corner.
+        width: Width of the layout.
+        height: Height of the layout.
         align_horizontal: Align children in orthogonal direction.
             Options include ``left``, ``center``, and ``right``.
         align_vertical: Align children in orthogonal direction. Options
@@ -567,12 +569,7 @@ class UIGridLayout(UILayout):
 
     def _update_size_hints(self):
         self._size_hint_requires_update = False
-        if self.legacy_mode:
-            self._update_size_hints_v1()
-        else:
-            self._update_size_hints_v2()
 
-    def _update_size_hints_v2(self):
         if not self.children:
             self.size_hint_min = (0, 0)
             return
@@ -648,69 +645,21 @@ class UIGridLayout(UILayout):
             + (self.row_count - 1) * self._vertical_spacing,
         )
 
-    def _update_size_hints_v1(self):
-        max_width_per_column: list[list[tuple[int, int]]] = [
-            [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
-        ]
-        max_height_per_row: list[list[tuple[int, int]]] = [
-            [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
-        ]
-
-        for child, data in self._children:
-            col_num = data["column"]
-            row_num = data["row"]
-            col_span = data["column_span"]
-            row_span = data["row_span"]
-
-            shmn_w, shmn_h = UILayout.min_size_of(child)
-
-            for i in range(col_num, col_span + col_num):
-                max_width_per_column[i][row_num] = (0, 0)
-
-            max_width_per_column[col_num][row_num] = (shmn_w, col_span)
-
-            for i in range(row_num, row_span + row_num):
-                max_height_per_row[i][col_num] = (0, 0)
-
-            max_height_per_row[row_num][col_num] = (shmn_h, row_span)
-
-        principal_width_ratio_list = []
-        principal_height_ratio_list = []
-
-        for row in max_height_per_row:
-            principal_height_ratio_list.append(max(height / (span or 1) for height, span in row))
-
-        for col in max_width_per_column:
-            principal_width_ratio_list.append(max(width / (span or 1) for width, span in col))
-
-        base_width = self._padding_left + self._padding_right + 2 * self._border_width
-        base_height = self._padding_top + self._padding_bottom + 2 * self._border_width
-
-        content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
-        content_width = (
-            sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
-        )
-
-        self.size_hint_min = (base_width + content_width, base_height + content_height)
-
-    legacy_mode = False
-
     def do_layout(self):
-        if self.legacy_mode:
-            self.do_layout_v1()
-        else:
-            self.do_layout_v2()
-
-    def do_layout_v2(self):
         """Executes the layout algorithm.
 
-        Children are placed in a grid layout based on the size hints."""
-        # grid layout algorithm
-        # 0.  generate list for all rows and columns
-        # 1.a per column, collect max of size_hint_min and max size_hint
-        # 1.b per row, collect max of size_hint_min and max size_hint
-        # 2.  use box layout algorithm to distribute space
-        # 3.  place widgets in grid layout
+        Children are placed in a grid layout based on the size hints.
+
+        Algorithm
+        ---------
+
+        0. generate list for all rows and columns
+        1. per column, collect max of size_hint_min and max size_hint (widths)
+        2. per row, collect max of size_hint_min and max size_hint (heights)
+        3.  use box layout algorithm to distribute space
+        4.  place widgets in grid layout
+
+        """
 
         # skip if no children
         if not self.children:
@@ -868,159 +817,6 @@ class UIGridLayout(UILayout):
 
                 start_x += column_sizes[col_num] + self._horizontal_spacing
             start_y -= row_sizes[row_num] + self._vertical_spacing
-
-    def do_layout_v1(self):
-        """Executes the layout algorithm.
-
-        Children are placed in a grid layout based on the size hints."""
-
-        initial_left_x = self.content_rect.left
-        start_y = self.content_rect.top
-
-        if not self.children:
-            return
-
-        child_sorted_row_wise = cast(
-            list[list[UIWidget]],
-            [[None for _ in range(self.column_count)] for _ in range(self.row_count)],
-        )
-
-        max_width_per_column: list[list[tuple[float, int]]] = [
-            [(0, 1) for _ in range(self.row_count)] for _ in range(self.column_count)
-        ]
-        max_height_per_row: list[list[tuple[float, int]]] = [
-            [(0, 1) for _ in range(self.column_count)] for _ in range(self.row_count)
-        ]
-
-        for child, data in self._children:
-            col_num = data["column"]
-            row_num = data["row"]
-            col_span = data["column_span"]
-            row_span = data["row_span"]
-
-            # resolve max_with per column, also handle span
-            for i in range(col_num, col_span + col_num):
-                max_width_per_column[i][row_num] = (0, 0)
-
-            max_width_per_column[col_num][row_num] = (child.width, col_span)
-
-            for i in range(row_num, row_span + row_num):
-                max_height_per_row[i][col_num] = (0, 0)
-
-            max_height_per_row[row_num][col_num] = (child.height, row_span)
-
-            for row in child_sorted_row_wise[row_num : row_num + row_span]:
-                row[col_num : col_num + col_span] = [child] * col_span
-
-        principal_height_ratio_list = []
-        principal_width_ratio_list = []
-
-        # Making cell height same for each row.
-        for row in max_height_per_row:
-            principal_height_ratio = max(
-                (height + self._vertical_spacing) / (span or 1) for height, span in row
-            )
-            principal_height_ratio_list.append(principal_height_ratio)
-            for i, (height, span) in enumerate(row):
-                if (height + self._vertical_spacing) / (span or 1) < principal_height_ratio:
-                    row[i] = (principal_height_ratio * span, span)
-
-        # Making cell width same for each column.
-        for col in max_width_per_column:
-            principal_width_ratio = max(
-                (width + self._horizontal_spacing) / (span or 1) for width, span in col
-            )
-            principal_width_ratio_list.append(principal_width_ratio)
-            for i, (width, span) in enumerate(col):
-                if (width + self._horizontal_spacing) / (span or 1) < principal_width_ratio:
-                    col[i] = (principal_width_ratio * span, span)
-
-        content_height = sum(principal_height_ratio_list) + self.row_count * self._vertical_spacing
-        content_width = (
-            sum(principal_width_ratio_list) + self.column_count * self._horizontal_spacing
-        )
-
-        def ratio(dimensions: list) -> list:
-            """Used to calculate ratio of the elements based on the minimum value in the parameter.
-
-            Args:
-                dimension: List containing max height or width of the
-                    cells.
-            """
-            ratio_value = sum(dimensions) or 1
-            return [dimension / ratio_value for dimension in dimensions]
-
-        expandable_height_ratio = ratio(principal_width_ratio_list)
-        expandable_width_ratio = ratio(principal_height_ratio_list)
-
-        total_available_height = self.content_rect.top - content_height - self.content_rect.bottom
-        total_available_width = self.content_rect.right - content_width - self.content_rect.left
-
-        # Row wise rendering children
-        for row_num, row in enumerate(child_sorted_row_wise):
-            max_height_row = 0
-            start_x = initial_left_x
-
-            for col_num, child in enumerate(row):
-                constant_height = max_height_per_row[row_num][col_num][0]
-                height_expand_ratio = expandable_height_ratio[col_num]
-                available_height = constant_height + total_available_height * height_expand_ratio
-
-                constant_width = max_width_per_column[col_num][row_num][0]
-                width_expand_ratio = expandable_width_ratio[row_num]
-                available_width = constant_width + total_available_width * width_expand_ratio
-
-                if child is not None and constant_width != 0 and constant_height != 0:
-                    new_rect = child.rect
-                    sh_w, sh_h = 0, 0
-
-                    if child.size_hint:
-                        sh_w, sh_h = (child.size_hint[0] or 0), (child.size_hint[1] or 0)
-                    shmn_w, shmn_h = child.size_hint_min or (None, None)
-                    shmx_w, shmx_h = child.size_hint_max or (None, None)
-
-                    new_height = max(shmn_h or 0, sh_h * available_height or child.height)
-                    if shmx_h:
-                        new_height = min(shmx_h, new_height)
-
-                    new_width = max(shmn_w or 0, sh_w * available_width or child.width)
-                    if shmx_w:
-                        new_width = min(shmx_w, new_width)
-
-                    new_rect = new_rect.resize(width=new_width, height=new_height)
-
-                    cell_height = constant_height + self._vertical_spacing
-                    cell_width = constant_width + self._horizontal_spacing
-
-                    center_y = start_y - (cell_height / 2)
-                    center_x = start_x + (cell_width / 2)
-
-                    start_x += cell_width
-
-                    if self.align_vertical == "top":
-                        new_rect = new_rect.align_top(start_y)
-                    elif self.align_vertical == "bottom":
-                        new_rect = new_rect.align_bottom(start_y - cell_height)
-                    else:
-                        new_rect = new_rect.align_y(center_y)
-
-                    if self.align_horizontal == "left":
-                        new_rect = new_rect.align_left(start_x - cell_width)
-                    elif self.align_horizontal == "right":
-                        new_rect = new_rect.align_right(start_x)
-                    else:
-                        new_rect = new_rect.align_x(center_x)
-
-                    child.rect = new_rect
-
-                    # done due to row-wise rendering as start_y doesn't resets
-                    # like start_x, specific to row span.
-                    row_span = max_height_per_row[row_num][col_num][1] or 1
-                    actual_row_height = cell_height / row_span
-                    if actual_row_height > max_height_row:
-                        max_height_row = actual_row_height
-
-            start_y -= max_height_row
 
 
 @dataclass
