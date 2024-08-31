@@ -1,4 +1,4 @@
-.. _gui_concepts:
+.. _gui_concept:
 
 GUI Concepts
 ------------
