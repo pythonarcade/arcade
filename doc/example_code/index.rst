@@ -626,8 +626,8 @@ Graphical User Interface
 
     Not all existing examples made it into this section. You can find more under `Arcade GUI Examples <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gui>`_
 
-Graphical User Interface (Experimentals)
-----------------------------------------
+Experimental Widgets
+^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: images/thumbs/gui_exp_hidden_password.png
    :figwidth: 170px
