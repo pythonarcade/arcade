@@ -60,7 +60,7 @@ class UIWidget(EventDispatcher, ABC):
     rect: Rect = Property(LBWH(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
 
-    size_hint: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+    size_hint: Optional[Tuple[float | None, float | None]] = Property(None)  # type: ignore
     size_hint_min: Optional[Tuple[float, float]] = Property(None)  # type: ignore
     size_hint_max: Optional[Tuple[float, float]] = Property(None)  # type: ignore
 
@@ -83,7 +83,7 @@ class UIWidget(EventDispatcher, ABC):
         height: float = 100,
         children: Iterable["UIWidget"] = tuple(),
         # Properties which might be used by layouts
-        size_hint: Optional[Tuple[float, float]] = None,  # in percentage
+        size_hint: Optional[Tuple[float | None, float | None]] = None,  # in percentage
         size_hint_min: Optional[Tuple[float, float]] = None,  # in pixel
         size_hint_max: Optional[Tuple[float, float]] = None,  # in pixel
         **kwargs,
