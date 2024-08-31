@@ -12,14 +12,14 @@ which can cause problems with the normal rendering system.
 
 Usage examples are listed under :ref:`gui_examples_overview`.
 
-We recommend to read the :ref:`gui_concept`, to get a better understanding of the
+We recommend to read the :ref:`gui_concepts`, to get a better understanding of the
 GUI module and its components.
 
 
 .. toctree::
     :maxdepth: 2
 
-    concept
+    concepts
     layouts
     style
 
