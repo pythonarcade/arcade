@@ -524,8 +524,13 @@ class SectionManager:
         if section_handlers:
             self.view.window.push_handlers(**section_handlers)
 
-        for section in self._sections:
-            section.enabled = True
+        for section in self.sections:
+            # sections are enabled by default
+            if section.enabled:
+                section.on_show_section()
+            else:
+                section.enabled = True
+                # enabling a section will trigger on_show_section
 
     def get_section_by_name(self, name: str) -> Section | None:
         """
