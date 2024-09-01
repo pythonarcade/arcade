@@ -1,4 +1,5 @@
 import arcade
+from arcade import View
 from tests.unit.section import RecorderSection, RecorderView
 
 
