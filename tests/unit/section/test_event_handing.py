@@ -27,6 +27,7 @@ def test_section_manager_enable_event_handling(window):
 
     # THEN
     assert recorder_section.events == [
+        "on_show_section",
         "on_mouse_enter",
         "on_mouse_press",
         "on_mouse_release",
@@ -34,6 +35,28 @@ def test_section_manager_enable_event_handling(window):
         "on_update",
         "on_mouse_leave",
     ]
+
+
+def test_sections_receive_callback_when_manager_enabled_and_disabled(window):
+    # GIVEN
+    view = RecorderView()
+    manager = view.section_manager
+
+    # SETUP
+    recorder_section = RecorderSection(
+        *window.rect.lbwh,
+    )
+    manager.add_section(section=recorder_section)
+    window.show_view(view)  # will enable the manager
+
+    # THEN
+    assert recorder_section.events == ["on_show_section"]
+
+    # WHEN
+    window.show_view(View())  # will disable the manager
+
+    # THEN
+    assert recorder_section.events == ["on_show_section", "on_hide_section"]
 
 
 def test_view_receives_events_once(window):
