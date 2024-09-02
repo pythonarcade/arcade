@@ -98,7 +98,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         """Provides the x coordinate for the given value."""
 
         x = self.content_rect.left
-        val = (value - self.min_value) / self.max_value
+        val = (value - self.min_value) / (self.max_value - self.min_value)
         return x + self._cursor_width + val * (self.content_width - 2 * self._cursor_width)
 
     @property
