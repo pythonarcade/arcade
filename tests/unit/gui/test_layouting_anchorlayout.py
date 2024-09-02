@@ -29,7 +29,11 @@ def test_place_widget(window):
 def test_place_widget_relative_to_own_content_rect(window):
     dummy = UIDummy(width=100, height=200)
 
-    subject = UIAnchorLayout(x=0, y=0, width=500, height=500).with_border(width=2).with_padding(left=50, top=100)
+    subject = (
+        UIAnchorLayout(x=0, y=0, width=500, height=500)
+        .with_border(width=2)
+        .with_padding(left=50, top=100)
+    )
 
     subject.add(
         dummy,
@@ -104,7 +108,9 @@ def test_grow_child_to_max_size(window):
 
 def test_shrink_child_to_min_size(window):
     subject = UIAnchorLayout(width=400, height=400)
-    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(0.1, 0.1), size_hint_min=(200, 150)))
+    dummy = subject.add(
+        UIDummy(width=100, height=100, size_hint=(0.1, 0.1), size_hint_min=(200, 150))
+    )
 
     subject._do_layout()
 
@@ -112,8 +118,21 @@ def test_shrink_child_to_min_size(window):
     assert dummy.size == Vec2(200, 150)
 
 
-def test_grow_child_within_bounds(window):
+def test_children_can_grow_out_of_bounce(window):
+    """This tests behavior, which is used for scrolling."""
     subject = UIAnchorLayout(width=400, height=400)
+    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(2, 2)))
+
+    subject._do_layout()
+
+    assert subject.rect == LBWH(0, 0, 400, 400)
+    assert dummy.size == Vec2(800, 800)
+
+
+def test_children_limited_to_layout_size_when_enforced(window):
+    """This tests behavior, which is used for scrolling."""
+    subject = UIAnchorLayout(width=400, height=400)
+    subject._restrict_child_size = True
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(2, 2)))
 
     subject._do_layout()
@@ -124,9 +143,11 @@ def test_grow_child_within_bounds(window):
 
 def test_only_adjust_size_if_size_hint_is_given_for_dimension(window):
     subject = UIAnchorLayout(width=400, height=400)
-    dummy = subject.add(UIDummy(width=100, height=100, size_hint=(2, None), size_hint_min=(None, 200)))
+    dummy = subject.add(
+        UIDummy(width=100, height=100, size_hint=(2, None), size_hint_min=(None, 200))
+    )
 
     subject._do_layout()
 
     assert subject.rect == LBWH(0, 0, 400, 400)
-    assert dummy.size == Vec2(400, 100)
+    assert dummy.size == Vec2(800, 100)

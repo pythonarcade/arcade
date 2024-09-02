@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import Any, Callable, Generator, Generic, Iterable, Sequence, Type, TypeVar
 
 __all__ = [
+    "as_type",
+    "type_name",
     "copy_dunders_unimplemented",
     "is_iterable",
     "is_nonstr_iterable",
@@ -47,6 +49,33 @@ class Chain(Generic[_T]):
     def __iter__(self) -> Generator[_T, None, None]:
         for item in chain.from_iterable(self.components):
             yield item
+
+
+def as_type(item: Any) -> type:
+    """If item is not a type, return its type. Otherwise, return item as-is.
+
+    Args:
+        item: A :py:class:`type` or instance of one.
+    """
+    if isinstance(item, type):
+        return item
+    else:
+        return item.__class__
+
+
+def type_name(item: Any) -> str:
+    """Get the name of item if it's a type or the name of its type if it's an instance.
+
+    This is meant to help shorten debugging-related code and developer
+    utilities. It isn't meant to be a performant tool.
+
+    Args:
+         item: A :py:class:`type` or an instance of one.
+    """
+    if isinstance(item, type):
+        return item.__name__
+    else:
+        return item.__class__.__name__
 
 
 def is_iterable(item: Any) -> bool:

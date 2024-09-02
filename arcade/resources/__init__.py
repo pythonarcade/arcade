@@ -214,19 +214,19 @@ def list_built_in_assets(
 def load_system_fonts() -> None:
     """Loads all the fonts in arcade's system directory.
 
-    Currently this is only the Kenney fonts::
+    Currently, this is only the Kenney fonts::
 
-        Kenney_Blocks.ttf
-        Kenney_Future.ttf
-        Kenney_Future_Narrow.ttf
-        Kenney_High.ttf
-        Kenney_High_Square.ttf
-        Kenney_Mini.ttf
-        Kenney_Mini_Square.ttf
-        Kenney_Pixel.ttf
-        Kenney_Pixel_Square.ttf
-        Kenney_Rocket.ttf
-        Kenney_Rocket_Square.ttf
+        Kenney_Blocks.ttf          - Kenney Blocks
+        Kenney_Future.ttf          - Kenney Future
+        Kenney_Future_Narrow.ttf   - Kenney Future Narrow
+        Kenney_High.ttf            - Kenney High
+        Kenney_High_Square.ttf     - Kenney High Square
+        Kenney_Mini.ttf            - Kenney Mini
+        Kenney_Mini_Square.ttf     - Kenney Mini Square
+        Kenney_Pixel.ttf           - Kenney Pixel
+        Kenney_Pixel_Square.ttf    - Kenney Pixel Square
+        Kenney_Rocket.ttf          - Kenney Rocket
+        Kenney_Rocket_Square.ttf   - Kenney Rocket Square
     """
     from arcade.text import load_font
 

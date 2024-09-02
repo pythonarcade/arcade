@@ -410,7 +410,10 @@ class TileMap:
                 continue
 
             # No specific tile info, but there is a tile sheet
-            # print(f"data {tileset_key} {tileset.tiles} {tileset.image} {tileset_key} {tile_gid} {tileset.tile_count}")  # noqa
+            # print(
+            #     f"data {tileset_key} {tileset.tiles} {tileset.image} "
+            #     f"{tileset_key} {tile_gid} {tileset.tile_count}"
+            # )
             if (
                 tileset.image is not None
                 and tileset_key <= tile_gid < tileset_key + tileset.tile_count

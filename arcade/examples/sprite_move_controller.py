@@ -79,17 +79,14 @@ class Player(arcade.Sprite):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
-    # noinspection PyMethodMayBeStatic
     def on_button_press(self, controller, button_name):
         """ Handle button-down event for the controller """
         print(f"Button {button_name} down")
 
-    # noinspection PyMethodMayBeStatic
     def on_button_release(self, controller, button_name):
         """ Handle button-up event for the controller """
         print(f"Button {button_name} up")
 
-    # noinspection PyMethodMayBeStatic
     def on_stick_motion(self, controller, stick_name, x, y):
         """ Handle hat events """
         print(f"Movement on stick {stick_name}: ({x}, {y})")

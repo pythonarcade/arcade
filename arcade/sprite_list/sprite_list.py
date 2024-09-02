@@ -247,7 +247,6 @@ class SpriteList(Generic[SpriteType]):
 
         # Load all the textures and write texture coordinates into buffers.
         for sprite in self.sprite_list:
-            # noinspection PyProtectedMember
             if sprite._texture is None:
                 raise ValueError("Attempting to use a sprite without a texture")
             self._update_texture(sprite)

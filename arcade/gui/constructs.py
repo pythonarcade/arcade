@@ -1,23 +1,21 @@
-"""
-Constructs, are prepared widget combinations, you can use for common use-cases
-"""
+"""Constructs, are prepared widget combinations, you can use for common use-cases"""
 
 from __future__ import annotations
 
 from typing import Any, Optional
 
 import arcade
+from arcade import uicolor
 from arcade.gui.events import UIOnActionEvent, UIOnClickEvent
 from arcade.gui.mixins import UIMouseFilterMixin
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIAnchorLayout, UIBoxLayout
-from arcade.gui.widgets.text import UITextArea
+from arcade.gui.widgets.text import UILabel, UITextArea
 
 
 class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
-    """
-    A simple dialog box that pops up a message with buttons to close.
+    """A simple dialog box that pops up a message with buttons to close.
     Subclass this class or overwrite the 'on_action' event handler with
 
     .. code-block:: python
@@ -27,11 +25,12 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         def on_action(event: UIOnActionEvent):
             pass
 
+    Args:
+      width: Width of the message box
+      height: Height of the message box
+      message_text: Text to show as message to the user
+      buttons: List of strings, which are shown as buttons
 
-    :param width: Width of the message box
-    :param height: Height of the message box
-    :param message_text: Text to show as message to the user
-    :param buttons: List of strings, which are shown as buttons
     """
 
     def __init__(
@@ -40,19 +39,20 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         width: float,
         height: float,
         message_text: str,
+        title: str | None = None,
         buttons=("Ok",),
     ):
         if not buttons:
             raise ValueError("At least a single value has to be available for `buttons`")
 
         super().__init__(size_hint=(1, 1))
-        self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_action")
+        self.with_background(color=uicolor.GRAY_CONCRETE.replace(a=150))
 
         space = 20
 
         # setup frame which will act like the window
         frame = self.add(UIAnchorLayout(width=width, height=height, size_hint=None))
-        frame.with_padding(all=space)
 
         frame.with_background(
             texture=NinePatchTexture(
@@ -60,12 +60,29 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
                 right=7,
                 bottom=7,
                 top=7,
-                texture=arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
+                texture=arcade.load_texture(":resources:gui_basic_assets/window/panel_gray.png"),
             )
         )
 
+        # setup title
+        if title:
+            title_label = frame.add(
+                child=UILabel(
+                    text="Message",
+                    font_size=16,
+                    size_hint=(1, 0),
+                    align="center",
+                ),
+                anchor_y="top",
+            )
+            title_label.with_padding(all=2, bottom=5)
+            title_label.with_background(color=uicolor.DARK_BLUE_MIDNIGHT_BLUE)
+            title_offset = title_label.height
+        else:
+            title_offset = 0
+
         # Setup text
-        frame.add(
+        text_area = frame.add(
             child=UITextArea(
                 text=message_text,
                 width=width - space,
@@ -74,7 +91,9 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
             ),
             anchor_x="center",
             anchor_y="top",
+            align_y=-(title_offset + space),
         )
+        text_area.with_padding(all=10)
 
         # setup buttons
         button_group = UIBoxLayout(vertical=False, space_between=10)
@@ -84,9 +103,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
             button.on_click = self._on_choice  # type: ignore
 
         frame.add(
-            child=button_group,
-            anchor_x="right",
-            anchor_y="bottom",
+            child=button_group, anchor_x="right", anchor_y="bottom", align_x=-space, align_y=space
         )
 
     def _on_choice(self, event):
@@ -100,19 +117,20 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
 
 
 class UIButtonRow(UIBoxLayout):
-    """
-    Places buttons in a row.
+    """Places buttons in a row.
 
-    :param vertical: Whether the button row is vertical or not.
-    :param align: Where to align the button row.
-    :param size_hint: Tuple of floats (0.0 - 1.0) of how much space of the parent
-        should be requested.
-    :param size_hint_min: Min width and height in pixel.
-    :param size_hint_max: Max width and height in pixel.
-    :param space_between: The space between the children.
-    :param style: Not used.
-    :param Tuple[str, ...] button_labels: The labels for the buttons.
-    :param callback: The callback function which will receive the text of the clicked button.
+    Args:
+        vertical: Whether the button row is vertical or not.
+        align: Where to align the button row.
+        size_hint: Tuple of floats (0.0 - 1.0) of how much space of the
+            parent should be requested.
+        size_hint_min: Min width and height in pixel.
+        size_hint_max: Max width and height in pixel.
+        space_between: The space between the children.
+        callback: The callback function which will receive the text of
+            the clicked button.
+        button_factory: The factory to create the buttons. Default is py:class:`UIFlatButton`.
+        **kwargs: Passed to UIBoxLayout
     """
 
     def __init__(
@@ -124,8 +142,8 @@ class UIButtonRow(UIBoxLayout):
         size_hint_min: Optional[Any] = None,
         size_hint_max: Optional[Any] = None,
         space_between: int = 10,
-        style: Optional[Any] = None,
         button_factory: type = UIFlatButton,
+        **kwargs,
     ):
         super().__init__(
             vertical=vertical,
@@ -134,25 +152,28 @@ class UIButtonRow(UIBoxLayout):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             space_between=space_between,
-            style=style,
+            **kwargs,
         )
-        self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_action")
 
         self.button_factory = button_factory
 
-    def add_button(
-        self,
-        label: str,
-        *,
-        style=None,
-        multiline=False,
-    ):
-        button = self.button_factory(text=label, style=style, multiline=multiline)
-        button.on_click = self._on_click  # type: ignore
+    def add_button(self, label: str, *, style=None, multiline=False, **kwargs):
+        """Add a button to the row.
+
+        Args:
+            label: The text of the button.
+            style: The style of the button.
+            multiline: Whether the button is multiline or not.
+            **kwargs: Passed to the button factory.
+        """
+        button = self.button_factory(text=label, style=style, multiline=multiline, **kwargs)
+        button.on_click = self._on_click
         self.add(button)
         return button
 
     def on_action(self, event: UIOnActionEvent):
+        """Called when button was pressed, override this method to handle button presses."""
         pass
 
     def _on_click(self, event: UIOnClickEvent):

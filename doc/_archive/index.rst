@@ -1,6 +1,6 @@
 :hide-toc:
 
-.. image:: images/arcade-logo.svg
+.. image:: images/logo/arcade-logo.svg
     :width: 10%
     :class: right-image
 

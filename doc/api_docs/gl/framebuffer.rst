@@ -10,9 +10,6 @@ Framebuffer
    :show-inheritance:
    :member-order: bysource
 
-DefaultFrameBuffer
-==================
-
 .. autoclass:: arcade.gl.framebuffer.DefaultFrameBuffer
    :members:
    :undoc-members:

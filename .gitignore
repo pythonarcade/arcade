@@ -17,26 +17,20 @@ venv*/
 .venv*/
 
 # docs
+doc/api_docs/api/*.rst
 /doc/api_docs/resources.rst
-doc/build/
 doc/api_docs/quick_index.rst
-doc/internal/blacklist.rst
-doc/internal/build.rst
-doc/source/quick_index.rst
 doc/example_code/images/thumbs/
-# keep around for backwards compatibility. Remove in 3.1+
 doc/example_code/how_to_examples/thumbs/
 
 # testing
 .pytest_cache/
 .coveralls.yml
-.tox/
 .mypy_cache/
 tests/test_examples/test.png
 stress_test*.csv
 arcade/examples/test.png
 arcade/examples/stress*.csv
-pylint.html
 
 # covereage
 htmlcov/
@@ -47,9 +41,7 @@ htmlcov/
 dist/
 build/
 arcade.egg-info/
-*.pyc
-arcade/__pycache__/
-doc/_build
+__pycache__
 
 # osx
 .DS_Store
@@ -61,8 +53,6 @@ temp/
 
 # Tiled Session for project
 *.tiled-session
-
-doc/api_docs/api/*.rst
 
 # Pyenv local
 .python-version

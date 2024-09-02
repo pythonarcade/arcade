@@ -138,7 +138,7 @@ class GPUBouncingCoins(arcade.Window):
         self.coins.draw()
 
         # Swap things around for next frame
-        self.buffer_velocity_1, self.buffer_velocity_2 = self.buffer_velocity_2, self.buffer_velocity_1  # noqa
+        (self.buffer_velocity_1, self.buffer_velocity_2) = self.buffer_velocity_2, self.buffer_velocity_1  # noqa
         self.geometry_1, self.geometry_2 = self.geometry_2, self.geometry_1
 
     def on_update(self, delta_time: float):

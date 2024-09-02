@@ -6,12 +6,6 @@ from arcade import LBWH
 from arcade.gui import NinePatchTexture
 
 
-# ":resources:gui_basic_assets/button_square_blue_pressed.png"
-# ":resources:gui_basic_assets/button_square_blue.png"
-# ":resources:gui_basic_assets/red_button_hover.png"
-# ":resources:gui_basic_assets/red_button_normal.png"
-
-
 @pytest.fixture(scope="module")
 def texture():
     return arcade.load_texture(
@@ -59,7 +53,7 @@ def test_borders_too_big(ctx, texture):
 def test_swap_texture(ctx, texture):
     patch = NinePatchTexture(texture=texture, left=7, right=8, bottom=9, top=10)
     new_texture = arcade.load_texture(
-        ":resources:gui_basic_assets/red_button_normal.png",
+        ":resources:gui_basic_assets/button/red_normal.png",
     )
     patch.draw_rect(rect=LBWH(0, 0, 200, 200))
     patch.texture = new_texture

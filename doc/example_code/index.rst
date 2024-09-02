@@ -579,44 +579,71 @@ Procedural Generation
 
    :ref:`procedural_caves_bsp`
 
+
+..  _gui_examples_overview:
+
 Graphical User Interface
 ------------------------
 
-.. figure:: images/thumbs/gui_flat_button.png
+
+.. figure:: images/thumbs/gui_0_basic_setup.png
    :figwidth: 170px
-   :target: gui_flat_button.html
+   :target: gui_0_basic_setup.html
 
-   :ref:`gui_flat_button`
+   :ref:`gui_0_basic_setup`
 
-.. figure:: images/thumbs/gui_flat_button_styled.png
+.. figure:: images/thumbs/gui_1_layouts.png
    :figwidth: 170px
-   :target: gui_flat_button_styled.html
+   :target: gui_1_layouts.html
 
-   :ref:`gui_flat_button_styled`
+   :ref:`gui_1_layouts`
 
-.. figure:: images/thumbs/gui_widgets.png
+.. figure:: images/thumbs/gui_2_widgets.png
+    :figwidth: 170px
+    :target: gui_2_widgets.html
+
+    :ref:`gui_2_widgets`
+
+.. figure:: images/thumbs/gui_3_buttons.png
    :figwidth: 170px
-   :target: gui_widgets.html
+   :target: gui_3_buttons.html
 
-   :ref:`gui_widgets`
+   :ref:`gui_3_buttons`
 
-.. figure:: images/thumbs/gui_ok_messagebox.png
+.. figure:: images/thumbs/gui_4_with_camera.png
    :figwidth: 170px
-   :target: gui_ok_messagebox.html
+   :target: gui_4_with_camera.html
 
-   :ref:`gui_ok_messagebox`
+   :ref:`gui_4_with_camera`
 
-.. figure:: images/thumbs/gui_scrollable_text.png
+.. figure:: images/thumbs/gui_5_uicolor_picker.png
    :figwidth: 170px
-   :target: gui_scrollable_text.html
+   :target: gui_5_uicolor_picker.html
 
-   :ref:`gui_scrollable_text`
+   :ref:`gui_5_uicolor_picker`
 
-.. figure:: images/thumbs/gui_slider.png
+.. note::
+
+    Not all existing examples made it into this section. You can find more under `Arcade GUI Examples <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gui>`_
+
+Experimental Widgets
+^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: images/thumbs/gui_exp_hidden_password.png
    :figwidth: 170px
-   :target: gui_slider.html
+   :target: gui_exp_hidden_password.html
 
-   :ref:`gui_slider`
+   :ref:`gui_exp_hidden_password`
+
+
+.. note::
+
+    Experimental widgets are not yet part of the official release.
+    They are subject to change and may not be fully functional.
+
+    Feedback is very welcome, please let us know what you think about them.
+
+
 
 Grid-Based Games
 ----------------
@@ -659,6 +686,8 @@ Grid-Based Games
 
 Advanced
 --------
+
+.. _example-code-pymunk:
 
 Using PyMunk for Physics
 ^^^^^^^^^^^^^^^^^^^^^^^^

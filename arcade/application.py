@@ -20,7 +20,6 @@ import arcade
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
 from arcade.color import TRANSPARENT_BLACK
 from arcade.context import ArcadeContext
-from arcade.sections import SectionManager
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
 from arcade.utils import is_raspberry_pi
 from arcade.window_commands import get_display_size, set_window
@@ -979,37 +978,21 @@ class Window(pyglet.window.Window):
         # remove previously shown view's handlers
         if self._current_view is not None:
             self._current_view.on_hide_view()
-            if self._current_view.has_sections:
-                self.remove_handlers(self._current_view.section_manager)
             self.remove_handlers(self._current_view)
 
         # push new view's handlers
         self._current_view = new_view
-        if new_view.has_sections:
-            section_manager_managed_events = new_view.section_manager.managed_events
-            section_handlers = {
-                event_type: getattr(new_view.section_manager, event_type, None)
-                for event_type in section_manager_managed_events
-            }
-            if section_handlers:
-                self.push_handlers(**section_handlers)
-        else:
-            section_manager_managed_events = set()
 
         # Note: Excluding on_show because this even can trigger multiple times.
         #       It should only be called once when the view is shown.
         view_handlers = {
             event_type: getattr(new_view, event_type, None)
             for event_type in self.event_types
-            if event_type != "on_show"
-            and event_type not in section_manager_managed_events
-            and hasattr(new_view, event_type)
+            if event_type != "on_show" and hasattr(new_view, event_type)
         }
         if view_handlers:
             self.push_handlers(**view_handlers)
         self._current_view.on_show_view()
-        if self._current_view.has_sections:
-            self._current_view.section_manager.on_show_view()
 
         # Note: After the View has been pushed onto pyglet's stack of event handlers
         # (via push_handlers()), pyglet
@@ -1028,17 +1011,8 @@ class Window(pyglet.window.Window):
             return
 
         self._current_view.on_hide_view()
-        if self._current_view.has_sections:
-            self._current_view.section_manager.on_hide_view()
-            self.remove_handlers(self._current_view.section_manager)
         self.remove_handlers(self._current_view)
         self._current_view = None
-
-    # def _create(self) -> None:
-    #     super()._create()
-
-    # def _recreate(self, changes) -> None:
-    #     super()._recreate(changes)
 
     def flip(self) -> None:
         """
@@ -1213,6 +1187,7 @@ def open_window(
     window_title: str | None = None,
     resizable: bool = False,
     antialiasing: bool = True,
+    **kwargs,
 ) -> Window:
     """
     Shortcut for opening/creating a window with less options.
@@ -1231,9 +1206,13 @@ def open_window(
             Whether the user can resize the window.
         antialiasing:
             Whether to use antialiasing
+        **kwargs:
+            Additional keyword arguments to pass to the window constructor.
     """
     global _window
-    _window = Window(width, height, window_title, resizable=resizable, antialiasing=antialiasing)
+    _window = Window(
+        width, height, window_title, resizable=resizable, antialiasing=antialiasing, **kwargs
+    )
     _window.invalid = False
     return _window
 
@@ -1244,7 +1223,7 @@ class View:
     Subclassing the window is very inflexible since you can't easily switch
     your update and draw logic.
 
-    A view is a way to encapsulate that logic so you can easily switch between
+    A view is a way to encapsulate that logic, so you can easily switch between
     different parts of your game. Maybe you have a title screen, a game screen,
     and a game over screen. Each of these could be a different view.
 
@@ -1256,46 +1235,6 @@ class View:
 
     def __init__(self, window: Window | None = None) -> None:
         self.window = arcade.get_window() if window is None else window
-        self.key: int | None = None
-        self._section_manager: SectionManager | None = None
-
-    @property
-    def section_manager(self) -> SectionManager:
-        """The section manager for this view.
-
-        If the view has section manager one will be created.
-        """
-        if self._section_manager is None:
-            self._section_manager = SectionManager(self)
-        return self._section_manager
-
-    @property
-    def has_sections(self) -> bool:
-        """Returns ``True`` if this view has sections."""
-        if self._section_manager is None:
-            return False
-        else:
-            return self.section_manager.has_sections
-
-    def add_section(
-        self,
-        section: arcade.Section,
-        at_index: int | None = None,
-        at_draw_order: int | None = None,
-    ) -> None:
-        """
-        Adds a section to the view Section Manager.
-
-        Args:
-            section:
-                The section to add to this section manager
-            at_index (optional):
-                The index to insert the section for event capture and
-                update events. If ``None`` it will be added at the end.
-            at_draw_order (optional):
-                Inserts the section in a specific draw order. Overwrites section.draw_order
-        """
-        self.section_manager.add_section(section, at_index, at_draw_order)
 
     def clear(
         self,

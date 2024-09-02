@@ -537,7 +537,7 @@ class Text:
         return self._label.italic
 
     @italic.setter
-    def italic(self, italic: bool):
+    def italic(self, italic: bool | str):
         self._label.italic = italic
 
     @property
