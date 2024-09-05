@@ -5,7 +5,7 @@ from typing import NamedTuple, Iterable, Optional, Union, TYPE_CHECKING, TypeVar
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Vec2
-from typing_extensions import Self
+from typing_extensions import Self, reveal_type
 
 import arcade
 from arcade import Sprite, Texture, LBWH, Rect
@@ -144,14 +144,19 @@ class UIWidget(EventDispatcher, ABC):
 
         return child
 
-    def remove(self, child: "UIWidget"):
+    def remove(self, child: "UIWidget") -> dict | None:
         """Removes a child from the UIManager which was directly added to it.
         This will not remove widgets which are added to a child of UIManager.
+
+        Return:
+            kwargs which were used when child was added
         """
         child.parent = None
         for c in self._children:
             if c.child == child:
                 self._children.remove(c)
+                return c.data
+        return None
 
     def clear(self):
         """Removes all children"""
