@@ -84,8 +84,8 @@ class UIWidget(EventDispatcher, ABC):
         children: Iterable["UIWidget"] = tuple(),
         # Properties which might be used by layouts
         size_hint: Optional[Tuple[float | None, float | None]] = None,  # in percentage
-        size_hint_min: Optional[Tuple[float, float]] = None,  # in pixel
-        size_hint_max: Optional[Tuple[float, float]] = None,  # in pixel
+        size_hint_min: Optional[Tuple[float | None, float | None]] = None,  # in pixel
+        size_hint_max: Optional[Tuple[float | None, float | None]] = None,  # in pixel
         **kwargs,
     ):
         self._requires_render = True
