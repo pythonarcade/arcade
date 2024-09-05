@@ -56,7 +56,7 @@ class UIStyledWidget(UIWidget, Generic[StyleRef]):
     """
 
     # TODO detect StyleBase changes, so that style changes can trigger rendering.
-    style: Mapping = DictProperty()  # type: ignore
+    style = DictProperty[str, StyleRef]()
 
     def __init__(self, *, style: Mapping[str, StyleRef], **kwargs):
         self.style = style
@@ -75,6 +75,6 @@ class UIStyledWidget(UIWidget, Generic[StyleRef]):
         """
         pass
 
-    def get_current_style(self) -> StyleRef:
+    def get_current_style(self) -> StyleRef | None:
         """Return style based on any state of the widget"""
         return self.style.get(self.get_current_state(), None)

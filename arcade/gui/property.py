@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import sys
 import traceback
-from typing import Any, Callable, Generic, Optional, TypeVar, cast
+from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, cast
 from weakref import WeakKeyDictionary, ref
 
-from typing_extensions import override
+from typing_extensions import Self, overload, override
 
 P = TypeVar("P")
 
@@ -21,7 +21,7 @@ class _Obs(Generic[P]):
         self.value = value
         # This will keep any added listener even if it is not referenced anymore
         # and would be garbage collected
-        self.listeners: set[Callable[[Any, P], Any]] = set()
+        self.listeners: set[Callable[[Any, P], Any] | Callable[[], Any]] = set()
 
 
 class Property(Generic[P]):
@@ -100,7 +100,7 @@ class Property(Generic[P]):
                 try:
                     # FIXME if listener() raises an error, the invalid call will be
                     #       also shown as an exception
-                    listener(instance, value)
+                    listener(instance, value)  # type: ignore
                 except TypeError:
                     # If the listener does not accept arguments, we call it without it
                     listener()  # type: ignore
@@ -139,12 +139,18 @@ class Property(Generic[P]):
     def __set_name__(self, owner, name):
         self.name = name
 
-    def __get__(self, instance, owner) -> P:
+    @overload
+    def __get__(self, instance: None, instance_type) -> Self: ...
+
+    @overload
+    def __get__(self, instance: Any, instance_type) -> P: ...
+
+    def __get__(self, instance: Any | None, instance_type) -> Self | P:
         if instance is None:
-            return self  # type: ignore
+            return self
         return self.get(instance)
 
-    def __set__(self, instance, value):
+    def __set__(self, instance, value: P):
         self.set(instance, value)
 
 
@@ -265,7 +271,11 @@ class _ObservableDict(dict):
         self.dispatch()
 
 
-class DictProperty(Property):
+K = TypeVar("K")
+V = TypeVar("V")
+
+
+class DictProperty(Property[Dict[K, V]], Generic[K, V]):
     """Property that represents a dict.
 
     Only dict are allowed. Any other classes are forbidden.
@@ -373,7 +383,7 @@ class _ObservableList(list):
         self.dispatch()
 
 
-class ListProperty(Property, Generic[P]):
+class ListProperty(Property[List[P]], Generic[P]):
     """Property that represents a list.
 
     Only list are allowed. Any other classes are forbidden.

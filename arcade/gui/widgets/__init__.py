@@ -57,22 +57,22 @@ class UIWidget(EventDispatcher, ABC):
         size_hint_max: max width and height in pixel
     """
 
-    rect: Rect = Property(LBWH(0, 0, 1, 1))  # type: ignore
-    visible: bool = Property(True)  # type: ignore
+    rect = Property(LBWH(0, 0, 1, 1))
+    visible = Property(True)
 
-    size_hint: Optional[Tuple[float | None, float | None]] = Property(None)  # type: ignore
-    size_hint_min: Optional[Tuple[float, float]] = Property(None)  # type: ignore
-    size_hint_max: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+    size_hint = Property[Optional[Tuple[float | None, float | None]]](None)
+    size_hint_min = Property[Tuple[float, float] | None](None)
+    size_hint_max = Property[Tuple[float, float] | None](None)
 
-    _children: List[_ChildEntry] = ListProperty()  # type: ignore
-    _border_width: int = Property(0)  # type: ignore
-    _border_color: Optional[Color] = Property(arcade.color.BLACK)  # type: ignore
-    _bg_color: Optional[Color] = Property(None)  # type: ignore
-    _bg_tex: Union[None, Texture, NinePatchTexture] = Property(None)  # type: ignore
-    _padding_top: int = Property(0)  # type: ignore
-    _padding_right: int = Property(0)  # type: ignore
-    _padding_bottom: int = Property(0)  # type: ignore
-    _padding_left: int = Property(0)  # type: ignore
+    _children = ListProperty[_ChildEntry]()
+    _border_width = Property(0)
+    _border_color = Property(arcade.color.BLACK)
+    _bg_color = Property[Color | None]()
+    _bg_tex = Property[Texture | NinePatchTexture | None]()
+    _padding_top = Property(0)
+    _padding_right = Property(0)
+    _padding_bottom = Property(0)
+    _padding_left = Property(0)
 
     def __init__(
         self,
@@ -188,7 +188,7 @@ class UIWidget(EventDispatcher, ABC):
             parent = parent.parent
 
         if parent:
-            yield parent  # type: ignore
+            yield parent
 
     def trigger_render(self):
         """This will delay a render right before the next frame is rendered, so that
@@ -362,9 +362,9 @@ class UIWidget(EventDispatcher, ABC):
             args = (args, args, args, args)
 
         elif len(args) == 2:  # self.padding = 10, 20 -> 10, 20, 10, 20
-            args = args + args  # type: ignore
+            args = args + args
 
-        pt, pr, pb, pl = args  # type: ignore # self.padding = 10, 20, 30, 40
+        pt, pr, pb, pl = args  # self.padding = 10, 20, 30, 40
         self._padding_top = pt
         self._padding_right = pr
         self._padding_bottom = pb

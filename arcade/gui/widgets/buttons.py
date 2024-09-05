@@ -56,7 +56,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         size_hint_max: max width and height in pixel
     """
 
-    _textures: dict[str, Union[Texture, NinePatchTexture]] = DictProperty()  # type: ignore
+    _textures = DictProperty[str, Union[Texture, NinePatchTexture]]()
 
     UIStyle = UITextureButtonStyle
 
@@ -186,6 +186,8 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         style = self.get_current_style()
 
         # update label
+        if style is None:
+            raise ValueError(f"No style found for state {self.get_current_state()}")
         self._apply_style(style)
 
         current_state = self.get_current_state()
@@ -203,7 +205,24 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         self.ui_label.rect = self.ui_label.rect.max_size(self.content_width, self.content_height)
 
 
-class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
+@dataclass
+class UIFlatButtonStyle(UIStyleBase):
+    """Used to style the button. Below is its use case.
+
+    .. code:: py
+
+        button = UIFlatButton(style={"normal": UIFlatButton.UIStyle(...),})
+    """
+
+    font_size: int = 12
+    font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
+    font_color: RGBA255 = color.WHITE
+    bg: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
+    border: Optional[RGBA255] = None
+    border_width: int = 0
+
+
+class UIFlatButton(UIInteractiveWidget, UIStyledWidget[UIFlatButtonStyle], UITextWidget):
     """A text button, with support for background color and a border.
 
     There are four states of the UITextureButton i.e. normal, hovered, pressed and disabled.
@@ -220,21 +239,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
         style: Used to style the button
     """
 
-    @dataclass
-    class UIStyle(UIStyleBase):
-        """Used to style the button. Below is its use case.
-
-        .. code:: py
-
-            button = UIFlatButton(style={"normal": UIFlatButton.UIStyle(...),})
-        """
-
-        font_size: int = 12
-        font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
-        font_color: RGBA255 = color.WHITE
-        bg: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
-        border: Optional[RGBA255] = None
-        border_width: int = 0
+    UIStyle = UIFlatButtonStyle
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
@@ -337,7 +342,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget, UITextWidget):
     def do_render(self, surface: Surface):
         """Render a flat button, graphical representation depends on the current state."""
         self.prepare_render(surface)
-        style: UIFlatButton.UIStyle = self.get_current_style()
+        style = self.get_current_style()
         if style is None:
             raise ValueError(f"No style found for state {self.get_current_state()}")
 

@@ -745,7 +745,7 @@ class UITextArea(UIWidget):
         """Handle scrolling of the widget."""
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.point_in_rect(event.pos):
-                self.layout.view_y += event.scroll_y * self.scroll_speed  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/916
+                self.layout.view_y = round(self.layout.view_y + event.scroll_y * self.scroll_speed)
                 self.trigger_full_render()
 
         if super().on_event(event):

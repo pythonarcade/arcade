@@ -179,7 +179,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
             if self.pressed:
                 old_value = self.value
                 self._thumb_x = event.x
-                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))  # type: ignore
+                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
 
         return EVENT_UNHANDLED
 
@@ -195,7 +195,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         """
         old_value = self.value
         self._thumb_x = event.x
-        self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))  # type: ignore
+        self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
 
     def on_change(self, event: UIOnChangeEvent):
         """To be implemented by the user, triggered when the cursor's value is changed.
@@ -405,7 +405,7 @@ class UITextureSlider(UISlider):
 
     @override
     def _render_track(self, surface: Surface):
-        style: UISliderStyle = self.get_current_style()  # type: ignore
+        style = self.get_current_style()
         surface.draw_texture(0, 0, self.width, self.height, self._track_tex)
 
         # TODO accept these as constructor params
