@@ -5,7 +5,7 @@ from typing import NamedTuple, Iterable, Optional, Union, TYPE_CHECKING, TypeVar
 
 from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Vec2
-from typing_extensions import Self, reveal_type
+from typing_extensions import Self
 
 import arcade
 from arcade import Sprite, Texture, LBWH, Rect
@@ -60,15 +60,15 @@ class UIWidget(EventDispatcher, ABC):
     rect = Property(LBWH(0, 0, 1, 1))
     visible = Property(True)
 
-    size_hint = Property[Optional[Tuple[float | None, float | None]]](None)
-    size_hint_min = Property[Tuple[float, float] | None](None)
-    size_hint_max = Property[Tuple[float, float] | None](None)
+    size_hint = Property[Optional[Tuple[Optional[float], Optional[float]]]](None)
+    size_hint_min = Property[Optional[Tuple[float, float]]](None)
+    size_hint_max = Property[Optional[Tuple[float, float]]](None)
 
     _children = ListProperty[_ChildEntry]()
     _border_width = Property(0)
     _border_color = Property(arcade.color.BLACK)
-    _bg_color = Property[Color | None]()
-    _bg_tex = Property[Texture | NinePatchTexture | None]()
+    _bg_color = Property[Optional[Color]]()
+    _bg_tex = Property[Union[Texture, NinePatchTexture, None]]()
     _padding_top = Property(0)
     _padding_right = Property(0)
     _padding_bottom = Property(0)
