@@ -173,6 +173,9 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         Returns: True if event was handled, False otherwise.
 
         """
+        if self.disabled:
+            return EVENT_UNHANDLED
+
         if super().on_event(event):
             return EVENT_HANDLED
 
