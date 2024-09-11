@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 from typing import Mapping, Optional, Union
@@ -50,7 +51,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
 
     """
 
-    value = Property(0)
+    value = Property(0.0)
 
     def __init__(
         self,
@@ -289,7 +290,7 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[Mapping[str, UISliderStyle], None] = None,
+        style: Union[dict[str, UISliderStyle], None] = None,
         **kwargs,
     ):
         super().__init__(
@@ -326,6 +327,9 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     @override
     def _render_track(self, surface: Surface):
         style = self.get_current_style()
+        if style is None:
+            warnings.warn(f"No style found for state {self.get_current_state()}", UserWarning)
+            return
 
         bg_slider_color = style.get("unfilled_track", UISlider.UIStyle.unfilled_track)
         fg_slider_color = style.get("filled_track", UISlider.UIStyle.filled_track)
@@ -356,6 +360,9 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     @override
     def _render_thumb(self, surface: Surface):
         style = self.get_current_style()
+        if style is None:
+            warnings.warn(f"No style found for state {self.get_current_state()}", UserWarning)
+            return
 
         border_width = style.get("border_width", UISlider.UIStyle.border_width)
         cursor_color = style.get("bg", UISlider.UIStyle.bg)
@@ -407,6 +414,10 @@ class UITextureSlider(UISlider):
     @override
     def _render_track(self, surface: Surface):
         style = self.get_current_style()
+        if style is None:
+            warnings.warn(f"No style found for state {self.get_current_state()}", UserWarning)
+            return
+
         surface.draw_texture(0, 0, self.width, self.height, self._track_tex)
 
         # TODO accept these as constructor params
@@ -417,13 +428,14 @@ class UITextureSlider(UISlider):
         slider_bottom = (self.height - slider_height) // 2
 
         # slider
-        arcade.draw_lbwh_rectangle_filled(
-            slider_left_x - self.left,
-            slider_bottom,
-            cursor_center_x - slider_left_x,
-            slider_height,
-            style.filled_track,
-        )
+        if style.filled_track:
+            arcade.draw_lbwh_rectangle_filled(
+                slider_left_x - self.left,
+                slider_bottom,
+                cursor_center_x - slider_left_x,
+                slider_height,
+                style.filled_track,
+            )
 
     @override
     def _render_thumb(self, surface: Surface):
