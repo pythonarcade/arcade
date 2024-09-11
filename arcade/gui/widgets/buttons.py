@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional, Union
 
+from typing_extensions import TypeAlias
+
 import arcade
 from arcade import Texture, color, uicolor
 from arcade.gui.nine_patch import NinePatchTexture
@@ -239,7 +241,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget[UIFlatButtonStyle], UITex
         style: Used to style the button
     """
 
-    UIStyle = UIFlatButtonStyle
+    UIStyle: TypeAlias = UIFlatButtonStyle
 
     DEFAULT_STYLE = {
         "normal": UIStyle(),
