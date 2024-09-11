@@ -135,13 +135,18 @@ class ScrollableTextArea(UITextArea, UIAnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self._down_indicator = UIImage(texture=TEX_SCROLL_DOWN, size_hint=None, width=32, height=32)
+        indicator_size = 22
+        self._down_indicator = UIImage(
+            texture=TEX_SCROLL_DOWN, size_hint=None, width=indicator_size, height=indicator_size
+        )
         self._down_indicator.visible = False
-        self.add(self._down_indicator, anchor_x="right", anchor_y="bottom")
+        self.add(self._down_indicator, anchor_x="right", anchor_y="bottom", align_x=3)
 
-        self._up_indicator = UIImage(texture=TEX_SCROLL_UP, size_hint=None, width=32, height=32)
+        self._up_indicator = UIImage(
+            texture=TEX_SCROLL_UP, size_hint=None, width=indicator_size, height=indicator_size
+        )
         self._up_indicator.visible = False
-        self.add(self._up_indicator, anchor_x="right", anchor_y="top")
+        self.add(self._up_indicator, anchor_x="right", anchor_y="top", align_x=3)
 
     def on_update(self, dt):
         self._up_indicator.visible = self.layout.view_y < 0

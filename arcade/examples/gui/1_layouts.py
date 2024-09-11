@@ -14,7 +14,8 @@ Content:
 from datetime import datetime
 
 import arcade
-from arcade.gui import UIAnchorLayout
+from arcade import load_texture
+from arcade.gui import UIAnchorLayout, UIImage, UITextArea
 
 arcade.resources.load_system_fonts()
 
@@ -59,6 +60,36 @@ Some widgets calculate their minimum size based on their content like UILabel
 and layouts in general.
 """
 
+TEX_SCROLL_DOWN = load_texture(":resources:gui_basic_assets/scroll/indicator_down.png")
+TEX_SCROLL_UP = load_texture(":resources:gui_basic_assets/scroll/indicator_up.png")
+
+
+class ScrollableTextArea(UITextArea, UIAnchorLayout):
+    """This widget is a text area that can be scrolled, like a UITextLayout, but shows indicator,
+    that the text can be scrolled."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        indicator_size = 22
+        self._down_indicator = UIImage(
+            texture=TEX_SCROLL_DOWN, size_hint=None, width=indicator_size, height=indicator_size
+        )
+        self._down_indicator.visible = False
+        self.add(self._down_indicator, anchor_x="right", anchor_y="bottom", align_x=-3)
+
+        self._up_indicator = UIImage(
+            texture=TEX_SCROLL_UP, size_hint=None, width=indicator_size, height=indicator_size
+        )
+        self._up_indicator.visible = False
+        self.add(self._up_indicator, anchor_x="right", anchor_y="top", align_x=-3)
+
+    def on_update(self, dt):
+        self._up_indicator.visible = self.layout.view_y < 0
+        self._down_indicator.visible = (
+            abs(self.layout.view_y) < self.layout.content_height - self.layout.height
+        )
+
 
 class LayoutView(arcade.gui.UIView):
     """This view demonstrates the use of layouts."""
@@ -71,7 +102,7 @@ class LayoutView(arcade.gui.UIView):
         self.anchor = self.add_widget(UIAnchorLayout())
 
         # Add describing text in center
-        text_area = arcade.gui.UITextArea(
+        text_area = ScrollableTextArea(
             text=DESCRIPTION,
             text_color=arcade.uicolor.WHITE_CLOUDS,
             font_name=("Lato", "proxima-nova", "Helvetica Neue", "Arial", "sans-serif"),
