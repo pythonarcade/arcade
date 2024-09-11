@@ -180,6 +180,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
                 old_value = self.value
                 self._thumb_x = event.x
                 self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
+                return True
 
         return EVENT_UNHANDLED
 
