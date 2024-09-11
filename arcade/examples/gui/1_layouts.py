@@ -79,8 +79,8 @@ class LayoutView(arcade.gui.UIView):
             size_hint=(0.5, 0.8),
         )
         self.anchor.add(text_area, anchor_x="center_x", anchor_y="center_y")
-        text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE)
-        text_area.with_background(color=arcade.uicolor.GRAY_CONCRETE.replace(a=125))
+        text_area.with_border(color=arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE)
+        text_area.with_background(color=arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE.replace(a=125))
         text_area.with_padding(left=5)
 
         # add a grid layout with the window and grid size and grid position
@@ -89,8 +89,8 @@ class LayoutView(arcade.gui.UIView):
             row_count=2,
             align_horizontal="left",
         )
-        self.grid.with_background(color=arcade.uicolor.GRAY_CONCRETE)
-        self.grid.with_border(color=arcade.uicolor.GRAY_ASBESTOS)
+        self.grid.with_background(color=arcade.uicolor.GRAY_ASBESTOS)
+        self.grid.with_border(color=arcade.uicolor.GRAY_CONCRETE)
         self.grid.with_padding(all=10)
         self.anchor.add(self.grid, anchor_x="left", anchor_y="top", align_x=10, align_y=-10)
         self.grid.add(

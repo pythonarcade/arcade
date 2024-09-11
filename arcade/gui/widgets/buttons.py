@@ -28,7 +28,7 @@ class UITextureButtonStyle(UIStyleBase):
 
     font_size: int = 12
     font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
-    font_color: RGBA255 = uicolor.WHITE_CLOUDS
+    font_color: RGBA255 = uicolor.WHITE
 
 
 class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle], UITextWidget):
