@@ -3,7 +3,7 @@ This module pre-defines colors from FlatUI.
 https://materialui.co/flatuicolors/
 """
 
-from arcade.color import BLACK, Color, WHITE
+from arcade.color import BLACK, WHITE, Color
 
 WHITE = WHITE
 GREEN_TURQUOISE = Color(26, 188, 156)
