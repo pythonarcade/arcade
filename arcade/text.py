@@ -638,14 +638,14 @@ class Text:
     def em_to_px(self, em: float) -> float:
         """Convert from an em value to a pixel amount.
 
-        1em is defined as `font_size`pt.
+        1em is defined as ``font_size``pt.
         """
         return (em * self.font_size) * (4 / 3)
 
     def px_to_em(self, px: float) -> float:
-        """Convert from an em value to a pixel amount.
+        """Convert from a pixel amount to a value in ems.
 
-        1em is defined as `font_size`pt.
+        1em is defined as ``font_size``pt.
         """
         return px / (4 / 3) / self.font_size
 
