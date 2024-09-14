@@ -616,36 +616,33 @@ class Text:
     @property
     def tracking(self) -> float | None:
         """
-        Get the tracking amount for this text object, or rather,
+        Get/set the tracking amount for this text object, or rather,
         the added space between each character.
 
-        Returns a pixel amount, or None if the tracking is inconsistent.
+        The value is an amount in pixels and can be negative.
+        To convert from the em unit, use Text.em_to_px().
+
+        Returns:
+            a pixel amount, or None if the tracking is inconsistent.
         """
         kerning = self._label.get_style("kerning")
         return kerning if kerning != pyglet.text.document.STYLE_INDETERMINATE else None
 
     @tracking.setter
     def tracking(self, value: float):
-        """
-        Get the tracking amount for this text object, or rather,
-        the added space between each character.
-
-        `value` is an amount in pixels and can be negative.
-        To convert from the em unit, use Text.em_to_px().
-        """
         self._label.set_style("kerning", value)
 
     def em_to_px(self, em: float) -> float:
         """Convert from an em value to a pixel amount.
 
-        1em is defined as ``font_size``pt.
+        1em is defined as ``font_size`` pt.
         """
         return (em * self.font_size) * (4 / 3)
 
     def px_to_em(self, px: float) -> float:
         """Convert from a pixel amount to a value in ems.
 
-        1em is defined as ``font_size``pt.
+        1em is defined as ``font_size`` pt.
         """
         return px / (4 / 3) / self.font_size
 
