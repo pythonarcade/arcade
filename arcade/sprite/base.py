@@ -198,6 +198,7 @@ class BasicSprite:
         if width != self._width or height != self._height:
             texture_width, texture_height = self._texture.size
             self._scale = width / texture_width, height / texture_height
+            self._hit_box.scale = self._scale
             self._width = width
             self._height = height
 
