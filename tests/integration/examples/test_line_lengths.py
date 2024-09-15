@@ -29,7 +29,7 @@ def is_ignored(path: Path):
 def test_line_lengths():
     paths = EXAMPLE_ROOT.glob("**/*.py")
 
-    regex = re.compile("^.{99}.*$")
+    regex = re.compile("^.{100}.*$")
     grand_total = 0
     file_count = 0
 

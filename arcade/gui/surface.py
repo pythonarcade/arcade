@@ -197,11 +197,12 @@ class Surface:
         w = max(w, 1)
         h = max(h, 1)
 
+        # round to nearest pixel, to avoid off by 1-pixel errors in ui
         viewport_rect = LBWH(
-            int(l * self._pixel_ratio),
-            int(b * self._pixel_ratio),
-            int(w * self._pixel_ratio),
-            int(h * self._pixel_ratio),
+            round(l * self._pixel_ratio),
+            round(b * self._pixel_ratio),
+            round(w * self._pixel_ratio),
+            round(h * self._pixel_ratio),
         )
         self.fbo.viewport = viewport_rect.viewport
 

@@ -60,7 +60,7 @@ class UIWidget(EventDispatcher, ABC):
     rect: Rect = Property(LBWH(0, 0, 1, 1))  # type: ignore
     visible: bool = Property(True)  # type: ignore
 
-    size_hint: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+    size_hint: Optional[Tuple[float | None, float | None]] = Property(None)  # type: ignore
     size_hint_min: Optional[Tuple[float, float]] = Property(None)  # type: ignore
     size_hint_max: Optional[Tuple[float, float]] = Property(None)  # type: ignore
 
@@ -83,9 +83,9 @@ class UIWidget(EventDispatcher, ABC):
         height: float = 100,
         children: Iterable["UIWidget"] = tuple(),
         # Properties which might be used by layouts
-        size_hint=None,  # in percentage
-        size_hint_min=None,  # in pixel
-        size_hint_max=None,  # in pixel
+        size_hint: Optional[Tuple[float | None, float | None]] = None,  # in percentage
+        size_hint_min: Optional[Tuple[float, float]] = None,  # in pixel
+        size_hint_max: Optional[Tuple[float, float]] = None,  # in pixel
         **kwargs,
     ):
         self._requires_render = True
@@ -510,6 +510,9 @@ class UIWidget(EventDispatcher, ABC):
         self.rect = self.rect.align_center(center)
         return self
 
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {self.rect.lbwh}>"
+
 
 class UIInteractiveWidget(UIWidget):
     """Base class for widgets which use mouse interaction (hover, pressed, clicked)
@@ -785,8 +788,9 @@ class UILayout(UIWidget):
         super()._do_layout()
 
     def do_layout(self):
-        """Triggered by the UIManager before rendering, :class:`UILayout` s should place
-        themselves and/or children. Do layout will be triggered on children afterward.
+        """do_layout is triggered by the UIManager before rendering.
+         :class:`UILayout` should position their children.
+         Afterward, do_layout of child widgets will be triggered.
 
         Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next
         frame, this will happen automatically if the position or size of this widget changed.

@@ -21,12 +21,12 @@ class MyView(arcade.View):
         super().__init__()
         self.ui = UIManager()
 
-        dummy1 = UIDummy(width=100, height=100)
+        dummy1 = UIDummy(size_hint=(1, 1))
         dummy2 = UIDummy(width=50, height=50)
         dummy3 = UIDummy(width=50, height=50, size_hint=(0.5, 0.5))
-        dummy4 = UIDummy(width=100, height=100)
-        dummy5 = UIDummy(width=200, height=100)
-        dummy6 = UIDummy(width=100, height=300)
+        dummy4 = UIDummy(size_hint=(1, 1))
+        dummy5 = UIDummy(size_hint=(1, 1))
+        dummy6 = UIDummy(size_hint=(1, 1))
 
         subject = (
             UIGridLayout(
@@ -34,8 +34,8 @@ class MyView(arcade.View):
                 row_count=3,
                 size_hint=(0.5, 0.5),
             )
-            .with_border()
-            .with_padding()
+            .with_border(color=arcade.color.RED)
+            .with_padding(all=2)
         )
 
         subject.add(child=dummy1, column=0, row=0)
@@ -50,6 +50,10 @@ class MyView(arcade.View):
 
         self.ui.add(anchor)
 
+        self.ui.execute_layout()
+        print(subject.size)
+        self.grid = subject
+
     def on_show_view(self):
         self.window.background_color = arcade.color.DARK_BLUE_GRAY
         # Enable UIManager when view is shown to catch window events
@@ -58,6 +62,11 @@ class MyView(arcade.View):
     def on_hide_view(self):
         # Disable UIManager when view gets inactive
         self.ui.disable()
+
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        if symbol == arcade.key.D:
+            self.grid.legacy_mode = not self.grid.legacy_mode
+        return True
 
     def on_draw(self):
         self.clear()
