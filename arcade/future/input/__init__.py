@@ -16,5 +16,5 @@ __all__ = [
     "Action",
     "ActionMapping",
     "Axis",
-    "AxisMapping"
+    "AxisMapping",
 ]
