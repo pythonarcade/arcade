@@ -78,7 +78,7 @@ We are using ``UIAnchorLayout`` to position the button. We also setup a function
 which is called when the button is clicked.
 
   .. literalinclude:: menu_02.py
-    :pyobject: MainView.on_draw
+    :pyobject: MainView.__init__
     :caption: Initialising the Button
     :emphasize-lines: 8-12
 
