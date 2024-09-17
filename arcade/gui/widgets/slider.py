@@ -238,7 +238,7 @@ class UISliderStyle(UIStyleBase):
 class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     """A simple slider.
 
-    A slider contains of a horizontal track and a thumb.
+    A slider consists of a horizontal track and a thumb.
     The thumb can be moved along the track to set the value of the slider.
 
     Use the `on_change` event to get notified about value changes.
