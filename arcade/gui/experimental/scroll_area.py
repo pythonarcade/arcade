@@ -176,14 +176,14 @@ class UIScrollArea(UILayout):
             if shw is not None:
                 new_width = shw * self.content_width
 
-                new_width = max(shw_min, new_width)
+                new_width = max(shw_min or 1, new_width)
                 if shw_max is not None:
                     new_width = min(shw_max, new_width)
                 new_rect = new_rect.resize(width=new_width)
 
             if shh is not None:
                 new_height = shh * self.content_height
-                new_height = max(shh_min, new_height)
+                new_height = max(shh_min or 1, new_height)
 
                 if shh_max is not None:
                     new_height = min(shh_max, new_height)
@@ -199,7 +199,7 @@ class UIScrollArea(UILayout):
         # resize surface to fit all children
         if self.surface.size != (total_min_x, total_min_y):
             self.surface.resize(
-                size=(total_min_x, total_min_y), pixel_ratio=self.surface.pixel_ratio
+                size=(round(total_min_x), round(total_min_y)), pixel_ratio=self.surface.pixel_ratio
             )
             self.scroll_x = 0
             self.scroll_y = 0
