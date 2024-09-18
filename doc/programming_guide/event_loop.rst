@@ -4,15 +4,14 @@ Event Loop
 Introduction
 ------------
 
-Python Arcade provides a simple three event loop to build off.
+Python Arcade provides three simple methods to integrate with the event loop.
 All three methods are exposed to be overridden in :py:class:`arcade.Window`
-and :py:class:`arcade.View`. You may also register your own handlers
-to these events using :py:func:`arcade.Window.push_handlers`, but this is
-not recommended for beginners.
+and :py:class:`arcade.View`. For advanced use cases it is possible to add own
+handler via :py:func:`arcade.Window.push_handlers`.
 
 :py:func:`on_draw`
 ^^^^^^^^^^^^^^^^^^
-is provided to render to the window. After the ``on_draw`` event, the window
+provides a hook to render to the window. After the ``on_draw`` event, the window
 will draw to the screen. By default, this attempts to occur every 1/60 seconds
 or once every 16.7 milliseconds. It can be changed when initializing your
 :py:class:`arcade.Window` with the ``draw_rate`` argument. Setting the draw rate
@@ -23,7 +22,7 @@ This means that non-default cameras must be reused on every draw event.
 
 :py:func:`on_update`
 ^^^^^^^^^^^^^^^^^^^^
-is provided to update state which needs to happen at a roughly regular interval.
+provides a hook to update state which needs to happen at a roughly regular interval.
 The update event is not strictly paired to the draw event, but they share the same
 thread. This can cause a bottle-neck if one is significantly slower than the other.
 The event also provides a ``delta_time`` argument which is the time elapsed since the
@@ -32,7 +31,7 @@ the ``update_rate`` argument when initialising your :py:class:`arcade.Window`.
 
 :py:func:`on_fixed_update`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-is provided to update state which must happen with an exactly regular interval.
+provides a hook to update state which must happen with an exactly regular interval.
 Because Arcade can't ensure the event is actually fired regularly it stores how
 much time has passed since the last update, and once enough time has passed it
 releases an ``on_fixed_update`` call. The fixed update always provides the same
@@ -41,7 +40,7 @@ called with the ``fixed_rate`` argument when initialising your :py:class:`arcade
 
 Time
 ----
-While pyglet does provide a clock for scheduling events it is closely tied
+While the underlying library, pyglet, provide a clock for scheduling events it is closely tied
 to the window's own events. For simple time keeping arcade provides global
 clock objects. Both clocks can be imported from ``arcade.clock`` as 
 ``GLOBAL_CLOCK`` and ``GLOBAL_FIXED_CLOCK``
@@ -58,7 +57,7 @@ can be created on the fly.
 :py:class:`arcade.FixedClock`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The fixed clock tracks the same values as the normal clock, but has two special features.
-Firstly it inforces that the ``delta_time`` passed into its ``tick`` method is always the same.
+Firstly it enforces that the ``delta_time`` passed into its ``tick`` method is always the same.
 This is because advanced physics engines require consistent time. Secondly the fixed clock
 requires a sibling regular clock. It uses this clock to track how offset from the true time it is.
 Like the regular clock you may make a new :py:class:`arcade.FixedClock` at any time,
@@ -66,23 +65,21 @@ but ensure they have a sibling.
 
 Up Coming
 ^^^^^^^^^
-In future versions of arcade there will be a :py:class:`arcade.SubClock`. The sub clock will
-provide many useful features currently missing from regular and fixed clocks. Sub clocks are 
-ticked by their parent clock. This means you won't need to manually tick clocks created at runtime.
-Sub clocks will also allow for time manipulation by changing how fast they see time flow. This
-allows you to easily create slow-down effects without any advanced maths or changing the number of 
-updates per frame. To gain access to a draft :py:class:`arcade.SubClock` you can find it in
-``arcade.future.sub_clock``. This version of the sub clock is not final. If you find any bugs do
-not hesitate to raise an issue on the github.
+In future version of arcade :py:class:`Clock` will be updated to allow for sub clocks. 
+Sub clocks will be ticked by their parent clock rather than be manually updated. Sub clocks
+will make it easier to control the flow of time for specific groups of objects. Such as only
+slowing enemies or excluding UI elements. To gain access to a draft :py:class:`arcade.Clock`
+you can find it in ``arcade.future.sub_clock``. This version of the sub clock is not final.
+If you find any bugs do not hesitate to raise an issue on the github.
 
 More on Fixed update
 --------------------
-the ``on_fixed_update`` event can be an extremelly powerful tool, but it has many complications
-that should be accounted for. If used imporperly the event can grind a game to a halt.
+The ``on_fixed_update`` event can be an extremely powerful tool, but it has many complications
+that should be taken into account. If used imporperly the event can grind a game to a halt.
 
 Death Spiral
 ^^^^^^^^^^^^
-A fixed update represnts a very specific amount of time. If all of the computations take
+A fixed update represents a very specific amount of time. If all of the computations take
 longer than the fixed update represents than the ammount of time accumulated between update
 events will grow. If this happens for multiple frames the game will begin to spiral. The 
 first few frames of the spiral will lead to one update cycle requiring two fixed update
@@ -100,13 +97,12 @@ to calculate for.
 
 Update Interpolation
 ^^^^^^^^^^^^^^^^^^^^
-Because fixed updates work on the accumulation of time this may not sync with the perfectly with 
+Because fixed updates work on the accumulation of time this may not sync with 
 the ``on_draw`` or ``on_update`` events. In extreme cases this can cause a visible stuttering to
-objects moved within ``on_fixed_update``. This is where the ``accumulated`` and ``fraction`` properties
-on ``GLOBAL_FIXED_CLOCK`` come into play. By storing the last frame's position information it is possible
+objects moved within ``on_fixed_update``. To prevent this, ``GLOBAL_FIXED_CLOCK`` provides
+the ``accumulated`` and ``fraction``properties. By storing the last frame's position information it is possible
 to use ``fraction`` to interpolate towards the next calculated positions. For a visual representation of 
-this effect look at the ``arcade.examples.fixed_update_interpolation``. Paired with slowing down time when
-computations get expensive allows for a much smoother game experience at the cost of code complexity.
+this effect look at ``arcade.examples.fixed_update_interpolation``.
 
 Vertical Synchronization
 ------------------------
