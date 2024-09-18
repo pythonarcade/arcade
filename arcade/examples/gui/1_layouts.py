@@ -14,7 +14,6 @@ Content:
 from datetime import datetime
 
 import arcade
-from arcade import load_texture
 from arcade.gui import UIAnchorLayout, UIImage, UITextArea
 
 arcade.resources.load_system_fonts()
@@ -60,8 +59,8 @@ Some widgets calculate their minimum size based on their content like UILabel
 and layouts in general.
 """
 
-TEX_SCROLL_DOWN = load_texture(":resources:gui_basic_assets/scroll/indicator_down.png")
-TEX_SCROLL_UP = load_texture(":resources:gui_basic_assets/scroll/indicator_up.png")
+TEX_SCROLL_DOWN = arcade.load_texture(":resources:gui_basic_assets/scroll/indicator_down.png")
+TEX_SCROLL_UP = arcade.load_texture(":resources:gui_basic_assets/scroll/indicator_up.png")
 
 
 class ScrollableTextArea(UITextArea, UIAnchorLayout):

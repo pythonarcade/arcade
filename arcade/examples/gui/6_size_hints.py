@@ -10,8 +10,8 @@ information for layouts which arrange widgets
 Please note the following:
 
 * These do nothing outside a layout
-* They are only hints, and do not guarantee a specific size will
-  always be set.
+* They are only hints, and do not guarantee that a specific size will
+  be provided.
 
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.6_size_hints
@@ -20,15 +20,13 @@ python -m arcade.examples.gui.6_size_hints
 from __future__ import annotations
 
 import arcade
-from arcade.gui import UIManager, UIBoxLayout
-from arcade.gui.widgets import UIDummy
-from arcade.gui.widgets.layout import UIAnchorLayout
+from arcade.gui import UIAnchorLayout, UIDummy, UIBoxLayout, UIView
 
 
-class MyView(arcade.View):
+class MyView(UIView):
     def __init__(self):
         super().__init__()
-        self.ui = UIManager()
+        self.background_color = arcade.uicolor.BLUE_BELIZE_HOLE
 
         anchor = self.ui.add(UIAnchorLayout())
 
@@ -46,23 +44,6 @@ class MyView(arcade.View):
             anchor_x="center_x",
             anchor_y="center_y",
         )
-
-    def on_show_view(self):
-        self.window.background_color = arcade.color.DARK_BLUE_GRAY
-        # Enable UIManager when view is shown to catch window events
-        self.ui.enable()
-
-    def on_hide_view(self):
-        # Disable UIManager when view gets inactive
-        self.ui.disable()
-
-    def on_draw(self):
-        self.clear()
-        self.ui.draw()
-
-    def on_key_press(self, symbol: int, modifiers: int):
-        print(self.ui_dummy.rect)
-        print(self.box.rect)
 
 
 if __name__ == "__main__":
