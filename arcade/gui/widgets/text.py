@@ -6,7 +6,7 @@ import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
-from typing_extensions import override
+from typing_extensions import Literal, override
 
 import arcade
 from arcade.gui.events import (
@@ -15,6 +15,7 @@ from arcade.gui.events import (
     UIMouseEvent,
     UIMousePressEvent,
     UIMouseScrollEvent,
+    UIOnChangeEvent,
     UITextInputEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,
@@ -83,7 +84,7 @@ class UILabel(UIWidget):
         y: float = 0,
         width: Optional[float] = None,
         height: Optional[float] = None,
-        font_name=("Arial",),
+        font_name=("calibri", "arial"),
         font_size: float = 12,
         text_color: RGBOrA255 = arcade.color.WHITE,
         bold=False,
@@ -221,6 +222,8 @@ class UILabel(UIWidget):
         font_name: Optional[FontNameOrNames] = None,
         font_size: Optional[float] = None,
         font_color: Optional[Color] = None,
+        bold: Optional[bool | str] = None,
+        italic: Optional[bool] = None,
     ):
         """Update font of the label.
 
@@ -230,20 +233,34 @@ class UILabel(UIWidget):
                 success.
             font_size: Font size of font.
             font_color: Color of the text.
+            bold: If enabled, the label's text will be in a **bold** style.
+            italic: If enabled, the label's text will be in an *italic*
         """
         font_name = font_name or self._label.font_name
         font_size = font_size or self._label.font_size
         font_color = font_color or self._label.color
+        font_bold = bold if bold is not None else self._label.bold
+        font_italic = italic if italic is not None else self._label.italic
 
         # Check if values actually changed, if then update and trigger render
         font_name_changed = self._label.font_name != font_name
         font_size_changed = self._label.font_size != font_size
         font_color_changed = self._label.color != font_color
-        if font_name_changed or font_size_changed or font_color_changed:
+        font_bold_changed = self._label.bold != font_bold
+        font_italic_changed = self._label.italic != font_italic
+        if (
+            font_name_changed
+            or font_size_changed
+            or font_color_changed
+            or font_bold_changed
+            or font_italic_changed
+        ):
             with self._label:
                 self._label.font_name = font_name
                 self._label.font_size = font_size
                 self._label.color = font_color
+                self._label.bold = font_bold
+                self._label.italic = font_italic
             self._update_size_hint_min()
 
             # Optimised render behaviour
@@ -288,6 +305,7 @@ class UITextWidget(UIAnchorLayout):
 
     def __init__(self, *, text: str, multiline: bool = False, **kwargs):
         super().__init__(text=text, **kwargs)
+        self._restrict_child_size = True
         self._label = UILabel(
             text=text, multiline=multiline
         )  # UILabel supports width=None for multiline
@@ -363,6 +381,8 @@ class UIInputText(UIWidget):
     users to type, so it is okay to have multiple of these.
 
     By default, a border is drawn around the input field.
+
+    The widget emits a :py:class:`~arcade.gui.UIOnChangeEvent` event when the text changes.
 
     Args:
         x: x position (default anchor is bottom-left).
@@ -454,6 +474,8 @@ class UIInputText(UIWidget):
 
         self._blink_state = self._get_caret_blink_state()
 
+        self.register_event_type("on_change")
+
     def _get_caret_blink_state(self):
         """Check whether or not the caret is currently blinking or not."""
         return self.caret.visible and self._active and self.caret._blink_visible
@@ -492,6 +514,7 @@ class UIInputText(UIWidget):
 
         # If active pass all non press events to caret
         if self._active:
+            old_text = self.text
             # Act on events if active
             if isinstance(event, UITextInputEvent):
                 self.caret.on_text(event.text)
@@ -514,6 +537,9 @@ class UIInputText(UIWidget):
                 elif isinstance(event, UIMouseScrollEvent):
                     self.caret.on_mouse_scroll(x, y, event.scroll_x, event.scroll_y)
                     self.trigger_full_render()
+
+            if old_text != self.text:
+                self.dispatch_event("on_change", UIOnChangeEvent(self, old_text, self.text))
 
         if super().on_event(event):
             return EVENT_HANDLED
@@ -563,7 +589,9 @@ class UIInputText(UIWidget):
     @text.setter
     def text(self, value):
         if value != self.doc.text:
+            old_text = self.doc.text
             self.doc.text = value
+            self.dispatch_event("on_change", UIOnChangeEvent(self, old_text, self.text))
 
             # if bg color or texture is set, render this widget only
             if self._bg_color or self._bg_tex:
@@ -578,6 +606,10 @@ class UIInputText(UIWidget):
         self.prepare_render(surface)
 
         self.layout.draw()
+
+    def on_change(self, event: UIOnChangeEvent):
+        """Event handler for text change."""
+        pass
 
 
 class UITextArea(UIWidget):
@@ -601,6 +633,11 @@ class UITextArea(UIWidget):
             of space of the parent should be requested.
         size_hint_min: Minimum size hint width and height in pixel.
         size_hint_max: Maximum size hint width and height in pixel.
+        document_mode: Mode of the document. Can be "PLAIN", "ATTRIBUTED", or "HTML".
+            PLAIN will decode the text as plain text, ATTRIBUTED and HTML will
+            decode the text as pyglet documents here
+            https://pyglet.readthedocs.io/en/latest/programming_guide/text.html
+        **kwargs: passed to :py:class:`~arcade.gui.UIWidget`.
     """
 
     def __init__(
@@ -611,7 +648,7 @@ class UITextArea(UIWidget):
         width: float = 400,
         height: float = 40,
         text: str = "",
-        font_name=("Arial",),
+        font_name=("arial", "calibri"),
         font_size: float = 12,
         text_color: RGBA255 = arcade.color.WHITE,
         multiline: bool = True,
@@ -619,6 +656,7 @@ class UITextArea(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
+        document_mode: Literal["PLAIN", "ATTRIBUTED", "HTML"] = "PLAIN",
         **kwargs,
     ):
         super().__init__(
@@ -636,10 +674,17 @@ class UITextArea(UIWidget):
         # Measured in pixels per 'click'
         self.scroll_speed = scroll_speed if scroll_speed is not None else font_size
 
-        self.doc: AbstractDocument = pyglet.text.decode_text(text)
+        self.doc: AbstractDocument
+        if document_mode == "PLAIN":
+            self.doc = pyglet.text.decode_text(text)
+        elif document_mode == "ATTRIBUTED":
+            self.doc = pyglet.text.decode_attributed(text)
+        elif document_mode == "HTML":
+            self.doc = pyglet.text.decode_html(text)
+
         self.doc.set_style(
             0,
-            12,
+            len(text),
             dict(
                 font_name=font_name,
                 font_size=font_size,

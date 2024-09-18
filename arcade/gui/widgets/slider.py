@@ -8,7 +8,7 @@ from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from typing_extensions import override
 
 import arcade
-from arcade import Texture
+from arcade import Texture, uicolor
 from arcade.gui import (
     NinePatchTexture,
     Surface,
@@ -20,7 +20,7 @@ from arcade.gui import (
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
-from arcade.types import RGBA255, Color
+from arcade.types import RGBA255
 
 
 class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
@@ -92,13 +92,13 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         bind(self, "pressed", self.trigger_render)
         bind(self, "disabled", self.trigger_render)
 
-        self.register_event_type("on_change")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_change")
 
     def _x_for_value(self, value: float):
         """Provides the x coordinate for the given value."""
 
         x = self.content_rect.left
-        val = (value - self.min_value) / self.max_value
+        val = (value - self.min_value) / (self.max_value - self.min_value)
         return x + self._cursor_width + val * (self.content_width - 2 * self._cursor_width)
 
     @property
@@ -223,11 +223,11 @@ class UISliderStyle(UIStyleBase):
 
     """
 
-    bg: RGBA255 = Color(94, 104, 117)
-    border: RGBA255 = Color(77, 81, 87)
-    border_width: int = 1
-    filled_track: RGBA255 = Color(50, 50, 50)
-    unfilled_track: RGBA255 = Color(116, 125, 123)
+    bg: RGBA255 = uicolor.WHITE_SILVER
+    border: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
+    border_width: int = 2
+    filled_track: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
+    unfilled_track: RGBA255 = uicolor.WHITE_SILVER
 
 
 class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
@@ -257,25 +257,21 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-            bg=Color(96, 103, 112),
-            border=Color(77, 81, 87),
+            border=uicolor.BLUE_PETER_RIVER,
             border_width=2,
-            filled_track=Color(50, 50, 50),
-            unfilled_track=Color(116, 125, 123),
+            filled_track=uicolor.BLUE_PETER_RIVER,
         ),
         "press": UIStyle(
-            bg=Color(96, 103, 112),
-            border=Color(77, 81, 87),
+            bg=uicolor.BLUE_PETER_RIVER,
+            border=uicolor.DARK_BLUE_WET_ASPHALT,
             border_width=3,
-            filled_track=Color(50, 50, 50),
-            unfilled_track=Color(116, 125, 123),
+            filled_track=uicolor.BLUE_PETER_RIVER,
         ),
         "disabled": UIStyle(
-            bg=Color(94, 104, 117),
-            border=Color(77, 81, 87),
+            bg=uicolor.WHITE_SILVER,
             border_width=1,
-            filled_track=Color(50, 50, 50),
-            unfilled_track=Color(116, 125, 123),
+            filled_track=uicolor.GRAY_ASBESTOS,
+            unfilled_track=uicolor.WHITE_SILVER,
         ),
     }
 
@@ -288,7 +284,7 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         x: float = 0,
         y: float = 0,
         width: float = 300,
-        height: float = 20,
+        height: float = 25,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -333,7 +329,7 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         bg_slider_color = style.get("unfilled_track", UISlider.UIStyle.unfilled_track)
         fg_slider_color = style.get("filled_track", UISlider.UIStyle.filled_track)
 
-        slider_height = self.content_height // 4
+        slider_height = self.content_height // 3
 
         slider_left_x = self._x_for_value(self.min_value)
         slider_right_x = self._x_for_value(self.max_value)
@@ -387,24 +383,30 @@ class UITextureSlider(UISlider):
 
     You can copy this as-is into your own project, or you can modify
     the class to have more features as needed.
+
+    Args:
+        track_texture: Texture for the track, should be a NinePatchTexture.
+        thumb_texture: Texture for the thumb.
+        style: Used to style the slider for different states.
+        **kwargs: Passed to UISlider.
     """
 
     def __init__(
         self,
-        track: Union[Texture, NinePatchTexture],
-        thumb: Union[Texture, NinePatchTexture],
+        track_texture: Union[Texture, NinePatchTexture],
+        thumb_texture: Union[Texture, NinePatchTexture],
         style=None,
         **kwargs,
     ):
-        self._track = track
-        self._thumb = thumb
+        self._track_tex = track_texture
+        self._thumb_tex = thumb_texture
 
         super().__init__(style=style or UISlider.DEFAULT_STYLE, **kwargs)
 
     @override
     def _render_track(self, surface: Surface):
         style: UISliderStyle = self.get_current_style()  # type: ignore
-        surface.draw_texture(0, 0, self.width, self.height, self._track)
+        surface.draw_texture(0, 0, self.width, self.height, self._track_tex)
 
         # TODO accept these as constructor params
         slider_height = self.height // 4
@@ -427,9 +429,9 @@ class UITextureSlider(UISlider):
         cursor_center_x = self._thumb_x
         rel_cursor_x = cursor_center_x - self.left
         surface.draw_texture(
-            x=rel_cursor_x - self._thumb.width // 4 + 2,
+            x=rel_cursor_x - self._thumb_tex.width // 4 + 2,
             y=0,
-            width=self._thumb.width // 2,
+            width=self._thumb_tex.width // 2,
             height=self.height,
-            tex=self._thumb,
+            tex=self._thumb_tex,
         )

@@ -67,7 +67,14 @@ API in a way that is not compatible with how it was used in 2.6.
   * Removed `arcade.gui.widgets.UIPadding` this is now general available in `arcade.gui.widgets.UIWidget`
   * Removed `arcade.gui.widgets.UITexturePane` this is now general available in `arcade.gui.widgets.UIWidget`
   * Removed `arcade.gui.widgets.UIAnchorWidget` replaced by `arcade.gui.widgets.UIAnchorLayout`
-
+* Resources
+  * removed unsused resources from `resources/gui_basic_assets`
+    * `items/shield_gold.png`
+    * `items/sword_gold.png`
+    * `slider_thumb.png`
+    * `slider_track.png`
+    * `toggle/switch_green.png`
+    * `toggle/switch_red.png`
 ### Featured Updates
 
 * The texture atlas has been heavily reworked to be more efficient.
@@ -131,6 +138,10 @@ API in a way that is not compatible with how it was used in 2.6.
   * Update and add example code.
   * Iterable (providing direct children)
 
+* Updated widgets
+  * `arcade.gui.widgets.text.UIInputText` emits `on_change` event when new text input or set
+  * `arcade.gui.widgets.slider.UITextureSlider` texture names changed to fit general naming pattern
+
 * New widgets:
 
   * `arcade.gui.widgets.dropdown.UIDropdown`
@@ -152,6 +163,8 @@ API in a way that is not compatible with how it was used in 2.6.
   * `arcade.gui.UIAnchorLayout`
   * `arcade.gui.UIGridLayout` [PR1478](https://github.com/pythonarcade/arcade/pull/1478)
 
+* Added color consistent assets to `arcade.resources.gui_basic_assets`
+* Provide GUI friendly color constants in `arcade.uicolor`
 * Replace deprecated usage of `arcade.draw_text`
 
 ### Misc Changes

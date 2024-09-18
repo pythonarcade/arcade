@@ -11,7 +11,9 @@ def test_constructor_only_text_no_size(window):
     """Should fit text"""
     label = UILabel(text="Example")
 
-    assert label.rect.width == pytest.approx(63, abs=7)  # on windows the width differs about 6 pixel
+    assert label.rect.width == pytest.approx(
+        63, abs=10
+    )  # on windows the width differs about 6 pixel
     assert label.rect.height == pytest.approx(19, abs=1)
 
 
@@ -46,21 +48,21 @@ def test_constructor_adaptive_width_support_for_multiline_text(window):
 
 def test_with_border_keeps_previous_size(window):
     label = UILabel(text="Example")
-    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.width == pytest.approx(63, abs=10)
     assert label.rect.height == pytest.approx(19, abs=6)
 
     label.with_border()
-    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.width == pytest.approx(63, abs=10)
     assert label.rect.height == pytest.approx(19, abs=6)
 
 
 def test_with_padding_keeps_previous_size(window):
     label = UILabel(text="Example")
-    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.width == pytest.approx(63, abs=10)
     assert label.rect.height == pytest.approx(19, abs=6)
 
     label.with_padding(all=2)
-    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.width == pytest.approx(63, abs=10)
     assert label.rect.height == pytest.approx(19, abs=6)
 
 
@@ -177,7 +179,7 @@ def test_multiline_enabled_size_hint_min_adapts_to_new_text(window):
     assert label.size_hint_min[1] > shm_h
 
 
-def test_integration_with_layout_fit_to_content(uimanager):
+def test_integration_with_layout_fit_to_content(ui):
     """Tests multiple integrations with layout/uimanager and auto size.
 
     Just to be sure, it really works as expected.
@@ -187,16 +189,16 @@ def test_integration_with_layout_fit_to_content(uimanager):
         size_hint=(0, 0),  # default, enables auto size
     )
 
-    uimanager.add(label)
-    uimanager.execute_layout()
+    ui.add(label)
+    ui.execute_layout()
 
     # auto size should fit the text
-    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.width == pytest.approx(63, abs=10)
     assert label.rect.height == pytest.approx(19, abs=6)
 
     # even when text changed
     label.text = "Example, which is way longer"
-    uimanager.execute_layout()
+    ui.execute_layout()
 
     assert label.rect.width > 63
     assert label.rect.height == pytest.approx(19, abs=6)
@@ -204,13 +206,13 @@ def test_integration_with_layout_fit_to_content(uimanager):
     # or font
     label.text = "Example"
     label.update_font(font_size=20)
-    uimanager.execute_layout()
+    ui.execute_layout()
 
     assert label.rect.width > 63
     assert label.rect.height > 20
 
 
-def test_fit_content_overrides_width(uimanager):
+def test_fit_content_overrides_width(ui):
     label = UILabel(
         text="Example",
         width=100,
@@ -219,11 +221,11 @@ def test_fit_content_overrides_width(uimanager):
 
     label.fit_content()
 
-    assert label.rect.width == pytest.approx(63, abs=7)
+    assert label.rect.width == pytest.approx(63, abs=10)
     assert label.rect.height == pytest.approx(19, abs=6)
 
 
-def test_fit_content_uses_adaptive_multiline_width(uimanager):
+def test_fit_content_uses_adaptive_multiline_width(ui):
     label = UILabel(
         text="Example with multiline enabled",
         width=70,

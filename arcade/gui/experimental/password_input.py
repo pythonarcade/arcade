@@ -6,7 +6,12 @@ from arcade.gui import Surface, UIEvent, UIInputText, UITextInputEvent
 
 
 class UIPasswordInput(UIInputText):
-    """A password input field. The text is hidden with asterisks."""
+    """A password input field. The text is hidden with asterisks.
+
+    Hint: It is recommended to set a background color to prevent full render cycles
+    when the caret blinks.
+
+    """
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         """Remove new lines from the input, which are not allowed in passwords."""

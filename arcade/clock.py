@@ -124,7 +124,7 @@ class FixedClock(Clock):
 
     Args:
         sibling: The unfixed clock which this clock will sync with.
-        fixed_tick_rate (float, optional): The fixed number of seconds that pass
+        fixed_tick_rate: The fixed number of seconds that pass
             for this clock every tick. Defaults to ``1.0 / 60.0``.
     """
 

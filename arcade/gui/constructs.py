@@ -5,12 +5,13 @@ from __future__ import annotations
 from typing import Any, Optional
 
 import arcade
+from arcade import uicolor
 from arcade.gui.events import UIOnActionEvent, UIOnClickEvent
 from arcade.gui.mixins import UIMouseFilterMixin
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIAnchorLayout, UIBoxLayout
-from arcade.gui.widgets.text import UITextArea
+from arcade.gui.widgets.text import UILabel, UITextArea
 
 
 class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
@@ -38,19 +39,20 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         width: float,
         height: float,
         message_text: str,
+        title: str | None = None,
         buttons=("Ok",),
     ):
         if not buttons:
             raise ValueError("At least a single value has to be available for `buttons`")
 
         super().__init__(size_hint=(1, 1))
-        self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_action")
+        self.with_background(color=uicolor.GRAY_CONCRETE.replace(a=150))
 
         space = 20
 
         # setup frame which will act like the window
         frame = self.add(UIAnchorLayout(width=width, height=height, size_hint=None))
-        frame.with_padding(all=space)
 
         frame.with_background(
             texture=NinePatchTexture(
@@ -58,12 +60,29 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
                 right=7,
                 bottom=7,
                 top=7,
-                texture=arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
+                texture=arcade.load_texture(":resources:gui_basic_assets/window/panel_gray.png"),
             )
         )
 
+        # setup title
+        if title:
+            title_label = frame.add(
+                child=UILabel(
+                    text="Message",
+                    font_size=16,
+                    size_hint=(1, 0),
+                    align="center",
+                ),
+                anchor_y="top",
+            )
+            title_label.with_padding(all=2, bottom=5)
+            title_label.with_background(color=uicolor.DARK_BLUE_MIDNIGHT_BLUE)
+            title_offset = title_label.height
+        else:
+            title_offset = 0
+
         # Setup text
-        frame.add(
+        text_area = frame.add(
             child=UITextArea(
                 text=message_text,
                 width=width - space,
@@ -72,7 +91,9 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
             ),
             anchor_x="center",
             anchor_y="top",
+            align_y=-(title_offset + space),
         )
+        text_area.with_padding(all=10)
 
         # setup buttons
         button_group = UIBoxLayout(vertical=False, space_between=10)
@@ -82,9 +103,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
             button.on_click = self._on_choice  # type: ignore
 
         frame.add(
-            child=button_group,
-            anchor_x="right",
-            anchor_y="bottom",
+            child=button_group, anchor_x="right", anchor_y="bottom", align_x=-space, align_y=space
         )
 
     def _on_choice(self, event):
@@ -135,26 +154,21 @@ class UIButtonRow(UIBoxLayout):
             space_between=space_between,
             **kwargs,
         )
-        self.register_event_type("on_action")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_action")
 
         self.button_factory = button_factory
 
-    def add_button(
-        self,
-        label: str,
-        *,
-        style=None,
-        multiline=False,
-    ):
+    def add_button(self, label: str, *, style=None, multiline=False, **kwargs):
         """Add a button to the row.
 
         Args:
             label: The text of the button.
             style: The style of the button.
             multiline: Whether the button is multiline or not.
+            **kwargs: Passed to the button factory.
         """
-        button = self.button_factory(text=label, style=style, multiline=multiline)
-        button.on_click = self._on_click  # type: ignore
+        button = self.button_factory(text=label, style=style, multiline=multiline, **kwargs)
+        button.on_click = self._on_click
         self.add(button)
         return button
 

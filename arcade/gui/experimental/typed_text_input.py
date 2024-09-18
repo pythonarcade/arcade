@@ -216,7 +216,7 @@ if __name__ == "__main__":
                 right=5,
                 top=5,
                 bottom=5,
-                texture=arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png"),
+                texture=arcade.load_texture(":resources:gui_basic_assets/window/panel_gray.png"),
             )
             self.instructions = UILabel(
                 text="Valid float values -> black text\nNon-float values -> red text",

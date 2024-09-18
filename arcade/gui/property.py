@@ -312,13 +312,13 @@ class _ObservableList(list):
         self.dispatch()
 
     @override
-    def __iadd__(self, *args):  # type: ignore
+    def __iadd__(self, *args):
         list.__iadd__(self, *args)
         self.dispatch()
         return self
 
     @override
-    def __imul__(self, *args):  # type: ignore
+    def __imul__(self, *args):
         list.__imul__(self, *args)
         self.dispatch()
         return self
@@ -373,7 +373,7 @@ class _ObservableList(list):
         self.dispatch()
 
 
-class ListProperty(Property):
+class ListProperty(Property, Generic[P]):
     """Property that represents a list.
 
     Only list are allowed. Any other classes are forbidden.
@@ -383,7 +383,7 @@ class ListProperty(Property):
         super().__init__(default_factory=_ObservableList)
 
     @override
-    def set(self, instance, value: dict):
+    def set(self, instance, value: list):
         """Set value for owner instance, wraps the list into an observable list."""
-        value = _ObservableList(self, instance, value)  # type: ignore
+        value = _ObservableList(self, instance, value)
         super().set(instance, value)

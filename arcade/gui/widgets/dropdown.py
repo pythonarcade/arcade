@@ -6,6 +6,7 @@ from typing import Optional, Union
 from pyglet.event import EVENT_HANDLED
 
 import arcade
+from arcade import uicolor
 from arcade.gui import UIEvent, UIMousePressEvent
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
 from arcade.gui.ui_manager import UIManager
@@ -58,7 +59,6 @@ class UIDropdown(UILayout):
         height: Height of each of the option.
         default: The default value shown.
         options: The options displayed when the layout is clicked.
-        style: Used to style the dropdown.
     """
 
     DIVIDER = None
@@ -68,27 +68,25 @@ class UIDropdown(UILayout):
         *,
         x: float = 0,
         y: float = 0,
-        width: float = 100,
-        height: float = 20,
+        width: float = 150,
+        height: float = 30,
         default: Optional[str] = None,
         options: Optional[list[Union[str, None]]] = None,
-        style=None,
         **kwargs,
     ):
-        if style is None:
-            style = {}
-
         # TODO handle if default value not in options or options empty
         if options is None:
             options = []
         self._options = options
         self._value = default
 
-        super().__init__(x=x, y=y, width=width, height=height, style=style, **kwargs)
+        super().__init__(x=x, y=y, width=width, height=height, **kwargs)
 
         # Setup button showing value
+        style = deepcopy(UIFlatButton.DEFAULT_STYLE)
+        style["hover"].font_color = uicolor.GREEN_NEPHRITIS
         self._default_button = UIFlatButton(
-            text=self._value or "", width=self.width, height=self.height
+            text=self._value or "", width=self.width, height=self.height, style=style
         )
 
         self._default_button.on_click = self._on_button_click  # type: ignore
@@ -99,7 +97,7 @@ class UIDropdown(UILayout):
         # add children after super class setup
         self.add(self._default_button)
 
-        self.register_event_type("on_change")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_change")
 
         self.with_border(color=arcade.color.RED)
 
@@ -126,7 +124,7 @@ class UIDropdown(UILayout):
         # is there another way then deepcopy, does it matter?
         # ("premature optimization is the root of all evil")
         active_style = deepcopy(UIFlatButton.DEFAULT_STYLE)
-        active_style["normal"]["bg"] = (55, 66, 81)
+        active_style["normal"]["bg"] = uicolor.GREEN_NEPHRITIS
 
         for option in self._options:
             if option is None:  # None = UIDropdown.DIVIDER, required by pyright
