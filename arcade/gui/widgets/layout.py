@@ -419,10 +419,7 @@ class UIBoxLayout(UILayout):
             child.rect = new_rect
 
     def __str__(self):
-        return (
-            f"UIBoxLayout(vertical={self.vertical})"
-            f"{'//' + self._debug_comment if self._debug_comment else ''}"
-        )
+        return f"UIBoxLayout(vertical={self.vertical})"
 
 
 class UIGridLayout(UILayout):
