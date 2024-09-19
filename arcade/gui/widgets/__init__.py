@@ -515,6 +515,9 @@ class UIWidget(EventDispatcher, ABC):
         self.rect = self.rect.align_center(center)
         return self
 
+    def __str__(self):
+        return f"{self.__class__.__name__}()"
+
     def __repr__(self):
         return f"<{self.__class__.__name__} {self.rect.lbwh}>"
 
@@ -824,8 +827,8 @@ class UISpace(UIWidget):
         *,
         x=0,
         y=0,
-        width=100,
-        height=100,
+        width=1,
+        height=1,
         color=None,
         size_hint=None,
         size_hint_min=None,
