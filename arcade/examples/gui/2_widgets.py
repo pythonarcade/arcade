@@ -223,7 +223,7 @@ class GalleryView(UIView):
                 """).strip(),
                 font_name=DETAILS_FONT,
                 font_size=32,
-                text_color=arcade.uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 size_hint=(0.8, 0.8),
             ),
             anchor_y="top",
@@ -292,7 +292,7 @@ class GalleryView(UIView):
                 size_hint=(1, 0.9),
                 font_name=DETAILS_FONT,
                 font_size=16,
-                text_color=arcade.uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 document_mode="ATTRIBUTED",
             )
         )
@@ -473,7 +473,7 @@ class GalleryView(UIView):
                     """).strip(),
                 font_name=DETAILS_FONT,
                 font_size=16,
-                text_color=arcade.uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 size_hint=(1, 0.9),
             )
         )
@@ -557,7 +557,7 @@ class GalleryView(UIView):
             """).strip(),
                 font_name=DETAILS_FONT,
                 font_size=16,
-                text_color=arcade.uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 size_hint=(1, 0.5),
             )
         )
@@ -605,7 +605,7 @@ class GalleryView(UIView):
                     """).strip(),
                 font_name=DETAILS_FONT,
                 font_size=16,
-                text_color=arcade.uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 size_hint=(1, 0.9),
             )
         )
