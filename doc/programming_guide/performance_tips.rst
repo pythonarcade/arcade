@@ -12,7 +12,7 @@ This page covers the most common slowdowns in games:
 #. :ref:`Collision detection <collision_detection_performance>`
 #. :ref:`Drawing <drawing_performance>`
 #. :ref:`Loading-related issues <loading_performance>`
-
+#. :ref:`Algorithms and raw performance <algorithms>`
 
 .. _collision_detection_performance:
 
@@ -462,7 +462,88 @@ downgrade quality, your game will be at risk of stuttering or freezing.
 
 The best way to handle this is to only use streaming when necessary.
 
+.. _algorithms:
 
+Algorithms and Raw Performance
+------------------------------
 
+Python is a slow language compared to languages such as Java, C++, or C#. This
+is because of its nature of being an *interpreted language*. This means that
+the code is executed line-by-line at runtime, whereas for other languages it is
+directly translated into low-level machine code.
 
+However, there are ways to mitigate this and to get the best out of Python. For
+example, you can try to reduce calculating expensive functions multiple times
+each frame.
 
+Change this:
+
+.. code-block:: python
+
+   if arcade.get_distance_between_sprites(a, b) < 50:
+      # Do something
+
+   print(f"Distance: {arcade.get_distance_between_sprites(a, b)}")
+
+to this:
+
+..code-block:: python
+
+   dist = arcade.get_distance_between_sprites(a, b):
+
+   if dist < 50:
+      # Do something
+
+   print(f"Distance: {distance}")
+
+Here, the number of calls to expensive functions is reduced.
+
+Using ctypes
+^^^^^^^^^^^^
+
+Sometimes, Python is just too slow, and even the best optimized Python code is
+too slow for your needs. An example of this is a game with many objects or
+sprites with complicated AI.
+
+The built-in module ctypes provides access to C functions to Python. By writing
+C code and linking it with Python, you can access the speed of C while writing
+the bulk of your code in Python. ctypes consistently outperforms Python in
+terms of raw performance by several times.
+
+Setup and installation for ctypes is a little complicated compared to
+installing arcade, and it varies for platform to platform. You can install MSYS2
+for Windows, Xcode command line tools with MacOS, and g++ using Linux. After
+installating, you'll need to write some C or C++ code, build it, and then in Python,
+link it to a function.
+
+You can find a good tutorial on ctypes here:
+https://stephenscotttucker.medium.com/interfacing-python-with-c-using-ctypes-classes-and-arrays-42534d562ce7
+
+Using numpy
+^^^^^^^^^^^
+
+Numpy can be used for mathematical functions to speed them up. It's a lot
+faster than the standard, built-in math functions provided by the Python
+standard library. You'll have to install numpy with the same way you installed
+arcade.
+
+Then, replace your use of the regular ``math`` function from Python with ``numpy``.
+
+.. code-block:: python
+
+   import math
+
+   math.cos(180)
+
+change it to this:
+
+.. code-block:: python
+
+   import numpy
+
+   numpy.cos(180)
+
+If your game is slow, you can use a profiler such as ``cProfile`` to analyze
+which functions are making it slow and to optimize them, if you call them
+directly in your code. You can also modify the window settings when creating
+your arcade window to sacrifice display for performance.
