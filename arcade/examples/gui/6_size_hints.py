@@ -36,7 +36,9 @@ arcade.resources.load_system_fonts()
 
 SIZE_HINT_TEXT = textwrap.dedent(
     """
-    UIWidgets provide three properties, which are used by layouts to determine the size of a widget.
+    UIWidgets provide three properties,
+    which are used by layouts to determine the size of a widget.
+
 These properties are:
 
 * size_hint - percentage of the layout size
@@ -44,7 +46,7 @@ These properties are:
 * size_hint_min - minimum size in pixels
 
 Theses properties can be None, or a tuple of two values. The first value is
-the width, and the second value is the height. 
+the width, and the second value is the height.
 
 If a value is None, the layout will use the widget's natural size for that dimension.
 
