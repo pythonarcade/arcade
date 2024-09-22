@@ -1,14 +1,9 @@
-"""This example is a proof-of-concept for a UIScrollArea.
+"""This example is a proof-of-concept for a scrollable area.
 
-You can currently scroll through the UIScrollArea in the following ways:
+The example shows vertical and horizontal scroll areas with a list of buttons.
 
-* scrolling the mouse wheel
-* dragging with middle mouse button
-
-It currently needs the following improvements:
-
-* A better API, including scroll direction control
-* UIScrollBars
+The current implementation lags a proper API, customizability, mouse support and documentation,
+but shows how to use the current experimental feature.
 
 If arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_scroll_area
@@ -16,33 +11,68 @@ python -m arcade.examples.gui.exp_scroll_area
 
 from __future__ import annotations
 
+
 import arcade
-from arcade import Window
-from arcade.gui import UIManager, UIDummy, UIBoxLayout, UIFlatButton, UIInputText
-from arcade.gui.experimental.scroll_area import UIScrollArea
+from arcade.gui import UIAnchorLayout, UIBoxLayout, UIFlatButton, UIView
+from arcade.gui.experimental import UIScrollArea
+from arcade.gui.experimental.scroll_area import UIScrollBar
 
 
-class MyWindow(Window):
+class MyView(UIView):
     def __init__(self):
         super().__init__()
+        self.background_color = arcade.uicolor.BLUE_BELIZE_HOLE
 
-        self.ui = UIManager()
-        self.ui.enable()
-        self.background_color = arcade.color.WHITE
-        self.input = self.ui.add(UIInputText(x=450, y=300).with_border())
+        # create a layout with two columns
+        root = self.add_widget(UIAnchorLayout())
+        content_left = UIAnchorLayout(size_hint=(0.5, 1))
+        root.add(content_left, anchor_x="left", anchor_y="center")
+        content_right = UIAnchorLayout(size_hint=(0.5, 1))
+        root.add(content_right, anchor_x="right", anchor_y="center")
 
-        self.scroll_area = UIScrollArea(x=100, y=100).with_border()
-        self.ui.add(self.scroll_area)
+        # create the list, which should be scrolled vertically
+        vertical_list = UIBoxLayout(size_hint=(1, 0), space_between=1)
+        for i in range(100):
+            button = UIFlatButton(height=30, size_hint=(1, None), text=f"Button {i}")
+            vertical_list.add(button)
 
-        anchor = self.scroll_area.add(UIBoxLayout(width=300, height=300, space_between=20))
-        anchor.add(UIDummy(height=50))
-        anchor.add(UIFlatButton(text="Hello from scroll area", multiline=True))
-        anchor.add(UIInputText().with_border())
+        # the scroll area and the scrollbar are added to a box layout
+        # so they are next to each other, this also reduces complexity for the layout
+        # implementation
+        v_scroll_area = UIBoxLayout(vertical=False, size_hint=(0.8, 0.8))
+        content_left.add(v_scroll_area, anchor_x="center", anchor_y="center")
 
-    def on_draw(self):
-        self.clear()
-        self.ui.draw()
+        scroll_layout = v_scroll_area.add(UIScrollArea(size_hint=(1, 1)))
+        scroll_layout.with_border(color=arcade.uicolor.WHITE_CLOUDS)
+        scroll_layout.add(vertical_list)
+
+        v_scroll_area.add(UIScrollBar(scroll_layout))
+
+        # create the list, which should be scrolled vertically
+        horizontal_list = UIBoxLayout(size_hint=(0, 1), space_between=1, vertical=False)
+        for i in range(100):
+            button = UIFlatButton(width=50, size_hint=(None, 1), text=f"B{i}")
+            horizontal_list.add(button)
+
+        # same as above, but for horizontal scrolling
+        h_scroll_area = UIBoxLayout(vertical=True, size_hint=(0.8, 0.8))
+        content_right.add(h_scroll_area, anchor_x="center", anchor_y="center")
+
+        scroll_layout = h_scroll_area.add(UIScrollArea(size_hint=(1, 1)))
+        scroll_layout.with_border(color=arcade.uicolor.WHITE_CLOUDS)
+        scroll_layout.add(horizontal_list)
+
+        h_scroll_area.add(UIScrollBar(scroll_layout, vertical=False))
+
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        if symbol == arcade.key.ESCAPE:
+            arcade.close_window()
+            return True
+
+        return False
 
 
 if __name__ == "__main__":
-    MyWindow().run()
+    window = arcade.Window(title="GUI Example: UIScrollLayout")
+    window.show_view(MyView())
+    window.run()

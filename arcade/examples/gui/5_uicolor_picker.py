@@ -13,9 +13,13 @@ from dataclasses import dataclass
 import arcade
 from arcade.gui import (
     UIAnchorLayout,
+    UIBoxLayout,
     UIEvent,
+    UIGridLayout,
     UIInteractiveWidget,
+    UILabel,
     UITextWidget,
+    UIView,
 )
 
 
@@ -27,7 +31,7 @@ class ChooseColorEvent(UIEvent):
     color: arcade.color.Color
 
 
-class Toast(arcade.gui.UILabel):
+class Toast(UILabel):
     """Label which disappears after a certain time."""
 
     def __init__(self, text: str, duration: float = 2.0, **kwargs):
@@ -95,7 +99,7 @@ class ColorButton(UITextWidget, UIInteractiveWidget):
         pass
 
 
-class ColorView(arcade.gui.UIView):
+class ColorView(UIView):
     """Uses the arcade.gui.UIView which takes care about the UIManager setup."""
 
     def __init__(self):
@@ -133,7 +137,7 @@ class ColorView(arcade.gui.UIView):
 
         # setup grid with colors
         self.grid = self.root.add(
-            arcade.gui.UIGridLayout(
+            UIGridLayout(
                 column_count=5,
                 row_count=4,
                 size_hint=(1, 1),
@@ -153,9 +157,7 @@ class ColorView(arcade.gui.UIView):
             button.on_choose_color = self.on_color_button_choose_color
 
         # setup toasts (temporary messages)
-        self.toasts = self.root.add(
-            arcade.gui.UIBoxLayout(space_between=2), anchor_x="right", anchor_y="top"
-        )
+        self.toasts = self.root.add(UIBoxLayout(space_between=2), anchor_x="right", anchor_y="top")
         self.toasts.with_padding(all=10)
 
     def on_color_button_choose_color(self, event: ChooseColorEvent) -> bool:

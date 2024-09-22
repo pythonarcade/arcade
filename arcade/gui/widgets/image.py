@@ -23,9 +23,9 @@ class UIImage(UIWidget):
         **kwargs: passed to UIWidget
     """
 
-    texture: Union[Texture, NinePatchTexture] = Property()  # type: ignore
+    texture = Property[Union[Texture, NinePatchTexture]]()
     """Texture to show"""
-    alpha: int = Property(255)  # type: ignore
+    alpha = Property(255)
     """Alpha value of the texture, value between 0 and 255.
     0 is fully transparent, 255 is fully visible."""
 

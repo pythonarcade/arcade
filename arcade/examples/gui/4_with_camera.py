@@ -17,8 +17,7 @@ import random
 from typing import Optional
 
 import arcade
-from arcade.gui import UIView, UIFlatButton, UIOnClickEvent, UILabel, UIBoxLayout
-from arcade.gui.widgets.layout import UIAnchorLayout
+from arcade.gui import UIAnchorLayout, UIBoxLayout, UIFlatButton, UILabel, UIOnClickEvent, UIView
 
 COIN_PNG = ":resources:images/items/coinGold.png"
 ADV_PNG = ":resources:/images/animated_characters/female_adventurer/femaleAdventurer_idle.png"

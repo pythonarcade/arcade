@@ -14,6 +14,7 @@ from arcade.gui import (
     UIManager,
     UITextureButton,
     UIAnchorLayout,
+    UIView,
 )
 
 # Preload textures, because they are mostly used multiple times, so they are not
@@ -70,7 +71,7 @@ class GreenView(arcade.View):
         # ...
 
 
-class BlueView(arcade.gui.UIView):
+class BlueView(UIView):
     """Uses the arcade.gui.UIView which takes care about the UIManager setup."""
 
     def __init__(self):

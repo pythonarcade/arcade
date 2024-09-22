@@ -3,8 +3,9 @@ This module pre-defines colors from FlatUI.
 https://materialui.co/flatuicolors/
 """
 
-from arcade.color import Color
+from arcade.color import BLACK, WHITE, Color
 
+WHITE = WHITE
 GREEN_TURQUOISE = Color(26, 188, 156)
 GREEN_GREEN_SEA = Color(22, 160, 133)
 GREEN_NEPHRITIS = Color(39, 174, 96)
@@ -25,8 +26,11 @@ WHITE_CLOUDS = Color(236, 240, 241)
 WHITE_SILVER = Color(189, 195, 199)
 GRAY_CONCRETE = Color(149, 165, 166)
 GRAY_ASBESTOS = Color(127, 140, 141)
+BLACK = BLACK
 
 __all__ = [
+    "BLACK",
+    "WHITE",
     "GREEN_TURQUOISE",
     "GREEN_GREEN_SEA",
     "GREEN_NEPHRITIS",

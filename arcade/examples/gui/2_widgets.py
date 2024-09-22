@@ -11,13 +11,12 @@ from __future__ import annotations
 import textwrap
 from copy import deepcopy
 
-import arcade.gui
-from arcade import TextureAnimation, TextureKeyframe, load_texture
-from arcade import uicolor
+import arcade
 from arcade.gui import (
     UIAnchorLayout,
     UIButtonRow,
     UIFlatButton,
+    UIInputText,
     UILabel,
     UISpace,
     UIOnActionEvent,
@@ -35,6 +34,7 @@ from arcade.gui import (
     UIDropdown,
     UIMessageBox,
     UIManager,
+    UIView,
 )
 
 # Load system fonts
@@ -45,37 +45,42 @@ DETAILS_FONT = ("arial", "Kenney Future Narrow")
 
 # Preload textures, because they are mostly used multiple times, so they are not
 # loaded multiple times
-TEX_RED_BUTTON_NORMAL = load_texture(":resources:gui_basic_assets/button/red_normal.png")
-TEX_RED_BUTTON_HOVER = load_texture(":resources:gui_basic_assets/button/red_hover.png")
-TEX_RED_BUTTON_PRESS = load_texture(":resources:gui_basic_assets/button/red_press.png")
-TEX_RED_BUTTON_DISABLE = load_texture(":resources:gui_basic_assets/button/red_disabled.png")
+TEX_SCROLL_DOWN = arcade.load_texture(":resources:gui_basic_assets/scroll/indicator_down.png")
+TEX_SCROLL_UP = arcade.load_texture(":resources:gui_basic_assets/scroll/indicator_up.png")
 
-TEX_TOGGLE_RED = load_texture(":resources:gui_basic_assets/toggle/red.png")
-TEX_TOGGLE_GREEN = load_texture(":resources:gui_basic_assets/toggle/green.png")
+TEX_RED_BUTTON_NORMAL = arcade.load_texture(":resources:gui_basic_assets/button/red_normal.png")
+TEX_RED_BUTTON_HOVER = arcade.load_texture(":resources:gui_basic_assets/button/red_hover.png")
+TEX_RED_BUTTON_PRESS = arcade.load_texture(":resources:gui_basic_assets/button/red_press.png")
+TEX_RED_BUTTON_DISABLE = arcade.load_texture(":resources:gui_basic_assets/button/red_disabled.png")
 
-TEX_CHECKBOX_CHECKED = load_texture(":resources:gui_basic_assets/checkbox/blue_check.png")
-TEX_CHECKBOX_UNCHECKED = load_texture(":resources:gui_basic_assets/checkbox/empty.png")
+TEX_TOGGLE_RED = arcade.load_texture(":resources:gui_basic_assets/toggle/red.png")
+TEX_TOGGLE_GREEN = arcade.load_texture(":resources:gui_basic_assets/toggle/green.png")
 
-TEX_SLIDER_THUMB_BLUE = load_texture(":resources:gui_basic_assets/slider/thumb_blue.png")
-TEX_SLIDER_TRACK_BLUE = load_texture(":resources:gui_basic_assets/slider/track_blue.png")
-TEX_SLIDER_THUMB_RED = load_texture(":resources:gui_basic_assets/slider/thumb_red.png")
-TEX_SLIDER_TRACK_RED = load_texture(":resources:gui_basic_assets/slider/track_red.png")
-TEX_SLIDER_THUMB_GREEN = load_texture(":resources:gui_basic_assets/slider/thumb_green.png")
-TEX_SLIDER_TRACK_GREEN = load_texture(":resources:gui_basic_assets/slider/track_green.png")
+TEX_CHECKBOX_CHECKED = arcade.load_texture(":resources:gui_basic_assets/checkbox/blue_check.png")
+TEX_CHECKBOX_UNCHECKED = arcade.load_texture(":resources:gui_basic_assets/checkbox/empty.png")
 
-TEX_NINEPATCH_BASE = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
+TEX_SLIDER_THUMB_BLUE = arcade.load_texture(":resources:gui_basic_assets/slider/thumb_blue.png")
+TEX_SLIDER_TRACK_BLUE = arcade.load_texture(":resources:gui_basic_assets/slider/track_blue.png")
+TEX_SLIDER_THUMB_RED = arcade.load_texture(":resources:gui_basic_assets/slider/thumb_red.png")
+TEX_SLIDER_TRACK_RED = arcade.load_texture(":resources:gui_basic_assets/slider/track_red.png")
+TEX_SLIDER_THUMB_GREEN = arcade.load_texture(":resources:gui_basic_assets/slider/thumb_green.png")
+TEX_SLIDER_TRACK_GREEN = arcade.load_texture(":resources:gui_basic_assets/slider/track_green.png")
 
-TEX_ARCADE_LOGO = load_texture(":resources:/logo.png")
+TEX_NINEPATCH_BASE = arcade.load_texture(":resources:gui_basic_assets/window/grey_panel.png")
+
+TEX_ARCADE_LOGO = arcade.load_texture(":resources:/logo.png")
 
 # Load animation for the sprite widget
 frame_textures = []
 for i in range(8):
-    tex = load_texture(
+    tex = arcade.load_texture(
         f":resources:images/animated_characters/female_adventurer/femaleAdventurer_walk{i}.png"
     )
     frame_textures.append(tex)
 
-TEX_ANIMATED_CHARACTER = TextureAnimation([TextureKeyframe(frame) for frame in frame_textures])
+TEX_ANIMATED_CHARACTER = arcade.TextureAnimation(
+    [arcade.TextureKeyframe(frame) for frame in frame_textures]
+)
 
 TEXT_WIDGET_EXPLANATION = textwrap.dedent("""
 Arcade GUI provides three types of text widgets:
@@ -95,9 +100,6 @@ This example shows how to use all three types of text widgets.
 
 
 A few hints regarding the usage of the text widgets:
-
-
-//Please scroll ...
 
 
 {bold True}UILabel{bold False}:
@@ -128,10 +130,37 @@ which relate to Pyglet FormattedDocument.
 """).strip()
 
 
-class GalleryView(arcade.gui.UIView):
+class ScrollableTextArea(UITextArea, UIAnchorLayout):
+    """This widget is a text area that can be scrolled, like a UITextLayout, but shows indicator,
+    that the text can be scrolled."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        indicator_size = 22
+        self._down_indicator = UIImage(
+            texture=TEX_SCROLL_DOWN, size_hint=None, width=indicator_size, height=indicator_size
+        )
+        self._down_indicator.visible = False
+        self.add(self._down_indicator, anchor_x="right", anchor_y="bottom", align_x=3)
+
+        self._up_indicator = UIImage(
+            texture=TEX_SCROLL_UP, size_hint=None, width=indicator_size, height=indicator_size
+        )
+        self._up_indicator.visible = False
+        self.add(self._up_indicator, anchor_x="right", anchor_y="top", align_x=3)
+
+    def on_update(self, dt):
+        self._up_indicator.visible = self.layout.view_y < 0
+        self._down_indicator.visible = (
+            abs(self.layout.view_y) < self.layout.content_height - self.layout.height
+        )
+
+
+class GalleryView(UIView):
     def __init__(self):
         super().__init__()
-        self.background_color = uicolor.BLUE_BELIZE_HOLE
+        self.background_color = arcade.uicolor.BLUE_BELIZE_HOLE
 
         root = self.add_widget(UIAnchorLayout())
 
@@ -142,15 +171,15 @@ class GalleryView(arcade.gui.UIView):
                 "Categories",
                 font_name=DEFAULT_FONT,
                 font_size=32,
-                text_color=uicolor.DARK_BLUE_MIDNIGHT_BLUE,
+                text_color=arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE,
                 size_hint=(1, 0.1),
                 align="center",
             )
         )
-        nav_side.add(UISpace(size_hint=(1, 0.01), color=uicolor.DARK_BLUE_MIDNIGHT_BLUE))
+        nav_side.add(UISpace(size_hint=(1, 0.01), color=arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE))
 
         nav_side.with_padding(all=10)
-        nav_side.with_background(color=uicolor.WHITE_CLOUDS)
+        nav_side.with_background(color=arcade.uicolor.WHITE_CLOUDS)
         nav_side.add_button("Start", style=UIFlatButton.STYLE_BLUE, size_hint=(1, 0.1))
         nav_side.add_button("Text", style=UIFlatButton.STYLE_BLUE, size_hint=(1, 0.1))
         nav_side.add_button("Interactive", style=UIFlatButton.STYLE_BLUE, size_hint=(1, 0.1))
@@ -194,7 +223,7 @@ class GalleryView(arcade.gui.UIView):
                 """).strip(),
                 font_name=DETAILS_FONT,
                 font_size=32,
-                text_color=uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 size_hint=(0.8, 0.8),
             ),
             anchor_y="top",
@@ -229,21 +258,21 @@ class GalleryView(arcade.gui.UIView):
 
         self._body.clear()
 
-        box = arcade.gui.UIBoxLayout(vertical=True, size_hint=(1, 1), align="left")
+        box = UIBoxLayout(vertical=True, size_hint=(1, 1), align="left")
         self._body.add(box)
         box.add(UILabel("Text Widgets", font_name=DEFAULT_FONT, font_size=32))
         box.add(UISpace(size_hint=(1, 0.1)))
 
-        row_1 = arcade.gui.UIBoxLayout(vertical=False, size_hint=(1, 0.1))
+        row_1 = UIBoxLayout(vertical=False, size_hint=(1, 0.1))
         box.add(row_1)
         row_1.add(UILabel("Name: ", font_name=DEFAULT_FONT, font_size=24))
         name_input = row_1.add(
-            arcade.gui.UIInputText(
+            UIInputText(
                 width=400,
                 height=40,
                 font_name=DEFAULT_FONT,
                 font_size=24,
-                border_color=uicolor.GRAY_CONCRETE,
+                border_color=arcade.uicolor.GRAY_CONCRETE,
                 border_width=2,
             )
         )
@@ -258,28 +287,26 @@ class GalleryView(arcade.gui.UIView):
         box.add(UISpace(size_hint=(1, 0.3)))  # Fill some of the left space
 
         text_area = box.add(
-            UITextArea(
+            ScrollableTextArea(
                 text=TEXT_WIDGET_EXPLANATION,
                 size_hint=(1, 0.9),
                 font_name=DETAILS_FONT,
                 font_size=16,
-                text_color=uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 document_mode="ATTRIBUTED",
             )
         )
         text_area.with_padding(left=10, right=10)
-        text_area.with_border(color=uicolor.GRAY_CONCRETE, width=2)
+        text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE, width=2)
 
     def _show_interactive_widgets(self):
         self._body.clear()
-        box = arcade.gui.UIBoxLayout(
-            vertical=True, size_hint=(1, 1), align="left", space_between=10
-        )
+        box = UIBoxLayout(vertical=True, size_hint=(1, 1), align="left", space_between=10)
         self._body.add(box)
         box.add(UILabel("Interactive Widgets", font_name=DEFAULT_FONT, font_size=32))
         box.add(UISpace(size_hint=(1, 0.1)))
 
-        flat_row = arcade.gui.UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
+        flat_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
         box.add(flat_row)
 
         flat_row.add(
@@ -288,15 +315,13 @@ class GalleryView(arcade.gui.UIView):
             )
         )
         flat_row.add(
-            UIFlatButton(
-                text="UIFlatButton red", style=UIFlatButton.STYLE_RED, size_hint=(0.3, 1)
-            )
+            UIFlatButton(text="UIFlatButton red", style=UIFlatButton.STYLE_RED, size_hint=(0.3, 1))
         )
         flat_row.add(
             UIFlatButton(text="disabled", style=UIFlatButton.STYLE_BLUE, size_hint=(0.3, 1))
         ).disabled = True
 
-        tex_row = arcade.gui.UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
+        tex_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
         box.add(tex_row)
         tex_row.add(
             UITextureButton(
@@ -322,7 +347,7 @@ class GalleryView(arcade.gui.UIView):
             )
         ).disabled = True
 
-        toggle_row = arcade.gui.UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
+        toggle_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
         box.add(toggle_row)
         toggle_row.add(
             UILabel("UITextureToggle", font_name=DETAILS_FONT, font_size=16, size_hint=(0.3, 0))
@@ -344,9 +369,7 @@ class GalleryView(arcade.gui.UIView):
             )
         )
 
-        dropdown_row = arcade.gui.UIBoxLayout(
-            vertical=False, size_hint=(1, 0.1), space_between=10
-        )
+        dropdown_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
         box.add(dropdown_row)
         dropdown_row.add(
             UILabel("UIDropdown", font_name=DETAILS_FONT, font_size=16, size_hint=(0.3, 0))
@@ -358,7 +381,7 @@ class GalleryView(arcade.gui.UIView):
             )
         )
 
-        slider_row = arcade.gui.UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
+        slider_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
         box.add(slider_row)
 
         slider_row.add(
@@ -375,9 +398,7 @@ class GalleryView(arcade.gui.UIView):
             )
         )
 
-        tex_slider_row = arcade.gui.UIBoxLayout(
-            vertical=False, size_hint=(1, 0.1), space_between=10
-        )
+        tex_slider_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
         box.add(tex_slider_row)
 
         tex_slider_row.add(
@@ -398,9 +419,9 @@ class GalleryView(arcade.gui.UIView):
         )
 
         green_style = deepcopy(UITextureSlider.DEFAULT_STYLE)
-        green_style["normal"].filled_track = uicolor.GREEN_GREEN_SEA
-        green_style["hover"].filled_track = uicolor.GREEN_EMERALD
-        green_style["press"].filled_track = uicolor.GREEN_GREEN_SEA
+        green_style["normal"].filled_track = arcade.uicolor.GREEN_GREEN_SEA
+        green_style["hover"].filled_track = arcade.uicolor.GREEN_EMERALD
+        green_style["press"].filled_track = arcade.uicolor.GREEN_GREEN_SEA
         s2 = tex_slider_row.add(
             UITextureSlider(
                 thumb_texture=TEX_SLIDER_THUMB_GREEN,
@@ -411,9 +432,9 @@ class GalleryView(arcade.gui.UIView):
         )
 
         red_style = deepcopy(UITextureSlider.DEFAULT_STYLE)
-        red_style["normal"].filled_track = uicolor.RED_POMEGRANATE
-        red_style["hover"].filled_track = uicolor.RED_ALIZARIN
-        red_style["press"].filled_track = uicolor.RED_POMEGRANATE
+        red_style["normal"].filled_track = arcade.uicolor.RED_POMEGRANATE
+        red_style["hover"].filled_track = arcade.uicolor.RED_ALIZARIN
+        red_style["press"].filled_track = arcade.uicolor.RED_POMEGRANATE
         s3 = tex_slider_row.add(
             UITextureSlider(
                 thumb_texture=TEX_SLIDER_THUMB_RED,
@@ -452,25 +473,21 @@ class GalleryView(arcade.gui.UIView):
                     """).strip(),
                 font_name=DETAILS_FONT,
                 font_size=16,
-                text_color=uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 size_hint=(1, 0.9),
             )
         )
         text_area.with_padding(left=10, right=10)
-        text_area.with_border(color=uicolor.GRAY_CONCRETE, width=2)
+        text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE, width=2)
 
     def _show_construct_widgets(self):
         self._body.clear()
-        box = arcade.gui.UIBoxLayout(
-            vertical=True, size_hint=(1, 1), align="left", space_between=10
-        )
+        box = UIBoxLayout(vertical=True, size_hint=(1, 1), align="left", space_between=10)
         self._body.add(box)
         box.add(UILabel("Constructs", font_name=DEFAULT_FONT, font_size=32))
         box.add(UISpace(size_hint=(1, 0.1)))
 
-        message_row = arcade.gui.UIBoxLayout(
-            vertical=False, size_hint=(1, 0.1), space_between=10
-        )
+        message_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
         box.add(message_row)
         message_row.add(
             UILabel(
@@ -506,7 +523,7 @@ class GalleryView(arcade.gui.UIView):
                 layer=UIManager.OVERLAY_LAYER,
             )
 
-        button_row = arcade.gui.UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
+        button_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
         box.add(button_row)
         button_row.add(
             UILabel(
@@ -540,32 +557,26 @@ class GalleryView(arcade.gui.UIView):
             """).strip(),
                 font_name=DETAILS_FONT,
                 font_size=16,
-                text_color=uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 size_hint=(1, 0.5),
             )
         )
         text_area.with_padding(left=10, right=10)
-        text_area.with_border(color=uicolor.GRAY_CONCRETE, width=2)
+        text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE, width=2)
 
     def _show_other_widgets(self):
         self._body.clear()
-        box = arcade.gui.UIBoxLayout(
-            vertical=True, size_hint=(1, 1), align="left", space_between=10
-        )
+        box = UIBoxLayout(vertical=True, size_hint=(1, 1), align="left", space_between=10)
         self._body.add(box)
         box.add(UILabel("Other Widgets", font_name=DEFAULT_FONT, font_size=32))
         box.add(UISpace(size_hint=(1, 0.1)))
 
         image_row = box.add(UIBoxLayout(vertical=False, size_hint=(1, 0.1)))
-        image_row.add(
-            UILabel("UIImage", font_name=DETAILS_FONT, font_size=16, size_hint=(0.3, 0))
-        )
+        image_row.add(UILabel("UIImage", font_name=DETAILS_FONT, font_size=16, size_hint=(0.3, 0)))
         image_row.add(UIImage(texture=TEX_ARCADE_LOGO, width=64, height=64))
 
         dummy_row = box.add(UIBoxLayout(vertical=False, size_hint=(1, 0.1)))
-        dummy_row.add(
-            UILabel("UIDummy", font_name=DETAILS_FONT, font_size=16, size_hint=(0.3, 0))
-        )
+        dummy_row.add(UILabel("UIDummy", font_name=DETAILS_FONT, font_size=16, size_hint=(0.3, 0)))
         dummy_row.add(UIDummy(size_hint=(0.2, 1)))
         dummy_row.add(UIDummy(size_hint=(0.2, 1)))
         dummy_row.add(UIDummy(size_hint=(0.2, 1)))
@@ -594,12 +605,12 @@ class GalleryView(arcade.gui.UIView):
                     """).strip(),
                 font_name=DETAILS_FONT,
                 font_size=16,
-                text_color=uicolor.WHITE_CLOUDS,
+                text_color=arcade.uicolor.WHITE,
                 size_hint=(1, 0.9),
             )
         )
         text_area.with_padding(left=10, right=10)
-        text_area.with_border(color=uicolor.GRAY_CONCRETE, width=2)
+        text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE, width=2)
 
 
 if __name__ == "__main__":
