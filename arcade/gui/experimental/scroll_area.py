@@ -196,10 +196,13 @@ class UIScrollArea(UILayout):
             if new_rect != child.rect:
                 child.rect = new_rect
 
+        total_min_x = round(total_min_x)
+        total_min_y = round(total_min_y)
+
         # resize surface to fit all children
         if self.surface.size != (total_min_x, total_min_y):
             self.surface.resize(
-                size=(round(total_min_x), round(total_min_y)), pixel_ratio=self.surface.pixel_ratio
+                size=(total_min_x, total_min_y), pixel_ratio=self.surface.pixel_ratio
             )
             self.scroll_x = 0
             self.scroll_y = 0
