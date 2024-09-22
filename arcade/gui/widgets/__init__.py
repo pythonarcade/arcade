@@ -525,6 +525,8 @@ class UIWidget(EventDispatcher, ABC):
 class UIInteractiveWidget(UIWidget):
     """Base class for widgets which use mouse interaction (hover, pressed, clicked)
 
+    It provides properties for hovered, pressed and disabled states.
+
     Args:
         x: x coordinate of bottom left
         y: y coordinate of bottom left

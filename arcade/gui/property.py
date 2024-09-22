@@ -42,6 +42,9 @@ class Property(Generic[P]):
         my_obj.name = "Hans"
         # > Something changed
 
+    Properties provide a less verbose way to implement the observer pattern in comparison to
+    using the `property` decorator.
+
     Args:
         default: Default value which is returned, if no value set before
         default_factory: A callable which returns the default value.
