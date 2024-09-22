@@ -43,6 +43,6 @@ to show the differences between two of the base classes.
 Example `ProgressBar`
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../arcade/gui/examples/gui/own_progressbar.py
+.. literalinclude:: ../../../arcade/examples/gui/own_progressbar.py
 
 

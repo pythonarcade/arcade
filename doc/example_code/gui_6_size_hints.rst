@@ -1,6 +1,6 @@
 :orphan:
 
-.. _gui_5_size_hints:
+.. _gui_6_size_hints:
 
 GUI Size Hints
 ==============
@@ -14,11 +14,11 @@ For example, a size hint of (0.5, 0.5) would make the element half
 the width and half the height of the parent element.
 
 
-.. image:: images/gui_5_size_hints.png
+.. image:: images/gui_6_size_hints.png
     :width: 600px
     :align: center
     :alt: Screen shot
 
-.. literalinclude:: ../../arcade/examples/gui/5_size_hints.py
-    :caption: 5_size_hints.py
+.. literalinclude:: ../../arcade/examples/gui/6_size_hints.py
+    :caption: 6_size_hints.py
     :linenos:

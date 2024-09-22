@@ -16,8 +16,7 @@ We recommend to read the :ref:`gui_concepts`, to get a better understanding of t
 GUI module and its components.
 
 
-Skill Levels
-------------
+**Learning Steps**:
 
 - **1 - starting**: Learn about UIManager, widgets like UIFlatButton and layouts like UIAnchorLayout and UIBoxLayout. Create your first button.
 - **2 - intermediate**: Learn more about size_hints and how to nest different layouts.
