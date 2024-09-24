@@ -21,6 +21,7 @@ While inheriting from :class:`arcade.gui.UIWidget`, provides the highest flexibi
 The main methods you need to implement are:
 - :meth:`arcade.gui.UIWidget.do_render` - This method is called to render the widget.
 - :meth:`arcade.gui.UIWidget.on_event` - This method is called to handle events like mouse or keyboard input.
+- :meth:`arcade.gui.UIWidget.on_update` - This method is called to update the widget (same frequency like window).
 
 You can also make use of other base classes, which provide a more specialized interface.
 Further baseclasses are:
@@ -44,6 +45,6 @@ to show the differences between two of the base classes.
 Example `ProgressBar`
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../../arcade/examples/gui/own_progressbar.py
+.. literalinclude:: ../../../arcade/examples/gui/own_widget.py
 
 

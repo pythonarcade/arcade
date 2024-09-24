@@ -19,7 +19,7 @@ Properties are a way to bind a value to a widget and trigger a function when the
 Read more about properties in the `arcade.gui` documentation.
 
 If arcade and Python are properly installed, you can run this example with:
-python -m arcade.examples.gui.own_progressbar
+python -m arcade.examples.gui.own_widgets
 """
 
 from __future__ import annotations
@@ -127,7 +127,7 @@ class Progressbar2(UIAnchorLayout):
 class MyView(UIView):
     def __init__(self):
         super().__init__()
-        self.ui = arcade.gui.UIManager()
+        self.background_color = arcade.uicolor.BLUE_BELIZE_HOLE
 
         root = self.ui.add(UIAnchorLayout())
         bars = root.add(UIBoxLayout(space_between=10))

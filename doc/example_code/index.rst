@@ -628,6 +628,18 @@ Graphical User Interface
 
    :ref:`gui_6_size_hints`
 
+.. figure:: images/thumbs/gui_own_widgets.png
+   :figwidth: 170px
+   :target: gui_own_widgets.html
+
+   :ref:`gui_own_widgets`
+
+.. figure:: images/thumbs/gui_own_layout.png
+   :figwidth: 170px
+   :target: gui_own_layout.html
+
+   :ref:`gui_own_layout`
+
 .. note::
 
     Not all existing examples made it into this section. You can find more under `Arcade GUI Examples <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gui>`_
