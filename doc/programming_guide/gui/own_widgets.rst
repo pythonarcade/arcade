@@ -17,20 +17,21 @@ Where to start
 
 To create own widgets, you need to create a new class that inherits from :class:`arcade.gui.UIWidget`.
 
-While inheriting from :class:`arcade.gui.UIWidget`, provides the highest flexibility,
-you can also make use of other base classes, which provide a more specialized interface.
+While inheriting from :class:`arcade.gui.UIWidget`, provides the highest flexibility.
+The main methods you need to implement are:
+- :meth:`arcade.gui.UIWidget.do_render` - This method is called to render the widget.
+- :meth:`arcade.gui.UIWidget.on_event` - This method is called to handle events like mouse or keyboard input.
 
+You can also make use of other base classes, which provide a more specialized interface.
 Further baseclasses are:
 
 - :class:`arcade.gui.UIInteractiveWidget`
     `UIInteractiveWidget` is a baseclass for widgets that can be interacted with.
-    It provides a way to handle mouse events and properties like `hovered` or `pressed`.
-    In addition it already implements the `on_click` method,
-    which can be used to react to a click event.
+    It handles mouse events and provides properties like `hovered` or `pressed` and an :meth:`on_click` method.
 
 - :class:`arcade.gui.UIAnchorLayout`
-    `UIAnchorLayout` is basically a frame, which can be used to position widgets
-    to a place within the widget. This makes it a great baseclass for a widget containing
+    `UIAnchorLayout` is basically a frame, which can be used to place widgets
+    to a position within itself. This makes it a great baseclass for a widget containing
     multiple other widgets. (Examples: `MessageBox`, `Card`, etc.)
 
 If your widget should act more as a general layout, position various widgets and handle their size,
