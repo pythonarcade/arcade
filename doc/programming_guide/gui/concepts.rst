@@ -516,8 +516,8 @@ game developer should mostly interact with user-interface events, which are
 dispatched from specific :py:class:`~arcade.gui.UIWidget`s like an ``on_click``
 of a button.
 
-In rare cases a developer might implement some widgets themselves or want to
-modify the existing GUI behavior. In those cases a developer might register own
+In cases where a developer implement own widgets themselves or want to
+modify the existing GUI behavior, the developer might register own
 pyglet event types on widgets or overwrite the
 :py:class:`~arcade.gui.UIWidget.on_event` method. In that case, refer to
 existing widgets as an example.
@@ -557,6 +557,8 @@ events.
 Property
 ````````
 
-:py:class:`~arcade.gui.Property` is an pure-Python implementation of Kivy
-like Properties. They are used to detect attribute changes of widgets and trigger
+:py:class:`~arcade.gui.Property` is an pure-Python implementation of Kivy-like Properties.
+They are used to detect attribute changes of widgets and especially to trigger
 rendering. They are mostly used within GUI widgets, but are globally available since 3.0.0.
+
+Properties are a less verbose way to implement the observer pattern compared to the property decorator.
