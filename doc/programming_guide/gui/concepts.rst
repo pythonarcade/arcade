@@ -63,6 +63,11 @@ A :class:`UIWidget` has following properties.
     move or resize its children; use a :py:class:`~arcade.gui.UILayout`
     instead.
 
+``visible``
+    A boolean indicating if the widget is visible or not. If a widget is not
+    visible, itself and any child widget will not be rendered.
+    Especially useful for hiding parts of the GUI like dialogs or popups.
+
 ``size_hint``
     A tuple of two normalized floats (``0.0``-``1.0``) describing the portion
     of the parent's width and height this widget prefers to occupy.
@@ -237,9 +242,9 @@ behaviour. Currently the available Mixins are still under heavy development.
 
 Available:
 
-- :py:class:`UIDraggableMixin`
-- :py:class:`UIMouseFilterMixin`
-- :py:class:`UIWindowLikeMixin`
+- :py:class:`UIDraggableMixin` - Makes a widget draggable with the mouse.
+- :py:class:`UIMouseFilterMixin` - Captures all mouse events.
+- :py:class:`UIWindowLikeMixin` - Makes a widget behave like a window, combining draggable and mouse filter behaviour.
 
 UIConstructs
 ============
@@ -248,8 +253,8 @@ Constructs are predefined structures of widgets and layouts like a message box.
 
 Available:
 
-- :py:class:`UIMessageBox`
-- :py:class:`UIButtonRow`
+- :py:class:`UIMessageBox` - A simple message box with a title, message and buttons.
+- :py:class:`UIButtonRow` - A row of buttons.
 
 Available Elements
 ==================
