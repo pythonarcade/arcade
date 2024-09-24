@@ -114,8 +114,8 @@ Widgets are positioned and then rendered into a framebuffer (something like a wi
 which is only updated if a widget changed and requested rendering
 (via :py:meth:`~arcade.gui.UIWidget.trigger_render` or :py:meth:`~arcade.gui.UIWidget.trigger_full_render`).
 
-During :py:meth:`~arcade.gui.UIManager.draw`, will check if updates are required and
-finally draws on screen.
+The :py:class:`~arcade.gui.UIManager` `draw` method, will check if updates are required and
+finally draws the framebuffer on screen.
 
 Layouting and Rendering
 ```````````````````````
