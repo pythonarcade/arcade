@@ -16,7 +16,7 @@ def test_sprites_at_point():
     sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
     assert len(sprite_list) == 1
 
-    sprite_list = arcade.get_sprites_at_point((0, 50), coin_list)
+    sprite_list = arcade.get_sprites_at_point((50, 0), coin_list)
     assert len(sprite_list) == 1
 
     sprite_list = arcade.get_sprites_at_point((0, -25), coin_list)
@@ -55,17 +55,15 @@ def test_sprite_collides_with_point():
     assert sprite.collides_with_point(point) is True
 
     # Negative
-    point = (0, 1)
+    point = (0, 2)
     assert sprite.collides_with_point(point) is False
-    point = (1, 0)
-    assert sprite.collides_with_point(point) is False
-    point = (1, 1)
-    assert sprite.collides_with_point(point) is False
-    point = (-1, -1)
-    assert sprite.collides_with_point(point) is False
-    point = (-1, 0)
+    point = (2, 0)
     assert sprite.collides_with_point(point) is False
     point = (2, 2)
+    assert sprite.collides_with_point(point) is False
+    point = (-2, -2)
+    assert sprite.collides_with_point(point) is False
+    point = (-2, 0)
     assert sprite.collides_with_point(point) is False
 
 
