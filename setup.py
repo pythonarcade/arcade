@@ -29,7 +29,7 @@ REQUIREMENTS_DEV = [
 # PYGMENTS 2.12.0 does not work as of 24-May-2022
 
 REQUIREMENTS_DOCS = [
-    "Sphinx==4.5.0",
+    "Sphinx~=5.0.0",
     "Pygments==2.10.0",
     "sphinx-copybutton==0.5.0",
     "sphinx-sitemap==2.2.0",
