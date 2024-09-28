@@ -29,12 +29,15 @@ def load_font(path: Union[str, Path]) -> None:
         # Load a font using a custom resource handle
         arcade.load_font(":font:Custom.ttf")
 
-    :param font_name:
+    :param path: The path of a font file as :py:class:`str`
+        or :py:class`~pathlib.Path`
     :raises FileNotFoundError: if the font specified wasn't found
     :return:
     """
     file_path = resolve_resource_path(path)
-    pyglet.font.add_file(str(file_path))
+    # Prevent warnings from pyglet not closing files when loading font files
+    with open(file_path, "rb") as f:
+        pyglet.font.add_file(f)
 
 
 FontNameOrNames = Union[str, Tuple[str, ...]]
