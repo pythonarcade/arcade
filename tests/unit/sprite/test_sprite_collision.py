@@ -7,16 +7,22 @@ def test_sprites_at_point():
 
     coin_list = arcade.SpriteList()
     sprite = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
+    # an adjacent sprite with the same level horizontal bottom edge
+    sprite2 = arcade.SpriteSolidColor(50, 50, center_x=50, center_y=0, color=arcade.csscolor.RED)
+    
     coin_list.append(sprite)
+    coin_list.append(sprite2)
 
-    # print()
-    # print(sprite.points)
     sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
     assert len(sprite_list) == 1
 
+    sprite_list = arcade.get_sprites_at_point((50, 0), coin_list)
+    assert len(sprite_list) == 1
+
+    sprite_list = arcade.get_sprites_at_point((0, -25), coin_list)
+    assert len(sprite_list) == 1
+
     sprite.position = (130, 130)
-    # print()
-    # print(sprite.points)
 
     sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
     assert len(sprite_list) == 0
@@ -25,8 +31,6 @@ def test_sprites_at_point():
     assert len(sprite_list) == 1
 
     sprite.angle = 90
-    # print()
-    # print(sprite.points)
 
     sprite_list = arcade.get_sprites_at_point((0, 0), coin_list)
     assert len(sprite_list) == 0
@@ -51,17 +55,15 @@ def test_sprite_collides_with_point():
     assert sprite.collides_with_point(point) is True
 
     # Negative
-    point = (0, 1)
+    point = (0, 2)
     assert sprite.collides_with_point(point) is False
-    point = (1, 0)
-    assert sprite.collides_with_point(point) is False
-    point = (1, 1)
-    assert sprite.collides_with_point(point) is False
-    point = (-1, -1)
-    assert sprite.collides_with_point(point) is False
-    point = (-1, 0)
+    point = (2, 0)
     assert sprite.collides_with_point(point) is False
     point = (2, 2)
+    assert sprite.collides_with_point(point) is False
+    point = (-2, -2)
+    assert sprite.collides_with_point(point) is False
+    point = (-2, 0)
     assert sprite.collides_with_point(point) is False
 
 

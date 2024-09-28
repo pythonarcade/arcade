@@ -3,7 +3,7 @@ import pytest
 import PIL.Image
 
 from arcade.texture_atlas.region import AtlasRegion
-from arcade.texture.texture import Texture, ImageData
+from arcade.texture.texture import ImageData
 from arcade.texture_atlas.atlas_default import DefaultTextureAtlas
 
 
