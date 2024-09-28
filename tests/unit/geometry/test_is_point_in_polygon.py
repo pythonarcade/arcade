@@ -1,8 +1,27 @@
 from arcade.geometry import is_point_in_polygon
 
 
-def test_point_in_rectangle():
+def test_point_in_rectangle_cw():
+    """Clockwise rectangle"""
     polygon = [(0, 0), (0, 50), (50, 50), (50, 0)]
+    # Center
+    assert is_point_in_polygon(25, 25, polygon) is True
+    # One pixel from edge
+    assert is_point_in_polygon(1, 1, polygon) is True
+    assert is_point_in_polygon(49, 49, polygon) is True
+    assert is_point_in_polygon(1, 49, polygon) is True
+    assert is_point_in_polygon(49, 1, polygon) is True
+
+    # Intersect edges
+    assert is_point_in_polygon(0, 0, polygon) is True
+    assert is_point_in_polygon(50, 50, polygon) is True
+    assert is_point_in_polygon(0, 50, polygon) is True
+    assert is_point_in_polygon(50, 0, polygon) is True
+
+
+def test_point_in_rectangle_cc():
+    """Counter-clockwise rectangle"""
+    polygon = [(0, 0), (50, 0), (50, 50), (0, 50)]
     # Center
     assert is_point_in_polygon(25, 25, polygon) is True
     # One pixel from edge
