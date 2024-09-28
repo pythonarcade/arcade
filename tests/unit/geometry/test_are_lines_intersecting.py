@@ -6,7 +6,6 @@ def test_are_lines_intersecting():
     line_b = [(0, 0), (50, 50)]
     assert are_lines_intersecting(*line_a, *line_b) is True
 
-    # ---------
     # Two lines clearly intersecting
     line_a = [(0, 0), (50, 50)]
     line_b = [(0, 50), (50, 0)]
@@ -22,7 +21,7 @@ def test_are_lines_intersecting():
     line_b = [(0, -50), (0, 50)]
     assert are_lines_intersecting(*line_a, *line_b) is True
 
-    # Twp perpendicular lines almost intersecting
+    # Two perpendicular lines almost intersecting
     line_a = [(0, 0), (50, 0)]
     line_b = [(-1, -50), (-1, 50)]
     assert are_lines_intersecting(*line_a, *line_b) is False
