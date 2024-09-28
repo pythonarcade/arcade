@@ -20,6 +20,13 @@ Improve the Documentation
 
 You can also suggest improvements to the documentation. All the documentation
 is in the codebase.
+[pyaml]: https://stackoverflow.com/questions/77490435/attributeerror-cython-sources
+
+> [!WARNING]
+> Documentation for this branch requires one of the following to build:
+> Python <= 3.11
+> The workarounds described in [this stack overflow thread][pyyaml]
+
 
 Improve Test Cases
 ------------------

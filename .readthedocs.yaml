@@ -6,7 +6,9 @@ sphinx:
   configuration: doc/conf.py
 
 python:
-  version: 3.8
+  # Build on Python <= 3.12 to annoying cython / pyaml issues:
+  # https://stackoverflow.com/questions/77490435/attributeerror-cython-sources
+  version: 3.11
   install:
     - method: pip
       path: .

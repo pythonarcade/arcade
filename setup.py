@@ -28,8 +28,10 @@ REQUIREMENTS_DEV = [
 # ALERT
 # PYGMENTS 2.12.0 does not work as of 24-May-2022
 
+# Doc build is on Python <= 3.11 to avoid 3.12 / cython issues:
+# https://stackoverflow.com/questions/77490435/attributeerror-cython-sources
 REQUIREMENTS_DOCS = [
-    "Sphinx~=5.0.0",
+    "Sphinx~=5.0.0",  # Apparently 4.5.X now breaks? (Sep 2024)
     "Pygments==2.10.0",
     "sphinx-copybutton==0.5.0",
     "sphinx-sitemap==2.2.0",
