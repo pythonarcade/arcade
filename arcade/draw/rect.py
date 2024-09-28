@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import array
-from typing import Optional
 
 from arcade import gl
 from arcade.color import WHITE
@@ -22,18 +23,27 @@ def draw_texture_rect(
     blend=True,
     alpha=255,
     pixelated=False,
-    atlas: Optional[TextureAtlasBase] = None,
+    atlas: TextureAtlasBase | None = None,
 ) -> None:
     """
     Draw a texture on a rectangle.
 
-    :param texture: identifier of texture returned from load_texture() call
-    :param rect: Rectangle to draw the texture on.
-    :param color: Color of the texture. Defaults to white.
-    :param angle: Rotation of the texture in degrees. Defaults to zero.
-    :param blend: If True, enable alpha blending. Defaults to True.
-    :param alpha: Transparency of image. 0 is fully transparent, 255 (default) is fully opaque.
-    :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
+    Args:
+        texture:
+            Identifier of texture returned from load_texture() call
+        rect:
+            Rectangle to draw the texture on.
+        color:
+            Color of the texture. Defaults to white.
+        angle:
+            Rotation of the texture in degrees. Defaults to zero.
+        blend:
+            If True, enable alpha blending. Defaults to True.
+        alpha:
+            Transparency of image. 0 is fully transparent, 255 (default) is fully opaque.
+        atlas:
+            The texture atlas the texture resides in.
+            if not supplied the default texture atlas is used
     """
     ctx = get_window().ctx
 
@@ -77,16 +87,23 @@ def draw_sprite(
     blend: bool = True,
     alpha=255,
     pixelated=False,
-    atlas: Optional[TextureAtlasBase] = None,
+    atlas: TextureAtlasBase | None = None,
 ) -> None:
     """
     Draw a sprite.
 
-    :param sprite: The sprite to draw.
-    :param blend: Draw the sprite with or without alpha blending
-    :param alpha: Fade the sprite from completely transparent to opaque (range: 0 to 255)
-    :param pixelated: If true the sprite will be render in pixelated style. Otherwise smooth/linear
-    :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
+    Args:
+        sprite:
+            The sprite to draw.
+        blend:
+            Draw the sprite with or without alpha blending
+        alpha:
+            Fade the sprite from completely transparent to opaque (range: 0 to 255)
+        pixelated:
+            If true the sprite will be render in pixelated style. Otherwise smooth/linear
+        atlas:
+            The texture atlas the texture resides in.
+            if not supplied the default texture atlas is used
     """
     draw_texture_rect(
         sprite.texture,
@@ -107,17 +124,25 @@ def draw_sprite_rect(
     blend: bool = True,
     alpha=255,
     pixelated=False,
-    atlas: Optional[TextureAtlasBase] = None,
+    atlas: TextureAtlasBase | None = None,
 ) -> None:
-    """
-    Draw a sprite.
+    """Draw a sprite.
 
-    :param sprite: The sprite to draw.
-    :param rect: The location and size of the sprite
-    :param blend: Draw the sprite with or without alpha blending
-    :param alpha: Fade the sprite from completely transparent to opaque (range: 0 to 255)
-    :param pixelated: If true the sprite will be render in pixelated style. Otherwise smooth/linear
-    :param atlas: The texture atlas the texture resides in. if not supplied the default texture atlas is used
+    Args:
+        sprite:
+            The sprite to draw.
+        rect:
+            The location and size of the sprite
+        blend:
+            Draw the sprite with or without alpha blending
+        alpha:
+            Fade the sprite from completely transparent to opaque (range: 0 to 255)
+        pixelated:
+            If true the sprite will be render in pixelated style.
+            Otherwise smooth/linear
+        atlas:
+            The texture atlas the texture resides in.
+            if not supplied the default texture atlas is used
     """
     draw_texture_rect(
         sprite.texture,
@@ -142,15 +167,22 @@ def draw_lrbt_rectangle_outline(
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
-    :param left: The x coordinate of the left edge of the rectangle.
-    :param right: The x coordinate of the right edge of the rectangle.
-    :param bottom: The y coordinate of the rectangle bottom.
-    :param top: The y coordinate of the top of the rectangle.
-    :param color: The outline color as an RGBA :py:class:`tuple`, RGB
-        :py:class:`tuple`, or a :py:class:`.Color` instance.
-    :param border_width: The width of the border in pixels. Defaults to one.
-    :Raises ValueError: Raised if left > right or top < bottom.
-
+    Args:
+        left:
+            The x coordinate of the left edge of the rectangle.
+        right:
+            The x coordinate of the right edge of the rectangle.
+        bottom:
+            The y coordinate of the rectangle bottom.
+        top:
+            The y coordinate of the top of the rectangle.
+        color:
+            The outline color as an RGBA :py:class:`tuple`, RGB
+            :py:class:`tuple`, or a :py:class:`.Color` instance.
+        border_width:
+            The width of the border in pixels. Defaults to one.
+    Raises:
+        ValueError: Raised if left > right or top < bottom.
     """
     if left > right:
         raise ValueError("Left coordinate must be less than or equal to " "the right coordinate")
@@ -172,13 +204,20 @@ def draw_lbwh_rectangle_outline(
     """
     Draw a rectangle extending from bottom left to top right
 
-    :param bottom_left_x: The x coordinate of the left edge of the rectangle.
-    :param bottom_left_y: The y coordinate of the bottom of the rectangle.
-    :param width: The width of the rectangle.
-    :param height: The height of the rectangle.
-    :param color: The outline color as an RGBA :py:class:`tuple`, RGB
-        :py:class:`tuple`, or a :py:class:`.Color` instance.
-    :param border_width: The width of the border in pixels. Defaults to one.
+    Args:
+        bottom_left_x:
+            The x coordinate of the left edge of the rectangle.
+        bottom_left_y:
+            The y coordinate of the bottom of the rectangle.
+        width:
+            The width of the rectangle.
+        height:
+            The height of the rectangle.
+        color:
+            The outline color as an RGBA :py:class:`tuple`, RGB
+            :py:class:`tuple`, or a :py:class:`.Color` instance.
+        border_width:
+            The width of the border in pixels. Defaults to one.
     """
     draw_rect_outline(LBWH(left, bottom, width, height), color, border_width)
 
@@ -189,13 +228,20 @@ def draw_lrbt_rectangle_filled(
     """
     Draw a rectangle by specifying left, right, bottom and top edges.
 
-    :param left: The x coordinate of the left edge of the rectangle.
-    :param right: The x coordinate of the right edge of the rectangle.
-    :param bottom: The y coordinate of the rectangle bottom.
-    :param top: The y coordinate of the top of the rectangle.
-    :param color: The fill color as an RGBA :py:class:`tuple`,
-        RGB :py:class:`tuple`, or a :py:class:`.Color` instance.
-    :Raises ValueError: Raised if left > right or top < bottom.
+    Args:
+        left:
+            The x coordinate of the left edge of the rectangle.
+        right:
+            The x coordinate of the right edge of the rectangle.
+        bottom:
+            The y coordinate of the rectangle bottom.
+        top:
+            The y coordinate of the top of the rectangle.
+        color:
+            The fill color as an RGBA :py:class:`tuple`,
+            RGB :py:class:`tuple`, or a :py:class:`.Color` instance.
+    Raises:
+        ValueError: Raised if left > right or top < bottom.
     """
     if left > right:
         raise ValueError(
@@ -216,12 +262,18 @@ def draw_lbwh_rectangle_filled(
     """
     Draw a filled rectangle extending from bottom left to top right
 
-    :param left: The x coordinate of the left edge of the rectangle.
-    :param bottom: The y coordinate of the bottom of the rectangle.
-    :param width: The width of the rectangle.
-    :param height: The height of the rectangle.
-    :param color: The fill color as an RGBA :py:class:`tuple`, RGB
-        :py:class:`tuple`, :py:class:`~arcade.types.Color` instance
+    Args:
+        left:
+            The x coordinate of the left edge of the rectangle.
+        bottom:
+            The y coordinate of the bottom of the rectangle.
+        width:
+            The width of the rectangle.
+        height:
+            The height of the rectangle.
+        color:
+            The fill color as an RGBA :py:class:`tuple`, RGB
+            :py:class:`tuple`, :py:class:`~arcade.types.Color` instance
     """
     draw_rect_filled(LBWH(left, bottom, width, height), color)
 
@@ -232,12 +284,16 @@ def draw_rect_outline(
     """
     Draw a rectangle outline.
 
-    :param rect: The rectangle to draw.
-        a :py:class`~arcade.types.Rect` instance.
-    :param color: The fill color as an RGBA :py:class:`tuple`,
-        RGB :py:class:`tuple`, or :py:class`.Color` instance.
-    :param border_width: width of the lines, in pixels.
-    :param tilt_angle: rotation of the rectangle. Defaults to zero (clockwise).
+    Args:
+        rect:
+            The rectangle to draw. a :py:class`~arcade.types.Rect` instance.
+        color:
+            The fill color as an RGBA :py:class:`tuple`,
+            RGB :py:class:`tuple`, or :py:class`.Color` instance.
+        border_width:
+            width of the lines, in pixels.
+        tilt_angle:
+            rotation of the rectangle. Defaults to zero (clockwise).
     """
 
     HALF_BORDER = border_width / 2
@@ -269,11 +325,14 @@ def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> Non
     """
     Draw a filled-in rectangle.
 
-    :param rect: The rectangle to draw.
-        a :py:class`~arcade.types.Rect` instance.
-    :param color: The fill color as an RGBA :py:class:`tuple`,
-        RGB :py:class:`tuple, or :py:class`.Color` instance.
-    :param tilt_angle: rotation of the rectangle (clockwise). Defaults to zero.
+    Args:
+        rect:
+            The rectangle to draw. a :py:class`~arcade.types.Rect` instance.
+        color:
+            The fill color as an RGBA :py:class:`tuple`,
+            RGB :py:class:`tuple, or :py:class`.Color` instance.
+        tilt_angle:
+            rotation of the rectangle (clockwise). Defaults to zero.
     """
     # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()

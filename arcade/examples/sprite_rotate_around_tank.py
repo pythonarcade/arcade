@@ -64,8 +64,9 @@ class RotatingSprite(arcade.Sprite):
         """
         Rotate the sprite around a point by the set amount of degrees
 
-        :param point: The point that the sprite will rotate about
-        :param degrees: How many degrees to rotate the sprite
+        Args:
+            point: The point that the sprite will rotate about
+            degrees: How many degrees to rotate the sprite
         """
 
         # Make the sprite turn as its position is moved

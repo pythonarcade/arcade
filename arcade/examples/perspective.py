@@ -1,4 +1,3 @@
-# flake8: noqa
 """
 Perspective example using the lower level rendering API.
 
@@ -18,7 +17,7 @@ python -m arcade.examples.perspective
 from array import array
 
 import arcade
-from pyglet.math import Mat4
+from pyglet.math import Mat4, Vec3
 from arcade.gl import BufferDescription
 
 
@@ -78,8 +77,8 @@ class Perspective(arcade.Window):
             data=array(
                 'f',
                 [
-                    # x  y   z  u  v 
-                    -1,  1, 0, 0, 1,  # Top Left     
+                    # x  y   z  u  v
+                    -1,  1, 0, 0, 1,  # Top Left
                     -1, -1, 0, 0, 0,  # Bottom Left
                      1,  1, 0, 1, 1,  # Top Right
                      1, -1, 0, 1, 0,  # Bottom right
@@ -121,8 +120,8 @@ class Perspective(arcade.Window):
         self.fbo.color_attachments[0].use(unit=0)
 
         # Move the plane into camera view and rotate it
-        translate = Mat4.from_translation((0, 0, -2))
-        rotate = Mat4.from_rotation(self.time / 2, (1, 0, 0))
+        translate = Mat4.from_translation(Vec3(0, 0, -2))
+        rotate = Mat4.from_rotation(self.time / 2, Vec3(1, 0, 0))
         self.program["model"] = translate @ rotate
 
         # Scroll the texture coordinates
@@ -141,7 +140,9 @@ class Perspective(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.program["projection"] = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
+        self.program["projection"] = Mat4.perspective_projection(
+            self.aspect_ratio, 0.1, 100, fov=75,
+        )
 
 
 def main():

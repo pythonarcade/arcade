@@ -11,10 +11,14 @@ def draw_line_strip(point_list: Point2List, color: RGBOrA255, line_width: float 
     """
     Draw a multi-point line.
 
-    :param point_list: List of x, y points that make up this strip
-    :param color: A color, specified as an RGBA tuple or a
-        :py:class:`~arcade.types.Color` instance.
-    :param line_width: Width of the line
+    Args:
+        point_list:
+            List of x, y points that make up this strip
+        color:
+            A color, specified as an RGBA tuple or a
+            :py:class:`~arcade.types.Color` instance.
+        line_width:
+            Width of the line
     """
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.LINE_STRIP)
@@ -44,13 +48,20 @@ def draw_line(
     """
     Draw a line.
 
-    :param start_x: x position of line starting point.
-    :param start_y: y position of line starting point.
-    :param end_x: x position of line ending point.
-    :param end_y: y position of line ending point.
-    :param color: A color, specified as an RGBA tuple or a
-        :py:class:`~arcade.types.Color` instance.
-    :param line_width: Width of the line in pixels.
+    Args:
+        start_x:
+            x position of line starting point.
+        start_y:
+            y position of line starting point.
+        end_x:
+            x position of line ending point.
+        end_y:
+            y position of line ending point.
+        color:
+            A color, specified as an RGBA tuple or a
+            :py:class:`~arcade.types.Color` instance.
+        line_width:
+            Width of the line in pixels.
     """
     # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
@@ -79,11 +90,15 @@ def draw_lines(point_list: Point2List, color: RGBOrA255, line_width: float = 1) 
 
     Draw a line between each pair of points specified.
 
-    :param point_list: List of points making up the lines. Each point is
-         in a list. So it is a list of lists.
-    :param color: A color, specified as an RGBA tuple or a
-        :py:class:`~arcade.types.Color` instance.
-    :param line_width: Width of the line in pixels.
+    Args:
+        point_list:
+            List of points making up the lines. Each point is in a list.
+            So it is a list of lists.
+        color:
+            A color, specified as an RGBA tuple or a
+            :py:class:`~arcade.types.Color` instance.
+        line_width:
+            Width of the line in pixels.
     """
     # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()

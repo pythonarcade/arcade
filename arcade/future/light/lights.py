@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from array import array
-from typing import Iterator, Optional, Sequence
+from typing import Iterator, Sequence
 
 from arcade import gl
 from arcade.color import WHITE
@@ -16,11 +16,12 @@ class Light:
     Note: It's important to separate lights that don't change properties
     and static ones with the ``usage`` parameter.
 
-    :param center_x: X position of the light
-    :param center_y: Y position of the light
-    :param radius: Radius of the light
-    :param color: Color of the light
-    :param mode: 'hard' or 'soft' light
+    Args:
+        center_x: X position of the light
+        center_y: Y position of the light
+        radius: Radius of the light
+        color: Color of the light
+        mode: 'hard' or 'soft' light
     """
 
     HARD = 1.0
@@ -36,7 +37,8 @@ class Light:
     ):
         if not (isinstance(color, tuple) or isinstance(color, list)):
             raise ValueError(
-                "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
+                "Color must be a 3-4 element Tuple or List with red-green-blue "
+                " and optionally an alpha."
             )
 
         if not isinstance(mode, str) or not (mode == "soft" or mode == "hard"):
@@ -47,11 +49,12 @@ class Light:
         self._radius = radius
         self._attenuation = Light.HARD if mode == "hard" else Light.SOFT
         self._color = color[:3]
-        self._light_layer: Optional[LightLayer] = None
+        self._light_layer: LightLayer | None = None
 
         if len(self._color) != 3:
             raise ValueError(
-                "Color must be a 3-4 element Tuple or List with red-green-blue and optionally an alpha."
+                "Color must be a 3-4 element Tuple or List with red-green-blue "
+                "and optionally an alpha."
             )
 
     @property
@@ -83,7 +86,8 @@ class LightLayer(RenderTargetTexture):
 
     The size of a layer should ideally be of the same size and the screen.
 
-    :param Tuple[int, int] size: Width and height of light layer
+    Args:
+        size: Width and height of light layer
     """
 
     def __init__(self, width: int, height: int):
@@ -178,9 +182,11 @@ class LightLayer(RenderTargetTexture):
         ambient_color: RGBOrA255 = (64, 64, 64),
     ):
         """Draw the lights
-        :param Tuple[float, float] position: Position offset (scrolling)
-        :param target: The window or framebuffer we want to render to (default is window)
-        :param ambient_color: The ambient light color
+
+        Args:
+            position: Position offset (scrolling)
+            target: The window or framebuffer we want to render to (default is window)
+            ambient_color: The ambient light color
         """
         if target is None:
             target = self.window

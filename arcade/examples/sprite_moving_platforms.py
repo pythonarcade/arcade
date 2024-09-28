@@ -205,7 +205,11 @@ class MyGame(arcade.Window):
         """
 
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position,
+            position,
+            CAMERA_SPEED,
+        )
 
 
 def main():

@@ -5,6 +5,10 @@ import arcade
 from arcade import *
 
 
+# TODO: double-check whether this is actually the right solution?
+builtin_types = frozenset((bool, str, int, ModuleType))
+
+
 def test_import():
     """Compare arcade.__all__ to the actual module contents"""
     import arcade
@@ -16,7 +20,8 @@ def test_import():
     remaining = arcade_names - common
     for name in copy(remaining):
         attr = getattr(arcade, name)
-        if type(attr) is ModuleType:
+        attr_type = type(attr)
+        if attr_type in builtin_types:
             remaining.remove(name)
         elif not attr.__module__.startswith('arcade.'):
             remaining.remove(name)

@@ -54,15 +54,20 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", scale=0.75)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=0.75,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
         for i in range(50):
             # Create the coin instance
-            coin = Collectable(":resources:images/items/coinGold.png", scale=SPRITE_SCALING)
+            coin = Collectable(
+                ":resources:images/items/coinGold.png",
+                scale=SPRITE_SCALING,
+            )
 
             # Position the coin
             coin.center_x = random.randrange(SCREEN_WIDTH)

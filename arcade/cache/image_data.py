@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from arcade.texture import ImageData
@@ -32,8 +32,9 @@ class ImageDataCache:
         An entry can only be cached as either strong or weak, not both.
         If and existing entry is found, it will be replaced.
 
-        :param name: Name of the image
-        :param image: ImageData object
+        Args:
+            name: Name of the image
+            image: ImageData object
         """
         from arcade.texture import ImageData
 
@@ -42,12 +43,14 @@ class ImageDataCache:
 
         self._entries[name] = image
 
-    def get(self, name: str) -> Optional["ImageData"]:
+    def get(self, name: str) -> ImageData | None:
         """
         Attempts to retrieve an entry from the cache.
 
-        :param name: Name of the image
-        :return: ImageData object or None if not found
+        Args:
+            name: Name of the image
+        Returns:
+            ImageData instance or ``None`` if not found
         """
         return self._entries.get(name)
 
@@ -55,8 +58,11 @@ class ImageDataCache:
         """
         Attempts to delete an entry from the cache.
 
-        :param name: Name of the image
-        :param raise_if_not_exist: If True, raises KeyError if the entry does not exist
+        Args:
+            name:
+                Name of the image
+            raise_if_not_exist:
+                If ``True``, raises ``KeyError`` if the entry does not exist
         """
         try:
             del self._entries[name]
@@ -71,10 +77,10 @@ class ImageDataCache:
     def __len__(self):
         return len(self._entries)
 
-    def __getitem__(self, name: str) -> Optional["ImageData"]:
+    def __getitem__(self, name: str) -> ImageData | None:
         return self.get(name)
 
-    def __setitem__(self, name: str, image: "ImageData"):
+    def __setitem__(self, name: str, image: ImageData):
         self.put(name, image)
 
     def __delitem__(self, name: str):

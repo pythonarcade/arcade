@@ -44,9 +44,10 @@
 #     Dump the atlas to a file. This includes the atlas image
 #     and metadata.
 
-#     :param atlas: The atlas to dump
-#     :param directory: The directory to dump the atlas to
-#     :param name: The name of the atlas
+#     Args:
+#         atlas: The atlas to dump
+#         directory: The directory to dump the atlas to
+#         name: The name of the atlas
 #     """
 #     # Dump the image
 #     atlas.save(directory / f"{name}.png", flip=False)

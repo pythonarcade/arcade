@@ -7,7 +7,6 @@ https://gist.github.com/silvasur/565419/d9de6a84e7da000797ac681976442073045c74a4
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.tetris
 """
-# flake8: noqa: E241
 import arcade
 import random
 import PIL
@@ -234,7 +233,6 @@ class MyGame(arcade.Window):
         elif key == arcade.key.DOWN:
             self.drop()
 
-    # noinspection PyMethodMayBeStatic
     def draw_grid(self, grid, offset_x, offset_y):
         """
         Draw the grid. Used to draw the falling stones. The board is drawn
@@ -247,8 +245,14 @@ class MyGame(arcade.Window):
                 if grid[row][column]:
                     color = colors[grid[row][column]]
                     # Do the math to figure out where the box is
-                    x = (MARGIN + WIDTH) * (column + offset_x) + MARGIN + WIDTH // 2
-                    y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y) + MARGIN + HEIGHT // 2
+                    x = (
+                        (MARGIN + WIDTH) * (column + offset_x)
+                        + MARGIN + WIDTH // 2
+                    )
+                    y = (
+                        SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y)
+                        + MARGIN + HEIGHT // 2
+                    )
 
                     # Draw the box
                     arcade.draw_rect_filled(arcade.rect.XYWH(x, y, WIDTH, HEIGHT), color)

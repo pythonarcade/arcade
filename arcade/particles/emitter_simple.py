@@ -1,13 +1,14 @@
 """
 Convenience functions that provide a much simpler interface to Emitters and Particles.
 
-These trade away some flexibility in favor of simplicity to allow beginners to start using particle systems.
+These trade away some flexibility in favor of simplicity to allow beginners
+to start using particle systems.
 """
 
 from __future__ import annotations
 
 import random
-from typing import Sequence, Type
+from typing import Sequence
 
 from arcade.math import rand_in_circle, rand_on_circle
 from arcade.types import PathOrTexture, Point
@@ -27,7 +28,7 @@ def make_burst_emitter(
     fade_particles: bool = True,
 ) -> Emitter:
     """Returns an emitter that emits all of its particles at once"""
-    particle_factory: Type[LifetimeParticle] = LifetimeParticle
+    particle_factory: type[LifetimeParticle] = LifetimeParticle
     if fade_particles:
         particle_factory = FadeParticle
     return Emitter(
@@ -54,7 +55,7 @@ def make_interval_emitter(
     fade_particles: bool = True,
 ) -> Emitter:
     """Returns an emitter that emits its particles at a constant rate for a given amount of time"""
-    particle_factory: Type[LifetimeParticle] = LifetimeParticle
+    particle_factory: type[LifetimeParticle] = LifetimeParticle
     if fade_particles:
         particle_factory = FadeParticle
     return Emitter(

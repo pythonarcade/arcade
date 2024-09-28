@@ -24,7 +24,7 @@ MOVEMENT_SPEED = 5
 
 class Player(arcade.Sprite):
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         """ Move the player """
         # Move player.
         # Remove these lines if physics engine is moving player.
@@ -78,8 +78,10 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    scale=SPRITE_SCALING)
+        self.player_sprite = Player(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -114,7 +116,7 @@ class MyGame(arcade.Window):
         # Call update to move the sprite
         # If using a physics engine, call update player to rely on physics engine
         # for movement, and call physics engine here.
-        self.player_list.update()
+        self.player_list.update(delta_time)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

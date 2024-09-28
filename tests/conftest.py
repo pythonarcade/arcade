@@ -29,7 +29,9 @@ OFFSCREEN = None
 def create_window(width=1280, height=720, caption="Testing", **kwargs):
     global WINDOW
     if not WINDOW:
-        WINDOW = REAL_WINDOW_CLASS(width=width, height=height, title=caption, vsync=False, antialiasing=False)
+        WINDOW = REAL_WINDOW_CLASS(
+            width=width, height=height, title=caption, vsync=False, antialiasing=False
+        )
         WINDOW.set_vsync(False)
         # This value is being monkey-patched into the Window class so that tests can identify if we are using
         # arcade-accelerate easily in case they need to disable something when it is enabled.
@@ -164,7 +166,7 @@ class WindowProxy:
 
     @property
     def viewport(self):
-        return self.window.viewport 
+        return self.window.viewport
 
     @viewport.setter
     def viewport(self, viewport):
@@ -282,11 +284,11 @@ class WindowProxy:
     def use(self):
         self.window.use()
 
-    def push_handlers(self, *handlers):
-        self.window.push_handlers(*handlers)
+    def push_handlers(self, *args, **kwargs):
+        self.window.push_handlers(*args, **kwargs)
 
-    def remove_handlers(self, *handlers):
-        self.window.remove_handlers(*handlers)
+    def remove_handlers(self, *args, **kwargs):
+        self.window.remove_handlers(*args, **kwargs)
 
     def run(self):
         self.window.run()
@@ -307,7 +309,6 @@ class WindowProxy:
     @property
     def fixed_delta_time(self) -> float:
         return self.window._fixed_rate
-
 
 
 @pytest.fixture(scope="function")
@@ -364,7 +365,9 @@ class Offscreen:
 
     def read_region(self, rect: Rect) -> list[tuple[int, int, int, int]]:
         """Read a region of RGBA pixels from the offscreen buffer"""
-        data = self.fbo.read(components=4, viewport=(rect.left, rect.bottom, rect.width, rect.height))
+        data = self.fbo.read(
+            components=4, viewport=(rect.left, rect.bottom, rect.width, rect.height)
+        )
         return [
             (
                 int.from_bytes(data[i : i + 4], "little"),

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Generator, Optional
+from typing import TYPE_CHECKING, Generator
 
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
@@ -42,25 +42,29 @@ class OrthographicProjector(Projector):
     Initialize a Projector which produces an orthographic projection matrix using
     a CameraData and PerspectiveProjectionData PoDs.
 
-    :param window: The window to bind the camera to. Defaults to the currently active camera.
-    :param view: The CameraData PoD. contains the viewport, position, up, forward, and zoom.
-    :param projection: The OrthographicProjectionData PoD.
-                contains the left, right, bottom top, near, and far planes.
+    Args:
+        window:
+            The window to bind the camera to. Defaults to the currently active camera.
+        view:
+            The CameraData PoD. contains the viewport, position, up, forward, and zoom.
+        projection:
+            The OrthographicProjectionData PoD.
+            contains the left, right, bottom top, near, and far planes.
     """
 
     def __init__(
         self,
         *,
-        window: Optional["Window"] = None,
-        view: Optional[CameraData] = None,
-        projection: Optional[OrthographicProjectionData] = None,
-        viewport: Optional[Rect] = None,
-        scissor: Optional[Rect] = None,
+        window: Window | None = None,
+        view: CameraData | None = None,
+        projection: OrthographicProjectionData | None = None,
+        viewport: Rect | None = None,
+        scissor: Rect | None = None,
     ):
-        self._window: "Window" = window or get_window()
+        self._window: Window = window or get_window()
 
         self.viewport: Rect = viewport or LBWH(0, 0, self._window.width, self._window.height)
-        self.scissor: Optional[Rect] = scissor
+        self.scissor: Rect | None = scissor
 
         self._view = view or CameraData(  # Viewport
             (self._window.width / 2, self._window.height / 2, 0),  # Position

@@ -12,6 +12,12 @@ from arcade.gl.vertex_array import Geometry
 
 
 def _get_active_context() -> Context:
+    """
+    Get the global active context.
+
+    The gl module is forbidden to reach outside of its own module.
+    so we can't use ``arcade.get_window().ctx`` here.
+    """
     ctx = Context.active
     if not ctx:
         raise RuntimeError("No context is currently activated")
@@ -29,8 +35,13 @@ def quad_2d(
     """
     Creates 2D quad Geometry using 2 triangle strip with texture coordinates.
 
-    :param size: width and height
-    :param pos: Center position x and y
+    By default a unit quad is created with the center at (0, 0).
+
+    Args:
+        size:
+            width and height of the quad
+        pos:
+            Center position x and y
     """
     ctx = _get_active_context()
     width, height = size
@@ -63,10 +74,17 @@ def screen_rectangle(
     """
     Creates screen rectangle using 2 triangle strip with texture coordinates.
 
-    :param bottom_left_x: Bottom left x position
-    :param bottom_left_y: Bottom left y position
-    :param width: Width of the rectangle
-    :param height: Height of the rectangle
+    This can create a rectangle in normalized device coordinates or projection space.
+
+    Args:
+        bottom_left_x:
+            Bottom left x position
+        bottom_left_y:
+            Bottom left y position
+        width:
+            Width of the rectangle
+        height:
+            Height of the rectangle
     """
     ctx = _get_active_context()
     # fmt: off
@@ -93,11 +111,18 @@ def cube(
     size: tuple[float, float, float] = (1.0, 1.0, 1.0),
     center: tuple[float, float, float] = (0.0, 0.0, 0.0),
 ) -> Geometry:
-    """Creates a cube with normals and texture coordinates.
+    """
+    Creates a cube with normals and texture coordinates.
 
-    :param size: size of the cube as a 3-component tuple
-    :param center: center of the cube as a 3-component tuple
-    :returns: A cube
+    By default a unit cube is created with the center at (0, 0, 0).
+
+    Args:
+        size:
+            Size of the cube as a 3-component tuple
+        center:
+            Center of the cube as a 3-component tuple
+    Returns:
+        A Geometry instance containing a cube
     """
     ctx = _get_active_context()
     width, height, depth = size
@@ -240,12 +265,19 @@ def sphere(
     """
     Creates a 3D sphere.
 
-    :param radius: Radius or the sphere
-    :param rings: number or horizontal rings
-    :param sectors: number of vertical segments
-    :param normals: Include normals in the VAO
-    :param uvs: Include texture coordinates in the VAO
-    :return: A geometry object
+    Args:
+        radius:
+            Radius or the sphere
+        rings:
+            number or horizontal rings
+        sectors:
+            number of vertical segments
+        normals:
+            Include normals
+        uvs:
+            Include texture coordinates
+    Returns:
+        A Geometry instance containing a sphere
     """
     ctx = _get_active_context()
 

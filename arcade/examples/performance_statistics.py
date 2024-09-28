@@ -19,8 +19,8 @@ If Python and Arcade are installed, this example can be run from the
 command line with:
 python -m arcade.examples.performance_statistics
 """
+from __future__ import annotations
 import random
-from typing import Optional
 
 import arcade
 
@@ -53,7 +53,7 @@ class Coin(arcade.BasicSprite):
         self.change_x = 0
         self.change_y = 0
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         """ Update the sprite. """
         # Setting the position is faster than setting x & y individually
         self.position = (
@@ -81,9 +81,9 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Variables to hold game objects and performance info
-        self.coin_list: Optional[arcade.SpriteList] = None
-        self.perf_graph_list: Optional[arcade.SpriteList] = None
-        self.fps_text: Optional[arcade.Text] = None
+        self.coin_list: arcade.SpriteList | None = None
+        self.perf_graph_list: arcade.SpriteList | None = None
+        self.fps_text: arcade.Text | None = None
         self.frame_count: int = 0  # for tracking the reset interval
 
         self.coin_texture = arcade.load_texture(":resources:images/items/coinGold.png")

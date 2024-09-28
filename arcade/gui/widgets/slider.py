@@ -5,9 +5,10 @@ from dataclasses import dataclass
 from typing import Mapping, Optional, Union
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
+from typing_extensions import override
 
 import arcade
-from arcade import Texture
+from arcade import Texture, uicolor
 from arcade.gui import (
     NinePatchTexture,
     Surface,
@@ -19,12 +20,11 @@ from arcade.gui import (
 from arcade.gui.events import UIOnChangeEvent
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
-from arcade.types import RGBA255, Color
+from arcade.types import RGBA255
 
 
 class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
-    """
-    Base class for sliders.
+    """Base class for sliders.
 
     A slider contains of a horizontal track and a thumb.
     The thumb can be moved along the track to set the value of the slider.
@@ -32,6 +32,22 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
     Use the `on_change` event to get notified about value changes.
 
     Subclasses should implement the `_render_track` and `_render_thumb` methods.
+
+    Args:
+
+        value: Current value of the curosr of the slider.
+        min_value: Minimum value of the slider.
+        max_value: Maximum value of the slider.
+        x: x coordinate of bottom left.
+        y: y coordinate of bottom left.
+        width: Width of the slider.
+        height: Height of the slider.
+        size_hint: Size hint of the slider.
+        size_hint_min: Minimum size hint of the slider.
+        size_hint_max: Maximum size hint of the slider.
+        style: Used to style the slider for different states.
+        **kwargs: Passed to UIInteractiveWidget.
+
     """
 
     value = Property(0)
@@ -113,33 +129,49 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
                 self.content_width - 2 * self._cursor_width
             )
 
+    @override
     def do_render(self, surface: Surface):
+        """Render the slider, including track and thumb."""
         self.prepare_render(surface)
         self._render_track(surface)
         self._render_thumb(surface)
 
     @abstractmethod
-    def _render_track(self, surface):
+    def _render_track(self, surface: Surface):
         """Render the track of the slider.
 
         This method should be implemented in a slider implementation.
 
         Track should stay within self.content_rect.
+
+        Args:
+                surface: Surface to render on.
         """
         pass
 
     @abstractmethod
-    def _render_thumb(self, surface):
+    def _render_thumb(self, surface: Surface):
         """Render the thumb of the slider.
 
         This method should be implemented in a slider implementation.
 
         Thumb should stay within self.content_rect.
         x coordinate of the thumb should be self._thumb_x.
+
+        Args:
+            surface: Surface to render on.
         """
         pass
 
+    @override
     def on_event(self, event: UIEvent) -> Optional[bool]:
+        """
+        Args:
+            event: Event to handle.
+
+        Returns: True if event was handled, False otherwise.
+
+        """
         if super().on_event(event):
             return EVENT_HANDLED
 
@@ -151,52 +183,72 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
 
         return EVENT_UNHANDLED
 
+    @override
     def on_click(self, event: UIOnClickEvent):
+        """Handle click events to set the value of the slider.
+
+        A new value is calculated based on the click position and the slider's width and
+        the `on_change` event is dispatched.
+
+        Args:
+            event: Click event.
+        """
         old_value = self.value
         self._thumb_x = event.x
         self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))  # type: ignore
 
     def on_change(self, event: UIOnChangeEvent):
-        """To be implemented by the user, triggered when the cursor's value is changed."""
+        """To be implemented by the user, triggered when the cursor's value is changed.
+
+        Args:
+            event: Event containing the old and new value of the cursor.
+        """
         pass
 
 
 @dataclass
 class UISliderStyle(UIStyleBase):
-    """
-    Used to style the slider for different states. Below is its use case.
+    """Used to style the slider for different states. Below is its use case.
 
     .. code:: py
 
         button = UITextureButton(style={"normal": UITextureButton.UIStyle(...),})
+
+    Args:
+        bg: Background color.
+        border: Border color.
+        border_width: Width of the border.
+        filled_track: Color of the filled track.
+        unfilled_track: Color of the unfilled track.
+
     """
 
-    bg: RGBA255 = Color(94, 104, 117)
-    border: RGBA255 = Color(77, 81, 87)
-    border_width: int = 1
-    filled_track: RGBA255 = Color(50, 50, 50)
-    unfilled_track: RGBA255 = Color(116, 125, 123)
+    bg: RGBA255 = uicolor.WHITE_SILVER
+    border: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
+    border_width: int = 2
+    filled_track: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
+    unfilled_track: RGBA255 = uicolor.WHITE_SILVER
 
 
 class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
-    """
-    A simple slider.
+    """A simple slider.
 
     A slider contains of a horizontal track and a thumb.
     The thumb can be moved along the track to set the value of the slider.
 
     Use the `on_change` event to get notified about value changes.
 
-    There are four states of the UISlider i.e normal, hovered, pressed and disabled.
+    There are four states of the UISlider i.e. normal, hovered, pressed and disabled.
 
-    :param value: Current value of the curosr of the slider.
-    :param min_value: Minimum value of the slider.
-    :param max_value: Maximum value of the slider.
-    :param x: x coordinate of bottom left.
-    :param y: y coordinate of bottom left.
-    :param width: Width of the slider.
-    :param height: Height of the slider.
-    :param Mapping[str, "UISlider.UIStyle"] | None style: Used to style the slider for different states.
+    Args:
+        value: Current value of the cursor of the slider.
+        min_value: Minimum value of the slider.
+        max_value: Maximum value of the slider.
+        x: x coordinate of bottom left.
+        y: y coordinate of bottom left.
+        width: Width of the slider.
+        height: Height of the slider.
+        style: Used to style the slider for different states.
 
     """
 
@@ -205,25 +257,21 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     DEFAULT_STYLE = {
         "normal": UIStyle(),
         "hover": UIStyle(
-            bg=Color(96, 103, 112),
-            border=Color(77, 81, 87),
+            border=uicolor.BLUE_PETER_RIVER,
             border_width=2,
-            filled_track=Color(50, 50, 50),
-            unfilled_track=Color(116, 125, 123),
+            filled_track=uicolor.BLUE_PETER_RIVER,
         ),
         "press": UIStyle(
-            bg=Color(96, 103, 112),
-            border=Color(77, 81, 87),
+            bg=uicolor.BLUE_PETER_RIVER,
+            border=uicolor.DARK_BLUE_WET_ASPHALT,
             border_width=3,
-            filled_track=Color(50, 50, 50),
-            unfilled_track=Color(116, 125, 123),
+            filled_track=uicolor.BLUE_PETER_RIVER,
         ),
         "disabled": UIStyle(
-            bg=Color(94, 104, 117),
-            border=Color(77, 81, 87),
+            bg=uicolor.WHITE_SILVER,
             border_width=1,
-            filled_track=Color(50, 50, 50),
-            unfilled_track=Color(116, 125, 123),
+            filled_track=uicolor.GRAY_ASBESTOS,
+            unfilled_track=uicolor.WHITE_SILVER,
         ),
     }
 
@@ -236,7 +284,7 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         x: float = 0,
         y: float = 0,
         width: float = 300,
-        height: float = 20,
+        height: float = 25,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -258,8 +306,13 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
             **kwargs,
         )
 
+    @override
     def get_current_state(self) -> str:
-        """Returns the current state of the slider i.e disabled, press, hover or normal."""
+        """Get the current state of the slider.
+
+        Returns:
+            ""normal"", ""hover"", ""press"" or ""disabled"".
+        """
         if self.disabled:
             return "disabled"
         elif self.pressed:
@@ -269,14 +322,14 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         else:
             return "normal"
 
+    @override
     def _render_track(self, surface: Surface):
-        """Render the track of the slider."""
         style = self.get_current_style()
 
         bg_slider_color = style.get("unfilled_track", UISlider.UIStyle.unfilled_track)
         fg_slider_color = style.get("filled_track", UISlider.UIStyle.filled_track)
 
-        slider_height = self.content_height // 4
+        slider_height = self.content_height // 3
 
         slider_left_x = self._x_for_value(self.min_value)
         slider_right_x = self._x_for_value(self.max_value)
@@ -299,8 +352,8 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
             fg_slider_color,
         )
 
+    @override
     def _render_thumb(self, surface: Surface):
-        """Render the thumb of the slider."""
         style = self.get_current_style()
 
         border_width = style.get("border_width", UISlider.UIStyle.border_width)
@@ -326,28 +379,34 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
 
 
 class UITextureSlider(UISlider):
-    """
-    A custom slider subclass which supports textures.
+    """A custom slider subclass which supports textures.
 
     You can copy this as-is into your own project, or you can modify
     the class to have more features as needed.
+
+    Args:
+        track_texture: Texture for the track, should be a NinePatchTexture.
+        thumb_texture: Texture for the thumb.
+        style: Used to style the slider for different states.
+        **kwargs: Passed to UISlider.
     """
 
     def __init__(
         self,
-        track: Union[Texture, NinePatchTexture],
-        thumb: Union[Texture, NinePatchTexture],
+        track_texture: Union[Texture, NinePatchTexture],
+        thumb_texture: Union[Texture, NinePatchTexture],
         style=None,
         **kwargs,
     ):
-        self._track = track
-        self._thumb = thumb
+        self._track_tex = track_texture
+        self._thumb_tex = thumb_texture
 
         super().__init__(style=style or UISlider.DEFAULT_STYLE, **kwargs)
 
+    @override
     def _render_track(self, surface: Surface):
         style: UISliderStyle = self.get_current_style()  # type: ignore
-        surface.draw_texture(0, 0, self.width, self.height, self._track)
+        surface.draw_texture(0, 0, self.width, self.height, self._track_tex)
 
         # TODO accept these as constructor params
         slider_height = self.height // 4
@@ -365,13 +424,14 @@ class UITextureSlider(UISlider):
             style.filled_track,
         )
 
+    @override
     def _render_thumb(self, surface: Surface):
         cursor_center_x = self._thumb_x
         rel_cursor_x = cursor_center_x - self.left
         surface.draw_texture(
-            x=rel_cursor_x - self._thumb.width // 4 + 2,
+            x=rel_cursor_x - self._thumb_tex.width // 4 + 2,
             y=0,
-            width=self._thumb.width // 2,
+            width=self._thumb_tex.width // 2,
             height=self.height,
-            tex=self._thumb,
+            tex=self._thumb_tex,
         )

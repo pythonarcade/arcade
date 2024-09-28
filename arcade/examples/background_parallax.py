@@ -91,7 +91,11 @@ class MyGame(arcade.Window):
     def pan_camera_to_player(self):
         # Move the camera toward the center of the player's sprite
         target_x = self.player_sprite.center_x
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, self.height//2), CAMERA_SPEED)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position,
+            (target_x, self.height//2),
+            CAMERA_SPEED
+        )
 
     def on_update(self, delta_time: float):
         # Move the player in our infinite world

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union, Optional, Sequence
-from arcade.utils import warning, ReplacementWarning
+from typing import Sequence
+from arcade.exceptions import warning, ReplacementWarning
 
 #: The absolute path to this directory
 RESOURCE_DIR = Path(__file__).parent.resolve()
@@ -24,7 +24,7 @@ __all__ = [
 
 
 @warning(warning_type=ReplacementWarning, new_name="resolve")
-def resolve_resource_path(path: Union[str, Path]) -> Path:
+def resolve_resource_path(path: str | Path) -> Path:
     """
     Attempts to resolve a path to a resource including resource handles.
 
@@ -39,12 +39,13 @@ def resolve_resource_path(path: Union[str, Path]) -> Path:
         resolve(":resources:images/cards/cardBack_blue1.png")
         resolve(":my_handle:music/combat.wav")
 
-    :param Union[str, Path] path: A Path or string
+    Args:
+        path: A Path or string
     """
     return resolve(path)
 
 
-def resolve(path: Union[str, Path]) -> Path:
+def resolve(path: str | Path) -> Path:
     """
     Attempts to resolve a path to a resource including resource handles.
 
@@ -59,7 +60,8 @@ def resolve(path: Union[str, Path]) -> Path:
         resolve(":resources:images/cards/cardBack_blue1.png")
         resolve(":my_handle:music/combat.wav")
 
-    :param Union[str, Path] path: A Path or string
+    Args:
+        path: A Path or string
     """
     # Convert to a Path object and resolve resource handle
     if isinstance(path, str):
@@ -101,7 +103,8 @@ def resolve(path: Union[str, Path]) -> Path:
     try:
         path = Path(path.resolve(strict=True))
     except AttributeError:
-        # WARNING: This is due to an issue caused by Nuitka overriding strings into janky path object
+        # WARNING: This is due to an issue caused by Nuitka overriding strings
+        #          into janky path object
         path = Path(path.absolute())
 
     # Always return absolute paths
@@ -116,7 +119,7 @@ def resolve(path: Union[str, Path]) -> Path:
         raise FileNotFoundError(f"Cannot locate resource : {path}")
 
 
-def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
+def add_resource_handle(handle: str, path: str | Path) -> None:
     """
     Add a resource handle or path to an existing handle.
 
@@ -124,8 +127,9 @@ def add_resource_handle(handle: str, path: Union[str, Path]) -> None:
     the first path, it will look in the next path, and so on. The search
     is done in reverse order, so the last path added is searched first.
 
-    :param handle: The name of the handle
-    :param Union[str, Path] path: The absolute path to a directory
+    Args:
+        handle: The name of the handle
+        path: The absolute path to a directory
     """
     if isinstance(path, str):
         path = Path(path)
@@ -153,7 +157,8 @@ def get_resource_handle_paths(handle: str) -> list[Path]:
     """
     Returns the paths for a resource handle.
 
-    :param handle: The name of the handle
+    Args:
+        handle: The name of the handle
     """
     try:
         return handles[handle]
@@ -162,7 +167,7 @@ def get_resource_handle_paths(handle: str) -> list[Path]:
 
 
 def list_built_in_assets(
-    *, name: Optional[str] = None, extensions: Optional[Sequence[str]] = None
+    *, name: str | None = None, extensions: Sequence[str] | None = None
 ) -> list[Path]:
     """
     List built in assets in arcade.
@@ -181,9 +186,11 @@ def list_built_in_assets(
         # Get all card images
         list_built_in_assets(name="card", extensions=(".png", ".jpg"))
 
-    :param name: Include only assets that contain this string in the filename
-    :param extensions: A tuple of file extensions to filter by
-    :return: A list of absolute paths to requested assets
+    Args:
+        name: Include only assets that contain this string in the filename
+        extensions: A tuple of file extensions to filter by
+    Returns:
+        A list of absolute paths to requested assets
     """
     all_paths = ASSET_PATH.glob("**/*")
     if extensions is None and name is None:
@@ -207,19 +214,19 @@ def list_built_in_assets(
 def load_system_fonts() -> None:
     """Loads all the fonts in arcade's system directory.
 
-    Currently this is only the Kenney fonts::
+    Currently, this is only the Kenney fonts::
 
-        Kenney_Blocks.ttf
-        Kenney_Future.ttf
-        Kenney_Future_Narrow.ttf
-        Kenney_High.ttf
-        Kenney_High_Square.ttf
-        Kenney_Mini.ttf
-        Kenney_Mini_Square.ttf
-        Kenney_Pixel.ttf
-        Kenney_Pixel_Square.ttf
-        Kenney_Rocket.ttf
-        Kenney_Rocket_Square.ttf
+        Kenney_Blocks.ttf          - Kenney Blocks
+        Kenney_Future.ttf          - Kenney Future
+        Kenney_Future_Narrow.ttf   - Kenney Future Narrow
+        Kenney_High.ttf            - Kenney High
+        Kenney_High_Square.ttf     - Kenney High Square
+        Kenney_Mini.ttf            - Kenney Mini
+        Kenney_Mini_Square.ttf     - Kenney Mini Square
+        Kenney_Pixel.ttf           - Kenney Pixel
+        Kenney_Pixel_Square.ttf    - Kenney Pixel Square
+        Kenney_Rocket.ttf          - Kenney Rocket
+        Kenney_Rocket_Square.ttf   - Kenney Rocket Square
     """
     from arcade.text import load_font
 

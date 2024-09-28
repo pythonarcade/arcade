@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import NamedTuple, Optional, TypedDict
+from typing import NamedTuple, TypedDict
 
 from pyglet.math import Vec2
 
@@ -42,18 +42,21 @@ class RectKwargs(TypedDict):
 class Rect(NamedTuple):
     """A rectangle, with several convenience properties and functions.
 
-    This object is immutable by design. It provides no setters, and is a NamedTuple subclass.
+    This object is immutable by design. It provides no setters, and is a NamedTuple
+    subclass.
 
-    Attempts to implement all Rectangle functions used in the library, and to be a helpful
-    tool for developers storing/maniulating rectangle and rectangle-like constructs.
+    Attempts to implement all Rectangle functions used in the library, and to be a
+    helpful tool for developers storing/manipulating rectangle and rectangle-like
+    constructs.
 
-    Rectangles cannot rotate by design, since this complicates their implmentation a lot.
+    Rectangles cannot rotate by design, since this complicates their implementation
+    a lot.
 
-    You probably don't want to create one of these directly, and should instead use a helper method, like
-    :py:func:`.LBWH`, :py:func:`.LRBT`, :py:func:`.XYWH`, or :py:func:`.Viewport`.
+    You probably don't want to create one of these directly, and should instead use
+    a helper method, like :py:func:`.LBWH`, :py:func:`.LRBT`, :py:func:`.XYWH`, or
+    :py:func:`.Viewport`.
 
     You can also use :py:meth:`.from_kwargs` to create a Rect from keyword arguments.
-
     """
 
     #: The X position of the rectangle's left edge.
@@ -96,37 +99,58 @@ class Rect(NamedTuple):
 
     @property
     def bottom_left(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-left of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        bottom-left of the rectangle.
+        """
         return Vec2(self.left, self.bottom)
 
     @property
     def bottom_right(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-right of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        bottom-right of the rectangle.
+        """
         return Vec2(self.right, self.bottom)
 
     @property
     def top_left(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-left of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        top-left of the rectangle.
+        """
         return Vec2(self.left, self.top)
 
     @property
     def top_right(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-right of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        top-right of the rectangle.
+        """
         return Vec2(self.right, self.top)
 
     @property
     def bottom_center(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the bottom-center of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        bottom-center of the rectangle.
+        """
         return Vec2(self.x, self.bottom)
 
     @property
     def center_right(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the center-right of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        center-right of the rectangle.
+        """
         return Vec2(self.right, self.y)
 
     @property
     def top_center(self) -> Vec2:
-        """Returns a :py:class:`~pyglet.math.Vec2` representing the top-center of the rectangle."""
+        """
+        Returns a :py:class:`~pyglet.math.Vec2` representing the
+        top-center of the rectangle.
+        """
         return Vec2(self.x, self.top)
 
     @property
@@ -163,8 +187,8 @@ class Rect(NamedTuple):
 
     def resize(
         self,
-        width: Optional[AsFloat] = None,
-        height: Optional[AsFloat] = None,
+        width: AsFloat | None = None,
+        height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
@@ -283,8 +307,8 @@ class Rect(NamedTuple):
 
     def min_size(
         self,
-        width: Optional[AsFloat] = None,
-        height: Optional[AsFloat] = None,
+        width: AsFloat | None = None,
+        height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
@@ -297,8 +321,8 @@ class Rect(NamedTuple):
 
     def max_size(
         self,
-        width: Optional[AsFloat] = None,
-        height: Optional[AsFloat] = None,
+        width: AsFloat | None = None,
+        height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
@@ -311,8 +335,8 @@ class Rect(NamedTuple):
 
     def clamp_height(
         self,
-        min_height: Optional[AsFloat] = None,
-        max_height: Optional[AsFloat] = None,
+        min_height: AsFloat | None = None,
+        max_height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """
@@ -324,8 +348,8 @@ class Rect(NamedTuple):
 
     def clamp_width(
         self,
-        min_width: Optional[AsFloat] = None,
-        max_width: Optional[AsFloat] = None,
+        min_width: AsFloat | None = None,
+        max_width: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """Return a :py:class:`.Rect` constrained to the passed dimension.
@@ -337,21 +361,25 @@ class Rect(NamedTuple):
         * It will be positioned at the current position using the passed
           ``anchor``
 
-        :param min_width: An optional minimum width.
-        :param max_width: An optional maximum width.
-        :param anchor: A :py:class:`~pyglet.math.Vec2` of the fractional
-            percentage of the rectangle's total :py:attr:`.size` along
-            both axes. It defaults to the center.
+        Args:
+            min_width:
+                An optional minimum width.
+            max_width:
+                An optional maximum width.
+            anchor:
+                A :py:class:`~pyglet.math.Vec2` of the fractional
+                percentage of the rectangle's total :py:attr:`.size` along
+                both axes. It defaults to the center.
         """
         width = min(max_width or float("inf"), max(min_width or 0.0, self.width))
         return self.resize(width, self.height, anchor)
 
     def clamp_size(
         self,
-        min_width: Optional[AsFloat] = None,
-        max_width: Optional[AsFloat] = None,
-        min_height: Optional[AsFloat] = None,
-        max_height: Optional[AsFloat] = None,
+        min_width: AsFloat | None = None,
+        max_width: AsFloat | None = None,
+        min_height: AsFloat | None = None,
+        max_height: AsFloat | None = None,
         anchor: Vec2 = AnchorPoint.CENTER,
     ) -> Rect:
         """Get a new clamped-size rectangle at the same position and anchored at ``anchor_point``.
@@ -374,7 +402,8 @@ class Rect(NamedTuple):
     def __or__(self, other: Rect) -> Rect:
         """Shorthand for :py:meth:`rect.union(other) <union>`.
 
-        :param other: Another :py:class:`Rect` instance.
+        Args:
+            other: Another :py:class:`Rect` instance.
         """
         return self.union(other)
 
@@ -384,7 +413,8 @@ class Rect(NamedTuple):
         If the two :py:class:`Rect` instances do not intersect, this
         method will return ``None`` instead.
 
-        :param other: Another :py:class:`Rect` instance.
+        Args:
+            other: Another :py:class:`Rect` instance.
         """
         intersecting = self.overlaps(other)
         if not intersecting:
@@ -398,14 +428,16 @@ class Rect(NamedTuple):
     def __and__(self, other: Rect) -> Rect | None:
         """Shorthand for :py:meth:`rect.intersection(other) <interesection>`.
 
-        :param other: Another :py:class:`Rect` instance.
+        Args:
+            other: Another :py:class:`Rect` instance.
         """
         return self.intersection(other)
 
     def overlaps(self, other: Rect) -> bool:
         """Returns ``True`` if `other` overlaps with ``self``.
 
-        :param other: Another :py:class:`Rect` instance.
+        Args:
+            other: Another :py:class:`Rect` instance.
         """
 
         return (other.width + self.width) / 2.0 > abs(self.x - other.x) and (
@@ -415,15 +447,17 @@ class Rect(NamedTuple):
     def point_in_rect(self, point: Point2) -> bool:
         """Returns ``True`` if ``point`` is inside this rectangle.
 
-        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        Args:
+            point: A tuple of :py:class:`int` or :py:class:`float` values.
         """
         px, py = point
         return (self.left <= px <= self.right) and (self.bottom <= py <= self.top)
 
-    def point_in_bounce(self, point: Point2) -> bool:
+    def point_in_bounds(self, point: Point2) -> bool:
         """Returns ``True`` if ``point`` is inside this rectangle excluding the boundaries.
 
-        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        Args:
+            point: A tuple of :py:class:`int` or :py:class:`float` values.
         """
         px, py = point
         return (self.left < px < self.right) and (self.bottom < py < self.top)
@@ -431,7 +465,8 @@ class Rect(NamedTuple):
     def __contains__(self, point: Point2) -> bool:
         """Shorthand for :py:meth:`rect.point_in_rect(point) <point_in_rect>`.
 
-        :param point: A tuple of :py:class:`int` or :py:class:`float` values.
+        Args:
+            point: A tuple of :py:class:`int` or :py:class:`float` values.
         """
         return self.point_in_rect(point)
 
@@ -450,7 +485,8 @@ class Rect(NamedTuple):
         The ``point``'s distance from the bounds is computed by through
         :py:meth:`distance_from_bounds`.
 
-        :param point:
+        Args:
+            point: The point to check.
         """
         return abs(self.distance_from_bounds(point)) < tolerance
 
@@ -498,9 +534,8 @@ class Rect(NamedTuple):
            |
            O----- x -----|
 
-        :param point: A point relative to the rectangle's
-            :py:meth:`bottom_left` corner.
-
+        Args:
+            point: A point relative to the rectangle's :py:meth:`bottom_left` corner.
         """
         x, y = point
         return Vec2(
@@ -528,10 +563,11 @@ class Rect(NamedTuple):
         #. Returned values from :py:meth:`position_to_uv`
         #. Rescaled input data from controllers
 
-        :param uv: A pair of ratio values describing how far a
-            a point falls from a rectangle's :py:attr:`bottom_left`
-            toward its :py:attr:`top_right`.
-
+        Args:
+            uv:
+                A pair of ratio values describing how far a
+                a point falls from a rectangle's :py:attr:`bottom_left`
+                toward its :py:attr:`top_right`.
         """
         x, y = uv
         return Vec2(self.left + x * self.width, self.bottom + y * self.height)
@@ -741,7 +777,10 @@ def XYRR(x: AsFloat, y: AsFloat, half_width: AsFloat, half_height: AsFloat) -> R
 
 
 def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
-    """Creates a new :py:class:`.Rect` from left, bottom, width, and height parameters, restricted to integers."""
+    """
+    Creates a new :py:class:`.Rect` from left, bottom, width, and height parameters,
+    restricted to integers.
+    """
     right = left + width
     top = bottom + height
     x = left + int(width / 2)

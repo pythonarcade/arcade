@@ -244,9 +244,13 @@ class RLDungeonGenerator:
                     continue
                 adj = self.are_rooms_adjacent(room, other)
                 if len(adj[0]) > 0:
-                    room_dict[key].append((other, adj[0], 'rows', self.distance_between_rooms(room, other)))
+                    room_dict[key].append(
+                        (other, adj[0], 'rows', self.distance_between_rooms(room, other))
+                    )
                 elif len(adj[1]) > 0:
-                    room_dict[key].append((other, adj[1], 'cols', self.distance_between_rooms(room, other)))
+                    room_dict[key].append(
+                        (other, adj[1], 'cols', self.distance_between_rooms(room, other))
+                    )
 
             groups.append([room])
 
@@ -416,7 +420,11 @@ class MyGame(arcade.Window):
         """
 
         position = (self.player_sprite.center_x, self.player_sprite.center_y)
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, camera_speed)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position,
+            position,
+            camera_speed,
+        )
 
     def on_update(self, delta_time):
         """ Movement and game logic """

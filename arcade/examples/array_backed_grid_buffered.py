@@ -93,7 +93,9 @@ class MyGame(arcade.Window):
                 x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
                 y = (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
-                current_rect = arcade.shape_list.create_rectangle_filled(x, y, WIDTH, HEIGHT, color)
+                current_rect = arcade.shape_list.create_rectangle_filled(
+                    x, y, WIDTH, HEIGHT, color,
+                )
                 self.shape_list.append(current_rect)
 
     def on_draw(self):

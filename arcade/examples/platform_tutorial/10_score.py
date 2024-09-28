@@ -68,7 +68,9 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
-        self.player_texture = arcade.load_texture(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
+        self.player_texture = arcade.load_texture(
+            ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        )
 
         self.player_sprite = arcade.Sprite(self.player_texture)
         self.player_sprite.center_x = 64

@@ -16,7 +16,8 @@ def generate_view_matrix(camera_data: CameraData) -> Mat4:
     """
     Using the ViewData it generates a view matrix from the pyglet Mat4 look at function
     """
-    # Even if forward and up are normalised floating point error means every vector must be normalised.
+    # Even if forward and up are normalized floating point error means every vector
+    # must be normalized.
     fo = Vec3(*camera_data.forward).normalize()  # Forward Vector
     up = Vec3(
         *camera_data.up
@@ -26,12 +27,12 @@ def generate_view_matrix(camera_data: CameraData) -> Mat4:
     po = Vec3(*camera_data.position)
 
     # fmt: off
-    return Mat4((
+    return Mat4(
         ri.x, up.x, -fo.x, 0.0,
         ri.y, up.y, -fo.y, 0.0,
         ri.z, up.z, -fo.z, 0.0,
         -ri.dot(po), -up.dot(po), fo.dot(po), 1.0
-    ))
+    )
     # fmt: on
 
 
@@ -39,11 +40,11 @@ def generate_orthographic_matrix(
     perspective_data: OrthographicProjectionData, zoom: float = 1.0
 ) -> Mat4:
     """
-    Using the OrthographicProjectionData a projection matrix is generated where the size of an
-    object is not affected by depth.
+    Using the OrthographicProjectionData a projection matrix is generated where
+    the size of an object is not affected by depth.
 
-    Generally keep the scale value to integers or negative powers of integers (2^-1, 3^-1, 2^-2, etc.) to keep
-    the pixels uniform in size. Avoid a zoom of 0.0.
+    Generally keep the scale value to integers or negative powers of integers
+    (``2^-1, 3^-1, 2^-2``, etc.) to keep the pixels uniform in size. Avoid a zoom of 0.0.
     """
 
     # Scale the projection by the zoom value. Both the width and the height
@@ -68,12 +69,12 @@ def generate_orthographic_matrix(
     tz = -(z_far + z_near) / depth
 
     # fmt: off
-    return Mat4((
+    return Mat4(
         sx, 0.0, 0.0, 0.0,
         0.0,  sy, 0.0, 0.0,
         0.0, 0.0,  sz, 0.0,
         tx,  ty,  tz, 1.0
-    ))
+    )
     # fmt: on
 
 
@@ -81,11 +82,11 @@ def generate_perspective_matrix(
     perspective_data: PerspectiveProjectionData, zoom: float = 1.0
 ) -> Mat4:
     """
-    Using the OrthographicProjectionData a projection matrix is generated where the size of the
-    objects is not affected by depth.
+    Using the OrthographicProjectionData a projection matrix is generated where
+    the size of the objects is not affected by depth.
 
-    Generally keep the scale value to integers or negative powers of integers (2^-1, 3^-1, 2^-2, etc.) to keep
-    the pixels uniform in size. Avoid a zoom of 0.0.
+    Generally keep the scale value to integers or negative powers of integers
+    (``2^-1, 3^-1, 2^-2``, etc.) to keep the pixels uniform in size. Avoid a zoom of 0.0.
     """
     fov = perspective_data.fov / zoom
     z_near, z_far, aspect = (
@@ -109,12 +110,12 @@ def generate_perspective_matrix(
     h = 2 * z_near / height
 
     # fmt: off
-    return Mat4((
+    return Mat4(
         w, 0, 0, 0,
         0, h, 0, 0,
         0, 0, q, -1,
         0, 0, qn, 0
-    ))
+    )
     # fmt: on
 
 

@@ -4,9 +4,8 @@ Physics engines for top-down or platformers.
 
 from __future__ import annotations
 
-# pylint: disable=too-many-arguments, too-many-locals, too-few-public-methods
 import math
-from typing import Iterable, Optional, Union
+from typing import Iterable
 
 from arcade import (
     BasicSprite,
@@ -38,7 +37,6 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
         walls:
             A list of walls to guess our way out of.
     """
-
     # Original x & y of the moving object
     o_x, o_y = colliding.position
 
@@ -107,7 +105,6 @@ def _move_sprite(
         A list of other individual sprites the ``moving_sprite``
         collided with.
     """
-
     # See if we are starting this turn with a sprite already colliding with us.
     if len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
         _wiggle_until_free(moving_sprite, can_collide)
@@ -265,7 +262,10 @@ def _move_sprite(
         moved_x = original_x + cur_x_change * direction
         moved_y = almost_original_y + cur_y_change
         moving_sprite.position = moved_x, moved_y
-        # print(f"({moving_sprite.center_x}, {moving_sprite.center_y}) {cur_x_change * direction}, {cur_y_change}")
+        # print(
+        #     f"({moving_sprite.center_x}, {moving_sprite.center_y}) "
+        #     f"{cur_x_change * direction}, {cur_y_change}"
+        # )
 
     # Add in rotating hit list
     for sprite in rotating_hit_list:
@@ -278,9 +278,8 @@ def _move_sprite(
     return complete_hit_list
 
 
-def _add_to_list(
-    dest: list[SpriteList], source: Optional[SpriteList | Iterable[SpriteList]]
-) -> None:
+def _add_to_list(dest: list[SpriteList], source: SpriteList | Iterable[SpriteList] | None) -> None:
+    """Helper function to add a SpriteList or list of SpriteLists to a list."""
     if not source:
         return
     elif isinstance(source, SpriteList):
@@ -316,7 +315,7 @@ class PhysicsEngineSimple:
     def __init__(
         self,
         player_sprite: Sprite,
-        walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+        walls: SpriteList | Iterable[SpriteList] | None = None,
     ) -> None:
         self.player_sprite: Sprite = player_sprite
         """The player-controlled :py:class:`.Sprite`."""
@@ -340,7 +339,7 @@ class PhysicsEngineSimple:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
+    def walls(self, walls: SpriteList | Iterable[SpriteList] | None = None) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:
@@ -435,10 +434,10 @@ class PhysicsEnginePlatformer:
     def __init__(
         self,
         player_sprite: Sprite,
-        platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+        platforms: SpriteList | Iterable[SpriteList] | None = None,
         gravity_constant: float = 0.5,
-        ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
-        walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None,
+        ladders: SpriteList | Iterable[SpriteList] | None = None,
+        walls: SpriteList | Iterable[SpriteList] | None = None,
     ) -> None:
         if not isinstance(player_sprite, Sprite):
             raise TypeError("player_sprite must be a Sprite, not a basic_sprite!")
@@ -518,9 +517,10 @@ class PhysicsEnginePlatformer:
         * :py:meth:`disable_multi_jump`
         """
 
-    # The property object for ladders. This allows us setter/getter/deleter capabilities in safe manner
+    # The property object for ladders. This allows us setter/getter/deleter
+    # capabilities in safe manner
     # TODO: figure out what do do with 15_ladders_moving_platforms.py
-    # It's no longer used by any exampple or tutorial file
+    # It's no longer used by any example or tutorial file
     @property
     def ladders(self) -> list[SpriteList]:
         """Ladders turn off gravity while touched by the player.
@@ -538,7 +538,7 @@ class PhysicsEnginePlatformer:
         return self._ladders
 
     @ladders.setter
-    def ladders(self, ladders: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
+    def ladders(self, ladders: SpriteList | Iterable[SpriteList] | None = None) -> None:
         if ladders:
             _add_to_list(self._ladders, ladders)
         else:
@@ -580,9 +580,7 @@ class PhysicsEnginePlatformer:
         return self._platforms
 
     @platforms.setter
-    def platforms(
-        self, platforms: Optional[Union[SpriteList, Iterable[SpriteList]]] = None
-    ) -> None:
+    def platforms(self, platforms: SpriteList | Iterable[SpriteList] | None = None) -> None:
         if platforms:
             _add_to_list(self._platforms, platforms)
         else:
@@ -618,7 +616,7 @@ class PhysicsEnginePlatformer:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: Optional[Union[SpriteList, Iterable[SpriteList]]] = None) -> None:
+    def walls(self, walls: SpriteList | Iterable[SpriteList] | None = None) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:
@@ -649,7 +647,7 @@ class PhysicsEnginePlatformer:
         .. warning:: This runs collisions **every** time it is called!
 
         If you are thinking of calling this repeatedly, first double-check
-        whether you can store the returne value to a local variable instead.
+        whether you can store the returned value to a local variable instead.
 
         The player can jump when at least one of the following are true:
         after updating state:

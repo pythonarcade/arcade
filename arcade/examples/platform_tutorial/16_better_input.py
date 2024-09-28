@@ -86,12 +86,18 @@ class MyGame(arcade.Window):
         }
 
         # Load our TileMap
-        self.tile_map = arcade.load_tilemap(":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
+        self.tile_map = arcade.load_tilemap(
+            ":resources:tiled_maps/map_with_ladders.json",
+            scaling=TILE_SCALING,
+            layer_options=layer_options,
+        )
 
         # Create our Scene Based on the TileMap
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.player_texture = arcade.load_texture(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
+        self.player_texture = arcade.load_texture(
+            ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        )
 
         self.player_sprite = arcade.Sprite(self.player_texture)
         self.player_sprite.center_x = 128
@@ -130,7 +136,8 @@ class MyGame(arcade.Window):
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
         # Calculate the right edge of the map in pixels
-        self.end_of_map = (self.tile_map.width * self.tile_map.tile_width) * self.tile_map.scaling
+        self.end_of_map = (self.tile_map.width * self.tile_map.tile_width)
+        self.end_of_map *= self.tile_map.scaling
 
     def on_draw(self):
         """Render the screen."""
@@ -173,12 +180,12 @@ class MyGame(arcade.Window):
         self.camera.position = self.player_sprite.position
 
     def process_keychange(self):
-
-        # First handle the case where we have moved up. This needs to be handled differently to move the player
-        # upwards if they are on a ladder, or perform a jump if they are not on a ladder. This code might look
-        # different if we had a separate button for jumping, we would only need to handle moving upwards if
-        # we were on a ladder for the up key then. Here we also handle the case where we have moved down while on
-        # a ladder.
+        # First handle the case where we have moved up. This needs to be handled
+        # differently to move the player upwards if they are on a ladder, or
+        # perform a jump if they are not on a ladder. This code might look
+        # different if we had a separate button for jumping, we would only need
+        # to handle moving upwards if we were on a ladder for the up key then.
+        # Here we also handle the case where we have moved down while on a ladder.
         if self.up_pressed and not self.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
@@ -189,18 +196,22 @@ class MyGame(arcade.Window):
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
 
-        # Now we need a special handling of our vertical movement while we are on a ladder, but have no input specified.
-        # When we jump, the physics engine takes care of resetting our vertical movement to zero once we've hit the ground.
-        # However for ladders, we need to ensure that we set the vertical movement back to zero if the user does not give
-        # input, otherwise once a user starts climbing a ladder, they will move upwards automatically until they reach the
-        # end of the ladder. You can try commenting out this block to see what that effect looks like.
+        # Now we need a special handling of our vertical movement while we are 
+        # on a ladder, but have no input specified. When we jump, the physics
+        # engine takes care of resetting our vertical movement to zero once we've
+        # hit the ground. However for ladders, we need to ensure that we set the
+        # vertical movement back to zero if the user does not give input, otherwise
+        # once a user starts climbing a ladder, they will move upwards automatically
+        # until they reach the end of the ladder. You can try commenting out this
+        # block to see what that effect looks like.
         if self.physics_engine.is_on_ladder():
             if not self.up_pressed and not self.down_pressed:
                 self.player_sprite.change_y = 0
             elif self.up_pressed and self.down_pressed:
                 self.player_sprite.change_y = 0
 
-        # Now we just handle our horizontal movement, very similar to how we did before, but now just combined in our new function.
+        # Now we just handle our horizontal movement, very similar to how we
+        # did before, but now just combined in our new function.
         if self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
         elif self.left_pressed and not self.right_pressed:

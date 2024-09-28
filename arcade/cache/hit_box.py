@@ -15,7 +15,7 @@ import gzip
 import json
 from collections import OrderedDict
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from arcade.resources import resolve
 from arcade.types import Point2List
@@ -46,7 +46,7 @@ class HitBoxCache:
     def __iter__(self):
         return iter(self._entries)
 
-    def get(self, name_or_texture: Union[str, "Texture"]) -> Optional[Point2List]:
+    def get(self, name_or_texture: str | Texture) -> Point2List | None:
         """
         Get the hit box points for a texture with a given hash
         and hit box algorithm.
@@ -58,8 +58,11 @@ class HitBoxCache:
             # Get a cache entry by string
             points = cache.get("hash|(0, 1, 2, 3)|simple|")
 
-        :param keys: List of keys to use for the cache entry
-        :param hit_box_algorithm: The hit box algorithm used
+        Args:
+            keys:
+                The texture or cache name to get the hit box for
+            hit_box_algorithm:
+                The hit box algorithm used
         """
         from arcade import Texture
 
@@ -70,7 +73,7 @@ class HitBoxCache:
         else:
             raise TypeError(f"Expected str or Texture: {name_or_texture}")
 
-    def put(self, name_or_texture: Union[str, "Texture"], points: Point2List) -> None:
+    def put(self, name_or_texture: str | Texture, points: Point2List) -> None:
         """
         Store hit box points for a texture.
 
@@ -81,8 +84,11 @@ class HitBoxCache:
             # Cache with custom string
             cache.put("my_custom_points", points)
 
-        :param keys: List of keys to use for the cache entry
-        :param points: The hit box points
+        Args:
+            keys:
+                The texture or cache name to store the hit box for
+            points:
+                The hit box points
         """
         from arcade import Texture
 
@@ -97,7 +103,7 @@ class HitBoxCache:
         else:
             raise TypeError(f"Expected str or Texture: {name_or_texture}")
 
-    def load(self, path: Union[str, Path]) -> None:
+    def load(self, path: str | Path) -> None:
         """
         Load a json file containing hit boxes.
 
@@ -105,6 +111,9 @@ class HitBoxCache:
         entries and can therefore be called multiple times to populate it.
 
         if the file extension is ".gz" the file will be compressed.
+
+        Args:
+            path: The path to the json file to load
         """
         path = resolve(path)
         if path.suffix == ".gz":
@@ -126,8 +135,11 @@ class HitBoxCache:
 
         if the file extension is ".gz" the file will be compressed.
 
-        :param path: The path to save the cache to
-        :param indent: The indentation level for the json file
+        Args:
+            path:
+                The path to save the cache to
+            indent:
+                The indentation level for the json file
         """
         if indent == 0:
             data_str = json.dumps(self._entries)
@@ -143,9 +155,7 @@ class HitBoxCache:
             fd.write(data)
 
     def flush(self) -> None:
-        """
-        Clear the cache.
-        """
+        """Clear the cache."""
         self._entries.clear()
 
     def __repr__(self) -> str:

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional, Union
-
 import arcade.gl as gl
 from arcade.future.background import BackgroundTexture
 from arcade.window_commands import get_window
@@ -24,9 +22,9 @@ class Background:
         texture: BackgroundTexture,
         pos: tuple[float, float],
         size: tuple[int, int],
-        color: Union[tuple[float, float, float], tuple[int, int, int]],
-        shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None,
+        color: tuple[float, float, float] | tuple[int, int, int],
+        shader: gl.Program | None = None,
+        geometry: gl.Geometry | None = None,
     ):
         self._ctx = get_window().ctx
         if shader is None:
@@ -47,7 +45,8 @@ class Background:
             self.shader["pos"] = pos
         except KeyError:
             print(
-                "Attempting to set uniform 'pos' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'pos' when the shader does not "
+                "have a uniform with that name."
             )
 
         self._size = size
@@ -55,7 +54,8 @@ class Background:
             self.shader["size"] = size
         except KeyError:
             print(
-                "Attempting to set uniform 'size' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'size' when the shader does not "
+                "have a uniform with that name."
             )
 
         self._blend = 1.0
@@ -63,7 +63,8 @@ class Background:
             self.shader["blend"] = 1.0
         except KeyError:
             print(
-                "Attempting to set uniform 'blend' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'blend' when the shader does not "
+                "have a uniform with that name."
             )
 
         self._color = (
@@ -73,41 +74,42 @@ class Background:
             self.shader["color"] = self._color
         except KeyError:
             print(
-                "Attempting to set uniform 'color' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'color' when the shader does not "
+                "have a uniform with that name."
             )
 
     @staticmethod
     def from_file(
         tex_src: str,
         pos: tuple[float, float] = (0.0, 0.0),
-        size: Optional[tuple[int, int]] = None,
+        size: tuple[int, int] | None = None,
         offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Optional[tuple[int, int, int]] = None,
-        color_norm: Optional[tuple[float, float, float]] = None,
-        shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None,
+        color: tuple[int, int, int] | None = None,
+        color_norm: tuple[float, float, float] | None = None,
+        shader: gl.Program | None = None,
+        geometry: gl.Geometry | None = None,
     ):
         """
-        This will generate a Background from an input image source. The generated texture is not stored in the
-        texture cache or any texture atlas.
+        This will generate a Background from an input image source.
+        The generated texture is not stored in the texture cache or any texture atlas.
 
-        :param tex_src: The image source.
-        :param pos: The position of the Background (Bottom Left Corner by default).
-        :param size: The width and height of the Background.
-        :param offset: The BackgroundTexture offset.
-        :param scale: The BackgroundTexture Scale.
-        :param angle: The BackgroundTexture angle.
-        :param filters: The OpenGl Texture filters (gl.Nearest by default).
-        :param color: This is a color defined from 0-255. Prioritises color_norm
-        :param color_norm: This is a color defined from 0.0-1.0. Prioritises color_norm
-                           assumed to be in the range 0.0-1.0.
-        :param shader: The shader used for rendering.
-        :param geometry: The geometry used for rendering (a rectangle equal to the size by default).
-        :return: The generated Background.
+        Args:
+            tex_src: The image source.
+            pos: The position of the Background (Bottom Left Corner by default).
+            size: The width and height of the Background.
+            offset: The BackgroundTexture offset.
+            scale: The BackgroundTexture Scale.
+            angle: The BackgroundTexture angle.
+            filters: The OpenGl Texture filters (gl.Nearest by default).
+            color: This is a color defined from 0-255. Priorities color_norm
+            color_norm: This is a color defined from 0.0-1.0. Priorities color_norm
+                            assumed to be in the range 0.0-1.0.
+            shader: The shader used for rendering.
+            geometry: The geometry used for rendering (a rectangle equal to the size by default).
         """
         background_texture = BackgroundTexture.from_file(tex_src, offset, scale, angle, filters)
         if size is None:
@@ -141,7 +143,8 @@ class Background:
             self.shader["size"] = value
         except KeyError:
             print(
-                "Attempting to set uniform 'size' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'size' when the shader does not "
+                "have a uniform with that name."
             )
 
     @property
@@ -155,7 +158,8 @@ class Background:
             self.shader["blend"] = value
         except KeyError:
             print(
-                "Attempting to set uniform 'blend' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'blend' when the shader does not "
+                "have a uniform with that name."
             )
 
     @property
@@ -179,7 +183,8 @@ class Background:
             self.shader["color"] = self._color
         except KeyError:
             print(
-                "Attempting to set uniform 'color' when shader does not have uniform with that name."
+                "Attempting to set uniform 'color' when shader does not "
+                "have uniform with that name."
             )
 
     @property
@@ -193,7 +198,8 @@ class Background:
             self.shader["color"] = self._color
         except KeyError:
             print(
-                "Attempting to set uniform 'color' when shader does not have uniform with that name."
+                "Attempting to set uniform 'color' when shader does not "
+                "have uniform with that name."
             )
 
     def draw(self, shift: tuple[float, float] = (0.0, 0.0)):
@@ -201,14 +207,16 @@ class Background:
             self.shader["pixelTransform"] = self.texture.pixel_transform
         except KeyError:
             print(
-                "Attempting to set uniform 'pixelTransform' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'pixelTransform' when the shader does "
+                "not have a uniform with that name."
             )
 
         try:
             self.shader["pos"] = self.pos[0] + shift[0], self.pos[1] + shift[1]
         except KeyError:
             print(
-                "Attempting to set uniform 'pos' when the shader does not have a uniform with that name."
+                "Attempting to set uniform 'pos' when the shader does not have a "
+                "uniform with that name."
             )
 
         self.texture.use(0)

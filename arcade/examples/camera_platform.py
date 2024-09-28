@@ -221,8 +221,10 @@ class MyGame(arcade.Window):
         """
         Manage Scrolling
 
-        :param panning_fraction: Number from 0 to 1. Higher the number, faster we
-                                 pan the camera to the user.
+        Args:
+            panning_fraction:
+                Number from 0 to 1. Higher the number, faster we
+                pan the camera to the user.
         """
 
         # This spot would center on the user
@@ -233,7 +235,11 @@ class MyGame(arcade.Window):
             screen_center_y = self.camera.viewport_height/2
         user_centered = screen_center_x, screen_center_y
 
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, user_centered, panning_fraction)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position,
+            user_centered,
+            panning_fraction,
+        )
 
     def on_update(self, delta_time):
         """Movement and game logic"""

@@ -1,0 +1,160 @@
+/*
+ * This files is dedicated to bigger layout "features" that deviate from the
+ * stock RTD theme layout.
+ *
+ * Eg. centering the whole page, collapsible navigation, etc.
+ */
+
+
+/*
+ * Redesign the top-left logo area.
+ */
+.wy-side-nav-search .icon-home {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+
+    padding: 16px 12px;
+    padding-bottom: 32px;
+
+    color: var(--color-emphasis) !important;
+
+    border-radius: 16px;
+}
+.wy-side-nav-search .icon-home::before {
+    /* Remove RTD "home" icon (small house) before page logo text. */
+    content: none;
+}
+.wy-side-nav-search .icon-home img.logo {
+    margin: 0 !important;
+    padding: 0;
+    max-width: 100px;
+    padding-bottom: 16px;
+}
+.wy-side-nav-search > div.version {
+    font-size: 85%;
+    /* Same monospace as our `pre` blocks */
+    font-family: SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;
+    margin-top: -38px;
+    margin-bottom: 24px;
+}
+
+
+/*
+ * Center the page on desktop screens for better readability.
+ */
+@media screen and (min-width: 768px) {
+    .wy-nav-content {
+        max-width: 900px;
+    }
+
+    /* Page background behind centered area, visible on wide screens. */
+    .wy-body-for-nav {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #cbd0c7;
+
+        /* Subtle box shadow to make the content "pop" when centered. */
+        box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.70);
+        -webkit-box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.70);
+        -moz-box-shadow: 0px 0px 12px 0px rgba(0,0,0,0.70);
+    }
+    html[data-theme="dark"] .wy-body-for-nav {
+        background-color: #262826;
+    }
+
+    /* Required extra rules for navigation & revision flyout to center everything. */
+    .wy-nav-side,
+    .rst-versions {
+        left: inherit;
+    }
+}
+
+
+/*
+ * Togglable sidebar sections functionality.
+ *
+ * Directly adapted from Godot's own custom RDT code:
+ * https://github.com/godotengine/godot-docs/blob/master/_static/css/custom.css
+ *
+ * <sidebar_toggle>
+ */
+.wy-menu-vertical p.caption {
+    cursor: pointer;
+}
+.wy-menu-vertical p.caption.active .caption-text:before {
+    transform: rotate(90deg);
+}
+.wy-menu-vertical p.caption .caption-text:before {
+    content: "❯";
+    display: inline-block;
+    margin-left: -4px;
+    transition: transform 0.2s;
+    width: 16px;
+    height: 32px;
+    transform-origin: 2px 16px;
+}
+.wy-menu-vertical p.caption + ul {
+    display: none;
+}
+.wy-menu-vertical p.caption + ul.active {
+    display: block;
+}
+/* </sidebar_toggle> */
+
+
+/*
+ * Facelift example page with custom card layout
+ */
+#examples figure {
+  display: inline-flex;
+  align-items: center;
+  flex-direction: column;
+
+  background-color: #eee;
+
+  padding: 24px 16px;
+  padding-bottom: 0;
+
+  /* Tuned so that all cards with up to 3 rows of text (95%) will be the same height. */
+  min-height: 230px;
+
+  margin-right: 4px;
+
+  width: 180px !important;
+
+  border: #ddd 1px solid;
+  border-radius: 8px;
+}
+
+#examples figure figcaption {
+    padding: 16px 0;
+}
+#examples figure figcaption .headerlink {
+    display: none;
+}
+#examples figure figcaption * {
+    margin: 0;
+    display: inline-block;
+}
+#examples figure img {
+    /* Notice: the uniformity of these "cards" is based on the images all being same height */
+    height: 100px;
+
+    border: #bbb 1px solid;
+    border-radius: 8px;
+}
+
+html[data-theme="dark"] #examples figure {
+  background-color: #2b2b2b;
+  border-color: #333;
+}
+html[data-theme="dark"] #examples figure img {
+    border: #111 2px solid;
+}
+
+/* Class property list should be inline, not inline blocks to ensure each property is on a separate line */
+html.writer-html4 .rst-content dl:not(.docutils) .property,html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) .property {
+    display: inline;
+}

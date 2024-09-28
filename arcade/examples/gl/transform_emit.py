@@ -129,7 +129,9 @@ class TransformEmit(arcade.Window):
         self.buffer_pos_2 = self.ctx.buffer(reserve=self.num_points * 8)
         self.buffer_vel_2 = self.ctx.buffer(reserve=self.num_points * 8)
 
-        self.buffer_colors = self.ctx.buffer(data=array("f", [random.random() for _ in range(self.num_points * 3)]))
+        self.buffer_colors = self.ctx.buffer(
+            data=array("f", [random.random() for _ in range(self.num_points * 3)])
+        )
 
         # Geometry definition for drawing the two sets of positions
         self.draw_geometry_1 = self.ctx.geometry(

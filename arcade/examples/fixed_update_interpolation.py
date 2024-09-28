@@ -29,17 +29,20 @@ class Game(arcade.Window):
         self.interpolated_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.ORANGE)
         self.fixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.GOLD)
 
-        # by setting the tick speed to 0.1 the standard update perseves time at a tenth speed
+        # by setting the tick speed to 0.1 the standard update
+        # perseves time at a tenth speed
         arcade.clock.GLOBAL_CLOCK.set_tick_speed(0.1)
 
-        # We store the last position of the fixed sprite to find the interpolated sprite's position
+        # We store the last position of the fixed sprite to find
+        # the interpolated sprite's position
         self.last_position = 0.0
 
         self.sprites = arcade.SpriteList()
         self.sprites.extend((self.unfixed_sprite, self.fixed_sprite, self.interpolated_sprite))
 
     def setup(self):
-        self.unfixed_sprite.change_y = self.fixed_sprite.change_y = self.interpolated_sprite.change_y = 0.0
+        self.unfixed_sprite.change_y = self.interpolated_sprite.change_y = 0.0
+        self.fixed_sprite.change_y = self.interpolated_sprite.change_y = 0.0
 
         self.unfixed_sprite.position = SCREEN_WIDTH / 4.0, SCREEN_HEIGHT / 2.0
         self.interpolated_sprite.position = 2.0 * SCREEN_WIDTH / 4.0, SCREEN_HEIGHT / 2.0
@@ -55,8 +58,12 @@ class Game(arcade.Window):
         # Accelerate the sprite downward due to gravity
         self.fixed_sprite.change_y -= GRAVITY * delta_time
 
-        # If the sprite is colliding with the ground then make it 'bounce' by flipping it's velocity
-        if self.fixed_sprite.center_y <= CIRCLE_RADIUS and self.fixed_sprite.change_y <= 0.0:
+        # If the sprite is colliding with the ground then make it 'bounce' by
+        # flipping it's velocity
+        if (
+            self.fixed_sprite.center_y <= CIRCLE_RADIUS
+            and self.fixed_sprite.change_y <= 0.0
+        ):
             self.fixed_sprite.change_y *= -1
 
         # Move the sprite based on its velocity
@@ -67,15 +74,21 @@ class Game(arcade.Window):
         # Accelerate the sprite downward due to gravity
         self.unfixed_sprite.change_y -= GRAVITY * delta_time
 
-        # If the sprite is colliding with the ground then make it 'bounce' by flipping it's velocity
-        if self.unfixed_sprite.center_y <= CIRCLE_RADIUS and self.unfixed_sprite.change_y <= 0.0:
+        # If the sprite is colliding with the ground then make it 'bounce'
+        # by flipping it's velocity
+        if (
+            self.unfixed_sprite.center_y <= CIRCLE_RADIUS
+            and self.unfixed_sprite.change_y <= 0.0
+        ):
             self.unfixed_sprite.change_y *= -1
 
         # Move the sprite based on its velocity
         self.unfixed_sprite.center_y += self.unfixed_sprite.change_y * delta_time
 
         self.interpolated_sprite.center_y = arcade.math.lerp(
-            self.last_position, self.fixed_sprite.center_y, arcade.clock.GLOBAL_FIXED_CLOCK.fraction
+            self.last_position,
+            self.fixed_sprite.center_y,
+            arcade.clock.GLOBAL_FIXED_CLOCK.fraction,
         )
 
     def on_draw(self):

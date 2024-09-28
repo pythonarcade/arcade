@@ -21,7 +21,9 @@ SCREEN_TITLE = "ShaderToy Video"
 class ShadertoyVideo(arcade.View):
     """
     Can be used to add effects like rain to the background of the game.
-    Make sure to inherit this view and call super for `__init__`, `on_draw`, `on_update` and `on_resize`.
+
+    Make sure to inherit this view and call super for `__init__`,
+    `on_draw`, `on_update` and `on_resize`.
     """
 
     def __init__(self, path: str):

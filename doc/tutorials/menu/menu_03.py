@@ -3,6 +3,7 @@ Menu.
 
 Shows the usage of almost every gui widget, switching views and making a modal.
 """
+
 import arcade
 import arcade.gui
 
@@ -43,14 +44,14 @@ class MainView(arcade.View):
         self.manager.disable()
 
     def on_show_view(self):
-        """ This is run once when we switch to this view """
+        """This is run once when we switch to this view"""
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         # Enable the UIManager when the view is showm.
         self.manager.enable()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear the screen
         self.clear()
 
@@ -74,14 +75,16 @@ class MenuView(arcade.View):
         exit = arcade.gui.UIFlatButton(text="Exit", width=320)
 
         # Initialise a grid in which widgets can be arranged.
-        self.grid = arcade.gui.UIGridLayout(column_count=2, row_count=3, horizontal_spacing=20, vertical_spacing=20)
+        self.grid = arcade.gui.UIGridLayout(
+            column_count=2, row_count=3, horizontal_spacing=20, vertical_spacing=20
+        )
 
         # Adding the buttons to the layout.
-        self.grid.add(resume, col_num=0, row_num=0)
-        self.grid.add(start_new_game, col_num=1, row_num=0)
-        self.grid.add(volume, col_num=0, row_num=1)
-        self.grid.add(options, col_num=1, row_num=1)
-        self.grid.add(exit, col_num=0, row_num=2, col_span=2)
+        self.grid.add(resume, column=0, row=0)
+        self.grid.add(start_new_game, column=1, row=0)
+        self.grid.add(volume, column=0, row=1)
+        self.grid.add(options, column=1, row=1)
+        self.grid.add(exit, column=0, row=2, column_span=2)
 
         self.anchor = self.manager.add(arcade.gui.UIAnchorLayout())
 
@@ -98,7 +101,7 @@ class MenuView(arcade.View):
         self.manager.disable()
 
     def on_show_view(self):
-        """ This is run once when we switch to this view """
+        """This is run once when we switch to this view"""
 
         # Makes the background darker
         arcade.set_background_color([rgb - 50 for rgb in arcade.color.DARK_BLUE_GRAY])
@@ -107,7 +110,7 @@ class MenuView(arcade.View):
         self.manager.enable()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear the screen
         self.clear()
         self.manager.draw()

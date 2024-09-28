@@ -44,7 +44,7 @@ class Player(arcade.Sprite):
             # Required for the controller events to be called.
             self.controller.push_handlers(self)
 
-    def update(self):
+    def update(self, delta_time: float = 1 / 60):
         """ Move the player """
 
         # If there is a controller, grab the speed.
@@ -79,17 +79,14 @@ class Player(arcade.Sprite):
         elif self.top > SCREEN_HEIGHT - 1:
             self.top = SCREEN_HEIGHT - 1
 
-    # noinspection PyMethodMayBeStatic
     def on_button_press(self, controller, button_name):
         """ Handle button-down event for the controller """
         print(f"Button {button_name} down")
 
-    # noinspection PyMethodMayBeStatic
     def on_button_release(self, controller, button_name):
         """ Handle button-up event for the controller """
         print(f"Button {button_name} up")
 
-    # noinspection PyMethodMayBeStatic
     def on_stick_motion(self, controller, stick_name, x, y):
         """ Handle hat events """
         print(f"Movement on stick {stick_name}: ({x}, {y})")
@@ -161,7 +158,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.all_sprites_list.update()
+        self.all_sprites_list.update(delta_time)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """

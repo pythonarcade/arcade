@@ -1,5 +1,11 @@
+from typing import TypeVar
+
 from arcade import View
-from arcade.gui import UIManager
+from arcade.gui.ui_manager import UIManager
+from arcade.gui.widgets import UIWidget
+from arcade.types import RGBOrA255
+
+W = TypeVar("W", bound=UIWidget)
 
 
 class UIView(View):
@@ -11,6 +17,9 @@ class UIView(View):
     This class provides two draw callbacks: on_draw_before_ui and on_draw_after_ui.
     Use these to draw custom elements before or after the UI elements are drawn.
 
+    The screen is cleared before on_draw_before_ui is called
+    with the background color of the window.
+
     If you override ``on_show_view`` or ``on_show_view``,
     don't forget to call super().on_show_view() or super().on_hide_view().
 
@@ -19,6 +28,11 @@ class UIView(View):
     def __init__(self):
         super().__init__()
         self.ui = UIManager()
+        self.background_color: RGBOrA255 | None = None
+
+    def add_widget(self, widget: W) -> W:
+        """Add a widget to the UIManager of this view."""
+        return self.ui.add(widget)
 
     def on_show_view(self):
         """If subclassing UIView, don't forget to call super().on_show_view()."""
@@ -29,8 +43,10 @@ class UIView(View):
         self.ui.disable()
 
     def on_draw(self):
-        """To subclass UIView and add custom drawing, override on_draw_before_ui and on_draw_after_ui."""
-        self.clear()
+        """To subclass UIView and add custom drawing, override on_draw_before_ui
+        and on_draw_after_ui.
+        """
+        self.clear(color=self.background_color)
         self.on_draw_before_ui()
         self.ui.draw()
         self.on_draw_after_ui()

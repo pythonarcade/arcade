@@ -6,10 +6,11 @@ from pyglet.math import Vec2
 
 import arcade
 from arcade.color import BLACK, WHITE
+from arcade.exceptions import ReplacementWarning, warning
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
 from arcade.types import LRBT, RGBA255, AsFloat, Color, Point, Point2, PointList, Rect, RGBOrA255
-from arcade.utils import ReplacementWarning, copy_dunders_unimplemented, warning
+from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
     from arcade.sprite_list import SpriteList
@@ -27,10 +28,15 @@ class BasicSprite:
     after creation. For more built-in features, please see
     :py:class:`~arcade.Sprite`.
 
-    :param texture: The texture data to use for this sprite.
-    :param scale: The scaling factor for drawing the texture.
-    :param center_x: Location of the sprite along the X axis in pixels.
-    :param center_y: Location of the sprite along the Y axis in pixels.
+    Args:
+        texture:
+            The texture data to use for this sprite.
+        scale:
+            The scaling factor for drawing the texture.
+        center_x:
+            Location of the sprite along the X axis in pixels.
+        center_y:
+            Location of the sprite along the Y axis in pixels.
     """
 
     __slots__ = (
@@ -67,6 +73,7 @@ class BasicSprite:
         self._visible = bool(visible)
         self._color: Color = WHITE
         self.sprite_lists: list["SpriteList"] = []
+        """The sprite lists this sprite is a member of"""
 
         # Core properties we don't use, but spritelist expects it
         self._angle = 0.0
@@ -77,12 +84,7 @@ class BasicSprite:
 
     @property
     def position(self) -> Point2:
-        """
-        Get or set the center x and y position of the sprite.
-
-        Returns:
-            (center_x, center_y)
-        """
+        """Get or set the center x and y position of the sprite."""
         return self._position
 
     @position.setter
@@ -402,6 +404,7 @@ class BasicSprite:
 
     @property
     def rect(self) -> Rect:
+        """A rectangle with with the sprites left, right, bottom, and top values."""
         return LRBT(self.left, self.right, self.bottom, self.top)
 
     @property
@@ -455,7 +458,6 @@ class BasicSprite:
 
         * The new color's alpha value will be ignored
         * The old alpha value will be preserved
-
         """
         return self._color[:3]
 
@@ -576,30 +578,29 @@ class BasicSprite:
 
     # ---- Update methods ----
 
-    def update(self) -> None:
+    def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         Generic update method. It can be called manually
         or by the SpriteList's update method.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         pass
 
-    def on_update(self, delta_time: float = 1 / 60) -> None:
-        """
-        Update the sprite. Similar to update, but also takes a delta-time.
-        It can be called manually or by the SpriteList's on_update method.
-
-        :param delta_time: Time since last update.
-        """
-        pass
-
-    def update_animation(self, delta_time: float = 1 / 60) -> None:
+    def update_animation(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
         """
         Generic update animation method. Usually involves changing
         the active texture on the sprite.
 
         This can be called manually or by the SpriteList's update_animation method.
 
-        :param delta_time: Time since last update.
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
         """
         pass
 
@@ -647,7 +648,8 @@ class BasicSprite:
                     return
             except ValueError:
                 raise ValueError(
-                    "factor must be a float, int, or tuple-like which unpacks as two float-like values"
+                    "factor must be a float, int, or tuple-like "
+                    "which unpacks as two float-like values"
                 )
             except TypeError:
                 raise TypeError(
@@ -709,11 +711,12 @@ class BasicSprite:
         If ``point`` equals the sprite's :py:attr:`~position`,
         the distance will be zero and the sprite will not move.
 
-        :param point: The reference point for rescaling.
-        :param factors_xy: A 2-length iterable containing x and y
-                           multipliers for ``scale`` & distance to
-                           ``point``.
-        :return:
+        Args:
+            point:
+                The reference point for rescaling.
+            factors_xy:
+                A 2-length iterable containing x and y
+                multipliers for ``scale`` & distance to ``point``.
         """
         self.rescale_relative_to_point(point, factors_xy)  # type: ignore
 
@@ -721,27 +724,25 @@ class BasicSprite:
 
     @property
     def hit_box(self) -> HitBox:
+        """The hit box for this sprite."""
         return self._hit_box
 
     def update_spatial_hash(self) -> None:
-        """
-        Update the sprites location in the spatial hash if present.
-        """
+        """Update the sprites location in the spatial hash if present."""
         for sprite_list in self.sprite_lists:
             if sprite_list.spatial_hash is not None:
                 sprite_list.spatial_hash.move(self)
 
-    def register_sprite_list(self, new_list: "SpriteList") -> None:
+    def register_sprite_list(self, new_list: SpriteList) -> None:
         """
-        Register this sprite as belonging to a list. We will automatically
-        remove ourselves from the list when kill() is called.
+        Register this sprite as belonging to a list.
+
+        We will automatically remove ourselves from the list when kill() is called.
         """
         self.sprite_lists.append(new_list)
 
     def remove_from_sprite_lists(self) -> None:
-        """
-        Remove the sprite from all sprite lists.
-        """
+        """Remove the sprite from all sprite lists."""
         while len(self.sprite_lists) > 0:
             self.sprite_lists[0].remove(self)
 
@@ -753,8 +754,11 @@ class BasicSprite:
         """
         Draw a sprite's hit-box. This is useful for debugging.
 
-        :param color: Color of box
-        :param line_thickness: How thick the box should be
+        Args:
+            color:
+                Color of box
+            line_thickness:
+                How thick the box should be
         """
         points: PointList = self.hit_box.get_adjusted_points()
         # NOTE: This is a COPY operation. We don't want to modify the points.
@@ -773,8 +777,10 @@ class BasicSprite:
         """
         Check if point is within the current sprite.
 
-        :param point: Point to check.
-        :return: True if the point is contained within the sprite's boundary.
+        Args:
+            point: Point to check.
+        Returns:
+            ``True`` if the point is contained within the sprite's boundary.
         """
         from arcade.geometry import is_point_in_polygon
 
@@ -784,8 +790,10 @@ class BasicSprite:
     def collides_with_sprite(self: SpriteType, other: SpriteType) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
 
-        :param other: the other sprite to check against.
-        :return: True or False, whether or not they are overlapping.
+        Args:
+            other: the other sprite to check against.
+        Returns:
+            ``True`` or ``False``, whether or not they are overlapping.
         """
         from arcade import check_for_collision
 
@@ -794,10 +802,11 @@ class BasicSprite:
     def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> list[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
-        :param sprite_list: SpriteList to check against
-        :return: List of all overlapping Sprites from the original SpriteList
+        Args:
+            sprite_list: SpriteList to check against
+        Returns:
+            List of all overlapping Sprites from the original SpriteList
         """
         from arcade import check_for_collision_with_list
 
-        # noinspection PyTypeChecker
         return check_for_collision_with_list(self, sprite_list)

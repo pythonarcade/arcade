@@ -12,7 +12,7 @@ It allows you to do the following:
 
 from __future__ import annotations
 
-from typing import Iterable, Optional, Union
+from typing import Iterable
 from warnings import warn
 
 from arcade import Sprite, SpriteList
@@ -41,7 +41,8 @@ class SceneKeyError(KeyError):
     The main purpose of this class is to help arcade's developers keep
     error messages consistent.
 
-    :param name: the name of the missing :py:class:`~arcade.SpriteList`
+    Args:
+        name: the name of the missing :py:class:`~arcade.SpriteList`
     """
 
     def __init__(self, name: str):
@@ -51,7 +52,8 @@ class SceneKeyError(KeyError):
 
 class Scene:
     """
-    Stores :py:class:`~arcade.SpriteList` instances as named layers, allowing bulk updates & drawing.
+    Stores :py:class:`~arcade.SpriteList` instances as named layers,
+    allowing bulk updates & drawing.
 
     In addition to helping you update or draw multiple sprite lists at
     once, this class also provides the following convenience methods:
@@ -77,7 +79,7 @@ class Scene:
         """
         return len(self._sprite_lists)
 
-    def __delitem__(self, sprite_list: Union[int, str, SpriteList]) -> None:
+    def __delitem__(self, sprite_list: int | str | SpriteList) -> None:
         """
         Remove a sprite list from this scene by its index, name, or instance value.
 
@@ -92,9 +94,10 @@ class Scene:
         * :py:meth:`.remove_sprite_list_by_name`
         * :py:meth:`.remove_sprite_list_by_object`
 
-        :param sprite_list:
-            The index, name, or :py:class:`~arcade.SpriteList` instance to remove from
-            this scene.
+        Args:
+            sprite_list:
+                The index, name, or :py:class:`~arcade.SpriteList` instance to remove from
+                this scene.
         """
         if isinstance(sprite_list, int):
             self.remove_sprite_list_by_index(sprite_list)
@@ -111,8 +114,9 @@ class Scene:
         The SpriteLists will use the layer names and ordering as defined in the
         Tiled file.
 
-        :param tilemap: The :py:class:`~arcade.tilemap.TileMap`
-            object to create the scene from.
+        Args:
+            tilemap: The :py:class:`~arcade.tilemap.TileMap`
+                object to create the scene from.
         """
         scene = cls()
         for name, sprite_list in tilemap.sprite_lists.items():
@@ -129,7 +133,8 @@ class Scene:
         * directly accessing ``scene_instance._name_mapping``, although this will
           get flagged by linters as bad style.
 
-        :param name: The name of the sprite list to retrieve.
+        Args:
+            name: The name of the sprite list to retrieve.
         """
         return self._name_mapping[name]
 
@@ -140,7 +145,8 @@ class Scene:
         This is here for ease of use to make sub-scripting the scene object directly
         to retrieve a SpriteList possible.
 
-        :param key: The name of the sprite list to retrieve
+        Args:
+            key: The name of the sprite list to retrieve
         """
         if key in self._name_mapping:
             return self._name_mapping[key]
@@ -162,8 +168,9 @@ class Scene:
         * :py:meth:`.add_sprite_list`
         * :py:meth:`.add_sprite_list_after`
 
-        :param name: The name of the sprite list to add to or create.
-        :param sprite: The sprite to add.
+        Args:
+            name: The name of the sprite list to add to or create.
+            sprite: The sprite to add.
         """
         if name in self._name_mapping:
             self._name_mapping[name].append(sprite)
@@ -176,7 +183,7 @@ class Scene:
         self,
         name: str,
         use_spatial_hash: bool = False,
-        sprite_list: Optional[SpriteList] = None,
+        sprite_list: SpriteList | None = None,
     ) -> None:
         """
         Add a SpriteList to the scene with the specified name.
@@ -186,17 +193,19 @@ class Scene:
         If no SpriteList is supplied via the ``sprite_list`` parameter then a new one will be
         created, and the ``use_spatial_hash`` parameter will be respected for that creation.
 
-        :param name: The name to give the new layer.
-        :param use_spatial_hash: If creating a new sprite list, whether
-            to enable spatial hashing on it.
-        :param sprite_list: Use a specific sprite list rather than creating a new one.
+        Args:
+            name: The name to give the new layer.
+            use_spatial_hash: If creating a new sprite list, whether
+                to enable spatial hashing on it.
+            sprite_list: Use a specific sprite list rather than creating a new one.
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
             warn(
-                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+                f"A Spritelist with the name: '{name}', is already in the scene, "
+                "will override Spritelist"
             )
         self._name_mapping[name] = sprite_list
         self._sprite_lists.append(sprite_list)
@@ -206,7 +215,7 @@ class Scene:
         name: str,
         before: str,
         use_spatial_hash: bool = False,
-        sprite_list: Optional[SpriteList] = None,
+        sprite_list: SpriteList | None = None,
     ) -> None:
         """
         Add a sprite list to the scene with the specified name before another SpriteList.
@@ -217,20 +226,21 @@ class Scene:
 
         The added sprite list will be drawn under the sprite list named in ``before``.
 
-        :param name: The name to give the new layer.
-        :param before: The name of the layer to place the new
-            one before.
-        :param use_spatial_hash: If creating a new sprite list, selects
-            whether to enable spatial hashing.
-        :param sprite_list: If a sprite list is passed via
-            this argument, it will be used instead of creating a new one.
+        Args:
+            name: The name to give the new layer.
+            before: The name of the layer to place the new one before.
+            use_spatial_hash: If creating a new sprite list, selects
+                whether to enable spatial hashing.
+            sprite_list: If a sprite list is passed via
+                this argument, it will be used instead of creating a new one.
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
             warn(
-                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+                f"A Spritelist with the name: '{name}', "
+                "is already in the scene, will override Spritelist"
             )
         self._name_mapping[name] = sprite_list
         before_list = self._name_mapping[before]
@@ -249,8 +259,9 @@ class Scene:
         or ``before`` contain a name not currently in the scene. This exception can
         be handled as a :py:class:`KeyError`.
 
-        :param name: The name of the SpriteList to move.
-        :param before: The name of the SpriteList to place it before.
+        Args:
+            name: The name of the SpriteList to move.
+            before: The name of the SpriteList to place it before.
         """
         if name not in self._name_mapping:
             raise SceneKeyError(name)
@@ -269,7 +280,7 @@ class Scene:
         name: str,
         after: str,
         use_spatial_hash: bool = False,
-        sprite_list: Optional[SpriteList] = None,
+        sprite_list: SpriteList | None = None,
     ) -> None:
         """
         Add a SpriteList to the scene with the specified name after a specific SpriteList.
@@ -280,19 +291,21 @@ class Scene:
 
         The added sprite list will be drawn above the sprite list named in ``after``.
 
-        :param name: The name to give the layer.
-        :param after: The name of the layer to place the new one after.
-        :param use_spatial_hash: If creating a new sprite list, selects
-            whether to enable spatial hashing.
-        :param sprite_list: If a sprite list is passed via
-            this argument, it will be used instead of creating a new one.
+        Args:
+            name: The name to give the layer.
+            after: The name of the layer to place the new one after.
+            use_spatial_hash: If creating a new sprite list, selects
+                whether to enable spatial hashing.
+            sprite_list: If a sprite list is passed via
+                this argument, it will be used instead of creating a new one.
         """
         if sprite_list is None:
             sprite_list = SpriteList(use_spatial_hash=use_spatial_hash)
         if name in self._name_mapping.keys():
             self.remove_sprite_list_by_name(name)
             warn(
-                f"A Spritelist with the name: '{name}', is already in the scene, will override Spritelist"
+                f"A Spritelist with the name: '{name}', "
+                f"is already in the scene, will override Spritelist"
             )
         self._name_mapping[name] = sprite_list
         after_list = self._name_mapping[after]
@@ -311,8 +324,9 @@ class Scene:
         or ``after`` contain a name not currently in the scene. This exception can
         be handled as a :py:class:`KeyError`.
 
-        :param name: The name of the SpriteList to move.
-        :param after: The name of the SpriteList to place it after.
+        Args:
+            name: The name of the SpriteList to move.
+            after: The name of the SpriteList to place it after.
         """
         if name not in self._name_mapping:
             raise SceneKeyError(name)
@@ -330,7 +344,8 @@ class Scene:
         """
         Remove a layer from the scene by its index in the draw order.
 
-        :param index: The index of the sprite list to remove.
+        Args:
+            index: The index of the sprite list to remove.
         """
         self.remove_sprite_list_by_object(self._sprite_lists[index])
 
@@ -344,7 +359,8 @@ class Scene:
         A :py:class:`KeyError` will be raised if the SpriteList is not
         in the scene.
 
-        :param name: The name of the sprite list to remove.
+        Args:
+            name: The name of the sprite list to remove.
         """
         sprite_list = self._name_mapping[name]
         self._sprite_lists.remove(sprite_list)
@@ -357,14 +373,21 @@ class Scene:
         A :py:class:`ValueError` will be raised if the passed sprite
         list is not in the scene.
 
-        :param sprite_list: The sprite list to remove.
+        Args:
+            sprite_list: The sprite list to remove.
         """
         self._sprite_lists.remove(sprite_list)
         self._name_mapping = {
             key: val for key, val in self._name_mapping.items() if val != sprite_list
         }
 
-    def update(self, names: Optional[Iterable[str]] = None) -> None:
+    def update(
+        self,
+        delta_time: float,
+        names: Iterable[str] | None = None,
+        *args,
+        **kwargs,
+    ) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.update` on the scene's sprite lists.
 
@@ -376,40 +399,35 @@ class Scene:
         lists will be drawn in the order of the passed iterable. If a
         name is not in the scene, a :py:class:`KeyError` will be raised.
 
-        :param names: Which layers & what order to update them in.
+        Args:
+            delta_time: The time step to update by in seconds.
+            names: Which layers & what order to update them in.
+            *args: Additional positional arguments propagated down to sprites
+            **kwargs: Additional keyword arguments propagated down to sprites
         """
-        if names:
+        # Due to api changes in 3.0 we sanity check delta_time
+        if not isinstance(delta_time, (int, float)):
+            raise TypeError(
+                f"Expected a number for delta_time, but got {type(delta_time)} instead."
+            )
+
+        if names is not None:
+            # Due to api changes in 3.0 we sanity names
+            if not isinstance(names, Iterable):
+                raise TypeError(
+                    f"Expected an iterable of layer names, but got {type(names)} instead."
+                )
+
             for name in names:
-                self._name_mapping[name].update()
+                self._name_mapping[name].update(delta_time, *args, **kwargs)
             return
 
         for sprite_list in self._sprite_lists:
-            sprite_list.update()
+            sprite_list.update(delta_time, *args, **kwargs)
 
-    def on_update(self, delta_time: float = 1 / 60, names: Optional[Iterable[str]] = None) -> None:
-        """
-        Call :py:meth:`~arcade.SpriteList.on_update` on the scene's sprite lists.
-
-        By default, this method calls :py:meth:`~arcade.SpriteList.on_update`
-        on the scene's sprite lists in the default draw order.
-
-        You can limit and reorder the updates with the ``names``
-        argument by passing a list of names in the scene. The sprite
-        lists will be drawn in the order of the passed iterable. If a
-        name is not in the scene, a :py:class:`KeyError` will be raised.
-
-        :param delta_time: The time step to update by in seconds.
-        :param names: Which layers & what order to update them in.
-        """
-        if names:
-            for name in names:
-                self._name_mapping[name].on_update(delta_time)
-            return
-
-        for sprite_list in self._sprite_lists:
-            sprite_list.on_update(delta_time)
-
-    def update_animation(self, delta_time: float, names: Optional[Iterable[str]] = None) -> None:
+    def update_animation(
+        self, delta_time: float, names: Iterable[str] | None = None, *args, **kwargs
+    ) -> None:
         """
         Call :py:meth:`~arcade.SpriteList.update_animation` on the scene's sprite lists.
 
@@ -421,23 +439,26 @@ class Scene:
         lists will be drawn in the order of the passed iterable. If a
         name is not in the scene, a :py:class:`KeyError` will be raised.
 
-        :param delta_time: The time step to update by in seconds.
-        :param names: Which layers & what order to update them in.
+        Args:
+            delta_time: The time step to update by in seconds.
+            names: Which layers & what order to update them in.
+            *args: Additional positional arguments propagated down to sprites
+            **kwargs: Additional keyword arguments propagated down to sprites
         """
         if names:
             for name in names:
-                self._name_mapping[name].update_animation(delta_time)
+                self._name_mapping[name].update_animation(delta_time, *args, **kwargs)
             return
 
         for sprite_list in self._sprite_lists:
-            sprite_list.update_animation(delta_time)
+            sprite_list.update_animation(delta_time, *args, **kwargs)
 
     def draw(
         self,
-        names: Optional[Iterable[str]] = None,
-        filter: Optional[OpenGlFilter] = None,
+        names: Iterable[str] | None = None,
+        filter: OpenGlFilter | None = None,
         pixelated: bool = False,
-        blend_function: Optional[BlendFunction] = None,
+        blend_function: BlendFunction | None = None,
         **kwargs,
     ) -> None:
         """
@@ -456,17 +477,16 @@ class Scene:
         ``**kwargs`` option is for advanced users who have
         subclassed :py:class:`~arcade.SpriteList`.
 
-        :param names: Which layers to draw & what order to draw them in.
-        :param filter: Optional parameter to set OpenGL filter, such as
-           ``gl.GL_NEAREST`` to avoid smoothing.
-        :param pixelated: ``True`` for pixel art and ``False`` for
-            smooth scaling.
-        :param blend_function:
-            Use the specified OpenGL blend function while drawing the
-            sprite list, such as ``arcade.Window.ctx.BLEND_ADDITIVE``
-            or ``arcade.Window.ctx.BLEND_DEFAULT``.
+        Args:
+            names: Which layers to draw & what order to draw them in.
+            filter: Optional parameter to set OpenGL filter, such as
+                ``gl.GL_NEAREST`` to avoid smoothing.
+            pixelated: ``True`` for pixel art and ``False`` for smooth scaling.
+            blend_function:
+                Use the specified OpenGL blend function while drawing the
+                sprite list, such as ``arcade.Window.ctx.BLEND_ADDITIVE``
+                or ``arcade.Window.ctx.BLEND_DEFAULT``.
         """
-
         if names:
             for name in names:
                 self._name_mapping[name].draw(
@@ -483,7 +503,7 @@ class Scene:
         self,
         color: RGBA255 = Color(0, 0, 0, 255),
         line_thickness: float = 1.0,
-        names: Optional[Iterable[str]] = None,
+        names: Iterable[str] | None = None,
     ) -> None:
         """
         Draw debug hit box outlines for sprites in the scene's layers.
@@ -494,11 +514,11 @@ class Scene:
         If `names` is not provided, then every layer's hit boxes will be drawn in the
         order specified.
 
-        :param color: The RGBA color to use to draw the hit boxes with.
-        :param line_thickness: How many pixels thick the hit box outlines should be
-        :param names: Which layers & what order to draw their hit boxes in.
+        Args:
+            color: The RGBA color to use to draw the hit boxes with.
+            line_thickness: How many pixels thick the hit box outlines should be
+            names: Which layers & what order to draw their hit boxes in.
         """
-
         if names:
             for name in names:
                 self._name_mapping[name].draw_hit_boxes(color, line_thickness)
@@ -511,6 +531,6 @@ class Scene:
         """Returns whether or not `_sprite_lists` contains anything"""
         return bool(self._sprite_lists)
 
-    def __contains__(self, item: Union[str, SpriteList]) -> bool:
+    def __contains__(self, item: str | SpriteList) -> bool:
         """True when `item` is in `_sprite_lists` or is a value in `_name_mapping`"""
         return item in self._sprite_lists or item in self._name_mapping

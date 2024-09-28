@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Iterable, Optional, Sequence, Union
+from typing import Iterable, Sequence, Union
 
 from pyglet import gl
 from typing_extensions import TypeAlias
@@ -115,7 +115,7 @@ GL_NAMES = {
 }
 
 
-def gl_name(gl_type: Optional[PyGLenum]) -> Union[str, PyGLenum, None]:
+def gl_name(gl_type: PyGLenum | None) -> str | PyGLenum | None:
     """Return the name of a gl type"""
     if gl_type is None:
         return None
@@ -128,11 +128,17 @@ class AttribFormat:
     This is attribute metadata used when attempting to map vertex
     shader inputs.
 
-    :param name: Name of the attribute
-    :param gl_type: The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
-    :param bytes_per_component: Number of bytes for a single component
-    :param offset: (Optional) Offset for BufferDescription
-    :param location: (Optional) Location for program attribute
+    Args:
+        name:
+            Name of the attribute
+        gl_type:
+            The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
+        bytes_per_component:
+            Number of bytes for a single component
+        offset (optional):
+            Offset for BufferDescription
+        location (optional):
+            Location for program attribute
     """
 
     __slots__ = (
@@ -146,8 +152,8 @@ class AttribFormat:
 
     def __init__(
         self,
-        name: Optional[str],
-        gl_type: Optional[PyGLenum],
+        name: str | None,
+        gl_type: PyGLenum | None,
         components: int,
         bytes_per_component: int,
         offset=0,
@@ -202,16 +208,17 @@ class BufferDescription:
             ['in_pos', 'in_uv'],
         )
 
-    :param buffer: The buffer to describe
-    :param formats: The format of each attribute
-    :param attributes: List of attributes names (strings)
-    :param normalized: list of attribute names that should be normalized
-    :param instanced: ``True`` if this is per instance data
+    Args:
+        buffer: The buffer to describe
+        formats: The format of each attribute
+        attributes: List of attributes names (strings)
+        normalized: list of attribute names that should be normalized
+        instanced: ``True`` if this is per instance data
     """
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    _formats: dict[str, tuple[Optional[PyGLenum], int]] = {
+    _formats: dict[str, tuple[PyGLenum | None, int]] = {
         # (gl enum, byte size)
         # Floats
         "f": (gl.GL_FLOAT, 4),
@@ -252,7 +259,7 @@ class BufferDescription:
         buffer: Buffer,
         formats: str,
         attributes: Sequence[str],
-        normalized: Optional[Iterable[str]] = None,
+        normalized: Iterable[str] | None = None,
         instanced: bool = False,
     ):
         #: The :py:class:`~arcade.gl.Buffer` this description object describes
@@ -350,11 +357,17 @@ class TypeInfo:
     """
     Describes an opengl type
 
-    :param name: the string representation of this type
-    :param enum: The enum of this type
-    :param gl_type: the base enum of this type
-    :param gl_size: byte size if the gl_type
-    :param components: Number of components for this enum
+    Args:
+        name:
+            The string representation of this type
+        enum:
+            The enum of this type
+        gl_type:
+            The base enum of this type
+        gl_size:
+            byte size if the gl_type
+        components:
+            Number of components for this enum
     """
 
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
@@ -381,12 +394,27 @@ class TypeInfo:
 
 class GLTypes:
     """
-    Get information about an attribute type.
+    Detailed Information about all attribute type.
+
     During introspection we often just get integers telling us what type is used.
-    This can for example be `35664` telling us it's a `GL_FLOAT_VEC2`.
-    We want to know this is a `gl.GLfloat` with 2 components so we can compare
-    that to the types in the `BufferDescription`.
-    These an also be used for uniform introspection.
+    This can for example be ``35664`` telling us it's a ``GL_FLOAT_VEC2``.
+
+    During introspection we need to know the exact datatype of the attribute.
+    It's not enough to know it's a float, we need to know if it's a vec2, vec3, vec4
+    or any other type that OpenGL supports.
+
+    Examples of types are::
+
+        GL_FLOAT_VEC2
+        GL_DOUBLE_VEC4
+        GL_INT_VEC3
+        GL_UNSIGNED_INT_VEC2
+        GL_UNSIGNED_BYTE
+        GL_FLOAT
+        GL_DOUBLE
+        GL_INT
+        GL_UNSIGNED_INT
+        ...
     """
 
     types = {

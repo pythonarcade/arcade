@@ -19,7 +19,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "pyglet == 2.1dev2",
+    # Fallback to use pyglet's development branch as a rolling release package
+    # at the cost of slow download and constant pip install -I -e .[dev]    
+    # "pyglet@git+https://github.com/pyglet/pyglet.git@development#egg=pyglet",
+    # Expected future dev preview release on PyPI (not yet released)
+    'pyglet==2.1.dev5',
     "pillow~=10.2.0",
     "pymunk~=6.6.0",
     "pytiled-parser~=2.2.5",
@@ -38,14 +42,14 @@ Book = "https://learn.arcade.academy"
 # Used for dev work
 dev = [
     # --- Documentation: Sphinx 7 based currently
-    "sphinx>=7.3.7,<8",  # April 2024
-    "sphinx_rtd_theme==2.0.0",  # Nov 2023
+    "sphinx==7.3.7",               # April 2024 | Updated 2024-07-15, 7.4+ is broken with sphinx-autobuild
+    "sphinx_rtd_theme==2.0.0",     # Nov 2023
     "sphinx-rtd-dark-mode==1.3.0",
-    "sphinx-autobuild==2024.4.16",  # April 2024
-    "sphinx-copybutton==0.5.2", # April 2023
-    "sphinx-sitemap==2.6.0",  # April 2024
-    "pygments==2.17.2",  # 2.18 has breaking changes in lexer
-    "docutils==0.20.1",  # ?
+    "sphinx-autobuild==2024.4.16", # April 2024 | Due to this, Python 3.10+ is required to serve docs
+    "sphinx-copybutton==0.5.2",    # April 2023
+    "sphinx-sitemap==2.6.0",       # April 2024
+    "pygments==2.17.2",            # 2.18 has breaking changes in lexer
+    "docutils==0.20.1",            # ?
     # "pyyaml==6.0.1",
     # "readthedocs-sphinx-search==0.3.2",
     # "sphinx-autodoc-typehints==2.0.1",
@@ -54,12 +58,12 @@ dev = [
     "pytest-cov",
     "pytest-mock",
     "coverage",
-    "coveralls",  # Do we really need this?
+    "coveralls",          # Do we really need this?
     "black",
     "ruff",
     "mypy",
-    "pyright==1.1.355",    
-    "typer[all]==0.11.0",  # Needed for make.py
+    "pyright==1.1.372",
+    "typer[all]==0.11.0", # Needed for make.py
     "wheel",
 ]
 # Testing only
@@ -88,7 +92,7 @@ build-backend = "setuptools.build_meta"
 # E731 do not assign a lambda expression, use a def
 # E741 Ambiguous variable name
 # F811: redefinition
-line-length = 120
+line-length = 100
 output-format = "full"
 exclude = [
     "venv",

@@ -27,7 +27,7 @@ class EnemySprite(arcade.Sprite):
         # When we fire, what list tracks the bullets?
         self.bullet_list = bullet_list
 
-    def on_update(self, delta_time: float = 1 / 60):
+    def update(self, delta_time: float = 1 / 60):
         """ Update this sprite. """
 
         # Track time since we last fired
@@ -69,14 +69,19 @@ class MyGame(arcade.Window):
         self.bullet_list = arcade.SpriteList()
 
         # Add player ship
-        self.player = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", scale=0.5)
+        self.player = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_orange.png",
+            scale=0.5,
+        )
         self.player_list.append(self.player)
 
         # Add top-left enemy ship
-        enemy = EnemySprite(":resources:images/space_shooter/playerShip1_green.png",
-                            scale=0.5,
-                            bullet_list=self.bullet_list,
-                            time_between_firing=2.0)
+        enemy = EnemySprite(
+            ":resources:images/space_shooter/playerShip1_green.png",
+            scale=0.5,
+            bullet_list=self.bullet_list,
+            time_between_firing=2.0,
+        )
         enemy.center_x = 120
         enemy.center_y = SCREEN_HEIGHT - enemy.height
         enemy.angle = 180
@@ -105,14 +110,14 @@ class MyGame(arcade.Window):
         """ All the logic to move, and the game logic goes here. """
 
         # Call on_update for each enemy in  the list
-        self.enemy_list.on_update(delta_time)
+        self.enemy_list.update(delta_time)
 
         # Get rid of the bullet when it flies off-screen
         for bullet in self.bullet_list:
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
 
-        self.bullet_list.update()
+        self.bullet_list.update(delta_time)
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
         """

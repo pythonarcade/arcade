@@ -29,16 +29,17 @@ class Coin(arcade.Sprite):
     """
 
     def reset_pos(self):
-
         # Reset the coin to a random spot above the screen
         self.center_y = random.randrange(SCREEN_HEIGHT + 20,
                                          SCREEN_HEIGHT + 100)
         self.center_x = random.randrange(SCREEN_WIDTH)
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
+        # Take frame time into account
+        time_step = delta_time * 60
 
-        # Move the coin
-        self.center_y -= 1
+        # Move the coin 1 pixel down per 1/60th of a second
+        self.center_y -= 1 * time_step
 
         # See if the coin has fallen off the bottom of the screen.
         # If so, reset it.
@@ -80,8 +81,10 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_sprite_list.append(self.player_sprite)
@@ -122,7 +125,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.coin_sprite_list.update()
+        self.coin_sprite_list.update(delta_time)
 
         # Generate a list of all sprites that collided with the player.
         hit_list = arcade.check_for_collision_with_list(self.player_sprite,

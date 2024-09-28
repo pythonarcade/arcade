@@ -11,12 +11,19 @@ class Uniform:
     """
     A Program uniform
 
-    :param ctx: The context
-    :param program_id: The program id to which this uniform belongs
-    :param location: The uniform location
-    :param name: The uniform name
-    :param data_type: The data type of the uniform
-    :param array_length: The array length of the uniform
+    Args:
+        ctx:
+            The context
+        program_id:
+            The program id to which this uniform belongs
+        location:
+            The uniform location
+        name:
+            The uniform name
+        data_type:
+            The data type of the uniform
+        array_length:
+            The array length of the uniform
     """
 
     _uniform_getters = {
@@ -183,6 +190,7 @@ class Uniform:
     def components(self) -> int:
         """
         How many components for the uniform.
+
         A vec4 will for example have 4 components.
         """
         return self._components
@@ -217,6 +225,7 @@ class Uniform:
             c_array,
             length,
         )
+
         self.setter = Uniform._create_setter_func(
             self._ctx,
             self._program_id,
@@ -325,19 +334,32 @@ class Uniform:
 class UniformBlock:
     """
     Wrapper for a uniform block in shaders.
+
+    Args:
+        glo:
+            The OpenGL object handle
+        index:
+            The index of the uniform block
+        size:
+            The size of the uniform block
+        name:
+            The name of the uniform
     """
 
     __slots__ = ("glo", "index", "size", "name")
 
     def __init__(self, glo: int, index: int, size: int, name: str):
-        #: The OpenGL object handle
         self.glo = glo
-        #: The index of the uniform block
+        """The OpenGL object handle"""
+
         self.index = index
-        #: The size of the uniform block
+        """The index of the uniform block"""
+
         self.size = size
-        #: The name of the uniform block
+        """The size of the uniform block"""
+
         self.name = name
+        """The name of the uniform block"""
 
     @property
     def binding(self) -> int:
@@ -353,6 +375,7 @@ class UniformBlock:
     def getter(self):
         """
         The getter function for this uniform block.
+
         Returns self.
         """
         return self
@@ -361,9 +384,10 @@ class UniformBlock:
         """
         The setter function for this uniform block.
 
-        :param value: The binding index to set.
+        Args:
+            value: The binding index to set.
         """
         self.binding = value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<UniformBlock {self.name} index={self.index} size={self.size}>"

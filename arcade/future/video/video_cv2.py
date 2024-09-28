@@ -13,7 +13,6 @@ from __future__ import annotations
 
 from math import floor
 from pathlib import Path
-from typing import Union
 
 import cv2  # type: ignore
 
@@ -26,10 +25,11 @@ class VideoPlayerCV2:
     Primitive video player for arcade with cv2.
     Renders to the entire screen. Use VideoPlayer to render to specific coordinate.
 
-    :param path: Path of the video that is to be played.
+    Args:
+        path: Path of the video that is to be played.
     """
 
-    def __init__(self, path: Union[str, Path], loop: bool = False):
+    def __init__(self, path: str | Path, loop: bool = False):
         self.loop = loop
 
         self.ctx = arcade.get_window().ctx
@@ -130,11 +130,12 @@ class CV2PlayerView(arcade.View):
 
     Requires the opencv-python module to be installed.
 
-    :param path: Path of the video that is to be played.
-    :param resize: Change the window size to the video size
+    Args:
+        path: Path of the video that is to be played.
+        resize: Change the window size to the video size
     """
 
-    def __init__(self, path: Union[str, Path], loop: bool = False, resize: bool = False):
+    def __init__(self, path: str | Path, loop: bool = False, resize: bool = False):
         super().__init__()
 
         self.video_player = VideoPlayerCV2(path, loop)

@@ -6,9 +6,8 @@ Use a fireworks display to demonstrate "real-world" uses of Emitters and Particl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.particle_fireworks
 """
-
+from __future__ import annotations
 import random
-from typing import Optional
 
 import pyglet
 from pyglet.math import Vec2
@@ -101,13 +100,18 @@ def make_flash(prev_emitter):
         center_xy=prev_emitter.get_pos(),
         emit_controller=EmitBurst(3),
         particle_factory=lambda emitter: FadeParticle(
-            filename_or_texture=FLASH_TEXTURE, change_xy=rand_in_circle((0.0, 0.0), 3.5), lifetime=0.15
+            filename_or_texture=FLASH_TEXTURE,
+            change_xy=rand_in_circle((0.0, 0.0), 3.5),
+            lifetime=0.15,
         ),
     )
 
 
 def make_puff(prev_emitter):
-    """Return emitter that generates the subtle smoke cloud left after a firework shell explodes"""
+    """
+    Return emitter that generates the subtle smoke cloud
+    left after a firework shell explodes.
+    """
     return Emitter(
         center_xy=prev_emitter.get_pos(),
         emit_controller=EmitBurst(4),
@@ -124,7 +128,7 @@ class AnimatedAlphaParticle(LifetimeParticle):
 
     def __init__(
         self,
-        filename_or_texture: Optional[PathOrTexture],
+        filename_or_texture: PathOrTexture | None,
         change_xy: Vec2,
         start_alpha: int = 0,
         duration1: float = 1.0,
@@ -154,23 +158,25 @@ class AnimatedAlphaParticle(LifetimeParticle):
         self.out_duration = duration2
         self.end_alpha = end_alpha
 
-    def update(self):
-        super().update()
+    def update(self, delta_time: float = 1 / 60):
+        super().update(delta_time)
         if self.lifetime_elapsed <= self.in_duration:
             u = self.lifetime_elapsed / self.in_duration
-            self.alpha = clamp(lerp(self.start_alpha, self.mid_alpha, u), 0, 255)
+            self.alpha = int(clamp(lerp(self.start_alpha, self.mid_alpha, u), 0, 255))
         else:
             u = (self.lifetime_elapsed - self.in_duration) / self.out_duration
-            self.alpha = clamp(lerp(self.mid_alpha, self.end_alpha, u), 0, 255)
+            self.alpha = int(clamp(lerp(self.mid_alpha, self.end_alpha, u), 0, 255))
 
 
 class RocketEmitter(Emitter):
-    """Custom emitter class to add gravity to the emitter to represent gravity on the firework shell"""
-
-    def update(self):
-        super().update()
+    """
+    Custom emitter class to add gravity to the emitter to
+    represent gravity on the firework shell.
+    """
+    def update(self, delta_time: float = 1 / 60):
+        super().update(delta_time)
         # gravity
-        self.change_y += -0.05
+        self.change_y += -0.05 * (60 * delta_time)
 
 
 class FireworksApp(arcade.Window):
@@ -178,7 +184,7 @@ class FireworksApp(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         self.background_color = arcade.color.BLACK
-        self.emitters = []
+        self.emitters: list[Emitter] = []
 
         self.launch_firework(0)
         arcade.schedule(self.launch_spinner, 4.0)
@@ -226,7 +232,10 @@ class FireworksApp(arcade.Window):
             self.launch_sparkle_firework,
         )
         random.choice(launchers)(delta_time)
-        pyglet.clock.schedule_once(self.launch_firework, random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX))
+        pyglet.clock.schedule_once(
+            self.launch_firework,
+            random.uniform(LAUNCH_INTERVAL_MIN, LAUNCH_INTERVAL_MAX),
+        )
 
     def launch_random_firework(self, _delta_time):
         """Simple firework that explodes in a random color"""
@@ -252,7 +261,10 @@ class FireworksApp(arcade.Window):
         self.emitters.append(spinner2)
 
     def explode_firework(self, prev_emitter):
-        """Actions that happen when a firework shell explodes, resulting in a typical firework"""
+        """
+        Actions that happen when a firework shell explodes,
+        resulting in a typical firework
+        """
         self.emitters.append(make_puff(prev_emitter))
         self.emitters.append(make_flash(prev_emitter))
 
@@ -270,7 +282,10 @@ class FireworksApp(arcade.Window):
         self.emitters.append(sparks)
 
     def explode_ringed_firework(self, prev_emitter):
-        """Actions that happen when a firework shell explodes, resulting in a ringed firework"""
+        """
+        Actions that happen when a firework shell explodes,
+        resulting in a ringed firework.
+        """
         self.emitters.append(make_puff(prev_emitter))
         self.emitters.append(make_flash(prev_emitter))
 
@@ -300,7 +315,10 @@ class FireworksApp(arcade.Window):
         self.emitters.append(ring)
 
     def explode_sparkle_firework(self, prev_emitter):
-        """Actions that happen when a firework shell explodes, resulting in a sparkling firework"""
+        """
+        Actions that happen when a firework shell explodes,
+        resulting in a sparkling firework.
+        """
         self.emitters.append(make_puff(prev_emitter))
         self.emitters.append(make_flash(prev_emitter))
 
@@ -329,7 +347,7 @@ class FireworksApp(arcade.Window):
             self.cloud.center_x = 0
         # update
         for e in emitters_to_update:
-            e.update()
+            e.update(delta_time)
         # remove emitters that can be reaped
         to_del = [e for e in emitters_to_update if e.can_reap()]
         for e in to_del:
@@ -341,7 +359,13 @@ class FireworksApp(arcade.Window):
             e.draw()
         arcade.draw_lrbt_rectangle_filled(0, SCREEN_WIDTH, 0, 25, arcade.color.DARK_GREEN)
         mid = SCREEN_WIDTH / 2
-        arcade.draw_lrbt_rectangle_filled(mid - 2, mid + 2, 10, SPINNER_HEIGHT, arcade.color.DARK_BROWN)
+        arcade.draw_lrbt_rectangle_filled(
+            mid - 2,
+            mid + 2,
+            10,
+            SPINNER_HEIGHT,
+            arcade.color.DARK_BROWN,
+        )
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
@@ -358,7 +382,11 @@ def firework_spark_mutator(particle: FadeParticle):
 
 
 def rocket_smoke_mutator(particle: LifetimeParticle):
-    particle.scale = lerp(0.5, 3.0, particle.lifetime_elapsed / particle.lifetime_original)  # type: ignore
+    particle.scale = lerp(
+        0.5,
+        3.0,
+        particle.lifetime_elapsed / particle.lifetime_original  # type: ignore
+    )
 
 
 def main():

@@ -113,7 +113,7 @@ class BindlessTexture(arcade.Window):
             }
             """,
             fragment_shader="""
-            #version 430
+            #version 460
             #extension GL_ARB_bindless_texture : require
 
             // This is the structure of the data in the shader storage buffer.
@@ -126,7 +126,7 @@ class BindlessTexture(arcade.Window):
             // Shader storage buffer with texture handles
             layout(std430, binding=0) buffer BindlessData
             {
-                TextureRef Materials[4];
+                TextureRef Materials[];
             } bindless_data;
 
             // Get the texture index from the geometry shader

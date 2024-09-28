@@ -109,49 +109,52 @@ A UIStyle is a typed description of available style options.
 For the UIFlatButton the supported attributes are:
 
 
-================ ================= ===================== ==================================
-Name              Type              Default value         Description
-================ ================= ===================== ==================================
-font_size        int                12                    Size of the text on the button
-font_name        FontNameOrNames    ("calibri", "arial")  Font of the text
-font_color       RGBA255            arcade.color.WHITE    Color of text
-bg               RGBA255            (21, 19, 21, 255)     Background color
-border           Optional           None                  Border color
-border_width     int                0                     Border width
-================ ================= ===================== ==================================
+================ =================== ======================== ==================================
+Name              Type               Default value            Description
+================ =================== ======================== ==================================
+``font_size``    ``int``             12                       Size of the text on the button
+``font_name``    ``FontNameOrNames`` ``("calibri", "arial")`` Font of the text
+``font_color``   ``RGBA255``         ``arcade.color.WHITE``   Color of text
+``bg``           ``RGBA255``         ``(21, 19, 21, 255)``    Background color
+``border``       ``Optional``        ``None``                 Border color
+``border_width`` ``int``             0                        Border width
+================ =================== ======================== ==================================
 
-The style attribute is a dictionary, which maps a state like 'normal, 'hover' etc.
-to an instance of UIFlatButton.UIStyle.
+The style attribute is a dictionary, which maps states such as ``normal``, ``hover``, ``press``,
+and ``disabled`` to an instance of the class's ``UIStyle``.
 
-Wellknown states
-````````````````
+Common states
+`````````````
 
-======== ======================================================
-Name     Description
-======== ======================================================
-normal   The default state of a widget.
-hover    Mouse hovered over an interactive widget.
-press    Mouse is pressed while hovering over the widget.
-disabled The widget is disabled.
-======== ======================================================
+============ ======================================================
+Name         Description
+============ ======================================================
+``normal``   The default state of a widget.
+``hover``    The mouse is hovered over an interactive widget.
+``press``    The mouse is pressed while hovering over the widget.
+``disabled`` The widget is disabled.
+============ ======================================================
 
 
 Advanced
 ========
 
-This section describes the styling system itself,
-and how it can be used to create own stylable widgets or extend existing ones.
+This section describes the styling system itself, and how it can be used to
+create your own stylable widgets or extend existing ones.
 
-Stylable widgets inherit from `UIStyledWidget`, which provides two basic features:
+Stylable widgets inherit from :py:meth:`~arcade.gui.UIStyledWidget`, which
+provides two basic features:
 
-1. owns a style property, which provides a mapping between a widgets state and style to be applied
-2. provides an abstractmethod which have to provide a state (which is a simple string)
+1. A :py:attr:`~arcade.gui.UIStyledWidget.style` property, which provides a
+   mapping between a widget's state and style to be applied.
+2. Provides an ``abstractmethod`` to provide a state, which is a simple string.
 
 
 Tha basic idea:
 
-- a stylable widget has a state (e.g. 'normal', 'hover', 'press', or 'disabled')
-- the state is used to define, which style will be applied
+- A stylable widget has a state, which can be ``normal``, ``hover``, ``press``,
+  or ``disabled``.
+- The state is used to define which style will be applied.
 
 Your own stylable widget
 ````````````````````````
@@ -168,7 +171,6 @@ Your own stylable widget
         class UIStyle(UIStyleBase):
             color: RGBA255 = arcade.color.GREEN
 
-
         DEFAULT_STYLE = {
             "normal": UIStyle(),
             "hover": UIStyle(color=arcade.color.YELLOW),
@@ -177,7 +179,7 @@ Your own stylable widget
         }
 
         def get_current_state(self) -> str:
-            """Returns the current state of the widget i.e disabled, press, hover or normal."""
+            """Returns the current state of the widget i.e.disabled, press, hover or normal."""
             if self.disabled:
                 return "disabled"
             elif self.pressed:

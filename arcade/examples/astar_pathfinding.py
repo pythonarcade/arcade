@@ -25,8 +25,14 @@ VIEWPORT_MARGIN = 100
 HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
 VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
 
-# If the player moves further than this boundary away from the camera we use a constraint to move the camera
-CAMERA_BOUNDARY = arcade.LRBT(-HORIZONTAL_BOUNDARY, HORIZONTAL_BOUNDARY, -VERTICAL_BOUNDARY, VERTICAL_BOUNDARY)
+# If the player moves further than this boundary away from the camera we use a
+# constraint to move the camera
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY,
+    HORIZONTAL_BOUNDARY,
+    -VERTICAL_BOUNDARY,
+    VERTICAL_BOUNDARY,
+)
 
 class MyGame(arcade.Window):
     """

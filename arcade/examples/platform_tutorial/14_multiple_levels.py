@@ -77,12 +77,18 @@ class MyGame(arcade.Window):
         }
 
         # Load our TileMap
-        self.tile_map = arcade.load_tilemap(f":resources:tiled_maps/map2_level_{self.level}.json", scaling=TILE_SCALING, layer_options=layer_options)
+        self.tile_map = arcade.load_tilemap(
+            f":resources:tiled_maps/map2_level_{self.level}.json",
+            scaling=TILE_SCALING,
+            layer_options=layer_options,
+        )
 
         # Create our Scene Based on the TileMap
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.player_texture = arcade.load_texture(":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png")
+        self.player_texture = arcade.load_texture(
+            ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        )
 
         # Add Player Spritelist before "Foreground" layer. This will make the foreground
         # be drawn after the player, making it appear to be in front of the Player.
@@ -124,7 +130,8 @@ class MyGame(arcade.Window):
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
         # Calculate the right edge of the map in pixels
-        self.end_of_map = (self.tile_map.width * self.tile_map.tile_width) * self.tile_map.scaling
+        self.end_of_map = (self.tile_map.width * self.tile_map.tile_width)
+        self.end_of_map *= self.tile_map.scaling
         print(self.end_of_map)
 
     def on_draw(self):

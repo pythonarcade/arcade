@@ -44,6 +44,16 @@ class CameraData:
     """Stores position, orientation, and zoom for a camera.
 
     This is like where a camera is placed in 3D space.
+
+    Args:
+        position:
+            The camera's location in 3D space.
+        up:
+            The direction which is considered "up" for the camera.
+        forward:
+            The direction the camera is facing.
+        zoom:
+            How much the camera is zoomed in or out.
     """
 
     __slots__ = ("position", "up", "forward", "zoom")
@@ -56,19 +66,23 @@ class CameraData:
         zoom: float = 1.0,
     ):
 
-        #: A 3D vector which describes where the camera is located.
         self.position: tuple[float, float, float] = position
-        #: A 3D vector which describes which direction is up (+y).
-        self.up: tuple[float, float, float] = up
-        #: A scalar which describes which direction the camera is pointing.
-        #:
-        #: While this affects the projection matrix, it also allows camera
-        #: controllers to access zoom functionality without interacting with
-        #: projection data.
-        self.forward: tuple[float, float, float] = forward
+        """A 3D vector which describes where the camera is located."""
 
-        # Zoom
+        self.up: tuple[float, float, float] = up
+        """A 3D vector which describes which direction is up (+y)."""
+
+        self.forward: tuple[float, float, float] = forward
+        """
+        A scalar which describes which direction the camera is pointing.
+
+        While this affects the projection matrix, it also allows camera
+        controllers to access zoom functionality without interacting with
+        projection data.
+        """
+
         self.zoom: float = zoom
+        """A scalar which describes how much the camera is zoomed in or out."""
 
     def __str__(self):
         return f"CameraData<{self.position=}, {self.up=}, {self.forward=}, {self.zoom=}>"
@@ -78,6 +92,12 @@ class CameraData:
 
 
 def duplicate_camera_data(origin: CameraData):
+    """
+    Clone camera data
+
+    Args:
+        origin: The camera data to clone
+    """
     return CameraData(origin.position, origin.up, origin.forward, float(origin.zoom))
 
 
@@ -86,8 +106,9 @@ def constrain_camera_data(data: CameraData, forward_priority: bool = False):
     Ensure that the camera data forward and up vectors are length one,
     and are perpendicular
 
-    :param data: the camera data to constrain
-    :param forward_priority: whether up or forward gets constrained
+    Args:
+        data: the camera data to constrain
+        forward_priority: whether up or forward gets constrained
     """
     forward_vec = Vec3(*data.forward).normalize()
     up_vec = Vec3(*data.up).normalize()
@@ -104,9 +125,18 @@ def constrain_camera_data(data: CameraData, forward_priority: bool = False):
 class OrthographicProjectionData:
     """Describes an Orthographic projection.
 
-    This is by default a Left-handed system. with the X axis going from left to right, The Y axis going from
-    bottom to top, and the Z axis going from towards the screen to away from the screen. This can be made
-    right-handed by making the near value greater than the far value.
+    This is by default a Left-handed system. with the X axis going from left to
+    right, The Y axis going from bottom to top, and the Z axis going from towards
+    the screen to away from the screen. This can be made right-handed by making
+    the near value greater than the far value.
+
+    Args:
+        left: Left limit of the projection
+        right: Right limit of the projection
+        bottom: Bottom limit of the projection
+        top: Top limit of the projection
+        near: Near plane
+        far: Far plane
     """
 
     __slots__ = ("rect", "near", "far")
@@ -114,23 +144,29 @@ class OrthographicProjectionData:
     def __init__(
         self, left: float, right: float, bottom: float, top: float, near: float, far: float
     ):
-
-        # Data for generating Orthographic Projection matrix
         self.rect: Rect = LRBT(left, right, bottom, top)
-        #: The 'closest' visible position along the forward direction.
-        #:
-        #: It will get mapped to z = -1.0. Anything closer than this value
-        #: is not visible.
+        """Rectangle defining the projection area."""
+
         self.near: float = near
-        #: The 'farthest' visible position along the forward direction.
-        #:
-        #: It will get mapped to z = 1.0. Anything father than this value
-        #: is not visible.
+        """
+        The 'closest' visible position along the forward direction.
+
+        It will get mapped to z = -1.0. Anything closer than this value
+        is not visible.
+        """
+
         self.far: float = far
+        """
+        The 'farthest' visible position along the forward direction.
+
+        It will get mapped to z = 1.0. Anything father than this value
+        is not visible.
+        """
 
     @property
     def left(self) -> float:
-        """ "The left-side cutoff value, which gets mapped to x = -1.0.
+        """
+        The left-side cutoff value, which gets mapped to x = -1.0.
 
         Anything to the left of this value is not visible.
         """
@@ -146,7 +182,8 @@ class OrthographicProjectionData:
 
     @property
     def right(self) -> float:
-        """ "The right-side cutoff value, which gets mapped to x = 1.0.
+        """
+        The right-side cutoff value, which gets mapped to x = 1.0.
 
         Anything to the left of this value is not visible.
         """
@@ -162,7 +199,8 @@ class OrthographicProjectionData:
 
     @property
     def bottom(self) -> float:
-        """ "The bottom-side cutoff value, which gets mapped to -y = 1.0.
+        """
+        The bottom-side cutoff value, which gets mapped to -y = 1.0.
 
         Anything to the left of this value is not visible.
         """
@@ -178,7 +216,8 @@ class OrthographicProjectionData:
 
     @property
     def top(self) -> float:
-        """ "The top-side cutoff value, which gets mapped to y = 1.0.
+        """
+        The top-side cutoff value, which gets mapped to y = 1.0.
 
         Anything to the left of this value is not visible.
         """
@@ -194,6 +233,7 @@ class OrthographicProjectionData:
 
     @property
     def lrbt(self) -> tuple[float, float, float, float]:
+        """The left, right, bottom, and top values of the projection."""
         return self.rect.lrbt
 
     @lrbt.setter
@@ -210,39 +250,62 @@ class OrthographicProjectionData:
 
 
 def orthographic_from_rect(rect: Rect, near: float, far: float) -> OrthographicProjectionData:
+    """
+    Create an orthographic projection from a rectangle.
+
+    Args:
+        rect: The rectangle to create the projection from.
+        near: The near plane of the projection.
+        far: The far plane of the projection.
+    """
     return OrthographicProjectionData(rect.left, rect.right, rect.bottom, rect.top, near, far)
 
 
 class PerspectiveProjectionData:
-    """Describes a perspective projection.
-    )
+    """
+    Data for perspective projection.
+
+    Args:
+        aspect: The aspect ratio of the screen (width over height).
+        fov: The field of view in degrees.
+        near: The 'closest' visible position along the forward direction.
+        far: The 'farthest' visible position along the forward
     """
 
     __slots__ = ("aspect", "fov", "near", "far")
 
     def __init__(self, aspect: float, fov: float, near: float, far: float):
-        #: The aspect ratio of the screen (width over height).
         self.aspect: float = aspect
-        #: The field of view in degrees.
-        #:
-        #: Together with the aspect ratio, it defines the size of the
-        #: perspective projection for any given depth.
-        self.fov: float = fov
-        #: The 'closest' visible position along the forward direction.
-        #:
-        #: It will get mapped to z = -1.0. Anything closer than this value
-        #: is not visible.
-        self.near: float = near
-        #: The 'farthest' visible position along the forward direction.
-        #:
-        #: It will get mapped to z = 1.0. Anything father than this value
-        #: is not visible.
-        self.far: float = far
+        """The aspect ratio of the screen (width over height)."""
 
-    def __str__(self):
+        self.fov: float = fov
+        """
+        The field of view in degrees.
+
+        Together with the aspect ratio, it defines the size of the
+        perspective projection for any given depth.
+        """
+
+        self.near: float = near
+        """
+        The 'closest' visible position along the forward direction.
+
+        It will get mapped to z = -1.0. Anything closer than this value
+        is not visible.
+        """
+
+        self.far: float = far
+        """"
+        The 'farthest' visible position along the forward direction.
+
+        It will get mapped to z = 1.0. Anything father than this value
+        is not visible.
+        """
+
+    def __str__(self) -> str:
         return f"PerspectiveProjection<{self.aspect=}, {self.fov=}, {self.near=}, {self.far=}>"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__str__()
 
 
@@ -366,7 +429,8 @@ class Projector(Protocol):
         Essentially reverses the effects of the projector.
 
         Args:
-            screen_coordinate: A 2D position in pixels should generally be inside the range of the active viewport.
+            screen_coordinate: A 2D position in pixels should generally be inside
+                the range of the active viewport.
             depth: The depth of the query. This can be though of how far along the forward vector
                    the final coord will be.
         Returns:

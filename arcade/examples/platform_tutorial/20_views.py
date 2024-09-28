@@ -53,7 +53,8 @@ class Character(arcade.Sprite):
             arcade.load_texture(f"{main_path}_climb1.png")
         )
 
-        # This variable will change dynamically and will represent the currently active texture.
+        # This variable will change dynamically and will represent the currently
+        # active texture.
         self.texture = self.idle_texture_pair[0]
 
 
@@ -61,20 +62,23 @@ class PlayerCharacter(Character):
     def __init__(self):
         super().__init__("female_adventurer", "femaleAdventurer")
 
-        # Track extra state related to the player. We will use these for change textures in animations
+        # Track extra state related to the player. We will use these for change
+        # textures in animations
         self.climbing = False
         self.should_update_walk = 0
 
     def update_animation(self, delta_time):
 
-        # Figure out the direction the character is facing based on the movement and previous direction.
+        # Figure out the direction the character is facing based on the movement
+        # and previous direction.
         if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
             self.facing_direction = LEFT_FACING
         elif self.change_x > 0 and self.facing_direction == LEFT_FACING:
             self.facing_direction = RIGHT_FACING
 
-        # Handle animations for climbing on ladders. We use the absolute value of change_y here because
-        # we don't care if the character is moving up or down, the animation stays the same.
+        # Handle animations for climbing on ladders. We use the absolute value
+        # of change_y here because we don't care if the character is moving up
+        # or down, the animation stays the same.
         if self.climbing and abs(self.change_y) > 1:
             self.cur_texture += 1
             if self.cur_texture > 7:
@@ -115,7 +119,8 @@ class Enemy(Character):
         self.should_update_walk = 0
 
     def update_animation(self, delta_time):
-        # Figure out the direction the character is facing based on the movement and previous direction.
+        # Figure out the direction the character is facing based on the
+        # movement and previous direction.
         if self.change_x < 0 and self.facing_direction == RIGHT_FACING:
             self.facing_direction = LEFT_FACING
         elif self.change_x > 0 and self.facing_direction == LEFT_FACING:
@@ -243,7 +248,11 @@ class GameView(arcade.View):
         }
 
         # Load our TileMap
-        self.tile_map = arcade.load_tilemap(":resources:tiled_maps/map_with_ladders.json", scaling=TILE_SCALING, layer_options=layer_options)
+        self.tile_map = arcade.load_tilemap(
+            ":resources:tiled_maps/map_with_ladders.json",
+            scaling=TILE_SCALING,
+            layer_options=layer_options,
+        )
 
         # Create our Scene Based on the TileMap
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -316,7 +325,8 @@ class GameView(arcade.View):
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
         # Calculate the right edge of the map in pixels
-        self.end_of_map = (self.tile_map.width * self.tile_map.tile_width) * self.tile_map.scaling
+        self.end_of_map = (self.tile_map.width * self.tile_map.tile_width)
+        self.end_of_map *= self.tile_map.scaling
 
         # Add an empty bullet SpriteList to our scene
         self.scene.add_sprite_list("Bullets")
@@ -359,7 +369,10 @@ class GameView(arcade.View):
         if self.can_shoot:
             if self.shoot_pressed:
                 arcade.play_sound(self.shoot_sound)
-                bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scaling=0.8)
+                bullet = arcade.Sprite(
+                    ":resources:images/space_shooter/laserBlue01.png",
+                    scaling=0.8,
+                )
                 if self.player_sprite.facing_direction == RIGHT_FACING:
                     bullet.change_x = 12
                 else:
@@ -377,9 +390,9 @@ class GameView(arcade.View):
                 self.shoot_timer = 0
 
 
-        # Actually trigger animation updates. We've added the Background and Coins layer here
-        # as well. Our Tiled map has some animated tiles built-in, check out the flags and torches
-        # on the map.
+        # Actually trigger animation updates. We've added the Background and Coins layer
+        # here as well. Our Tiled map has some animated tiles built-in, check out the flags
+        # and torches on the map.
         self.scene.update_animation(
             delta_time,
             [
@@ -390,12 +403,13 @@ class GameView(arcade.View):
             ]
         )
 
-        self.scene.update(["Enemies", "Bullets"])
+        self.scene.update(delta_time, ["Enemies", "Bullets"])
 
+        # Keep enemies walking within their boundaries configured in Tiled
         for enemy in self.scene["Enemies"]:
-            if (enemy.boundary_right and enemy.right > enemy.boundary_right and enemy.change_x > 0):
+            if enemy.right > enemy.boundary_right and enemy.change_x > 0:
                 enemy.change_x *= -1
-            elif (enemy.boundary_left and enemy.left < enemy.boundary_left and enemy.change_x < 0):
+            elif enemy.left < enemy.boundary_left and enemy.change_x < 0:
                 enemy.change_x *= -1
 
         for bullet in self.scene["Bullets"]:
@@ -423,7 +437,9 @@ class GameView(arcade.View):
 
                 return
 
-            if (bullet.right < 0) or (bullet.left > (self.tile_map.width * self.tile_map.tile_width) * TILE_SCALING):
+            # Remove bullet if it leaves the map area.
+            # Bullets only travel horizontally, so we only need to check left and right.
+            if (bullet.right < 0) or (bullet.left > self.end_of_map):
                 bullet.remove_from_sprite_lists()
 
         # See if we hit any coins
@@ -452,12 +468,12 @@ class GameView(arcade.View):
         self.camera.position = self.player_sprite.position
 
     def process_keychange(self):
-
-        # First handle the case where we have moved up. This needs to be handled differently to move the player
-        # upwards if they are on a ladder, or perform a jump if they are not on a ladder. This code might look
-        # different if we had a separate button for jumping, we would only need to handle moving upwards if
-        # we were on a ladder for the up key then. Here we also handle the case where we have moved down while on
-        # a ladder.
+        # First handle the case where we have moved up. This needs to be handled
+        # differently to move the player upwards if they are on a ladder, or
+        # perform a jump if they are not on a ladder. This code might look
+        # different if we had a separate button for jumping, we would only need
+        # to handle moving upwards if we were on a ladder for the up key then.
+        # Here we also handle the case where we have moved down while on a ladder.
         if self.up_pressed and not self.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
@@ -468,18 +484,22 @@ class GameView(arcade.View):
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
 
-        # Now we need a special handling of our vertical movement while we are on a ladder, but have no input specified.
-        # When we jump, the physics engine takes care of resetting our vertical movement to zero once we've hit the ground.
-        # However for ladders, we need to ensure that we set the vertical movement back to zero if the user does not give
-        # input, otherwise once a user starts climbing a ladder, they will move upwards automatically until they reach the
-        # end of the ladder. You can try commenting out this block to see what that effect looks like.
+        # Now we need a special handling of our vertical movement while we are 
+        # on a ladder, but have no input specified. When we jump, the physics
+        # engine takes care of resetting our vertical movement to zero once we've
+        # hit the ground. However for ladders, we need to ensure that we set the
+        # vertical movement back to zero if the user does not give input, otherwise
+        # once a user starts climbing a ladder, they will move upwards automatically
+        # until they reach the end of the ladder. You can try commenting out this
+        # block to see what that effect looks like.
         if self.physics_engine.is_on_ladder():
             if not self.up_pressed and not self.down_pressed:
                 self.player_sprite.change_y = 0
             elif self.up_pressed and self.down_pressed:
                 self.player_sprite.change_y = 0
 
-        # Now we just handle our horizontal movement, very similar to how we did before, but now just combined in our new function.
+        # Now we just handle our horizontal movement, very similar to how we
+        # did before, but now just combined in our new function.
         if self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
         elif self.left_pressed and not self.right_pressed:

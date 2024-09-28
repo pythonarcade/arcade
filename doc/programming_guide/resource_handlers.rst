@@ -101,7 +101,7 @@ Adding Your Own Resource Handles
 You may want to define your own resource handles for various reasons.
 
 The :py:func:`arcade.resources.add_resource_handle` function allows you
-to do this. However, this functionrequires you to first find the absolute
+to do this. However, this function requires you to first find the absolute
 path of the folder you would like to add.
 
 
@@ -230,7 +230,7 @@ libraries like Arcade, we'll do the same here:
    :lineno-start: 1
    :emphasize-lines: 1,1
 
-   from pathlib import Path  # <-- put the line here above arcade
+   from pathlib import Path # <-- put the line here above Arcade
    import arcade
 
 
@@ -341,7 +341,7 @@ build command.
 When the executable is ran, the files and folders are unbundled and placed inside a temporary location, (on Window's
 this is normally ``C:\Users\UserName\AppData\Local\Temp``). This includes an exact copy of your data directory and it is
 from here that your application is ran from. To ensure that the running executable correctly finds this data directory,
-we can use the ``__file__`` dunder variable to locate temporary folder's location.
+we can use the ``__file__`` variable to locate temporary folder's location.
 
 .. code-block:: Python
 

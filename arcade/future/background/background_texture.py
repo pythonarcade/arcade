@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from PIL import Image
 from pyglet.math import Mat3
 
@@ -13,8 +11,10 @@ from arcade.window_commands import get_window
 
 class BackgroundTexture:
     """
-    BackgroundTextures are PODs (packet of data) types. They have very little functionality by themselves,
-    but are used by Backgrounds. They hold an arcade.gl.Texture and 3 Pyglet.Maths.Mat3s.
+    BackgroundTextures are PODs (packet of data) types. They have very little
+    functionality by themselves, but are used by Backgrounds. They hold an
+    ``arcade.gl.Texture``and 3 `pyglet.math.Mat3``.
+
     The Mat3s define the scaling, rotation, and translation of the pixel data in the texture.
     see background_fs.glsl in resources/shaders for an implementation of this.
     """
@@ -124,15 +124,17 @@ class BackgroundTexture:
 
     def use(self, unit: int = 0) -> None:
         """Bind the texture to a channel,
-        :param unit: The texture unit to bind the texture.
+
+        Args:
+            unit: The texture unit to bind the texture.
         """
         self.texture.use(unit)
 
     def render_target(
         self,
         context: ArcadeContext,
-        color_attachments: Optional[list[gl.Texture2D]] = None,
-        depth_attachment: Optional[gl.Texture2D] = None,
+        color_attachments: list[gl.Texture2D] | None = None,
+        depth_attachment: gl.Texture2D | None = None,
     ) -> gl.Framebuffer:
         if color_attachments is None:
             color_attachments = []

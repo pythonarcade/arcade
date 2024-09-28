@@ -24,7 +24,6 @@ PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
-
 class MyGame(arcade.Window):
     """
     Main application class.
@@ -61,7 +60,13 @@ class MyGame(arcade.Window):
         self.right_key_down = False
 
         # Text object to display the score
-        self.score_display = arcade.Text("Score: 0", x=10, y=10, color=arcade.csscolor.WHITE, font_size=18)
+        self.score_display = arcade.Text(
+            "Score: 0",
+            x=10,
+            y=10,
+            color=arcade.csscolor.WHITE,
+            font_size=18,
+        )
 
     def create_scene(self) -> arcade.Scene:
         """Load the tilemap and create the scene object."""
@@ -74,7 +79,11 @@ class MyGame(arcade.Window):
                 "use_spatial_hash": True,
             },
         }
-        tile_map = arcade.load_tilemap( ":resources:tiled_maps/map.json", TILE_SCALING, layer_options)
+        tile_map = arcade.load_tilemap(
+            ":resources:tiled_maps/map.json",
+            scaling=TILE_SCALING,
+            layer_options=layer_options,
+        )
 
         # Set the window background color to the same as the map if it has one
         if tile_map.background_color:
@@ -164,7 +173,11 @@ class MyGame(arcade.Window):
 
         # Here's our center, move to it
         player_centered = screen_center_x, screen_center_y
-        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, player_centered, 0.1)
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position,
+            player_centered,
+            0.1,
+        )
 
     def on_update(self, delta_time: float):
         """Movement and game logic"""

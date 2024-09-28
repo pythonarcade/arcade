@@ -4,7 +4,7 @@ Original screenshot utilities from arcade 2.
 These functions are flawed because they only read from the screen.
 """
 
-from typing import Optional
+from __future__ import annotations
 
 import PIL.Image
 import PIL.ImageOps
@@ -16,14 +16,12 @@ def get_pixel(x: int, y: int, components: int = 3) -> tuple[int, ...]:
     """
     Given an x, y, will return a color value of that point.
 
-    :param x: x location
-    :param y: y location
-    :param components: Number of components to fetch. By default we fetch 3
-        3 components (RGB). 4 components would be RGBA.
-
+    Args:
+        x: x location
+        y: y location
+        components: Number of components to fetch. By default we fetch 3
+            3 components (RGB). 4 components would be RGBA.
     """
-    # noinspection PyCallingNonCallable,PyTypeChecker
-
     # The window may be 'scaled' on hi-res displays. Particularly Macs. OpenGL
     # won't account for this, so we need to.
     window = get_window()
@@ -40,8 +38,8 @@ def get_pixel(x: int, y: int, components: int = 3) -> tuple[int, ...]:
 def get_image(
     x: int = 0,
     y: int = 0,
-    width: Optional[int] = None,
-    height: Optional[int] = None,
+    width: int | None = None,
+    height: int | None = None,
     components: int = 4,
 ) -> PIL.Image.Image:
     """
@@ -53,11 +51,12 @@ def get_image(
         image = arcade.get_image()
         image.save('screenshot.png')
 
-    :param x: Start (left) x location
-    :param y: Start (bottom) y location
-    :param width: Width of image. Leave blank for grabbing the 'rest' of the image
-    :param height: Height of image. Leave blank for grabbing the 'rest' of the image
-    :param components: Number of components to fetch. By default we fetch 4 (4=RGBA, 3=RGB)
+    Args:
+        x: Start (left) x location
+        y: Start (bottom) y location
+        width: Width of image. Leave blank for grabbing the 'rest' of the image
+        height: Height of image. Leave blank for grabbing the 'rest' of the image
+        components: Number of components to fetch. By default we fetch 4 (4=RGBA, 3=RGB)
     """
     window = get_window()
     ctx = window.ctx

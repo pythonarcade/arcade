@@ -11,7 +11,7 @@ This example works by doing the following for each frame:
 1. Render a depth value for pixel into a buffer
 2. Render a gaussian blurred version of the scene
 3. For each pixel, use the current depth value to lerp between the
-   blurred and unblurred versions of the scene.
+   blurred and un-blurred versions of the scene.
 
 This is more expensive than rendering the scene directly, but it's
 both easier and more performant than more accurate blur approaches.
@@ -26,7 +26,7 @@ from contextlib import contextmanager
 from math import cos, pi
 from random import randint, uniform
 from textwrap import dedent
-from typing import Optional, cast
+from typing import cast
 
 from pyglet.graphics import Batch
 
@@ -40,13 +40,16 @@ from arcade.types import RGBA255, Color
 class DepthOfField:
     """A depth-of-field effect we can use as a render context manager.
 
-    :param size: The size of the buffers.
-    :param clear_color: The color which will be used as the background.
+    Args:
+        size:
+            The size of the buffers.
+        clear_color:
+            The color which will be used as the background.
     """
 
     def __init__(
         self,
-        size: Optional[tuple[int, int]] = None,
+        size: tuple[int, int] | None = None,
         clear_color: RGBA255 = (155, 155, 155, 255),
     ):
         self._geo = geometry.quad_2d_fs()
@@ -86,7 +89,7 @@ class DepthOfField:
                 )
             ]
         )
-        self._blurred: Optional[Texture2D] = None
+        self._blurred: Texture2D | None = None
 
         # To keep this example in one file, we use strings for our
         # our shaders. You may want to use pathlib.Path.read_text in
@@ -171,10 +174,14 @@ class DepthOfField:
 class App(Window):
     """Window subclass to hold sprites and rendering helpers.
 
-    :param text_color: The color of the focus indicator.
-    :param focus_range: The range the focus value will oscillate between.
-    :param focus_change_speed: How fast the focus bounces back and forth
-        between the ``-focus_range`` and ``focus_range``.
+    Args:
+        text_color:
+            The color of the focus indicator.
+        focus_range:
+            The range the focus value will oscillate between.
+        focus_change_speed:
+            How fast the focus bounces back and forth
+            between the ``-focus_range`` and ``focus_range``.
     """
 
     def __init__(

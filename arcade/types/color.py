@@ -21,11 +21,11 @@ named color values, please see the following:
 from __future__ import annotations
 
 import random
-from typing import Iterable, Optional, TypeVar, Union
+from typing import Iterable, TypeVar, Union
 
 from typing_extensions import Final, Self
 
-from arcade.utils import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
+from arcade.exceptions import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
 
 __all__ = (
     "Color",
@@ -113,11 +113,11 @@ class Color(RGBA255):
               * Python's built-in :py:mod:`colorsys` module
               * The `colour`_ package
 
-    :param r: the red channel of the color, between 0 and 255, inclusive
-    :param g: the green channel of the color, between 0 and 255, inclusive
-    :param b: the blue channel of the color, between 0 and 255, inclusive
-    :param a: the alpha or transparency channel of the color, between
-        0 and 255, inclusive
+    Args:
+        r: the red channel of the color, between 0 and 255, inclusive
+        g: the green channel of the color, between 0 and 255, inclusive
+        b: the blue channel of the color, between 0 and 255, inclusive
+        a: the alpha or transparency channel of the color, between 0 and 255, inclusive
     """
 
     __slots__ = ()
@@ -224,8 +224,9 @@ class Color(RGBA255):
                      >>> Color(*rgb_green_tuple, 127)
                      Color(r=0, g=255, b=0, a=127)
 
-        :param iterable: An iterable which unpacks to 3 or 4 elements,
-            each between 0 and 255, inclusive.
+        Args:
+            iterable: An iterable which unpacks to 3 or 4 elements,
+                each between 0 and 255, inclusive.
         """
         if isinstance(iterable, cls):
             return iterable
@@ -276,9 +277,9 @@ class Color(RGBA255):
             >>> print(half_opacity_gray)
             Color(r=128, g=128, b=128, a=128)
 
-        :param brightness: How bright the new gray should be
-        :param a: a transparency value, fully opaque by default
-        :return:
+        Args:
+            brightness: How bright the new gray should be
+            a: a transparency value, fully opaque by default
         """
 
         if not 0 <= brightness <= 255:
@@ -310,9 +311,11 @@ class Color(RGBA255):
         To convert from an RGBA value as a 32-bit integer, see
         :py:meth:`.from_uint32`.
 
-        :param color: a 3-byte :py:class:`int` between ``0`` and
-            ``16777215`` (``0xFFFFFF``)
-        :param a: an alpha value to use between 0 and 255, inclusive.
+        Args:
+            color:
+                a 3-byte :py:class:`int` between ``0`` and ``16777215`` (``0xFFFFFF``)
+            a:
+                An alpha value to use between 0 and 255, inclusive.
         """
 
         if not 0 <= color <= MAX_UINT24:
@@ -341,8 +344,9 @@ class Color(RGBA255):
         To convert from an RGB value as a 24-bit integer, see
         :py:meth:`.from_uint24`.
 
-        :param color: An :py:class:`int` between ``0`` and ``4294967295``
-            (``0xFFFFFFFF``)
+        Args:
+            color:
+                An :py:class:`int` between ``0`` and ``4294967295`` (``0xFFFFFFFF``)
         """
         if not 0 <= color <= MAX_UINT32:
             raise IntOutsideRangeError("color", color, 0, MAX_UINT32)
@@ -372,7 +376,8 @@ class Color(RGBA255):
             >>> Color.from_normalized(normalized_half_opacity_green)
             Color(r=0, g=255, b=0, a=127)
 
-        :param color_normalized: A tuple of 4 normalized (``0.0`` to ``1.0``) RGBA values.
+        Args:
+            color_normalized: A tuple of 4 normalized (``0.0`` to ``1.0``) RGBA values.
         """
         r, g, b, *_a = color_normalized
 
@@ -441,8 +446,9 @@ class Color(RGBA255):
         * `Simple Wiki's Hexadecimal Page`_
         * The `CSS hex color`_ specification
 
-        :param code: A `CSS hex color`_ string which may omit
-            the leading ``#`` character.
+        Args:
+            code:
+                A `CSS hex color`_ string which may omit the leading ``#`` character.
         """
         code = code.lstrip("#")
 
@@ -464,10 +470,10 @@ class Color(RGBA255):
     @classmethod
     def random(
         cls,
-        r: Optional[int] = None,
-        g: Optional[int] = None,
-        b: Optional[int] = None,
-        a: Optional[int] = None,
+        r: int | None = None,
+        g: int | None = None,
+        b: int | None = None,
+        a: int | None = None,
     ) -> Self:
         """Create a :py:class:`Color` by randomizing all unspecified channels.
 
@@ -484,10 +490,11 @@ class Color(RGBA255):
             >>> Color.random(a=255)
             Color(r=25, g=99, b=234, a=255)
 
-        :param r: Specify a value for the red channel
-        :param g: Specify a value for the green channel
-        :param b: Specify a value for the blue channel
-        :param a: Specify a value for the alpha channel
+        Args:
+            r: Specify a value for the red channel
+            g: Specify a value for the green channel
+            b: Specify a value for the blue channel
+            a: Specify a value for the alpha channel
         """
         rand = random.randint(0, MAX_UINT32)
         if r is None:
@@ -503,10 +510,10 @@ class Color(RGBA255):
 
     def replace(
         self,
-        r: Optional[int] = None,
-        g: Optional[int] = None,
-        b: Optional[int] = None,
-        a: Optional[int] = None,
+        r: int | None = None,
+        g: int | None = None,
+        b: int | None = None,
+        a: int | None = None,
     ) -> Color:
         """Create a :py:class:`Color` with specified values replaced in a predefined color.
 
@@ -516,10 +523,11 @@ class Color(RGBA255):
             >>> arcade.color.BLUE.replace(a = 100)
             Color(r = 0, g = 0, b = 255, a = 100)
 
-        :param r: Specify a value for the red channel
-        :param g: Specify a value for the green channel
-        :param b: Specify a value for the blue channel
-        :param a: Specify a value for the alpha channel
+        Args:
+            r: Specify a value for the red channel
+            g: Specify a value for the green channel
+            b: Specify a value for the blue channel
+            a: Specify a value for the alpha channel
         """
         return Color(
             self.r if r is None else r,
@@ -558,10 +566,10 @@ class Color(RGBA255):
                   convert data, you may instead be looking for Python's
                   built-in :py:mod:`struct` and :py:mod:`array` modules.
 
-        :param order:
-            A string of channel names as letters in ``"RGBArgba"``
-            with repeats allowed.
-        :return:
+        Args:
+            order:
+                A string of channel names as letters in ``"RGBArgba"`` with repeats allowed.
+        Returns:
             A tuple of channel values in the given ``order``.
         """
         ret = []

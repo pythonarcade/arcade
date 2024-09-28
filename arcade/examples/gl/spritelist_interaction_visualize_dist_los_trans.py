@@ -161,7 +161,9 @@ class SpriteListInteraction(arcade.Window):
         # Lookup texture/framebuffer for walls so we can trace pixels in the shader.
         # It contains a texture attachment with the same size as the window.
         # We draw only the walls into this one as a line of sight lookup
-        self.walls_fbo = self.ctx.framebuffer(color_attachments=[self.ctx.texture((WINDOW_WIDTH, WINDOW_HEIGHT))])
+        self.walls_fbo = self.ctx.framebuffer(
+            color_attachments=[self.ctx.texture((WINDOW_WIDTH, WINDOW_HEIGHT))]
+        )
         # Draw the walls into the framebuffer
         with self.walls_fbo.activate() as fbo:
             fbo.clear()
@@ -191,8 +193,9 @@ class SpriteListInteraction(arcade.Window):
             num_sprites_found = self.query.primitives_generated
             if num_sprites_found > 0:
                 print(f"We found {num_sprites_found} sprite(s)")
-                # Transfer the the data from the vram into python and decode the values into python objects.
-                # We read num_sprites_found float values from the result buffer and convert those into python floats
+                # Transfer the the data from the vram into python and decode the
+                # values into python objects. We read num_sprites_found float
+                # values from the result buffer and convert those into python floats
                 sprite_indices = struct.unpack(
                     f"{num_sprites_found}f",
                     self.result_buffer.read(size=num_sprites_found * 4),
@@ -215,7 +218,12 @@ class SpriteListInteraction(arcade.Window):
         arcade.draw_sprite(self.player)
 
         # Visualize the interaction radius
-        arcade.draw_circle_filled(self.player.center_x, self.player.center_y, INTERACTION_RADIUS, (255, 255, 255, 64))
+        arcade.draw_circle_filled(
+            center_x=self.player.center_x,
+            center_y=self.player.center_y,
+            radius=INTERACTION_RADIUS,
+            color=(255, 255, 255, 64)
+        )
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         # Move the sprite to mouse position

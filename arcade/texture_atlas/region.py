@@ -2,7 +2,9 @@
 Metadata about where an image is located in the atlas.
 """
 
-from typing import TYPE_CHECKING, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from .base import TexCoords, TextureAtlasBase
 
@@ -35,13 +37,22 @@ class AtlasRegion:
         +-----------------+--------------------+
         (0, 0)                                 (1, 0)
 
-    :param atlas: The atlas this region belongs to
-    :param texture: The arcade texture
-    :param x: The x position of the texture
-    :param y: The y position of the texture
-    :param width: The width of the texture in pixels
-    :param height: The height of the texture in pixels
-    :param texture_coordinates: The texture coordinates (optional)
+    Args:
+        atlas:
+            The atlas this region belongs to
+        texture:
+            The arcade texture
+        x:
+            The x position of the texture
+        y:
+            The y position of the texture
+        width:
+            The width of the texture in pixels
+        height:
+            The height of the texture in pixels
+        texture_coordinates (optional):
+            The texture coordinates for this region.
+            If not provided, they will be calculated.
     """
 
     __slots__ = (
@@ -54,12 +65,12 @@ class AtlasRegion:
 
     def __init__(
         self,
-        atlas: "TextureAtlasBase",
+        atlas: TextureAtlasBase,
         x: int,
         y: int,
         width: int,
         height: int,
-        texture_coordinates: Optional[TexCoords] = None,
+        texture_coordinates: TexCoords | None = None,
     ):
         #: X position of the texture in the atlas
         self.x = x
@@ -100,12 +111,15 @@ class AtlasRegion:
                 ul_y + _height - hp_y,
             )
 
-    def verify_image_size(self, image_data: "ImageData"):
+    def verify_image_size(self, image_data: ImageData):
         """
         Verify the image size.
 
         The internal image of a texture can potentially be tampered with
         at any point causing an atlas update to fail.
+
+        Args:
+            image_data: The image data to verify
         """
         if image_data.size != (self.width, self.height):
             raise RuntimeError(

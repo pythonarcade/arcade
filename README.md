@@ -1,32 +1,30 @@
 # Welcome to The Arcade Library!
 
+![MIT License](https://img.shields.io/pypi/l/arcade)
+[<img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Pull Requests Welcome">](http://makeapullrequest.com)
+[<img src="https://img.shields.io/badge/first--timers--only-friendly-blue.svg" alt="First Timers Friendly">](http://www.firsttimersonly.com/)
+
 Arcade is an easy-to-learn Python library for creating 2D video games.
 It is ideal for beginning programmers, or programmers who want to create
 2D games without learning a complex framework.
 
-Arcade is built on top of Pyglet and OpenGL.
+[pyglet]: https://github.com/pyglet/pyglet
+[Games Made with Arcade]: https://api.arcade.academy/en/latest/sample_games.html
+Arcade is built on top of [pyglet][] and OpenGL. See [Games Made with Arcade][]
+for example game jam entries and more.
 
-[<img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="Pull Requests Welcome">](http://makeapullrequest.com)
-[<img src="https://img.shields.io/badge/first--timers--only-friendly-blue.svg" alt="First Timers Friendly">](http://www.firsttimersonly.com/)
+[Arcade Discord Server]: https://discord.gg/ZjGDqMp
 
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/arcade)
-
 ![GitHub Commit Activity](https://img.shields.io/github/commit-activity/m/pythonarcade/arcade)
 
-![MIT License](https://img.shields.io/pypi/l/arcade)
+## Stable Documentation
 
-## Documentation
+Read the stable documentation at https://api.arcade.academy.
 
-* For full documentation see https://api.arcade.academy
-* For installation: https://api.arcade.academy/en/latest/install/index.html
-* For example code that uses the Arcade library see: https://api.arcade.academy/en/latest/examples/index.html
-* For API documentation see: https://api.arcade.academy/en/latest/quick_index.html
-* Learn Arcade AND how to program: https://learn.arcade.academy
-* Release notes: https://api.arcade.academy/en/latest/development/release_notes.html
+## Development Previews
 
-## Games Using Arcade
-
-See: https://api.arcade.academy/en/latest/sample_games.html
+Preview the next release at https://api.arcade.academy/en/development/.
 
 ## Citation
 
@@ -45,6 +43,6 @@ See: https://api.arcade.academy/en/latest/sample_games.html
 ## Contact the Maintainers
 
 The best way to contact and chat with the maintainers is on the
-[Python Arcade Discord channel](https://discord.gg/ZjGDqMp).
+[Arcade Discord Server][].
 
 paul@cravenfamily.com

@@ -181,20 +181,20 @@ def test_point_in_rect():
     assert not rect.point_in_rect((150, 150))
 
 
-def test_point_in_bounce():
+def test_point_in_bounds():
     rect = LBWH(0, 0, 100, 100)
 
-    # on bounce
-    assert not rect.point_in_bounce((0, 0))
-    assert not rect.point_in_bounce((100, 100))
+    # on bounds
+    assert not rect.point_in_bounds((0, 0))
+    assert not rect.point_in_bounds((100, 100))
 
-    # out of bounce
-    assert not rect.point_in_bounce((150, 150))
+    # out of bounds
+    assert not rect.point_in_bounds((150, 150))
 
-    # in bounce
-    assert rect.point_in_bounce((1, 1))
-    assert rect.point_in_bounce((50, 50))
-    assert rect.point_in_bounce((99, 99))
+    # in bounds
+    assert rect.point_in_bounds((1, 1))
+    assert rect.point_in_bounds((50, 50))
+    assert rect.point_in_bounds((99, 99))
 
 
 def test_rect_scale():

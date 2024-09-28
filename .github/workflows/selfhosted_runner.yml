@@ -45,7 +45,7 @@ jobs:
           which python
           python -c "import pyglet; print('pyglet version', pyglet.__version__)"
           python -c "import PIL; print('Pillow version', PIL.__version__)"
-          pytest
+          pytest --maxfail=10
 
       # Prepare the Pull Request Payload artifact. If this fails, we
       # we fail silently using the `continue-on-error` option. It's

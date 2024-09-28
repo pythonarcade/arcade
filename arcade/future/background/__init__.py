@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Tuple
+from typing import Tuple
 
 from PIL import Image
 
@@ -44,16 +44,16 @@ def texture_from_file(
 def background_from_file(
     tex_src: str,
     pos: Tuple[float, float] = (0.0, 0.0),
-    size: Optional[Tuple[int, int]] = None,
+    size: Tuple[int, int] | None = None,
     offset: Tuple[float, float] = (0.0, 0.0),
     scale: float = 1.0,
     angle: float = 0.0,
     *,
     filters=(gl.NEAREST, gl.NEAREST),
-    color: Optional[Tuple[int, int, int]] = None,
-    color_norm: Optional[Tuple[float, float, float]] = None,
-    shader: Optional[gl.Program] = None,
-    geometry: Optional[gl.Geometry] = None,
+    color: Tuple[int, int, int] | None = None,
+    color_norm: Tuple[float, float, float] | None = None,
+    shader: gl.Program | None = None,
+    geometry: gl.Geometry | None = None,
 ) -> Background:
 
     texture = BackgroundTexture.from_file(tex_src, offset, scale, angle, filters)

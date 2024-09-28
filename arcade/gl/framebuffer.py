@@ -3,7 +3,7 @@ from __future__ import annotations
 import weakref
 from contextlib import contextmanager
 from ctypes import c_int, string_at
-from typing import TYPE_CHECKING, Generator, Optional
+from typing import TYPE_CHECKING, Generator
 
 from pyglet import gl
 
@@ -12,7 +12,7 @@ from arcade.types import RGBOrA255, RGBOrANormalized
 from .texture import Texture2D
 from .types import pixel_formats
 
-if TYPE_CHECKING:  # handle import cycle caused by type hinting
+if TYPE_CHECKING:
     from arcade.gl import Context
 
 
@@ -38,9 +38,13 @@ class Framebuffer:
             ]
         )
 
-    :param ctx: The context this framebuffer belongs to
-    :param color_attachments: List of color attachments.
-    :param depth_attachment: A depth attachment (optional)
+    Args:
+        ctx:
+            The context this framebuffer belongs to
+        color_attachments (optional):
+            A color attachment or a list of color attachments
+        depth_attachment (optional):
+            A depth attachment
     """
 
     #: Is this the default framebuffer? (window buffer)
@@ -65,8 +69,8 @@ class Framebuffer:
         self,
         ctx: "Context",
         *,
-        color_attachments=None,
-        depth_attachment: Optional[Texture2D] = None,
+        color_attachments: Texture2D | list[Texture2D],
+        depth_attachment: Texture2D | None = None,
     ):
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
         self._ctx = ctx
@@ -76,7 +80,7 @@ class Framebuffer:
         self._color_attachments = (
             color_attachments if isinstance(color_attachments, list) else [color_attachments]
         )
-        self._depth_attachment: Optional[Texture2D] = depth_attachment
+        self._depth_attachment: Texture2D | None = depth_attachment
         self._samples = 0  # Leaving this at 0 for future sample support
         self._depth_mask = True  # Determines if the depth buffer should be affected
         self._prev_fbo = None
@@ -90,7 +94,7 @@ class Framebuffer:
         # but let's keep this simple with high compatibility.
         self._width, self._height = self._detect_size()
         self._viewport = 0, 0, self._width, self._height
-        self._scissor: Optional[tuple[int, int, int, int]] = None
+        self._scissor: tuple[int, int, int, int] | None = None
 
         # Attach textures to it
         for i, tex in enumerate(self._color_attachments):
@@ -137,14 +141,13 @@ class Framebuffer:
 
     @property
     def glo(self) -> gl.GLuint:
-        """
-        The OpenGL id/name of the framebuffer
-        """
+        """The OpenGL id/name of the framebuffer."""
         return self._glo
 
     def _get_viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the framebuffer's viewport.
+
         The viewport parameter are ``(x, y, width, height)``.
         It determines what part of the framebuffer should be rendered to.
         By default the viewport is ``(0, 0, width, height)``.
@@ -176,7 +179,7 @@ class Framebuffer:
 
     viewport = property(_get_viewport, _set_viewport)
 
-    def _get_scissor(self) -> Optional[tuple[int, int, int, int]]:
+    def _get_scissor(self) -> tuple[int, int, int, int] | None:
         """
         Get or set the scissor box for this framebuffer.
 
@@ -239,7 +242,7 @@ class Framebuffer:
         return self._color_attachments
 
     @property
-    def depth_attachment(self) -> Optional[Texture2D]:
+    def depth_attachment(self) -> Texture2D | None:
         """Depth attachment."""
         return self._depth_attachment
 
@@ -247,6 +250,7 @@ class Framebuffer:
     def depth_mask(self) -> bool:
         """
         Get or set the depth mask (default: ``True``).
+
         It determines if depth values should be written
         to the depth texture when depth testing is enabled.
 
@@ -288,8 +292,10 @@ class Framebuffer:
     def use(self, *, force: bool = False):
         """Bind the framebuffer making it the target of all rendering commands
 
-        :param force: Force the framebuffer binding even if the system
-                           already believes it's already bound.
+        Args:
+            force:
+                Force the framebuffer binding even if the system
+                already believes it's already bound.
         """
         self._use(force=force)
         self._ctx.active_framebuffer = self
@@ -316,10 +322,10 @@ class Framebuffer:
     def clear(
         self,
         *,
-        color: Optional[RGBOrA255] = None,
-        color_normalized: Optional[RGBOrANormalized] = None,
+        color: RGBOrA255 | None = None,
+        color_normalized: RGBOrANormalized | None = None,
         depth: float = 1.0,
-        viewport: Optional[tuple[int, int, int, int]] = None,
+        viewport: tuple[int, int, int, int] | None = None,
     ):
         """
         Clears the framebuffer::
@@ -333,11 +339,18 @@ class Framebuffer:
         If the background color is an ``RGB`` value instead of ``RGBA```
         we assume alpha value 255.
 
-        :param color: A 3 or 4 component tuple containing the color (prioritized over color_normalized)
-        :param color_normalized: A 3 or 4 component tuple containing the color in normalized form
-        :param depth: Value to clear the depth buffer (unused)
-        :param normalized: If the color values are normalized or not
-        :param Tuple[int, int, int, int] viewport: The viewport range to clear
+        Args:
+            color:
+                A 3 or 4 component tuple containing the color
+                (prioritized over color_normalized)
+            color_normalized:
+                A 3 or 4 component tuple containing the color in normalized form
+            depth:
+                Value to clear the depth buffer (unused)
+            normalized:
+                If the color values are normalized or not
+            viewport:
+                The viewport range to clear
         """
         with self.activate():
             scissor_values = self._scissor
@@ -379,13 +392,24 @@ class Framebuffer:
 
     def read(self, *, viewport=None, components=3, attachment=0, dtype="f1") -> bytes:
         """
-        Read framebuffer pixels
+        Read the raw framebuffer pixels.
 
-        :param viewport: The x, y, with, height to read
-        :param components:
-        :param attachment: The attachment id to read from
-        :param dtype: The data type to read
-        :return: pixel data as a bytearray
+        Reading data from a framebuffer is much more powerful than
+        reading date from textures. We can specify more or less
+        what format we want the data. It's not uncommon to throw
+        textures into framebuffers just to get access to this read
+        api.
+
+        Args:
+            viewport:
+                The x, y, with, height area to read.
+            components:
+                The number of components to read. 1, 2, 3 or 4.
+                This will determine the format to read.
+            attachment:
+                The attachment id to read from
+            dtype:
+                The data type to read. Pixel data will be converted to this format.
         """
         # TODO: use texture attachment info to determine read format?
         try:
@@ -420,6 +444,7 @@ class Framebuffer:
     def resize(self):
         """
         Detects size changes in attachments.
+
         This will reset the viewport to ``0, 0, width, height``.
         """
         self._width, self._height = self._detect_size()
@@ -428,7 +453,8 @@ class Framebuffer:
     def delete(self):
         """
         Destroy the underlying OpenGL resource.
-        Don't use this unless you know exactly what you are doing.
+
+        .. warning:: Don't use this unless you know exactly what you are doing.
         """
         Framebuffer.delete_glo(self._ctx, self._glo)
         self._glo.value = 0
@@ -438,8 +464,11 @@ class Framebuffer:
         """
         Destroys the framebuffer object
 
-        :param ctx: OpenGL context
-        :param framebuffer_id: Framebuffer to destroy (glo)
+        Args:
+            ctx:
+                The context this framebuffer belongs to
+            framebuffer_id:
+                Framebuffer id destroy (glo)
         """
         if gl.current_context is None:
             return
@@ -449,10 +478,18 @@ class Framebuffer:
 
     def _detect_size(self) -> tuple[int, int]:
         """Detect the size of the framebuffer based on the attachments"""
-        expected_size = (
-            self._color_attachments[0] if self._color_attachments else self._depth_attachment
-        ).size
-        for layer in [*self._color_attachments, self._depth_attachment]:
+        attachments = []
+
+        if self._color_attachments:
+            attachments.extend(self._color_attachments)
+        elif self._depth_attachment:
+            attachments.append(self._depth_attachment)
+
+        if not attachments:
+            raise RuntimeError("Framebuffer has no attachments")
+
+        expected_size = attachments[0].size
+        for layer in attachments:
             if layer and layer.size != expected_size:
                 raise ValueError("All framebuffer attachments should have the same size")
         return expected_size
@@ -461,6 +498,7 @@ class Framebuffer:
     def _check_completeness() -> None:
         """
         Checks the completeness of the framebuffer.
+
         If the framebuffer is not complete, we cannot continue.
         """
         # See completeness rules : https://www.khronos.org/opengl/wiki/Framebuffer_Object
@@ -488,24 +526,21 @@ class Framebuffer:
 class DefaultFrameBuffer(Framebuffer):
     """
     Represents the default framebuffer.
-    This is the framebuffer of the window itself and need
-    some special handling.
 
-    We are not allowed to destroy this framebuffer since
-    it's owned by pyglet. This framebuffer can also change
-    size and pixel ratio at any point.
+    This is the framebuffer of the window itself and need some special handling.
 
-    We're doing some initial introspection to guess
-    somewhat sane initial values. Since this is a
-    dynamic framebuffer we cannot trust the internal
-    values. We can only trust what the pyglet window
-    itself reports related to window size and
-    framebuffer size. This should be updated in the
-    ``on_resize`` callback.
+    We are not allowed to destroy this framebuffer since it's owned by pyglet.
+    This framebuffer can also change size and pixel ratio at any point.
+
+    We're doing some initial introspection to guess somewhat sane initial values.
+    Since this is a dynamic framebuffer we cannot trust the internal values.
+    We can only trust what the pyglet window itself reports related to window size
+    and framebuffer size. This should be updated in the ``on_resize`` callback.
     """
 
-    #: Is this the default framebuffer? (window buffer)
     is_default = True
+    """Is this the default framebuffer? (window buffer)"""
+
     __slots__ = ()
 
     def __init__(self, ctx: "Context"):
@@ -608,14 +643,14 @@ class DefaultFrameBuffer(Framebuffer):
 
     viewport = property(_get_viewport, _set_viewport)
 
-    def _get_scissor(self) -> Optional[tuple[int, int, int, int]]:
+    def _get_scissor(self) -> tuple[int, int, int, int] | None:
         """
         Get or set the scissor box for this framebuffer.
 
         By default the scissor box is disabled and has no effect
         and will have an initial value of ``None``. The scissor
         box is enabled when setting a value and disabled when
-        set to ``None``
+        set to ``None``::
 
             # Set and enable scissor box only drawing
             # in a 100 x 100 pixel lower left area

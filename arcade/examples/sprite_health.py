@@ -12,7 +12,9 @@ from typing import Tuple
 import arcade
 from arcade.types import Color
 
-IMAGE_FEMALE_PERSON_IDLE = ":assets:images/animated_characters/female_person/femalePerson_idle.png"
+IMAGE_FEMALE_PERSON_IDLE = (
+    ":assets:images/animated_characters/female_person/femalePerson_idle.png"
+)
 IMAGE_LASER_BLUE01 = ":assets:images/space_shooter/laserBlue01.png"
 IMAGE_ZOMBIE_IDLE = ":assets:images/animated_characters/zombie/zombie_idle.png"
 
@@ -63,7 +65,7 @@ class Bullet(arcade.Sprite):
             scale=SPRITE_SCALING_BULLET,
         )
 
-    def on_update(self, delta_time: float = 1 / 60) -> None:
+    def update(self, delta_time: float = 1 / 60) -> None:
         """Updates the bullet's position."""
         self.position = (
             self.center_x + self.change_x * delta_time,
@@ -75,16 +77,25 @@ class IndicatorBar:
     """
     Represents a bar which can display information about a sprite.
 
-    :param owner: The owner of this indicator bar.
-    :param sprite_list: The sprite list used to draw the indicator
-        bar components.
-    :param Tuple[float, float] position: The initial position of the bar.
-    :param full_color: The color of the bar.
-    :param background_color: The background color of the bar.
-    :param width: The width of the bar.
-    :param height: The height of the bar.
-    :param border_size: The size of the bar's border.
-    :param scale: The scale of the indicator bar.
+    Args:
+        owner:
+            The owner of this indicator bar.
+        sprite_list:
+            The sprite list used to draw the indicator bar components.
+        position:
+            The initial position of the bar.
+        full_color:
+            The color of the bar.
+        background_color:
+            The background color of the bar.
+        width:
+            The width of the bar.
+        height:
+            The height of the bar.
+        border_size:
+            The size of the bar's border.
+        scale:
+            The scale of the indicator bar.
     """
 
     def __init__(
@@ -317,7 +328,7 @@ class MyGame(arcade.Window):
         )
 
         # Call updates on bullet sprites
-        self.bullet_list.on_update(delta_time)
+        self.bullet_list.update(delta_time)
 
         # Check if the enemy can attack. If so, shoot a bullet from the
         # enemy towards the player

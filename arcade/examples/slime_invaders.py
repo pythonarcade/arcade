@@ -79,15 +79,24 @@ class MyGame(arcade.Window):
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
         self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
-        self.texture_enemy_left = arcade.load_texture(":resources:images/enemies/slimeBlue.png")
+        self.texture_enemy_left = arcade.load_texture(
+            ":resources:images/enemies/slimeBlue.png",
+        )
         self.texture_enemy_right = self.texture_enemy_left.flip_left_right()
         # The laser points right so we rotate it 270 clockwise to point up
-        self.texture_blue_laser = arcade.load_texture(":resources:images/space_shooter/laserBlue01.png").rotate_270()
+        self.texture_blue_laser = arcade.load_texture(
+            ":resources:images/space_shooter/laserBlue01.png",
+        ).rotate_270()
 
         self.background_color = arcade.color.AMAZON
         self.score_text = arcade.Text("Score: 0", 10, 20, arcade.color.WHITE, 14)
         self.game_over_text = arcade.Text(
-            "GAME OVER", self.width / 2, self.height / 2, arcade.color.WHITE, 60, anchor_x="center",
+            "GAME OVER",
+            x=self.width / 2,
+            y=self.height / 2,
+            color=arcade.color.WHITE,
+            font_size=60,
+            anchor_x="center",
         )
 
     def setup_level_one(self):
@@ -271,7 +280,10 @@ class MyGame(arcade.Window):
             # a chance to fire.
             if random.randrange(chance) == 0 and enemy.center_x not in x_spawn:
                 # Create a bullet
-                bullet = arcade.Sprite(":resources:images/space_shooter/laserRed01.png", scale=SPRITE_SCALING_LASER)
+                bullet = arcade.Sprite(
+                    ":resources:images/space_shooter/laserRed01.png",
+                    scale=SPRITE_SCALING_LASER,
+                )
 
                 # Angle down.
                 bullet.angle = 180

@@ -55,7 +55,8 @@ class MyGame(arcade.Window):
         target_x = self.player_sprite.center_x
         target_y = self.player_sprite.center_y
 
-        # This limits where the player can see. Ensuring they never go too far from the transition.
+        # This limits where the player can see. Ensuring they never go too far
+        # from the transition.
         if 0.0 > target_x:
             target_x = 0.0
         elif target_x > self.background_1.size[0] * 2:
@@ -66,7 +67,11 @@ class MyGame(arcade.Window):
         elif target_y > self.background_1.size[1]:
             target_y = self.background_1.size[1]
 
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position,
+            (target_x, target_y),
+            CAMERA_SPEED,
+        )
 
     def on_update(self, delta_time: float):
         new_position = (

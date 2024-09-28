@@ -77,17 +77,20 @@ class Smoke(arcade.SpriteCircle):
         self.change_y = SMOKE_RISE_RATE
         self.scale = SMOKE_START_SCALE
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         """Update this particle"""
+        # Take delta_time into account
+        time_step = 60 * delta_time
+
         if self.alpha <= PARTICLE_FADE_RATE:
             # Remove faded out particles
             self.remove_from_sprite_lists()
         else:
             # Update values
-            self.alpha -= SMOKE_FADE_RATE
-            self.center_x += self.change_x
-            self.center_y += self.change_y
-            self.scale += SMOKE_EXPANSION_RATE
+            self.alpha -= int(SMOKE_FADE_RATE * time_step)
+            self.center_x += self.change_x * time_step
+            self.center_y += self.change_y * time_step
+            self.scale += SMOKE_EXPANSION_RATE * time_step
 
 
 class Particle(arcade.SpriteCircle):
@@ -105,8 +108,11 @@ class Particle(arcade.SpriteCircle):
         self.change_x = math.sin(math.radians(direction)) * speed
         self.change_y = math.cos(math.radians(direction)) * speed
 
-    def update(self):
-        """ Update the particle """
+    def update(self, delta_time: float = 1 / 60):
+        """Update the particle"""
+        # Take delta_time into account
+        time_step = 60 * delta_time
+
         if self.alpha == 0:
             # Faded out, remove
             self.remove_from_sprite_lists()
@@ -114,9 +120,9 @@ class Particle(arcade.SpriteCircle):
             # Gradually fade out the particle. Don't go below 0
             self.alpha = max(0, self.alpha - PARTICLE_FADE_RATE)
             # Move the particle
-            self.center_x += self.change_x
-            self.center_y += self.change_y
-            self.change_y -= PARTICLE_GRAVITY
+            self.center_x += self.change_x * time_step
+            self.center_y += self.change_y * time_step
+            self.change_y -= PARTICLE_GRAVITY * time_step
 
             # Should we sparkle this?
             if random.random() <= PARTICLE_SPARKLE_CHANCE:
@@ -146,8 +152,10 @@ class MyGame(arcade.Window):
         self.explosions_list = arcade.SpriteList()
 
         # Set up the player info. Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/space_shooter/playerShip2_orange.png",
-                                           scale=SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip2_orange.png",
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
         self.player_list.append(self.player_sprite)
@@ -222,7 +230,10 @@ class MyGame(arcade.Window):
         arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", scale=SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(
+            ":resources:images/space_shooter/laserBlue01.png",
+            scale=SPRITE_SCALING_LASER,
+        )
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
@@ -249,8 +260,8 @@ class MyGame(arcade.Window):
         """ Movement and game logic """
 
         # Call update on bullet sprites
-        self.bullet_list.update()
-        self.explosions_list.update()
+        self.bullet_list.update(delta_time)
+        self.explosions_list.update(delta_time)
 
         # Loop through each bullet
         for bullet in self.bullet_list:

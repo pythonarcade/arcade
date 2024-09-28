@@ -15,13 +15,15 @@ Note:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sections_demo_1
 """
-from typing import Optional
+
+from __future__ import annotations
 
 import arcade
+from arcade import SectionManager
 
 
 class Box(arcade.SpriteSolidColor):
-    """ This is a Solid Sprite that represents a GREEN Box on the screen """
+    """This is a Solid Sprite that represents a GREEN Box on the screen"""
 
     def __init__(self, section):
         super().__init__(100, 100, color=arcade.color.APPLE_GREEN)
@@ -47,8 +49,7 @@ class ScreenPart(arcade.Section):
     boundaries (left, bottom, etc.)
     """
 
-    def __init__(self, left: int, bottom: int, width: int, height: int,
-                 **kwargs):
+    def __init__(self, left: int, bottom: int, width: int, height: int, **kwargs):
         super().__init__(left, bottom, width, height, **kwargs)
 
         self.selected: bool = False  # if this section is selected
@@ -59,26 +60,33 @@ class ScreenPart(arcade.Section):
         self.box.position = self.left + (self.width / 2), 50
 
         # variable that will hold the Box when it's being dragged
-        self.hold_box: Optional[Box] = None
+        self.hold_box: Box | None = None
 
     def on_update(self, delta_time: float):
         # call on_update on the owned Box
         self.box.on_update(delta_time)
 
     def on_draw(self):
-        """ Draw this section """
+        """Draw this section"""
         if self.selected:
             # Section is selected when mouse is within its boundaries
-            arcade.draw_lrbt_rectangle_filled(self.left, self.right, self.bottom,
-                                              self.top, arcade.color.GRAY)
-            arcade.draw_text(f'You\'re are on the {self.name}', self.left + 30,
-                             self.top - 50, arcade.color.BLACK, 16)
+            arcade.draw_lrbt_rectangle_filled(
+                self.left, self.right, self.bottom, self.top, arcade.color.GRAY
+            )
+            arcade.draw_text(
+                f"You're are on the {self.name}",
+                self.left + 30,
+                self.top - 50,
+                arcade.color.BLACK,
+                16,
+            )
 
         # draw the box
         arcade.draw_sprite(self.box)
 
-    def on_mouse_drag(self, x: float, y: float, dx: float, dy: float,
-                      _buttons: int, _modifiers: int):
+    def on_mouse_drag(
+        self, x: float, y: float, dx: float, dy: float, _buttons: int, _modifiers: int
+    ):
         # if we hold a box, then whe move it at the same rate the mouse moves
         if self.hold_box:
             self.hold_box.position = x, y
@@ -110,28 +118,43 @@ class ScreenPart(arcade.Section):
 
 
 class GameView(arcade.View):
-
     def __init__(self):
         super().__init__()
 
         # add sections to the view
+        self.section_manager = SectionManager(self)
 
         # 1) First section holds half of the screen
-        self.add_section(ScreenPart(0, 0, self.window.width / 2,
-                                    self.window.height, name='Left'))
+        self.section_manager.add_section(
+            ScreenPart(0, 0, self.window.width / 2, self.window.height, name="Left")
+        )
 
         # 2) Second section holds the other half of the screen
-        self.add_section(ScreenPart(self.window.width / 2, 0,
-                                    self.window.width / 2, self.window.height,
-                                    name='Right'))
+        self.section_manager.add_section(
+            ScreenPart(
+                self.window.width / 2, 0, self.window.width / 2, self.window.height, name="Right"
+            )
+        )
+
+    def on_show_view(self) -> None:
+        self.section_manager.enable()
+
+    def on_hide_view(self) -> None:
+        self.section_manager.disable()
 
     def on_draw(self):
         # clear the screen
         self.clear(color=arcade.color.BEAU_BLUE)
 
         # draw a line separating each Section
-        arcade.draw_line(self.window.width / 2, 0, self.window.width / 2,
-                         self.window.height, arcade.color.BLACK, 1)
+        arcade.draw_line(
+            self.window.width / 2,
+            0,
+            self.window.width / 2,
+            self.window.height,
+            arcade.color.BLACK,
+            1,
+        )
 
 
 def main():
@@ -148,5 +171,5 @@ def main():
     window.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

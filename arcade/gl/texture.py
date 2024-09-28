@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import weakref
 from ctypes import byref, string_at
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from pyglet import gl
 
@@ -39,22 +39,41 @@ class Texture2D:
         'u2': UNSIGNED_SHORT
         'u4': UNSIGNED_INT
 
-    :param ctx: The context the object belongs to
-    :param Tuple[int, int] size: The size of the texture
-    :param components: The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
-    :param dtype: The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
-    :param data: The texture data (optional). Can be bytes or any object supporting the buffer protocol.
-    :param filter: The minification/magnification filter of the texture
-    :param wrap_x: Wrap mode x
-    :param wrap_y: Wrap mode y
-    :param target: The texture type (Ignored. Legacy)
-    :param depth: creates a depth texture if `True`
-    :param samples: Creates a multisampled texture for values > 0.
-                        This value will be clamped between 0 and the max
-                        sample capability reported by the drivers.
-    :param immutable: Make the storage (not the contents) immutable. This can sometimes be
-                           required when using textures with compute shaders.
-    :param internal_format: The internal format of the texture
+    Args:
+        ctx:
+            The context the object belongs to
+        size:
+            The size of the texture
+        components:
+            The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
+        dtype:
+            The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
+        data:
+            The texture data (optional). Can be bytes or any object supporting
+            the buffer protocol.
+        filter:
+            The minification/magnification filter of the texture
+        wrap_x:
+            Wrap mode x
+        wrap_y:
+            Wrap mode y
+        target:
+            The texture type (Ignored. Legacy)
+        depth:
+            creates a depth texture if `True`
+        samples:
+            Creates a multisampled texture for values > 0.
+            This value will be clamped between 0 and the max
+            sample capability reported by the drivers.
+        immutable:
+            Make the storage (not the contents) immutable. This can sometimes be
+            required when using textures with compute shaders.
+        internal_format:
+            The internal format of the texture
+        compressed:
+            Is the texture compressed?
+        compressed_data:
+            The raw compressed data
     """
 
     __slots__ = (
@@ -113,20 +132,20 @@ class Texture2D:
 
     def __init__(
         self,
-        ctx: "Context",
+        ctx: Context,
         size: tuple[int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
-        data: Optional[BufferProtocol] = None,
-        filter: Optional[tuple[PyGLuint, PyGLuint]] = None,
-        wrap_x: Optional[PyGLuint] = None,
-        wrap_y: Optional[PyGLuint] = None,
+        data: BufferProtocol | None = None,
+        filter: tuple[PyGLuint, PyGLuint] | None = None,
+        wrap_x: PyGLuint | None = None,
+        wrap_y: PyGLuint | None = None,
         target=gl.GL_TEXTURE_2D,
         depth=False,
         samples: int = 0,
         immutable: bool = False,
-        internal_format: Optional[PyGLuint] = None,
+        internal_format: PyGLuint | None = None,
         compressed: bool = False,
         compressed_data: bool = False,
     ):
@@ -141,7 +160,7 @@ class Texture2D:
         self._samples = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
         self._depth = depth
         self._immutable = immutable
-        self._compare_func: Optional[str] = None
+        self._compare_func: str | None = None
         self._anisotropy = 1.0
         self._internal_format = internal_format
         self._compressed = compressed
@@ -191,6 +210,11 @@ class Texture2D:
         """
         Resize the texture. This will re-allocate the internal
         memory and all pixel data will be lost.
+
+        .. note:: Immutable textures cannot be resized.
+
+        Args:
+            size: The new size of the texture
         """
         if self._immutable:
             raise ValueError("Immutable textures cannot be resized")
@@ -214,7 +238,8 @@ class Texture2D:
             format_info = pixel_formats[self._dtype]
         except KeyError:
             raise ValueError(
-                f"dype '{self._dtype}' not support. Supported types are : {tuple(pixel_formats.keys())}"
+                f"dype '{self._dtype}' not support. Supported types are : "
+                f"{tuple(pixel_formats.keys())}"
             )
         _format, _internal_format, self._type, self._component_size = format_info
         if data is not None:
@@ -308,100 +333,74 @@ class Texture2D:
                 )
 
     @property
-    def ctx(self) -> "Context":
-        """
-        The context this texture belongs to
-        """
+    def ctx(self) -> Context:
+        """The context this texture belongs to."""
         return self._ctx
 
     @property
     def glo(self) -> gl.GLuint:
-        """
-        The OpenGL texture id
-        """
+        """The OpenGL texture id"""
         return self._glo
 
     @property
     def compressed(self) -> bool:
-        """
-        Is this using a compressed format?
-        """
+        """Is this using a compressed format?"""
         return self._compressed
 
     @property
     def width(self) -> int:
-        """
-        The width of the texture in pixels
-        """
+        """The width of the texture in pixels"""
         return self._width
 
     @property
     def height(self) -> int:
-        """
-        The height of the texture in pixels
-        """
+        """The height of the texture in pixels"""
         return self._height
 
     @property
     def dtype(self) -> str:
-        """
-        The data type of each component
-        """
+        """The data type of each component"""
         return self._dtype
 
     @property
     def size(self) -> tuple[int, int]:
-        """
-        The size of the texture as a tuple
-        """
+        """The size of the texture as a tuple"""
         return self._width, self._height
 
     @property
     def samples(self) -> int:
-        """
-        Number of samples if multisampling is enabled (read only)
-        """
+        """Number of samples if multisampling is enabled (read only)"""
         return self._samples
 
     @property
     def byte_size(self) -> int:
-        """
-        The byte size of the texture.
-        """
+        """The byte size of the texture."""
         return pixel_formats[self._dtype][3] * self._components * self.width * self.height
 
     @property
     def components(self) -> int:
-        """
-        Number of components in the texture
-        """
+        """Number of components in the texture"""
         return self._components
 
     @property
     def component_size(self) -> int:
-        """
-        Size in bytes of each component
-        """
+        """Size in bytes of each component"""
         return self._component_size
 
     @property
     def depth(self) -> bool:
-        """
-        If this is a depth texture.
-        """
+        """If this is a depth texture."""
         return self._depth
 
     @property
     def immutable(self) -> bool:
-        """
-        Does this texture have immutable storage?
-        """
+        """Does this texture have immutable storage?"""
         return self._immutable
 
     @property
     def swizzle(self) -> str:
         """
-        str: The swizzle mask of the texture (Default ``'RGBA'``).
+        The swizzle mask of the texture (Default ``'RGBA'``).
 
         The swizzle mask change/reorder the ``vec4`` value returned by the ``texture()`` function
         in a GLSL shaders. This is represented by a 4 character string were each
@@ -468,7 +467,9 @@ class Texture2D:
 
     @property
     def filter(self) -> tuple[int, int]:
-        """Get or set the ``(min, mag)`` filter for this texture.
+        """
+        Get or set the ``(min, mag)`` filter for this texture.
+
         These are rules for how a texture interpolates.
         The filter is specified for minification and magnification.
 
@@ -509,9 +510,10 @@ class Texture2D:
     @property
     def wrap_x(self) -> int:
         """
-        Get or set the horizontal wrapping of the texture. This decides how textures
-        are read when texture coordinates are outside the ``[0.0, 1.0]`` area.
-        Default value is ``REPEAT``.
+        Get or set the horizontal wrapping of the texture.
+
+        This decides how textures are read when texture coordinates are outside
+        the ``[0.0, 1.0]`` area. Default value is ``REPEAT``.
 
         Valid options are::
 
@@ -537,9 +539,10 @@ class Texture2D:
     @property
     def wrap_y(self) -> int:
         """
-        Get or set the horizontal wrapping of the texture. This decides how textures
-        are read when texture coordinates are outside the ``[0.0, 1.0]`` area.
-        Default value is ``REPEAT``.
+        Get or set the horizontal wrapping of the texture.
+
+        This decides how textures are read when texture coordinates are outside the
+        ``[0.0, 1.0]`` area. Default value is ``REPEAT``.
 
         Valid options are::
 
@@ -564,9 +567,7 @@ class Texture2D:
 
     @property
     def anisotropy(self) -> float:
-        """
-        Get or set the anisotropy for this texture.
-        """
+        """Get or set the anisotropy for this texture."""
         return self._anisotropy
 
     @anisotropy.setter
@@ -577,7 +578,7 @@ class Texture2D:
         gl.glTexParameterf(self._target, gl.GL_TEXTURE_MAX_ANISOTROPY, self._anisotropy)
 
     @property
-    def compare_func(self) -> Optional[str]:
+    def compare_func(self) -> str | None:
         """
         Get or set the compare function for a depth texture::
 
@@ -590,13 +591,11 @@ class Texture2D:
             texture.compare_func = '!='  # GL_NOTEQUAL
             texture.compare_func = '0'   # GL_NEVER
             texture.compare_func = '1'   # GL_ALWAYS
-
-        :type: str
         """
         return self._compare_func
 
     @compare_func.setter
-    def compare_func(self, value: Union[str, None]):
+    def compare_func(self, value: str | None):
         if not self._depth:
             raise ValueError("Depth comparison function can only be set on depth textures")
 
@@ -622,8 +621,12 @@ class Texture2D:
         """
         Read the contents of the texture.
 
-        :param level:  The texture level to read
-        :param alignment: Alignment of the start of each row in memory in number of bytes. Possible values: 1,2,4
+        Args:
+            level:
+                The texture level to read
+            alignment:
+                Alignment of the start of each row in memory in number of bytes.
+                Possible values: 1,2,4
         """
         if self._samples > 0:
             raise ValueError("Multisampled textures cannot be read directly")
@@ -657,12 +660,13 @@ class Texture2D:
         :ref:`prog-guide-gl-buffer-protocol-typing` for more
         information.
 
-        :param data: :class:`~arcade.gl.Buffer` or
-                                            buffer protocol object with
-                                            data to write.
-        :param level: The texture level to write
-        :param Union[Tuple[int, int], Tuple[int, int, int, int]] viewport:
-          The area of the texture to write. 2 or 4 component tuple
+        Args:
+            data:
+                :class:`~arcade.gl.Buffer` or buffer protocol object with data to write.
+            level:
+                The texture level to write
+            viewport:
+                The area of the texture to write. 2 or 4 component tuple
         """
         # TODO: Support writing to layers using viewport + alignment
         if self._samples > 0:
@@ -742,8 +746,11 @@ class Texture2D:
                    # Set up linear interpolating minification filter
                    texture.filter = ctx.LINEAR_MIPMAP_LINEAR, ctx.LINEAR
 
-        :param base: Level the mipmaps start at (usually 0)
-        :param max_level: The maximum number of levels to generate
+        Args:
+            base:
+                Level the mipmaps start at (usually 0)
+            max_level:
+                The maximum number of levels to generate
 
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
@@ -759,6 +766,7 @@ class Texture2D:
     def delete(self):
         """
         Destroy the underlying OpenGL resource.
+
         Don't use this unless you know exactly what you are doing.
         """
         Texture2D.delete_glo(self._ctx, self._glo)
@@ -768,10 +776,12 @@ class Texture2D:
     def delete_glo(ctx: "Context", glo: gl.GLuint):
         """
         Destroy the texture.
+
         This is called automatically when the object is garbage collected.
 
-        :param ctx: OpenGL Context
-        :param glo: The OpenGL texture id
+        Args:
+            ctx: OpenGL Context
+            glo: The OpenGL texture id
         """
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
@@ -785,7 +795,8 @@ class Texture2D:
     def use(self, unit: int = 0) -> None:
         """Bind the texture to a channel,
 
-        :param unit: The texture unit to bind the texture.
+        Args:
+            unit: The texture unit to bind the texture.
         """
         gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
         gl.glBindTexture(self._target, self._glo)
@@ -797,10 +808,11 @@ class Texture2D:
         Note that either or both ``read`` and ``write`` needs to be ``True``.
         The supported modes are: read only, write only, read-write
 
-        :param unit: The image unit
-        :param read: The compute shader intends to read from this image
-        :param write: The compute shader intends to write to this image
-        :param level:
+        Args:
+            unit: The image unit
+            read: The compute shader intends to read from this image
+            write: The compute shader intends to write to this image
+            level: The mipmap level to bind
         """
         if self._ctx.gl_api == "gles" and not self._immutable:
             raise ValueError("Textures bound to image units must be created with immutable=True")
@@ -841,11 +853,11 @@ class Texture2D:
             The amount of storage available for resident images/textures may be less
             than the total storage for textures that is available. As such, you should
             attempt to minimize the time a texture spends being resident. Do not attempt
-            to take steps like making textures resident/unresident every frame or something.
-            But if you are finished using a texture for some time, make it unresident.
+            to take steps like making textures resident/un-resident every frame or something.
+            But if you are finished using a texture for some time, make it un-resident.
 
-        Keyword Args:
-            resident (bool): Make the texture resident.
+        Args:
+            resident: Make the texture resident.
         """
         handle = gl.glGetTextureHandleARB(self._glo)
         is_resident = gl.glIsTextureHandleResidentARB(handle)

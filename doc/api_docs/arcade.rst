@@ -1,8 +1,5 @@
 .. _arcade-api:
 
-API Reference
-=============
-
 This page documents the Application Programming Interface (API)
 for the Python Arcade library. See also:
 
@@ -44,6 +41,10 @@ for the Python Arcade library. See also:
     api/open_gl
     api/math
     gl/index
+    api/exceptions
+    api/start_finish_render
+    api/cache
+    api/future
 
 .. _arcade-api-gui:
 

@@ -25,9 +25,8 @@ class MyGame(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
         self.camera = arcade.camera.Camera2D()
 
-        # Load the background from file. It defaults to the size of the texture with the bottom left corner at (0, 0).
-        # Image from:
-        # https://wallpaper-gallery.net/single/free-background-images/free-background-images-22.html
+        # Load the background from file. It defaults to the size of the texture
+        # with the bottom left corner at (0, 0).
         self.background = background.Background.from_file(
             ":resources:/images/backgrounds/abstract_1.jpg"
         )
@@ -57,7 +56,11 @@ class MyGame(arcade.Window):
             target_y = 0.0
         elif target_y > self.background.size[1]:
             target_y = self.background.size[1]
-        self.camera.position = arcade.math.lerp_2d(self.camera.position, (target_x, target_y), CAMERA_SPEED)
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position,
+            (target_x, target_y),
+            CAMERA_SPEED,
+        )
 
     def on_update(self, delta_time: float):
         new_position = (

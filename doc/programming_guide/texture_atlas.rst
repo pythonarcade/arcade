@@ -51,7 +51,7 @@ height.
 Default Texture Atlas
 ---------------------
 
-Most users will not be aware that arcade is using a texture
+Most users will not be aware that Arcade is using a texture
 atlas under the hood. More advanced users can take advantage
 of these if they run into limitations.
 
@@ -166,7 +166,7 @@ or in any case you need the sprite texture to be really dynamic
     with spritelist.atlas.render_into(texture) as framebuffer:
         # Clear the allocated region in the atlas (if you need it)
         framebuffer.clear()
-        # From here on we can draw using any arcade draw functionality
+        # From here on we can draw using any Arcade draw functionality
         arcade.draw_rectangle_filled(128, 128, 160, 160, arcade.color.WHITE, rotation)
 
     # Draw the spritelist and see your animating sprite texture

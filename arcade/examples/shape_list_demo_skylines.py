@@ -42,7 +42,13 @@ def make_skyline(width, skyline_height, skyline_color,
     shape_list = ShapeElementList()
 
     # Add the "base" that we build the buildings on
-    shape = create_rectangle_filled(width / 2, skyline_height / 2, width, skyline_height, skyline_color)
+    shape = create_rectangle_filled(
+        center_x=width / 2,
+        center_y=skyline_height / 2,
+        width=width,
+        height=skyline_height,
+        color=skyline_color,
+    )
     shape_list.append(shape)
 
     building_center_x = 0
@@ -97,7 +103,10 @@ def make_skyline(width, skyline_height, skyline_color,
 
             # Based on that, how big should they be?
             window_height = (building_height - window_margin * 2) / window_rows
-            window_width = (building_width - window_margin * 2 - window_gap * (window_columns - 1)) / window_columns
+            window_width = (
+                (building_width - window_margin * 2 - window_gap * (window_columns - 1))
+                / window_columns
+            )
 
             # Find the bottom left of the building so we can start adding widows
             building_base_y = building_center_y - building_height / 2
@@ -106,19 +115,34 @@ def make_skyline(width, skyline_height, skyline_color,
             # Loop through each window
             for row in range(window_rows):
                 for column in range(window_columns):
-                    if random.random() < light_on_chance:
-                        x1 = building_left_x + column * (window_width + window_gap) + window_margin
-                        x2 = building_left_x + column * (window_width + window_gap) + window_width + window_margin
-                        y1 = building_base_y + row * window_height
-                        y2 = building_base_y + row * window_height + window_height * .8
+                    if random.random() > light_on_chance:
+                        continue
 
-                        skyline_point_list.append([x1, y1])
-                        skyline_point_list.append([x1, y2])
-                        skyline_point_list.append([x2, y2])
-                        skyline_point_list.append([x2, y1])
+                    x1 = (
+                        building_left_x
+                        + column * (window_width + window_gap)
+                        + window_margin
+                    )
+                    x2 = (
+                        building_left_x
+                        + column * (window_width + window_gap)
+                        + window_width
+                        + window_margin
+                    )
+                    y1 = building_base_y + row * window_height
+                    y2 = building_base_y + row * window_height + window_height * .8
 
-                        for i in range(4):
-                            color_list.append((window_color[0], window_color[1], window_color[2]))
+                    skyline_point_list.append([x1, y1])
+                    skyline_point_list.append([x1, y2])
+                    skyline_point_list.append([x2, y2])
+                    skyline_point_list.append([x2, y1])
+
+                    for i in range(4):
+                        color_list.append((
+                            window_color[0],
+                            window_color[1],
+                            window_color[2],
+                        ))
 
         building_center_x += (building_width / 2)
 

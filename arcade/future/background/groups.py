@@ -1,19 +1,18 @@
 from __future__ import annotations
 
-from typing import Optional, Union
-
 import arcade.gl as gl
 from arcade.future.background import Background
 
 
 class BackgroundGroup:
     """
-    If you have many backgrounds which you would like to draw together and move together this can help.
+    If you have many backgrounds which you would like to draw together and move
+    together this can help.
     The pos of the Background Group is independent of each Background pos.
     The offset of the BackgroundGroup is the same as each background.
     """
 
-    def __init__(self, backgrounds: Optional[list[Background]] = None):
+    def __init__(self, backgrounds: list[Background] | None = None):
         self._backgrounds: list[Background] = [] if backgrounds is None else backgrounds
 
         self._pos = (0.0, 0.0)
@@ -65,16 +64,16 @@ class BackgroundGroup:
         self,
         tex_src: str,
         pos: tuple[float, float] = (0.0, 0.0),
-        size: Optional[tuple[int, int]] = None,
+        size: tuple[int, int] | None = None,
         offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Optional[tuple[int, int, int]] = None,
-        color_norm: Optional[tuple[float, float, float]] = None,
-        shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None,
+        color: tuple[int, int, int] | None = None,
+        color_norm: tuple[float, float, float] | None = None,
+        shader: gl.Program | None = None,
+        geometry: gl.Geometry | None = None,
     ):
         background = Background.from_file(
             tex_src,
@@ -103,8 +102,8 @@ class ParallaxGroup:
 
     def __init__(
         self,
-        backgrounds: Optional[list[Background]] = None,
-        depths: Optional[list[float]] = None,
+        backgrounds: list[Background] | None = None,
+        depths: list[float] | None = None,
     ):
         self._backgrounds: list[Background] = [] if backgrounds is None else backgrounds
         self._depths: list[float] = [] if depths is None else depths
@@ -137,7 +136,7 @@ class ParallaxGroup:
     def __getitem__(self, item: int):
         return self._backgrounds[item], self._depths[item]
 
-    def __setitem__(self, key: int, value: Union[Background, float]):
+    def __setitem__(self, key: int, value: Background | float):
         if isinstance(value, (float, int)):
             self._depths[key] = value
         else:
@@ -170,17 +169,17 @@ class ParallaxGroup:
         self,
         tex_src: str,
         pos: tuple[float, float] = (0.0, 0.0),
-        size: Optional[tuple[int, int]] = None,
+        size: tuple[int, int] | None = None,
         depth: float = 1,
         offset: tuple[float, float] = (0.0, 0.0),
         scale: float = 1.0,
         angle: float = 0.0,
         *,
         filters=(gl.NEAREST, gl.NEAREST),
-        color: Optional[tuple[int, int, int]] = None,
-        color_norm: Optional[tuple[float, float, float]] = None,
-        shader: Optional[gl.Program] = None,
-        geometry: Optional[gl.Geometry] = None,
+        color: tuple[int, int, int] | None = None,
+        color_norm: tuple[float, float, float] | None = None,
+        shader: gl.Program | None = None,
+        geometry: gl.Geometry | None = None,
     ):
         background = Background.from_file(
             tex_src,

@@ -45,9 +45,9 @@ ASTERIOD_TYPE_TINY = 1
 
 class TurningSprite(arcade.Sprite):
     """ Sprite that sets its angle to the direction it is traveling in. """
-    def update(self):
+    def update(self, delta_time=1 / 60):
         """ Move the sprite """
-        super().update()
+        super().update(delta_time)
         self.angle = -math.degrees(math.atan2(self.change_y, self.change_x))
 
 
@@ -82,7 +82,7 @@ class ShipSprite(arcade.Sprite):
         self.center_y = SCREEN_HEIGHT / 2
         self.angle = 0
 
-    def update(self):
+    def update(self, delta_time=1 / 60):
         """ Update our position and other particulars. """
 
         # Is the user spawning
@@ -145,9 +145,9 @@ class AsteroidSprite(arcade.Sprite):
         super().__init__(image_file_name, scale=scale)
         self.type = type
 
-    def update(self):
+    def update(self, delta_time=1 / 60):
         """ Move the asteroid around. """
-        super().update()
+        super().update(delta_time)
         if self.center_x < LEFT_LIMIT:
             self.center_x = RIGHT_LIMIT
         if self.center_x > RIGHT_LIMIT:
@@ -211,31 +211,41 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = ShipSprite(":resources:images/space_shooter/playerShip1_orange.png",
-                                        scale=SCALE)
+        self.player_sprite = ShipSprite(
+            ":resources:images/space_shooter/playerShip1_orange.png",
+            scale=SCALE,
+        )
         self.player_sprite_list.append(self.player_sprite)
         self.lives = 3
 
         # Set up the little icons that represent the player lives.
         cur_pos = 10
         for i in range(self.lives):
-            life = arcade.Sprite(":resources:images/space_shooter/playerLife1_orange.png",
-                                 scale=SCALE)
+            life = arcade.Sprite(
+                ":resources:images/space_shooter/playerLife1_orange.png",
+                scale=SCALE,
+            )
             life.center_x = cur_pos + life.width
             life.center_y = life.height
             cur_pos += life.width
             self.ship_life_list.append(life)
 
         # Make the asteroids
-        image_list = (":resources:images/space_shooter/meteorGrey_big1.png",
-                      ":resources:images/space_shooter/meteorGrey_big2.png",
-                      ":resources:images/space_shooter/meteorGrey_big3.png",
-                      ":resources:images/space_shooter/meteorGrey_big4.png")
+        image_list = (
+            ":resources:images/space_shooter/meteorGrey_big1.png",
+            ":resources:images/space_shooter/meteorGrey_big2.png",
+            ":resources:images/space_shooter/meteorGrey_big3.png",
+            ":resources:images/space_shooter/meteorGrey_big4.png",
+            )
         for i in range(STARTING_ASTEROID_COUNT):
             # Pick one of four random rock images
             image_no = random.randrange(4)
 
-            enemy_sprite = AsteroidSprite(image_list[image_no], scale=SCALE, type=ASTERIOD_TYPE_BIG)
+            enemy_sprite = AsteroidSprite(
+                image_list[image_no],
+                scale=SCALE,
+                type=ASTERIOD_TYPE_BIG,
+            )
 
             # Set position
             enemy_sprite.center_y = random.randrange(BOTTOM_LIMIT, TOP_LIMIT)

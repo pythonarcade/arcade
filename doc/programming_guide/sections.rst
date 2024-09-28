@@ -81,6 +81,8 @@ This is what looks like using Sections:
 
 .. code:: py
 
+    import arcade
+
     class Map(arcade.Section):
 
         # ...
@@ -103,10 +105,17 @@ This is what looks like using Sections:
 
         def __init__(self, *args, **kwargs):
             self.map_section = Map(0, 0, 700, self.window.height)
-            self.side_section = SideSpace(700, 0, 100, self.window.height)
+            self.side_section = Side(700, 0, 100, self.window.height)
 
-            self.add_section(self.map_section)
-            self.add_section(self.side_section)
+            self.sm = arcade.SectionManager()
+            self.sm.add_section(self.map_section)
+            self.sm.add_section(self.side_section)
+
+        def on_show_view(self) -> None:
+            self.sm.enable()
+
+        def on_hide_view(self) -> None:
+            self.sm.disable()
 
         # ...
 
@@ -116,8 +125,12 @@ How to work with Sections
 
 To work with sections you first need to have a :class:`~arcade.View`. Sections depend on
 Views and are handled by a special :class:`~arcade.SectionManager` inside the
-:class:`~arcade.View`. Don't worry, 99% of the time you won't need to interact with the
-:class:`~arcade.SectionManager`.
+:class:`~arcade.View`. The :class:`~arcade.SectionManager` will handle all the events and
+dispatch them to the sections. The :class:`~arcade.SectionManager` will also handle the
+drawing order of the sections.
+
+You will have to enable and disable the :class:`~arcade.SectionManager` in the :class:`~arcade.View`
+``on_show_view`` and ``on_hide_view`` methods.
 
 To create a :class:`~arcade.Section` start by inheriting from :py:class:`~arcade.Section`.
 
@@ -184,8 +197,8 @@ Properties of a :class:`~arcade.Section`:
     If True the section mouse events will receive x, y coordinates section
     related to the section dimensions and position (not related to the screen).
     **Note that although this seems very useful, section local coordinates doesn't work with
-    arcade collision methods. You can use Section ``get_xy_screen_relative`` to transform local
-    mouse coordinates to screen coordinates that work with arcade collision methods**
+    Arcade collision methods. You can use Section ``get_xy_screen_relative`` to transform local
+    mouse coordinates to screen coordinates that work with Arcade collision methods**
 
 **enabled:**
     By default all sections are enabled. This allows to tell if this particular
@@ -285,10 +298,17 @@ Lets look what this configuration may look:
             self.popup = PopUp(message='', popup_left, popup_bottom, popup_width,
                                popup_height, enabled=False, modal=True)
 
-            self.add_section(self.map)
-            self.add_section(self.menu)
-            self.add_section(self.panel)
-            self.add_section(self.popup)
+            self.sm = arcade.SectionManager()
+            self.sm.add_section(self.map)
+            self.sm.add_section(self.menu)
+            self.sm.add_section(self.panel)
+            self.sm.add_section(self.popup)
+
+        def on_show_view(self) -> None:
+            self.sm.section_manager.enable()
+
+        def on_hide_view(self) -> None:
+            self.sm.section_manager.disable()
 
         def close():
             self.popup.message = 'Are you sure you want to close the view?'
@@ -343,9 +363,6 @@ The Section Manager
 Behind the scenes, when sections are added to the :class:`~arcade.View` the
 :class:`~arcade.SectionManager` is what will handle all events instead of
 the :class:`~arcade.View` itself.
-
-You can access the :class:`~arcade.SectionManager` by accessing the ``View.section_manager``.
-Note that if you don't use Sections, the section manager inside the View will not be used nor created.
 
 Usually you won't need to work with the :class:`~arcade.SectionManager`, but there are
 some cases where you will need to work with it.

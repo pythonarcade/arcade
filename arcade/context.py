@@ -6,7 +6,7 @@ Contains pre-loaded programs
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Iterable, Optional, Sequence, Union
+from typing import Any, Iterable, Sequence
 
 import pyglet
 from PIL import Image
@@ -33,23 +33,28 @@ class ArcadeContext(Context):
     An OpenGL context implementation for Arcade with added custom features.
     This context is normally accessed through :py:attr:`arcade.Window.ctx`.
 
-    Pyglet users can use the base Context class and extend that as they please.
-
-    **This is part of the low level rendering API in arcade
-    and is mainly for more advanced usage**
-
-    :param window: The pyglet window
-    :param gc_mode: The garbage collection mode for opengl objects.
-                        ``auto`` is just what we would expect in python
-                        while ``context_gc`` (default) requires you to call ``Context.gc()``.
-                        The latter can be useful when using multiple threads when
-                        it's not clear what thread will gc the object.
+    Args:
+        window:
+            The pyglet window
+        gc_mode:
+            The garbage collection mode for OpenGL objects. ``auto`` is just
+            what we would expect in python while ``context_gc`` (default)
+            requires you to call ``Context.gc()``. The latter can be useful
+            when using multiple threads when it's not clear what thread will
+            gc the object.
+        gl_api:
+            The OpenGL API to use. By default it's set to ``gl`` which is
+            the standard OpenGL API. If you want to use OpenGL ES you can
+            set it to ``gles``.
     """
 
     atlas_size: tuple[int, int] = 512, 512
 
     def __init__(
-        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
+        self,
+        window: pyglet.window.Window,  # type: ignore
+        gc_mode: str = "context_gc",
+        gl_api: str = "gl",
     ) -> None:
         super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
 
@@ -196,7 +201,7 @@ class ArcadeContext(Context):
         )
         self.geometry_empty: Geometry = self.geometry()
 
-        self._atlas: Optional[TextureAtlasBase] = None
+        self._atlas: TextureAtlasBase | None = None
         # Global labels we modify in `arcade.draw_text`.
         # These multiple labels with different configurations are stored
         self.label_cache: dict[str, arcade.Text] = {}
@@ -223,7 +228,8 @@ class ArcadeContext(Context):
 
     def bind_window_block(self) -> None:
         """
-        Binds the projection and view uniform buffer object.
+        Binds the global projection and view uniform buffer object.
+
         This should always be bound to index 0 so all shaders
         have access to them.
         """
@@ -238,7 +244,9 @@ class ArcadeContext(Context):
     @property
     def default_atlas(self) -> TextureAtlasBase:
         """
-        The default texture atlas. This is created when arcade is initialized.
+        The default texture atlas.
+
+        This is created when arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
         is passed in the :py:class:`arcade.SpriteList` constructor.
         """
@@ -260,9 +268,10 @@ class ArcadeContext(Context):
     def viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the viewport for the currently active framebuffer.
+
         The viewport simply describes what pixels of the screen
-        OpenGL should render to. Normally it would be the size of
-        the window's framebuffer::
+        OpenGL should render to. Format is ``(x, y, width, height)``.
+        Normally it would be the size of the window's framebuffer::
 
             # 4:3 screen
             ctx.viewport = 0, 0, 800, 600
@@ -270,8 +279,6 @@ class ArcadeContext(Context):
             ctx.viewport = 0, 0, 1920, 1080
             # Using the current framebuffer size
             ctx.viewport = 0, 0, *ctx.screen.size
-
-        :type: tuple (x, y, width, height)
         """
         return self.active_framebuffer.viewport
 
@@ -284,12 +291,12 @@ class ArcadeContext(Context):
     @property
     def projection_matrix(self) -> Mat4:
         """
-        Get the current projection matrix.
-        This 4x4 float32 matrix is calculated by cameras.
+        Get or set the current projection matrix.
+
+        This 4x4 float32 matrix is usually calculated by a cameras but
+        can be modified directly if you know what you are doing.
 
         This property simply gets and sets pyglet's projection matrix.
-
-        :type: pyglet.math.Mat4
         """
         return self.window.projection
 
@@ -303,12 +310,12 @@ class ArcadeContext(Context):
     @property
     def view_matrix(self) -> Mat4:
         """
-        Get the current view matrix.
-        This 4x4 float32 matrix is calculated when setting :py:attr:`~arcade.ArcadeContext.view_matrix_2d`.
+        Get or set the current view matrix.
+
+        This 4x4 float32 matrix is usually calculated by a cameras but
+        can be modified directly if you know what you are doing.
 
         This property simply gets and sets pyglet's view matrix.
-
-        :type: pyglet.math.Mat4
         """
         return self.window.view
 
@@ -322,46 +329,58 @@ class ArcadeContext(Context):
     def load_program(
         self,
         *,
-        vertex_shader: Union[str, Path],
-        fragment_shader: Optional[Union[str, Path]] = None,
-        geometry_shader: Optional[Union[str, Path]] = None,
-        tess_control_shader: Optional[Union[str, Path]] = None,
-        tess_evaluation_shader: Optional[Union[str, Path]] = None,
-        common: Iterable[Union[str, Path]] = (),
-        defines: Optional[dict[str, Any]] = None,
-        varyings: Optional[Sequence[str]] = None,
+        vertex_shader: str | Path,
+        fragment_shader: str | Path | None = None,
+        geometry_shader: str | Path | None = None,
+        tess_control_shader: str | Path | None = None,
+        tess_evaluation_shader: str | Path | None = None,
+        common: Iterable[str | Path] = (),
+        defines: dict[str, Any] | None = None,
+        varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
         """
-        Create a new program given a file names that contain the vertex shader and
-        fragment shader. Note that fragment and geometry shader are optional for
+        Create a new program given file names that contain the vertex shader and
+        fragment shader. Note that the fragment and geometry shaders are optional
         when transform shaders are loaded.
 
-        This method also supports the resource handles.
+        This method also supports resource handles.
 
         Example::
 
-            # The most common use case if having a vertex and fragment shader
+            # The most common use case is having a vertex and fragment shader
             program = window.ctx.load_program(
                 vertex_shader="vert.glsl",
                 fragment_shader="frag.glsl",
             )
 
-        :param vertex_shader: path to vertex shader
-        :param fragment_shader: path to fragment shader (optional)
-        :param geometry_shader: path to geometry shader (optional)
-        :param tess_control_shader: Tessellation Control Shader
-        :param tess_evaluation_shader: Tessellation Evaluation Shader
-        :param common: Common files to be included in all shaders
-        :param defines: Substitute ``#define`` values in the source
-        :param varyings: The name of the out attributes in a transform shader.
-                                                 This is normally not necessary since we auto detect them,
-                                                 but some more complex out structures we can't detect.
-        :param varyings_capture_mode: The capture mode for transforms.
-                                          ``"interleaved"`` means all out attribute will be written to a single buffer.
-                                          ``"separate"`` means each out attribute will be written separate buffers.
-                                          Based on these settings the `transform()` method will accept a single
-                                          buffer or a list of buffer.
+        Args:
+            vertex_shader:
+                Path to the vertex shader.
+            fragment_shader (optional):
+                Path to the fragment shader (optional).
+            geometry_shader (optional):
+                Path to the geometry shader (optional).
+            tess_control_shader (optional):
+                Tessellation Control Shader.
+            tess_evaluation_shader (optional):
+                Tessellation Evaluation Shader.
+            common (optional):
+                Common files to be included in all shaders.
+            defines (optional):
+                Substitute `#define` values in the source.
+            varyings (optional):
+                The name of the out attributes in a transform shader.
+                This is normally not necessary since we auto detect them,
+                but some more complex out structures we can't detect.
+            varyings_capture_mode (optional):
+                The capture mode for transforms.
+
+                Based on these settings, the `transform()` method will accept a single
+                buffer or a list of buffers.
+
+                - ``"interleaved"`` means all out attributes will be written to a single buffer.
+                - ``"separate"`` means each out attribute will be written to separate buffers.
         """
         from arcade.resources import resolve
 
@@ -402,7 +421,7 @@ class ArcadeContext(Context):
         )
 
     def load_compute_shader(
-        self, path: Union[str, Path], common: Iterable[Union[str, Path]] = ()
+        self, path: str | Path, common: Iterable[str | Path] = ()
     ) -> ComputeShader:
         """
         Loads a compute shader from file. This methods supports
@@ -412,8 +431,11 @@ class ArcadeContext(Context):
 
             ctx.load_compute_shader(":shader:compute/do_work.glsl")
 
-        :param path: Path to texture
-        :param common: Common source injected into compute shader
+        Args:
+            path:
+                Path to texture
+            common (optional):
+                Common sources injected into compute shader
         """
         from arcade.resources import resolve
 
@@ -426,18 +448,18 @@ class ArcadeContext(Context):
 
     def load_texture(
         self,
-        path: Union[str, Path],
+        path: str | Path,
         *,
         flip: bool = True,
         build_mipmaps: bool = False,
-        internal_format: Optional[int] = None,
+        internal_format: int | None = None,
         compressed: bool = False,
     ) -> Texture2D:
         """
         Loads and creates an OpenGL 2D texture.
         Currently, all textures are converted to RGBA for simplicity.
 
-        Example::
+        Examples::
 
             # Load a texture in current working directory
             texture = window.ctx.load_texture("background.png")
@@ -452,13 +474,19 @@ class ArcadeContext(Context):
                 compressed=True,
             )
 
-        :param path: Path to texture
-        :param flip: Flips the image upside down
-        :param build_mipmaps: Build mipmaps for the texture
-        :param internal_format: The internal format of the texture. This can be used to
-            override the default internal format when using sRGBA or compressed textures.
-        :param compressed: If the internal format is a compressed format meaning your
-            texture will be compressed by the GPU.
+        Args:
+            path:
+                Path to texture
+            flip:
+                Flips the image upside down. Default is ``True``.
+            build_mipmaps:
+                Build mipmaps for the texture. Default is ``False``.
+            internal_format (optional):
+                The internal format of the texture. This can be used to override
+                the default internal format when using sRGBA or compressed textures.
+            compressed (optional):
+                If the internal format is a compressed format meaning your
+                texture will be compressed by the GPU.
         """
         from arcade.resources import resolve
 
@@ -493,9 +521,10 @@ class ArcadeContext(Context):
 
         Example::
 
-            #include :my_shader:lib/common.glsl
+            #include :my_resource_handle:lib/common.glsl
 
-        :param source: Shader
+        Args:
+            source: The shader source code
         """
         from arcade.resources import resolve
 
@@ -516,9 +545,15 @@ class ArcadeContext(Context):
         """
         Shortcut method for reading data from a framebuffer and converting it to a PIL image.
 
-        :param fbo: Framebuffer to get image from
-        :param components: Number of components to read
-        :param flip: Flip the image upside down
+        Args:
+            fbo:
+                Framebuffer to get image from
+            components:
+                Number of components to read. Default is 4 (RGBA).
+                Valid values are 1, 2, 3, 4.
+            flip:
+                Flip the image upside down. This is useful because OpenGL has the
+                origin at the bottom left corner while PIL has it at the top left.
         """
         mode = "RGBA"[:components]
         image = Image.frombuffer(

@@ -1,5 +1,6 @@
 """
-This submodule has functions that control opening, closing, rendering, and otherwise managing windows.
+This submodule has functions that control opening, closing, rendering,
+and otherwise managing windows.
 It also has commands for scheduling pauses and scheduling interval functions.
 """
 
@@ -7,7 +8,7 @@ from __future__ import annotations
 
 import gc
 import os
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
 import pyglet
 
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from arcade import Window
 
 
-_window: Optional["Window"] = None
+_window: Window | None = None
 
 __all__ = [
     "get_display_size",
@@ -41,8 +42,10 @@ def get_display_size(screen_id: int = 0) -> tuple[int, int]:
 
     The size of the primary monitor is returned by default.
 
-    :param screen_id: The screen number
-    :return: Tuple containing the width and height of the screen
+    Args:
+        screen_id: The screen number
+    Returns:
+        Tuple containing the width and height of the screen
     """
     display = pyglet.display.Display()
     screen = display.get_screens()[screen_id]
@@ -63,11 +66,12 @@ def get_window() -> "Window":
     return _window
 
 
-def set_window(window: Optional["Window"]) -> None:
+def set_window(window: Window | None) -> None:
     """
     Set a handle to the current window.
 
-    :param window: Handle to the current window.
+    Args:
+        window: Handle to the current window.
     """
     global _window
     _window = window
@@ -96,11 +100,12 @@ def close_window() -> None:
 def run():
     """
     Run the main loop.
-    After the window has been set up, and the event hooks are in place, this is usually one of the last
-    commands on the main program. This is a blocking function starting pyglet's event loop
-    meaning it will start to dispatch events such as ``on_draw`` and ``on_update``.
-    """
 
+    After the window has been set up, and the event hooks are in place,
+    this is usually one of the last commands on the main program.
+    This is a blocking function starting pyglet's event loop meaning
+    it will start to dispatch events such as ``on_draw`` and ``on_update``.
+    """
     window = get_window()
 
     # Used in some unit test
@@ -189,8 +194,12 @@ def start_render(pixelated=False, blend=True) -> None:
 
     A few configuration options are available in this function.
 
-    :param pixelated: If True, the buffer will be be pixelated when resized. Otherwise, it will be smooth.
-    :param blend: If alpha blending
+    Args:
+        pixelated:
+            If True, the buffer will be be pixelated when resized.
+            Otherwise, it will be smooth.
+        blend:
+            If alpha blending
     """
     from arcade.start_finish_data import StartFinishRenderData
 
@@ -245,7 +254,8 @@ def set_background_color(color: RGBA255) -> None:
         # Specify RGB value directly (red)
         arcade.set_background_color((255, 0, 0))
 
-    :param RGBA255: List of 3 or 4 values in RGB/RGBA format.
+    Args:
+        color: List of 3 or 4 values in RGB/RGBA format.
     """
     get_window().background_color = Color.from_iterable(color)
 
@@ -272,8 +282,11 @@ def schedule(function_pointer: Callable, interval: float):
         arcade.schedule(some_action, 1)
         # Unschedule
 
-    :param function_pointer: Pointer to the function to be called.
-    :param interval: Interval to call the function (float or integer)
+    Args:
+        function_pointer:
+            Pointer to the function to be called.
+        interval:
+            Interval to call the function (float or integer)
     """
     pyglet.clock.schedule_interval(function_pointer, interval)
 
@@ -290,7 +303,8 @@ def unschedule(function_pointer: Callable):
         arcade.schedule(some_action, 1)
         arcade.unschedule(some_action)
 
-    :param function_pointer: Pointer to the function to be unscheduled.
+    Args:
+        function_pointer: Pointer to the function to be unscheduled.
     """
     pyglet.clock.unschedule(function_pointer)
 
@@ -310,7 +324,10 @@ def schedule_once(function_pointer: Callable, delay: float):
         # Call the function once after 1 second
         arcade.schedule_one(some_action, 1)
 
-    :param function_pointer: Pointer to the function to be called.
-    :param delay: Delay in seconds
+    Args:
+        function_pointer:
+            Pointer to the function to be called.
+        delay:
+            Delay in seconds
     """
     pyglet.clock.schedule_once(function_pointer, delay)
