@@ -1102,6 +1102,10 @@ class SpriteList(Generic[SpriteType]):
                 atlas_texture.filter = self.DEFAULT_TEXTURE_FILTER
 
         self.program["spritelist_color"] = self._color
+
+        # Control center pixel interpolation:
+        # 0.0 = raw interpolation using texture corners
+        # 1.0 = center pixel interpolation
         if self.ctx.NEAREST in atlas_texture.filter:
             self.program.set_uniform_safe("uv_offset_bias", 0.0)
         else:
