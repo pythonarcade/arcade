@@ -532,7 +532,18 @@ class Text:
 
     @position.setter
     def position(self, point: Point):
-        self._label.position = point
+        try:
+            x, y, *_extra = point
+            len_extra = len(_extra)
+            if len_extra > 1:
+                raise ValueError()
+            elif len_extra == 1:
+                z = _extra[0]
+            else:
+                z = 0
+        except ValueError:
+            raise ValueError("Point must be an XY coordinate or XYZ coordinate.")
+        self._label.position = x, y, z
 
 
 def draw_text(
@@ -725,6 +736,7 @@ def draw_text(
             text=str(text),
             x=start_x,
             y=start_y,
+            z=0,
             font_name=adjusted_font,
             font_size=font_size,
             anchor_x=anchor_x,
@@ -742,7 +754,7 @@ def draw_text(
     if label.text != text:
         label.text = str(text)
     if label.x != start_x or label.y != start_y:
-        label.position = start_x, start_y
+        label.position = start_x, start_y, label.z
     if label.color != color:
         label.color = color
 
