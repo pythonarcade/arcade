@@ -89,8 +89,7 @@ class AtlasRegion:
             # Width and height
             _width = self.width / atlas.width
             _height = self.height / atlas.height
-            # Half pixel correction
-            hp_x, hp_y = 0.5 / atlas.width, 0.5 / atlas.height
+
             # Upper left corner. Note that are mapping the texture upside down and corners
             # are named as from the vertex position point of view.
             ul_x, ul_y = self.x / atlas.width, self.y / atlas.height
@@ -98,17 +97,17 @@ class AtlasRegion:
             # upper_left, upper_right, lower_left, lower_right
             self.texture_coordinates = (
                 # upper_left
-                ul_x + hp_x,
-                ul_y + hp_y,
+                ul_x,
+                ul_y,
                 # upper_right
-                ul_x + _width - hp_x,
-                ul_y + hp_y,
+                ul_x + _width,
+                ul_y,
                 # lower_left
-                ul_x + hp_x,
-                ul_y + _height - hp_y,
+                ul_x,
+                ul_y + _height,
                 # lower_right
-                ul_x + _width - hp_x,
-                ul_y + _height - hp_y,
+                ul_x + _width,
+                ul_y + _height,
             )
 
     def verify_image_size(self, image_data: ImageData):

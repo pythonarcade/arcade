@@ -35,6 +35,12 @@ And disable it with :py:meth:`~arcade.gui.UIManager.disable()` within :py:meth:`
 
 To draw the GUI, call :py:meth:`~arcade.gui.UIManager.draw` within the :py:meth:`~arcade.View.on_draw` method.
 
+The :py:class`~arcade.gui.UIView` class is a subclass of :py:class:`~arcade.View` and provides
+a convenient way to use the GUI. It instanciates a :py:class:`~arcade.gui.UIManager` which can be accessed
+via the :py:attr:`~arcade.gui.UIView.ui` attribute.
+It automatically enables and disables the
+:py:class:`~arcade.gui.UIManager` when the view is shown or hidden.
+
 
 UIWidget
 ````````
@@ -108,8 +114,8 @@ Widgets are positioned and then rendered into a framebuffer (something like a wi
 which is only updated if a widget changed and requested rendering
 (via :py:meth:`~arcade.gui.UIWidget.trigger_render` or :py:meth:`~arcade.gui.UIWidget.trigger_full_render`).
 
-During :py:meth:`~arcade.gui.UIManager.draw`, will check if updates are required and
-finally draws on screen.
+The :py:class:`~arcade.gui.UIManager` `draw` method, will check if updates are required and
+finally draws the framebuffer on screen.
 
 Layouting and Rendering
 ```````````````````````

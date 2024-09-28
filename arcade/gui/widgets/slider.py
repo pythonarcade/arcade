@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 from typing import Mapping, Optional, Union
@@ -50,7 +51,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
 
     """
 
-    value = Property(0)
+    value = Property(0.0)
 
     def __init__(
         self,
@@ -98,7 +99,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         """Provides the x coordinate for the given value."""
 
         x = self.content_rect.left
-        val = (value - self.min_value) / self.max_value
+        val = (value - self.min_value) / (self.max_value - self.min_value)
         return x + self._cursor_width + val * (self.content_width - 2 * self._cursor_width)
 
     @property
@@ -172,6 +173,9 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         Returns: True if event was handled, False otherwise.
 
         """
+        if self.disabled:
+            return EVENT_UNHANDLED
+
         if super().on_event(event):
             return EVENT_HANDLED
 
@@ -179,7 +183,8 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
             if self.pressed:
                 old_value = self.value
                 self._thumb_x = event.x
-                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))  # type: ignore
+                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
+                return EVENT_HANDLED
 
         return EVENT_UNHANDLED
 
@@ -195,7 +200,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         """
         old_value = self.value
         self._thumb_x = event.x
-        self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))  # type: ignore
+        self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
 
     def on_change(self, event: UIOnChangeEvent):
         """To be implemented by the user, triggered when the cursor's value is changed.
@@ -233,7 +238,7 @@ class UISliderStyle(UIStyleBase):
 class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     """A simple slider.
 
-    A slider contains of a horizontal track and a thumb.
+    A slider consists of a horizontal track and a thumb.
     The thumb can be moved along the track to set the value of the slider.
 
     Use the `on_change` event to get notified about value changes.
@@ -288,7 +293,7 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[Mapping[str, UISliderStyle], None] = None,
+        style: Union[dict[str, UISliderStyle], None] = None,
         **kwargs,
     ):
         super().__init__(
@@ -325,6 +330,9 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     @override
     def _render_track(self, surface: Surface):
         style = self.get_current_style()
+        if style is None:
+            warnings.warn(f"No style found for state {self.get_current_state()}", UserWarning)
+            return
 
         bg_slider_color = style.get("unfilled_track", UISlider.UIStyle.unfilled_track)
         fg_slider_color = style.get("filled_track", UISlider.UIStyle.filled_track)
@@ -355,6 +363,9 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
     @override
     def _render_thumb(self, surface: Surface):
         style = self.get_current_style()
+        if style is None:
+            warnings.warn(f"No style found for state {self.get_current_state()}", UserWarning)
+            return
 
         border_width = style.get("border_width", UISlider.UIStyle.border_width)
         cursor_color = style.get("bg", UISlider.UIStyle.bg)
@@ -405,7 +416,11 @@ class UITextureSlider(UISlider):
 
     @override
     def _render_track(self, surface: Surface):
-        style: UISliderStyle = self.get_current_style()  # type: ignore
+        style = self.get_current_style()
+        if style is None:
+            warnings.warn(f"No style found for state {self.get_current_state()}", UserWarning)
+            return
+
         surface.draw_texture(0, 0, self.width, self.height, self._track_tex)
 
         # TODO accept these as constructor params
@@ -416,13 +431,14 @@ class UITextureSlider(UISlider):
         slider_bottom = (self.height - slider_height) // 2
 
         # slider
-        arcade.draw_lbwh_rectangle_filled(
-            slider_left_x - self.left,
-            slider_bottom,
-            cursor_center_x - slider_left_x,
-            slider_height,
-            style.filled_track,
-        )
+        if style.filled_track:
+            arcade.draw_lbwh_rectangle_filled(
+                slider_left_x - self.left,
+                slider_bottom,
+                cursor_center_x - slider_left_x,
+                slider_height,
+                style.filled_track,
+            )
 
     @override
     def _render_thumb(self, surface: Surface):

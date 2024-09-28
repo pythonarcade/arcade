@@ -197,9 +197,11 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         input_text_widget = arcade.gui.UIInputText(text=input_text, width=250).with_border()
 
         # Load the on-off textures.
-        on_texture = arcade.load_texture(":resources:gui_basic_assets/toggle/circle_switch_on.png")
+        on_texture = arcade.load_texture(
+            ":resources:gui_basic_assets/simple_checkbox/circle_on.png"
+        )
         off_texture = arcade.load_texture(
-            ":resources:gui_basic_assets/toggle/circle_switch_off.png"
+            ":resources:gui_basic_assets/simple_checkbox/circle_off.png"
         )
 
         # Create the on-off toggle and a label

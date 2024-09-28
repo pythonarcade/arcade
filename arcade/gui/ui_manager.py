@@ -101,7 +101,7 @@ class UIManager(EventDispatcher):
         self._render_to_surface_camera = arcade.Camera2D()
         # this camera is used for rendering the UI and should not be changed by the user
 
-        self.register_event_type("on_event")  # type: ignore  # https://github.com/pyglet/pyglet/pull/1173  # noqa
+        self.register_event_type("on_event")
 
     def add(self, widget: W, *, index=None, layer=0) -> W:
         """Add a widget to the :class:`UIManager`.
@@ -447,16 +447,31 @@ class UIManager(EventDispatcher):
         return LBWH(0, 0, *self.window.get_size())
 
     def debug(self):
-        """Walks through all widgets of a UIManager and prints out the rect"""
+        """Walks through all widgets of a UIManager and prints out layout information."""
         for index, layer in self.children.items():
             print(f"Layer {index}")
+            # print table headers, widget, rect, size_hint, size_hint_min, size_hint_max
+            print(
+                f"{'Widget':<60}|"
+                f"{'Rect (LBWH)':<30}|"
+                f"{'Size Hint':<12}|"
+                f"{'Size Hint Min':<12}|"
+                f"{'Size Hint Max':<12}"
+            )
             for child in reversed(layer):
                 self._debug(child, prefix="  ")
         return
 
     @staticmethod
     def _debug(element, prefix=""):
-        print(f"{prefix}{element.__class__}:{element.rect}")
+        print(
+            f"{prefix}{element}".ljust(60),
+            f"{tuple(round(v, 2) for v in element.rect.lbwh)}".ljust(30),
+            f"{element.size_hint}".ljust(12),
+            f"{element.size_hint_min}".ljust(12),
+            f"{element.size_hint_max}".ljust(12),
+            sep="|",
+        )
         if isinstance(element, UIWidget):
             for child in element.children:
                 UIManager._debug(child, prefix=prefix + "  ")

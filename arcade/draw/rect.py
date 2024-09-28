@@ -56,18 +56,20 @@ def draw_texture_rect(
         ctx.disable(ctx.BLEND)
 
     atlas = atlas or ctx.default_atlas
+    program = ctx.sprite_program_single
 
     texture_id, _ = atlas.add(texture)
     if pixelated:
         atlas.texture.filter = gl.NEAREST, gl.NEAREST
+        program.set_uniform_safe("uv_offset_bias", 0.0)
     else:
         atlas.texture.filter = gl.LINEAR, gl.LINEAR
+        program.set_uniform_safe("uv_offset_bias", 1.0)
 
     atlas.texture.use(unit=0)
     atlas.use_uv_texture(unit=1)
 
     geometry = ctx.geometry_empty
-    program = ctx.sprite_program_single
     program["pos"] = rect.center_x, rect.center_y, 0
     program["color"] = color.normalized
     program["size"] = rect.width, rect.height

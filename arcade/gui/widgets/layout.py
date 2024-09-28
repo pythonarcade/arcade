@@ -418,6 +418,9 @@ class UIBoxLayout(UILayout):
             # update child rect
             child.rect = new_rect
 
+    def __str__(self):
+        return f"UIBoxLayout(vertical={self.vertical})"
+
 
 class UIGridLayout(UILayout):
     """Place widgets in a grid.
@@ -829,7 +832,7 @@ class _C:
     min: float
     max: float | None
     hint: float
-    final_size: float = 0.0
+    _final_size: float = 0.0
     """The final size of the entry which will be returned by the algorithm"""
 
     @staticmethod
@@ -880,9 +883,9 @@ def _box_orthogonal_algorithm(constraints: list[_C], container_size: float) -> L
         size = container_size * c.hint
         c.max = container_size if c.max is None else c.max
 
-        c.final_size = min(max(c.min, size), c.max)  # clamp width to min and max values
+        c._final_size = min(max(c.min, size), c.max)  # clamp width to min and max values
 
-    return [c.final_size for c in constraints]
+    return [c._final_size for c in constraints]
 
 
 def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[float]:
@@ -897,6 +900,12 @@ def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[fl
     Returns:
         List of tuples with the sizes of each element
     """
+    # adjust hint value based on min and max values
+    for c in constraints:
+        c.hint = max(c.min / container_size, c.hint)
+        if c.max is not None:
+            c.hint = min(c.hint, c.max / container_size)
+
     # normalize hint - which will cover cases, where the sum of the hints is greater than 1.
     # children will get a relative size based on their hint
     total_hint = sum(c.hint for c in constraints)
@@ -904,35 +913,28 @@ def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[fl
         for c in constraints:
             c.hint /= total_hint
 
+        # adjust hint value based on min values, again
+        for c in constraints:
+            c.hint = max(c.min / container_size, c.hint)
+
+    # check if the total hint is greater than 1, again (caused by reapplied min values)
+    total_hint = sum(c.hint for c in constraints)
+    if total_hint > 1:
+        # calculate the total hint value of all adjustable constraints
+        total_adjustable_hint = sum(c.hint - c.min / container_size for c in constraints)
+
+        # check if we have any adjustable constraints
+        if total_adjustable_hint > 0:
+            # reduce hint values of adjustable constraints to fit the container size
+            required_adjustment = total_hint - 1
+            possible_adjustment = min(required_adjustment, total_adjustable_hint)
+            for c in constraints:
+                adjustable_size = c.hint - c.min / container_size
+                c.hint -= possible_adjustment * (adjustable_size / total_adjustable_hint)
+
     # calculate the width of each entry based on the hint
     for c in constraints:
-        size = container_size * c.hint
-        c.min = c.min or 0
-        max_value = container_size if c.max is None else c.max
+        c._final_size = container_size * c.hint
 
-        c.final_size = min(max(c.min, size), max_value)  # clamp width to min and max values
-
-    # ---- Constantin
-    # calculate scaling factor
-    total_size = sum(c.final_size for c in constraints)
-    growth_diff = total_size - sum(c.min for c in constraints)  # calculate available space
-    total_adjustable_size = container_size - sum(c.min for c in constraints)
-
-    if growth_diff != 0:
-        scaling_factor = total_adjustable_size / growth_diff
-
-        # adjust final_width based on scaling factor if scaling factor is less than 1
-        if scaling_factor < 1:
-            for c in constraints:
-                c.final_size *= scaling_factor
-
-    # recheck min constraints
-    for c in constraints:
-        c.final_size = max(c.final_size, c.min)
-
-    # recheck max constraints
-    for c in constraints:
-        max_value = container_size if c.max is None else c.max
-        c.final_size = min(c.final_size, max_value)
-
-    return [c.final_size for c in constraints]
+    # return the calculated sizes, round to avoid floating point errors
+    return [round(c._final_size, 5) for c in constraints]

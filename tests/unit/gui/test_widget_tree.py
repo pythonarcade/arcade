@@ -43,6 +43,19 @@ def test_widget_remove_child():
     assert child not in parent.children
 
 
+def test_widget_remove_child_returns_kwargs():
+    # GIVEN
+    parent = UIDummy()
+    child = UIDummy()
+
+    # WHEN
+    parent.add(child, key="value")
+    kwargs = parent.remove(child)
+
+    # THEN
+    assert kwargs == {"key": "value"}
+
+
 def test_widget_clear_children():
     # GIVEN
     parent = UIDummy()
