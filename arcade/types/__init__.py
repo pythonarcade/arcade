@@ -250,11 +250,14 @@ class TiledObject(NamedTuple):
     type: str | None = None
     """Type of the object"""
 
+
 # Stolen from Pylance
 class SupportsDunderLT(Protocol[_T_contra]):
     def __lt__(self, other: _T_contra, /) -> bool: ...
 
+
 class SupportsDunderGT(Protocol[_T_contra]):
     def __gt__(self, other: _T_contra, /) -> bool: ...
+
 
 SupportsRichComparison = Union[SupportsDunderLT[Any], SupportsDunderGT[Any]]
