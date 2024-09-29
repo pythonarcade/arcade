@@ -31,7 +31,8 @@ from arcade import (
     get_window,
 )
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
-from arcade.types import Color as ArcadeColor, RGBA255
+from arcade.types import RGBA255
+from arcade.types import Color as ArcadeColor
 
 if TYPE_CHECKING:
     from arcade import DefaultTextureAtlas, Texture

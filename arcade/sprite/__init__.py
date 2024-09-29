@@ -48,9 +48,8 @@ def load_animated_gif(resource_name: str | Path) -> TextureAnimationSprite:
 
     # Pillow doc recommends testing for the is_animated attribute as of 10.0.0
     # https://pillow.readthedocs.io/en/stable/deprecations.html#categories
-    if (
-        not getattr(image_object, "is_animated", False)
-        or not (n_frames := getattr(image_object, "n_frames", 0))
+    if not getattr(image_object, "is_animated", False) or not (
+        n_frames := getattr(image_object, "n_frames", 0)
     ):
         raise TypeError(f"The file {resource_name} is not an animated gif.")
 

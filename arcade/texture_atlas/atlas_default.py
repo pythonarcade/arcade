@@ -13,8 +13,8 @@ from typing import (
 from weakref import WeakSet, WeakValueDictionary, finalize
 
 import PIL.Image
-from PIL.Image import Resampling
 from PIL import Image, ImageDraw
+from PIL.Image import Resampling
 from pyglet.image.atlas import (
     Allocator,
     AllocatorException,

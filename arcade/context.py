@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Any, Iterable, Sequence
 
 import pyglet
-
 from PIL import Image
 from pyglet import gl
 from pyglet.graphics.shader import UniformBufferObject

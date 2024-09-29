@@ -9,7 +9,7 @@ from pymunk.autogeometry import (
     simplify_curves,
 )
 
-from arcade.types import Point2, Point2List, RGBA255
+from arcade.types import RGBA255, Point2, Point2List
 
 from .base import HitBoxAlgorithm
 
@@ -121,9 +121,7 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
             of :py:class:`~pymunk.autogeometry.PolylineSet` of line sets.
         """
         if image.mode != "RGBA":
-            raise ValueError(
-                "Image's mode!='RGBA'! Try using image.convert(\"RGBA\")."
-            )
+            raise ValueError("Image's mode!='RGBA'! Try using image.convert(\"RGBA\").")
 
         def sample_func(sample_point: Point2) -> int:
             """Function used to sample image."""
