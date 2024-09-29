@@ -572,6 +572,20 @@ class Rect(NamedTuple):
         x, y = uv
         return Vec2(self.left + x * self.width, self.bottom + y * self.height)
 
+    def get_relative_to_anchor(self, point: Point2, anchor: Vec2 = AnchorPoint.CENTER) -> Vec2:
+        """Convert a point to a relative offset from the anchor point.
+
+        Args:
+            point:
+                The point to make relative.
+            anchor:
+                The anchor point to make the point relative to.
+        """
+        x, y = point
+        rx = x - (self.left + (self.width * anchor.x))
+        ry = y - (self.bottom + (self.height * anchor.y))
+        return Vec2(rx, ry)
+
     def to_points(self) -> tuple[Vec2, Vec2, Vec2, Vec2]:
         """Return a new :py:class:`tuple` of this rectangle's corner points.
 
