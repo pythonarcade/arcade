@@ -47,7 +47,8 @@ def clamp(
         low (float): The lower bound
         high (float): The upper bound
     """
-    return high if a > high else max(a, low)  # type: ignore - Python will deal with > unsupported by falling back on <.
+    # Python will deal with > unsupported by falling back on <.
+    return high if a > high else max(a, low)  # type: ignore
 
 
 # This TypeVar helps match v1 and v2 as the same type below in lerp's
