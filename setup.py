@@ -13,7 +13,7 @@ def get_long_description() -> str:
         return f.read()
 
 # Testing and code inspection tools
-REQUIREMENTS_DEV = [
+REQUIREMENTS_TESTS = [
     "pytest",
     "flake8",
     "mypy",
@@ -61,8 +61,9 @@ setup(
         "pytiled-parser==2.2.0",
     ],
     extras_require={
-        "dev": REQUIREMENTS_DEV + REQUIREMENTS_DOCS,
+        "tests": REQUIREMENTS_TESTS,
         "docs": REQUIREMENTS_DOCS,
+        "dev": REQUIREMENTS_TESTS + REQUIREMENTS_DOCS,
     },
     packages=find_namespace_packages(
         include=["arcade", "arcade.*"],
