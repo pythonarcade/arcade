@@ -26,7 +26,7 @@ from __future__ import annotations
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable, Protocol
+from typing import Any, NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable, Protocol
 
 from pytiled_parser import Properties
 
@@ -249,3 +249,12 @@ class TiledObject(NamedTuple):
     """Name of the object"""
     type: str | None = None
     """Type of the object"""
+
+# Stolen from Pylance
+class SupportsDunderLT(Protocol[_T_contra]):
+    def __lt__(self, other: _T_contra, /) -> bool: ...
+
+class SupportsDunderGT(Protocol[_T_contra]):
+    def __gt__(self, other: _T_contra, /) -> bool: ...
+
+SupportsRichComparison = Union[SupportsDunderLT[Any], SupportsDunderGT[Any]]
