@@ -21,6 +21,11 @@ def test_ctx(ctx):
     assert ctx.blend_func == ctx.BLEND_PREMULTIPLIED_ALPHA
 
 
+def test_extensions(ctx):
+    assert isinstance(ctx.extensions, set)
+    assert len(ctx.extensions) > 0
+
+
 def test_viewport(ctx):
     vp = 0, 0, 100, 100
     ctx.viewport = vp
