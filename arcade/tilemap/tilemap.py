@@ -700,7 +700,9 @@ class TileMap:
         )
 
         if layer.transparent_color:
-            # Returned object is a sequence-like object per the pillow doc
+            # The pillow source doesn't annotate a return type for this method, but:
+            # 1. The docstring does specify the returned object is sequence-like
+            # 2. We convert to RGBA mode implicitly in load_or_get_texture above
             data: Sequence[RGBA255] = my_texture.image.getdata()  # type:ignore
 
             target = layer.transparent_color
