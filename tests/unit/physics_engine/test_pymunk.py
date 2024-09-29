@@ -1,5 +1,9 @@
+import pymunk.autogeometry
 import pytest
+from PIL import Image
+
 import arcade
+from arcade.hitbox import PymunkHitBoxAlgorithm
 
 
 def test_pymunk():
@@ -55,3 +59,38 @@ def test_pymunk_add_sprite_moment_backwards_compatibility(moment_of_inertia_arg_
     set_moment = physics_engine.get_physics_object(sprite).body.moment
 
     assert set_moment == arcade.PymunkPhysicsEngine.MOMENT_INF
+
+
+def test_pymunk_hitbox_algorithm_trace_image_only_takes_rgba():
+    """Test whether non-RGBA modes raise a ValueError.
+
+    We expect the hitbox algo to take RGBA image because the alpha
+    channel is how we determine whether a pixel is empty. See the
+    pillow doc for more on the modes offered:
+    https://pillow.readthedocs.io/en/stable/handbook/concepts.html#modes
+    """
+
+    algo = PymunkHitBoxAlgorithm()
+    def mode(m: str) -> Image.Image:
+        return Image.new(
+            m, # type: ignore
+            (10, 10), 0)
+
+    with pytest.raises(ValueError):
+        algo.trace_image(mode("1"))
+
+    with pytest.raises(ValueError):
+        algo.trace_image(mode("L"))
+
+    with pytest.raises(ValueError):
+        algo.trace_image(mode("P"))
+
+    with pytest.raises(ValueError):
+        algo.trace_image(mode("RGB"))
+
+    with pytest.raises(ValueError):
+        algo.trace_image(mode("HSV"))
+
+    assert isinstance(
+        algo.trace_image(mode("RGBA")), pymunk.autogeometry.PolylineSet)
+
