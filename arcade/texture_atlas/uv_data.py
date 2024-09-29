@@ -29,18 +29,21 @@ class UVData:
 
     - Greatly increase the performance of the texture atlas
     - Greatly simplify the system
-    - Allow images to move freely around the atlas without having to update the vertex buffers. \
-      Meaning we can allow re-building and re-sizing. The resize can even \
+    - Allow images to move freely around the atlas without having to update the vertex buffers.
+      Meaning we can allow re-building and re-sizing. The resize can even
       be done in the GPU by rendering the old atlas into the new one.
     - Avoid spending lots of time packing texture data into buffers
     - Avoid spending lots of buffer memory
 
-    :param ctx: The arcade context
-    :param capacity: The number of textures the atlas keeps track of.
-                     This is multiplied by 4096. Meaning capacity=2 is 8192 textures.
+    Args:
+        ctx:
+            The arcade context
+        capacity:
+            The number of textures the atlas keeps track of.
+            This is multiplied by 4096. Meaning capacity=2 is 8192 textures.
     """
 
-    def __init__(self, ctx: "ArcadeContext", capacity: int):
+    def __init__(self, ctx: ArcadeContext, capacity: int):
         self._ctx = ctx
         self._capacity = capacity
         self._num_slots = UV_TEXTURE_WIDTH * capacity
@@ -60,7 +63,7 @@ class UVData:
         self._slots: Dict[str, int] = dict()
         self._slots_free = deque(i for i in range(0, self._num_slots))
 
-    def clone_with_slots(self) -> "UVData":
+    def clone_with_slots(self) -> UVData:
         """
         Clone the UVData with the current slot data. The UV data itself
         and the opengl texture is not cloned.
@@ -94,9 +97,8 @@ class UVData:
         """
         Get the slot for a texture by name or raise an exception
 
-        :param name: The name of the texture
-        :return: The slot
-        :raises Exception: If the texture is not found
+        Args:
+            name: The name of the texture
         """
         slot = self._slots.get(name)
         if slot is None:
@@ -109,8 +111,8 @@ class UVData:
         Getting existing slots is useful when the resize or re-build
         the atlas.
 
-        :param name: The name of the texture
-        :return: The slot or a free slot
+        Args:
+            name: The name of the texture
         """
         slot = self._slots.get(name)
         if slot is not None:
@@ -130,7 +132,8 @@ class UVData:
         Free a slot for a texture by name.
         If the slot is not found no action is taken
 
-        :param name: The name of the texture
+        Args:
+            name: The name of the texture
         """
         try:
             slot = self._slots.pop(name)
@@ -142,8 +145,9 @@ class UVData:
         """
         Update the texture coordinates for a slot.
 
-        :param slot: The slot to update
-        :param data: The texture coordinates
+        Args:
+            slot: The slot to update
+            data: The texture coordinates
         """
         self._data[slot * 8 : slot * 8 + 8] = array("f", data)
         self._dirty = True

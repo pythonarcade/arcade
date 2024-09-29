@@ -67,12 +67,6 @@ void main() {
     vec2 uv0, uv1, uv2, uv3;
     vec2 atlas_size = vec2(textureSize(sprite_texture, 0));
     getSpriteUVs(uv_texture, int(texture_id), uv0, uv1, uv2, uv3);
-    // TODO: Do center pixel interpolation. Revert by 0.5 pixels for now
-    vec2 half_px = 0.5 / atlas_size;
-    uv0 -= half_px;
-    uv1 += vec2(half_px.x, -half_px.y);
-    uv2 += vec2(-half_px.x, half_px.y);
-    uv3 += half_px;
 
     // Local corner offsets in pixels
     float left = start.x;

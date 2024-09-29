@@ -39,8 +39,8 @@ First we will import the arcade gui:
 
 .. literalinclude:: menu_02.py
     :caption: Importing arcade.gui
-    :lines: 4-5
-    :emphasize-lines: 2
+    :lines: 6-8
+    :emphasize-lines: 3
 
 Modify the MainView
 ~~~~~~~~~~~~~~~~~~~~
@@ -49,36 +49,38 @@ We are going to add a button to change the view. For drawing a button we would
 need a ``UIManager``.
 
 .. literalinclude:: menu_02.py
-    :caption: Intialising the Manager
-    :lines: 16-19
-    :emphasize-lines: 4
+    :caption: Initialising the Manager
+    :lines: 19-22
+    :emphasize-lines: 3
 
 After initialising the manager we need to enable it when the view is shown and
-disable it when the view is hiddien.
+disable it when the view is hidden.
 
 .. literalinclude:: menu_02.py
     :caption: Enabling the Manager
     :pyobject: MainView.on_show_view
-    :emphasize-lines: 5-6
+    :emphasize-lines: 6
 
 .. literalinclude:: menu_02.py
     :caption: Disabling the Manager
     :pyobject: MainView.on_hide_view
+    :emphasize-lines: 3
 
-We also need to draw the childrens of the menu in ``on_draw``.
+We also need to draw the children of the menu in ``on_draw``.
 
  .. literalinclude:: menu_02.py
-    :caption: Drawing Children's of the Manager
+    :caption: Drawing UI on screen
     :pyobject: MainView.on_draw
-    :emphasize-lines: 6-7
+    :emphasize-lines: 7
 
-Now we have successfully setup the manager, only thing left it to add the button.
+Now we have successfully setup the manager, we can now add a button to the view.
 We are using ``UIAnchorLayout`` to position the button. We also setup a function
 which is called when the button is clicked.
 
   .. literalinclude:: menu_02.py
+    :pyobject: MainView.__init__
     :caption: Initialising the Button
-    :lines: 21-37
+    :emphasize-lines: 8-12
 
 Initialise the Menu View
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,7 +115,10 @@ First we setup buttons for resume, starting a new game, volume, options and exit
 
 .. literalinclude:: menu_03.py
     :caption: Initialising the Buttons
-    :lines: 67-72
+    :pyobject: MenuView.__init__
+    :emphasize-lines: 6-11
+    :lines: 1-12
+
 
 Displaying the Buttons in a Grid
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,7 +128,9 @@ displayed in a grid like manner.
 
 .. literalinclude:: menu_03.py
     :caption: Setting up the Grid
-    :lines: 74-90
+    :pyobject: MenuView.__init__
+    :emphasize-lines: 14-23
+    :lines: 1-24
 
 Final code for the ``__init__`` method after these.
 
@@ -154,7 +161,7 @@ as they don't have much to explain.
 
 .. literalinclude:: menu_04.py
     :caption: Adding callback for button events 1
-    :lines: 94-107
+    :lines: 98-113
 
 Adding ``on_click`` Callback for Volume and Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -173,7 +180,7 @@ volume and options button to trigger it when they are clicked.
 
 .. literalinclude:: menu_04.py
     :caption: Adding callback for button events 2
-    :lines: 109-123
+    :lines: 113-123
 
 Program Listings
 ~~~~~~~~~~~~~~~~
@@ -197,15 +204,15 @@ later why are those parameters needed.
 
 .. literalinclude:: menu_05.py
     :caption: Editing parameters
-    :lines: 153-156
+    :lines: 161-168
 
 We also need to change accordingly the places where we have used this class i.e
 options and volume ``on_click`` event listener. The layer parameter being set
-1, means that this layer is always drawn on top i.e its the first layer.
+1, means that this layer is always drawn on top i.e.its the first layer.
 
 .. literalinclude:: menu_05.py
     :caption: Editing arguments
-    :lines: 109-131
+    :lines: 115-136
 
 Now you might be getting a little idea why we have edited the parameters but
  follow on to actually know the reason.
@@ -220,13 +227,13 @@ background color so it appears invisible.
 
 .. literalinclude:: menu_05.py
     :caption: Adding title label
-    :lines: 179-181
+    :lines: 193-195
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding title label to the layout
-    :lines: 213-215
+    :lines: 238-239
 
 
 Adding a Input Field
@@ -239,14 +246,13 @@ the title label.
 
 .. literalinclude:: menu_05.py
     :caption: Adding input field
-    :lines: 183
+    :lines: 197
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding input field to the layout
-    :lines: 213-216
-    :emphasize-lines: 4
+    :lines: 240
 
 If you paid attention when we defined the ``input_text`` variable we passed the
 ``text`` parameter with our ``input_text_default`` argument. We basically added
@@ -265,14 +271,14 @@ toggle label.
 
 .. literalinclude:: menu_05.py
     :caption: Adding toggle button
-    :lines: 189-201
+    :lines: 199-216
 
 Adding it to the widget layout. Add this line after you have added the input
 field.
 
 .. literalinclude:: menu_05.py
     :caption: Adding toggle button to the layout
-    :lines: 217
+    :lines: 241
 
 Adding a Dropdown
 ~~~~~~~~~~~~~~~~~
@@ -281,13 +287,13 @@ We add a dropdown by using ``UIDropdown``.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown
-    :lines: 203-204
+    :lines: 219-221
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown to the layout
-    :lines: 218
+    :lines: 242
 
 Adding a Slider
 ~~~~~~~~~~~~~~~
@@ -298,13 +304,13 @@ Theres a functionality to style the slider, this is also present for
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider
-    :lines: 206-207
+    :lines: 223-235
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider to the layout
-    :lines: 219-220
+    :lines: 243-244
 
 Finishing touches
 ~~~~~~~~~~~~~~~~~

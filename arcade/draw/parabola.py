@@ -14,13 +14,20 @@ def draw_parabola_filled(
     """
     Draws a filled in parabola.
 
-    :param start_x: The starting x position of the parabola
-    :param start_y: The starting y position of the parabola
-    :param end_x: The ending x position of the parabola
-    :param height: The height of the parabola
-    :param color: A 3 or 4 length tuple of 0-255 channel values
-        or a :py:class:`~arcade.types.Color` instance.
-    :param tilt_angle: The angle of the tilt of the parabola (clockwise)
+    Args:
+        start_x:
+            The starting x position of the parabola
+        start_y:
+            The starting y position of the parabola
+        end_x:
+            The ending x position of the parabola
+        height:
+            The height of the parabola
+        color:
+            A 3 or 4 length tuple of 0-255 channel values
+            or a :py:class:`~arcade.types.Color` instance.
+        tilt_angle:
+            The angle of the tilt of the parabola (clockwise)
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height
@@ -42,14 +49,22 @@ def draw_parabola_outline(
     """
     Draws the outline of a parabola.
 
-    :param start_x: The starting x position of the parabola
-    :param start_y: The starting y position of the parabola
-    :param end_x: The ending x position of the parabola
-    :param height: The height of the parabola
-    :param color: A 3 or 4 length tuple of 0-255 channel values
-        or a :py:class:`~arcade.types.Color` instance.
-    :param border_width: The width of the parabola
-    :param tilt_angle: The angle of the tilt of the parabola (clockwise)
+    Args:
+        start_x:
+            The starting x position of the parabola
+        start_y:
+            The starting y position of the parabola
+        end_x:
+            The ending x position of the parabola
+        height:
+            The height of the parabola
+        color:
+            A 3 or 4 length tuple of 0-255 channel values
+            or a :py:class:`~arcade.types.Color` instance.
+        border_width:
+            The width of the parabola
+        tilt_angle:
+            The angle of the tilt of the parabola (clockwise)
     """
     center_x = (start_x + end_x) / 2
     center_y = start_y + height

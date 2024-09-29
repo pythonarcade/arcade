@@ -377,7 +377,7 @@ class MyGame(arcade.Window):
             ]
         )
 
-        self.scene.update(["Enemies", "Bullets"])
+        self.scene.update(delta_time, ["Enemies", "Bullets"])
 
         for enemy in self.scene["Enemies"]:
             if enemy.right > enemy.boundary_right and enemy.change_x > 0:

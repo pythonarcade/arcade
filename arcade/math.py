@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import math
 import random
-from typing import Sequence, Union
+from typing import TypeVar
 
-from pyglet.math import Vec2
+from pyglet.math import Vec2, Vec3
 
-from arcade.types import AsFloat, Point, Point2
+from arcade.types import HasAddSubMul, Point, Point2
 from arcade.types.rect import Rect
 from arcade.types.vector_like import Point3
 
@@ -42,55 +42,68 @@ def clamp(a, low: float, high: float) -> float:
         a (float): The number to clamp
         low (float): The lower bound
         high (float): The upper bound
-    Returns:
-        float: The clamped number
     """
     return high if a > high else max(a, low)
 
 
-V_2D = Union[tuple[AsFloat, AsFloat], Sequence[AsFloat]]
-V_3D = Union[tuple[AsFloat, AsFloat, AsFloat], Sequence[AsFloat]]
+# This TypeVar helps match v1 and v2 as the same type below in lerp's
+# signature. If we used HasAddSubMul, they could be different.
+L = TypeVar("L", bound=HasAddSubMul)
 
 
-def lerp(v1: AsFloat, v2: AsFloat, u: float) -> float:
-    """linearly interpolate between two values
+def lerp(v1: L, v2: L, u: float) -> L:
+    """Linearly interpolate two values which support arithmetic operators.
+
+    Both ``v1`` and ``v2`` must be of compatible types and support
+    the following operators:
+
+    * ``+`` (:py:meth:`~object.__add__`)
+    * ``-`` (:py:meth:`~object.__sub__`)
+    * ``*`` (:py:meth:`~object.__mul__`)
+
+    This means that in certain cases, you may want to use another
+    function:
+
+    * For angles, use :py:func:`lerp_angle`.
+    * To convert points as arbitary sequences, use:
+
+      * :py:func:`lerp_2d`
+      * :py:func:`lerp_3d`
 
     Args:
-        v1 (float): The first value
-        v2 (float): The second value
-        u (float): The interpolation value `(0.0 to 1.0)`
-    Returns:
-        float: The interpolated value
+        v1 (HasAddSubMul): The first value
+        v2 (HasAddSubMul): The second value
+        u: The interpolation value `(0.0 to 1.0)`
     """
     return v1 + ((v2 - v1) * u)
 
 
-def lerp_2d(v1: V_2D, v2: V_2D, u: float) -> tuple[float, float]:
-    """
-    Linearly interpolate between two 2D points.
+def lerp_2d(v1: Point2, v2: Point2, u: float) -> Vec2:
+    """Linearly interpolate between two 2D points passed as sequences.
+
+    .. tip:: This function returns a :py:class:`Vec2` you can use
+             with :py:func`lerp` .
 
     Args:
-        v1 (tuple[float, float]): The first point
-        v2 (tuple[float, float]): The second point
+        v1: The first point as a sequence of 2 values.
+        v2: The second point as a sequence of 2 values.
         u (float): The interpolation value `(0.0 to 1.0)`
-    Returns:
-        tuple[float, float]: The interpolated 2D point
     """
-    return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u))
+    return Vec2(lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u))
 
 
-def lerp_3d(v1: V_3D, v2: V_3D, u: float) -> tuple[float, float, float]:
-    """
-    Linearly interpolate between two 3D points.
+def lerp_3d(v1: Point3, v2: Point3, u: float) -> Vec3:
+    """Linearly interpolate between two 3D points passed as sequences.
+
+    .. tip:: This function returns a :py:class:`Vec2` you can use
+             with :py:func`lerp`.
 
     Args:
-        v1 (tuple[float, float, float]): The first point
-        v2 (tuple[float, float, float]): The second point
+        v1: The first point as a sequence of 3 values.
+        v2: The second point as a sequence of 3 values.
         u (float): The interpolation value `(0.0 to 1.0)`
-    Returns:
-        tuple[float, float, float]: The interpolated 3D point
     """
-    return (lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
+    return Vec3(lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
 
 
 def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:
@@ -102,9 +115,6 @@ def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:
         start_angle (float): The starting angle
         end_angle (float): The ending angle
         u (float): The interpolation value (0.0 to 1.0)
-
-    Returns:
-        float: The interpolated angle
     """
     start_angle %= 360
     end_angle %= 360
@@ -124,8 +134,6 @@ def rand_in_rect(rect: Rect) -> Point2:
 
     Args:
         rect (Rect): The rectangle to calculate the point in.
-    Returns:
-        Point2: The random point in the rectangle.
     """
     return (
         random.uniform(rect.left, rect.right),
@@ -146,8 +154,6 @@ def rand_in_circle(center: Point2, radius: float) -> Point2:
     Args:
         center (Point2): The center of the circle
         radius (float): The radius of the circle
-    Returns:
-        Point2: A random point in the circle
     """
     # random angle
     angle = 2 * math.pi * random.random()
@@ -167,8 +173,6 @@ def rand_on_circle(center: Point2, radius: float) -> Point2:
     Args:
         center (Point2): The center of the circle
         radius (float): The radius of the circle
-    Returns:
-        Point2: A random point on the circle
     """
     angle = 2 * math.pi * random.random()
     return (radius * math.cos(angle) + center[0], radius * math.sin(angle) + center[1])
@@ -181,8 +185,6 @@ def rand_on_line(pos1: Point2, pos2: Point2) -> Point:
     Args:
         pos1 (Point2): The first point
         pos2 (Point2): The second point
-    Returns:
-        Point: A random point on the line
     """
     u = random.uniform(0.0, 1.0)
     return lerp_2d(pos1, pos2, u)
@@ -202,8 +204,6 @@ def rand_angle_spread_deg(angle: float, half_angle_spread: float) -> float:
     Args:
         angle (float): The angle to spread from
         half_angle_spread (float): The half angle spread
-    Returns:
-        float: A random angle
     """
     s = random.uniform(-half_angle_spread, half_angle_spread)
     return angle + s
@@ -219,8 +219,6 @@ def rand_vec_spread_deg(
         angle (float): The angle to spread from
         half_angle_spread (float): The half angle spread
         length (float): The length of the vector
-    Returns:
-        tuple[float, float]: A random vector
     """
     a = rand_angle_spread_deg(angle, half_angle_spread)
     vel = Vec2.from_polar(a, length)
@@ -239,8 +237,6 @@ def rand_vec_magnitude(
         angle (float): The angle to spread from
         lo_magnitude (float): The lower magnitude
         hi_magnitude (float): The higher magnitude
-    Returns:
-        tuple[float, float]: A random vector
     """
     mag = random.uniform(lo_magnitude, hi_magnitude)
     vel = Vec2.from_polar(angle, mag)
@@ -256,8 +252,6 @@ def get_distance(x1: float, y1: float, x2: float, y2: float) -> float:
         y1 (float): y coordinate of the first point
         x2 (float): x coordinate of the second point
         y2 (float): y coordinate of the second point
-    Returns:
-        float: Distance between the two points
     """
     return math.hypot(x1 - x2, y1 - y2)
 
@@ -278,8 +272,6 @@ def rotate_point(
         cx (float): x value of the center point you want to rotate around
         cy (float): y value of the center point you want to rotate around
         angle_degrees (float): Angle, in degrees, to rotate
-    Returns:
-        tuple[float, float]: Return rotated (x, y) pair
     """
     temp_x = x - cx
     temp_y = y - cy
@@ -307,9 +299,6 @@ def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
         y1 (float): y coordinate of the first point
         x2 (float): x coordinate of the second point
         y2 (float): y coordinate of the second point
-
-    Returns:
-        float: Angle in degrees between the two points
     """
     x_diff = x2 - x1
     y_diff = y2 - y1
@@ -325,9 +314,6 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
         y1 (float): y coordinate of the first point
         x2 (float): x coordinate of the second point
         y2 (float): y coordinate of the second point
-
-    Returns:
-        float: Angle in radians between the two points
     """
     x_diff = x2 - x1
     y_diff = y2 - y1
@@ -347,10 +333,6 @@ def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[flo
         axis (tuple[float, float, float]): The unit length vector that will be rotated around
         vector (tuple[float, float, float]): The 3-dimensional vector to be rotated
         angle (float): The angle in degrees to rotate the vector clock-wise by
-
-    Returns:
-        tuple[float, float, float]: A rotated 3-dimension vector with the same length as
-        the argument vector.
     """
     _rotation_rads = -math.radians(angle)
     p1, p2, p3 = vector

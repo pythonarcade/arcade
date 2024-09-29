@@ -18,9 +18,8 @@ class SimpleHitBoxAlgorithm(HitBoxAlgorithm):
         Given an RGBA image, this returns points that make up a hit box around it. Attempts
         to trim out transparent pixels.
 
-        :param image:
-
-        :Returns: List of points
+        Args:
+            image: Image get hit box from.
         """
         if image.mode != "RGBA":
             raise ValueError("Image mode is not RGBA. image.convert('RGBA') is needed.")

@@ -120,46 +120,52 @@ def _may_be_flip(tile: pytiled_parser.Tile, texture: Texture) -> Texture:
 class TileMap:
     """
     Class that represents a fully parsed and loaded map from Tiled.
-    For examples on how to use this class, see:
-    https://api.arcade.academy/en/latest/examples/platform_tutorial/step_09.html
+    For examples on how to use this class, see: :ref:`platformer_part_twelve`
 
-
-    :param str | Path map_file: A JSON map file for a Tiled map to initialize from
-    :param scaling: Global scaling to apply to all Sprites.
-    :param Dict[str, Dict[str, Any]] layer_options: Extra parameters for each layer.
-    :param use_spatial_hash: If set to True, this will make moving a sprite
-           in the SpriteList slower, but it will speed up collision detection
-           with items in the SpriteList. Great for doing collision detection
-           with static walls/platforms.
-    :param hit_box_algorithm: The hit box algorithm to use for the Sprite's in this layer.
-    :param tiled_map: An already parsed pytiled-parser map object.
-           Passing this means that the ``map_file`` argument will be ignored, and the pre-parsed
-           map will instead be used. This can be helpful for working with Tiled World files.
-    :param offset: Can be used to offset the position of all sprites and objects
+    Args:
+        map_file:
+            A JSON map file for a Tiled map to initialize from
+        scaling:
+            Global scaling to apply to all Sprites.
+        layer_options:
+            Extra parameters for each layer.
+        use_spatial_hash:
+            If set to True, this will make moving a sprite
+            in the SpriteList slower, but it will speed up collision detection
+            with items in the SpriteList. Great for doing collision detection
+            with static walls/platforms.
+        hit_box_algorithm:
+            The hit box algorithm to use for the Sprite's in this layer.
+        tiled_map:
+            An already parsed pytiled-parser map object.
+            Passing this means that the ``map_file`` argument will be ignored, and the pre-parsed
+            map will instead be used. This can be helpful for working with Tiled World files.
+        offset:
+            Can be used to offset the position of all sprites and objects
             within the map. This will be applied in addition to any offsets from Tiled. This value
             can be overridden with the layer_options dict.
-    :param texture_atlas: A default texture atlas to use for the
-            SpriteLists created by this map. If not supplied the global default atlas will be used.
-    :param lazy: SpriteLists will be created lazily.
-    :param texture_cache_manager: The texture cache manager to use for loading textures.
+        texture_atlas:
+            A default texture atlas to use for the SpriteLists created by this map.
+            If not supplied the global default atlas will be used.
+        lazy:
+            SpriteLists will be created lazily.
+        texture_cache_manager:
+            The texture cache manager to use for loading textures.
 
-    The `layer_options` parameter can be used to specify per layer arguments.
-
+    The ``layer_options`` parameter can be used to specify per layer arguments.
     The available options for this are:
 
-        use_spatial_hash - A boolean to enable spatial hashing on this layer's SpriteList.
-        scaling - A float providing layer specific Sprite scaling.
-        hit_box_algorithm - The hit box algorithm to use for the Sprite's in this layer.
-        offset - A tuple containing X and Y position offsets for the layer
-        custom_class - All objects in the layer are created from this class instead of Sprite. \
+    - ``use_spatial_hash`` - A boolean to enable spatial hashing on this layer's SpriteList.
+    - ``scaling`` - A float providing layer specific Sprite scaling.
+    - ``hit_box_algorithm`` - The hit box algorithm to use for the Sprite's in this layer.
+    - ``offset`` - A tuple containing X and Y position offsets for the layer
+    - ``custom_class`` - All objects in the layer are created from this class instead of Sprite. \
                        Must be subclass of Sprite.
-        custom_class_args - Custom arguments, passed into the constructor of the custom_class
-        texture_atlas - A texture atlas to use for the SpriteList from this layer, if none is \
-                        supplied then the one defined at the map level will be used.
+    - ``custom_class_args`` - Custom arguments, passed into the constructor of the custom_class
+    - ``texture_atlas`` - A texture atlas to use for the SpriteList from this layer, if none is \
+        supplied then the one defined at the map level will be used.
 
-        For example:
-
-        code-block::
+        Example configuring layer options for a layer named "Platforms"::
 
             layer_options = {
                 "Platforms": {
@@ -182,26 +188,35 @@ class TileMap:
     The pytiled-parser map object. This can be useful for implementing features
     that aren't supported by this class by accessing the raw map data directly.
     """
+
     width: float
     "The width of the map in tiles. This is the number of tiles, not pixels."
+
     height: float
     "The height of the map in tiles. This is the number of tiles, not pixels."
+
     tile_width: float
     "The width in pixels of each tile."
+
     tile_height: float
     "The height in pixels of each tile."
+
     background_color: Color | None
     "The background color of the map."
+
     scaling: float
     "A global scaling value to be applied to all Sprites in the map."
+
     sprite_lists: dict[str, SpriteList]
     """A dictionary mapping SpriteLists to their layer names. This is used
                     for all tile layers of the map."""
+
     object_lists: dict[str, list[TiledObject]]
     """
     A dictionary mapping TiledObjects to their layer names. This is used
     for all object layers of the map.
     """
+
     offset: Vec2
     "A tuple containing the X and Y position offset values."
 
@@ -336,8 +351,9 @@ class TileMap:
         If you have a map with 128x128 pixel Tiles, and you supply coordinates 500, 250 to
         this function you'll receive back 3, 2
 
-        :param x: The X Coordinate to convert
-        :param y: The Y Coordinate to convert
+        Args:
+            x: The X Coordinate to convert
+            y: The Y Coordinate to convert
         """
         x = math.floor(x / (self.tile_width * self.scaling))
         y = math.floor(y / (self.tile_height * self.scaling))
@@ -345,6 +361,14 @@ class TileMap:
         return x, y
 
     def get_tilemap_layer(self, layer_path: str) -> pytiled_parser.Layer | None:
+        """
+        Given a path to a layer, this will attempt to return the layer.
+
+        Args:
+            layer_path:
+                A string representing the path to the layer. For example,
+                "Layer Group 1/Layer Group 2/Tile Layer 1"
+        """
         assert isinstance(layer_path, str)
 
         def _get_tilemap_layer(my_path, layers):
@@ -386,7 +410,10 @@ class TileMap:
                 continue
 
             # No specific tile info, but there is a tile sheet
-            # print(f"data {tileset_key} {tileset.tiles} {tileset.image} {tileset_key} {tile_gid} {tileset.tile_count}")  # noqa
+            # print(
+            #     f"data {tileset_key} {tileset.tiles} {tileset.image} "
+            #     f"{tileset_key} {tile_gid} {tileset.tile_count}"
+            # )
             if (
                 tileset.image is not None
                 and tileset_key <= tile_gid < tileset_key + tileset.tile_count
@@ -1013,18 +1040,26 @@ def load_tilemap(
     For more clarification on the layer_options key, see the `__init__` function
     of the `TileMap` class
 
-    :param str | Path map_file: The JSON map file.
-    :param scaling: The global scaling to apply to all Sprite's within the map.
-    :param use_spatial_hash: If set to True, this will make moving a sprite
-               in the SpriteList slower, but it will speed up collision detection
-               with items in the SpriteList. Great for doing collision detection
-               with static walls/platforms.
-    :param hit_box_algorithm: The hit box algorithm to use for collision detection.
-    :param Dict[str, Dict[str, Any]] layer_options: Layer specific options for the map.
-    :param offset: Can be used to offset the position of all sprites and objects
+    Args:
+        map_file:
+            The JSON map file.
+        scaling:
+            The global scaling to apply to all Sprite's within the map.
+        use_spatial_hash:
+            If set to True, this will make moving a sprite
+            in the SpriteList slower, but it will speed up collision detection
+            with items in the SpriteList. Great for doing collision detection
+            with static walls/platforms.
+        hit_box_algorithm:
+            The hit box algorithm to use for collision detection.
+        layer_options:
+            Layer specific options for the map.
+        offset:
+            Can be used to offset the position of all sprites and objects
             within the map. This will be applied in addition to any offsets from Tiled. This value
             can be overridden with the layer_options dict.
-    :param lazy: SpriteLists will be created lazily.
+        lazy:
+            SpriteLists will be created lazily.
     """
     return TileMap(
         map_file=map_file,

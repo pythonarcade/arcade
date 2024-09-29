@@ -33,7 +33,7 @@ class Player(arcade.Sprite):
         self.easing_x_data = None
         self.easing_y_data = None
 
-    def on_update(self, delta_time: float = 1 / 60):
+    def update(self, delta_time: float = 1 / 60):
         if self.easing_angle_data is not None:
             done, self.angle = easing.ease_angle_update(self.easing_angle_data, delta_time)
             if done:
@@ -94,7 +94,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.player_list.on_update(delta_time)
+        self.player_list.update(delta_time)
 
     def on_key_press(self, key, modifiers):
         x = self.mouse["x"]

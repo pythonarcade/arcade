@@ -21,9 +21,14 @@ class TextureKeyframe:
     """
     Keyframe for texture animations.
 
-    :param texture: Texture to display for this keyframe.
-    :param duration: Duration in milliseconds to display this keyframe.
-    :param tile_id: Tile ID for this keyframe (only used for tiled maps)
+    Args:
+        texture:
+            Texture to display for this keyframe.
+        duration:
+            Duration in milliseconds to display this keyframe.
+        tile_id (optional):
+            Tile ID for this keyframe (only used for tiled maps).
+            This can be ignored when not using tiled maps.
     """
 
     __slots__ = ("texture", "duration", "tile_id")
@@ -43,8 +48,11 @@ class TextureAnimation:
     The animation should not store any state related to the current time
     so it can be shared between multiple sprites.
 
-    :param keyframes: List of keyframes for the animation.
-    :param loop: If the animation should loop.
+    Args:
+        keyframes:
+            List of keyframes for the animation.
+        loop:
+            If the animation should loop.
     """
 
     __slots__ = ("_keyframes", "_duration_ms", "_timeline")
@@ -64,28 +72,23 @@ class TextureAnimation:
 
     @property
     def duration_seconds(self) -> float:
-        """
-        Total duration of the animation in seconds.
-        """
+        """Total duration of the animation in seconds."""
         return self._duration_ms / 1000
 
     @property
     def duration_ms(self) -> int:
-        """
-        Total duration of the animation in milliseconds.
-        """
+        """Total duration of the animation in milliseconds."""
         return self._duration_ms
 
     @property
     def num_frames(self) -> int:
-        """
-        Number of frames in the animation.
-        """
+        """Number of frames in the animation."""
         return len(self._keyframes)
 
     def _create_timeline(self, keyframes: list[TextureKeyframe]) -> list[int]:
         """
         Create a timeline of the animation.
+
         This is a list of timestamps for each frame in seconds.
         """
         timeline: list[int] = []
@@ -101,9 +104,13 @@ class TextureAnimation:
         """
         Get the frame at a given time.
 
-        :param time: Time in seconds.
-        :param loop: If the animation should loop.
-        :return: Tuple of frame index and keyframe.
+        Args:
+            time:
+                Time in seconds.
+            loop:
+                If the animation should loop.
+        Returns:
+            Tuple of frame index and keyframe.
         """
         if loop:
             time_ms = int(time * 1000) % self._duration_ms
@@ -123,12 +130,18 @@ class TextureAnimation:
 class TextureAnimationSprite(Sprite):
     """
     Animated sprite based on keyframes.
-    Primarily used internally by tilemaps.
 
-    :param path_or_texture: Path to the image file, or a Texture object.
-    :param center_x: Initial x position of the sprite.
-    :param center_y: Initial y position of the sprite.
-    :param scale: Initial scale of the sprite.
+    Primarily used internally by tilemaps to animate tiles.
+
+    Args:
+        path_or_texture:
+            Path to the image file, or a Texture object.
+        center_x:
+            Initial x position of the sprite.
+        center_y:
+            Initial y position of the sprite.
+        scale:
+            Initial scale of the sprite.
     """
 
     def __init__(
@@ -175,7 +188,8 @@ class TextureAnimationSprite(Sprite):
         """
         Set the animation for this sprite.
 
-        :param value: Animation to set.
+        Args:
+            value: Animation to set.
         """
         self._animation = value
         # TODO: Forcing the first frame here might not be the best idea.
@@ -186,7 +200,8 @@ class TextureAnimationSprite(Sprite):
         """
         Logic for updating the animation.
 
-        :param delta_time: Time since last update.
+        Args:
+            delta_time: Time since last update.
         """
         if self._animation is None:
             raise RuntimeError("No animation set for this sprite.")
@@ -210,9 +225,13 @@ class AnimatedWalkingSprite(Sprite):
     For an example, see this section of the platformer tutorial:
     :ref:`platformer_part_twelve`.
 
-    :param scale: Initial scale of the sprite.
-    :param center_x: Initial x position of the sprite.
-    :param center_y: Initial y position of the sprite.
+    Args:
+        scale:
+            Initial scale of the sprite.
+        center_x:
+            Initial x position of the sprite.
+        center_y:
+            Initial y position of the sprite.
     """
 
     def __init__(
@@ -244,7 +263,8 @@ class AnimatedWalkingSprite(Sprite):
         """
         Logic for texture animation.
 
-        :param delta_time: Time since last update.
+        Args:
+            delta_time: Time since last update.
         """
         x1 = self.center_x
         x2 = self.last_texture_change_center_x

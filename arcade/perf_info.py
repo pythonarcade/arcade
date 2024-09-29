@@ -4,15 +4,15 @@ Utility functions to keep performance information
 
 from __future__ import annotations
 
-import collections
 import time
+from collections import deque
 
 import pyglet
 
 # Evil globals
-_timings: dict = {}
+_timings: dict[str, deque[float]] = {}
 _pyglets_dispatch_event = None
-_frame_times: collections.deque = collections.deque()
+_frame_times: deque = deque()
 _max_history: int = 100
 
 __all__ = [
@@ -50,7 +50,7 @@ def _dispatch_event(self, *args) -> None:
     if name in _timings:
         data = _timings[name]
     else:
-        data = collections.deque()
+        data = deque()
         _timings[name] = data
 
     # Add out time to the list
@@ -114,7 +114,7 @@ def clear_timings() -> None:
     _timings = {}
 
 
-def get_timings() -> dict:
+def get_timings() -> dict[str, deque[float]]:
     """
     Get a dict of the current dispatch event timings.
 
@@ -138,7 +138,9 @@ def enable_timings(max_history: int = 100) -> None:
     See :ref:`performance_statistics_example` for an example of how to
     use function.
 
-    :param max_history: How many frames to keep performance info for.
+    Args:
+        max_history:
+            How many frames to keep performance info for.
     """
     global _pyglets_dispatch_event, _max_history
 
@@ -182,7 +184,8 @@ def get_fps(frame_count: int = 60) -> float:
     See :ref:`performance_statistics_example` for an example of how to
     use function.
 
-    :param frame_count: How many frames to calculate the FPS over.
+    Args:
+        frame_count: How many frames to calculate the FPS over.
     """
     cur_time = time.perf_counter()
     if len(_frame_times) == 0:

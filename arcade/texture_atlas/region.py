@@ -37,13 +37,22 @@ class AtlasRegion:
         +-----------------+--------------------+
         (0, 0)                                 (1, 0)
 
-    :param atlas: The atlas this region belongs to
-    :param texture: The arcade texture
-    :param x: The x position of the texture
-    :param y: The y position of the texture
-    :param width: The width of the texture in pixels
-    :param height: The height of the texture in pixels
-    :param texture_coordinates: The texture coordinates (optional)
+    Args:
+        atlas:
+            The atlas this region belongs to
+        texture:
+            The arcade texture
+        x:
+            The x position of the texture
+        y:
+            The y position of the texture
+        width:
+            The width of the texture in pixels
+        height:
+            The height of the texture in pixels
+        texture_coordinates (optional):
+            The texture coordinates for this region.
+            If not provided, they will be calculated.
     """
 
     __slots__ = (
@@ -56,7 +65,7 @@ class AtlasRegion:
 
     def __init__(
         self,
-        atlas: "TextureAtlasBase",
+        atlas: TextureAtlasBase,
         x: int,
         y: int,
         width: int,
@@ -80,8 +89,7 @@ class AtlasRegion:
             # Width and height
             _width = self.width / atlas.width
             _height = self.height / atlas.height
-            # Half pixel correction
-            hp_x, hp_y = 0.5 / atlas.width, 0.5 / atlas.height
+
             # Upper left corner. Note that are mapping the texture upside down and corners
             # are named as from the vertex position point of view.
             ul_x, ul_y = self.x / atlas.width, self.y / atlas.height
@@ -89,25 +97,28 @@ class AtlasRegion:
             # upper_left, upper_right, lower_left, lower_right
             self.texture_coordinates = (
                 # upper_left
-                ul_x + hp_x,
-                ul_y + hp_y,
+                ul_x,
+                ul_y,
                 # upper_right
-                ul_x + _width - hp_x,
-                ul_y + hp_y,
+                ul_x + _width,
+                ul_y,
                 # lower_left
-                ul_x + hp_x,
-                ul_y + _height - hp_y,
+                ul_x,
+                ul_y + _height,
                 # lower_right
-                ul_x + _width - hp_x,
-                ul_y + _height - hp_y,
+                ul_x + _width,
+                ul_y + _height,
             )
 
-    def verify_image_size(self, image_data: "ImageData"):
+    def verify_image_size(self, image_data: ImageData):
         """
         Verify the image size.
 
         The internal image of a texture can potentially be tampered with
         at any point causing an atlas update to fail.
+
+        Args:
+            image_data: The image data to verify
         """
         if image_data.size != (self.width, self.height):
             raise RuntimeError(

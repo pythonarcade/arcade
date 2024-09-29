@@ -3,12 +3,12 @@ import pytest
 import PIL.Image
 
 from arcade.texture_atlas.region import AtlasRegion
-from arcade.texture.texture import Texture, ImageData
+from arcade.texture.texture import ImageData
 from arcade.texture_atlas.atlas_default import DefaultTextureAtlas
 
 
-def test_region_coordinates(ctx):
-    """Test region class."""
+def test_region_coordinates_simple(ctx):
+    """Basic region test."""
     atlas = DefaultTextureAtlas(size=(8, 8), border=0, auto_resize=False)
     region = AtlasRegion(atlas=atlas, x=0, y=0, width=8, height=8)
     assert region.x == 0
@@ -16,25 +16,28 @@ def test_region_coordinates(ctx):
     assert region.width == 8
     assert region.height == 8
     # Simulate the half pixel location
-    a, b = 0.5 / 8, 1 - 0.5 / 8
+    a, b = 0, 1.0
     assert region.texture_coordinates == (
         a, a,
         b, a,
         a, b,
         b, b,
     )
-    # Above raw values:
-    # (
-    #     0.0625, 0.0625,
-    #     0.9375, 0.0625,
-    #     0.0625, 0.9375,
-    #     0.9375, 0.9375)
-    # )
+
+
+def test_region_coordinates_complex(ctx):
+    """A more complex region test."""
+    atlas = DefaultTextureAtlas(size=(16, 16), border=0, auto_resize=False)
+    region = AtlasRegion(atlas=atlas, x=1, y=2, width=8, height=6)
+    assert region.x == 1
+    assert region.y == 2
+    assert region.width == 8
+    assert region.height == 6
+    assert region.texture_coordinates == (0.0625, 0.125, 0.5625, 0.125, 0.0625, 0.5, 0.5625, 0.5)
 
 
 def test_verify_size(ctx):
     im_data = ImageData(PIL.Image.new("RGBA", (8, 8)))
-    texture = Texture(im_data)
     region = AtlasRegion(atlas=ctx.default_atlas, x=0, y=0, width=8, height=8)
 
     region.verify_image_size(im_data)

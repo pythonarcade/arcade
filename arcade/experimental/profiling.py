@@ -33,7 +33,8 @@ class Profiler:
         The same profiler instance can be enabled multiple times
         to accumulate data.
 
-    :param sort_by: function sort order
+    Args:
+        sort_by: function sort order
     """
 
     def __init__(self, sort_by="tottime"):

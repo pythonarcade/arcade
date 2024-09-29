@@ -18,11 +18,11 @@ def are_polygons_intersecting(poly_a: Point2List, poly_b: Point2List) -> bool:
     Check if two polygons intersect.
 
     Args:
-        poly_a (Point2List) : List of points that define the first polygon.
-        poly_b (Point2List): List of points that define the second polygon.
+        poly_a: List of points that define the first polygon.
+        poly_b: List of points that define the second polygon.
 
     Returns:
-        True if polygons intersect, False otherwise
+        ``True`` if polygons intersect, ``False`` otherwise
     """
     # if either are [], they don't intersect
     if not poly_a or not poly_b:
@@ -95,9 +95,9 @@ def get_triangle_orientation(p: Point2, q: Point2, r: Point2) -> int:
       * 2 --> Counterclockwise
 
     Args:
-        p (Point2): Point 1
-        q (Point2): Point 2
-        r (Point2): Point 3
+        p: Point 1
+        q: Point 2
+        r: Point 3
 
     Returns:
         int: 0, 1, or 2 depending on the orientation
@@ -118,13 +118,13 @@ def are_lines_intersecting(p1: Point2, q1: Point2, p2: Point2, q2: Point2) -> bo
     returns true if the two lines intersect.
 
     Args:
-        p1 (Point2): Point 1
-        q1 (Point2): Point 2
-        p2 (Point2): Point 3
-        q2 (Point2): Point 4
+        p1: Point 1
+        q1: Point 2
+        p2: Point 3
+        q2: Point 4
 
     Returns:
-        bool: True or false depending if lines intersect
+        bool: ``True`` or ``False`` depending if lines intersect
     """
     o1 = get_triangle_orientation(p1, q1, p2)
     o2 = get_triangle_orientation(p1, q1, q2)
@@ -160,12 +160,12 @@ def is_point_in_polygon(x: float, y: float, polygon: Point2List) -> bool:
     Checks if a point is inside a polygon of three or more points.
 
     Args:
-        x (float): X coordinate of point
-        y (float): Y coordinate of point
-        polygon (Point2List): List of points that define the polygon.
+        x: X coordinate of point
+        y: Y coordinate of point
+        polygon: List of points that define the polygon.
 
     Returns:
-        bool: True or false depending if point is inside polygon
+        bool: ``True`` or ``False`` depending if point is inside polygon
     """
     p = x, y
     n = len(polygon)
@@ -199,7 +199,7 @@ def is_point_in_polygon(x: float, y: float, polygon: Point2List) -> bool:
             # segment 'i-next', then check if it lies
             # on segment. If it lies, return true, otherwise false
             if get_triangle_orientation(polygon[i], p, polygon[next_item]) == 0:
-                return not is_point_in_box(
+                return is_point_in_box(
                     polygon[i],
                     p,
                     polygon[next_item],

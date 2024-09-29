@@ -25,8 +25,9 @@ class SpriteSheet:
     Note that the default coordinate system used for slicing is using image coordinates
     (0, 0) in the upper left corner. This matches the coordinate system used by PIL.
 
-    :param path: Path to the file to load.
-    :param image: PIL image to use.
+    Args:
+        path (optional) Path to the image to load.
+        image (optional): PIL image to use.
     """
 
     def __init__(
@@ -46,11 +47,12 @@ class SpriteSheet:
         self._flip_flags = (False, False)
 
     @classmethod
-    def from_image(cls, image: Image.Image) -> "SpriteSheet":
+    def from_image(cls, image: Image.Image) -> SpriteSheet:
         """
         Create a sprite sheet from a PIL image.
 
-        :param image: PIL image to use.
+        Args:
+            image: PIL image to use.
         """
         return cls(image=image)
 
@@ -68,9 +70,7 @@ class SpriteSheet:
     @property
     def path(self) -> Path | None:
         """
-        The path to the sprite sheet.
-
-        :return: The path.
+        The path to the sprite sheet if it was loaded from disk.
         """
         return self._path
 
@@ -83,7 +83,7 @@ class SpriteSheet:
         Default values are ``(False, False)``. Will be modified when
         :py:meth:`flip_left_right` or :py:meth:`flip_top_bottom` is called.
 
-        :return: Tuple of booleans ``(flip_left_right, flip_top_bottom)``.
+        Tuple of booleans ``(flip_left_right, flip_top_bottom)``.
         """
         return self._flip_flags
 
@@ -107,12 +107,18 @@ class SpriteSheet:
         """
         Slice out an image from the sprite sheet.
 
-        :param x: X position of the image (lower left corner)
-        :param y: Y position of the image (lower left corner)
-        :param width: Width of the image.
-        :param height: Height of the image.
-        :param origin: Origin of the image. Default is "upper_left".
-                       Options are "upper_left" or "lower_left".
+        Args:
+            x:
+                X position of the image
+            y:
+                Y position of the image
+            width:
+                Width of the image.
+            height:
+                Height of the image.
+            origin:
+                Origin of the image. Default is "upper_left".
+                Options are "upper_left" or "lower_left".
         """
         # PIL box is a 4-tuple: left, upper, right, and lower
         if origin == "upper_left":
@@ -137,10 +143,21 @@ class SpriteSheet:
         """
         Slice out texture from the sprite sheet.
 
-        :param x: X position of the texture (lower left corner).
-        :param y: Y position of the texture (lower left corner).
-        :param width: Width of the texture.
-        :param height: Height of the texture.
+        Args:
+            x:
+                X position of the texture (lower left corner).
+            y:
+                Y position of the texture (lower left corner).
+            width:
+                Width of the texture.
+            height:
+                Height of the texture.
+            hit_box_algorithm:
+                Hit box algorithm to use for the texture.
+                If not provided, the default hit box algorithm will be used.
+            origin:
+                Origin of the texture. Default is "upper_left".
+                Options are "upper_left" or "lower_left".
         """
         im = self.get_image(x, y, width, height, origin=origin)
         texture = Texture(im, hit_box_algorithm=hit_box_algorithm)
@@ -158,10 +175,15 @@ class SpriteSheet:
         """
         Slice a grid of textures from the sprite sheet.
 
-        :param size: Size of each texture ``(width, height)``
-        :param columns: Number of columns in the grid
-        :param count: Number of textures to crop
-        :param margin: The margin around each texture ``(left, right, bottom, top)``
+        Args:
+            size:
+                Size of each texture ``(width, height)``
+            columns:
+                Number of columns in the grid
+            count:
+                Number of textures to crop
+            margin:
+                The margin around each texture ``(left, right, bottom, top)``
         """
         images = []
         width, height = size
@@ -189,11 +211,18 @@ class SpriteSheet:
         """
         Slice a grid of textures from the sprite sheet.
 
-        :param size: Size of each texture ``(width, height)``
-        :param columns: Number of columns in the grid
-        :param count: Number of textures to crop
-        :param margin: The margin around each texture ``(left, right, bottom, top)``
-        :param hit_box_algorithm: Hit box algorithm to use for the textures.
+        Args:
+            size:
+                Size of each texture ``(width, height)``
+            columns:
+                Number of columns in the grid
+            count:
+                Number of textures to crop
+            margin:
+                The margin around each texture ``(left, right, bottom, top)``
+            hit_box_algorithm:
+                Hit box algorithm to use for the textures.
+                If not provided, the default hit box algorithm will be used.
         """
         textures = []
         width, height = size

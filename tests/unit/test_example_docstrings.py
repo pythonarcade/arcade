@@ -29,8 +29,9 @@ def check_single_example_docstring(path: Path, name: str) -> None:
        python -m arcade.examples.sprite_rooms
        \"\"\"
 
-    :param path: Path to the file
-    :param name: Name of module
+    Args:
+        path: Path to the file
+        name: Name of module
     """
 
     # Read the file & extract the docstring
@@ -52,7 +53,8 @@ def check_submodules(parent_module_absolute_name: str) -> None:
     * A module name is what Python sees the module's name as (``"arcade.color"``)
     * A file path is the location on disk (``C:\\Users\\Reader\\python_project\game.py``)
 
-    :param parent_module_absolute_name: The absolute import name of the module to check.
+    Args:
+        parent_module_absolute_name: The absolute import name of the module to check.
     """
     # Get the file system location of the named parent module
     parent_module_info = importlib.import_module(parent_module_absolute_name)

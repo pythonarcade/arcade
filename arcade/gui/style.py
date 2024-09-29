@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Generic, Mapping, TypeVar, overload
+from typing import Any, Generic, TypeVar, overload
 
 from arcade.gui.property import DictProperty
 from arcade.gui.widgets import UIWidget
@@ -10,8 +10,7 @@ from arcade.gui.widgets import UIWidget
 
 @dataclass
 class UIStyleBase:
-    """
-    Base class for styles to ensure a general interface and implement additional magic.
+    """Base class for styles to ensure a general interface and implement additional magic.
 
     Support dict like access syntax.
 
@@ -25,6 +24,7 @@ class UIStyleBase:
     def get(self, key, default: Any) -> Any: ...
 
     def get(self, key, default=None):
+        """Get a value from the style, if not available return default."""
         return self[key] if key in self else default
 
     def __contains__(self, item):
@@ -41,10 +41,24 @@ StyleRef = TypeVar("StyleRef", bound=UIStyleBase)
 
 
 class UIStyledWidget(UIWidget, Generic[StyleRef]):
-    # TODO detect StyleBase changes, so that style changes can trigger rendering.
-    style: Mapping = DictProperty()  # type: ignore
+    """Baseclass for widgets to be styled.
 
-    def __init__(self, *, style: Mapping[str, StyleRef], **kwargs):
+    A styled widget should own a dataclass, which subclasses UIStyleBase.
+    The style dict should contain the different states of the widget.
+
+    The widget should implement py:method::`get_current_state()`,
+    which should return the current state of the widget.
+
+    Args:
+        style: A mapping of states to styles
+        **kwargs: passed to UIWidget
+
+    """
+
+    # TODO detect StyleBase changes, so that style changes can trigger rendering.
+    style = DictProperty[str, StyleRef]()
+
+    def __init__(self, *, style: dict[str, StyleRef], **kwargs):
         self.style = style
         super().__init__(**kwargs)
 
@@ -61,6 +75,6 @@ class UIStyledWidget(UIWidget, Generic[StyleRef]):
         """
         pass
 
-    def get_current_style(self) -> StyleRef:
+    def get_current_style(self) -> StyleRef | None:
         """Return style based on any state of the widget"""
         return self.style.get(self.get_current_state(), None)

@@ -19,8 +19,9 @@ class VideoPlayer:
     """
     Primitive video player for arcade.
 
-    :param path: Path of the video that is to be played.
-    :param loop: Pass `True` to make the video loop.
+    Args:
+        path: Path of the video that is to be played.
+        loop: Pass `True` to make the video loop.
     """
 
     def __init__(self, path: str | Path, loop: bool = False):
@@ -38,7 +39,8 @@ class VideoPlayer:
         """
         Call this in `on_draw`.
 
-        :param size: Pass None as one of the elements if you want to use the
+        Args:
+            size: Pass None as one of the elements if you want to use the
             dimension(width, height) attribute.
         """
         if size and len(size) == 2:

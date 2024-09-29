@@ -20,7 +20,9 @@ if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] 
 
 def configure_logging(level: int | None = None):
     """Set up basic logging.
-    :param level: The log level. Defaults to DEBUG.
+
+    Args:
+        level: The log level. Defaults to DEBUG.
     """
     import logging
 
@@ -55,7 +57,6 @@ if sys.platform == "darwin" or sys.platform.startswith("linux"):
 else:
     os.environ["PATH"] += str(lib_location)
 
-# noinspection PyPep8
 import pyglet
 
 
@@ -227,6 +228,7 @@ from .types.rect import Rect, LRBT, LBWH, XYWH
 # Module imports
 from arcade import color as color
 from arcade import csscolor as csscolor
+from arcade import uicolor as uicolor
 from arcade import camera as camera
 from arcade import key as key
 from arcade import resources as resources
@@ -386,6 +388,7 @@ __all__ = [
     "rect",
     "color",
     "csscolor",
+    "uicolor",
     "key",
     "resources",
     "types",

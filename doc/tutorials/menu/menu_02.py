@@ -3,6 +3,7 @@ Menu.
 
 Shows the usage of almost every gui widget, switching views and making a modal.
 """
+
 import arcade
 import arcade.gui
 
@@ -17,7 +18,6 @@ class MainView(arcade.View):
 
     def __init__(self):
         super().__init__()
-
         self.manager = arcade.gui.UIManager()
 
         switch_menu_button = arcade.gui.UIFlatButton(text="Pause", width=250)
@@ -38,19 +38,19 @@ class MainView(arcade.View):
             child=switch_menu_button,
         )
 
-    def on_hide_view(self):
-        # Disable the UIManager when the view is hidden.
-        self.manager.disable()
-
     def on_show_view(self):
-        """ This is run once when we switch to this view """
+        """This is run once when we switch to this view"""
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
         # Enable the UIManager when the view is showm.
         self.manager.enable()
 
+    def on_hide_view(self):
+        # Disable the UIManager when the view is hidden.
+        self.manager.disable()
+
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear the screen
         self.clear()
 
@@ -73,7 +73,7 @@ class MenuView(arcade.View):
         self.manager.disable()
 
     def on_show_view(self):
-        """ This is run once when we switch to this view """
+        """This is run once when we switch to this view"""
 
         # Makes the background darker
         arcade.set_background_color([rgb - 50 for rgb in arcade.color.DARK_BLUE_GRAY])
@@ -81,7 +81,7 @@ class MenuView(arcade.View):
         self.manager.enable()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
 
         # Clear the screen
         self.clear()

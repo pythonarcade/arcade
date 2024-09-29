@@ -26,7 +26,7 @@ from __future__ import annotations
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar
+from typing import NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable, Protocol
 
 from pytiled_parser import Properties
 
@@ -109,6 +109,7 @@ __all__ = [
     "PointList",
     "Point2List",
     "Point3List",
+    "OneOrIterableOf",
     "EMPTY_POINT_LIST",
     "AnchorPoint",
     "Rect",
@@ -123,6 +124,7 @@ __all__ = [
     "Box",
     "LRBTNF",
     "XYZWHD",
+    "HasAddSubMul",
     "RGB",
     "RGBA",
     "RGBOrA",
@@ -140,6 +142,39 @@ __all__ = [
 
 _T = TypeVar("_T")
 
+
+OneOrIterableOf = Union[_T, Iterable[_T]]
+"""Either an instance of something or an iterable of them.
+
+When writing loading code which is not performance critical,
+you may also want to see the following:
+
+* :py:func:`arcade.utils.grow_sequence`
+* :py:func:`arcade.utils.is_iterable`
+* :py:func:`arcade.utils.is_nonstr_iterable`
+* :py:func:`arcade.utils.is_str_or_noniterable`
+
+.. tip:: You can inline the contents of these functions when
+         performance matters.
+
+You should avoid using this annotation with values which may include
+``None``. These include:
+
+* Pipe syntax such as ``OneOrIterable[MyType | None]``
+* :py:class:`typing.Optional` equivalents of pipe syntax
+
+Instead, consider one of the following when possible:
+
+.. code-block:: python
+
+   def annotated(argument: OneOrIterableOf[MyType] = tuple()):
+      ...
+
+   def annotated2(argument: OneOrIterableOf[MyType] | None = tuple()):
+      ...
+
+"""
+
 # --- Begin potentially obsolete annotations ---
 
 #: ``Size2D`` helps mark int or float sizes. Use it like a
@@ -154,8 +189,9 @@ _T = TypeVar("_T")
 #:       ``size`` argument is how you can mark texture sizes, while
 #:       you can use ``Size2D[float]`` to denote float regions.
 #:
-#:       :param size: A made-up hypothetical argument.
-#:       :param color: Hypothetical texture-related argument.
+#        Args:
+#:           size: A made-up hypothetical argument.
+#:           color: Hypothetical texture-related argument.
 #:       """
 #:       ...  # No function definition
 #:
@@ -169,6 +205,23 @@ IPoint = tuple[int, int]
 Velocity = tuple[AsFloat, AsFloat]
 
 # --- End potentially obsolete annotations ---
+
+
+# These are for the argument type + return type. They're separate TypeVars
+# to handle cases which take tuple but return Vec2 (e.g. pyglet.math.Vec2).
+_T_contra = TypeVar("_T_contra", contravariant=True)  # Same or more general than T
+_T_co = TypeVar("_T_co", covariant=True)  # Same or more specific than T
+
+
+class HasAddSubMul(Protocol[_T_contra, _T_co]):
+    """Matches types which work with :py:func:`arcade.math.lerp`."""
+
+    # The / matches float and similar operations to keep pyright
+    # happy since built-in arithmetic makes them positional only.
+    # See https://peps.python.org/pep-0570/
+    def __add__(self, value: _T_contra, /) -> _T_co: ...
+    def __sub__(self, value: _T_contra, /) -> _T_co: ...
+    def __mul__(self, value: _T_contra, /) -> _T_co: ...
 
 
 # Path handling
@@ -186,7 +239,13 @@ PathOrTexture = PathOr["Texture"]
 
 
 class TiledObject(NamedTuple):
+    """Object in a tilemaps"""
+
     shape: Union[Point, PointList, tuple[int, int, int, int]]
+    """Shape of the object"""
     properties: Properties | None = None
+    """Properties of the object"""
     name: str | None = None
+    """Name of the object"""
     type: str | None = None
+    """Type of the object"""

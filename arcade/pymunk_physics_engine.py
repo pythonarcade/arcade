@@ -39,10 +39,6 @@ class PymunkException(Exception):
 class PymunkPhysicsEngine:
     """An Arcade-specific adapter for Pymunk.
 
-    .. _Pymunk: https://www.pymunk.org/en/latest/index.html
-    .. _Chipmunk2D:  https://chipmunk-physics.net/
-    .. _CONTRIBUTING.md: https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md
-
     `Pymunk`_ is itself a Python adapter for the professional-grade
     `Chipmunk2D`_ engine. However, Arcade's ``PymunkPhysicsEngine``
     and its doc are currently in need of improvement.
@@ -50,7 +46,7 @@ class PymunkPhysicsEngine:
      .. note:: Arcade would welcome assistance with improving it.
 
                If you are interested, please see Arcade's
-               `CONTRIBUTING.md`_.
+               `CONTRIBUTING.md <CONTRIBUTING.md: https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md>`_
 
     Args:
         gravity:
@@ -138,7 +134,7 @@ class PymunkPhysicsEngine:
 
     def __init__(
         self, gravity=(0, 0), damping: float = 1.0, maximum_incline_on_ground: float = 0.708
-    ):
+    ) -> None:
         # -- Pymunk
         self.space = pymunk.Space()
         self.space.gravity = gravity
@@ -163,7 +159,7 @@ class PymunkPhysicsEngine:
         max_vertical_velocity: int | None = None,
         radius: float = 0,
         collision_type: str | None = "default",
-    ):
+    ) -> None:
         """Add a sprite to the physics engine.
 
         Args:
@@ -362,8 +358,64 @@ class PymunkPhysicsEngine:
         body_type: int = DYNAMIC,
         damping: float | None = None,
         collision_type: str | None = None,
-    ):
-        """Add all sprites in a sprite list to the physics engine."""
+    ) -> None:
+        """
+        Add all sprites in a sprite list to the physics engine.
+
+        Args:
+            sprite_list:
+                A list of sprites to add
+            mass:
+                The mass of the object (Defaults to ``1.0``).
+            friction:
+                How much the object resists sliding against surfaces:
+
+                .. list-table::
+                   :header-rows: 0
+
+                   * - ``0.0``
+                     - Absolutely slippery with no resistance at all
+                   * - ``0.2``
+                     - Default (Waxed wood on very wet snow)
+                   * - ``friction > 1.0``
+                     - Very rough
+
+                *Higher values may not make a meaningful difference.*
+
+                See :py:attr:`pymunk.Shape.friction` to learn more.
+
+            elasticity:
+                How bouncy the object is.
+
+                .. list-table::
+                   :header-rows: 0
+
+                   * - ``0.0``
+                     - No bounce
+                   * - ``0.99``
+                     - Very bouncy
+                   * - ``elasticity >= 1.0``
+                     - May behave badly (breaks conservation of energy)
+
+                See :py:attr:`pymunk.Shape.elasticity` to learn more.
+
+            moment_of_inertia:
+                How much force is needed to change the object's rotation (
+                pass :py:attr:`MOMENT_INF` or ``float('inf')`` to "lock"
+                its angle).
+
+                See :py:attr:`pymunk.Shape.moment_of_inertia` to learn more.
+
+            body_type:
+                :py:attr:`DYNAMIC` (default), :py:attr:`KINEMATIC`, or
+                :py:attr:`STATIC`.
+            damping:
+                Like air resistance. See the :py:class:`.PymunkPhysicsEngine`
+                top-level doc.
+            collision_type:
+                Assign a collision name to this sprite. It will be used
+                by :py:meth:`add_collision_handler` if called.
+        """
         for sprite in sprite_list:
             self.add_sprite(
                 sprite=sprite,
@@ -376,7 +428,7 @@ class PymunkPhysicsEngine:
                 collision_type=collision_type,
             )
 
-    def remove_sprite(self, sprite: Sprite):
+    def remove_sprite(self, sprite: Sprite) -> None:
         """Remove a sprite from the physics engine."""
         physics_object = self.sprites[sprite]
         self.space.remove(physics_object.body)  # type: ignore
@@ -421,7 +473,7 @@ class PymunkPhysicsEngine:
         grounding = self.check_grounding(sprite)
         return grounding["body"] is not None
 
-    def apply_impulse(self, sprite: Sprite, impulse: tuple[float, float]):
+    def apply_impulse(self, sprite: Sprite, impulse: tuple[float, float]) -> None:
         """Apply an impulse force on a sprite"""
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
@@ -448,7 +500,7 @@ class PymunkPhysicsEngine:
             )
         physics_object.body.position = position
 
-    def set_rotation(self, sprite: Sprite, rotation: float):
+    def set_rotation(self, sprite: Sprite, rotation: float) -> None:
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
             raise PymunkException(
@@ -456,7 +508,7 @@ class PymunkPhysicsEngine:
             )
         physics_object.body.angle = math.radians(rotation)
 
-    def set_velocity(self, sprite: Sprite, velocity: tuple[float, float]):
+    def set_velocity(self, sprite: Sprite, velocity: tuple[float, float]) -> None:
         """Directly set the velocity of a sprite known to the engine.
 
         .. warning:: Avoid using this on any :py:attr:`DYNAMIC` objects!
@@ -486,8 +538,18 @@ class PymunkPhysicsEngine:
         pre_handler: Callable | None = None,
         post_handler: Callable | None = None,
         separate_handler: Callable | None = None,
-    ):
-        """Add code to handle collisions between objects."""
+    ) -> None:
+        """
+        Add code to handle collisions between objects.
+
+        Args:
+            first_type: The first type of object to check for collisions.
+            second_type: The second type of object to check for collisions.
+            begin_handler: Function to call when a collision begins.
+            pre_handler: Function to call before a collision is resolved.
+            post_handler: Function to call after a collision is resolved.
+            separate_handler: Function to call when two objects
+        """
 
         if first_type not in self.collision_types:
             # LOG.debug(f"Adding new collision type of {first_type}.")
@@ -531,7 +593,7 @@ class PymunkPhysicsEngine:
         if separate_handler:
             h.separate = _f4
 
-    def resync_sprites(self):
+    def resync_sprites(self) -> None:
         """
         Set visual sprites to be the same location as physics engine sprites.
         Call this after stepping the pymunk physics engine
@@ -566,18 +628,18 @@ class PymunkPhysicsEngine:
                 # Notify sprite we moved, in case animation needs to be updated
                 sprite.pymunk_moved(self, dx, dy, d_angle)
 
-    def step(self, delta_time: float = 1 / 60.0, resync_sprites: bool = True):
+    def step(self, delta_time: float = 1 / 60.0, resync_sprites: bool = True) -> None:
         """
         Tell the physics engine to perform calculations.
 
-        :param delta_time: Time to move the simulation forward. Keep this
-                                 value constant, do not use varying values for
-                                 each step.
-        :param resync_sprites: Resynchronize Arcade graphical sprites to be
-                                    at the same location as their Pymunk counterparts.
-                                    If running multiple steps per frame, set this to
-                                    false for the first steps, and true for the last
-                                    step that's part of the update.
+        Args:
+            delta_time: Time to move the simulation forward. Keep this
+                value constant, do not use varying values for each step.
+            resync_sprites: Resynchronize Arcade graphical sprites to be
+                at the same location as their Pymunk counterparts.
+                If running multiple steps per frame, set this to
+                false for the first steps, and true for the last
+                step that's part of the update.
         """
         # Update physics
         # Use a constant time step, don't use delta_time
@@ -588,11 +650,25 @@ class PymunkPhysicsEngine:
             self.resync_sprites()
 
     def get_physics_object(self, sprite: Sprite) -> PymunkPhysicsObject:
-        """Get the shape/body for a sprite."""
+        """
+        Get the shape/body for a sprite.
+
+        Args:
+            sprite:
+                The sprite to get the physics object for.
+        """
         return self.sprites[sprite]
 
     def apply_force(self, sprite: Sprite, force: tuple[float, float]):
-        """Apply force to a Sprite."""
+        """
+        Apply force to a Sprite.
+
+        Args:
+            sprite:
+                The sprite to apply the force to.
+            force:
+                The force to apply to the sprite.
+        """
         physics_object = self.sprites[sprite]
         if physics_object.body is None:
             raise PymunkException(
@@ -600,8 +676,16 @@ class PymunkPhysicsEngine:
             )
         physics_object.body.apply_force_at_local_point(force, (0, 0))
 
-    def set_horizontal_velocity(self, sprite: Sprite, velocity: float):
-        """Set a sprite's velocity"""
+    def set_horizontal_velocity(self, sprite: Sprite, velocity: float) -> None:
+        """
+        Set a sprite's velocity.
+
+        Args:
+            sprite:
+                The sprite to set the velocity for.
+            velocity:
+                The velocity to set the sprite to.
+        """
         physics_object = self.sprites[sprite]
         if physics_object.body is None:
             raise PymunkException(
@@ -611,7 +695,7 @@ class PymunkPhysicsEngine:
         new_cv = (velocity, cv[1])
         physics_object.body.velocity = new_cv
 
-    def set_friction(self, sprite: Sprite, friction: float):
+    def set_friction(self, sprite: Sprite, friction: float) -> None:
         """Set the friction a sprite experiences against other surfaces.
 
         This is how "rough" a sprite is during a collision with others:
@@ -630,6 +714,12 @@ class PymunkPhysicsEngine:
           of the :ref:`pymunk_platformer_tutorial`
         * `Simple Wikipedia's Article on Friction`_
         * :py:attr:`pymunk.Poly.friction`
+
+        Args:
+            sprite:
+                The sprite to set the friction for.
+            friction:
+                How much the object resists sliding against surfaces.
         """
         physics_object = self.sprites[sprite]
         if physics_object.shape is None:
@@ -638,7 +728,7 @@ class PymunkPhysicsEngine:
             )
         physics_object.shape.friction = friction
 
-    def apply_opposite_running_force(self, sprite: Sprite):
+    def apply_opposite_running_force(self, sprite: Sprite) -> None:
         """
         If a sprite goes left while on top of a dynamic sprite, that sprite
         should get pushed to the right.
@@ -651,8 +741,13 @@ class PymunkPhysicsEngine:
         if body.force[0] and grounding and grounding["body"]:
             grounding["body"].apply_force_at_world_point((-body.force[0], 0), grounding["position"])
 
-    def check_grounding(self, sprite: Sprite):
-        """See if the player is on the ground. Used to see if we can jump."""
+    def check_grounding(self, sprite: Sprite) -> dict:
+        """
+        See if the player is on the ground. Used to see if we can jump.
+
+        Args:
+            sprite: The sprite to check if it is on the ground.
+        """
         grounding = {
             "normal": pymunk.Vec2d.zero(),
             "penetration": pymunk.Vec2d.zero(),

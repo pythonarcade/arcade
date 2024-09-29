@@ -25,7 +25,8 @@ class VideoPlayerCV2:
     Primitive video player for arcade with cv2.
     Renders to the entire screen. Use VideoPlayer to render to specific coordinate.
 
-    :param path: Path of the video that is to be played.
+    Args:
+        path: Path of the video that is to be played.
     """
 
     def __init__(self, path: str | Path, loop: bool = False):
@@ -129,8 +130,9 @@ class CV2PlayerView(arcade.View):
 
     Requires the opencv-python module to be installed.
 
-    :param path: Path of the video that is to be played.
-    :param resize: Change the window size to the video size
+    Args:
+        path: Path of the video that is to be played.
+        resize: Change the window size to the video size
     """
 
     def __init__(self, path: str | Path, loop: bool = False, resize: bool = False):

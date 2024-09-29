@@ -27,7 +27,7 @@ class EnemySprite(arcade.Sprite):
         # When we fire, what list tracks the bullets?
         self.bullet_list = bullet_list
 
-    def on_update(self, delta_time: float = 1 / 60):
+    def update(self, delta_time: float = 1 / 60):
         """ Update this sprite. """
 
         # Track time since we last fired
@@ -110,14 +110,14 @@ class MyGame(arcade.Window):
         """ All the logic to move, and the game logic goes here. """
 
         # Call on_update for each enemy in  the list
-        self.enemy_list.on_update(delta_time)
+        self.enemy_list.update(delta_time)
 
         # Get rid of the bullet when it flies off-screen
         for bullet in self.bullet_list:
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
 
-        self.bullet_list.update()
+        self.bullet_list.update(delta_time)
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
         """

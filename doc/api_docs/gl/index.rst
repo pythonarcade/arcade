@@ -13,11 +13,12 @@ queries, buffers, vertex arrays/geometry and compute shaders
 This API is also heavily inspired by ModernGL_. It's basically
 a subset of ModernGL_ except we are using pyglet's
 OpenGL bindings. However, we don't have the context
-flexibility and speed of ModernGL_, but we are at the
-very least on par with PyOpenGL or slightly better because
-pyglet's OpenGL bindings are very light. The higher
-level abstraction is the main selling point as it
-saves the user from an enormous amount of work.
+flexibility and speed of ModernGL_.
+
+The higher level abstraction is the main selling point because
+it's much easier to learn, use and understand.
+It saves the user from an enormous amount of work
+and protects them from the most common pitfalls.
 
 Note that all resources are created through the
 :py:class:`arcade.gl.Context` / :py:class:`arcade.ArcadeContext`.
@@ -35,17 +36,16 @@ how this API works, but we do have examples in the experimental
 directory (git).
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    context
    texture
    buffer
-   buffer_description
    geometry
    framebuffer
    query
    program
-   compute_shader
+   utils
    exceptions
 
 .. _ModernGL: https://github.com/moderngl/moderngl
