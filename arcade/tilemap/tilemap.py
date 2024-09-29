@@ -13,6 +13,7 @@ import copy
 import math
 import os
 from collections import OrderedDict
+from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, cast
 
@@ -30,7 +31,7 @@ from arcade import (
     get_window,
 )
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
-from arcade.types import Color as ArcadeColor
+from arcade.types import Color as ArcadeColor, RGBA255
 
 if TYPE_CHECKING:
     from arcade import DefaultTextureAtlas, Texture
@@ -699,7 +700,8 @@ class TileMap:
         )
 
         if layer.transparent_color:
-            data = my_texture.image.getdata()
+            # Returned object is a sequence-like object per the pillow doc
+            data: Sequence[RGBA255] = my_texture.image.getdata()  # type:ignore
 
             target = layer.transparent_color
             new_data = []
