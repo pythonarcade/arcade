@@ -70,7 +70,7 @@ def draw_texture_rect(
     atlas.use_uv_texture(unit=1)
 
     geometry = ctx.geometry_empty
-    program["pos"] = rect.center_x, rect.center_y, 0
+    program["pos"] = rect.x, rect.y, 0
     program["color"] = color.normalized
     program["size"] = rect.width, rect.height
     program["angle"] = angle
@@ -299,27 +299,71 @@ def draw_rect_outline(
     """
 
     HALF_BORDER = border_width / 2
+    # Extremely unrolled code below
 
     # fmt: off
-    i_lb = rect.bottom_left.x  + HALF_BORDER, rect.bottom_left.y  + HALF_BORDER
-    i_rb = rect.bottom_right.x - HALF_BORDER, rect.bottom_right.y + HALF_BORDER
-    i_rt = rect.top_right.x    - HALF_BORDER, rect.top_right.y    - HALF_BORDER
-    i_lt = rect.top_left.x     + HALF_BORDER, rect.top_left.y     - HALF_BORDER
-    o_lb = rect.bottom_left.x  - HALF_BORDER, rect.bottom_left.y  - HALF_BORDER
-    o_rb = rect.bottom_right.x + HALF_BORDER, rect.bottom_right.y - HALF_BORDER
-    o_rt = rect.top_right.x    + HALF_BORDER, rect.top_right.y    + HALF_BORDER
-    o_lt = rect.top_left.x     - HALF_BORDER, rect.top_right.y    + HALF_BORDER
+    left   = rect.left
+    right  = rect.right
+    bottom = rect.bottom
+    top    = rect.top
+    x      = rect.x
+    y      = rect.y
+
+    # o = outer, i = inner
+    #
+    # o_left, o_top                  o_right, o_top
+    #  +----------------------------------------+
+    #  | i_left, i_top          i_right, i_top  |
+    #  |  +----------------------------------+  |
+    #  |  |                                  |  |
+    #  |  |                                  |  |
+    #  |  |                                  |  |
+    #  |  +----------------------------------+  |
+    #  | i_left, i_bottom    i_right , i_bottom |
+    #  +----------------------------------------+
+    # o_left, o_bottom               o_right, o_bottom
+
+    i_left   = left   + HALF_BORDER
+    i_bottom = bottom + HALF_BORDER
+    i_right  = right  - HALF_BORDER
+    i_top    = top    - HALF_BORDER
+
+    o_left   = left   - HALF_BORDER
+    o_bottom = bottom - HALF_BORDER
+    o_right  = right  + HALF_BORDER
+    o_top    = top    + HALF_BORDER
+
+    # Declared separately because the code below seems to break mypy
+    point_list: Point2List
+
+    # This is intentionally unrolled to minimize repacking tuples
+    if tilt_angle == 0:
+        point_list = (
+            (o_left  , o_top   ),
+            (i_left  , i_top   ),
+            (o_right , o_top   ),
+            (i_right , i_top   ),
+            (o_right , o_bottom),
+            (i_right , i_bottom),
+            (o_left  , o_bottom),
+            (i_left  , i_bottom),
+            (o_left  , o_top   ),
+            (i_left  , i_top   )
+        )
+    else:
+        point_list = (
+            rotate_point(o_left   , o_top   , x, y, tilt_angle),
+            rotate_point(i_left   , i_top   , x, y, tilt_angle),
+            rotate_point(o_right  , o_top   , x, y, tilt_angle),
+            rotate_point(i_right  , i_top   , x, y, tilt_angle),
+            rotate_point(o_right  , o_bottom, x, y, tilt_angle),
+            rotate_point(i_right  , i_bottom, x, y, tilt_angle),
+            rotate_point(o_left   , o_bottom, x, y, tilt_angle),
+            rotate_point(i_left   , i_bottom, x, y, tilt_angle),
+            rotate_point(o_left   , o_top   , x, y, tilt_angle),
+            rotate_point(i_left   , i_top   , x, y, tilt_angle)
+        )
     # fmt: on
-
-    point_list: Point2List = (o_lt, i_lt, o_rt, i_rt, o_rb, i_rb, o_lb, i_lb, o_lt, i_lt)
-
-    if tilt_angle != 0:
-        point_list_2 = []
-        for point in point_list:
-            new_point = rotate_point(point[0], point[1], rect.x, rect.y, tilt_angle)
-            point_list_2.append(new_point)
-        point_list = point_list_2
-
     _generic_draw_line_strip(point_list, color, gl.TRIANGLE_STRIP)
 
 
