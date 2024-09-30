@@ -492,7 +492,7 @@ class ArcadeContext(Context):
 
         path = resolve(path)
 
-        image = Image.open(str(path))
+        image: Image.Image = Image.open(str(path))  # type: ignore
 
         if flip:
             image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)

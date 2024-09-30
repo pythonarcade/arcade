@@ -14,6 +14,7 @@ from weakref import WeakSet, WeakValueDictionary, finalize
 
 import PIL.Image
 from PIL import Image, ImageDraw
+from PIL.Image import Resampling
 from pyglet.image.atlas import (
     Allocator,
     AllocatorException,
@@ -504,10 +505,10 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
             # Resize the strips to the border size if larger than 1
             if self._border > 1:
-                strip_top = strip_top.resize((image.width, self._border), Image.NEAREST)
-                strip_bottom = strip_bottom.resize((image.width, self._border), Image.NEAREST)
-                strip_left = strip_left.resize((self._border, image.height), Image.NEAREST)
-                strip_right = strip_right.resize((self._border, image.height), Image.NEAREST)
+                strip_top = strip_top.resize((image.width, self._border), Resampling.NEAREST)
+                strip_bottom = strip_bottom.resize((image.width, self._border), Resampling.NEAREST)
+                strip_left = strip_left.resize((self._border, image.height), Resampling.NEAREST)
+                strip_right = strip_right.resize((self._border, image.height), Resampling.NEAREST)
 
             tmp.paste(strip_top, (self._border, 0))
             tmp.paste(strip_bottom, (self._border, tmp.height - self._border))
