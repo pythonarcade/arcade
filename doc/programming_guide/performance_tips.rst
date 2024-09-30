@@ -545,5 +545,22 @@ change it to this:
 
 If your game is slow, you can use a profiler such as ``cProfile`` to analyze
 which functions are making it slow and to optimize them, if you call them
-directly in your code. You can also modify the window settings when creating
-your arcade window to sacrifice display for performance.
+directly in your code.
+
+You can also modify the window settings when creating your arcade window to
+sacrifice display and responsiveness for performance, such as the
+``update_rate``, ``draw_rate``, and ``fixed_rate`` to something like 1/30, and
+the ``samples`` to 2 or 4. Through testing is important to find a balance
+between performance and quality.
+
+You might also want to disable pyglet's ``debug_gl`` option. You can do this by
+importing pyglet before anything else::
+
+.. code-block:: python
+
+    import pyglet
+    pyglet.options["debug_gl"] = false
+
+    import arcade
+
+Doing so will significantly increase performance.
