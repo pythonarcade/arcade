@@ -57,7 +57,7 @@ setup(
     install_requires=[
         "pyglet==2.0.17",
         "pillow~=10.4.0",
-        "pymunk~=6.6.0",
+        "pymunk~=6.8.1",
         "pytiled-parser==2.2.0",
     ],
     extras_require={
