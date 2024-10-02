@@ -25,6 +25,8 @@ from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
 from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
 
+from arcade.gl.types import PyGLenum
+
 __all__ = ["ArcadeContext"]
 
 
@@ -451,8 +453,12 @@ class ArcadeContext(Context):
         path: str | Path,
         *,
         flip: bool = True,
+        wrap_x: PyGLenum | None = None,
+        wrap_y: PyGLenum | None = None,
+        filter: tuple[PyGLenum, PyGLenum] | None = None,
         build_mipmaps: bool = False,
         internal_format: int | None = None,
+        immutable: bool = False,
         compressed: bool = False,
     ) -> Texture2D:
         """
@@ -479,6 +485,12 @@ class ArcadeContext(Context):
                 Path to texture
             flip:
                 Flips the image upside down. Default is ``True``.
+            wrap_x:
+                The wrap mode for the x-axis. Default is ``None``.
+            wrap_y:
+                The wrap mode for the y-axis. Default is ``None``.
+            filter:
+                The min and mag filter. Default is ``None``.
             build_mipmaps:
                 Build mipmaps for the texture. Default is ``False``.
             internal_format (optional):
@@ -501,7 +513,11 @@ class ArcadeContext(Context):
             image.size,
             components=4,
             data=image.convert("RGBA").tobytes(),
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            filter=filter,
             internal_format=internal_format,
+            immutable=immutable,
             compressed=compressed,
         )
         image.close()

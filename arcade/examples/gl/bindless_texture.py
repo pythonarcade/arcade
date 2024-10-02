@@ -151,9 +151,12 @@ class BindlessTexture(arcade.Window):
 
         # Load enough textures to cover for each point/sprite
         for i in range(16 * 9):
-            texture = self.ctx.load_texture(next(resource_cycle))
-            texture.wrap_x = self.ctx.CLAMP_TO_EDGE
-            texture.wrap_y = self.ctx.CLAMP_TO_EDGE
+            texture = self.ctx.load_texture(
+                next(resource_cycle),
+                immutable=True,
+                wrap_x=self.ctx.CLAMP_TO_EDGE,
+                wrap_y=self.ctx.CLAMP_TO_EDGE,
+            )
             # Make sure we keep a reference to the texture to avoid GC
             self.textures.append(texture)
             # Create a texture handle and make it resident.
