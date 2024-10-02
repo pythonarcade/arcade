@@ -22,10 +22,9 @@ from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.framebuffer import Framebuffer
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture2D
+from arcade.gl.types import PyGLenum
 from arcade.gl.vertex_array import Geometry
 from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
-
-from arcade.gl.types import PyGLenum
 
 __all__ = ["ArcadeContext"]
 
