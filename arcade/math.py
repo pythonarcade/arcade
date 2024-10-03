@@ -6,7 +6,7 @@ from typing import TypeVar
 
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import HasAddSubMul, Point, Point2
+from arcade.types import HasAddSubMul, Point, Point2, SupportsRichComparison
 from arcade.types.rect import Rect
 from arcade.types.vector_like import Point3
 
@@ -34,8 +34,12 @@ __all__ = [
     "quaternion_rotation",
 ]
 
+SupportsRichComparisonT = TypeVar("SupportsRichComparisonT", bound=SupportsRichComparison)
 
-def clamp(a, low: float, high: float) -> float:
+
+def clamp(
+    a: SupportsRichComparisonT, low: SupportsRichComparisonT, high: SupportsRichComparisonT
+) -> SupportsRichComparisonT:
     """Clamp a number between a range.
 
     Args:
@@ -43,7 +47,8 @@ def clamp(a, low: float, high: float) -> float:
         low (float): The lower bound
         high (float): The upper bound
     """
-    return high if a > high else max(a, low)
+    # Python will deal with > unsupported by falling back on <.
+    return high if a > high else max(a, low)  # type: ignore
 
 
 # This TypeVar helps match v1 and v2 as the same type below in lerp's
