@@ -75,6 +75,7 @@ class ControllerButtons(StrEnum):
     DPAD_UP = "dpup"
     DPAD_DOWN = "dpdown"
 
+
 class XBoxControllerButtons(StrEnum):
     Y = ControllerButtons.TOP_FACE
     B = ControllerButtons.RIGHT_FACE
@@ -91,6 +92,7 @@ class XBoxControllerButtons(StrEnum):
     DPAD_RIGHT = ControllerButtons.DPAD_RIGHT
     DPAD_UP = ControllerButtons.DPAD_UP
     DPAD_DOWN = ControllerButtons.DPAD_DOWN
+
 
 class PSControllerButtons(StrEnum):
     TRIANGLE = ControllerButtons.TOP_FACE
