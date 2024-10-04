@@ -6,6 +6,7 @@ Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 
 import os
 from pathlib import Path
+from typing import Callable
 
 # GIT_URL_FILE_ROOT is set via runpy.run_path's init_globals keyword in conf.py
 # Uncomment to run from debugger.
@@ -17,7 +18,7 @@ from pathlib import Path
 GIT_URL_MODULE_ROOT= f"{GIT_URL_FILE_ROOT}/arcade" # noqa
 COLUMNS = 3
 COLUMN_PCT_WIDTHS = ' '.join([str(100 // COLUMNS) for _ in range(COLUMNS)])
-skip_extensions = ['.glsl', '.md', '.py', '.yml', '.url', '.txt']
+skip_extensions = frozenset(('.glsl', '.md', '.py', '.yml', '.url', '.txt'))
 
 
 # Initial debug output
@@ -28,35 +29,51 @@ for var_name in sorted(to_show.keys()):
         print(f"Using {var_name}={to_show[var_name]!r}")
 
 
-def skipped_file(path):
-    filename = path.name
-    for extension in skip_extensions:
-        if filename.endswith(extension):
-            return True
-    return False
+def skip_by_extension(path: Path) -> bool:
+    """Debugabble and replaceable condition for skipping files.
+
+    Keeping this separate allows stepping through it in a debugger for
+    strange edge cases (.tar.gz if we have to, etc).
+    """
+    extension = path.suffix
+    return extension in skip_extensions
 
 
-def process_resource_directory(out, my_path: Path):
+def process_resource_directory(
+        out,
+        my_path: Path,
+        skip_condition: Callable[[Path], bool] = skip_by_extension
+):
+    """Recursively process a resource directory.
 
+    Args:
+         out: A file-like write target.
+         my_path: A directory path.
+         skip_condition: A callable which tells us when to skip a file.
+    """
     for cur_node in my_path.iterdir():
 
-        curr_node_rel = cur_node.relative_to('../arcade/')
+        cur_node_rel = cur_node.relative_to('../arcade/')
         if cur_node.is_dir():
 
             if cur_node.name.endswith("__"):
                 continue
 
-            os.makedirs(Path("build/html", *curr_node_rel.parts), exist_ok=True)
+            os.makedirs(Path("build/html", *cur_node_rel.parts), exist_ok=True)
 
             # out.write(f"\n{cur_node.name}\n")
             # out.write("-" * len(cur_node.name) + "\n\n")
             process_resource_directory.cell_count = 0
 
-            only_file_list = [item for item in cur_node.iterdir() if not (item.is_dir() or skipped_file(item))]
-            if len(only_file_list) > 0:
-                header_title = f":resources:{curr_node_rel.relative_to('resources').as_posix()}/"
+            files_to_show = [
+                item for item in cur_node.iterdir()
+                if not (item.is_dir() or skip_condition(item))
+            ]
+
+            if len(files_to_show) > 0:
+                header_title = f":resources:{cur_node_rel.relative_to('resources').as_posix()}/"
                 if header_title == ":resources:images/":
-                    for f in only_file_list:
+                    for f in files_to_show:
                         print(f.name)
                 # out.write(f"\n{header_title}\n")
                 # out.write("-" * (len(header_title)) + "\n\n")
@@ -67,7 +84,7 @@ def process_resource_directory(out, my_path: Path):
                 out.write(f"    :header-rows: 0\n")
                 out.write(f"    :class: resource-table\n\n")
 
-                process_resource_files(out, only_file_list)
+                process_resource_files(out, files_to_show)
                 out.write("\n\n")
 
             process_resource_directory(out, cur_node)
