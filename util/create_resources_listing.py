@@ -118,25 +118,25 @@ def resources():
     except FileExistsError:
         pass
 
-    out = open("../doc/resources.rst", "w")
+    with open("../doc/resources.rst", "w") as out:
+        out.write(".. _resources:\n")
+        out.write("\n")
+        out.write("Built-In Resources\n")
+        out.write("==================\n")
+        out.write("\n")
+        out.write("Resource files are images and sounds built into Arcade that "
+                  "can be used to quickly build and test simple code without having "
+                  "to worry about copying files into the project.\n\n")
+        out.write("Any file loaded that starts with ``:resources:`` will attempt "
+                  "to load that file from the library resources instead of the "
+                  "project directory.\n\n")
+        out.write("Many of the resources come from `Kenney.nl <https://kenney.nl/>`_ ")
+        out.write("and are licensed under CC0 (Creative Commons Zero). Be sure to ")
+        out.write("check out his web page for a much wider selection of assets.")
 
-    out.write(".. _resources:\n")
-    out.write("\n")
-    out.write("Built-In Resources\n")
-    out.write("==================\n")
-    out.write("\n")
-    out.write("Resource files are images and sounds built into Arcade that "
-              "can be used to quickly build and test simple code without having "
-              "to worry about copying files into the project.\n\n")
-    out.write("Any file loaded that starts with ``:resources:`` will attempt "
-              "to load that file from the library resources instead of the "
-              "project directory.\n\n")
-    out.write("Many of the resources come from `Kenney.nl <https://kenney.nl/>`_ ")
-    out.write("and are licensed under CC0 (Creative Commons Zero). Be sure to ")
-    out.write("check out his web page for a much wider selection of assets.")
+        out.write("\n")
+        process_resource_directory(out, Path('../arcade/resources/'))
 
-    out.write("\n")
-    process_resource_directory(out, Path('../arcade/resources/'))
     print("Done creating resources.rst")
 
 

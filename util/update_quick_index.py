@@ -3,6 +3,7 @@ Script used to create the quick index
 """
 import re
 import os
+from io import StringIO
 from pathlib import Path
 titles = {
     'arcade_types.py': ['Arcade Data Types', 'arcade_types.rst'],
@@ -84,7 +85,8 @@ def get_member_list(filepath):
     """
     Take a file, and return all the classes, functions, and data declarations in it
     """
-    file_pointer = open(filepath, encoding="utf8")
+    with open(filepath, encoding="utf8") as f:
+       buffer = StringIO(f.read())
     filename = filepath.name
 
     class_re = re.compile("^class ([A-Za-z0-9]+[^\(:]*)")
@@ -97,7 +99,7 @@ def get_member_list(filepath):
 
     line_no = 0
     try:
-        for line in file_pointer:
+        for line in buffer:
             line_no += 1
 
             class_names = class_re.findall(line)
