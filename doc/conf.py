@@ -314,25 +314,29 @@ def warn_undocumented_members(_app, what, name, _obj, _options, lines):
 def source_read(_app, docname, source):
 
     # print(f"  XXX Reading {docname}")
+
+    # IMPORTANT:
+    # 1. Some of this ugliness may actually enhance performance
+    # 2. Before committing "cleaner" code, try benchmarking
     import os
     file_path = os.path.dirname(os.path.abspath(__file__))
     os.chdir(file_path)
 
-    filename = None
     if docname == "arcade.color":
         filename = "../arcade/color/__init__.py"
     elif docname == "arcade.csscolor":
         filename = "../arcade/csscolor/__init__.py"
+    else:
+        return
 
-    if filename:
-        import re
-        p = re.compile("^([A-Z_]+) = (\\(.*\\))")
+    import re
+    p = re.compile("^([A-Z_]+) = (\\(.*\\))")
 
-        original_text = source[0]
-        append_text = "\n\n.. raw:: html\n\n"
-        append_text += "    <table>"
-        color_file = open(filename)
+    original_text = source[0]
+    append_text = "\n\n.. raw:: html\n\n"
+    append_text += "    <table>"
 
+    with open(filename, 'r', encoding='utf8') as color_file:
         for line in color_file:
             match = p.match(line)
             if match:
@@ -343,7 +347,7 @@ def source_read(_app, docname, source):
                 append_text += f"<td style='width:80px;background-color:rgb{match.group(2)};'>&nbsp;</td>"
                 append_text += "    </td></tr>\n"
         append_text += "    </table>"
-        source[0] = original_text + append_text
+    source[0] = original_text + append_text
 
 
 def post_process(_app, _exception):
