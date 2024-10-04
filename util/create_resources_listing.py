@@ -4,20 +4,22 @@ Quick Index Generator
 Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
 
-import re
 import os
-import shutil
 from pathlib import Path
 
+# GIT_URL_FILE_ROOT is set via runpy.run_path's init_globals keyword in conf.py
+GIT_URL_MODULE_ROOT= f"{GIT_URL_FILE_ROOT}/arcade" # noqa
 COLUMNS = 3
-
-
-GIT_BRANCH = "2.6-py312"
-GIT_REPO_URL_REFIX = "https://github.com/pythonarcade/arcade/blob"
-GIT_REPO_SOURCE_ROOT = f"{GIT_REPO_URL_REFIX}/{GIT_BRANCH}"
-
-
+COLUMN_PCT_WIDTHS = ' '.join([str(100 // COLUMNS) for _ in range(COLUMNS)])
 skip_extensions = ['.glsl', '.md', '.py', '.yml', '.url', '.txt']
+
+
+# Initial debug output
+print("Generating resource listing...")
+to_show = dict(locals())
+for var_name in sorted(to_show.keys()):
+    if var_name.startswith("GIT_") or var_name == "skip_extensions":
+        print(f"Using {var_name}={to_show[var_name]!r}")
 
 
 def skipped_file(path):
@@ -55,7 +57,7 @@ def process_resource_directory(out, my_path: Path):
 
                 out.write(f"\n")
                 out.write(f".. list-table:: {header_title}\n")
-                out.write(f"    :widths: 33 33 33\n")
+                out.write(f"    :widths: {COLUMN_PCT_WIDTHS}\n")
                 out.write(f"    :header-rows: 0\n")
                 out.write(f"    :class: resource-table\n\n")
 
@@ -64,38 +66,47 @@ def process_resource_directory(out, my_path: Path):
 
             process_resource_directory(out, cur_node)
 
+
+def embed_url(r3, raw: bool = True):
+    parts = [GIT_URL_MODULE_ROOT, '/', r3]
+    if raw:
+        parts.append("?raw=true")
+    return ''.join(parts)
+
+
 def process_resource_files(out, file_list):
 
     start_row = True
     for cur_node in file_list:
-        cur_node_rel = cur_node.relative_to('../arcade')
         r1 = cur_node.relative_to('.')
-        r3 = 'resources/' + str(r1)[20:].replace('\\', '/')
+        rel = str(r1)[20:].replace("\\", '/')
+        r3 = f"resources/{rel}"
 
         # r2 = f":resources:{cur_node_rel.relative_to('resources').as_posix()}"
         if process_resource_directory.cell_count % COLUMNS == 0:
             start_row = "*"
+
         if cur_node.suffix in [".png", ".jpg", ".gif", ".svg"]:
             out.write(f"    {start_row} - .. image:: ../arcade/{r3}\n\n")
             out.write(f"        {cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".wav":
-            file_path = f"{GIT_REPO_SOURCE_ROOT}/arcade/{r3}?raw=true"
+            file_path = embed_url(r3)
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <audio controls><source src='{file_path}' type='audio/x-wav'></audio><br />{cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".mp3":
-            file_path = f"{GIT_REPO_SOURCE_ROOT}/arcade/{r3}?raw=true"
+            file_path = embed_url(r3)
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <audio controls><source src='{file_path}' type='audio/mpeg'></audio><br />{cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".ogg":
-            file_path = f"{GIT_REPO_SOURCE_ROOT}/arcade/{r3}?raw=true"
+            file_path = embed_url(r3)
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".glsl":
-            file_path = f"{GIT_REPO_SOURCE_ROOT}/arcade/{r3}"
+            file_path = embed_url(r3, raw=False)
             out.write(f"    {start_row} - `{cur_node.name} <{file_path}>`_\n")
             # out.write(f"    {start_row} - .. raw:: html\n\n")
             # out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{cur_node.name}\n")

@@ -2,10 +2,81 @@
 """
 Generate HTML docs
 """
+from __future__ import annotations
 
 import runpy
+import subprocess
 import sys
 import os
+from typing import Callable
+
+# Set up version import below
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../arcade'))
+
+
+# Don't change to
+# from arcade.version import VERSION
+# or read the docs build will fail.
+from version import VERSION
+
+
+print(f"Got Arcade \"VERSION = {VERSION!r}\" from setup.py")
+RELEASE = VERSION  # Sphinx config var
+
+
+# --- Figure out our durable GitHub-hosted file embeds and links
+GIT_REF_ENV_VAR = 'ARCADE_DOC_GIT_REF'  # If set, skips git + branch checks below
+GIT_REPO_HOME = "https://github.com/pythonarcade/arcade"  # Base for resource embeds
+
+
+def linesplit(raw: str) -> list[str]:
+    """Default git command postprocessing helper."""
+    return raw.strip().split("\n")
+
+
+def cli(
+    cmd: list[str], postprocess = linesplit,
+    check=True, capture_output=True, encoding='utf8', text=True,
+):
+    """Run a command line command and grab its stdout.
+
+    Handle failures by:
+    1. Using `try subprocess.SubprocessError as e:`
+    2. Access `e.stderr` if you need debug output
+    """
+    stdout = subprocess.run(
+        cmd, capture_output=capture_output, check=check, encoding=encoding, text=text
+    ).stdout
+    return postprocess(stdout)
+
+
+def get_git_ref_name(*, env_var: str, default: str = 'development'):
+    var_value = os.environ.get(env_var, None)
+    if var_value:
+        print(f"Git URL ref forced to {var_value!r} by env var {env_var}.")
+        return var_value
+
+    # Don't bother converting to set: it's O(N) and we only search each once
+    git_tags = cli(['git', 'tag', '--format=%(refname:lstrip=2)'])
+    if VERSION in git_tags:
+        print(f"Version {VERSION!r} is in git tags: using TAG-BASED RESOURCE LINKS.")
+        return VERSION
+    branches = cli(['git', 'branch', '--format=%(refname:lstrip=2)'])
+    if VERSION in branches:
+        print(f"Version {VERSION!r} is a git branch: using BRANCH-BASED RESOURCE LINKS.")
+        return VERSION
+
+    print(f"WARNING: Version {VERSION!r} in neither TAGS nor BRANCHES: Falling back to git ref {default!r}!")
+    return default
+
+
+REF_NAME = get_git_ref_name(env_var=GIT_REF_ENV_VAR)
+
+# Pass these to runpy.run_path via the init_globals keyword argument
+GIT_URL_FILE_ROOT = f"{GIT_REPO_HOME}/blob/{REF_NAME}"
+GIT_URL_FOLDER_ROOT = f"{GIT_REPO_HOME}/tree/f{REF_NAME}"
+
 
 # --- Pre-processing Tasks
 
@@ -14,9 +85,13 @@ import os
 # Make thumbnails for the example code screenshots
 runpy.run_path('../util/generate_example_thumbnails.py', run_name='__main__')
 # Create a listing of the resources
-runpy.run_path('../util/create_resources_listing.py', run_name='__main__')
+runpy.run_path(
+    '../util/create_resources_listing.py',
+    init_globals=dict(GIT_URL_FILE_ROOT=GIT_URL_FILE_ROOT),
+    run_name='__main__')
 # Run the generate quick API index script
 runpy.run_path('../util/update_quick_index.py', run_name='__main__')
+
 
 # Enable this is you want __init__ to show up in docs.
 # Ideally, these docs should be in the class docs, not __init__ so try to
@@ -27,15 +102,6 @@ runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 
 autodoc_inherit_docstrings = False
 
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../arcade'))
-
-# Don't change to
-# from arcade.version import VERSION
-# or read the docs build will fail.
-from version import VERSION
-
-RELEASE = VERSION
 
 # -- General configuration ------------------------------------------------
 
