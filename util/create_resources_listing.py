@@ -8,6 +8,12 @@ import os
 from pathlib import Path
 
 # GIT_URL_FILE_ROOT is set via runpy.run_path's init_globals keyword in conf.py
+# Uncomment to run from debugger.
+# try:
+#     _ = GIT_URL_FILE_ROOT
+# except Exception as _:
+#     GIT_URL_FILE_ROOT = "https://github.com/pythonarcade/blob/2.6.17"
+
 GIT_URL_MODULE_ROOT= f"{GIT_URL_FILE_ROOT}/arcade" # noqa
 COLUMNS = 3
 COLUMN_PCT_WIDTHS = ' '.join([str(100 // COLUMNS) for _ in range(COLUMNS)])
@@ -78,9 +84,9 @@ def process_resource_files(out, file_list):
 
     start_row = True
     for cur_node in file_list:
-        r1 = cur_node.relative_to('.')
-        rel = str(r1)[20:].replace("\\", '/')
-        r3 = f"resources/{rel}"
+        rel = cur_node.relative_to('.')
+        cleaned = '/'.join(rel.parts[3:])
+        r3 = f"resources/{cleaned}"
 
         # r2 = f":resources:{cur_node_rel.relative_to('resources').as_posix()}"
         if process_resource_directory.cell_count % COLUMNS == 0:
