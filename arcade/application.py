@@ -150,7 +150,7 @@ class Window(pyglet.window.Window):
         update_rate: float = 1 / 60,
         antialiasing: bool = True,
         gl_version: tuple[int, int] = (3, 3),
-        screen: pyglet.display.Screen | None = None,
+        screen: Screen | None = None,
         style: str | None = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
         visible: bool = True,
         vsync: bool = False,

@@ -47,7 +47,7 @@ def get_display_size(screen_id: int = 0) -> tuple[int, int]:
     Returns:
         Tuple containing the width and height of the screen
     """
-    display = pyglet.display.Display()
+    display = pyglet.display.Display()  # type: ignore  # pending: pyglet fixes import tricks
     screen = display.get_screens()[screen_id]
     return screen.width, screen.height
 
