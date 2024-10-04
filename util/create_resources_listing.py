@@ -12,6 +12,11 @@ from pathlib import Path
 COLUMNS = 3
 
 
+GIT_BRANCH = "2.6-py312"
+GIT_REPO_URL_REFIX = "https://github.com/pythonarcade/arcade/blob"
+GIT_REPO_SOURCE_ROOT = f"{GIT_REPO_URL_REFIX}/{GIT_BRANCH}"
+
+
 skip_extensions = ['.glsl', '.md', '.py', '.yml', '.url', '.txt']
 
 
@@ -59,7 +64,6 @@ def process_resource_directory(out, my_path: Path):
 
             process_resource_directory(out, cur_node)
 
-
 def process_resource_files(out, file_list):
 
     start_row = True
@@ -76,22 +80,22 @@ def process_resource_files(out, file_list):
             out.write(f"        {cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".wav":
-            file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+            file_path = f"{GIT_REPO_SOURCE_ROOT}/arcade/{r3}?raw=true"
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <audio controls><source src='{file_path}' type='audio/x-wav'></audio><br />{cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".mp3":
-            file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+            file_path = f"{GIT_REPO_SOURCE_ROOT}/arcade/{r3}?raw=true"
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <audio controls><source src='{file_path}' type='audio/mpeg'></audio><br />{cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".ogg":
-            file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}?raw=true"
+            file_path = f"{GIT_REPO_SOURCE_ROOT}/arcade/{r3}?raw=true"
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{cur_node.name}\n")
             process_resource_directory.cell_count += 1
         elif cur_node.suffix == ".glsl":
-            file_path = f"https://github.com/pythonarcade/arcade/blob/development/arcade/{r3}"
+            file_path = f"{GIT_REPO_SOURCE_ROOT}/arcade/{r3}"
             out.write(f"    {start_row} - `{cur_node.name} <{file_path}>`_\n")
             # out.write(f"    {start_row} - .. raw:: html\n\n")
             # out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{cur_node.name}\n")
