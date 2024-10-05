@@ -21,6 +21,11 @@ API in a way that is not compatible with how it was used in 2.6.
   cached absolutely everything, something that caused major issues for larger
   projects needing to manage memory. Functions like `arcade.load_texture` no
   longer cache the texture. See the texture section for more details
+* removed the poorly named `Window.set_viewport` and `set_viewport` methods.
+  Their functionaliy has been completely superseeded by `Camera2D`.
+* Fixed `ArcadeContext` assuming that the projection and view matrices were aligned
+  to the xy-plane and only Orthographic. Making it safe to use full 3D matrices
+  with arcade.
 * The `Sprite` initializer is greatly simplified. It's no longer possible to
   slice or transform textures through parameters in the sprite initializer.
   All texture manipulation should now be done through the `Texture` class.
@@ -29,6 +34,9 @@ API in a way that is not compatible with how it was used in 2.6.
 * `Sprite.on_update` has been removed. Use `Sprite.update` instead. This now
   also has a `delta_time` parameter and accept/forwards `*args` and `**kwargs`
   to support custom parameters. The same applies to `SpriteList`.
+* `Sprite.draw` has been removed. Use either `arcade.draw.draw_sprite`
+  or an `arcade.SpriteList`.
+* Removed `Sprite.face_point` and `Sprite.collision_radius`. 
 * The deprecated `update()` function has been removed from the
   `arcade.Window`, `arcade.View`,
   `arcade.Section`, and `arcade.SectionManager` classes.
@@ -75,6 +83,7 @@ API in a way that is not compatible with how it was used in 2.6.
     * `slider_track.png`
     * `toggle/switch_green.png`
     * `toggle/switch_red.png`
+
 ### Featured Updates
 
 * The texture atlas has been heavily reworked to be more efficient.
@@ -91,8 +100,13 @@ API in a way that is not compatible with how it was used in 2.6.
   can freely use pyglet batches, Labels when preferred over arcade's types.
   Note that texture/image handling are still separate systems. This is
   however a solvable problem for intermediate and advanced users.
+* A fully functioning 2D camera allows for moving, rotating, and zooming what 
+  is being drawn to the screen. Works with both arcade and pyglet.
+* Added a new `GLOBAL_CLOCK` and `GLOBAL_FIXED_CLOCK` accessable from `arcade.clock`. 
+  which provide access global elapsed time, number of frames, and last update delta_time
+  values.
 
-### View and View
+### Window and View
 
 * Removal of the `update` function in favor of `arcade.Window.on_update()`
 * `update_rate` parameter in the constructor can no longer be set to `None`.
@@ -108,6 +122,19 @@ API in a way that is not compatible with how it was used in 2.6.
   * Removal of the ``update`` function in favor of `arcade.View.on_update()`
 * `arcade.Section` and `arcade.SectionManager`
   * Removal of the ``update`` function in favor of `arcade.Section.on_update()`
+* Added a whole new `on_fixed_update` method which is called with a regular delta time
+  * Is also available for `arcade.View`
+  * control the rate of fixed updates with the `fixed_rate`
+    parameter in `Window.__init__`
+  * control the max number of fixed updates per frame wtih the `fixed_rate_cap`
+    parameter in `Window.__init__`
+
+### Camera
+
+* Created `arcade.camera.Camera2D` which allows for easy manipulation of the matrices
+  Arcade and Pyglet use for rendering.
+* Created `arcade.camera.PerspectiveProjector` and `arcade.camera.OrthographicProjector`
+  that also 
 
 ### Textures
 
@@ -178,9 +205,18 @@ API in a way that is not compatible with how it was used in 2.6.
 
 ### Sprites
 
+* Created `BasicSprite` which is the absolute minimum required for an arcade sprite
+  most users will do well sticking with `Sprite`.
+* `Sprite.draw` has been completely removed. This was a wasteful and slow way to 
+  render a sprite. Use an `arcade.SpriteList` or `arcade.draw.draw_sprite`.
+* `Sprite.visible` no longer overrides the alpha of the sprite allowing for toggling
+  transparent sprites.
+* `Sprite.face_towards` has been removed as it did not behave as expected and is 
+  not strictly bound to sprites
+* `Sprite.collisin_radius` has been removed as it is no longer used in collision checking.
+  Sprites now only rely on their hitbox.
 * The method signature for `arcade.Sprite.__init__` has been changed.
   (May break old code.)
-* The sprite code has been cleaned up and broken into parts.
 * `arcade.Sprite.angle` now rotates clockwise. Why it ever rotated
   the other way, and why it lasted so long, we do not know.
 
@@ -218,9 +254,10 @@ the new controller API.
 
 ### `arcade.draw_*`:
 
-* Added `arcade.draw_commands.draw_lbwh_rectangle_textured`
-* Replaces the now-deprecated `arcade.draw_commands.draw_lrwh_rectangle_textured`
-* Usage is exactly the same
+* `arcade.draw_commands` has been renamed to `arcade.draw`
+* Added `arcade.draw.draw_lbwh_rectangle_textured` which replaces 
+  the now-deprecated `arcade.draw_commands.draw_lrwh_rectangle_textured`.
+  Usage is exactly the same
 
 ### OpenGL
 
@@ -304,7 +341,7 @@ The main arcade team:
 * [pvcraven](https://github.com/pvcraven)
 * [Maic Siemering](https://github.com/eruvanos)
 * [Cleptomania](https://github.com/Cleptomania)
-* [A. J. Andrews](https://github.com/DragonMoffon)
+* [DragonMoffon](https://github.com/DragonMoffon)
 * [Andrew Bradley](https://github.com/cspotcode)
 * [DigiDuncan](https://github.com/DigiDuncan)
 * [Alejandro Casanovas](https://github.com/janscas)
