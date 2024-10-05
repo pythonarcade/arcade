@@ -17,6 +17,8 @@ easy reference. There may be other behavior changes that could break specific
 scenarios, but this section is limited to changes which directly changed the
 API in a way that is not compatible with how it was used in 2.6.
 
+
+* Dropped Python 3.8 support completely
 * Texture management has completely changed in arcade 3.0. In the past we have
   cached absolutely everything, something that caused major issues for larger
   projects needing to manage memory. Functions like `arcade.load_texture` no
@@ -126,7 +128,7 @@ API in a way that is not compatible with how it was used in 2.6.
   * Is also available for `arcade.View`
   * control the rate of fixed updates with the `fixed_rate`
     parameter in `Window.__init__`
-  * control the max number of fixed updates per frame wtih the `fixed_rate_cap`
+  * control the max number of fixed updates per regular update with the `fixed_rate_cap`
     parameter in `Window.__init__`
 
 ### Camera
@@ -134,11 +136,19 @@ API in a way that is not compatible with how it was used in 2.6.
 * Created `arcade.camera.Camera2D` which allows for easy manipulation of the matrices
   Arcade and Pyglet use for rendering.
 * Created `arcade.camera.PerspectiveProjector` and `arcade.camera.OrthographicProjector`
-  that also 
+  which can manipulate the matrices in 3D space.
+* Created methods to rotate and move cameras.
+* Created methods to generate view and projection matrices would the need for a 
+  projector object
+* Added a default camera which automatically adjusts to the active render target
+* Added a 2D camera shake object that makes it easy to add camera shake to a game
+* All Projectors provide methods to project to and from screen and world coordinates
 
 ### Textures
 
 * `arcade.load_texture`
+* `arcade.get_default_texture` and `arcade.get_default_image` are new methods and
+  are used to give `Sprites` their default texture when none is provided.
 
 ### GUI
 
@@ -196,7 +206,21 @@ API in a way that is not compatible with how it was used in 2.6.
 
 ### Misc Changes
 
+* Arcade experimental has been split into two submodules `experimental` and `future`.
+  * `future` includes all incomplete features we intend to include in Arcade eventaually
+  * `experimental` is any code that is interesting, but is not intended to be new features of Arcade
 * `arcade.color_from_hex_string` changed to follow the CSS hex string standard
+* Made `Pyglets` maths classes accessable within arcade.
+* arcade's utility maths functions have more robust typing
+* Added `Point`, `Point2`, `Point3` type aliases for tuples and vectors
+* Added `Sequence` types for all three `Point` aliases
+* Added a `Color` object that includes methods for swapping out or randomizing specific
+  channels
+* Added a `Rect` type that makes it easy to work with axis aligned rectangles.
+  * Provides a plethora of functions to create a full `Rect` object from just 4
+    values.
+  * Provides methods to move and scale the `Rect`
+  * Proivdes methods to compare againts the `Rect` with 2D points and other `Rects`
 * Windows Text glyph are now created with DirectWrite instead of GDI
 * Removal of various deprecated functions and parameters
 * OpenGL examples moved to
@@ -319,6 +343,8 @@ the new controller API.
 * [CONTRIBUTING.md](https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md)
   page has been updated
 * Improve `background_parallax` example
+* More detailed information on how Arcade's event loop works
+* The platformer tutorial has had a total overhaul
 
 ### Experimental
 
