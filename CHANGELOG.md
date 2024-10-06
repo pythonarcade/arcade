@@ -10,7 +10,7 @@ Version 3.0.0 is a major update to Arcade. It breaks compatibility with the 2.6 
 
 ### Breaking Changes
 
-These are the breaking API changes. This is a quick reference for updating 2.6 code. You can find more details in later sections. Lots of behavior has changed even if the interface hasn't. If you are porting old code, read through these logs thoroughly.
+These are the breaking API changes, and is a quick reference for updating 2.6 code. You can find more details in later sections. Lots of behavior has changed even if the interface hasn't. If you are porting old code, read through these logs thoroughly.
 
 * Dropped Python 3.8 support completely
 * Texture management has completely changed in  3.0. In the past, we
