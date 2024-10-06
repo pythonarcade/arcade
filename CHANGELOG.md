@@ -15,7 +15,7 @@ These are the breaking API changes. This is a quick reference for updating 2.6 c
 * Dropped Python 3.8 support completely
 * Texture management has completely changed in  3.0. In the past, we
  cached everything, which caused issues for larger
- projects that needed memory management. Functions like `Arcade.load_texture` no longer cache the texture.
+ projects that needed memory management. Functions like `Arcade.load_texture` no longer cache textures.
 * removed the poorly named `Window.set_viewport` and `set_viewport` methods.
  `Camera2D` has completely superseded their functionality.
 * Fixed `ArcadeContext` assuming that the projection and view matrices were aligned to the xy-plane and Orthographic. It is now safe to use full 3D matrices with Arcade.
