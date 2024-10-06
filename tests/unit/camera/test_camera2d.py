@@ -1,4 +1,5 @@
 from typing import Tuple
+from math import radians
 
 import pytest as pytest
 
@@ -24,7 +25,7 @@ def camera_class(request):
     return request.param
 
 
-AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION = [
+AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION = (
     (-100.0, -100.0, -1.0, 1.0),
     (100.0, 100.0, -1.0, 1.0),
     (0.0, 0.0, 1.0, 2.0),
@@ -32,9 +33,11 @@ AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION = [
     (-1.0, 1.0, 0.0, 0.0),
     (1.0, 2.0, 100.0, 100.0),
     (5.0, 5.0, 5.0, 5.0),
-]
+)
 
-NEAR_FAR_VALUES = [-50.0, 0.0, 50.0]
+NEAR_FAR_VALUES = (-50.0, 0.0, 50.0)
+
+ROTATIONS = (0, 15, 45, 90, 270)
 
 
 @pytest.fixture(params=AT_LEAST_ONE_EQUAL_VIEWPORT_DIMENSION)
@@ -139,16 +142,42 @@ def test_move_camera_and_unproject(window: Window):
 
     assert screen_coordinate == (pytest.approx(0), pytest.approx(0))
 
-def test_rotate_camera_with_angle(window: Window):
+@pytest.mark.parametrize('angle', ROTATIONS)
+def test_rotate_camera_with_angle(window: Window, angle: float):
     camera = Camera2D()
-    camera.angle = 45
-    assert camera.angle == pytest.approx(45.0)
-    assert camera.up == pytest.approx(Vec2(0.5**0.5, 0.5**0.5))
+    camera.angle = angle
+    up = Vec2(0.0, 1.0).rotate(radians(-angle))
+    assert camera.angle == pytest.approx(angle)
+    assert camera.up.x == pytest.approx(up.x)
+    assert camera.up.y == pytest.approx(up.y)
 
-    camera.angle = 180
-    assert camera.angle == pytest.approx(180.0)
-    assert camera.up == pytest.approx(Vec2(0.0, -1.0))
-
-    camera.angle = 270
-    assert camera.angle == pytest.approx(-90.0)
-    assert camera.up == pytest.approx(Vec2(-1.0, 0.0))
+@pytest.mark.parametrize('angle', ROTATIONS)
+def test_camera_corner_properties(window: Window, angle: float):
+    camera = Camera2D(projection=LRBT(-1.0, 1.0, -1.0, 1.0), position=(0.0, 0.0))
+    camera.angle = angle
+    up = camera.up
+    ri = Vec2(up.y, -up.x)
+    corner = camera.top_left
+    assert corner.x == pytest.approx(up.x - ri.x)
+    assert corner.y == pytest.approx(up.y - ri.y)
+    corner = camera.top_right
+    assert corner.x == pytest.approx(up.x + ri.x)
+    assert corner.y == pytest.approx(up.y + ri.y)
+    corner = camera.bottom_left
+    assert corner.x == pytest.approx(-up.x - ri.x)
+    assert corner.y == pytest.approx(-up.y - ri.y)
+    corner = camera.bottom_right
+    assert corner.x == pytest.approx(-up.x + ri.x)
+    assert corner.y == pytest.approx(-up.y + ri.y)
+    corner = camera.center_left
+    assert corner.x == pytest.approx(-ri.x)
+    assert corner.y == pytest.approx(-ri.y)
+    corner = camera.center_right
+    assert corner.x == pytest.approx(ri.x)
+    assert corner.y == pytest.approx(ri.y)
+    corner = camera.top_center
+    assert corner.x == pytest.approx(up.x)
+    assert corner.y == pytest.approx(up.y)
+    corner = camera.bottom_center
+    assert corner.x == pytest.approx(-up.x)
+    assert corner.y == pytest.approx(-up.y)
