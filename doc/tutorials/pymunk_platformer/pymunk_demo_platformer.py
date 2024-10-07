@@ -59,7 +59,7 @@ class PlayerSprite(arcade.Sprite):
         super().__init__()
 
         # Set our scale
-        self.scale = SPRITE_SCALING_PLAYER
+        self.scale_set_uniform(SPRITE_SCALING_PLAYER)
 
         # Images from Kenney.nl's Character pack
         # main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"

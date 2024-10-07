@@ -562,6 +562,42 @@ class BasicSprite:
 
     # --- Scale methods -----
 
+    def scale_set_uniform(self, new_scale: AsFloat) -> None:
+        """Set the sprite's scale uniformly.
+
+        This sets both the x and y scale values to the same value.
+
+        Args:
+            new_scale: The new scale value for the sprite.
+        """
+        self._scale = new_scale, new_scale
+        self._hit_box.scale = self._scale
+        tex_width, tex_height = self._texture.size
+        self._width = tex_width * new_scale
+        self._height = tex_height * new_scale
+
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+
+    def scale_add_uniform(self, factor: AsFloat) -> None:
+        """Add to the sprite's scale uniformly.
+
+        This adds the factor to both the x and y scale values.
+
+        Args:
+            factor: The factor to add to the sprite's scale.
+        """
+        self._scale = self._scale[0] + factor, self._scale[1] + factor
+        self._hit_box.scale = self._scale
+        tex_width, tex_height = self._texture.size
+        self._width = tex_width * self._scale[0]
+        self._height = tex_height * self._scale[1]
+
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+
     def scale_multiply_uniform(self, factor: AsFloat) -> None:
         """Scale the sprite uniformly by a factor.
 
@@ -571,26 +607,10 @@ class BasicSprite:
             factor: The factor to scale up the sprite by.
         """
         self._scale = self._scale[0] * factor, self._scale[1] * factor
+        self._hit_box.scale = self._scale
         tex_width, tex_height = self._texture.size
         self._width = tex_width * factor
         self._height = tex_height * factor
-
-        self.update_spatial_hash()
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_size(self)
-
-    def scale_set_uniform(self, new_scale: AsFloat) -> None:
-        """Set the sprite's scale uniformly.
-
-        This sets both the x and y scale values to the same value.
-
-        Args:
-            new_scale: The new scale value for the sprite.
-        """
-        tex_width, tex_height = self._texture.size
-        tex_width, tex_height = self._texture.size
-        self._width = tex_width * new_scale
-        self._height = tex_height * new_scale
 
         self.update_spatial_hash()
         for sprite_list in self.sprite_lists:

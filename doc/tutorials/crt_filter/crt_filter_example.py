@@ -30,7 +30,7 @@ class MyGame(arcade.Window):
 
         # Load the pac-man map image and scale it up to the window size
         map = arcade.Sprite("Pac-man.png", center_x=width / 2, center_y=height / 2)
-        map.scale = width / map.width
+        map.scale_set_uniform(width / map.width)
         self.sprite_list.append(map)
 
         # Slice out some textures from the sprite sheet
