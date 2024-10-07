@@ -13,47 +13,36 @@ gettext.install('text_loc_example', localedir='text_loc_example_locale')
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
 SCREEN_TITLE = "Localizing Text Example"
-_ = gettext.gettext
 
-
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """
     Main application class.
     """
-
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
-
-        self.background_color = arcade.color.WHITE
-        self.text_angle = 0
-        self.time_elapsed = 0.0
-
-    def on_update(self, delta_time):
-        self.text_angle += 1
-        self.time_elapsed += delta_time
+    def __init__(self):
+        super().__init__()
+        self.window.background_color = arcade.color.WHITE
+        self.text = arcade.Text(
+            gettext.gettext("Simple line of text in 12 point"),
+            50.0, 450.0, arcade.color.BLACK, 12
+        )
 
     def on_draw(self):
         """
         Render the screen.
         """
-
         # This command should happen before we start drawing. It will clear
         # the screen to the background color, and erase what we drew last frame.
         self.clear()
 
-        # start_x and start_y make the start point for the text.
-        # We draw a dot to make it easy too see
-        # the text in relation to its start x and y.
-        start_x = 50
-        start_y = 450
-        arcade.draw_point(start_x, start_y, arcade.color.BLUE, 5)
-        arcade.draw_text(
-            _("Simple line of text in 12 point"), start_x, start_y, arcade.color.BLACK, 12
-        )
-
+        # We draw a dot to make it clear how the text relates to the text
+        arcade.draw_point(self.text.x, self.text.y, arcade.color.BLUE, 5)
+        self.text.draw()
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game = MyGame()
+
+    window.show_view(game)
     arcade.run()
 
 
