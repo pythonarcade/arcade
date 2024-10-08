@@ -21,14 +21,28 @@ class InstructionView(arcade.View):
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         self.window.default_camera.use()
+        self.title_text = arcade.Text(
+            "Instructions Screen",
+            x=self.window.width / 2,
+            y=self.window.height / 2,
+            color=arcade.color.WHITE,
+            font_size=50,
+            anchor_x="center",
+        )
+        self.instruction_text = arcade.Text(
+            "Click to advance",
+            x=self.window.width / 2,
+            y=self.window.height / 2-75,
+            color=arcade.color.WHITE,
+            font_size=20,
+            anchor_x="center",
+        )
 
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        arcade.draw_text("Instructions Screen", self.window.width / 2, self.window.height / 2,
-                         arcade.color.WHITE, font_size=50, anchor_x="center")
-        arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2-75,
-                         arcade.color.WHITE, font_size=20, anchor_x="center")
+        self.title_text.draw()
+        self.instruction_text.draw()
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, start the game. """
@@ -52,8 +66,10 @@ class GameOverView(arcade.View):
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        self.texture.draw_sized(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2,
-                                SCREEN_WIDTH, SCREEN_HEIGHT)
+        arcade.draw_texture_rect(
+            self.texture,
+            rect=arcade.LBWH(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+        )
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, re-start the game. """
@@ -76,6 +92,7 @@ class GameView(arcade.View):
 
         # Set up the player info
         self.player_sprite = None
+        self.score_text = arcade.Text("Score: 0", 10, 10, arcade.color.WHITE, 14)
         self.score = 0
 
         # Don't show the mouse cursor
@@ -124,7 +141,8 @@ class GameView(arcade.View):
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        self.score_text.text = output
+        self.score_text.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle Mouse Motion """

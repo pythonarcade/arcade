@@ -16,6 +16,7 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
+        self.ctx.enable_only(self.ctx.BLEND)
         # Set uniform data to send to the GLSL shader
         self.shadertoy.program['pos'] = self.mouse["x"], self.mouse["y"]
 
