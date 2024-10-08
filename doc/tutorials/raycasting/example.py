@@ -135,7 +135,7 @@ class MyGame(arcade.Window):
         # example though.)
         self.physics_engine.update()
 
-    def on_resize(self, width: int, height: int) -> bool | None:
+    def on_resize(self, width: int, height: int):
         self.shadertoy.resize((width, height))
         # Resize the channels
         size = width, height
