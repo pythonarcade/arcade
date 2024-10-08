@@ -171,13 +171,12 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # atlas_name: Set of textures with matching atlas name
         self._unique_textures: dict[str, WeakSet[Texture]] = dict()
 
-        # Add all the textures
-        for tex in textures or []:
-            self.add(tex)
-
         self._textures_added = 0
         self._textures_removed = 0
         self._finalizers_created = 0
+
+        for tex in textures or []:
+            self.add(tex)
 
     @property
     def max_width(self) -> int:

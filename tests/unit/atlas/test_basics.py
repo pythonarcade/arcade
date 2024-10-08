@@ -22,6 +22,13 @@ def test_create(ctx, common):
     common.check_internals(atlas, images=0, textures=0, unique_textures=0)
 
 
+def test_create_add(ctx, common):
+    """Create atlas with initial textures"""
+    texture = load_texture(":resources:onscreen_controls/shaded_dark/a.png")
+    atlas = DefaultTextureAtlas((100, 200), textures=[texture])
+    common.check_internals(atlas, images=1, textures=1, unique_textures=1)
+
+
 def test_add(ctx, common):
     """Test adding textures to atlas"""
     tex_a = load_texture(":resources:onscreen_controls/shaded_dark/a.png")
