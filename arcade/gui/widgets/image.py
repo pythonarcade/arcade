@@ -45,7 +45,7 @@ class UIImage(UIWidget):
         texture: Union[Texture, NinePatchTexture],
         width: float | None = None,
         height: float | None = None,
-        angle: float = 0,
+        angle: int = 0,
         alpha: int = 255,
         **kwargs,
     ):
