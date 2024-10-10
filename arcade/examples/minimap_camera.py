@@ -13,8 +13,8 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-DEFAULT_SCREEN_WIDTH = 1280
-DEFAULT_SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Minimap Example"
 
 # How many pixels to keep as a minimum margin between the character
@@ -34,18 +34,18 @@ MINIMAP_HEIGHT = 256
 MAP_WIDTH = 2048
 MAP_HEIGHT = 2048
 
-MAP_PROJECTION_WIDTH = 256
-MAP_PROJECTION_HEIGHT = 256
+MAP_PROJECTION_WIDTH = 1024
+MAP_PROJECTION_HEIGHT = 1024
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__()
 
         # Sprite lists
         self.player_list = None
@@ -53,13 +53,12 @@ class MyGame(arcade.Window):
 
         # Mini-map related
         minimap_viewport = arcade.LBWH(
-            DEFAULT_SCREEN_WIDTH - MINIMAP_WIDTH,
-            DEFAULT_SCREEN_HEIGHT - MINIMAP_HEIGHT,
+            self.width - MINIMAP_WIDTH,
+            self.height - MINIMAP_HEIGHT,
             MINIMAP_WIDTH, MINIMAP_HEIGHT,
         )
-        minimap_projection = arcade.LRBT(
-            -MAP_PROJECTION_WIDTH/2, MAP_PROJECTION_WIDTH/2,
-            -MAP_PROJECTION_HEIGHT/2, MAP_PROJECTION_HEIGHT/2,
+        minimap_projection = arcade.XYWH(
+            0.0, 0.0, MAP_PROJECTION_WIDTH, MAP_PROJECTION_HEIGHT
         )
         self.camera_minimap = arcade.camera.Camera2D(
             viewport=minimap_viewport, projection=minimap_projection
@@ -88,7 +87,7 @@ class MyGame(arcade.Window):
             color=arcade.color.BLACK_BEAN,
             font_size=10,
             multiline=True,
-            width=DEFAULT_SCREEN_WIDTH,
+            width=self.width,
         )
 
     def setup(self):
@@ -235,9 +234,19 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
+
 
 
 if __name__ == "__main__":

@@ -117,7 +117,7 @@ class ScreenPart(arcade.Section):
             self.hold_box.release()
 
 
-class GameView(arcade.View):
+class MyGame(arcade.View):
     def __init__(self):
         super().__init__()
 
@@ -162,7 +162,7 @@ def main():
     window = arcade.Window()
 
     # create the custom View. Sections are initialized inside the GameView init
-    view = GameView()
+    view = MyGame()
 
     # show the view
     window.show_view(view)

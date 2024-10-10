@@ -14,7 +14,7 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Starting Template"
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """
     Main application class.
 
@@ -23,8 +23,8 @@ class MyGame(arcade.Window):
     with your own code. Don't leave 'pass' in this program.
     """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         self.background_color = arcade.color.AMAZON
 
@@ -91,8 +91,18 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.run()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
+
 
 
 if __name__ == "__main__":

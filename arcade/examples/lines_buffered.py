@@ -19,17 +19,16 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Vertex Buffer Object With Lines Example"
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Set up the application.
         """
-        super().__init__(width, height, title)
-        self.set_vsync(True)
+        super().__init__()
 
         self.shape_list = ShapeElementList()
         point_list = ((0, 50),
@@ -79,7 +78,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, vsync=True)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

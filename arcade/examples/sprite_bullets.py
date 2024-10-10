@@ -23,13 +23,13 @@ SCREEN_TITLE = "Sprites and Bullets Example"
 BULLET_SPEED = 5
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -41,7 +41,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
@@ -167,8 +167,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    window.setup()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

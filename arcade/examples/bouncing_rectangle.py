@@ -62,11 +62,11 @@ class Item:
             arcade.rect.XYWH(self.center_x, self.center_y, RECT_WIDTH, RECT_HEIGHT), RECT_COLOR)
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         # Create our rectangle
         self.item = Item()
@@ -93,7 +93,16 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

@@ -20,9 +20,9 @@ PLAYER_SPEED = 300
 CAMERA_SPEED = 0.1
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__()
         self.camera = arcade.camera.Camera2D()
 
         # Load the background from file. It defaults to the size of the texture
@@ -73,11 +73,9 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-
-        self.camera.use()
-
-        self.background.draw()
-        arcade.draw_sprite(self.player_sprite)
+        with self.camera.activate():
+            self.background.draw()
+            arcade.draw_sprite(self.player_sprite)
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol in (arcade.key.LEFT, arcade.key.A):
@@ -108,8 +106,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    app = MyGame()
-    app.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

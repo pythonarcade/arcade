@@ -12,15 +12,15 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-DEFAULT_SCREEN_WIDTH = 1280
-DEFAULT_SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
 VIEWPORT_MARGIN = 200
-HORIZONTAL_BOUNDARY = DEFAULT_SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
-VERTICAL_BOUNDARY = DEFAULT_SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
+HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
 # If the player moves further than this boundary away from the camera we use a
 # constraint to move the camera
 CAMERA_BOUNDARY = arcade.LRBT(
@@ -37,14 +37,14 @@ CAMERA_SPEED = 0.1
 PLAYER_MOVEMENT_SPEED = 7
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__()
 
         # Sprite lists
         self.player_list = None
@@ -212,14 +212,22 @@ class MyGame(arcade.Window):
         """
         super().on_resize(width, height)
         self.camera_sprites.match_screen(and_projection=True)
-        self.camera_gui.match_screen(and_projection=True)
-        self.camera_gui.position = self.center
+        self.camera_gui.match_screen(and_projection=True, and_position=True)
 
 
 def main():
     """ Main function """
-    window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

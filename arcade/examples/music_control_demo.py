@@ -8,9 +8,9 @@ import arcade.gui.widgets.buttons
 import arcade.gui.widgets.layout
 
 
-class MyView(arcade.View):
-    def __init__(self, my_window: arcade.Window):
-        super().__init__(my_window)
+class MyGame(arcade.View):
+    def __init__(self):
+        super().__init__()
 
         self.media_player = None
         self.paused = True
@@ -223,7 +223,20 @@ class MyView(arcade.View):
         self.ui_manager.disable()
 
 
-if __name__ == "__main__":
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
     window = arcade.Window(title="Arcade Music Control Demo")
-    window.show_view(MyView(window))
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()

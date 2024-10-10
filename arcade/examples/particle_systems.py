@@ -784,9 +784,9 @@ def emitter_39():
     return emitter_39.__doc__, e
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.background_color = arcade.color.BLACK
 
@@ -847,8 +847,18 @@ class MyGame(arcade.Window):
 
 
 def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create the MyGame view
     game = MyGame()
-    game.run()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

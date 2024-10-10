@@ -137,7 +137,12 @@ class MyView(UIView):
         self.ui.debug()
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="UIExample: Size Hints")
     window.show_view(MyView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()
+

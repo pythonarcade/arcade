@@ -32,10 +32,11 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Transform Feedback"
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+    def __init__(self):
+        super().__init__()
+        self.ctx = self.window.ctx
 
         # Program to visualize the points
         self.points_program = self.ctx.program(
@@ -127,13 +128,13 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.point_size = 2 * self.get_pixel_ratio()
+        self.ctx.point_size = 2 * self.window.get_pixel_ratio()
 
         # Set uniforms in the program
-        self.gravity_program["dt"] = arcade.clock.GLOBAL_CLOCK.delta_time
+        self.gravity_program["dt"] = self.window.delta_time
         self.gravity_program["force"] = 0.25
         self.gravity_program["gravity_pos"] = (
-            math.sin(self.time * 0.77) * 0.25, math.cos(self.time) * 0.25
+            math.sin(self.window.time * 0.77) * 0.25, math.cos(self.window.time) * 0.25
         )
 
         # Transform data in buffer_1 into buffer_2
@@ -147,6 +148,20 @@ class MyGame(arcade.Window):
         self.buffer_1, self.buffer_2 = self.buffer_2, self.buffer_1
 
 
-if __name__ == "__main__":
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()

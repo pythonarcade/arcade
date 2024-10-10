@@ -196,7 +196,11 @@ class MyView(UIView):
         grid.add(texture_button_with_toggle, row=3, column=0, column_span=3)
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(800, 600, "GUI Example: Buttons", resizable=True)
     window.show_view(MyView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

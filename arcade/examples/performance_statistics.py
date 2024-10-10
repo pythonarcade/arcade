@@ -72,13 +72,13 @@ class Coin(arcade.BasicSprite):
             self.change_y *= -1
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Our custom Window Class"""
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables to hold game objects and performance info
         self.coin_list: arcade.SpriteList | None = None
@@ -186,10 +186,18 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame()
-    window.setup()
-    arcade.run()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 if __name__ == "__main__":
     main()

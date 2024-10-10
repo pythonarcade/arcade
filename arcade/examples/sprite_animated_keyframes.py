@@ -9,10 +9,10 @@ python -m arcade.examples.sprite_animated_keyframes
 import arcade
 
 
-class Animated(arcade.Window):
+class MyGame(arcade.View):
 
     def __init__(self):
-        super().__init__(1280, 720, "Time based animated sprite")
+        super().__init__()
 
         # Load the 8 frames for the walking animation
         path = ":assets:/images/animated_characters/female_adventurer/"
@@ -42,7 +42,18 @@ class Animated(arcade.Window):
 
 
 def main():
-    Animated().run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(1280, 720, "Time based animated sprite")
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

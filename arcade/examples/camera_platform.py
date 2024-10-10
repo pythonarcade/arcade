@@ -15,8 +15,8 @@ import arcade
 TILE_SCALING = 0.5
 PLAYER_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 
 SCREEN_TITLE = "Camera Example"
 SPRITE_PIXEL_SIZE = 128
@@ -40,14 +40,14 @@ LAYER_NAME_COINS = "Coins"
 LAYER_NAME_BOMBS = "Bombs"
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """Main application class."""
 
     def __init__(self):
         """
         Initializer
         """
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__()
 
         # Our TileMap Object
         self.tile_map = None
@@ -177,7 +177,7 @@ class MyGame(arcade.Window):
         # the camera following algorithm.
         self.camera_shake.readjust_camera()
 
-        with self.default_camera.activate():
+        with self.window.default_camera.activate():
             # Update fps text periodically
             if self.last_time and self.frame_count % 60 == 0:
                 fps = 1.0 / (time.time() - self.last_time) * 60
@@ -275,9 +275,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """Get this game started."""
-    window = MyGame()
-    window.setup()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

@@ -21,10 +21,10 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprite Follow Path Simple Example"
 
 
-class Game(arcade.Window):
+class MyGame(arcade.View):
 
     def __init__(self):
-        super().__init__(fixed_rate=1/60.0)
+        super().__init__()
         self.unfixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.RADICAL_RED)
         self.interpolated_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.ORANGE)
         self.fixed_sprite = arcade.SpriteCircle(CIRCLE_RADIUS, arcade.color.GOLD)
@@ -97,9 +97,19 @@ class Game(arcade.Window):
 
 
 def main():
-    win = Game()
-    win.setup()
-    win.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fixed_rate=1/60)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == '__main__':

@@ -251,9 +251,9 @@ class IndicatorBar:
             self.full_box.scale = value
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     def __init__(self) -> None:
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Create sprite lists
         self.bullet_list: arcade.SpriteList = arcade.SpriteList()
@@ -382,10 +382,19 @@ class MyGame(arcade.Window):
                 )
 
 
-def main() -> None:
-    """Main Program."""
-    window = MyGame()
-    window.setup()
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

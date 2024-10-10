@@ -260,7 +260,11 @@ class MyCoinGame(UIView):
         return False
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(1280, 720, "GUI Example: Coin Game (Camera)", resizable=False)
     window.show_view(MyCoinGame())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

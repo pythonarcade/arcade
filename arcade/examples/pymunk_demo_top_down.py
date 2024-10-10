@@ -26,11 +26,10 @@ PLAYER_MOVE_FORCE = 4000
 BULLET_MOVE_FORCE = 2500
 
 
-class MyWindow(arcade.Window):
-    """ Main Window """
-    def __init__(self, width, height, title):
+class MyGame(arcade.View):
+    def __init__(self):
         """ Init """
-        super().__init__(width, height, title)
+        super().__init__()
 
         self.background_color = arcade.color.AMAZON
 
@@ -313,11 +312,19 @@ class MyWindow(arcade.Window):
         self.gem_list.draw()
         self.player_list.draw()
 
-
 def main():
     """ Main function """
-    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

@@ -52,10 +52,10 @@ class RotatingSprite(arcade.Sprite):
             point[0], point[1], degrees)
 
 
-class ExampleWindow(arcade.Window):
+class MyGame(arcade.View):
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.sprites = arcade.SpriteList()
 
@@ -115,8 +115,18 @@ class ExampleWindow(arcade.Window):
 
 
 def main():
-    window = ExampleWindow()
-    window.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == '__main__':

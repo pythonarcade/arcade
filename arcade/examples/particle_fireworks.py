@@ -179,9 +179,9 @@ class RocketEmitter(Emitter):
         self.change_y += -0.05 * (60 * delta_time)
 
 
-class FireworksApp(arcade.Window):
+class MyGame(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.background_color = arcade.color.BLACK
         self.emitters: list[Emitter] = []
@@ -390,8 +390,18 @@ def rocket_smoke_mutator(particle: LifetimeParticle):
 
 
 def main():
-    app = FireworksApp()
-    app.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

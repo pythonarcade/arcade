@@ -18,13 +18,13 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Sprites with Properties Example"
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Our custom Window Class"""
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -37,7 +37,7 @@ class MyGame(arcade.Window):
         self.trigger_sprite = None
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         self.background_color = arcade.color.AMAZON
 
@@ -76,6 +76,10 @@ class MyGame(arcade.Window):
             center_x=750, center_y=50,
         )
 
+    def on_key_press(self, symbol, modifiers):
+        if symbol == arcade.key.R:
+            self.setup()
+
     def on_draw(self):
         """ Draw everything """
         self.clear()
@@ -84,7 +88,7 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
         # Put the instructions on the screen.
-        instructions1 = "Touch a coin to set its intensity property to 'bright'."
+        instructions1 = "Touch a coin to set its intensity property to 'bright'. Press 'R' to reset the sprites"
         arcade.draw_text(instructions1, 10, 90, arcade.color.WHITE, 14)
         instructions2 = "Touch the trigger at the bottom-right to destroy all 'bright' sprites."
         arcade.draw_text(instructions2, 10, 70, arcade.color.WHITE, 14)
@@ -131,8 +135,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame()
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

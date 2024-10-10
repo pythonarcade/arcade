@@ -23,9 +23,9 @@ PLAYER_SPEED = 300
 CAMERA_SPEED = 0.5
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__()
         # Set the background color to equal to that of the first background.
         self.background_color = (5, 44, 70)
 
@@ -98,13 +98,11 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
-        self.camera.use()
+        with self.camera.activate():
+            with self.window.ctx.enabled(self.window.ctx.BLEND):
+                self.backgrounds.draw()
 
-        self.ctx.enable(self.ctx.BLEND)
-        self.backgrounds.draw()
-        self.ctx.disable(self.ctx.BLEND)
-
-        arcade.draw_sprite(self.player_sprite)
+            arcade.draw_sprite(self.player_sprite)
 
     def on_key_press(self, symbol: int, modifiers: int):
         # Support arrow keys and ASWD
@@ -136,8 +134,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    app = MyGame()
-    app.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

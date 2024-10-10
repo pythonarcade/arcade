@@ -50,14 +50,14 @@ class Player(arcade.Sprite):
                 self.easing_y_data = None
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """Main application class."""
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """Initializer"""
 
         # Call the parent class initializer
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Set up the player info
         self.player_list = arcade.SpriteList()
@@ -97,8 +97,8 @@ class MyGame(arcade.Window):
         self.player_list.update(delta_time)
 
     def on_key_press(self, key, modifiers):
-        x = self.mouse["x"]
-        y = self.mouse["y"]
+        x = self.window.mouse["x"]
+        y = self.window.mouse["y"]
 
         if key == arcade.key.KEY_1:
             angle = arcade.math.get_angle_degrees(
@@ -160,9 +160,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """Main function"""
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

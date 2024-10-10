@@ -48,7 +48,11 @@ class MyView(arcade.View):
         self.ui.draw()
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(800, 600, "UIExample", resizable=True)
     window.show_view(MyView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

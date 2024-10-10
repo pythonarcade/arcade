@@ -9,18 +9,16 @@ python -m arcade.examples.sprite_minimal
 import arcade
 
 
-class WhiteSpriteCircleExample(arcade.Window):
+class MyGame(arcade.View):
 
     def __init__(self):
-        super().__init__(1280, 720, "White SpriteCircle Example")
-        self.sprites = None
-
+        super().__init__()
         # 1. Create the SpriteList
         self.sprites = arcade.SpriteList()
 
         # 2. Create & append your Sprite instance to the SpriteList
-        self.circle = arcade.SpriteCircle(30, arcade.color.WHITE)  # 30 pixel radius circle
-        self.circle.position = self.width // 2, self.height // 2  # Put it in the middle
+        self.circle = arcade.Sprite()  # Sprite with the default texture
+        self.circle.position = self.center  # center sprite on screen
         self.sprites.append(self.circle)  # Append the instance to the SpriteList
 
     def on_draw(self):
@@ -32,8 +30,18 @@ class WhiteSpriteCircleExample(arcade.Window):
 
 
 def main():
-    game = WhiteSpriteCircleExample()
-    game.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(1280, 720, "Minimal SPrite Example")
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

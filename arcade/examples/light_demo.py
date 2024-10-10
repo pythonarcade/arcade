@@ -9,8 +9,8 @@ python -m arcade.examples.light_demo
 import arcade
 from arcade.future.light import Light, LightLayer
 
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 768
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Lighting Demo"
 MOVEMENT_SPEED = 5
 
@@ -31,12 +31,11 @@ CAMERA_BOUNDARY = arcade.LRBT(
 AMBIENT_COLOR = (10, 10, 10, 255)
 
 
-class MyGame(arcade.Window):
-    """ Main Game Window """
+class MyGame(arcade.View):
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """ Set up the class. """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__()
 
         # Sprite lists
         self.background_sprite_list = None
@@ -290,8 +289,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

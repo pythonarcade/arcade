@@ -69,12 +69,12 @@ class Line(Shape):
                          self.color, 2)
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
     def __init__(self):
         # Call the parent __init__
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Create a shape list
         self.shape_list = []
@@ -134,7 +134,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

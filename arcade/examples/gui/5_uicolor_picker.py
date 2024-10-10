@@ -189,7 +189,11 @@ class ColorView(UIView):
         pass
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: Color Picker")
     window.show_view(ColorView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

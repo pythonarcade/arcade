@@ -52,12 +52,12 @@ class Coin(arcade.Sprite):
         self.circle_angle += self.circle_speed
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
 
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Sprite lists
         self.all_sprites_list = None
@@ -67,7 +67,7 @@ class MyGame(arcade.Window):
         self.score = 0
         self.player_sprite = None
 
-    def start_new_game(self):
+    def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
@@ -106,7 +106,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         # Set the background color
         self.background_color = arcade.color.AMAZON
@@ -145,8 +145,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.start_new_game()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

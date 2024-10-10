@@ -48,11 +48,11 @@ class EnemySprite(arcade.Sprite):
             self.bullet_list.append(bullet)
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.background_color = arcade.color.BLACK
 
@@ -128,9 +128,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Run the game """
-    window = MyGame()
-    window.setup()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

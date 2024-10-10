@@ -72,7 +72,11 @@ class MyView(UIView):
         return False
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: UIScrollLayout")
     window.show_view(MyView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

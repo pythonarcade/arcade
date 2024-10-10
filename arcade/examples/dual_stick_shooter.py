@@ -122,9 +122,9 @@ class Enemy(arcade.sprite.Sprite):
             self.center_x -= min(ENEMY_SPEED, self.center_x - player_sprite.center_x)
 
 
-class MyGame(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+class MyGame(arcade.View):
+    def __init__(self):
+        super().__init__()
         self.game_over = False
         self.score = 0
         self.tick = 0
@@ -357,8 +357,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

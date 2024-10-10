@@ -49,18 +49,18 @@ class Snowflake(arcade.SpriteCircle):
         self.drift += 1 * delta_time
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """ Initializer """
         # Calls "__init__" of parent class (arcade.Window) to setup screen
-        super().__init__(width, height, title)
+        super().__init__()
 
         self.snowflake_list = arcade.SpriteList()
 
         # Don't show the mouse pointer
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         # Set the background color
         self.background_color = arcade.color.BLACK
@@ -97,8 +97,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.start_snowfall()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+    game.start_snowfall()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

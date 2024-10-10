@@ -264,13 +264,13 @@ class RLDungeonGenerator:
         self.connect_rooms()
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         self.grid = None
         self.wall_list = None
@@ -370,24 +370,22 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Select the scrolling camera
-        self.camera_sprites.use()
-
-        # Draw the sprites
-        self.wall_list.draw()
-        self.player_list.draw()
+        with self.camera_sprites.activate():
+            # Draw the sprites
+            self.wall_list.draw()
+            self.player_list.draw()
 
         # Use the non-scrolling camera
-        self.camera_gui.use()
+        with self.camera_gui.activate():
+            # Draw info on the screen
+            self.sprite_count_text.draw()
+            output = f"Drawing time: {self.draw_time:.3f}"
+            self.draw_time_text.text = output
+            self.draw_time_text.draw()
 
-        # Draw info on the screen
-        self.sprite_count_text.draw()
-        output = f"Drawing time: {self.draw_time:.3f}"
-        self.draw_time_text.text = output
-        self.draw_time_text.draw()
-
-        output = f"Processing time: {self.processing_time:.3f}"
-        self.processing_time_text.text = output
-        self.processing_time_text.draw()
+            output = f"Processing time: {self.processing_time:.3f}"
+            self.processing_time_text.text = output
+            self.processing_time_text.draw()
         self.draw_time = timeit.default_timer() - draw_start_time
 
     def on_key_press(self, key, modifiers):
@@ -442,9 +440,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function, start up window and run """
-    game = MyGame(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the MyGame view
+    game = MyGame()
     game.setup()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

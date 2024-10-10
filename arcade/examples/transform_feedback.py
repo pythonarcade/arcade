@@ -30,13 +30,15 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Transform Feedback"
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+    def __init__(self):
+        super().__init__()
+        # get the GL context from the window
+        context = self.window.ctx
 
         # Program to visualize the points
-        self.points_program = self.ctx.program(
+        self.points_program = context.program(
             vertex_shader="""
             #version 330
             in vec2 in_pos;
@@ -67,7 +69,7 @@ class MyGame(arcade.Window):
         )
 
         # A program transforming points being affected by a gravity point
-        self.gravity_program = self.ctx.program(
+        self.gravity_program = context.program(
             vertex_shader="""
             #version 330
 
@@ -99,22 +101,22 @@ class MyGame(arcade.Window):
         )
         N = 50_000
         # Make two buffers we transform between so we can work on the previous result
-        self.buffer_1 = self.ctx.buffer(data=array('f', self.gen_initial_data(N)))
-        self.buffer_2 = self.ctx.buffer(reserve=self.buffer_1.size)
+        self.buffer_1 = context.buffer(data=array('f', self.gen_initial_data(N)))
+        self.buffer_2 = context.buffer(reserve=self.buffer_1.size)
 
         # We also need to be able to visualize both versions (draw to the screen)
-        self.vao_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2x4', ['in_pos'])])
-        self.vao_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2x4', ['in_pos'])])
+        self.vao_1 = context.geometry([BufferDescription(self.buffer_1, '2f 2x4', ['in_pos'])])
+        self.vao_2 = context.geometry([BufferDescription(self.buffer_2, '2f 2x4', ['in_pos'])])
 
         # We need to be able to transform both buffers (ping-pong)
-        self.gravity_1 = self.ctx.geometry(
+        self.gravity_1 = context.geometry(
             [BufferDescription(self.buffer_1, '2f 2f', ['in_pos', 'in_vel'])]
         )
-        self.gravity_2 = self.ctx.geometry(
+        self.gravity_2 = context.geometry(
             [BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])]
         )
 
-        self.ctx.enable_only()  # Ensure no context flags are set
+        context.enable_only()  # Ensure no context flags are set
 
     def gen_initial_data(self, count):
         for _ in range(count):
@@ -125,28 +127,39 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.point_size = 2 * self.get_pixel_ratio()
+        self.window.ctx.point_size = 2 * self.window.get_pixel_ratio()
 
         # Set uniforms in the program
-        self.gravity_program['dt'] = self.delta_time
+        self.gravity_program['dt'] = self.window.delta_time
         self.gravity_program['force'] = 0.25
         self.gravity_program['gravity_pos'] = (
-            math.sin(self.time * 0.77) * 0.25, math.cos(self.time) * 0.25
+            math.sin(self.window.time * 0.77) * 0.25, math.cos(self.window.time) * 0.25
         )
 
         # Transform data in buffer_1 into buffer_2
         self.gravity_1.transform(self.gravity_program, self.buffer_2)
         # Render the result (Draw buffer_2)
-        self.vao_2.render(self.points_program, mode=self.ctx.POINTS)
+        self.vao_2.render(self.points_program, mode=arcade.gl.POINTS)
 
         # Swap around stuff around so we transform back and fourth between the two buffers
         self.gravity_1, self.gravity_2 = self.gravity_2, self.gravity_1
         self.vao_1, self.vao_2 = self.vao_2, self.vao_1
         self.buffer_1, self.buffer_2 = self.buffer_2, self.buffer_1
 
-
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE).run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
+
 
 
 if __name__ == "__main__":

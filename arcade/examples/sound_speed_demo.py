@@ -58,9 +58,9 @@ class SoundButton(arcade.SpriteSolidColor):
         self.sound.play(speed=self.speed, volume=self.volume)
 
 
-class MyGame(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+class MyGame(arcade.View):
+    def __init__(self):
+        super().__init__()
 
         self.background_color = arcade.color.AMAZON
         self.button_sprites = arcade.SpriteList()
@@ -97,7 +97,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE).run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

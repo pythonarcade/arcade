@@ -34,10 +34,11 @@ SCREEN_HEIGHT = 720
 SCREEN_TITLE = "Transform Feedback"
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+    def __init__(self):
+        super().__init__()
+        self.ctx = self.window.ctx
 
         # Program to visualize the points
         self.points_program = self.ctx.program(
@@ -188,6 +189,20 @@ class MyGame(arcade.Window):
         self.mouse_pos = x, y
 
 
-if __name__ == "__main__":
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()
