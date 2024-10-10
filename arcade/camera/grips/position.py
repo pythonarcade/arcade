@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from pyglet.math import Vec3
+
+from arcade.camera import CameraData
 from arcade.math import quaternion_rotation
 from arcade.types import Point3
-from arcade.camera import CameraData
 
 
 def look_at(camera: CameraData, target: Point3, up: Point3 | None = None) -> tuple[Point3, Point3]:

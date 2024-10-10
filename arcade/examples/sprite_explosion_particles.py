@@ -254,7 +254,7 @@ class GameView(arcade.View):
             self.reset()
         # Close the window
         elif symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_update(self, delta_time):
         """ Movement and game logic """

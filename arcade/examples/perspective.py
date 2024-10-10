@@ -119,7 +119,9 @@ class GameView(arcade.View):
     def on_update(self, delta_time: float):
         # Rotate the perspective camera around the plane
         view_data = self.projector.view
-        view_data.position = arcade.math.quaternion_rotation((1.0, 0.0, 0.0), (0, 0, 3), 180 * self.window.time)
+        view_data.position = arcade.math.quaternion_rotation(
+            (1.0, 0.0, 0.0), (0, 0, 3), 180 * self.window.time
+        )
         view_data.forward, view_data.up = arcade.camera.grips.look_at(view_data, (0.0, 0.0, 0.0))
         print(view_data)
 

@@ -390,7 +390,7 @@ class Camera2D:
             )
 
         self.update_viewport(
-            self.render_target.viewport,
+            LRBT(*self.render_target.viewport),
             and_projection=and_projection,
             and_scissor=and_scissor,
             and_position=and_position,

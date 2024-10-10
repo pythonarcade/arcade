@@ -129,7 +129,7 @@ def smerp(v1: L, v2: L, dt: float, h: float) -> L:
            0.1-25.0 is a good range.
     """
 
-    return v2 + (v1 - v2)*math.pow(2.0, -dt/h)
+    return v2 + (v1 - v2) * math.pow(2.0, -dt / h)
 
 
 def smerp_2d(v1: Point2, v2: Point2, dt: float, h: float) -> Vec2:
@@ -154,8 +154,8 @@ def smerp_2d(v1: Point2, v2: Point2, dt: float, h: float) -> Vec2:
     """
     x1, y1 = v1
     x2, y2 = v2
-    d = math.pow(2.0, -dt/h)
-    return Vec2(x2 + (x1 - x2)*d, y2 + (y1 - y2)*d)
+    d = math.pow(2.0, -dt / h)
+    return Vec2(x2 + (x1 - x2) * d, y2 + (y1 - y2) * d)
 
 
 def smerp_3d(v1: Point3, v2: Point3, dt: float, h: float) -> Vec3:
@@ -180,8 +180,8 @@ def smerp_3d(v1: Point3, v2: Point3, dt: float, h: float) -> Vec3:
     """
     x1, y1, z1 = v1
     x2, y2, z2 = v2
-    d = math,pow(2.0, -dt/h)
-    return Vec3(x2 + (x1 - x2)*d, y2 + (y1 - y2)*d, z2 + (z1 - z2)*d)
+    d = math.pow(2.0, -dt / h)
+    return Vec3(x2 + (x1 - x2) * d, y2 + (y1 - y2) * d, z2 + (z1 - z2) * d)
 
 
 def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:

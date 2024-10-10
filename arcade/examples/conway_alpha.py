@@ -120,7 +120,7 @@ class GameView(arcade.View):
         if symbol == arcade.key.SPACE:
             self.reset()
         elif symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_update(self, delta_time: float):
         """ Update the grid """

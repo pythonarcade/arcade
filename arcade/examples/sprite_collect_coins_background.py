@@ -121,7 +121,7 @@ class GameView(arcade.View):
         if symbol == arcade.key.R:
             self.reset()
         elif symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
 
 def main():

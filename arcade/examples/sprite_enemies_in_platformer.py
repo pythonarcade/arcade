@@ -150,7 +150,11 @@ class GameView(arcade.View):
         self.enemy_list.draw()
 
         if self.game_over:
-            arcade.draw_text("GAME OVER, Press R to reset", self.center_x, self.center_y, font_size=30, anchor_x='center')
+            arcade.draw_text(
+                "GAME OVER, Press R to reset",
+                self.center_x, self.center_y,
+                font_size=30, anchor_x='center'
+            )
 
     def on_key_press(self, key, modifiers):
         """

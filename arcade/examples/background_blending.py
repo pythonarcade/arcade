@@ -114,7 +114,7 @@ class GameView(arcade.View):
             self.y_direction += PLAYER_SPEED
         # Close the window
         elif symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol in (arcade.key.LEFT, arcade.key.A):

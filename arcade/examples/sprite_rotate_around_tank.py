@@ -131,8 +131,9 @@ class GameView(arcade.View):
 
         # Rotate the tank's body in place without changing position
         # We'll rotate the barrel after updating the entire tank's x & y
-        self.tank.angle += TANK_TURN_SPEED_DEGREES\
-            * self.tank_turning * delta_time
+        self.tank.angle += (
+            TANK_TURN_SPEED_DEGREES * self.tank_turning * delta_time
+        )
 
         # Calculate how much the tank should move forward or back
         move_magnitude = self.tank_direction * TANK_SPEED_PIXELS * delta_time

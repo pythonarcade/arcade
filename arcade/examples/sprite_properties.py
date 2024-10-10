@@ -18,6 +18,13 @@ WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Sprites with Properties Example"
 
 
+INSTRUCTIONS1 = (
+    "Touch a coin to set its intensity property to 'bright'."
+    "Press 'R' to reset the sprites"
+)
+INSTRUCTIONS2 = "Touch the trigger at the bottom-right to destroy all 'bright' sprites."
+
+
 class GameView(arcade.View):
     """ Our custom Window Class"""
 
@@ -88,10 +95,8 @@ class GameView(arcade.View):
         self.player_list.draw()
 
         # Put the instructions on the screen.
-        instructions1 = "Touch a coin to set its intensity property to 'bright'. Press 'R' to reset the sprites"
-        arcade.draw_text(instructions1, 10, 90, arcade.color.WHITE, 14)
-        instructions2 = "Touch the trigger at the bottom-right to destroy all 'bright' sprites."
-        arcade.draw_text(instructions2, 10, 70, arcade.color.WHITE, 14)
+        arcade.draw_text(INSTRUCTIONS1, 10, 90, arcade.color.WHITE, 14)
+        arcade.draw_text(INSTRUCTIONS2, 10, 70, arcade.color.WHITE, 14)
 
         # Query the property on the coins and show results.
         coins_are_bright = [coin.intensity == 'bright' for coin in self.coin_list]

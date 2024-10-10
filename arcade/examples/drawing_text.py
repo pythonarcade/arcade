@@ -263,7 +263,7 @@ class GameView(arcade.View):
     def on_key_press(self, symbol: int, modifiers: int):
         """ Handle key press events """
         if symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
 
 def main():
