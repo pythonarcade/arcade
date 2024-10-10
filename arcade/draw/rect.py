@@ -30,11 +30,11 @@ def draw_texture_rect(
 
     Args:
         texture:
-            Identifier of texture returned from load_texture() call
+            The texture to draw.
         rect:
             Rectangle to draw the texture on.
         color:
-            Color of the texture. Defaults to white.
+             Color multiplier for the texture. Defaults to white.
         angle:
             Rotation of the texture in degrees. Defaults to zero.
         blend:
@@ -275,7 +275,7 @@ def draw_lbwh_rectangle_filled(
             The height of the rectangle.
         color:
             The fill color as an RGBA :py:class:`tuple`, RGB
-            :py:class:`tuple`, :py:class:`~arcade.types.Color` instance
+            :py:class:`tuple`, :py:class:`.Color` instance
     """
     draw_rect_filled(LBWH(left, bottom, width, height), color)
 
@@ -288,10 +288,10 @@ def draw_rect_outline(
 
     Args:
         rect:
-            The rectangle to draw. a :py:class`~arcade.types.Rect` instance.
+            The rectangle to draw. a :py:class:`~arcade.Rect` instance.
         color:
-            The fill color as an RGBA :py:class:`tuple`,
-            RGB :py:class:`tuple`, or :py:class`.Color` instance.
+            The outline color as an RGBA :py:class:`tuple`,
+            RGB :py:class:`tuple`, or :py:class:`.Color` instance.
         border_width:
             width of the lines, in pixels.
         tilt_angle:
@@ -373,10 +373,10 @@ def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> Non
 
     Args:
         rect:
-            The rectangle to draw. a :py:class`~arcade.types.Rect` instance.
+            The rectangle to draw. a :py:class:`~arcade.Rect` instance.
         color:
             The fill color as an RGBA :py:class:`tuple`,
-            RGB :py:class:`tuple, or :py:class`.Color` instance.
+            RGB :py:class:`tuple`, or :py:class:`.Color` instance.
         tilt_angle:
             rotation of the rectangle (clockwise). Defaults to zero.
     """

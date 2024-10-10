@@ -55,7 +55,7 @@ def _generic_draw_line_strip(
             So it is a list of lists.
         color:
             A color, specified as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
     """
     # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
