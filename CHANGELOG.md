@@ -66,7 +66,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
  tested on the Raspberry Pi 4 and 5. Any model using the Cortex-A72
  or Cortex-A76 CPU should work. Use images from 2024 or later for best
  results.
-* Arcade now supports freely mixing Pyglet and Arcade code. You can now freely use pyglet batches and Labels when preferred over Arcade's types. Note that texture/image handling is still a separate system.
+* Arcade now supports freely mixing Pyglet and Arcade code. You can now freely use Pyglet batches and Labels when preferred over Arcade's types. Note that texture/image handling is still a separate system.
 * A fully functioning 2D camera allows for moving, rotating, and zooming and works with Arcade and Pyglet.
 * Added a new `GLOBAL_CLOCK` and `GLOBAL_FIXED_CLOCK` accessable from `arcade.clock`. which provides global access to elapsed time, number of frames, and the last delta_time.
 
@@ -180,7 +180,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
   * `future` includes all incomplete features we intend to include in Arcade eventually
   * `experimental` is any interesting code that may not end up as Arcade features.
 * `arcade.color_from_hex_string` changed to follow the CSS hex string standard.
-* Made `Pyglets` maths classes accessible within Arcade.
+* Made Pyglet's maths classes accessible within Arcade.
 * Arcade's utility math functions have more robust typing.
 * Added `Point`, `Point2`, `Point3` type aliases for tuples and vectors.
 * Added `Sequence` types for all three `Point` aliases.
@@ -192,7 +192,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 
 ### Sprites
 
-* Created `BasicSprite`, the absolute minimum required for an arcade sprite most users will do well sticking with `Sprite`.
+* Created `BasicSprite`, the absolute minimum required for an Arcade sprite most users will do well sticking with `Sprite`.
 * `Sprite.draw` has been completely removed. It was a wasteful and slow way to render a sprite. Use an `arcade.SpriteList` or `arcade.draw.draw_sprite`.
 * `Sprite.visible` no longer overrides the sprite's alpha, allowing for toggling transparent sprites.
 * `Sprite.face_towards` has been removed as it did not behave as expected and is not strictly for sprites.
