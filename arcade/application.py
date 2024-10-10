@@ -1233,8 +1233,13 @@ class View:
             window is used. (Normally you don't need to provide this).
     """
 
-    def __init__(self, window: Window | None = None) -> None:
+    def __init__(
+        self,
+        window: Window | None = None,
+        background_color: RGBOrA255 | None = None
+    ) -> None:
         self.window = arcade.get_window() if window is None else window
+        self.background_color: RGBOrA255 | None = background_color
 
     def clear(
         self,
@@ -1258,6 +1263,8 @@ class View:
             viewport (optional):
                 The viewport range to clear
         """
+        if color is None and color_normalized is None:
+            color = self.background_color
         self.window.clear(color=color, color_normalized=color_normalized, viewport=viewport)
 
     def on_update(self, delta_time: float) -> bool | None:
@@ -1562,14 +1569,3 @@ class View:
         An alias for `arcade.Window.center_y`
         """
         return self.window.center_y
-
-    @property
-    def background_color(self) -> Color:
-        """
-        An alias for `arcade.Window.background_color`
-        """
-        return self.window.background_color
-
-    @background_color.setter
-    def background_color(self, color: Color) -> None:
-        self.window.background_color = color
