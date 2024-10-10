@@ -279,10 +279,19 @@ class BasicSprite:
         return self._scale
 
     @scale.setter
-    def scale(self, new_scale: Point2):
+    def scale(self, new_scale: Point2 | AsFloat):
         if new_scale == self._scale:
             return
-        scale_x, scale_y = new_scale
+
+        if isinstance(new_scale, AsFloat):
+            new_scale = new_scale, new_scale
+
+        try:
+            scale_x, scale_y = new_scale
+        except ValueError:
+            raise ValueError("scale must be a scalar or a length 2 tuple-like")
+        except TypeError:
+            raise TypeError("scale must be a scalar or a length 2 tuple-like")
 
         self._hit_box.scale = new_scale
         tex_width, tex_height = self._texture.size
@@ -562,27 +571,8 @@ class BasicSprite:
 
     # --- Scale methods -----
 
-    def scale_set_uniform(self, new_scale: AsFloat) -> None:
-        """Set the sprite's scale uniformly.
-
-        This sets both the x and y scale values to the same value.
-
-        Args:
-            new_scale: The new scale value for the sprite.
-        """
-        self._scale = new_scale, new_scale
-        self._hit_box.scale = self._scale
-        tex_width, tex_height = self._texture.size
-        self._width = tex_width * new_scale
-        self._height = tex_height * new_scale
-
-        self.update_spatial_hash()
-        for sprite_list in self.sprite_lists:
-            sprite_list._update_size(self)
-
-    def scale_add_uniform(self, factor: AsFloat) -> None:
-        """Add to the sprite's scale uniformly.
-
+    def add_scale(self, factor: AsFloat) -> None:
+        """Add to the sprite's scale by the factor.
         This adds the factor to both the x and y scale values.
 
         Args:
@@ -598,14 +588,14 @@ class BasicSprite:
         for sprite_list in self.sprite_lists:
             sprite_list._update_size(self)
 
-    def scale_multiply_uniform(self, factor: AsFloat) -> None:
-        """Scale the sprite uniformly by a factor.
-
+    def multiply_scale(self, factor: AsFloat) -> None:
+        """multiply the sprite's scale by the factor.
         This multiplies both the x and y scale values by the factor.
 
         Args:
             factor: The factor to scale up the sprite by.
         """
+
         self._scale = self._scale[0] * factor, self._scale[1] * factor
         self._hit_box.scale = self._scale
         tex_width, tex_height = self._texture.size

@@ -123,7 +123,7 @@ def test_render_with_movement(window: arcade.Window):
         frame_counter += 1
         if frame_counter == 5:
             character_list.pop()
-            coin_list[0].scale_set_uniform(2.0)
+            coin_list[0].scale = 2.0
 
         coin_hit_list = arcade.check_for_collision_with_list(character_sprite, coin_list)
         for coin in coin_hit_list:
@@ -217,16 +217,16 @@ def test_render_scaled(window):
     assert gold_1.scale == (1.0, 1.0)
     assert gold_1.width, gold_1.height == (64, 64)
 
-    gold_1.scale_set_uniform(2.0)
+    gold_1.scale = 2.0
     assert gold_1.scale == (2.0, 2.0)
     assert gold_1.width, gold_1.height == (128, 128)
 
-    gold_1.scale_multiply_uniform(0.25)
+    gold_1.multiply_scale(0.25)
     assert gold_1.scale == (0.5, 0.5)
     assert gold_1.width, gold_1.height == (32, 32)
 
     # edge case: negative scale values are supported
-    gold_1.scale_multiply_uniform(-1.0)
+    gold_1.multiply_scale(-1.0)
     assert gold_1.scale == (-0.5, -0.5)
     assert gold_1.width, gold_1.height == (-32, -32)
 
@@ -245,7 +245,7 @@ def test_render_scaled(window):
         character_list.draw()
 
     def update(delta_time):
-        character_sprite.scale_add_uniform(0.1)
+        character_sprite.add_scale(0.1)
 
     window.on_draw = on_draw
     window.update = update

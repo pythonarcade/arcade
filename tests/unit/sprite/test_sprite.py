@@ -180,22 +180,25 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # check if x dimension is properly reset
     sprite.scale = 3.0, 2.0
-    sprite.scale_set_uniform(2.0)
+    assert sprite.scale == (3.0, 2.0)
+    sprite.scale = 2.0
     assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # check if y dimension is properly reset
     sprite.scale = 5.0, 3.0
-    sprite.scale_set_uniform(5.0)
-    assert sprite.scale_x == 5.0
+    assert sprite.scale == (5.0, 3.0)
+    sprite.scale = 5.0
+    assert sprite.scale_y == 5.0
     assert sprite.scale == (5.0, 5.0)
     assert sprite.width == 100
     assert sprite.height == 100
 
     # check if both dimensions properly reset
     sprite.scale = 0.5, 4.0
-    sprite.scale_set_uniform(1.0)
+    assert sprite.scale == (0.5, 4.0)
+    sprite.scale = 1.0
     assert sprite.scale_x == 1.0
     assert sprite.scale == (1.0, 1.0)
     assert sprite.width == 20
@@ -203,7 +206,8 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # edge case: setting negative values works
     sprite.scale = 0.5, 4.0
-    sprite.scale_set_uniform(-1.0)
+    assert sprite.scale == (0.5, 4.0)
+    sprite.scale = -1.0
     assert sprite.scale_x == -1.0
     assert sprite.scale == (-1.0, -1.0)
     assert sprite.width == -20
@@ -211,21 +215,24 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # edge case: x scale < 0 is reset to positive
     sprite.scale = -1.0, 1.0
-    sprite.scale_set_uniform(2.0)
+    assert sprite.scale == (-1.0, 1.0)
+    sprite.scale = 2.0
     assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # edge case: y scale < 0 is reset to positive
     sprite.scale = 1.0, -1.0
-    sprite.scale_set_uniform(2.0)
+    assert sprite.scale == (1.0, -1.0)
+    sprite.scale = 2.0
     assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
     # edge case: x < 0, y < 0 is reset to positive
     sprite.scale = -1.0, -1.0
-    sprite.scale_set_uniform(2.0)
+    assert sprite.scale == (-1.0, -1.0)
+    sprite.scale = 2.0
     assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
