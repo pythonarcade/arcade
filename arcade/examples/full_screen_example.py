@@ -14,9 +14,9 @@ from arcade.types import LRBT
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Full Screen Example"
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+WINDOW_TITLE = "Full Screen Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -25,7 +25,7 @@ VIEWPORT_MARGIN = 40
 MOVEMENT_SPEED = 5
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -45,7 +45,7 @@ class MyGame(arcade.View):
         # The camera used to update the viewport and projection on screen resize.
         self.camera = arcade.camera.Camera2D(
             position=(0, 0),
-            projection=LRBT(left=0, right=SCREEN_WIDTH, bottom=0, top=SCREEN_HEIGHT),
+            projection=LRBT(left=0, right=WINDOW_WIDTH, bottom=0, top=WINDOW_HEIGHT),
             viewport=self.window.rect
         )
 
@@ -65,7 +65,7 @@ class MyGame(arcade.View):
                 arcade.draw_texture_rect(self.example_image, arcade.XYWH(x, y, width, height))
 
             arcade.draw_rect_outline(
-                LRBT(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT),
+                LRBT(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT),
                 color=arcade.color.WHITE,
                 border_width=5,
             )
@@ -74,16 +74,16 @@ class MyGame(arcade.View):
             text_size = 18
             arcade.draw_text(
                 "Press F to toggle between full screen and windowed mode, unstretched.",
-                x=SCREEN_WIDTH // 2,
-                y=SCREEN_HEIGHT // 2 - 20,
+                x=WINDOW_WIDTH // 2,
+                y=WINDOW_HEIGHT // 2 - 20,
                 color=arcade.color.WHITE,
                 font_size=text_size,
                 anchor_x="center",
             )
             arcade.draw_text(
                 "Press S to toggle between full screen and windowed mode, stretched.",
-                x=SCREEN_WIDTH // 2,
-                y=SCREEN_HEIGHT // 2 + 20,
+                x=WINDOW_WIDTH // 2,
+                y=WINDOW_HEIGHT // 2 + 20,
                 color=arcade.color.WHITE,
                 font_size=text_size,
                 anchor_x="center",
@@ -109,9 +109,9 @@ class MyGame(arcade.View):
             # do a bit of math for that.
             self.camera.projection = LRBT(
                 left=0,
-                right=SCREEN_WIDTH,
+                right=WINDOW_WIDTH,
                 bottom=0,
-                top=SCREEN_HEIGHT,
+                top=WINDOW_HEIGHT,
             )
             self.camera.viewport = self.window.rect
 
@@ -122,12 +122,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on f
+    # Show GameView on f
     window.show_view(game)
 
     # Start the arcade game loop

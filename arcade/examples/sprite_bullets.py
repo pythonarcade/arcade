@@ -16,14 +16,14 @@ SPRITE_SCALING_COIN = 0.4
 SPRITE_SCALING_LASER = 0.8
 COIN_COUNT = 50
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprites and Bullets Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprites and Bullets Example"
 
 BULLET_SPEED = 5
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -80,8 +80,8 @@ class MyGame(arcade.View):
             )
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(120, SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(120, WINDOW_HEIGHT)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -162,20 +162,20 @@ class MyGame(arcade.View):
                 arcade.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > SCREEN_HEIGHT:
+            if bullet.bottom > WINDOW_HEIGHT:
                 bullet.remove_from_sprite_lists()
 
 
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

@@ -24,9 +24,9 @@ CELL_HEIGHT = 15
 CELL_MARGIN = 0
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (CELL_WIDTH + CELL_MARGIN) * COLUMN_COUNT + CELL_MARGIN
-SCREEN_HEIGHT = (CELL_HEIGHT + CELL_MARGIN) * ROW_COUNT + CELL_MARGIN
-SCREEN_TITLE = "Conway's Game of Life"
+WINDOW_WIDTH = (CELL_WIDTH + CELL_MARGIN) * COLUMN_COUNT + CELL_MARGIN
+WINDOW_HEIGHT = (CELL_HEIGHT + CELL_MARGIN) * ROW_COUNT + CELL_MARGIN
+WINDOW_TITLE = "Conway's Game of Life"
 
 # Colors and alpha values
 ALIVE_COLOR = arcade.color.BISTRE
@@ -81,7 +81,7 @@ def randomize_grid(grid: arcade.SpriteList):
             cell.alpha = ALPHA_OFF
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -196,13 +196,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     window.center_window()
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

@@ -12,9 +12,9 @@ import arcade
 # --- Set up the constants
 
 # Size of the screen
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Bouncing Rectangle Example"
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 600
+WINDOW_TITLE = "Bouncing Rectangle Example"
 
 # Rectangle info
 RECT_WIDTH = 50
@@ -44,10 +44,10 @@ class Item:
         self.center_x += self.change_x
         self.center_y += self.change_y
         # Check if we need to bounce of right edge
-        if self.center_x > SCREEN_WIDTH - RECT_WIDTH / 2:
+        if self.center_x > WINDOW_WIDTH - RECT_WIDTH / 2:
             self.change_x *= -1
         # Check if we need to bounce of top edge
-        if self.center_y > SCREEN_HEIGHT - RECT_HEIGHT / 2:
+        if self.center_y > WINDOW_HEIGHT - RECT_HEIGHT / 2:
             self.change_y *= -1
         # Check if we need to bounce of left edge
         if self.center_x < RECT_WIDTH / 2:
@@ -62,7 +62,7 @@ class Item:
             arcade.rect.XYWH(self.center_x, self.center_y, RECT_WIDTH, RECT_HEIGHT), RECT_COLOR)
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -94,12 +94,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

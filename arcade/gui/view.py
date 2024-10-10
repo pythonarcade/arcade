@@ -5,7 +5,6 @@ from typing import TypeVar
 from arcade import View
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets import UIWidget
-from arcade.types import RGBOrA255
 
 W = TypeVar("W", bound=UIWidget)
 

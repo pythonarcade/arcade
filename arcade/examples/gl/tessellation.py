@@ -11,12 +11,12 @@ from array import array
 import arcade
 from arcade.gl import BufferDescription
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Bezier Curve Tessellation"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Bezier Curve Tessellation"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.Window):
 
     def __init__(self, width, height, title):
         """
@@ -110,5 +110,5 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    GameView(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     arcade.run()

@@ -15,16 +15,16 @@ import random
 SPRITE_SCALING = 0.5
 SPRITE_SCALING_COIN = 0.2
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite No Coins on Walls Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite No Coins on Walls Example"
 
 NUMBER_OF_COINS = 50
 
 MOVEMENT_SPEED = 5
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -90,8 +90,8 @@ class MyGame(arcade.View):
             # Keep trying until success
             while not coin_placed_successfully:
                 # Position the coin
-                coin.center_x = random.randrange(SCREEN_WIDTH)
-                coin.center_y = random.randrange(SCREEN_HEIGHT)
+                coin.center_x = random.randrange(WINDOW_WIDTH)
+                coin.center_y = random.randrange(WINDOW_HEIGHT)
 
                 # See if the coin is hitting a wall
                 wall_hit_list = arcade.check_for_collision_with_list(coin, self.wall_list)
@@ -155,13 +155,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

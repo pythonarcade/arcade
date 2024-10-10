@@ -27,22 +27,22 @@ BULLET_SPEED = 150
 BULLET_DAMAGE = 1
 PLAYER_HEALTH = 5
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Health Bars"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Health Bars"
 
 
 def sprite_off_screen(
     sprite: arcade.Sprite,
-    screen_height: int = SCREEN_HEIGHT,
-    screen_width: int = SCREEN_WIDTH,
+    WINDOW_HEIGHT: int = WINDOW_HEIGHT,
+    WINDOW_WIDTH: int = WINDOW_WIDTH,
 ) -> bool:
     """Checks if a sprite is off-screen or not."""
     return (
         sprite.top < 0
-        or sprite.bottom > screen_height
+        or sprite.bottom > WINDOW_HEIGHT
         or sprite.right < 0
-        or sprite.left > screen_width
+        or sprite.left > WINDOW_WIDTH
     )
 
 
@@ -251,7 +251,7 @@ class IndicatorBar:
             self.full_box.scale = value
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     def __init__(self) -> None:
         super().__init__()
 
@@ -385,13 +385,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

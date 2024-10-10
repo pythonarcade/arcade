@@ -17,9 +17,9 @@ SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_ENEMY = 0.5
 ENEMY_SPEED = 5.0
 
-SCREEN_WIDTH = 1289
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Follow Path Simple Example"
+WINDOW_WIDTH = 1289
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Follow Path Simple Example"
 
 
 class Enemy(arcade.Sprite):
@@ -77,7 +77,7 @@ class Enemy(arcade.Sprite):
                 self.cur_position = 0
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         """ Initializer """
@@ -162,13 +162,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

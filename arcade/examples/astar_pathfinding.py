@@ -15,15 +15,15 @@ SPRITE_IMAGE_SIZE = 128
 SPRITE_SCALING = 0.25
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "A-Star Path-finding"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "A-Star Path-finding"
 
 MOVEMENT_SPEED = 5
 
 VIEWPORT_MARGIN = 100
-HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
-VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
+HORIZONTAL_BOUNDARY = WINDOW_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = WINDOW_HEIGHT / 2.0 - VIEWPORT_MARGIN
 
 # If the player moves further than this boundary away from the camera we use a
 # constraint to move the camera
@@ -34,7 +34,7 @@ CAMERA_BOUNDARY = arcade.LRBT(
     VERTICAL_BOUNDARY,
 )
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -233,13 +233,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

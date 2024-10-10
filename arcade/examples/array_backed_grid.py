@@ -28,12 +28,12 @@ HEIGHT = 30
 MARGIN = 5
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-SCREEN_TITLE = "Array Backed Grid Example"
+WINDOW_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+WINDOW_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+WINDOW_TITLE = "Array Backed Grid Example"
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -106,12 +106,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

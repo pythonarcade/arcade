@@ -9,14 +9,14 @@ python -m arcade.examples.light_demo
 import arcade
 from arcade.future.light import Light, LightLayer
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Lighting Demo"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Lighting Demo"
 MOVEMENT_SPEED = 5
 
 VIEWPORT_MARGIN = 200
-HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
-VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
+HORIZONTAL_BOUNDARY = WINDOW_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = WINDOW_HEIGHT / 2.0 - VIEWPORT_MARGIN
 # If the player moves further than this boundary away from
 # the camera we use a constraint to move the camera
 CAMERA_BOUNDARY = arcade.LRBT(
@@ -31,7 +31,7 @@ CAMERA_BOUNDARY = arcade.LRBT(
 AMBIENT_COLOR = (10, 10, 10, 255)
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         """ Set up the class. """
@@ -86,7 +86,7 @@ class MyGame(arcade.View):
 
         # Create a light layer, used to render things to, then post-process and
         # add lights. This must match the screen size.
-        self.light_layer = LightLayer(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.light_layer = LightLayer(WINDOW_WIDTH, WINDOW_HEIGHT)
         # We can also set the background color that will be lit by lights,
         # but in this instance we just want a black background
         self.light_layer.set_background_color(arcade.color.BLACK)
@@ -291,13 +291,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

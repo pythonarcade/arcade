@@ -13,9 +13,9 @@ import random
 import math
 import arcade
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Snow"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Snow"
 SNOWFLAKE_COUNT = 800
 
 
@@ -33,8 +33,8 @@ class Snowflake(arcade.SpriteCircle):
     def reset_pos(self):
         # Reset flake to random position above screen
         self.position = (
-            random.randrange(SCREEN_WIDTH),
-            random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT + 100),
+            random.randrange(WINDOW_WIDTH),
+            random.randrange(WINDOW_HEIGHT, WINDOW_HEIGHT + 100),
         )
 
     def update(self, delta_time: float = 1/60) -> None:
@@ -49,7 +49,7 @@ class Snowflake(arcade.SpriteCircle):
         self.drift += 1 * delta_time
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -76,8 +76,8 @@ class MyGame(arcade.View):
             )
             # Randomly position snowflake
             snowflake.position = (
-                random.randrange(SCREEN_WIDTH),
-                random.randrange(SCREEN_HEIGHT + 200),
+                random.randrange(WINDOW_WIDTH),
+                random.randrange(WINDOW_HEIGHT + 200),
             )
             # Add snowflake to snowflake list
             self.snowflake_list.append(snowflake)
@@ -99,13 +99,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.start_snowfall()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

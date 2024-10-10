@@ -29,9 +29,9 @@ SPRITE_SCALING_COIN = 0.25
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING_COIN)
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Performance Statistics Display Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Performance Statistics Display Example"
 
 # Size of performance graphs and distance between them
 GRAPH_WIDTH = 200
@@ -64,15 +64,15 @@ class Coin(arcade.BasicSprite):
         # Bounce the coin on the edge of the window
         if self.position[0] < 0:
             self.change_x *= -1
-        elif self.position[0] > SCREEN_WIDTH:
+        elif self.position[0] > WINDOW_WIDTH:
             self.change_x *= -1
         if self.position[1] < 0:
             self.change_y *= -1
-        elif self.position[1] > SCREEN_HEIGHT:
+        elif self.position[1] > WINDOW_HEIGHT:
             self.change_y *= -1
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Our custom Window Class"""
 
     def __init__(self):
@@ -99,8 +99,8 @@ class MyGame(arcade.View):
 
             # Position the coin
             coin.position = (
-                random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE),
-                random.randrange(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE)
+                random.randrange(SPRITE_SIZE, WINDOW_WIDTH - SPRITE_SIZE),
+                random.randrange(SPRITE_SIZE, WINDOW_HEIGHT - SPRITE_SIZE)
             )
 
             coin.change_x = random.randrange(-3, 4)
@@ -187,13 +187,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

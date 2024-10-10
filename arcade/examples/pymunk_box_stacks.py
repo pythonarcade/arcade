@@ -20,9 +20,9 @@ import pymunk
 import timeit
 import math
 
-SCREEN_WIDTH = 1800
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Pymunk test"
+WINDOW_WIDTH = 1800
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Pymunk test"
 
 
 class PhysicsSprite(arcade.Sprite):
@@ -49,7 +49,7 @@ class BoxSprite(PhysicsSprite):
         self.height = height
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -76,7 +76,7 @@ class MyGame(arcade.View):
         # Create the floor
         floor_height = 80
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        shape = pymunk.Segment(body, [0, floor_height], [SCREEN_WIDTH, floor_height], 0.0)
+        shape = pymunk.Segment(body, [0, floor_height], [WINDOW_WIDTH, floor_height], 0.0)
         shape.friction = 10
         self.space.add(shape, body)
         self.static_lines.append(shape)
@@ -129,10 +129,10 @@ class MyGame(arcade.View):
 
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE, 12)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 20, arcade.color.WHITE, 12)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 12)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.WHITE, 12)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -209,12 +209,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

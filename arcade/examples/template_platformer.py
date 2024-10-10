@@ -8,9 +8,9 @@ import arcade
 from arcade.types import Color
 
 # --- Constants
-SCREEN_TITLE = "Platformer"
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+WINDOW_TITLE = "Platformer"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 
 # Constants used to scale our sprites from their original size
 CHARACTER_SCALING = 1
@@ -28,7 +28,7 @@ PLAYER_JUMP_SPEED = 20
 FOLLOW_DECAY_CONST = 0.3  # get within 1% of the target position within 2 seconds
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -223,8 +223,8 @@ class MyGame(arcade.View):
 
 def main():
     """Main function"""
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game = MyGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
     game.reset()
 
     window.show_view(game)

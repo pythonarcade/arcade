@@ -11,16 +11,16 @@ python -m arcade.examples.background_stationary
 import arcade
 import arcade.future.background as background
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 
-SCREEN_TITLE = "Stationary Background Example"
+WINDOW_TITLE = "Stationary Background Example"
 
 PLAYER_SPEED = 300
 CAMERA_SPEED = 0.1
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     def __init__(self):
         super().__init__()
         self.camera = arcade.camera.Camera2D()
@@ -30,7 +30,7 @@ class MyGame(arcade.View):
         self.background = background.Background.from_file(
             ":resources:/images/backgrounds/abstract_1.jpg"
         )
-        self.background.size = (SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.background.size = (WINDOW_WIDTH, WINDOW_HEIGHT)
 
         # Create the player sprite.
         self.player_sprite = arcade.SpriteSolidColor(20, 30, color=arcade.color.PURPLE)
@@ -108,12 +108,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

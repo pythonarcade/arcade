@@ -15,9 +15,9 @@ import math
 
 SPRITE_SCALING = 1.0
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Collect Coins Moving in Circles Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Collect Coins Moving in Circles Example"
 
 
 class Coin(arcade.Sprite):
@@ -52,7 +52,7 @@ class Coin(arcade.Sprite):
         self.circle_angle += self.circle_speed
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -92,8 +92,8 @@ class MyGame(arcade.View):
             coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING / 3)
 
             # Position the center of the circle the coin will orbit
-            coin.circle_center_x = random.randrange(SCREEN_WIDTH)
-            coin.circle_center_y = random.randrange(SCREEN_HEIGHT)
+            coin.circle_center_x = random.randrange(WINDOW_WIDTH)
+            coin.circle_center_y = random.randrange(WINDOW_HEIGHT)
 
             # Random radius from 10 to 200
             coin.circle_radius = random.randrange(10, 200)
@@ -147,13 +147,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

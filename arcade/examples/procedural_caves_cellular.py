@@ -356,7 +356,7 @@ def main():
     # Create the InstructionView
     game = InstructionView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

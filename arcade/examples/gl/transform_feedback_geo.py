@@ -29,12 +29,12 @@ import arcade.clock
 from arcade.gl import BufferDescription
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Transform Feedback"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Transform Feedback"
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -154,12 +154,12 @@ class MyGame(arcade.View):
             [BufferDescription(self.buffer_2, "2f 2f", ["in_pos", "in_vel"])]
         )
 
-        self.mouse_pos = SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2
+        self.mouse_pos = WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2
 
     def gen_initial_data(self, count):
         for _ in range(count):
-            yield random.uniform(0, SCREEN_WIDTH)  # pos x
-            yield random.uniform(0, SCREEN_HEIGHT)  # pos y
+            yield random.uniform(0, WINDOW_WIDTH)  # pos x
+            yield random.uniform(0, WINDOW_HEIGHT)  # pos y
             yield random.uniform(-10, 10)  # velocity x
             yield random.uniform(-10, 10)  # velocity y
 
@@ -192,12 +192,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

@@ -12,16 +12,16 @@ python -m arcade.examples.background_scrolling
 import arcade
 import arcade.future.background as background
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 
-SCREEN_TITLE = "Scrolling Background Example"
+WINDOW_TITLE = "Scrolling Background Example"
 
 PLAYER_SPEED = 300
 CAMERA_SPEED = 0.5
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     def __init__(self):
         super().__init__()
         self.camera = arcade.camera.Camera2D()
@@ -29,7 +29,7 @@ class MyGame(arcade.View):
         # Load the background from file. Sized to match the screen
         self.background = background.Background.from_file(
             ":resources:/images/tiles/sandCenter.png",
-            size=(SCREEN_WIDTH, SCREEN_HEIGHT),
+            size=(WINDOW_WIDTH, WINDOW_HEIGHT),
         )
 
         # Create the player sprite.
@@ -107,12 +107,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

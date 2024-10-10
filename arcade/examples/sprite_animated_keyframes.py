@@ -9,7 +9,7 @@ python -m arcade.examples.sprite_animated_keyframes
 import arcade
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -46,10 +46,10 @@ def main():
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(1280, 720, "Time based animated sprite")
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

@@ -25,9 +25,9 @@ HEIGHT = 30
 MARGIN = 5
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-SCREEN_TITLE = "Tetris"
+WINDOW_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+WINDOW_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+WINDOW_TITLE = "Tetris"
 
 colors = [
     (0,   0,   0, 255),
@@ -119,7 +119,7 @@ def new_board():
     return board
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -166,7 +166,7 @@ class MyGame(arcade.View):
                 sprite = arcade.Sprite(texture_list[0])
                 sprite.textures = texture_list
                 sprite.center_x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
-                sprite.center_y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
+                sprite.center_y = WINDOW_HEIGHT - (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
                 self.board_sprite_list.append(sprite)
 
@@ -256,7 +256,7 @@ class MyGame(arcade.View):
                         + MARGIN + WIDTH // 2
                     )
                     y = (
-                        SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y)
+                        WINDOW_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y)
                         + MARGIN + HEIGHT // 2
                     )
 
@@ -284,8 +284,8 @@ class MyGame(arcade.View):
 
 def main():
     """ Create the game window, setup, run """
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game = MyGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
     game.setup()
 
     window.show_view(game)

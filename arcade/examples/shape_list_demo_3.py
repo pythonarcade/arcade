@@ -15,16 +15,16 @@ python -m arcade.examples.shape_list_demo_3
 import arcade
 import timeit
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Shape List Demo 3"
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Shape List Demo 3"
 
 HALF_SQUARE_WIDTH = 2.5
 HALF_SQUARE_HEIGHT = 2.5
 SQUARE_SPACING = 10
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -45,8 +45,8 @@ class MyGame(arcade.View):
         color_list = []
 
         # Now calculate all the points
-        for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
-            for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
+        for x in range(0, WINDOW_WIDTH, SQUARE_SPACING):
+            for y in range(0, WINDOW_HEIGHT, SQUARE_SPACING):
 
                 # Calculate where the four points of the rectangle will be if
                 # x and y are the center
@@ -86,7 +86,7 @@ class MyGame(arcade.View):
         self.shape_list.draw()
 
         output = f"Drawing time: {self.draw_time:.3f} seconds per frame."
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 18)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.WHITE, 18)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -94,13 +94,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

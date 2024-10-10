@@ -6,9 +6,9 @@ python -m arcade.examples.sprite_bullets_periodic
 """
 import arcade
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprites and Periodic Bullets Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprites and Periodic Bullets Example"
 
 
 class EnemySprite(arcade.Sprite):
@@ -48,7 +48,7 @@ class EnemySprite(arcade.Sprite):
             self.bullet_list.append(bullet)
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class """
 
     def __init__(self):
@@ -83,7 +83,7 @@ class MyGame(arcade.View):
             time_between_firing=2.0,
         )
         enemy.center_x = 120
-        enemy.center_y = SCREEN_HEIGHT - enemy.height
+        enemy.center_y = WINDOW_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
@@ -92,8 +92,8 @@ class MyGame(arcade.View):
                             scale=0.5,
                             bullet_list=self.bullet_list,
                             time_between_firing=1.0)
-        enemy.center_x = SCREEN_WIDTH - 120
-        enemy.center_y = SCREEN_HEIGHT - enemy.height
+        enemy.center_x = WINDOW_WIDTH - 120
+        enemy.center_y = WINDOW_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
@@ -130,13 +130,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

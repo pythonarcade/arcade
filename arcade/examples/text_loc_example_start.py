@@ -6,12 +6,12 @@ python -m arcade.examples.text_loc_example_start
 """
 import arcade
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
-SCREEN_TITLE = "Localizing Text Example"
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
+WINDOW_TITLE = "Localizing Text Example"
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -37,8 +37,8 @@ class MyGame(arcade.View):
 
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game = MyGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
 
     window.show_view(game)
     arcade.run()

@@ -20,9 +20,9 @@ SPRITE_SCALING_PLAYER = 0.75
 SPRITE_SCALING_enemy = 0.75
 SPRITE_SCALING_LASER = 1.0
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Slime Invaders"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Slime Invaders"
 
 BULLET_SPEED = 5
 ENEMY_SPEED = 2
@@ -32,7 +32,7 @@ MAX_PLAYER_BULLETS = 3
 # This margin controls how close the enemy gets to the left or right side
 # before reversing direction.
 ENEMY_VERTICAL_MARGIN = 15
-RIGHT_ENEMY_BORDER = SCREEN_WIDTH - ENEMY_VERTICAL_MARGIN
+RIGHT_ENEMY_BORDER = WINDOW_WIDTH - ENEMY_VERTICAL_MARGIN
 LEFT_ENEMY_BORDER = ENEMY_VERTICAL_MARGIN
 
 # How many pixels to move the enemy down when reversing
@@ -43,7 +43,7 @@ GAME_OVER = 1
 PLAY_GAME = 0
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -358,7 +358,7 @@ class MyGame(arcade.View):
                 arcade.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > SCREEN_HEIGHT:
+            if bullet.bottom > WINDOW_HEIGHT:
                 bullet.remove_from_sprite_lists()
 
     def on_update(self, delta_time):
@@ -378,13 +378,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.reset()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

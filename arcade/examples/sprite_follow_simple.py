@@ -17,9 +17,9 @@ SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.2
 COIN_COUNT = 50
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Follow Player Simple Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Follow Player Simple Example"
 
 SPRITE_SPEED = 0.5
 
@@ -51,7 +51,7 @@ class Coin(arcade.Sprite):
             self.center_x -= min(SPRITE_SPEED, self.center_x - player_sprite.center_x)
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Our custom Window Class"""
 
     def __init__(self):
@@ -99,8 +99,8 @@ class MyGame(arcade.View):
             coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -140,13 +140,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

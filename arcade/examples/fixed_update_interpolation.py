@@ -16,12 +16,12 @@ import arcade.clock
 GRAVITY = 98.1  # 98.1 px per second
 CIRCLE_RADIUS = 30
 
-SCREEN_WIDTH = 1289
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Follow Path Simple Example"
+WINDOW_WIDTH = 1289
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Follow Path Simple Example"
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -44,9 +44,9 @@ class MyGame(arcade.View):
         self.unfixed_sprite.change_y = self.interpolated_sprite.change_y = 0.0
         self.fixed_sprite.change_y = self.interpolated_sprite.change_y = 0.0
 
-        self.unfixed_sprite.position = SCREEN_WIDTH / 4.0, SCREEN_HEIGHT / 2.0
-        self.interpolated_sprite.position = 2.0 * SCREEN_WIDTH / 4.0, SCREEN_HEIGHT / 2.0
-        self.fixed_sprite.position = 3.0 * SCREEN_WIDTH / 4.0, SCREEN_HEIGHT / 2.0
+        self.unfixed_sprite.position = WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 2.0
+        self.interpolated_sprite.position = 2.0 * WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 2.0
+        self.fixed_sprite.position = 3.0 * WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 2.0
 
         self.last_position = self.fixed_sprite.center_y
 
@@ -99,13 +99,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, fixed_rate=1/60)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, fixed_rate=1/60)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

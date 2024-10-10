@@ -14,12 +14,12 @@ from inspect import getmembers
 from arcade.types import Color
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Vertex Buffer Object With Lines Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Vertex Buffer Object With Lines Example"
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -48,16 +48,16 @@ class MyGame(arcade.View):
             getmembers(arcade.color, lambda c: isinstance(c, Color))]
 
         for i in range(200):
-            x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH)
-            y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT)
+            x = WINDOW_WIDTH // 2 - random.randrange(WINDOW_WIDTH)
+            y = WINDOW_HEIGHT // 2 - random.randrange(WINDOW_HEIGHT)
             color = random.choice(colors)
             points = [(px + x, py + y) for px, py in point_list]
 
             my_line_strip = create_line_strip(points, color, 5)
             self.shape_list.append(my_line_strip)
 
-        self.shape_list.center_x = SCREEN_WIDTH // 2
-        self.shape_list.center_y = SCREEN_HEIGHT // 2
+        self.shape_list.center_x = WINDOW_WIDTH // 2
+        self.shape_list.center_y = WINDOW_HEIGHT // 2
         self.shape_list.angle = 0
 
         self.background_color = arcade.color.BLACK
@@ -80,12 +80,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, vsync=True)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, vsync=True)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

@@ -10,11 +10,11 @@ import gettext
 # Try to auto-detect the user's language and translate to it
 gettext.install('text_loc_example', localedir='text_loc_example_locale')
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
-SCREEN_TITLE = "Localizing Text Example"
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
+WINDOW_TITLE = "Localizing Text Example"
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -39,8 +39,8 @@ class MyGame(arcade.View):
         self.text.draw()
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game = MyGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
 
     window.show_view(game)
     arcade.run()

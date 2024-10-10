@@ -7,12 +7,12 @@ python -m arcade.examples.timer
 import arcade
 from arcade.clock import GLOBAL_CLOCK
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Timer Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Timer Example"
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -23,8 +23,8 @@ class MyGame(arcade.View):
         self.start_time: float = 0.0
         self.timer_text = arcade.Text(
             text="00:00:00",
-            x=SCREEN_WIDTH // 2,
-            y=SCREEN_HEIGHT // 2 - 50,
+            x=WINDOW_WIDTH // 2,
+            y=WINDOW_HEIGHT // 2 - 50,
             color=arcade.color.WHITE,
             font_size=100,
             anchor_x="center",
@@ -62,8 +62,8 @@ class MyGame(arcade.View):
         self.timer_text.text = f"{minutes:02d}:{seconds:02d}:{seconds_100s:02d}"
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game = MyGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
     game.reset()
 
     window.show_view(game)

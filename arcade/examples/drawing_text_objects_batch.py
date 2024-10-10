@@ -25,7 +25,7 @@ DEFAULT_LINE_HEIGHT = 45  # Line height to use in pixels
 DEFAULT_FONT_SIZE = 20  # Default font size in points
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -397,10 +397,10 @@ def main():
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

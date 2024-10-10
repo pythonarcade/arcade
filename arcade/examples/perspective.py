@@ -20,7 +20,7 @@ import arcade
 from arcade.gl import BufferDescription
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -158,10 +158,10 @@ def main():
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(1280, 720, "Perspective Example", resizable=True)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

@@ -14,9 +14,9 @@ SPRITE_SCALING = 0.5
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Enemies in a Platformer Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Enemies in a Platformer Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -29,7 +29,7 @@ JUMP_SPEED = 14
 GRAVITY = 0.5
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """Main application class."""
 
     def __init__(self):
@@ -56,7 +56,7 @@ class MyGame(arcade.View):
         self.player_list = arcade.SpriteList()
 
         # Draw the walls on the bottom
-        for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
+        for x in range(0, WINDOW_WIDTH, SPRITE_SIZE):
             wall = arcade.Sprite(
                 ":resources:images/tiles/grassMid.png",
                 scale=SPRITE_SCALING,
@@ -78,7 +78,7 @@ class MyGame(arcade.View):
             self.wall_list.append(wall)
 
         # Draw the crates
-        for x in range(0, SCREEN_WIDTH, SPRITE_SIZE * 5):
+        for x in range(0, WINDOW_WIDTH, SPRITE_SIZE * 5):
             wall = arcade.Sprite(
                 ":resources:images/tiles/boxCrate_double.png",
                 scale=SPRITE_SCALING,
@@ -207,8 +207,8 @@ class MyGame(arcade.View):
 
 def main():
     """ Main function """
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game = MyGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
     game.setup()
 
     window.show_view(game)

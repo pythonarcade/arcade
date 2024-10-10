@@ -19,18 +19,18 @@ import arcade
 
 from typing import cast
 
-SCREEN_TITLE = "Asteroid Smasher"
+WINDOW_TITLE = "Asteroid Smasher"
 STARTING_ASTEROID_COUNT = 3
 SCALE = 0.5
 
 # Screen dimensions and limits
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 OFFSCREEN_SPACE = 300
 LEFT_LIMIT = -OFFSCREEN_SPACE
-RIGHT_LIMIT = SCREEN_WIDTH + OFFSCREEN_SPACE
+RIGHT_LIMIT = WINDOW_WIDTH + OFFSCREEN_SPACE
 BOTTOM_LIMIT = -OFFSCREEN_SPACE
-TOP_LIMIT = SCREEN_HEIGHT + OFFSCREEN_SPACE
+TOP_LIMIT = WINDOW_HEIGHT + OFFSCREEN_SPACE
 
 # Control player speed
 TURN_SPEED = 3
@@ -78,8 +78,8 @@ class ShipSprite(arcade.Sprite):
         # If we are in the middle of respawning, this is non-zero.
         self.respawning = 1
         self.alpha = 0
-        self.center_x = SCREEN_WIDTH / 2
-        self.center_y = SCREEN_HEIGHT / 2
+        self.center_x = WINDOW_WIDTH / 2
+        self.center_y = WINDOW_HEIGHT / 2
         self.angle = 0
 
     def update(self, delta_time=1 / 60):
@@ -126,12 +126,12 @@ class ShipSprite(arcade.Sprite):
 
         # If the ship goes off-screen, move it to the other side of the window
         if self.right < 0:
-            self.left = SCREEN_WIDTH
-        if self.left > SCREEN_WIDTH:
+            self.left = WINDOW_WIDTH
+        if self.left > WINDOW_WIDTH:
             self.right = 0
         if self.bottom < 0:
-            self.top = SCREEN_HEIGHT
-        if self.top > SCREEN_HEIGHT:
+            self.top = WINDOW_HEIGHT
+        if self.top > WINDOW_HEIGHT:
             self.bottom = 0
 
         """ Call the parent class. """
@@ -158,7 +158,7 @@ class AsteroidSprite(arcade.Sprite):
             self.center_y = TOP_LIMIT
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -427,11 +427,11 @@ class MyGame(arcade.View):
                 size = max(bullet.width, bullet.height)
                 if bullet.center_x < 0 - size:
                     bullet.remove_from_sprite_lists()
-                if bullet.center_x > SCREEN_WIDTH + size:
+                if bullet.center_x > WINDOW_WIDTH + size:
                     bullet.remove_from_sprite_lists()
                 if bullet.center_y < 0 - size:
                     bullet.remove_from_sprite_lists()
-                if bullet.center_y > SCREEN_HEIGHT + size:
+                if bullet.center_y > WINDOW_HEIGHT + size:
                     bullet.remove_from_sprite_lists()
 
             if not self.player_sprite.respawning:
@@ -457,13 +457,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.start_new_game()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

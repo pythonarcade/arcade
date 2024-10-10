@@ -41,7 +41,7 @@ from arcade.math import clamp
 CHOICES = ["meow", "woof"]  # Which facts to display
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """Display a random cat fact"""
     def __init__(self):
         super().__init__()
@@ -270,10 +270,10 @@ def main():
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(1280, 720, "Random Animal Facts", resizable=True, vsync=True)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

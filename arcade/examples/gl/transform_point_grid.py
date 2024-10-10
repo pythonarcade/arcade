@@ -47,7 +47,7 @@ def gen_colors(width, height):
         yield random.uniform(0, 1)
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -180,10 +180,10 @@ def main():
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(768, 768, "Moving Point Grid - GPU")
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

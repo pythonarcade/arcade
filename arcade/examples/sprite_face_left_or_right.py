@@ -14,9 +14,9 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Face Left or Right Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Face Left or Right Example"
 
 MOVEMENT_SPEED = 5
 
@@ -42,7 +42,7 @@ class Player(arcade.Sprite):
             self.texture = self.textures[TEXTURE_RIGHT]
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -76,8 +76,8 @@ class MyGame(arcade.View):
 
         # Set up the player
         self.player_sprite = Player(self.left_texture, self.right_texture)
-        self.player_sprite.center_x = SCREEN_WIDTH / 2
-        self.player_sprite.center_y = SCREEN_HEIGHT / 2
+        self.player_sprite.center_x = WINDOW_WIDTH / 2
+        self.player_sprite.center_y = WINDOW_HEIGHT / 2
         self.player_sprite_list.append(self.player_sprite)
 
     def on_draw(self):
@@ -124,13 +124,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

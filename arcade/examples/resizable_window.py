@@ -6,15 +6,15 @@ python -m arcade.examples.resizable_window
 """
 import arcade
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
-SCREEN_TITLE = "Resizing Window Example"
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
+WINDOW_TITLE = "Resizing Window Example"
 START = 0
 END = 2000
 STEP = 50
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -61,12 +61,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

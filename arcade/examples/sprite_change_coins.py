@@ -14,9 +14,9 @@ import arcade
 
 SPRITE_SCALING = 0.4
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Change Coins"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Change Coins"
 
 
 class Collectable(arcade.Sprite):
@@ -28,7 +28,7 @@ class Collectable(arcade.Sprite):
         self.changed = False
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.a
     """
@@ -70,8 +70,8 @@ class MyGame(arcade.View):
             )
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -131,13 +131,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

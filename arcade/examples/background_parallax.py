@@ -24,16 +24,16 @@ ORIGINAL_BG_LAYER_HEIGHT_PX = 240
 SCALED_BG_LAYER_HEIGHT_PX = ORIGINAL_BG_LAYER_HEIGHT_PX * PIXEL_SCALE
 
 
-SCREEN_TITLE = "Background Group Example"
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = SCALED_BG_LAYER_HEIGHT_PX
+WINDOW_TITLE = "Background Group Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = SCALED_BG_LAYER_HEIGHT_PX
 
 
 PLAYER_SPEED = 300  # The player's speed in pixels / second
 CAMERA_SPEED = 0.1
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
@@ -46,7 +46,7 @@ class MyGame(arcade.View):
         self.backgrounds = background.ParallaxGroup()
 
         # Calculate the current size of each background fill layer in pixels
-        bg_layer_size_px = (SCREEN_WIDTH, SCALED_BG_LAYER_HEIGHT_PX)
+        bg_layer_size_px = (WINDOW_WIDTH, SCALED_BG_LAYER_HEIGHT_PX)
 
         # Import the image data for each background layer.
         # Unlike sprites, the scale argument doesn't resize the layer
@@ -166,12 +166,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

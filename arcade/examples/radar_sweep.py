@@ -8,13 +8,13 @@ import arcade
 import math
 
 # Set up the constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Radar Sweep Example"
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+WINDOW_TITLE = "Radar Sweep Example"
 
 # These constants control the particulars about the radar
-CENTER_X = SCREEN_WIDTH // 2
-CENTER_Y = SCREEN_HEIGHT // 2
+CENTER_X = WINDOW_WIDTH // 2
+CENTER_Y = WINDOW_HEIGHT // 2
 RADIANS_PER_FRAME = 0.02
 SWEEP_LENGTH = 250
 
@@ -46,7 +46,7 @@ class Radar:
                                    num_segments=60)
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -73,12 +73,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

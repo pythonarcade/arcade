@@ -15,9 +15,9 @@ from arcade import easing
 
 SPRITE_SCALING = 1.0
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Easing Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Easing Example"
 
 
 class Player(arcade.Sprite):
@@ -50,7 +50,7 @@ class Player(arcade.Sprite):
                 self.easing_y_data = None
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """Main application class."""
 
     def __init__(self):
@@ -70,8 +70,8 @@ class MyGame(arcade.View):
         # Set up the player
         self.player_sprite = Player(texture, SPRITE_SCALING)
         self.player_sprite.angle = 0
-        self.player_sprite.center_x = SCREEN_WIDTH / 2
-        self.player_sprite.center_y = SCREEN_HEIGHT / 2
+        self.player_sprite.center_x = WINDOW_WIDTH / 2
+        self.player_sprite.center_y = WINDOW_HEIGHT / 2
         self.player_list.append(self.player_sprite)
 
         # Set the background color
@@ -162,12 +162,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

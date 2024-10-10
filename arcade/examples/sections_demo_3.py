@@ -273,7 +273,7 @@ class Map(Section):
         self.height = height - self.view.info_bar.height
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """The game itself"""
 
     def __init__(self):
@@ -330,10 +330,10 @@ def main():
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(resizable=True)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

@@ -17,9 +17,9 @@ SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.3
 COIN_COUNT = 50
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Collect Coins Moving Down Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Collect Coins Moving Down Example"
 
 
 class Coin(arcade.Sprite):
@@ -30,9 +30,9 @@ class Coin(arcade.Sprite):
 
     def reset_pos(self):
         # Reset the coin to a random spot above the screen
-        self.center_y = random.randrange(SCREEN_HEIGHT + 20,
-                                         SCREEN_HEIGHT + 100)
-        self.center_x = random.randrange(SCREEN_WIDTH)
+        self.center_y = random.randrange(WINDOW_HEIGHT + 20,
+                                         WINDOW_HEIGHT + 100)
+        self.center_x = random.randrange(WINDOW_WIDTH)
 
     def update(self, delta_time: float = 1/60):
         # Take frame time into account
@@ -47,7 +47,7 @@ class Coin(arcade.Sprite):
             self.reset_pos()
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         """ Initializer """
@@ -96,8 +96,8 @@ class MyGame(arcade.View):
             coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
 
             # Add the coin to the lists
             self.coin_sprite_list.append(coin)
@@ -139,13 +139,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

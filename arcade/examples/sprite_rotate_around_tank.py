@@ -39,9 +39,9 @@ TANK_TURN_SPEED_DEGREES = 70  # How fast the tank's body can turn
 TANK_BARREL_LENGTH_HALF = 15
 
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Rotating Tank Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Rotating Tank Example"
 
 
 # These paths are built-in resources included with arcade
@@ -78,7 +78,7 @@ class RotatingSprite(arcade.Sprite):
         self.angle = get_angle_degrees(*self.position, *point)
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -106,7 +106,7 @@ class MyGame(arcade.View):
         self._correct = True
         self.correct_text = arcade.Text(
             "If the turret rotation is incorrect press P to reset it",
-            self.window.center_x, SCREEN_HEIGHT - 25,
+            self.window.center_x, WINDOW_HEIGHT - 25,
             anchor_x='center')
 
         self.control_text = arcade.Text(
@@ -221,8 +221,8 @@ class MyGame(arcade.View):
 
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game = MyGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
 
     window.show_view(game)
     window.run()

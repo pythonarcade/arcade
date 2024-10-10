@@ -9,9 +9,9 @@ import pymunk
 import timeit
 import math
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Pymunk 2 Example"
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Pymunk 2 Example"
 
 """
 Key bindings:
@@ -54,7 +54,7 @@ class BoxSprite(PhysicsSprite):
         self.height = height
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -92,7 +92,7 @@ class MyGame(arcade.View):
         shape = pymunk.Segment(
             body,
             (0, self.floor_height),
-            (SCREEN_WIDTH, self.floor_height),
+            (WINDOW_WIDTH, self.floor_height),
             0.0,
         )
         shape.friction = 10
@@ -134,18 +134,18 @@ class MyGame(arcade.View):
         # arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 20, arcade.color.WHITE)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.WHITE)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
         output = f"Mode: {self.mode}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.WHITE)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 60, arcade.color.WHITE)
 
         output = f"Physics: {self.physics}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.WHITE)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 80, arcade.color.WHITE)
 
     def make_box(self, x, y):
         size = 45
@@ -342,12 +342,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

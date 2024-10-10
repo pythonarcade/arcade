@@ -14,9 +14,9 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Move Sprite with Controller Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Move Sprite with Controller Example"
 
 MOVEMENT_SPEED = 5
 DEAD_ZONE = 0.05
@@ -71,13 +71,13 @@ class Player(arcade.Sprite):
         # Keep from moving off-screen
         if self.left < 0:
             self.left = 0
-        elif self.right > SCREEN_WIDTH - 1:
-            self.right = SCREEN_WIDTH - 1
+        elif self.right > WINDOW_WIDTH - 1:
+            self.right = WINDOW_WIDTH - 1
 
         if self.bottom < 0:
             self.bottom = 0
-        elif self.top > SCREEN_HEIGHT - 1:
-            self.top = SCREEN_HEIGHT - 1
+        elif self.top > WINDOW_HEIGHT - 1:
+            self.top = WINDOW_HEIGHT - 1
 
     def on_button_press(self, controller, button_name):
         """ Handle button-down event for the controller """
@@ -92,7 +92,7 @@ class Player(arcade.Sprite):
         print(f"Movement on stick {stick_name}: ({x}, {y})")
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -119,7 +119,7 @@ class MyGame(arcade.View):
             10,
             arcade.color.WHITE,
             22,
-            width=SCREEN_WIDTH,
+            width=WINDOW_WIDTH,
             align="center",
         )
 
@@ -184,13 +184,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

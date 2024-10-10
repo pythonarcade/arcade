@@ -6,9 +6,9 @@ python -m arcade.examples.drawing_text
 """
 import arcade
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Drawing Text Example"
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Drawing Text Example"
 DEFAULT_LINE_HEIGHT = 45
 DEFAULT_FONT_SIZE = 20
 
@@ -16,7 +16,7 @@ DEFAULT_FONT_SIZE = 20
 arcade.resources.load_system_fonts()
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -43,19 +43,19 @@ class MyGame(arcade.View):
 
         # Add the screen title
         start_x = 0
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5
         arcade.draw_text("Text Drawing Examples",
                          start_x,
                          start_y,
                          arcade.color.BLACK,
                          DEFAULT_FONT_SIZE * 2,
-                         width=SCREEN_WIDTH,
+                         width=WINDOW_WIDTH,
                          align="center")
 
         # start_x and start_y make the start point for the text. We draw a dot to make it
         # easy to see the text in relation to its start x and y.
         start_x = 10
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 3
         arcade.draw_text("Fonts:",
                          start_x,
                          start_y,
@@ -181,7 +181,7 @@ class MyGame(arcade.View):
 
         # --- Column 2 ---
         start_x = 750
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 3
         arcade.draw_text("Text Positioning:",
                          start_x,
                          start_y,
@@ -269,12 +269,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create the MyGame view
-    game = MyGame()
+    # Create the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

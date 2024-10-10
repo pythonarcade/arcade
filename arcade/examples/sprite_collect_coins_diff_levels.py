@@ -14,9 +14,9 @@ import arcade
 
 SPRITE_SCALING = 1.0
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Collect Coins with Different Levels Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Collect Coins with Different Levels Example"
 
 
 class FallingCoin(arcade.Sprite):
@@ -30,7 +30,7 @@ class FallingCoin(arcade.Sprite):
 
         # Did we go off the screen? If so, pop back to the top.
         if self.top < 0:
-            self.bottom = SCREEN_HEIGHT
+            self.bottom = WINDOW_HEIGHT
 
 
 class RisingCoin(arcade.Sprite):
@@ -43,11 +43,11 @@ class RisingCoin(arcade.Sprite):
         self.center_y += 2
 
         # Did we go off the screen? If so, pop back to the bottom.
-        if self.bottom > SCREEN_HEIGHT:
+        if self.bottom > WINDOW_HEIGHT:
             self.top = 0
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """
     Main application class.
     """
@@ -89,8 +89,8 @@ class MyGame(arcade.View):
             )
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -105,8 +105,8 @@ class MyGame(arcade.View):
             )
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT * 2)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT, WINDOW_HEIGHT * 2)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -121,8 +121,8 @@ class MyGame(arcade.View):
             )
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(-SCREEN_HEIGHT, 0)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(-WINDOW_HEIGHT, 0)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -195,13 +195,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.reset()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

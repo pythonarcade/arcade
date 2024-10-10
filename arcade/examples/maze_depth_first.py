@@ -17,9 +17,9 @@ NATIVE_SPRITE_SIZE = 128
 SPRITE_SCALING = 0.25
 SPRITE_SIZE = int(NATIVE_SPRITE_SIZE * SPRITE_SCALING)
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 700
-SCREEN_TITLE = "Maze Depth First Example"
+WINDOW_WIDTH = 1000
+WINDOW_HEIGHT = 700
+WINDOW_TITLE = "Maze Depth First Example"
 
 MOVEMENT_SPEED = 8
 
@@ -37,8 +37,8 @@ MERGE_SPRITES = True
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
 VIEWPORT_MARGIN = 200
-HORIZONTAL_BOUNDARY = SCREEN_WIDTH / 2.0 - VIEWPORT_MARGIN
-VERTICAL_BOUNDARY = SCREEN_HEIGHT / 2.0 - VIEWPORT_MARGIN
+HORIZONTAL_BOUNDARY = WINDOW_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = WINDOW_HEIGHT / 2.0 - VIEWPORT_MARGIN
 # If the player moves further than this boundary away from
 # he camera we use a constraint to move the camera
 CAMERA_BOUNDARY = arcade.LRBT(
@@ -90,7 +90,7 @@ def make_maze_depth_first(maze_width, maze_height):
     return maze
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -220,19 +220,19 @@ class MyGame(arcade.View):
         left, bottom = self.camera.bottom_left
         arcade.draw_text(output,
                          left + 20,
-                         SCREEN_HEIGHT - 20 + bottom,
+                         WINDOW_HEIGHT - 20 + bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Drawing time: {self.draw_time:.3f}"
         arcade.draw_text(output,
                          left + 20,
-                         SCREEN_HEIGHT - 40 + bottom,
+                         WINDOW_HEIGHT - 40 + bottom,
                          arcade.color.WHITE, 16)
 
         output = f"Processing time: {self.processing_time:.3f}"
         arcade.draw_text(output,
                          left + 20,
-                         SCREEN_HEIGHT - 60 + bottom,
+                         WINDOW_HEIGHT - 60 + bottom,
                          arcade.color.WHITE, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
@@ -279,13 +279,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

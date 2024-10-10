@@ -10,9 +10,9 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 1289
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite with Moving Platforms Example"
+WINDOW_WIDTH = 1289
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite with Moving Platforms Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = (SPRITE_PIXEL_SIZE * SPRITE_SCALING)
 
@@ -30,7 +30,7 @@ GRAVITY = .9 * SPRITE_SCALING
 CAMERA_SPEED = 0.1
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
@@ -215,13 +215,13 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

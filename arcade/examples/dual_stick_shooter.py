@@ -14,9 +14,9 @@ from typing import cast
 
 import arcade
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Dual-stick Shooter Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Dual-stick Shooter Example"
 MOVEMENT_SPEED = 4
 BULLET_SPEED = 10
 BULLET_COOLDOWN_TICKS = 10
@@ -82,8 +82,8 @@ class Player(arcade.sprite.Sprite):
         super().__init__(
             filename,
             scale=0.4,
-            center_x=SCREEN_WIDTH / 2,
-            center_y=SCREEN_HEIGHT / 2,
+            center_x=WINDOW_WIDTH / 2,
+            center_y=WINDOW_HEIGHT / 2,
         )
         self.shoot_up_pressed = False
         self.shoot_down_pressed = False
@@ -122,7 +122,7 @@ class Enemy(arcade.sprite.Sprite):
             self.center_x -= min(ENEMY_SPEED, self.center_x - player_sprite.center_x)
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     def __init__(self):
         super().__init__()
         self.game_over = False
@@ -163,8 +163,8 @@ class MyGame(arcade.View):
         self.bullet_cooldown = 0
         self.bullet_list = arcade.SpriteList()
         self.enemy_list = arcade.SpriteList()
-        self.player.center_x = SCREEN_WIDTH / 2
-        self.player.center_y = SCREEN_HEIGHT / 2
+        self.player.center_x = WINDOW_WIDTH / 2
+        self.player.center_y = WINDOW_HEIGHT / 2
 
     def connect_controller(self, controller):
         self.controller = controller
@@ -177,8 +177,8 @@ class MyGame(arcade.View):
     def spawn_enemy(self, _elapsed):
         if self.game_over:
             return
-        x = random.randint(0, SCREEN_WIDTH)
-        y = random.randint(0, SCREEN_HEIGHT)
+        x = random.randint(0, WINDOW_WIDTH)
+        y = random.randint(0, WINDOW_HEIGHT)
         self.enemy_list.append(Enemy(x, y))
 
     def on_update(self, delta_time):
@@ -346,10 +346,10 @@ class MyGame(arcade.View):
         # Game over message
         if self.game_over:
             arcade.draw_text("Game Over",
-                             SCREEN_WIDTH / 2,
-                             SCREEN_HEIGHT / 2,
+                             WINDOW_WIDTH / 2,
+                             WINDOW_HEIGHT / 2,
                              arcade.color.WHITE, 100,
-                             width=SCREEN_WIDTH,
+                             width=WINDOW_WIDTH,
                              align="center",
                              anchor_x="center",
                              anchor_y="center")
@@ -359,12 +359,12 @@ class MyGame(arcade.View):
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    # Create and setup the MyGame view
-    game = MyGame()
+    # Create and setup the GameView
+    game = GameView()
 
-    # Show MyGame on screen
+    # Show GameView on screen
     window.show_view(game)
 
     # Start the arcade game loop

@@ -15,9 +15,9 @@ import arcade
 TILE_SCALING = 0.5
 PLAYER_SCALING = 1
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Tiled Map Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Tiled Map Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
 CAMERA_PAN_SPEED = 0.30
@@ -28,7 +28,7 @@ JUMP_SPEED = 23
 GRAVITY = 1.1
 
 
-class MyGame(arcade.View):
+class GameView(arcade.View):
     """Main application class."""
 
     def __init__(self):
@@ -245,8 +245,8 @@ class MyGame(arcade.View):
 
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game = MyGame()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
     game.setup()
 
     window.show_view(game)
