@@ -12,7 +12,7 @@ Version 3.0.0 is a major update to Arcade. It breaks compatibility with the 2.6 
 
 These are the breaking API changes, and is a quick reference for updating 2.6 code. You can find more details in later sections. Lots of behavior has changed even if the interface hasn't. If you are porting old code, read through these logs thoroughly.
 
-* Dropped Python 3.8 support completely
+* Dropped Python 3.8 support completely.
 * Texture management has completely changed in  3.0. In the past, we
  cached everything, which caused issues for larger
  projects that needed memory management. Functions like `Arcade.load_texture` no longer cache textures.
@@ -43,13 +43,13 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 * The `use_spatial_hash` parameter for `SpriteList` and `TileMap` is now a `bool` instead of `Optional[bool]`
 * `arcade.draw_text()` and `arcade.text.Text` arguments have changed. `x` and `y ` have replaced `start_x` and `start_y`. `align` no longer interferes with `multiline`.
 * GUI
-  * Removed `arcade.gui.widgets.UIWrapper`. It is now a part of `arcade.gui.widgets.UILayout`
-  * Removed `arcade.gui.widgets.UIBorder`. It is now a part of `arcade.gui.widgets.UIWidget`
-  * Removed `arcade.gui.widgets.UIPadding`. It is now a part of `arcade.gui.widgets.UIWidget`
-  * Removed `arcade.gui.widgets.UITexturePane`. It is now a part of `arcade.gui.widgets.UIWidget`
-  * Removed `arcade.gui.widgets.UIAnchorWidget` has been replaced by `arcade.gui.widgets.UIAnchorLayout`
+  * Removed `arcade.gui.widgets.UIWrapper`. It is now a part of `arcade.gui.widgets.UILayout`.
+  * Removed `arcade.gui.widgets.UIBorder`. It is now a part of `arcade.gui.widgets.UIWidget`.
+  * Removed `arcade.gui.widgets.UIPadding`. It is now a part of `arcade.gui.widgets.UIWidget`.
+  * Removed `arcade.gui.widgets.UITexturePane`. It is now a part of `arcade.gui.widgets.UIWidget`.
+  * Removed `arcade.gui.widgets.UIAnchorWidget` has been replaced by `arcade.gui.widgets.UIAnchorLayout`.
 * Resources
-  * removed unused resources from `resources/gui_basic_assets`
+  * removed unused resources from `resources/gui_basic_assets`.
     * `items/shield_gold.png`
     * `items/sword_gold.png`
     * `slider_thumb.png`
@@ -72,33 +72,33 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 
 ### Window and View
 
-* Removal of the `update` function in favor of `arcade.Window.on_update()`
+* Removal of the `update` function in favor of `arcade.Window.on_update()`.
 * The `update_rate` parameter in the constructor can no longer be set to `None` and must be a float.
 * A new `draw_rate` parameter in `arcade.Window.__init__`, controls the call interval of `arcade.Window.on_draw(). It is now possible to separate the draw and update speeds of Arcade windows. Keeping `draw_rate` close to the refresh rate of the user's monitor while setting `update_rate` to a much shorter interval can greatly improve the perceived smoothness of your application.
 * `open_window()` now accepts `**kwargs` to pass additional parameters to the `arcade.Window` constructor.
 * `arcade.View`
-  * Removal of the ``update`` function in favor of `arcade.View.on_update()`
+  * Removal of the ``update`` function in favor of `arcade.View.on_update()`.
 * `arcade.Section` and `arcade.SectionManager`
-  * Removal of the ``update`` function in favor of `arcade.Section.on_update()`
+  * Removal of the ``update`` function in favor of `arcade.Section.on_update()`.
 * Added a whole new `on_fixed_update` method, which is called with a regular delta time
-  * Is also available for `arcade. View`
-  * Control the rate of fixed updates with the `fixed_rate`
- parameter in `Window.__init__`
+  * Is also available for `arcade. View`.
+  * Control the rate of fixed updates with the `fixed_rate`.
+ parameter in `Window.__init__`.
   * Control the max number of fixed updates per regular update with the `fixed_rate_cap`
- parameter in `Window.__init__`
+ parameter in `Window.__init__`.
  * See the updated event loop docs for an in-depth explanation of ``on_fixed_update`` vs. ``on_update``.
 
 ### Camera
 
 * Created `arcade.camera.Camera2D`, which allows for easy manipulation of Arcade and Pyglet's rendering matrices.
-* Created `arcade.camera.PerspectiveProjector` and `arcade.camera.OrthographicProjector`
+* Created `arcade.camera.PerspectiveProjector` and `arcade.camera.OrthographicProjector`.
  which can manipulate the matrices in 3D space.
 * Created methods to rotate and move cameras.
-* Created methods to generate view and projection matrices needed by projector objects
+* Created methods to generate view and projection matrices needed by projector objects.
 * Created static projector classes to set the matrices with constant values.
-* Added a default camera that automatically adjusts to the active render target
-* Added a camera shake object that makes it easy to add camera shake to a game
-* All Projectors provide methods to project to and from the screen and world coordinates
+* Added a default camera that automatically adjusts to the active render target.
+* Added a camera shake object that makes it easy to add camera shake to a game.
+* All Projectors provide methods to project to and from the screen and world coordinates.
 
 ### Textures
 
@@ -110,7 +110,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 ### GUI
 
 * `arcade.gui.widgets.UIWidget`
-  * Supports padding, border, and background (color or texture)
+  * Supports padding, border, and background (color or texture).
   * Visibility: visible=False will prevent widget rendering. It will also
  not receive any UI events.
   * Dropped `arcade.gui.widget.UIWidget.with_space_around`.
@@ -141,7 +141,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
   * `arcade.gui.widgets.constructs.UIButtonRow`
  ([PR1580](https://github.com/pythonarcade/arcade/pull/1580))
 
-* `arcade.gui.UIInteractiveWidget` only reacts to left mouse button events
+* `arcade.gui.UIInteractiveWidget` only reacts to left mouse button events.
 
 * Arcade `arcade.gui.property.Property`:
   * Properties are observable attributes (supports primitive, list, and dict). A Listener can be bound with `arcade.gui.property.bind`.
@@ -151,8 +151,8 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
   * `Arcade.gui.UIGridLayout` [PR1478](https://github.com/pythonarcade/arcade/pull/1478)
 
 * Added color-consistent assets to `arcade.resources.gui_basic_assets`.
-* Provide GUI-friendly color constants in `arcade.uicolor`
-* Replace deprecated usage of `arcade.draw_text`
+* Provide GUI-friendly color constants in `arcade.uicolor`.
+* Replace deprecated usage of `arcade.draw_text`.
 
 ### Rect
 * Added a `Rect` type, making working with axis-aligned rectangles easy.
@@ -179,14 +179,14 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 * Arcade experimental has been split into two submodules, `experimental` and `future`.
   * `future` includes all incomplete features we intend to include in Arcade eventually
   * `experimental` is any interesting code that may not end up as Arcade features.
-* `arcade.color_from_hex_string` changed to follow the CSS hex string standard
+* `arcade.color_from_hex_string` changed to follow the CSS hex string standard.
 * Made `Pyglets` maths classes accessible within Arcade.
-* arcade's utility maths functions have more robust typing
-* Added `Point`, `Point2`, `Point3` type aliases for tuples and vectors
-* Added `Sequence` types for all three `Point` aliases
+* Arcade's utility math functions have more robust typing.
+* Added `Point`, `Point2`, `Point3` type aliases for tuples and vectors.
+* Added `Sequence` types for all three `Point` aliases.
 * Added a `Color` object with a plethora of useful methods.
-* Windows Text glyphs are now created with DirectWrite instead of GDI
-* Removal of various deprecated functions and parameters
+* Windows Text glyphs are now created with DirectWrite instead of GDI.
+* Removal of various deprecated functions and parameters.
 * OpenGL examples moved to _`examples/gl <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gl>`_
  from _"experiments/examples"_
 
@@ -208,7 +208,7 @@ However, most people can treat it as depreciated. It is an alias to Pyglet's joy
 ### Text
 
 * Complete removal of the old PIL-based text system. In 2.6, we switched to the newer Pyglet-based system, but there were still remnants of the PIL implementation—namely, the `arcade.create_text_sprite` function. There's no API breaking change, but if you are using the function, it would be worth reading the new docs, as there are some different considerations when using a custom `arcade.TextureAtlas`. This function is faster than the old PIL implementation. Texture generation happens almost entirely on the GPU now.
-* The `arcade.text_pillow` module no longer exists
+* The `arcade.text_pillow` module no longer exists.
 * `arcade.text_pyglet` has been renamed `arcade.text`.
 * `arcade.draw_text` and `arcade.Text` now accept a `z` parameter that defaults to 0. Previous text versions had the same default.
 
@@ -230,9 +230,9 @@ However, most people can treat it as depreciated. It is an alias to Pyglet's joy
 * Fixed many implicit type conversions in the shader code for broader support.
 * Added `front_face` property on the context for configuring the winding order of triangles.
 * Added `cull_face` property to the context to configure what triangle faces to cull.
-* Added support for bindless textures
-* Added support for 64-bit integer uniforms
-* Added support for 64-bit float uniforms
+* Added support for bindless textures.
+* Added support for 64-bit integer uniforms.
+* Added support for 64-bit float uniforms.
 
 ### TileMap
 
@@ -246,17 +246,17 @@ However, most people can treat it as depreciated. It is an alias to Pyglet's joy
 * Collision detection is now even faster.
 * Remove Shapely for collision detection, as Python 3.11+ is faster without it.
 
-### Shape list
+### Shape List
 
-* New buffered `Arcade.create_triangles_strip_filled_with_colors`
-* `arcade.shape_list` now contains all items that can rendered using an `arcade.ShapeElementList`
+* New buffered `Arcade.create_triangles_strip_filled_with_colors`.
+* `arcade.shape_list` now contains all items that can rendered using an `arcade.ShapeElementList`.
 
 ### Documentation
 
-* Example code page has been reorganized
+* Example code page has been reorganized.
 * [CONTRIBUTING.md](https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md) has been updated.
-* Improved `background_parallax` example
-* More detailed information on how Arcade's event loop works
+* Improved `background_parallax` example.
+* More detailed information on how Arcade's event loop works.
 * The platformer tutorial has been overhauled.
 
 ### Future
@@ -289,7 +289,7 @@ We would also like to thank the contributors who spent their valuable time solvi
 #### Notable contributors:
 
 * [Mohammad Ibrahim](https://github.com/Ibrahim2750mi) was a massive help with the GUI and various other parts of the library.
-* [ryyst](https://github.com/ryyst) Completely revitalised the Arcade Docs.
+* [ryyst](https://github.com/ryyst) completely revitalised the Arcade Docs.
 
 #### Contributors
 
