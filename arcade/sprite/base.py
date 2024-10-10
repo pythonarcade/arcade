@@ -283,7 +283,7 @@ class BasicSprite:
         if new_scale == self._scale:
             return
 
-        if isinstance(new_scale, AsFloat):
+        if isinstance(new_scale, (float, int)):
             new_scale = new_scale, new_scale
 
         try:
