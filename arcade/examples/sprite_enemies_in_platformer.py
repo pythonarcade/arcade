@@ -29,12 +29,12 @@ JUMP_SPEED = 14
 GRAVITY = 0.5
 
 
-class MyGame(arcade.Window):
+class MyGame(arcade.View):
     """Main application class."""
 
     def __init__(self):
         """Initializer"""
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Sprite lists
         self.wall_list = None
@@ -149,6 +149,9 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.enemy_list.draw()
 
+        if self.game_over:
+            arcade.draw_text("GAME OVER, Press R to reset", self.center_x, self.center_y, font_size=30, anchor_x='center')
+
     def on_key_press(self, key, modifiers):
         """
         Called whenever the mouse moves.
@@ -160,6 +163,9 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = -MOVEMENT_SPEED
         elif key == arcade.key.RIGHT:
             self.player_sprite.change_x = MOVEMENT_SPEED
+        elif key == arcade.key.R:
+            self.setup()
+            self.game_over = False
 
     def on_key_release(self, key, modifiers):
         """
@@ -200,8 +206,12 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    window.setup()
+    """ Main function """
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game = MyGame()
+    game.setup()
+
+    window.show_view(game)
     arcade.run()
 
 
