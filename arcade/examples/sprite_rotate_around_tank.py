@@ -141,13 +141,13 @@ class GameView(arcade.View):
         y_dir = math.cos(self.tank.radians) * move_magnitude
 
         # Move the tank's body
-        self.tank.position =(
+        self.tank.position = (
             self.tank.center_x + x_dir,
             self.tank.center_y + y_dir
         )
 
         # Move the barrel with the body
-        self.barrel.position =(
+        self.barrel.position = (
             self.barrel.center_x + x_dir,
             self.barrel.center_y + y_dir
         )
