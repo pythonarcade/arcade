@@ -187,7 +187,7 @@ class WindowProxy:
 
     @property
     def center(self):
-        return self.center
+        return self.window.center
 
     @property
     def rect(self):
