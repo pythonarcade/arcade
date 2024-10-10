@@ -56,10 +56,7 @@ LEFT_FACING = 1
 class PlayerSprite(arcade.Sprite):
     def __init__(self):
         # Let parent initialize
-        super().__init__()
-
-        # Set our scale
-        self.scale_set_uniform(SPRITE_SCALING_PLAYER)
+        super().__init__(scale=SPRITE_SCALING_PLAYER)
 
         # Images from Kenney.nl's Character pack
         # main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
