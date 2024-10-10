@@ -1520,3 +1520,56 @@ class View:
             y: The y position the mouse entered the window
         """
         pass
+
+    @property
+    def size(self) -> tuple[float, float]:
+        """
+        An alias for `arcade.Window.size`
+        """
+        return self.window.size
+
+    @property
+    def width(self) -> float:
+        """
+        An alias for `arcade.Window.width`
+        """
+        return self.window.width
+
+    @property
+    def height(self) -> float:
+        """
+        An alias for `arcade.Window.height`
+        """
+        return self.window.height
+
+    @property
+    def center(self) -> tuple[float, float]:
+        """
+        An alias for `arcade.Window.center`
+        """
+        return self.window.center
+
+    @property
+    def center_x(self) -> float:
+        """
+        An alias for `arcade.Window.center_x`
+        """
+        return self.window.center_x
+
+    @property
+    def center_y(self) -> float:
+        """
+        An alias for `arcade.Window.center_y`
+        """
+        return self.window.center_y
+
+    @property
+    def background_color(self) -> Color:
+        """
+        An alias for `arcade.Window.background_color`
+        """
+        return self.window.background_color
+
+    @background_color.setter
+    def background_color(self, color: Color) -> None:
+        self.window.background_color = color
