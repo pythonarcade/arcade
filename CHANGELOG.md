@@ -154,6 +154,26 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 * Provide GUI-friendly color constants in `arcade.uicolor`
 * Replace deprecated usage of `arcade.draw_text`
 
+### Rect
+* Added a `Rect` type, making working with axis-aligned rectangles easy.
+  * Provides functions to create a full `Rect` object from four values.
+  * Provides methods to move and scale the `Rect`.
+  * Provides methods to compare against the `Rect` with 2D points and other `Rects`.
+* Added `AnchorPoint` helpers, which are aliases for `Vec2`s.
+* Added several helper methods for creating `Rect` objects.
+  * `LRBT(left, right, bottom, top)`
+  * `LBWH(left, bottom, width, height)`
+  * `XYWH(x, y, width, height, anchor = AnchorPoint.CENTER)`
+  * `XYRR(center_x, center_y, half_width, half_height)` (this is mostly used for GL.)
+  * `Viewport(left, right, width, height)` (where all inputs are `int`s.)
+* Several properties in the library now return a `Rect`:
+  * `Window.rect`
+  * `BasicSprite.rect`
+  * `OrthographicProjectionData.rect`
+  * `UIWidget.rect`
+  * `Section.rect`
+* The drawing functions `draw_rect_filled()` and `draw_rect_outline()` can be used to draw a `Rect` directly.
+
 ### Misc Changes
 
 * Arcade experimental has been split into two submodules, `experimental` and `future`.
@@ -165,10 +185,6 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 * Added `Point`, `Point2`, `Point3` type aliases for tuples and vectors
 * Added `Sequence` types for all three `Point` aliases
 * Added a `Color` object with a plethora of useful methods.
-* Added a `Rect` type, making working with axis-aligned rectangles easy.
-  * Provides functions to create a full `Rect` object from four values.
-  * Provides methods to move and scale the `Rect`
-  * Provides methods to compare against the `Rect` with 2D points and other `Rects`
 * Windows Text glyphs are now created with DirectWrite instead of GDI
 * Removal of various deprecated functions and parameters
 * OpenGL examples moved to _`examples/gl <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gl>`_
