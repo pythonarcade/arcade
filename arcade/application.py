@@ -1234,9 +1234,7 @@ class View:
     """
 
     def __init__(
-        self,
-        window: Window | None = None,
-        background_color: RGBOrA255 | None = None
+        self, window: Window | None = None, background_color: RGBOrA255 | None = None
     ) -> None:
         self.window = arcade.get_window() if window is None else window
         self.background_color: RGBOrA255 | None = background_color
