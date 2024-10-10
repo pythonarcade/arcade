@@ -118,6 +118,4 @@ def main():
     arcade.run()
 
 if __name__ == "__main__":
-    window = arcade.Window(title="GUI Example: Basic Setup")
-    window.show_view(GreenView())
-    window.run()
+    main()
