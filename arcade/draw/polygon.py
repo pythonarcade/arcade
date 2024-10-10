@@ -31,7 +31,7 @@ def draw_polygon_outline(point_list: Point2List, color: RGBOrA255, line_width: f
             in a list. So it is a list of lists.
         color:
             The color of the outline as an RGBA :py:class:`tuple` or
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
         line_width:
             Width of the line in pixels.
     """

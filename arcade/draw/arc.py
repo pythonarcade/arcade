@@ -32,7 +32,7 @@ def draw_arc_filled(
             height of the arc.
         color:
             A 3 or 4 length tuple of 0-255 channel values or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
         start_angle:
             start angle of the arc in degrees.
         end_angle:
@@ -93,7 +93,7 @@ def draw_arc_outline(
             height of the arc.
         color:
             A 3 or 4 length tuple of 0-255 channel values or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
         start_angle:
             Start angle of the arc in degrees.
         end_angle:
