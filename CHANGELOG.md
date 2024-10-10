@@ -16,7 +16,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 * Texture management has completely changed in  3.0. In the past, we
  cached everything, which caused issues for larger
  projects that needed memory management. Functions like `Arcade.load_texture` no longer cache textures.
-* removed the poorly named `Window.set_viewport` and `set_viewport` methods.
+* Removed the poorly named `Window.set_viewport` and `set_viewport` methods.
  `Camera2D` has completely superseded their functionality.
 * Fixed `ArcadeContext` assuming that the projection and view matrices were aligned to the xy-plane and Orthographic. It is now safe to use full 3D matrices with Arcade.
 * The `Sprite` initializer has been simplified. It's no longer possible to
@@ -49,7 +49,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
   * Removed `arcade.gui.widgets.UITexturePane`. It is now a part of `arcade.gui.widgets.UIWidget`.
   * Removed `arcade.gui.widgets.UIAnchorWidget` has been replaced by `arcade.gui.widgets.UIAnchorLayout`.
 * Resources
-  * removed unused resources from `resources/gui_basic_assets`.
+  * Removed unused resources from `resources/gui_basic_assets`.
     * `items/shield_gold.png`
     * `items/sword_gold.png`
     * `slider_thumb.png`
@@ -98,7 +98,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 * Created static projector classes to set the matrices with constant values.
 * Added a default camera that automatically adjusts to the active render target.
 * Added a camera shake object that makes it easy to add camera shake to a game.
-* All Projectors provide methods to project to and from the screen and world coordinates.
+* All `Projector`s provide methods to project to and from the screen and world coordinates.
 
 ### Textures
 
@@ -155,6 +155,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 * Replace deprecated usage of `arcade.draw_text`.
 
 ### Rect
+
 * Added a `Rect` type, making working with axis-aligned rectangles easy.
   * Provides functions to create a full `Rect` object from four values.
   * Provides methods to move and scale the `Rect`.
@@ -176,11 +177,11 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 
 ### Misc Changes
 
-* Arcade experimental has been split into two submodules, `experimental` and `future`.
+* `arcade.experimental` has been split into two submodules, `experimental` and `future`.
   * `future` includes all incomplete features we intend to include in Arcade eventually
   * `experimental` is any interesting code that may not end up as Arcade features.
 * `arcade.color_from_hex_string` changed to follow the CSS hex string standard.
-* Made Pyglet's maths classes accessible within Arcade.
+* Made Pyglet's math classes accessible within Arcade.
 * Arcade's utility math functions have more robust typing.
 * Added `Point`, `Point2`, `Point3` type aliases for tuples and vectors.
 * Added `Sequence` types for all three `Point` aliases.
@@ -212,7 +213,7 @@ However, most people can treat it as depreciated. It is an alias to Pyglet's joy
 * `arcade.text_pyglet` has been renamed `arcade.text`.
 * `arcade.draw_text` and `arcade.Text` now accept a `z` parameter that defaults to 0. Previous text versions had the same default.
 
-### `arcade.draw_*`:
+### `arcade.draw_*`
 
 * `arcade.draw_commands` has been renamed `arcade.draw`.
 * Added `arcade.draw.draw_lbwh_rectangle_textured` which replaces 
@@ -246,7 +247,7 @@ However, most people can treat it as depreciated. It is an alias to Pyglet's joy
 * Collision detection is now even faster.
 * Remove Shapely for collision detection, as Python 3.11+ is faster without it.
 
-### Shape List
+### Shape Lists
 
 * New buffered `Arcade.create_triangles_strip_filled_with_colors`.
 * `arcade.shape_list` now contains all items that can rendered using an `arcade.ShapeElementList`.
