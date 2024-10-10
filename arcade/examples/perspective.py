@@ -1,5 +1,5 @@
 """
-Perspective example using the lower level rendering API.
+Perspective example using the PerspectiveProjectionCamera
 
 This is definitely in the advanced section, but it can be
 a useful tool to learn. Sometimes we want perspective
@@ -17,23 +17,24 @@ python -m arcade.examples.perspective
 from array import array
 
 import arcade
-from pyglet.math import Mat4, Vec3
 from arcade.gl import BufferDescription
 
 
-class Perspective(arcade.Window):
+class MyGame(arcade.View):
 
     def __init__(self):
-        super().__init__(1280, 720, "Perspective", resizable=True)
+        super().__init__()
         # Simple texture shader for the plane.
         # It support projection and model matrix
         # and a scroll value for texture coordinates
-        self.program = self.ctx.program(
+        self.program = self.window.ctx.program(
             vertex_shader="""
             #version 330
 
-            uniform mat4 projection;
-            uniform mat4 model;
+            uniform WindowBlock {
+                mat4 projection;
+                mat4 model;
+            } window;
 
             in vec3 in_pos;
             in vec2 in_uv;
@@ -41,7 +42,7 @@ class Perspective(arcade.Window):
             out vec2 uv;
 
             void main() {
-                gl_Position = projection * model * vec4(in_pos, 1.0);
+                gl_Position = window.projection * window.model * vec4(in_pos, 1.0);
                 uv = in_uv;
             }
             """,
@@ -60,20 +61,24 @@ class Perspective(arcade.Window):
             """,
         )
 
-        # # Matrix for perspective projection
-        self.proj = Mat4.perspective_projection(self.aspect_ratio, 0.1, 100, fov=75)
-        # # Configure the projection in the shader
-        self.program["projection"] = self.proj
+        # Configure and create the perspective projector
+        self.perspective_data = arcade.camera.PerspectiveProjectionData(
+            self.window.aspect_ratio, # The ratio between window width and height
+            75, # The angle  between things at the top of the screen, and the bottom
+            0.1, # Anything within 0.1 units of the camera won't be visible
+            100.0 # Anything past 100.0 units of the camera won't be visible
+        )
+        self.projector = arcade.camera.PerspectiveProjector()
 
         # Framebuffer / virtual screen to render the contents into
-        self.fbo = self.ctx.framebuffer(
-            color_attachments=self.ctx.texture(size=(1024, 1024))
+        self.fbo = self.window.ctx.framebuffer(
+            color_attachments=self.window.ctx.texture(size=(1024, 1024))
         )
 
         # Set up the geometry buffer for the plane.
         # This is four points with texture coordinates
         # creating a rectangle
-        buffer = self.ctx.buffer(
+        buffer = self.window.ctx.buffer(
             data=array(
                 'f',
                 [
@@ -87,9 +92,9 @@ class Perspective(arcade.Window):
         )
         # Make this into a geometry object we can draw-
         # Here we describe the contents of the buffer so the shader can understand it
-        self.geometry = self.ctx.geometry(
+        self.geometry = self.window.ctx.geometry(
             content=[BufferDescription(buffer, "3f 2f", ("in_pos", "in_uv"))],
-            mode=self.ctx.TRIANGLE_STRIP,
+            mode=arcade.gl.TRIANGLE_STRIP,
         )
 
         # Create some sprites
@@ -104,11 +109,20 @@ class Perspective(arcade.Window):
                     )
                 )
 
+        # Create a 2D camera for rendering to the fbo
+        # by setting the camera's render target it will automatically
+        # size and position itself correctly
         self.offscreen_cam = arcade.camera.Camera2D(
-            position=(0.0, 0.0),
-            viewport=arcade.LBWH(0, 0, self.fbo.width, self.fbo.height),
-            projection=arcade.LRBT(0, self.fbo.width, 0, self.fbo.height)
+            render_target=self.fbo
         )
+
+    def on_update(self, delta_time: float):
+        # Rotate the perspective camera around the plane
+        view_data = self.projector.view
+        view_data.position = arcade.math.quaternion_rotation((1.0, 0.0, 0.0), (0, 0, 3), 180 * self.window.time)
+        view_data.forward, view_data.up = arcade.camera.grips.look_at(view_data, (0.0, 0.0, 0.0))
+        print(view_data)
+
 
     def on_draw(self):
         # Every frame we can update the offscreen texture if needed
@@ -116,37 +130,42 @@ class Perspective(arcade.Window):
         # Clear the window
         self.clear()
 
-        # Bind the texture containing the offscreen data to channel 0
-        self.fbo.color_attachments[0].use(unit=0)
+        with self.projector.activate():
+            # Bind the texture containing the offscreen data to channel 0
+            self.fbo.color_attachments[0].use(unit=0)
 
-        # Move the plane into camera view and rotate it
-        translate = Mat4.from_translation(Vec3(0, 0, -2))
-        rotate = Mat4.from_rotation(self.time / 2, Vec3(1, 0, 0))
-        self.program["model"] = translate @ rotate
+            # Scroll the texture coordinates
+            self.program["scroll"] = 0, -self.window.time / 5
 
-        # Scroll the texture coordinates
-        self.program["scroll"] = 0, -self.time / 5
-
-        # Draw the plane
-        self.geometry.render(self.program)
+            # Draw the plane
+            self.geometry.render(self.program)
 
     def draw_offscreen(self):
         """Render into the texture mapped """
-        # Activate the offscreen framebuffer and draw the sprites into it
-        with self.fbo.activate() as fbo:
-            fbo.clear()
+        # Activate the offscreen cam, this also activates it's render target
+        with self.offscreen_cam.activate():
+            self.fbo.clear()
             self.offscreen_cam.use()
             self.spritelist.draw()
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.program["projection"] = Mat4.perspective_projection(
-            self.aspect_ratio, 0.1, 100, fov=75,
-        )
+        self.perspective_data.aspect = height / width
 
 
 def main():
-    Perspective().run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(1280, 720, "Perspective Example", resizable=True)
+
+    # Create and setup the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":
