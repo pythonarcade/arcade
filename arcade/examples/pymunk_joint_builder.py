@@ -54,11 +54,11 @@ class BoxSprite(PhysicsSprite):
         self.height = height
 
 
-class MyApplication(arcade.Window):
+class MyGame(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         self.background_color = arcade.color.DARK_SLATE_GRAY
 
@@ -186,7 +186,7 @@ class MyApplication(arcade.Window):
         if self.shape_1 is None:
             print("Shape 1 Selected")
             self.shape_1 = shape_selected
-        elif self.shape_2 is None:
+        elif self.shape_2 is None and self.shape_1.shape != shape_selected.shape:
             print("Shape 2 Selected")
             self.shape_2 = shape_selected
             joint = pymunk.PinJoint(self.shape_1.shape.body, self.shape_2.shape.body)
@@ -195,6 +195,9 @@ class MyApplication(arcade.Window):
             self.shape_1 = None
             self.shape_2 = None
             print("Joint Made")
+        else:
+            print("Shapes Deselected")
+            self.shape_1 = self.shape_2 = None
 
     def make_damped_spring(self, x, y):
         shape_selected = self.get_shape(x, y)
@@ -204,7 +207,7 @@ class MyApplication(arcade.Window):
         if self.shape_1 is None:
             print("Shape 1 Selected")
             self.shape_1 = shape_selected
-        elif self.shape_2 is None:
+        elif self.shape_2 is None and self.shape_1.shape != shape_selected.shape:
             print("Shape 2 Selected")
             self.shape_2 = shape_selected
             joint = pymunk.DampedSpring(
@@ -218,6 +221,9 @@ class MyApplication(arcade.Window):
             self.shape_1 = None
             self.shape_2 = None
             print("Joint Made")
+        else:
+            print("Shapes deselected")
+            self.shape_1 = self.shape_2 = None
 
     def get_shape(self, x, y):
         # See if we clicked on anything
@@ -334,8 +340,18 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+
+    # Create the MyGame view
+    game = MyGame()
+
+    # Show MyGame on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":
