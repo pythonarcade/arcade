@@ -75,7 +75,7 @@ class Smoke(arcade.SpriteCircle):
     def __init__(self, size):
         super().__init__(size, arcade.color.LIGHT_GRAY, soft=True)
         self.change_y = SMOKE_RISE_RATE
-        self.scale_set_uniform(SMOKE_START_SCALE)
+        self.scale = SMOKE_START_SCALE
 
     def update(self, delta_time: float = 1/60):
         """Update this particle"""

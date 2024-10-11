@@ -262,11 +262,12 @@ class BasicSprite:
     @property
     def scale(self) -> Point2:
         """Get or set the x & y scale of the sprite as a pair of values.
+        You may set both the x & y with a single scalar, but scale will always return
+        a length 2 tuple of the x & y scale
 
         See :py:attr:`.scale_x` and :py:attr:`.scale_y` for individual access.
 
-        See :py:meth:`.scale_multiply_uniform` and :py:meth:`.scale_set_uniform`
-        for uniform scaling.
+        See :py:meth:`.scale_multiply_uniform` for uniform scaling.
 
         .. note:: Negative scale values are supported.
 
