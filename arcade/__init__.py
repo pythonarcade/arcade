@@ -80,41 +80,46 @@ if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_ras
 # Complex imports with potential circularity
 from .window_commands import close_window
 from .window_commands import exit
-from .window_commands import finish_render
 from .window_commands import get_display_size
 from .window_commands import get_window
-from .window_commands import schedule
-from .window_commands import run
-from .window_commands import set_background_color
 from .window_commands import set_window
-from .window_commands import start_render
+from .window_commands import schedule
 from .window_commands import unschedule
 from .window_commands import schedule_once
 
+# What's the point in these?
+from .window_commands import start_render
+from .window_commands import finish_render
+from .window_commands import run
+from .window_commands import set_background_color
+
+# These aren't STRICTLY NEEDED, but aren't a problem
 from .sections import Section, SectionManager
 
-from .application import MOUSE_BUTTON_LEFT
-from .application import MOUSE_BUTTON_MIDDLE
-from .application import MOUSE_BUTTON_RIGHT
-from .application import NoOpenGLException
+from .application import MOUSE_BUTTON_LEFT # Nuke (In new inputs anyway)
+from .application import MOUSE_BUTTON_MIDDLE # Nuke (In new inputs anywoy)
+from .application import MOUSE_BUTTON_RIGHT # Nuke (in new inputs anyway)
+from .application import NoOpenGLException # At top level?
 from .application import View
 from .application import Window
 from .application import get_screens
 from .application import open_window
 
 from .texture import Texture
-from .texture import TextureCacheManager
+from .texture import TextureCacheManager  # doesn't need to be top level it is an advanced feature
 from .texture import SpriteSheet
 from .texture import load_spritesheet
 from .texture import load_texture
 from .texture import load_image
+
+# These are useful, but do they need to be top level?
 from .texture import make_circle_texture
 from .texture import make_soft_circle_texture
 from .texture import make_soft_square_texture
 from .texture import get_default_image
 from .texture import get_default_texture
 
-from .draw import get_points_for_thick_line
+# This is contensious I don't want them here, but I understand why we might keep them
 from .draw import draw_arc_filled
 from .draw import draw_arc_outline
 from .draw import draw_circle_filled
@@ -141,13 +146,16 @@ from .draw import draw_triangle_filled
 from .draw import draw_triangle_outline
 from .draw import draw_lbwh_rectangle_filled
 from .draw import draw_lbwh_rectangle_outline
+
+# These are bad names, and nieche enough to not be top level worthy
 from .screenshot import get_image
 from .screenshot import get_pixel
 
+# These should be top level, but are being overridden by the new inputs
 # We don't have joysticks game controllers in headless mode
 if not headless:  # type: ignore
-    from .joysticks import get_game_controllers
-    from .joysticks import get_joysticks
+    from .joysticks import get_game_controllers # Joysticks should be accessable, but not top level
+    from .joysticks import get_joysticks # Joysticks should be accessable, but not top level
     from .controller import ControllerManager
     from .controller import get_controllers
 
@@ -156,22 +164,24 @@ from .sound import load_sound
 from .sound import play_sound
 from .sound import stop_sound
 
+# ???
 from .sprite import FACE_DOWN
 from .sprite import FACE_LEFT
 from .sprite import FACE_RIGHT
 from .sprite import FACE_UP
+
+# Nothing but, BasicSprite, Sprite, and the Shape Sprites should be top level
 from .sprite import TextureAnimationSprite
 from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
 from .sprite import TextureAnimation
 from .sprite import TextureKeyframe
-from .sprite import PyMunk
-from .sprite import PymunkMixin
+from .sprite import PyMunk  # :(
+from .sprite import PymunkMixin  # :(
 from .sprite import SpriteType
+
 from .sprite import Sprite
 from .sprite import BasicSprite
-
-# from .sprite import SimpleSprite
 from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
 
@@ -185,24 +195,31 @@ from .sprite_list import get_sprites_at_point
 from .sprite_list import get_distance_between_sprites
 from .sprite_list import get_sprites_in_rect
 
+# Feels like an advanced feature, but it is ubiqutous in arcade
 from .sprite_list import SpatialHash
 
+# Nuke
 from .scene import Scene
 from .scene import SceneKeyError
 
+# Keep for now cause they won't survive 3.2+
 from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
+# :(
 from .tilemap import load_tilemap
 from .tilemap import read_tmx
 from .tilemap import TileMap
 
+# :(
 from .pymunk_physics_engine import PymunkPhysicsEngine
 from .pymunk_physics_engine import PymunkPhysicsObject
 from .pymunk_physics_engine import PymunkException
 
+# This causes us so many issues with nuikta, but fine
 from .version import VERSION
 
+# niche enough to not be top level
 from .paths import has_line_of_sight
 from .paths import AStarBarrierList
 from .paths import astar_calculate_path
@@ -211,6 +228,7 @@ from .context import ArcadeContext
 
 from .texture_atlas import DefaultTextureAtlas
 
+# These don't need to be top level
 from .perf_info import enable_timings
 from .perf_info import print_timings
 from .perf_info import get_fps
@@ -221,9 +239,12 @@ from .perf_info import disable_timings
 
 from .perf_graph import PerfGraph
 
+# Should probably also add CameraData and OrthoData for typing,
+# but this is the backbone of so many examples
 from .camera import Camera2D
 
-from .types.rect import Rect, LRBT, LBWH, XYWH
+# Rect is so useful, and used EVERYWHERE in arcade.
+from .types.rect import Rect, LRBT, LBWH, XYWH, AnchorPoint
 
 # Module imports
 from arcade import color as color
@@ -237,9 +258,10 @@ from arcade import math as math
 from arcade import shape_list as shape_list
 from arcade import hitbox as hitbox
 from arcade import experimental as experimental
-from arcade.types import rect
+from arcade.types import rect  # since we import above we don't need this here
 
 # For ease of access for beginners
+# arcade.math should import these, and only Vec2 should be top level
 from pyglet.math import Vec2, Vec3, Vec4
 
 from .text import (
@@ -276,6 +298,7 @@ __all__ = [
     "LBWH",
     "LRBT",
     "XYWH",
+    "AnchorPoint",
     "Section",
     "SectionManager",
     "Scene",
@@ -347,7 +370,6 @@ __all__ = [
     "get_image",
     "get_joysticks",
     "get_pixel",
-    "get_points_for_thick_line",
     "get_screens",
     "get_sprites_at_exact_point",
     "get_sprites_at_point",
