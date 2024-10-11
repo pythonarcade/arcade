@@ -74,7 +74,7 @@ class SpriteList(Generic[SpriteType]):
     case by case basis.
 
     For the advanced options check the advanced section in the
-    arcade documentation.
+    Arcade documentation.
 
     Args:
         use_spatial_hash:

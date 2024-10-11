@@ -20,7 +20,7 @@ class TextureArrayAtlas(TextureAtlasBase):
     A texture atlas that stores textures in a texture array.
 
     Args:
-        ctx (ArcadeContext): The arcade context.
+        ctx (ArcadeContext): The Arcade context.
         size (Tuple[int, int]): The texture size in pixels per layer
         layers (int): The number of layers (number of textures to store)
     """

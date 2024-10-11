@@ -190,7 +190,7 @@ def start_render(pixelated=False, blend=True) -> None:
     Call :py:func:`arcade.finish_render` to stop recording. The
     start_render/finish_render calls can only be called once.
 
-    When running arcade this buffer will be presented to the screen.
+    When running Arcade this buffer will be presented to the screen.
 
     A few configuration options are available in this function.
 

@@ -1,7 +1,7 @@
 """
 Various utility functions.
 
-IMPORTANT: These should be standalone and not rely on any arcade imports
+IMPORTANT: These should be standalone and not rely on any Arcade imports
 """
 from __future__ import annotations
 

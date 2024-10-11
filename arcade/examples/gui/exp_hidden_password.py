@@ -8,7 +8,7 @@ Due to a bug in the current version of pyglet, the example uses ENTER to switch
 fields instead of TAB. This will be fixed in future versions.
 (https://github.com/pyglet/pyglet/issues/1197)
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_hidden_password
 """
 

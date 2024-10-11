@@ -147,7 +147,7 @@ class MyGame(arcade.Window):
     def reset(self):
         """
         Reset the game so it can be played again.
-        This is not a standard arcade method. It's simply an example of how
+        This is not a standard Arcade method. It's simply an example of how
         you might reset the game.
         """
         self.game_state = PLAY_GAME

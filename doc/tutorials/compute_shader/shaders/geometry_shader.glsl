@@ -3,7 +3,7 @@
 layout (points) in;
 layout (triangle_strip, max_vertices = 4) out;
 
-// Use arcade's global projection UBO
+// Use Arcade's global projection UBO
 uniform Projection {
     uniform mat4 matrix;
 } proj;

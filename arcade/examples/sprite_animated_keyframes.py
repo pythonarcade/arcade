@@ -3,7 +3,7 @@ Example using the TextureAnimationSprite class to animate a sprite using keyfram
 This sprite type is primarily used internally by tilemaps, but can be used for other
 purposes as well.
 
-If Python and arcade are installed, this example can be run from the command line with:
+If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.sprite_animated_keyframes
 """
 import arcade

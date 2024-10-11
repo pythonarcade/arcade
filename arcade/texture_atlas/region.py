@@ -41,7 +41,7 @@ class AtlasRegion:
         atlas:
             The atlas this region belongs to
         texture:
-            The arcade texture
+            The Arcade texture
         x:
             The x position of the texture
         y:

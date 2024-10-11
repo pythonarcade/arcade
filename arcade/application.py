@@ -570,7 +570,7 @@ class Window(pyglet.window.Window):
         Called once whenever a mouse button gets pressed down.
 
         Override this function to handle mouse clicks. For an example of
-        how to do this, see arcade's built-in :ref:`aiming and shooting
+        how to do this, see Arcade's built-in :ref:`aiming and shooting
         bullets <sprite_bullets_aimed>` demo.
 
         Args:
@@ -1329,7 +1329,7 @@ class View:
         Called once whenever a mouse button gets pressed down.
 
         Override this function to handle mouse clicks. For an example of
-        how to do this, see arcade's built-in :ref:`aiming and shooting
+        how to do this, see Arcade's built-in :ref:`aiming and shooting
         bullets <sprite_bullets_aimed>` demo.
 
         Args:

@@ -31,7 +31,7 @@ def draw_circle_filled(
         num_segments:
             Number of triangle segments that make up this circle.
             Higher is better quality, but slower render time.
-            The default value of -1 means arcade will try to calculate a reasonable
+            The default value of -1 means Arcade will try to calculate a reasonable
             amount of segments based on the size of the circle.
     """
     draw_ellipse_filled(
@@ -75,7 +75,7 @@ def draw_circle_outline(
         num_segments:
             Number of triangle segments that make up this circle.
             Higher is better quality, but slower render time.
-            The default value of -1 means arcade will try to calculate a reasonable
+            The default value of -1 means Arcade will try to calculate a reasonable
             amount of segments based on the size of the circle.
     """
     draw_ellipse_outline(
@@ -123,7 +123,7 @@ def draw_ellipse_filled(
         num_segments:
             Number of triangle segments that make up this circle.
             Higher is better quality, but slower render time.
-            The default value of -1 means arcade will try to calculate a reasonable
+            The default value of -1 means Arcade will try to calculate a reasonable
             amount of segments based on the size of the circle.
     """
     # Fail immediately if we have no window or context
@@ -182,7 +182,7 @@ def draw_ellipse_outline(
         num_segments:
             Number of triangle segments that make up this circle.
             Higher is better quality, but slower render time.
-            The default value of -1 means arcade will try to calculate a reasonable
+            The default value of -1 means Arcade will try to calculate a reasonable
             amount of segments based on the size of the circle.
     """
     # Fail immediately if we have no window or context

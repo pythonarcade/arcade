@@ -25,7 +25,7 @@ SCREEN_TITLE = "Sprite Collect Coins Moving Down Example"
 class Coin(arcade.Sprite):
     """
     This class represents the coins on our screen. It is a child class of
-    the arcade library's "Sprite" class.
+    the Arcade library's "Sprite" class.
     """
 
     def reset_pos(self):

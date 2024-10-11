@@ -17,7 +17,7 @@ easy reference. There may be other behavior changes that could break specific
 scenarios, but this section is limited to changes which directly changed the
 API in a way that is not compatible with how it was used in 2.6.
 
-* Texture management has completely changed in arcade 3.0. In the past we have
+* Texture management has completely changed in Arcade 3.0. In the past we have
   cached absolutely everything, something that caused major issues for larger
   projects needing to manage memory. Functions like `arcade.load_texture` no
   longer cache the texture. See the texture section for more details
@@ -88,7 +88,7 @@ API in a way that is not compatible with how it was used in 2.6.
   or Cortex-A76 CPU should work. Use images from 2024 or later for best
   results.
 * Arcade now supports freely mixing Pyglet and Arcade code. This means you
-  can freely use pyglet batches, Labels when preferred over arcade's types.
+  can freely use pyglet batches, Labels when preferred over Arcade's types.
   Note that texture/image handling are still separate systems. This is
   however a solvable problem for intermediate and advanced users.
 
@@ -297,7 +297,7 @@ testing, or even just providing feedback. It's hard to keep track of all the
 people involved in a release, but we want to thank everyone who has helped
 in any shape or form. We appreciate all of you!
 
-The main arcade team:
+The main Arcade team:
 
 * [Einar Forselv](https://github.com/einarf)
 * [pushfoo](https://github.com/pushfoo)

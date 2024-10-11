@@ -145,7 +145,7 @@ class BindlessTexture(arcade.Window):
 
         self.handles = []
         self.textures: List[Texture2D] = []
-        # Make a cycle iterator from arcade's resources (images)
+        # Make a cycle iterator from Arcade's resources (images)
         resources = arcade.resources.list_built_in_assets(name="female", extensions=(".png",))
         resource_cycle = cycle(resources)
 

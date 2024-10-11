@@ -74,7 +74,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
     keeping up to date.
 
     The atlas deals with image and textures. The image is the actual
-    image data. The texture is the arcade texture object that contains
+    image data. The texture is the Arcade texture object that contains
     the image and other information about such as transforms.
     Several textures can share the same image with different transforms
     applied. The transforms are simply changing the order of the texture
@@ -854,7 +854,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
     def update_texture_image_from_atlas(self, texture: "Texture") -> None:
         """
-        Update the arcade Texture's internal image with the pixel data content
+        Update the Arcade Texture's internal image with the pixel data content
         from the atlas texture on the GPU. This can be useful if you render
         into the atlas and need to update the texture with the new pixel data.
 

@@ -28,7 +28,7 @@ def create_ninepatch(
     # Manually create a ninepatch texture.
     # We make it white by default and draw a red rectangle in the middle.
     # This means borders are white and the middle is red.
-    # NOTE: Pillow's 0,0 is top left, arcade's is bottom left.
+    # NOTE: Pillow's 0,0 is top left, Arcade's is bottom left.
     patch_image = Image.new("RGBA", texture_size, (255, 255, 255, 255))
     draw = ImageDraw.Draw(patch_image)
     draw.rectangle((left, top, texture_size[0] - right - 1, texture_size[1] - bottom - 1), fill=(255, 0, 0, 255))

@@ -91,10 +91,10 @@ class Section:
         """if True 'update' and 'on_update' will not trigger in this section"""
 
         self.accept_keyboard_keys: bool | Iterable = accept_keyboard_keys
-        """arcade keyboard keys to accept."""
+        """Arcade keyboard keys to accept."""
 
         self.accept_mouse_events: bool | Iterable = accept_mouse_events
-        """arcade mouse events to accept."""
+        """Arcade mouse events to accept."""
 
         self.prevent_dispatch: Iterable = prevent_dispatch or {True}
         """prevents events to propagate"""

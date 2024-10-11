@@ -5,7 +5,7 @@ The example shows vertical and horizontal scroll areas with a list of buttons.
 The current implementation lags a proper API, customizability, mouse support and documentation,
 but shows how to use the current experimental feature.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_scroll_area
 """
 

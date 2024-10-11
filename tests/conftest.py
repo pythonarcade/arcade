@@ -300,7 +300,7 @@ class WindowProxy:
     @property
     def default_camera(self):
         """
-        Provides a reference to the default arcade camera.
+        Provides a reference to the default Arcade camera.
         Automatically sets projection and view to the size
         of the screen. Good for resetting the screen.
         """

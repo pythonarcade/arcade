@@ -1,6 +1,6 @@
 """Demonstrates the use of layouts.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.1_layouts
 
 Content:

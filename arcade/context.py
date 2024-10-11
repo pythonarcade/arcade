@@ -247,7 +247,7 @@ class ArcadeContext(Context):
         """
         The default texture atlas.
 
-        This is created when arcade is initialized.
+        This is created when Arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
         is passed in the :py:class:`arcade.SpriteList` constructor.
         """

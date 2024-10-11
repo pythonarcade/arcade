@@ -41,13 +41,13 @@ called with the ``fixed_rate`` argument when initialising your :py:class:`arcade
 Time
 ----
 While the underlying library, pyglet, provide a clock for scheduling events it is closely tied
-to the window's own events. For simple time keeping arcade provides global
+to the window's own events. For simple time keeping Arcade provides global
 clock objects. Both clocks can be imported from ``arcade.clock`` as 
 ``GLOBAL_CLOCK`` and ``GLOBAL_FIXED_CLOCK``
 
 :py:class:`arcade.Clock`
 ^^^^^^^^^^^^^^^^^^^^^^^^
-The base arcade clock tracks the elapsed time in seconds, the total number
+The base Arcade clock tracks the elapsed time in seconds, the total number
 of clock ticks, and the amount of time that elapsed since the last tick.
 The currently active window automatically ticks the ``GLOBAL_CLOCK`` every ``on_update``.
 This means there is no reason to manually tick it. If you need more
@@ -89,9 +89,9 @@ crashes.
 
 There are a few solutions to this issue. The simplist method, which works best when there may be spikes in
 computation time that quickly settle, is to clamp the max number of fixed updates that can occur in a single
-frame. In arcade this is done by setting the ``fixed_frame_cap`` argument when initialising your
+frame. In Arcade this is done by setting the ``fixed_frame_cap`` argument when initialising your
 :py:class:`arcade.Window`. The second method is to slow-down time temporarily. By changing the
-``_tick_speed`` of arcade's ``GLOBAL_CLOCK`` is is possible to slow down the accumulation of time.
+``_tick_speed`` of Arcade's ``GLOBAL_CLOCK`` is is possible to slow down the accumulation of time.
 For example setting ``GLOBAL_CLOCK._tick_speed = 0.5`` would allow the fixed update twice as many frames
 to calculate for.
 
