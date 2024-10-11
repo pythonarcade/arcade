@@ -5,7 +5,7 @@ frames for UI elements. Widgets which support a background texture can
 also use a NinePatchTexture to support scaling where the corners stay the
 same, like a window.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.ninepatch
 """
 

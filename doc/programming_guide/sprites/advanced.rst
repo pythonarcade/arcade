@@ -198,7 +198,7 @@ back to the main process.
 
 Please see the following for additional information:
 
-* :ref:`Arcade's OpenGL notes <open_gl_notes>` for arcade-specific
+* :ref:`Arcade's OpenGL notes <open_gl_notes>` for Arcade-specific
   threading considerations
 * Python's :py:mod:`threading` documentation
 * Python's :py:mod:`subprocess` and :py:mod:`pickle` documentation

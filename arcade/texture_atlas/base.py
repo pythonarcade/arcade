@@ -67,7 +67,7 @@ class TextureAtlasBase(abc.ABC):
 
     @property
     def ctx(self) -> ArcadeContext:
-        """The global arcade OpenGL context."""
+        """The global Arcade OpenGL context."""
         return self._ctx
 
     @property
@@ -332,7 +332,7 @@ class TextureAtlasBase(abc.ABC):
     @abc.abstractmethod
     def update_texture_image_from_atlas(self, texture: Texture) -> None:
         """
-        Update the arcade Texture's internal image with the pixel data content
+        Update the Arcade Texture's internal image with the pixel data content
         from the atlas texture on the GPU. This can be useful if you render
         into the atlas and need to update the texture with the new pixel data.
 

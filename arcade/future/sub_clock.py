@@ -7,7 +7,7 @@ from arcade.clock import GLOBAL_CLOCK, Clock
 
 def boot_strap_clock(clock: Optional[Clock] = None) -> Clock:
     """
-    Because the sub_clock is not a fully featured part of arcade we have to
+    Because the sub_clock is not a fully featured part of Arcade we have to
     manipulate the clocks before the can be used with sub_clocks.
 
     This step will no longer be required when SubClocks become part of the main

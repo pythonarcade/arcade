@@ -7,7 +7,7 @@ Arcade aims to support the same Python versions
 `currently supported by the PSF`_.
 
 You are strongly encouraged to upgrade to one of the versions listed at the
-link above, with the exception of 3.11 or later. Some of arcade's dependencies
+link above, with the exception of 3.11 or later. Some of Arcade's dependencies
 have not yet been ported for those versions.
 
 If you absolutely cannot upgrade to Python 3.9 or later, you can try using an

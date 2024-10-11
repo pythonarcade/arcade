@@ -1,5 +1,5 @@
 """
-Original screenshot utilities from arcade 2.
+Original screenshot utilities from Arcade 2.
 
 These functions are flawed because they only read from the screen.
 """

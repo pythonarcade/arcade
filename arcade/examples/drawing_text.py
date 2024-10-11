@@ -12,7 +12,7 @@ SCREEN_TITLE = "Drawing Text Example"
 DEFAULT_LINE_HEIGHT = 45
 DEFAULT_FONT_SIZE = 20
 
-# Load fonts bumbled with arcade such as the Kenney fonts
+# Load fonts bumbled with Arcade such as the Kenney fonts
 arcade.resources.load_system_fonts()
 
 

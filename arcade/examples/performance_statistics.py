@@ -2,7 +2,7 @@
 Performance Statistic Display Example
 
 This example demonstrates how to use a few performance profiling tools
-built into arcade:
+built into Arcade:
 
 * arcade.enable_timings
 * arcade.PerfGraph

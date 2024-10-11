@@ -1,9 +1,9 @@
 """Show all arcade.uicolors in a grid.
 
 Click on a color to select
-it and copy the arcade reference to the clipboard.
+it and copy the Arcade reference to the clipboard.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.5_uicolor_picker
 
 """

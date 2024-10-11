@@ -57,7 +57,7 @@ is also strongly recommended.
 ## Installing Arcade in Editable Mode
 
 To install all necessary development dependencies, run this command in your
-terminal from inside the top level of the arcade directory:
+terminal from inside the top level of the Arcade directory:
 
 ```bash
 pip install -e '.[dev]'
@@ -325,6 +325,6 @@ To enable this feature, most users can follow these steps:
 2. If it is one of the supported shells, run `./make.py --install-completion $(basename "$SHELL")`
 3. Restart your terminal
 
-If your default shell is not the shell you prefer using for arcade development,
+If your default shell is not the shell you prefer using for Arcade development,
 you may need to specify it to the command above directly instead of using
 auto-detection.

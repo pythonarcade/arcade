@@ -9,10 +9,10 @@ Events
 What is a keyboard event?
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Keyboard events are arcade's representation of physical keyboard interactions.
+Keyboard events are Arcade's representation of physical keyboard interactions.
 
 For example, if your keyboard is working correctly and you type the letter A
-into the window of a running arcade game, it will see two separate events:
+into the window of a running Arcade game, it will see two separate events:
 
 #. a key press event with the key code for ``A``
 #. a key release event with the key code for ``A``

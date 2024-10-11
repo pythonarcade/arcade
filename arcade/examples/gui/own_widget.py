@@ -18,7 +18,7 @@ Both approaches use a Property to trigger a render when the value changes.
 Properties are a way to bind a value to a widget and trigger a function when the value changes.
 Read more about properties in the `arcade.gui` documentation.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.own_widgets
 """
 

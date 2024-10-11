@@ -16,7 +16,7 @@ python -m arcade.examples.drawing_primitives
 """
 
 # Import the Arcade library. If this fails, then try following the instructions
-# for how to install arcade:
+# for how to install Arcade:
 # https://api.arcade.academy/en/latest/install/index.html
 import arcade
 

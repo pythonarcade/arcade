@@ -541,7 +541,7 @@ especially as a beginner.
 
 Why MP3 For Music and Ambiance?
 """""""""""""""""""""""""""""""
-#. Nearly every system which can run arcade has a supported MP3 decoder.
+#. Nearly every system which can run Arcade has a supported MP3 decoder.
 #. MP3 files are much smaller than Wave equivalents per minute of audio,
    which has multiple benefits.
 
@@ -594,7 +594,7 @@ Loading In-Depth
 
 .. _pyglet_ffmpeg_install: https://pyglet.readthedocs.io/en/latest/programming_guide/media.html#ffmpeg-installation
 
-There are 3 ways arcade can read audio data through pyglet:
+There are 3 ways Arcade can read audio data through pyglet:
 
 #. The built-in pyglet ``.wav`` loading features
 #. Platform-specific components or nearly-universal libraries
@@ -653,7 +653,7 @@ Choosing the Audio Backend
 
 .. _python_env_vars: https://www.twilio.com/blog/environment-variables-python
 
-By default, arcade will try pyglet audio back-ends in the following
+By default, Arcade will try pyglet audio back-ends in the following
 order until it finds one which loads:
 
 #. ``"openal"``
