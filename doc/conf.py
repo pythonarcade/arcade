@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
+from __future__ import annotations
 from functools import cache
+from pathlib import Path
 from textwrap import dedent
 from typing import Any, NamedTuple
 import docutils.nodes
@@ -20,12 +22,44 @@ sys.is_pyglet_doc_run = True
 
 # --- Pre-processing Tasks
 
+# These need to be earlier to get the right git ref
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../arcade'))
+
+# Don't change to
+# from arcade.version import VERSION
+# or read the docs build will fail.
+from version import VERSION # pyright: ignore [reportMissingImports]
+
+RELEASE = VERSION
+REPO_URL_BASE="https://github.com/pythonarcade/arcade"
+if 'dev' in RELEASE:
+    GIT_REF = 'development'
+else:
+    GIT_REF = RELEASE
+
+# We'll pass this to our generation scripts to initialize their globals
+RUNPY_INIT_GLOBALS = dict(
+    GIT_REF=GIT_REF,
+    BASE_URL_REPO=REPO_URL_BASE,
+    # This double-bracket escapes brackets in f-strings
+    FMT_URL_REF_PAGE=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}",
+    FMT_URL_REF_EMBED=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true",
+)
+
+
+def run_with_globals(path: str | Path, run_name="__main__", init_globals=RUNPY_INIT_GLOBALS):
+    """Centralize our script runs and globals."""
+    runpy.run_path(path, init_globals=init_globals, run_name=run_name)
+
+
 # Make thumbnails for the example code screenshots
-runpy.run_path('../util/generate_example_thumbnails.py', run_name='__main__')
+run_with_globals('../util/generate_example_thumbnails.py', run_name="main")
 # Create a listing of the resources
-runpy.run_path('../util/create_resources_listing.py', run_name='__main__')
+run_with_globals('../util/create_resources_listing.py')
 # Run the generate quick API index script
-runpy.run_path('../util/update_quick_index.py', run_name='__main__')
+run_with_globals('../util/update_quick_index.py')
+
 
 autodoc_inherit_docstrings = False
 autodoc_default_options = {
@@ -38,16 +72,6 @@ autodoc_default_options = {
 toc_object_entries_show_parents = 'hide'
 # Special methods in api docs gets a special prefix emoji
 prettyspecialmethods_signature_prefix = '🧙'
-
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../arcade'))
-
-# Don't change to
-# from arcade.version import VERSION
-# or read the docs build will fail.
-from version import VERSION # pyright: ignore [reportMissingImports]
-
-RELEASE = VERSION
 
 # -- General configuration ------------------------------------------------
 

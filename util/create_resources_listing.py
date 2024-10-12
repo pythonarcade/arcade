@@ -6,6 +6,9 @@ Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 import sys
 from pathlib import Path
 from typing import List
+import logging
+
+log = logging.getLogger(__name__)
 
 # Ensure we get utility and Arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
@@ -14,11 +17,39 @@ sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
 import arcade
 from doc_helpers.vfs import Vfs
 
+if __name__ == "__main__":
+    log.warning("Running directly instead of via conf.py! May template globals!")
+
+    def announce_templating(var_name):
+        _v = globals()[var_name]
+        log.warning(f"Templated {var_name} as {_v!r}")
+
+    # The following are provided via runpy.run_path's init_globals keyword
+    # in conf.py. Uncomment for easy debugger run without IDE config.
+    _URL_BASE = "https://github.com/pythonarcade/arcade"
+    try:
+        _ = GIT_REF  # noqa
+    except Exception as _:
+        GIT_REF = "development"
+        announce_templating("GIT_REF")
+    try:
+        _ = FMT_URL_REF_PAGE  # noqa
+    except Exception as _:
+        FMT_URL_REF_PAGE  = f"{_URL_BASE}/blob/{GIT_REF}/{{}}"
+        announce_templating("FMT_URL_REF_PAGE")
+    try:
+        _ = FMT_URL_REF_EMBED  # noqa
+    except Exception as _:
+        FMT_URL_REF_EMBED = f"{_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true"
+        announce_templating("FMT_URL_REF_EMBED")
+
+
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
 RESOURCE_DIR = ARCADE_ROOT / "arcade" / "resources"
 OUT_FILE = ARCADE_ROOT / "doc" / "api_docs" / "resources.rst"
-RESOURCE_URL = "https://github.com/pythonarcade/arcade/blob/development/{}?raw=true"
+RESOURCE_URL = FMT_URL_REF_EMBED # noqa  # It exists, see above.
+
 
 COLUMNS = 3
 # Metadata for the resource list: utils\create_resource_list.py
@@ -33,6 +64,7 @@ skip_extensions = [
     ".ttf",
     ".pyc",
 ]
+
 
 def skipped_file(file_path: Path):
     """Return True if file should be skipped."""
