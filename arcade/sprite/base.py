@@ -281,18 +281,26 @@ class BasicSprite:
 
     @scale.setter
     def scale(self, new_scale: Point2 | AsFloat):
+        if isinstance(new_scale, (float, int)):
+            scale_x = new_scale
+            scale_y = new_scale
+
+        else:  # Treat it as some sort of iterable or sequence
+            # Don't abstract this. Keep it here since it's a hot code path
+            try:
+                scale_x, scale_y = new_scale  # type / length implicit check
+            except ValueError:
+                raise ValueError(
+                    "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
+                )
+            except TypeError:
+                raise TypeError(
+                    "scale must be a tuple-like object which unpacks to exactly 2 coordinates"
+                )
+
+        new_scale = scale_x, scale_y
         if new_scale == self._scale:
             return
-
-        if isinstance(new_scale, (float, int)):
-            new_scale = new_scale, new_scale
-
-        try:
-            scale_x, scale_y = new_scale
-        except ValueError:
-            raise ValueError("scale must be a scalar or a length 2 tuple-like")
-        except TypeError:
-            raise TypeError("scale must be a scalar or a length 2 tuple-like")
 
         self._hit_box.scale = new_scale
         tex_width, tex_height = self._texture.size

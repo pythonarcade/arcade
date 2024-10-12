@@ -9,7 +9,7 @@ import arcade
 from sprite_alt import BasicSprite as SpriteA
 from arcade import BasicSprite as SpriteB
 
-N = 10
+N = 100
 MEASUREMENT_CONFIG = [
     {"name": "populate", "number": N, "measure_method": "populate", "post_methods": ["flush"]},
     {"name": "scale_set", "number": N, "measure_method": "scale_set", "post_methods": []},
@@ -56,7 +56,7 @@ class SpriteCollection:
                         texture=texture,
                         center_x=x * 64,
                         center_y=y * 64,
-                        scale=((1.0, 1.0)),
+                        scale=(1.0, 1.0),
                     )
                 )
 
@@ -74,7 +74,7 @@ class SpriteCollection:
     def scale_mult_uniform(self):
         """Multiply the scale of all sprites uniformly."""
         for sprite in self.spritelist:
-            sprite.scale_multiply_uniform(2.0)
+            sprite.multiply_scale(2.0)
 
     # Rotate
     # Move
