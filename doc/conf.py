@@ -11,6 +11,9 @@ import sphinx.ext.autodoc
 import sphinx.transforms
 import sys
 
+# May now be required as of pyglet==2.1.dev7 due to Jupyter oddities
+sys.is_pyglet_doc_run = True
+
 # --- Pre-processing Tasks
 
 # Make thumbnails for the example code screenshots
