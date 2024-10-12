@@ -69,12 +69,12 @@ def skipped_file(file_path: Path):
     return file_path.suffix in skip_extensions
 
 
-TABLE_COLS: dict[str, int] = defaultdict(lambda: 3)
-TABLE_COLS[':resources:video/'] = 1
+MAX_COLS: dict[str, int] = defaultdict(lambda: 3)
+
 
 @lru_cache(maxsize=None)
 def get_header_num_cols(resource_stub: str, n_files = math.inf) -> int:
-    return int(min(TABLE_COLS[resource_stub], n_files))
+    return int(min(MAX_COLS[resource_stub], n_files))
 
 
 @lru_cache(maxsize=None)
