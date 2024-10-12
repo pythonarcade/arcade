@@ -177,14 +177,14 @@ def process_resource_files(out, file_list: List[Path]):
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <audio controls><source src='{file_path}' type='audio/{src_type}'></audio>\n")
-            out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
+            out.write(f"            <br /><code class='literal'>&quot;{resource_copyable}&quot;</code>\n")
             # out.write(f"            <br /><a href={FMT_URL_REF_PAGE.format(resource_path)}>{path.name} on GitHub</a>\n")
         elif suffix in SUFFIX_TO_VIDEO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <video style=\"max-width: 100%\" controls><source src='{file_path}' type='video/{src_type}'></video>\n")
-            out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
+            out.write(f"            <br /><code class='literal'>&quot;{resource_copyable}&quot;</code>\n")
         elif suffix == ".glsl":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{path} <{file_path}>`_\n")
