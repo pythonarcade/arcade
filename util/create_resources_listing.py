@@ -66,10 +66,23 @@ skip_extensions = [
     ".pyc",
 ]
 
-
 def skipped_file(file_path: Path):
     """Return True if file should be skipped."""
     return file_path.suffix in skip_extensions
+
+
+TABLE_COLS: dict[str, int] = defaultdict(lambda: 3)
+TABLE_COLS[':resources:video/'] = 1
+
+@lru_cache(maxsize=None)
+def get_header_num_cols(resource_stub: str, n_files = math.inf) -> int:
+    return int(min(TABLE_COLS[resource_stub], n_files))
+
+
+@lru_cache(maxsize=None)
+def get_column_widths_for_n(n: int) -> str:
+    width = str(100 // n)
+    return ' '.join((width for _ in range(n)))
 
 
 @lru_cache(maxsize=None)  # Cache b/c re-using elsewhere
@@ -93,20 +106,6 @@ def create_resource_path(
 
     return f"{prefix}:resources:{path.as_posix()}{suffix}"
 
-
-TABLE_COLS: dict[str, int] = defaultdict(lambda: 3)
-TABLE_COLS[':resources:video/'] = 1
-
-
-@lru_cache(maxsize=None)
-def get_header_num_cols(resource_stub: str, n_files = math.inf) -> int:
-    return int(min(TABLE_COLS[resource_stub], n_files))
-
-
-@lru_cache(maxsize=None)
-def get_column_widths_for_n(n: int) -> str:
-    width = str(100 // n)
-    return ' '.join((width for _ in range(n)))
 
 def process_resource_directory(out, dir: Path):
     """
@@ -155,7 +154,6 @@ SUFFIX_TO_VIDEO_TYPE = {
 }
 
 def process_resource_files(out, file_list: List[Path]):
-    start_row = "*"
     cell_count = 0
 
     prefix = create_resource_path(file_list[0].parent)
@@ -190,15 +188,17 @@ def process_resource_files(out, file_list: List[Path]):
         elif suffix == ".glsl":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{path} <{file_path}>`_\n")
+        # Link Tiled maps
         elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
         else:
             out.write(f"    {start_row} - {name}\n")
+        # The below doesn't work because of how raw HTML / Sphinx images interact:
         # out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
         cell_count += 1
 
-
+    # Finish any remaining columns with empty cells
     while cell_count % COLUMNS > 0:
         out.write(f"      -\n")
         cell_count += 1
