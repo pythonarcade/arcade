@@ -5,14 +5,19 @@ import gc
 import math
 import timeit
 import arcade
+from itertools import cycle
+from random import random
 
 from sprite_alt import BasicSprite as SpriteA
 from arcade import BasicSprite as SpriteB
+
+random_numbers = cycle(tuple(random() + 0.1 for _ in range(1009)))
 
 N = 100
 MEASUREMENT_CONFIG = [
     {"name": "populate", "number": N, "measure_method": "populate", "post_methods": ["flush"]},
     {"name": "scale_set", "number": N, "measure_method": "scale_set", "post_methods": []},
+    {"name": "scale_set_uniform", "number": N, "measure_method": "scale_set_uniform", "post_methods": []},
     {"name": "scale_mult", "number": N, "measure_method": "scale_mult", "post_methods": []},
     {"name": "scale_mult_uniform", "number": N, "measure_method": "scale_mult_uniform", "post_methods": []},
 ]
@@ -64,17 +69,22 @@ class SpriteCollection:
     def scale_set(self):
         """Set the scale of all sprites."""
         for sprite in self.spritelist:
-            sprite.scale = 2.0
+            sprite.scale = next(random_numbers)
 
-    def scale_mult(self):
-        """Multiply the scale of all sprites."""
+    def scale_set_uniform(self):
+        """Set the scale of all sprites."""
         for sprite in self.spritelist:
-            sprite.scale *= 2.0
+            sprite.scale_set_uniform(next(random_numbers))
 
     def scale_mult_uniform(self):
+        """Multiply the scale of all sprites."""
+        for sprite in self.spritelist:
+            sprite.scale_multiply_uniform(next(random_numbers))
+
+    def scale_mult(self):
         """Multiply the scale of all sprites uniformly."""
         for sprite in self.spritelist:
-            sprite.multiply_scale(2.0)
+            sprite.multiply_scale(next(random_numbers, 1.0))
 
     # Rotate
     # Move
