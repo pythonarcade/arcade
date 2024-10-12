@@ -120,7 +120,7 @@ class BindlessTexture(arcade.Window):
             // The texture handles in the buffer are 64 bit integers and are
             // automatically converted into sampler objects for us.
             struct TextureRef {
-                sampler2D tex; // 64 bit integer
+                layout (bindless_sampler) sampler2D tex; // 64 bit integer
             };
 
             // Shader storage buffer with texture handles
