@@ -18,13 +18,13 @@ from arcade.camera.projection_functions import (
     project_orthographic,
     unproject_orthographic,
 )
-from arcade.gl import Framebuffer
 from arcade.types import LBWH, LRBT, XYWH, Point, Rect
 from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
 if TYPE_CHECKING:
     from arcade.application import Window
+    from arcade.gl import Framebuffer
 
 __all__ = ["Camera2D"]
 
