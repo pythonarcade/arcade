@@ -2,6 +2,7 @@
 """Sphinx configuration file"""
 from __future__ import annotations
 from functools import cache
+import logging
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, NamedTuple
@@ -22,26 +23,40 @@ sys.is_pyglet_doc_run = True
 
 # --- Pre-processing Tasks
 
+log = logging.getLogger('conf.py')
+logging.basicConfig(level=logging.INFO)
+
 HERE = Path(__file__).resolve()
 REPO_LOCAL_ROOT = HERE.parent.parent
+ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
 UTIL_DIR = REPO_LOCAL_ROOT / "util"
+
+log.info(f"Absolute path for our conf.py       : {str(HERE)!r}")
+log.info(f"Absolute path for the repo root     : {str(REPO_LOCAL_ROOT)!r}")
+log.info(f"Absolute path for the arcade module : {str(REPO_LOCAL_ROOT)!r}")
+log.info(f"Absolute path for the util dir      : {str(UTIL_DIR)!r}")
 
 # _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
 
 sys.path.insert(0, str(REPO_LOCAL_ROOT))
-sys.path.insert(0, str(REPO_LOCAL_ROOT / "arcade"))
+sys.path.insert(0, str(ARCADE_MODULE))
+log.info(f"Inserted elements in system path: First two are now:")
+for i in range(2):
+    log.info(f"  {i}: {sys.path[i]!r}")
 
 # Don't change to
 # from arcade.version import VERSION
 # or read the docs build will fail.
 from version import VERSION # pyright: ignore [reportMissingImports]
-
+log.info(f"Got version {VERSION!r}")
 
 REPO_URL_BASE="https://github.com/pythonarcade/arcade"
 if 'dev' in VERSION:
     GIT_REF = 'development'
+    log.info(f"Got .dev release: using {GIT_REF!r}")
 else:
     GIT_REF = VERSION
+    log.info(f"Got real release: using {GIT_REF!r}")
 
 
 # We'll pass this to our generation scripts to initialize their globals
@@ -53,12 +68,25 @@ RESOURCE_GLOBALS = dict(
     FMT_URL_REF_EMBED=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true",
 )
 
-def run_util(filename, init_globals=None):
+def run_util(filename, run_name="__main__", init_globals=None):
 
-    kwargs = dict(run_name="__main__")
+    full_absolute_path = UTIL_DIR / filename
+    full_str = str(full_absolute_path)
+
+    log.info(f"Running {full_str!r} with:")
+    log.info(f"  run_name={run_name!r}")
+    kwargs = dict(run_name=run_name)
     if init_globals is not None:
         kwargs['init_globals'] = init_globals
-    runpy.run_path(str(UTIL_DIR / filename), **kwargs)
+        log.info(f"  init_globals={{")
+        num_left = len(init_globals)
+        for k, v in init_globals.items():
+            end = "," if num_left else ""
+            log.info(f"    {k!r} : {v!r}{end}")
+            num_left -= num_left
+        log.info(f"  }}")
+
+    runpy.run_path(full_str, **kwargs)
 
 # Make thumbnails for the example code screenshots
 run_util("generate_example_thumbnails.py")
