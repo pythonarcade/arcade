@@ -23,8 +23,8 @@ from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
 if TYPE_CHECKING:
-    from arcade.gl import Framebuffer
     from arcade.application import Window
+    from arcade.gl import Framebuffer
 
 __all__ = ["Camera2D"]
 
