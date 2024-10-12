@@ -47,18 +47,12 @@ RUNPY_INIT_GLOBALS = dict(
     FMT_URL_REF_EMBED=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true",
 )
 
-
-def run_with_globals(path: str | Path, run_name="__main__", init_globals=RUNPY_INIT_GLOBALS):
-    """Centralize our script runs and globals."""
-    runpy.run_path(path, init_globals=init_globals, run_name=run_name)
-
-
 # Make thumbnails for the example code screenshots
-run_with_globals('../util/generate_example_thumbnails.py')
+runpy.run_path('../util/generate_example_thumbnails.py', run_name='__main__')
 # Create a listing of the resources
-run_with_globals('../util/create_resources_listing.py', run_name="main")
+runpy.run_path('../util/create_resources_listing.py', run_name="main", init_globals=RUNPY_INIT_GLOBALS)
 # Run the generate quick API index script
-run_with_globals('../util/update_quick_index.py')
+runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 
 
 autodoc_inherit_docstrings = False
