@@ -3,7 +3,10 @@ Quick Index Generator
 
 Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
+import math
 import sys
+from collections import defaultdict
+from functools import lru_cache
 from pathlib import Path
 from typing import List
 import logging
@@ -50,7 +53,6 @@ RESOURCE_DIR = ARCADE_ROOT / "arcade" / "resources"
 OUT_FILE = ARCADE_ROOT / "doc" / "api_docs" / "resources.rst"
 
 
-COLUMNS = 3
 # Metadata for the resource list: utils\create_resource_list.py
 skip_extensions = [
     ".glsl",
@@ -70,6 +72,7 @@ def skipped_file(file_path: Path):
     return file_path.suffix in skip_extensions
 
 
+@lru_cache(maxsize=None)  # Cache b/c re-using elsewhere
 def create_resource_path(
     path: Path,
     prefix: str = "",
@@ -91,6 +94,20 @@ def create_resource_path(
     return f"{prefix}:resources:{path.as_posix()}{suffix}"
 
 
+TABLE_COLS: dict[str, int] = defaultdict(lambda: 3)
+TABLE_COLS[':resources:video/'] = 1
+
+
+@lru_cache(maxsize=None)
+def get_header_num_cols(resource_stub: str, n_files = math.inf) -> int:
+    return int(min(TABLE_COLS[resource_stub], n_files))
+
+
+@lru_cache(maxsize=None)
+def get_column_widths_for_n(n: int) -> str:
+    width = str(100 // n)
+    return ' '.join((width for _ in range(n)))
+
 def process_resource_directory(out, dir: Path):
     """
     Go through resources in a directory.
@@ -102,7 +119,9 @@ def process_resource_directory(out, dir: Path):
         # out.write("-" * len(cur_node.name) + "\n\n")
 
         file_list = [item for item in path.iterdir() if not (item.is_dir() or skipped_file(item))]
-        if len(file_list) > 0:
+        num_files = len(file_list)
+        if num_files > 0:
+
             # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
             header_title = create_resource_path(path, suffix="/")
             if header_title == ":resources:images/":
@@ -110,10 +129,11 @@ def process_resource_directory(out, dir: Path):
                     print(f.name)
             # out.write(f"\n{header_title}\n")
             # out.write("-" * (len(header_title)) + "\n\n")
-
+            n_cols = get_header_num_cols(header_title, num_files)
+            widths = get_column_widths_for_n(n_cols)
             out.write(f"\n")
             out.write(f".. list-table:: {header_title}\n")
-            out.write(f"    :widths: 33 33 33\n")
+            out.write(f"    :widths: {widths}\n")
             out.write(f"    :header-rows: 0\n")
             out.write(f"    :class: resource-table\n\n")
 
@@ -122,40 +142,62 @@ def process_resource_directory(out, dir: Path):
 
         process_resource_directory(out, path)
 
+
 SUFFIX_TO_AUDIO_TYPE = {
     '.wav': 'x-wav',
     '.ogg': 'ogg',
     '.mp3': 'mpeg',
 }
+SUFFIX_TO_VIDEO_TYPE = {
+    '.mp4': 'mp4',
+    '.webm': 'webm',
+    '.avi': 'avi'
+}
 
 def process_resource_files(out, file_list: List[Path]):
-    start_row = True
+    start_row = "*"
     cell_count = 0
+
+    prefix = create_resource_path(file_list[0].parent)
+    COLUMNS = get_header_num_cols(prefix, len(file_list))
 
     for path in file_list:
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
         suffix = path.suffix
+
         if cell_count % COLUMNS == 0:
             start_row = "*"
+        else:
+            start_row = " "
+        name = path.name
+        resource_copyable = f"{create_resource_path(path)}"
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
             out.write(f"    {start_row} - .. image:: ../../{resource_path}\n\n")
-            out.write(f"        {path.name}\n")
-            cell_count += 1
+            out.write(f"        {name}\n")
         elif suffix in SUFFIX_TO_AUDIO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(f"            <audio controls><source src='{file_path}' type='audio/{src_type}'></audio><br />{path.name}\n")
-            cell_count += 1
-        elif path.suffix == ".glsl":
+            out.write(f"            <audio controls><source src='{file_path}' type='audio/{src_type}'></audio>\n")
+            out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
+            # out.write(f"            <br /><a href={FMT_URL_REF_PAGE.format(resource_path)}>{path.name} on GitHub</a>\n")
+        elif suffix in SUFFIX_TO_VIDEO_TYPE:
+            file_path = FMT_URL_REF_EMBED.format(resource_path)
+            src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
+            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"            <video style=\"max-width: 100%\" controls><source src='{file_path}' type='video/{src_type}'></video>\n")
+            out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
+        elif suffix == ".glsl":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
-            out.write(f"    {start_row} - `{path.name} <{file_path}>`_\n")
-            cell_count += 1
+            out.write(f"    {start_row} - `{path} <{file_path}>`_\n")
+        elif suffix == ".json":
+            file_path = FMT_URL_REF_PAGE.format(resource_path)
+            out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
         else:
-            out.write(f"    {start_row} - {path.name}\n")
-            cell_count += 1
+            out.write(f"    {start_row} - {name}\n")
+        # out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
+        cell_count += 1
 
-        start_row = " "
 
     while cell_count % COLUMNS > 0:
         out.write(f"      -\n")
