@@ -314,6 +314,7 @@ Notable contributions:
 * [Mohammad Ibrahim](https://github.com/Ibrahim2750mi) helping with the GUI and
   various other parts of the library.
 * [ryyst](https://github.com/ryyst) helping to kickstart the new documentation.
+* [DarkLight1337](https://github.com/DarkLight1337) helped the team untangle type annotation issues for cameras
 
 Also thanks to the smaller contributors taking their time to solve
 smaller issues, bugs and documentation. We appreciate your help!
