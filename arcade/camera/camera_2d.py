@@ -94,11 +94,11 @@ class Camera2D:
         far: float = 100.0,
         *,
         scissor: Rect | None = None,
-        render_target: Optional["Framebuffer"] = None,
+        render_target: Framebuffer | None = None,
         window: Window | None = None,
     ):
         self._window: Window = window or get_window()
-        self.render_target: Optional["Framebuffer"] = render_target
+        self.render_target: Framebuffer | None = render_target
         """
         An optional framebuffer to activate at the same time as
         the projection data, could be the screen, or an offscreen texture
@@ -162,7 +162,7 @@ class Camera2D:
         *,
         camera_data: CameraData | None = None,
         projection_data: OrthographicProjectionData | None = None,
-        render_target: Optional["Framebuffer"] = None,
+        render_target: Framebuffer | None = None,
         viewport: Rect | None = None,
         scissor: Rect | None = None,
         window: Window | None = None,
