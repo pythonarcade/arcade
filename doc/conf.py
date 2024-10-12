@@ -54,9 +54,9 @@ def run_with_globals(path: str | Path, run_name="__main__", init_globals=RUNPY_I
 
 
 # Make thumbnails for the example code screenshots
-run_with_globals('../util/generate_example_thumbnails.py', run_name="main")
+run_with_globals('../util/generate_example_thumbnails.py')
 # Create a listing of the resources
-run_with_globals('../util/create_resources_listing.py')
+run_with_globals('../util/create_resources_listing.py', run_name="main")
 # Run the generate quick API index script
 run_with_globals('../util/update_quick_index.py')
 
