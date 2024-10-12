@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from math import atan2, cos, degrees, radians, sin
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING, Generator, Optional
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self
@@ -94,11 +94,11 @@ class Camera2D:
         far: float = 100.0,
         *,
         scissor: Rect | None = None,
-        render_target: "Framebuffer" | None = None,
+        render_target: Optional["Framebuffer"] = None,
         window: Window | None = None,
     ):
         self._window: Window = window or get_window()
-        self.render_target: "Framebuffer" | None = render_target
+        self.render_target: Optional["Framebuffer"] = render_target
         """
         An optional framebuffer to activate at the same time as
         the projection data, could be the screen, or an offscreen texture
@@ -162,7 +162,7 @@ class Camera2D:
         *,
         camera_data: CameraData | None = None,
         projection_data: OrthographicProjectionData | None = None,
-        render_target: "Framebuffer" | None = None,
+        render_target: Optional["Framebuffer"] = None,
         viewport: Rect | None = None,
         scissor: Rect | None = None,
         window: Window | None = None,
