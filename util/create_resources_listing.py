@@ -48,7 +48,6 @@ MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
 RESOURCE_DIR = ARCADE_ROOT / "arcade" / "resources"
 OUT_FILE = ARCADE_ROOT / "doc" / "api_docs" / "resources.rst"
-RESOURCE_URL = FMT_URL_REF_EMBED # noqa  # It exists, see above.
 
 
 COLUMNS = 3
@@ -123,6 +122,11 @@ def process_resource_directory(out, dir: Path):
 
         process_resource_directory(out, path)
 
+SUFFIX_TO_AUDIO_TYPE = {
+    '.wav': 'x-wav',
+    '.ogg': 'ogg',
+    '.mp3': 'mpeg',
+}
 
 def process_resource_files(out, file_list: List[Path]):
     start_row = True
@@ -130,33 +134,22 @@ def process_resource_files(out, file_list: List[Path]):
 
     for path in file_list:
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
-
+        suffix = path.suffix
         if cell_count % COLUMNS == 0:
             start_row = "*"
-        if path.suffix in [".png", ".jpg", ".gif", ".svg"]:
+        if suffix in [".png", ".jpg", ".gif", ".svg"]:
             out.write(f"    {start_row} - .. image:: ../../{resource_path}\n\n")
             out.write(f"        {path.name}\n")
             cell_count += 1
-        elif path.suffix == ".wav":
-            file_path = RESOURCE_URL.format(resource_path)
+        elif suffix in SUFFIX_TO_AUDIO_TYPE:
+            file_path = FMT_URL_REF_EMBED.format(resource_path)
+            src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(f"            <audio controls><source src='{file_path}' type='audio/x-wav'></audio><br />{path.name}\n")
-            cell_count += 1
-        elif path.suffix == ".mp3":
-            file_path = RESOURCE_URL.format(resource_path)
-            out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(f"            <audio controls><source src='{file_path}' type='audio/mpeg'></audio><br />{path.name}\n")
-            cell_count += 1
-        elif path.suffix == ".ogg":
-            file_path = RESOURCE_URL.format(resource_path)
-            out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{path.name}\n")
+            out.write(f"            <audio controls><source src='{file_path}' type='audio/{src_type}'></audio><br />{path.name}\n")
             cell_count += 1
         elif path.suffix == ".glsl":
-            file_path = RESOURCE_URL.format(resource_path)
+            file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{path.name} <{file_path}>`_\n")
-            # out.write(f"    {start_row} - .. raw:: html\n\n")
-            # out.write(f"            <audio controls><source src='{file_path}' type='audio/ogg'></audio><br />{path.name}\n")
             cell_count += 1
         else:
             out.write(f"    {start_row} - {path.name}\n")
