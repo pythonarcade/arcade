@@ -20,31 +20,29 @@ sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
 import arcade
 from doc_helpers.vfs import Vfs
 
-if __name__ == "__main__":
-    log.warning("Running directly instead of via conf.py! May template globals!")
 
-    def announce_templating(var_name):
-        _v = globals()[var_name]
-        log.warning(f"Templated {var_name} as {_v!r}")
+def announce_templating(var_name):
+    _v = globals()[var_name]
+    log.warning(f"Templated {var_name} as {_v!r}")
 
-    # The following are provided via runpy.run_path's init_globals keyword
-    # in conf.py. Uncomment for easy debugger run without IDE config.
+# The following are provided via runpy.run_path's init_globals keyword
+# in conf.py. Uncomment for easy debugger run without IDE config.
+try:
+    _ = GIT_REF  # noqa
+except Exception as _:
+    GIT_REF = "development"
+    announce_templating("GIT_REF")
+try:
     _URL_BASE = "https://github.com/pythonarcade/arcade"
-    try:
-        _ = GIT_REF  # noqa
-    except Exception as _:
-        GIT_REF = "development"
-        announce_templating("GIT_REF")
-    try:
-        _ = FMT_URL_REF_PAGE  # noqa
-    except Exception as _:
-        FMT_URL_REF_PAGE  = f"{_URL_BASE}/blob/{GIT_REF}/{{}}"
-        announce_templating("FMT_URL_REF_PAGE")
-    try:
-        _ = FMT_URL_REF_EMBED  # noqa
-    except Exception as _:
-        FMT_URL_REF_EMBED = f"{_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true"
-        announce_templating("FMT_URL_REF_EMBED")
+    _ = FMT_URL_REF_PAGE  # noqa
+except Exception as _:
+    FMT_URL_REF_PAGE  = f"{_URL_BASE}/blob/{GIT_REF}/{{}}"
+    announce_templating("FMT_URL_REF_PAGE")
+try:
+    _ = FMT_URL_REF_EMBED  # noqa
+except Exception as _:
+    FMT_URL_REF_EMBED = f"{_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true"
+    announce_templating("FMT_URL_REF_EMBED")
 
 
 MODULE_DIR = Path(__file__).parent.resolve()
@@ -228,7 +226,9 @@ def resources():
     out.close()
     print("Done creating resources.rst")
 
+
 vfs = Vfs()
+
 
 def main():
     resources()

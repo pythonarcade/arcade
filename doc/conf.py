@@ -22,24 +22,20 @@ sys.is_pyglet_doc_run = True
 
 # --- Pre-processing Tasks
 
-# These need to be earlier to get the right git ref
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../arcade'))
+HERE = Path(__file__).resolve()
+REPO_LOCAL_ROOT = HERE.parent.parent
 
-# Don't change to
-# from arcade.version import VERSION
-# or read the docs build will fail.
-from version import VERSION # pyright: ignore [reportMissingImports]
+_temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
 
-RELEASE = VERSION
+
 REPO_URL_BASE="https://github.com/pythonarcade/arcade"
-if 'dev' in RELEASE:
+if 'dev' in _temp_version:
     GIT_REF = 'development'
 else:
-    GIT_REF = RELEASE
+    GIT_REF = _temp_version
 
 # We'll pass this to our generation scripts to initialize their globals
-RUNPY_INIT_GLOBALS = dict(
+RESOURCE_GLOBALS = dict(
     GIT_REF=GIT_REF,
     BASE_URL_REPO=REPO_URL_BASE,
     # This double-bracket escapes brackets in f-strings
@@ -47,10 +43,11 @@ RUNPY_INIT_GLOBALS = dict(
     FMT_URL_REF_EMBED=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true",
 )
 
+
 # Make thumbnails for the example code screenshots
 runpy.run_path('../util/generate_example_thumbnails.py', run_name='__main__')
 # Create a listing of the resources
-runpy.run_path('../util/create_resources_listing.py', run_name="main", init_globals=RUNPY_INIT_GLOBALS)
+runpy.run_path('../util/create_resources_listing.py', run_name="__main__", init_globals=RESOURCE_GLOBALS)
 # Run the generate quick API index script
 runpy.run_path('../util/update_quick_index.py', run_name='__main__')
 
@@ -67,6 +64,16 @@ toc_object_entries_show_parents = 'hide'
 # Special methods in api docs gets a special prefix emoji
 prettyspecialmethods_signature_prefix = '🧙'
 
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../arcade'))
+
+# Don't change to
+# from arcade.version import VERSION
+# or read the docs build will fail.
+from version import VERSION # pyright: ignore [reportMissingImports]
+
+
+RELEASE = VERSION
 # -- General configuration ------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
