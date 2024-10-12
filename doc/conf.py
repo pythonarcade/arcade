@@ -11,7 +11,11 @@ import sphinx.ext.autodoc
 import sphinx.transforms
 import sys
 
-# May now be required as of pyglet==2.1.dev7 due to Jupyter oddities
+# As of pyglet==2.1.dev7, this is no longer set in pyglet/__init__.py
+# because Jupyter / IPython always load Sphinx into sys.modules. See
+# the following for more info:
+# 1. The ticket: https://github.com/pyglet/pyglet/issues/1215
+# 2. The commit: https://github.com/pyglet/pyglet/commit/97076c3a33a7d368cc9c9e44ca67769b6a16a905
 sys.is_pyglet_doc_run = True
 
 # --- Pre-processing Tasks
