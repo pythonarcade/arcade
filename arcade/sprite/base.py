@@ -57,7 +57,7 @@ class BasicSprite:
     def __init__(
         self,
         texture: Texture,
-        scale: float = 1.0,
+        scale: float | Point2 = 1.0,
         center_x: float = 0,
         center_y: float = 0,
         visible: bool = True,
@@ -67,9 +67,9 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
         width, height = texture.size
-        self._width = width * scale
-        self._height = height * scale
-        self._scale = (scale, scale)
+        self._scale = (scale, scale) if isinstance(scale, (float, int)) else scale
+        self._width = width * self._scale[0]
+        self._height = height * self._scale[1]
         self._visible = bool(visible)
         self._color: Color = WHITE
         self.sprite_lists: list["SpriteList"] = []
@@ -198,6 +198,7 @@ class BasicSprite:
         if width != self._width or height != self._height:
             texture_width, texture_height = self._texture.size
             self._scale = width / texture_width, height / texture_height
+            self._hit_box.scale = self._scale
             self._width = width
             self._height = height
 

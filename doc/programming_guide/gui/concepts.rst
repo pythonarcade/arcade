@@ -11,7 +11,7 @@ The root of the tree is the :py:class:`~arcade.gui.UIManager`. The
 :py:class:`UIManager` connects the user interactions with the GUI. Read more about
 :ref:`UIEvent`.
 
-Classes of arcade's GUI code are prefixed with ``UI-`` to make them easy to
+Classes of Arcade's GUI code are prefixed with ``UI-`` to make them easy to
 identify and search for in autocompletion.
 
 Classes
@@ -35,11 +35,17 @@ And disable it with :py:meth:`~arcade.gui.UIManager.disable()` within :py:meth:`
 
 To draw the GUI, call :py:meth:`~arcade.gui.UIManager.draw` within the :py:meth:`~arcade.View.on_draw` method.
 
+The :py:class`~arcade.gui.UIView` class is a subclass of :py:class:`~arcade.View` and provides
+a convenient way to use the GUI. It instanciates a :py:class:`~arcade.gui.UIManager` which can be accessed
+via the :py:attr:`~arcade.gui.UIView.ui` attribute.
+It automatically enables and disables the
+:py:class:`~arcade.gui.UIManager` when the view is shown or hidden.
+
 
 UIWidget
 ````````
 
-The :py:class:`~arcade.gui.UIWidget` class is the core of arcade's GUI system.
+The :py:class:`~arcade.gui.UIWidget` class is the core of Arcade's GUI system.
 Widgets specify the behavior and graphical representation of any UI element,
 such as buttons or labels.
 
@@ -56,6 +62,11 @@ A :class:`UIWidget` has following properties.
     Child widgets rendered within this widget. A :class:`UIWidget` will not
     move or resize its children; use a :py:class:`~arcade.gui.UILayout`
     instead.
+
+``visible``
+    A boolean indicating if the widget is visible or not. If a widget is not
+    visible, itself and any child widget will not be rendered.
+    Especially useful for hiding parts of the GUI like dialogs or popups.
 
 ``size_hint``
     A tuple of two normalized floats (``0.0``-``1.0``) describing the portion
@@ -108,8 +119,8 @@ Widgets are positioned and then rendered into a framebuffer (something like a wi
 which is only updated if a widget changed and requested rendering
 (via :py:meth:`~arcade.gui.UIWidget.trigger_render` or :py:meth:`~arcade.gui.UIWidget.trigger_full_render`).
 
-During :py:meth:`~arcade.gui.UIManager.draw`, will check if updates are required and
-finally draws on screen.
+The :py:class:`~arcade.gui.UIManager` `draw` method, will check if updates are required and
+finally draws the framebuffer on screen.
 
 Layouting and Rendering
 ```````````````````````
@@ -231,9 +242,9 @@ behaviour. Currently the available Mixins are still under heavy development.
 
 Available:
 
-- :py:class:`UIDraggableMixin`
-- :py:class:`UIMouseFilterMixin`
-- :py:class:`UIWindowLikeMixin`
+- :py:class:`UIDraggableMixin` - Makes a widget draggable with the mouse.
+- :py:class:`UIMouseFilterMixin` - Captures all mouse events.
+- :py:class:`UIWindowLikeMixin` - Makes a widget behave like a window, combining draggable and mouse filter behaviour.
 
 UIConstructs
 ============
@@ -242,8 +253,8 @@ Constructs are predefined structures of widgets and layouts like a message box.
 
 Available:
 
-- :py:class:`UIMessageBox`
-- :py:class:`UIButtonRow`
+- :py:class:`UIMessageBox` - A simple message box with a title, message and buttons.
+- :py:class:`UIButtonRow` - A row of buttons.
 
 Available Elements
 ==================
@@ -277,7 +288,7 @@ Styling options are shown in the table below.
 |``font_size``   |Font size for the button text. Defaults to 12.              |
 +----------------+------------------------------------------------------------+
 |``font_name``   |Font name or family for the button text. If a tuple is      |
-|                |supplied then arcade will attempt to load all of the fonts, |
+|                |supplied then Arcade will attempt to load all of the fonts, |
 |                |prioritizing the first one. Defaults to                     |
 |                |``("calibri", "arial")``.                                   |
 +----------------+------------------------------------------------------------+
@@ -328,7 +339,7 @@ flat buttons.
 |``font_size``   |Font size for the button text. Defaults to 12.              |
 +----------------+------------------------------------------------------------+
 |``font_name``   |Font name or family for the button text. If a tuple is      |
-|                |supplied then arcade will attempt to load all of the fonts, |
+|                |supplied then Arcade will attempt to load all of the fonts, |
 |                |prioritizing the first one. Defaults to                     |
 |                |``("calibri", "arial")``.                                   |
 +----------------+------------------------------------------------------------+
@@ -505,8 +516,8 @@ game developer should mostly interact with user-interface events, which are
 dispatched from specific :py:class:`~arcade.gui.UIWidget`s like an ``on_click``
 of a button.
 
-In rare cases a developer might implement some widgets themselves or want to
-modify the existing GUI behavior. In those cases a developer might register own
+In cases where a developer implement own widgets themselves or want to
+modify the existing GUI behavior, the developer might register own
 pyglet event types on widgets or overwrite the
 :py:class:`~arcade.gui.UIWidget.on_event` method. In that case, refer to
 existing widgets as an example.
@@ -546,6 +557,8 @@ events.
 Property
 ````````
 
-:py:class:`~arcade.gui.Property` is an pure-Python implementation of Kivy
-like Properties. They are used to detect attribute changes of widgets and trigger
+:py:class:`~arcade.gui.Property` is an pure-Python implementation of Kivy-like Properties.
+They are used to detect attribute changes of widgets and especially to trigger
 rendering. They are mostly used within GUI widgets, but are globally available since 3.0.0.
+
+Properties are a less verbose way to implement the observer pattern compared to the property decorator.

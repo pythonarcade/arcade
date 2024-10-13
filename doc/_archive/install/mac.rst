@@ -39,7 +39,7 @@ click the easy-to-miss gear icon and "Add"
 
 .. image:: images/mac3.png
 
-You should get a warning at the top of the screen that 'arcade' is not installed.
+You should get a warning at the top of the screen that 'Arcade' is not installed.
 Go ahead and install it. Then try running the starting template.
 
 Sound Support

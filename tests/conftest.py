@@ -26,6 +26,21 @@ WINDOW = None
 OFFSCREEN = None
 
 
+def make_window_caption(request=None, prefix='Testing', sep=' - ') -> str:
+    """Centralizes test name customization.
+
+    It helps with:
+
+    1. Tests scoped as something other than function (can't use test_name fixture)
+    2. Local (non-CI) temp modifications of inter-test behavior
+    """
+    parts = [prefix]
+    if request is not None:
+        parts.append(request.node.name)
+
+    return sep.join(parts)
+
+
 def create_window(width=1280, height=720, caption="Testing", **kwargs):
     global WINDOW
     if not WINDOW:
@@ -39,7 +54,7 @@ def create_window(width=1280, height=720, caption="Testing", **kwargs):
     return WINDOW
 
 
-def prepare_window(window: arcade.Window):
+def prepare_window(window: arcade.Window, caption: str | None = None):
     # Check if someone has been naughty
     if window.has_exit:
         raise RuntimeError("Please do not close the global test window :D")
@@ -47,6 +62,8 @@ def prepare_window(window: arcade.Window):
     window.switch_to()
     if window.get_size() < (800, 600):
         window.set_size(800, 600)
+    if caption:
+        window.set_caption(caption)
 
     ctx = window.ctx
     # ctx._atlas = None  # Clear the global atlas
@@ -75,8 +92,13 @@ def prepare_window(window: arcade.Window):
     window.on_update = lambda dt: None
 
 
+@pytest.fixture
+def test_name(request):
+    return make_window_caption(request)
+
+
 @pytest.fixture(scope="function")
-def ctx():
+def ctx(test_name):
     """
     Per function context.
 
@@ -85,12 +107,12 @@ def ctx():
     """
     window = create_window()
     arcade.set_window(window)
-    prepare_window(window)
+    prepare_window(window, caption=test_name)
     return window.ctx
 
 
 @pytest.fixture(scope="session")
-def ctx_static():
+def ctx_static(request):
     """
     Context that is shared between tests
     This is the same global context.
@@ -98,12 +120,15 @@ def ctx_static():
     """
     window = create_window()
     arcade.set_window(window)
-    prepare_window(window)
+    # Can't use the test_name fixture here:
+    # 1. This fixture is session scoped
+    # 2. test_name is function scoped
+    prepare_window(window, caption=make_window_caption(request))
     return window.ctx
 
 
 @pytest.fixture(scope="function")
-def window():
+def window(test_name):
     """
     Global window that is shared between tests.
 
@@ -113,7 +138,7 @@ def window():
     """
     window = create_window()
     arcade.set_window(window)
-    prepare_window(window)
+    prepare_window(window, caption=test_name)
     return window
 
 
@@ -275,7 +300,7 @@ class WindowProxy:
     @property
     def default_camera(self):
         """
-        Provides a reference to the default arcade camera.
+        Provides a reference to the default Arcade camera.
         Automatically sets projection and view to the size
         of the screen. Good for resetting the screen.
         """
@@ -401,7 +426,7 @@ class Offscreen:
 
 
 @pytest.fixture(scope="function")
-def offscreen():
+def offscreen(test_name):
     """
     Offscreen rendering tools.
 
@@ -411,7 +436,7 @@ def offscreen():
 
     window = create_window()
     arcade.set_window(window)
-    prepare_window(window)
+    prepare_window(window, caption=test_name)
 
     if OFFSCREEN is None:
         OFFSCREEN = Offscreen()

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import PIL.Image
+from PIL import Image
 
 from arcade.hitbox import HitBoxAlgorithm
 from arcade.resources import resolve
@@ -52,7 +52,7 @@ def load_texture(
     if isinstance(file_path, str):
         file_path = resolve(file_path)
 
-    im = PIL.Image.open(file_path)
+    im: Image.Image = Image.open(file_path)  # type: ignore
     if im.mode != "RGBA":
         im = im.convert("RGBA")
 
@@ -66,7 +66,7 @@ def load_image(
     file_path: str | Path,
     *,
     mode: str = "RGBA",
-) -> PIL.Image.Image:
+) -> Image.Image:
     """
     Load a Pillow image from disk (no caching).
 
@@ -74,7 +74,7 @@ def load_image(
     This function is useful when you want to load an image and then
     manipulate it before creating a texture.
 
-    Note that arcade mainly works with RGBA images. If you override
+    Note that Arcade mainly works with RGBA images. If you override
     the mode you might need to convert the final image to RGBA.
 
     Args:
@@ -86,9 +86,10 @@ def load_image(
     if isinstance(file_path, str):
         file_path = resolve(file_path)
 
-    im = PIL.Image.open(file_path)
+    im: Image.Image = Image.open(file_path)  # type: ignore
     if im.mode != mode:
         im = im.convert(mode)
+
     return im
 
 
@@ -103,7 +104,7 @@ def load_spritesheet(file_name: str | Path) -> SpriteSheet:
     if isinstance(file_name, str):
         file_name = resolve(file_name)
 
-    im = PIL.Image.open(file_name)
+    im: Image.Image = Image.open(file_name)
     if im.mode != "RGBA":
         im = im.convert("RGBA")
 

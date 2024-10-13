@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
 from PIL import Image
+from PIL.Image import Transpose
 
 from arcade.resources import resolve
 
@@ -91,14 +92,14 @@ class SpriteSheet:
         """
         Flips the internal image left to right.
         """
-        self._image = self._image.transpose(Image.FLIP_LEFT_RIGHT)
+        self._image = self._image.transpose(Transpose.FLIP_LEFT_RIGHT)
         self._flip_flags = (not self._flip_flags[0], self._flip_flags[1])
 
     def flip_top_bottom(self) -> None:
         """
         Flip the internal image top to bottom.
         """
-        self._image = self._image.transpose(Image.FLIP_TOP_BOTTOM)
+        self._image = self._image.transpose(Transpose.FLIP_TOP_BOTTOM)
         self._flip_flags = (self._flip_flags[0], not self._flip_flags[1])
 
     def get_image(

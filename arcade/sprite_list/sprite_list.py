@@ -74,7 +74,7 @@ class SpriteList(Generic[SpriteType]):
     case by case basis.
 
     For the advanced options check the advanced section in the
-    arcade documentation.
+    Arcade documentation.
 
     Args:
         use_spatial_hash:
@@ -1102,6 +1102,14 @@ class SpriteList(Generic[SpriteType]):
                 atlas_texture.filter = self.DEFAULT_TEXTURE_FILTER
 
         self.program["spritelist_color"] = self._color
+
+        # Control center pixel interpolation:
+        # 0.0 = raw interpolation using texture corners
+        # 1.0 = center pixel interpolation
+        if self.ctx.NEAREST in atlas_texture.filter:
+            self.program.set_uniform_safe("uv_offset_bias", 0.0)
+        else:
+            self.program.set_uniform_safe("uv_offset_bias", 1.0)
 
         atlas_texture.use(0)
         atlas.use_uv_texture(1)

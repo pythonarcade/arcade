@@ -60,7 +60,7 @@ class NinePatchTexture:
             pixels)
         top: The height of the top border of the 9-patch (in pixels)
         texture: The raw texture to use for the 9-patch
-        atlas: Specify an atlas other than arcade's default texture
+        atlas: Specify an atlas other than Arcade's default texture
             atlas
     """
 

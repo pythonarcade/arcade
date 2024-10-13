@@ -25,3 +25,18 @@ def test_change_value_on_drag(ui):
 
     # THEN
     assert slider.value == 20
+
+
+def test_disable_slider(ui):
+    # GIVEN
+    slider = UISlider(height=30, width=120)
+    ui.add(slider)
+    slider.disabled = True
+
+    # WHEN
+    cx, cy = slider._thumb_x, slider.rect.y
+    ui.click_and_hold(cx, cy)
+    ui.drag(cx + 20, cy)
+
+    # THEN
+    assert slider.value == 0

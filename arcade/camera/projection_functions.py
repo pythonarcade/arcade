@@ -147,8 +147,8 @@ def unproject_orthographic(
     x, y, *z = screen_coordinate
     z = 0.0 if not z else z[0]
 
-    screen_x = 2.0 * (screen_coordinate[0] - viewport[0]) / viewport[2] - 1
-    screen_y = 2.0 * (screen_coordinate[1] - viewport[1]) / viewport[3] - 1
+    screen_x = 2.0 * (x - viewport[0]) / viewport[2] - 1
+    screen_y = 2.0 * (y - viewport[1]) / viewport[3] - 1
 
     _projection = ~projection_matrix
     _view = ~view_matrix
@@ -191,8 +191,8 @@ def unproject_perspective(
     x, y, *z = screen_coordinate
     z = 1.0 if not z else z[0]
 
-    screen_x = 2.0 * (screen_coordinate[0] - viewport[0]) / viewport[2] - 1
-    screen_y = 2.0 * (screen_coordinate[1] - viewport[1]) / viewport[3] - 1
+    screen_x = 2.0 * (x - viewport[0]) / viewport[2] - 1
+    screen_y = 2.0 * (y - viewport[1]) / viewport[3] - 1
 
     screen_x *= z
     screen_y *= z

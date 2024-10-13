@@ -46,6 +46,37 @@ def test_complex_example_with_max_value():
     assert sizes == [20, 20, 50]
 
 
+def test_complex_example_with_max_value_2():
+    # GIVEN
+    entries = [
+        _C(hint=0.2, min=10, max=10),
+        _C(hint=0.2, min=10, max=15),
+        _C(hint=0.6, min=10, max=50),
+    ]
+
+    # WHEN
+    sizes = _box_axis_algorithm(entries, 100)
+
+    # THEN
+    assert sizes == [10, 15, 50]
+
+
+def test_complex_example_with_max_value_hint_above_1():
+    # GIVEN
+    entries = [
+        _C(hint=0.3, min=0, max=None),
+        _C(hint=0.2, min=0, max=None),
+        _C(hint=0.6, min=0, max=50),
+    ]
+
+    # WHEN
+    sizes = _box_axis_algorithm(entries, 100)
+
+    # THEN
+    assert sum(sizes) == 100
+    assert sizes == [30, 20, 50]
+
+
 def test_complex_example_with_min_value():
     # GIVEN
     entries = [
@@ -216,4 +247,44 @@ def test_example_grow_relative_to_size_hint_huge_min():
     assert [int(e1), int(e2)] == [
         20,
         80,
+    ]
+
+
+def test_example_grow_relative_to_size_hint_huge_min_2():
+    # GIVEN
+    entries = [
+        _C(hint=1, min=0, max=None),
+        _C(hint=0.5, min=0, max=None),
+        _C(hint=0.5, min=70, max=None),
+    ]
+
+    # WHEN
+    e1, e2, e3 = _box_axis_algorithm(entries, 100)
+
+    # THEN
+    assert [
+        int(e1),
+        int(e2),
+        int(e3),
+    ] == [
+        20,
+        10,
+        70,
+    ]
+
+
+def test_enforced_min_size():
+    # GIVEN
+    entries = [
+        _C(hint=0, min=30, max=None),
+        _C(hint=1, min=30, max=None),
+    ]
+
+    # WHEN
+    e1, e2 = _box_axis_algorithm(entries, 100)
+
+    # THEN
+    assert [int(e1), int(e2)] == [
+        30,
+        70,
     ]

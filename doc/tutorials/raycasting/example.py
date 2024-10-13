@@ -1,4 +1,5 @@
 import random
+from pathlib import Path
 
 import arcade
 from arcade.experimental import Shadertoy
@@ -18,6 +19,7 @@ BOMB_COUNT = 70
 PLAYING_FIELD_WIDTH = 1600
 PLAYING_FIELD_HEIGHT = 1600
 
+CURRENT_DIR = Path(__file__).resolve().parent
 
 class MyGame(arcade.Window):
 
@@ -31,7 +33,12 @@ class MyGame(arcade.Window):
         self.load_shader()
 
         # Sprites and sprite lists
-        self.player_sprite = None
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+            center_x=256,
+            center_y=512,
+        )
         self.wall_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.bomb_list = arcade.SpriteList()
@@ -61,18 +68,14 @@ class MyGame(arcade.Window):
                     placed = True
             self.bomb_list.append(bomb)
 
-        # Create the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
-        self.player_sprite.center_x = 256
-        self.player_sprite.center_y = 512
+        # Add player to spritelist
         self.player_list.append(self.player_sprite)
 
         # Physics engine, so we don't run into walls
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
     def load_shader(self):
-        file = open("example.glsl")
+        file = open(CURRENT_DIR / "example.glsl")
         shader_sourcecode = file.read()
         size = self.width, self.height
 
@@ -88,19 +91,20 @@ class MyGame(arcade.Window):
         self.shadertoy.channel_1 = self.channel1.color_attachments[0]
 
     def on_draw(self):
+        # Render in the walls for lighting
         self.channel0.use()
-        # clear_color = 0, 0, 0, 0
-        # self.channel0.clear(color=clear_color)
+        self.channel0.clear()
         self.wall_list.draw()
 
         self.channel1.use()
-        # self.channel1.clear(color=clear_color)
-        self.channel1.clear(color=arcade.color.ARMY_GREEN)
+        self.channel1.clear(color=arcade.color.AMAZON)
         self.bomb_list.draw()
 
         self.use()
-        # self.camera_sprites.use()
-        self.shadertoy.render(mouse_position=(self.player_sprite.center_x, self.player_sprite.center_y))
+        self.clear()
+        # Do the shadow casting
+        self.shadertoy.render(mouse_position=self.player_sprite.position)
+        # Draw the player and walls on top
         self.wall_list.draw()
         self.player_list.draw()
 
@@ -130,6 +134,23 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.physics_engine.update()
+
+    def on_resize(self, width: int, height: int):
+        self.shadertoy.resize((width, height))
+        # Resize the channels
+        size = width, height
+        self.channel0 = self.shadertoy.ctx.framebuffer(
+            color_attachments=[self.shadertoy.ctx.texture(size, components=4)]
+        )
+        self.shadertoy.channel_0 = self.channel0.color_attachments[0]
+
+        self.channel1 = self.shadertoy.ctx.framebuffer(
+            color_attachments=[self.shadertoy.ctx.texture(size, components=4)]
+        )
+        self.shadertoy.channel_1 = self.channel1.color_attachments[0]
+
+
+        return super().on_resize(width, height)
 
 
 if __name__ == "__main__":

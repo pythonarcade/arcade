@@ -22,7 +22,7 @@ from arcade.gl.geometry import quad_2d_fs
 
 class VideoPlayerCV2:
     """
-    Primitive video player for arcade with cv2.
+    Primitive video player for Arcade with cv2.
     Renders to the entire screen. Use VideoPlayer to render to specific coordinate.
 
     Args:

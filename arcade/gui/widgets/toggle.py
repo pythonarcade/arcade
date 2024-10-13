@@ -33,7 +33,7 @@ class UITextureToggle(UIInteractiveWidget):
     """
 
     # Experimental ui class
-    value: bool = Property(False)  # type: ignore
+    value = Property(False)
 
     def __init__(
         self,

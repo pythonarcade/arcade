@@ -9,7 +9,7 @@ from pymunk.autogeometry import (
     simplify_curves,
 )
 
-from arcade.types import Point2, Point2List
+from arcade.types import RGBA255, Point2, Point2List
 
 from .base import HitBoxAlgorithm
 
@@ -92,18 +92,40 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
 
     def trace_image(self, image: Image) -> PolylineSet:
         """
-        Trace the image and return a list of line sets.
+        Trace the image and return a :py:class:~collections.abc.Sequence` of line sets.
 
-        These line sets represent the outline of the image or the outline of the
-        holes in the image. If more than one line set is returned it's important
-        to pick the one that covers the most of the image.
+        .. important:: The image :py:attr:`~PIL.Image.Image.mode` must be ``"RGBA"``!
+
+                       * This method raises a :py:class:`TypeError` when it isn't
+                       * Use :py:meth:`convert("RGBA") <PIL.Image.Image.convert>` to
+                         convert
+
+        The returned object will be a :py:mod:`pymunk`
+        :py:class:`~pymunk.autogeometry.PolylineSet`. Each
+        :py:class:`list` inside it will contain points as
+        :py:class:`pymunk.vec2d.Vec2d` instances. These lists
+        may represent:
+
+        * the outline of the image's contents
+        * the holes in the image
+
+        When this method returns more than one line set,
+        it's important to pick the one which covers the largest
+        portion of the image.
 
         Args:
-            image: Image to trace.
+            image: A :py:class:`PIL.Image.Image` to trace.
+
+        Returns:
+            A :py:mod:`pymunk` object which is a :py:class:`~collections.abc.Sequence`
+            of :py:class:`~pymunk.autogeometry.PolylineSet` of line sets.
         """
+        if image.mode != "RGBA":
+            raise ValueError("Image's mode!='RGBA'! Try using image.convert(\"RGBA\").")
 
         def sample_func(sample_point: Point2) -> int:
-            """Method used to sample image."""
+            """Function used to sample image."""
+            # Return 0 when outside of bounds
             if (
                 sample_point[0] < 0
                 or sample_point[1] < 0
@@ -113,7 +135,8 @@ class PymunkHitBoxAlgorithm(HitBoxAlgorithm):
                 return 0
 
             point_tuple = int(sample_point[0]), int(sample_point[1])
-            color = image.getpixel(point_tuple)
+            color: RGBA255 = image.getpixel(point_tuple)  # type: ignore
+
             return 255 if color[3] > 0 else 0
 
         # Do a quick check if it is a full tile

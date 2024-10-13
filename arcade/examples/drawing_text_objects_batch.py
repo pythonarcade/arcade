@@ -5,7 +5,7 @@ This example improves on the other two text-drawing examples
 by using pyglet's batch functionality.
 
 Although pyglet's batches do not support non-drawing features like
-arcade's SpriteList, they offer similar benefits for drawing. Adding
+Arcade's SpriteList, they offer similar benefits for drawing. Adding
 arcade.Text objects to a batch allows drawing thousands of them with
 almost the same cost as drawing a single one directly.
 
@@ -15,7 +15,7 @@ python -m arcade.examples.drawing_text_objects_batch
 import arcade
 from pyglet.graphics import Batch
 
-# Load fonts bumbled with arcade such as the Kenney fonts
+# Load fonts bumbled with Arcade such as the Kenney fonts
 arcade.resources.load_system_fonts()
 
 WINDOW_WIDTH = 1280  # Window width in pixels

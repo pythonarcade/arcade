@@ -1,39 +1,44 @@
 """Customizing buttons with text & textures.
 
-This example showcases arcade's range of different built-in button types
+This example showcases Arcade's range of different built-in button types
 and how they can be used to customize a UI. A UIGridLayout is used to
 arrange buttons.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.3_buttons
 """
 
 from __future__ import annotations
 
 import arcade
-from arcade import load_texture
-from arcade.gui import UIManager, UIImage
-from arcade.gui.events import UIOnChangeEvent
-from arcade.gui.widgets.buttons import UIFlatButton, UITextureButton
-from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
-from arcade.gui.widgets.toggle import UITextureToggle
+from arcade.gui import (
+    UIAnchorLayout,
+    UIFlatButton,
+    UIGridLayout,
+    UIImage,
+    UIOnChangeEvent,
+    UITextureButton,
+    UITextureToggle,
+    UIView,
+)
+
 
 # Preload textures, because they are mostly used multiple times, so they are not
 # loaded multiple times
-ICON_SMALLER = load_texture(":resources:gui_basic_assets/icons/smaller.png")
-ICON_LARGER = load_texture(":resources:gui_basic_assets/icons/larger.png")
+ICON_SMALLER = arcade.load_texture(":resources:gui_basic_assets/icons/smaller.png")
+ICON_LARGER = arcade.load_texture(":resources:gui_basic_assets/icons/larger.png")
 
-TEX_SWITCH_GREEN = load_texture(":resources:gui_basic_assets/toggle/green.png")
-TEX_SWITCH_RED = load_texture(":resources:gui_basic_assets/toggle/red.png")
-TEX_RED_BUTTON_NORMAL = load_texture(":resources:gui_basic_assets/button/red_normal.png")
-TEX_RED_BUTTON_HOVER = load_texture(":resources:gui_basic_assets/button/red_hover.png")
-TEX_RED_BUTTON_PRESS = load_texture(":resources:gui_basic_assets/button/red_press.png")
+TEX_SWITCH_GREEN = arcade.load_texture(":resources:gui_basic_assets/toggle/green.png")
+TEX_SWITCH_RED = arcade.load_texture(":resources:gui_basic_assets/toggle/red.png")
+TEX_RED_BUTTON_NORMAL = arcade.load_texture(":resources:gui_basic_assets/button/red_normal.png")
+TEX_RED_BUTTON_HOVER = arcade.load_texture(":resources:gui_basic_assets/button/red_hover.png")
+TEX_RED_BUTTON_PRESS = arcade.load_texture(":resources:gui_basic_assets/button/red_press.png")
 
 
-class MyView(arcade.View):
+class MyView(UIView):
     def __init__(self):
         super().__init__()
-        self.ui = UIManager()
+        self.background_color = arcade.uicolor.BLUE_PETER_RIVER
 
         grid = UIGridLayout(
             column_count=3,
@@ -189,19 +194,6 @@ class MyView(arcade.View):
             texture_button_with_toggle.disabled = event.new_value
 
         grid.add(texture_button_with_toggle, row=3, column=0, column_span=3)
-
-    def on_show_view(self):
-        self.window.background_color = arcade.uicolor.BLUE_BELIZE_HOLE
-        # Enable UIManager when view is shown to catch window events
-        self.ui.enable()
-
-    def on_hide_view(self):
-        # Disable UIManager when view gets inactive
-        self.ui.disable()
-
-    def on_draw(self):
-        self.clear()
-        self.ui.draw()
 
 
 if __name__ == "__main__":

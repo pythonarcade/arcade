@@ -4,7 +4,7 @@ Conway's Game of Life
 This code shows how to set up sprites in a grid, and then use their
 'alpha' value to quickly turn them on and off.
 
-After installing the "arcade" package version 2.4.4+, this program can be run by
+After installing the `arcade` package version 2.4.4+, this program can be run by
 typing:
 python -m arcade.examples.conway_alpha
 """

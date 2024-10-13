@@ -6,7 +6,7 @@ The game is controlled with the arrow keys or WASD.
 
 At the beginning of the game, the UI camera is used, to apply some animations.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.4_with_camera
 """
 
@@ -17,8 +17,7 @@ import random
 from typing import Optional
 
 import arcade
-from arcade.gui import UIView, UIFlatButton, UIOnClickEvent, UILabel, UIBoxLayout
-from arcade.gui.widgets.layout import UIAnchorLayout
+from arcade.gui import UIAnchorLayout, UIBoxLayout, UIFlatButton, UILabel, UIOnClickEvent, UIView
 
 COIN_PNG = ":resources:images/items/coinGold.png"
 ADV_PNG = ":resources:/images/animated_characters/female_adventurer/femaleAdventurer_idle.png"

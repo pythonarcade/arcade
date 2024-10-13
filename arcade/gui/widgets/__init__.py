@@ -57,22 +57,22 @@ class UIWidget(EventDispatcher, ABC):
         size_hint_max: max width and height in pixel
     """
 
-    rect: Rect = Property(LBWH(0, 0, 1, 1))  # type: ignore
-    visible: bool = Property(True)  # type: ignore
+    rect = Property(LBWH(0, 0, 1, 1))
+    visible = Property(True)
 
-    size_hint: Optional[Tuple[float | None, float | None]] = Property(None)  # type: ignore
-    size_hint_min: Optional[Tuple[float, float]] = Property(None)  # type: ignore
-    size_hint_max: Optional[Tuple[float, float]] = Property(None)  # type: ignore
+    size_hint = Property[Optional[Tuple[Optional[float], Optional[float]]]](None)
+    size_hint_min = Property[Optional[Tuple[Optional[float], Optional[float]]]](None)
+    size_hint_max = Property[Optional[Tuple[Optional[float], Optional[float]]]](None)
 
-    _children: List[_ChildEntry] = ListProperty()  # type: ignore
-    _border_width: int = Property(0)  # type: ignore
-    _border_color: Optional[Color] = Property(arcade.color.BLACK)  # type: ignore
-    _bg_color: Optional[Color] = Property(None)  # type: ignore
-    _bg_tex: Union[None, Texture, NinePatchTexture] = Property(None)  # type: ignore
-    _padding_top: int = Property(0)  # type: ignore
-    _padding_right: int = Property(0)  # type: ignore
-    _padding_bottom: int = Property(0)  # type: ignore
-    _padding_left: int = Property(0)  # type: ignore
+    _children = ListProperty[_ChildEntry]()
+    _border_width = Property(0)
+    _border_color = Property[Optional[Color]](arcade.color.BLACK)
+    _bg_color = Property[Optional[Color]]()
+    _bg_tex = Property[Union[Texture, NinePatchTexture, None]]()
+    _padding_top = Property(0)
+    _padding_right = Property(0)
+    _padding_bottom = Property(0)
+    _padding_left = Property(0)
 
     def __init__(
         self,
@@ -84,8 +84,8 @@ class UIWidget(EventDispatcher, ABC):
         children: Iterable["UIWidget"] = tuple(),
         # Properties which might be used by layouts
         size_hint: Optional[Tuple[float | None, float | None]] = None,  # in percentage
-        size_hint_min: Optional[Tuple[float, float]] = None,  # in pixel
-        size_hint_max: Optional[Tuple[float, float]] = None,  # in pixel
+        size_hint_min: Optional[Tuple[float | None, float | None]] = None,  # in pixel
+        size_hint_max: Optional[Tuple[float | None, float | None]] = None,  # in pixel
         **kwargs,
     ):
         self._requires_render = True
@@ -144,14 +144,19 @@ class UIWidget(EventDispatcher, ABC):
 
         return child
 
-    def remove(self, child: "UIWidget"):
+    def remove(self, child: "UIWidget") -> dict | None:
         """Removes a child from the UIManager which was directly added to it.
         This will not remove widgets which are added to a child of UIManager.
+
+        Return:
+            kwargs which were used when child was added
         """
         child.parent = None
         for c in self._children:
             if c.child == child:
                 self._children.remove(c)
+                return c.data
+        return None
 
     def clear(self):
         """Removes all children"""
@@ -188,7 +193,7 @@ class UIWidget(EventDispatcher, ABC):
             parent = parent.parent
 
         if parent:
-            yield parent  # type: ignore
+            yield parent
 
     def trigger_render(self):
         """This will delay a render right before the next frame is rendered, so that
@@ -362,9 +367,9 @@ class UIWidget(EventDispatcher, ABC):
             args = (args, args, args, args)
 
         elif len(args) == 2:  # self.padding = 10, 20 -> 10, 20, 10, 20
-            args = args + args  # type: ignore
+            args = args + args
 
-        pt, pr, pb, pl = args  # type: ignore # self.padding = 10, 20, 30, 40
+        pt, pr, pb, pl = args  # self.padding = 10, 20, 30, 40
         self._padding_top = pt
         self._padding_right = pr
         self._padding_bottom = pb
@@ -510,12 +515,17 @@ class UIWidget(EventDispatcher, ABC):
         self.rect = self.rect.align_center(center)
         return self
 
+    def __str__(self):
+        return f"{self.__class__.__name__}()"
+
     def __repr__(self):
         return f"<{self.__class__.__name__} {self.rect.lbwh}>"
 
 
 class UIInteractiveWidget(UIWidget):
     """Base class for widgets which use mouse interaction (hover, pressed, clicked)
+
+    It provides properties for hovered, pressed and disabled states.
 
     Args:
         x: x coordinate of bottom left
@@ -819,8 +829,8 @@ class UISpace(UIWidget):
         *,
         x=0,
         y=0,
-        width=100,
-        height=100,
+        width=1,
+        height=1,
         color=None,
         size_hint=None,
         size_hint_min=None,

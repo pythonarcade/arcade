@@ -1,6 +1,6 @@
 """Demonstrates the use of layouts.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.1_layouts
 
 Content:
@@ -14,7 +14,7 @@ Content:
 from datetime import datetime
 
 import arcade
-from arcade.gui import UIAnchorLayout
+from arcade.gui import UIAnchorLayout, UIImage, UITextArea
 
 arcade.resources.load_system_fonts()
 
@@ -59,6 +59,36 @@ Some widgets calculate their minimum size based on their content like UILabel
 and layouts in general.
 """
 
+TEX_SCROLL_DOWN = arcade.load_texture(":resources:gui_basic_assets/scroll/indicator_down.png")
+TEX_SCROLL_UP = arcade.load_texture(":resources:gui_basic_assets/scroll/indicator_up.png")
+
+
+class ScrollableTextArea(UITextArea, UIAnchorLayout):
+    """This widget is a text area that can be scrolled, like a UITextLayout, but shows indicator,
+    that the text can be scrolled."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        indicator_size = 22
+        self._down_indicator = UIImage(
+            texture=TEX_SCROLL_DOWN, size_hint=None, width=indicator_size, height=indicator_size
+        )
+        self._down_indicator.visible = False
+        self.add(self._down_indicator, anchor_x="right", anchor_y="bottom", align_x=-3)
+
+        self._up_indicator = UIImage(
+            texture=TEX_SCROLL_UP, size_hint=None, width=indicator_size, height=indicator_size
+        )
+        self._up_indicator.visible = False
+        self.add(self._up_indicator, anchor_x="right", anchor_y="top", align_x=-3)
+
+    def on_update(self, dt):
+        self._up_indicator.visible = self.layout.view_y < 0
+        self._down_indicator.visible = (
+            abs(self.layout.view_y) < self.layout.content_height - self.layout.height
+        )
+
 
 class LayoutView(arcade.gui.UIView):
     """This view demonstrates the use of layouts."""
@@ -71,7 +101,7 @@ class LayoutView(arcade.gui.UIView):
         self.anchor = self.add_widget(UIAnchorLayout())
 
         # Add describing text in center
-        text_area = arcade.gui.UITextArea(
+        text_area = ScrollableTextArea(
             text=DESCRIPTION,
             text_color=arcade.uicolor.WHITE_CLOUDS,
             font_name=("Lato", "proxima-nova", "Helvetica Neue", "Arial", "sans-serif"),
@@ -79,8 +109,8 @@ class LayoutView(arcade.gui.UIView):
             size_hint=(0.5, 0.8),
         )
         self.anchor.add(text_area, anchor_x="center_x", anchor_y="center_y")
-        text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE)
-        text_area.with_background(color=arcade.uicolor.GRAY_CONCRETE.replace(a=125))
+        text_area.with_border(color=arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE)
+        text_area.with_background(color=arcade.uicolor.DARK_BLUE_MIDNIGHT_BLUE.replace(a=125))
         text_area.with_padding(left=5)
 
         # add a grid layout with the window and grid size and grid position
@@ -89,8 +119,8 @@ class LayoutView(arcade.gui.UIView):
             row_count=2,
             align_horizontal="left",
         )
-        self.grid.with_background(color=arcade.uicolor.GRAY_CONCRETE)
-        self.grid.with_border(color=arcade.uicolor.GRAY_ASBESTOS)
+        self.grid.with_background(color=arcade.uicolor.GRAY_ASBESTOS)
+        self.grid.with_border(color=arcade.uicolor.GRAY_CONCRETE)
         self.grid.with_padding(all=10)
         self.anchor.add(self.grid, anchor_x="left", anchor_y="top", align_x=10, align_y=-10)
         self.grid.add(

@@ -14,7 +14,7 @@ class Clock:
     Arcade provides a global clock which is automatically ticked by the window.
 
     *Coming post 3.0:*
-    you can add 'sub-clocks' to arcade's top level clock which will tick at the
+    you can add 'sub-clocks' to Arcade's top level clock which will tick at the
     same time, and have cumulative tick_speeds. This allows you to slow down
     only certain elements rather than everything.
 
@@ -181,7 +181,7 @@ GLOBAL_FIXED_CLOCK = FixedClock(sibling=GLOBAL_CLOCK)
 
 def _setup_clock(initial_elapsed: float = 0.0, initial_tick: int = 0, tick_speed: float = 1.0):
     """
-    Private method used by the arcade window to setup the global clock post initialization.
+    Private method used by the Arcade window to setup the global clock post initialization.
 
     Args:
         initial_elapsed: The amount of time the clock should assume
@@ -199,7 +199,7 @@ def _setup_clock(initial_elapsed: float = 0.0, initial_tick: int = 0, tick_speed
 
 def _setup_fixed_clock(fixed_tick_rate: float = 1.0 / 60.0):
     """
-    Private method used by the arcade window to setup the global fixed clock
+    Private method used by the Arcade window to setup the global fixed clock
     post initialization.
 
     Args:

@@ -52,15 +52,15 @@ Documentation
 -------------
 
 Arcade provides several forms of documentation depending on the learning style of the user.
-For beginners to programming the arcade book is a great place to start. For those who prefer
-to learn by examples the arcade examples are a great resource. We also have various tutorials
+For beginners to programming the Arcade book is a great place to start. For those who prefer
+to learn by examples the Arcade examples are a great resource. We also have various tutorials
 for specific topics. More advanced users may prefer the API reference.
 
 Open Source
 -----------
 
 Arcade is free and open source. It is released under the MIT License. This means you can use it for free,
-and you can even use it in commercial projects. Copying and adapting content from arcade in educational
+and you can even use it in commercial projects. Copying and adapting content from Arcade in educational
 materials is highly encouraged.
 
 
@@ -101,6 +101,7 @@ Arcade is developed by volunteers.
    programming_guide/sound
    programming_guide/textures
    programming_guide/event_loop
+   programming_guide/camera
    programming_guide/sections
    programming_guide/gui/index
    programming_guide/texture_atlas
@@ -108,7 +109,6 @@ Arcade is developed by volunteers.
    programming_guide/opengl_notes
    programming_guide/performance_tips
    programming_guide/headless
-   programming_guide/vsync
 
 .. toctree::
    :hidden:

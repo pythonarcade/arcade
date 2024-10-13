@@ -1,5 +1,5 @@
 """
-Simple pygame-arcade interaction example
+Simple Pygame-Arcade interaction example
 
 We render contents to a pygame surface and write that
 to an OpenGL texture. Then we render that texture to
