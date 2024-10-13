@@ -195,7 +195,7 @@ class Window(pyglet.window.Window):
                     alpha_size=8,
                 )
                 display = pyglet.display.get_display()
-                screen = display.get_default_screen()  # type: ignore  # pending: resolve upstream type tricks
+                screen = screen or display.get_default_screen()
                 if screen:
                     config = screen.get_best_config(config)
             except pyglet.window.NoSuchConfigException:
@@ -260,11 +260,9 @@ class Window(pyglet.window.Window):
 
         self.set_vsync(vsync)
 
-        super().set_fullscreen(fullscreen, screen)
-        # This used to be necessary on Linux, but no longer appears to be.
-        # With Pyglet 2.0+, setting this to false will not allow the screen to
-        # update. It does, however, cause flickering if creating a window that
-        # isn't derived from the Window class.
+        if fullscreen is True:
+            super().set_fullscreen(True, screen)
+
         set_window(self)
 
         self.push_handlers(on_resize=self._on_resize)
@@ -472,7 +470,7 @@ class Window(pyglet.window.Window):
         # Get the display screen using pyglet
         screen_width, screen_height = get_display_size()
 
-        window_width, window_height = self.get_size()
+        window_width, window_height = self.get_framebuffer_size()
         # Center the window
         self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
 
