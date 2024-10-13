@@ -21,6 +21,7 @@ from arcade.camera.grips.constrain import (
     constrain_boundary_xz,
     constrain_boundary_xyz,
 )
+from arcade.camera.grips.position import look_at, orbit
 
 
 __all__ = (
@@ -43,4 +44,6 @@ __all__ = (
     "constrain_boundary_yz",
     "constrain_boundary_xz",
     "constrain_boundary_xyz",
+    "look_at",
+    "orbit",
 )

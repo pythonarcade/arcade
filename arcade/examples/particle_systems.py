@@ -24,12 +24,12 @@ from arcade.math import (
 )
 from arcade import particles, LBWH
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Particle System Examples"
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+WINDOW_TITLE = "Particle System Examples"
 QUIET_BETWEEN_SPAWNS = 0.25  # time between spawning another particle system
 EMITTER_TIMEOUT = 10 * 60
-CENTER_POS = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+CENTER_POS = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
 BURST_PARTICLE_COUNT = 500
 TEXTURE = ":resources:images/pinball/pool_cue_ball.png"
 TEXTURE2 = ":resources:images/space_shooter/playerShip3_orange.png"
@@ -165,7 +165,7 @@ def emitter_6():
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=rand_on_line((0.0, 0.0), (SCREEN_WIDTH, SCREEN_HEIGHT)),
+            center_xy=rand_on_line((0.0, 0.0), (WINDOW_WIDTH, WINDOW_HEIGHT)),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA
         )
@@ -399,7 +399,7 @@ def emitter_19():
             filename_or_texture=TEXTURE,
             change_xy=rand_in_circle((0.0, 0.0), PARTICLE_SPEED_SLOW),
             lifetime=DEFAULT_PARTICLE_LIFETIME,
-            center_xy=rand_on_line((0.0, 0.0), (SCREEN_WIDTH, SCREEN_HEIGHT)),
+            center_xy=rand_on_line((0.0, 0.0), (WINDOW_WIDTH, WINDOW_HEIGHT)),
             scale=DEFAULT_SCALE,
             alpha=DEFAULT_ALPHA,
         )
@@ -718,8 +718,8 @@ def emitter_36():
         def update(self, delta_time: float = 1 / 60):
             super().update(delta_time)
             self.elapsed += delta_time
-            self.center_x = sine_wave(self.elapsed, 0, SCREEN_WIDTH, SCREEN_WIDTH / 100)
-            self.center_y = sine_wave(self.elapsed, 0, SCREEN_HEIGHT, SCREEN_HEIGHT / 100)
+            self.center_x = sine_wave(self.elapsed, 0, WINDOW_WIDTH, WINDOW_WIDTH / 100)
+            self.center_y = sine_wave(self.elapsed, 0, WINDOW_HEIGHT, WINDOW_HEIGHT / 100)
 
     e = MovingEmitter(
         center_xy=CENTER_POS,
@@ -784,9 +784,9 @@ def emitter_39():
     return emitter_39.__doc__, e
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.background_color = arcade.color.BLACK
 
@@ -820,7 +820,7 @@ class MyGame(arcade.Window):
                 pyglet.clock.schedule_once(self.next_emitter, QUIET_BETWEEN_SPAWNS)
                 self.emitter = None
         self.obj.update(delta_time)
-        if self.obj.center_x > SCREEN_WIDTH:
+        if self.obj.center_x > WINDOW_WIDTH:
             self.obj.center_x = 0
 
     def on_draw(self):
@@ -828,8 +828,8 @@ class MyGame(arcade.Window):
         arcade.draw_sprite(self.obj)
         if self.label:
             arcade.draw_text("#{} {}".format(self.emitter_factory_id, self.label),
-                             SCREEN_WIDTH / 2, SCREEN_HEIGHT - 25,
-                             arcade.color.PALE_GOLD, 20, width=SCREEN_WIDTH,
+                             WINDOW_WIDTH / 2, WINDOW_HEIGHT - 25,
+                             arcade.color.PALE_GOLD, 20, width=WINDOW_WIDTH,
                              anchor_x="center")
         if self.emitter:
             self.emitter.draw()
@@ -847,8 +847,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    game = MyGame()
-    game.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

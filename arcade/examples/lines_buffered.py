@@ -14,22 +14,21 @@ from inspect import getmembers
 from arcade.types import Color
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Vertex Buffer Object With Lines Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Vertex Buffer Object With Lines Example"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Set up the application.
         """
-        super().__init__(width, height, title)
-        self.set_vsync(True)
+        super().__init__()
 
         self.shape_list = ShapeElementList()
         point_list = ((0, 50),
@@ -49,16 +48,16 @@ class MyGame(arcade.Window):
             getmembers(arcade.color, lambda c: isinstance(c, Color))]
 
         for i in range(200):
-            x = SCREEN_WIDTH // 2 - random.randrange(SCREEN_WIDTH)
-            y = SCREEN_HEIGHT // 2 - random.randrange(SCREEN_HEIGHT)
+            x = WINDOW_WIDTH // 2 - random.randrange(WINDOW_WIDTH)
+            y = WINDOW_HEIGHT // 2 - random.randrange(WINDOW_HEIGHT)
             color = random.choice(colors)
             points = [(px + x, py + y) for px, py in point_list]
 
             my_line_strip = create_line_strip(points, color, 5)
             self.shape_list.append(my_line_strip)
 
-        self.shape_list.center_x = SCREEN_WIDTH // 2
-        self.shape_list.center_y = SCREEN_HEIGHT // 2
+        self.shape_list.center_x = WINDOW_WIDTH // 2
+        self.shape_list.center_y = WINDOW_HEIGHT // 2
         self.shape_list.angle = 0
 
         self.background_color = arcade.color.BLACK
@@ -79,7 +78,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, vsync=True)
+
+    # Create and setup the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

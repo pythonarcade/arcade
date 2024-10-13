@@ -17,9 +17,9 @@ SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_ENEMY = 0.5
 ENEMY_SPEED = 5.0
 
-SCREEN_WIDTH = 1289
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Follow Path Simple Example"
+WINDOW_WIDTH = 1289
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Follow Path Simple Example"
 
 
 class Enemy(arcade.Sprite):
@@ -77,13 +77,12 @@ class Enemy(arcade.Sprite):
                 self.cur_position = 0
 
 
-class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+class GameView(arcade.View):
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -94,7 +93,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         self.background_color = arcade.color.AMAZON
 
@@ -157,13 +156,22 @@ class MyGame(arcade.Window):
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
 
 def main():
     """ Main function """
-    window = MyGame()
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

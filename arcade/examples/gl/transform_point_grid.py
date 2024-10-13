@@ -47,13 +47,14 @@ def gen_colors(width, height):
         yield random.uniform(0, 1)
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
-        self.set_vsync(True)
+    def __init__(self):
+        super().__init__()
+        self.window.set_vsync(True)
+        self.ctx = self.window.ctx
+
         self.ctx.disable(self.ctx.BLEND)
-        self.size = self.width, self.height
 
         # Two buffers on the gpu with positions
         self.buffer1 = self.ctx.buffer(data=array("f", gen_initial_data(self, *self.size)))
@@ -154,7 +155,7 @@ class MyGame(arcade.Window):
         self.clear()
         # Set a point size. Multiply with pixel ratio taking retina resolutions
         # and UI scaling into account
-        self.ctx.point_size = 2 * self.get_pixel_ratio()
+        self.ctx.point_size = 2 * self.window.get_pixel_ratio()
 
         # Draw the points we calculated last frame
         self.geometry1.render(self.points_program, mode=gl.POINTS)
@@ -174,6 +175,20 @@ class MyGame(arcade.Window):
         self.mouse_pos = x, y
 
 
-if __name__ == "__main__":
-    window = MyGame(768, 768, "Moving Point Grid - GPU")
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(768, 768, "Moving Point Grid - GPU")
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()

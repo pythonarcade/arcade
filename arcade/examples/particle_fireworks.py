@@ -24,9 +24,9 @@ from arcade.particles import (
     EmitBurst,
 )
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Particle based fireworks"
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+WINDOW_TITLE = "Particle based fireworks"
 LAUNCH_INTERVAL_MIN = 1.5
 LAUNCH_INTERVAL_MAX = 2.5
 TEXTURE = "images/pool_cue_ball.png"
@@ -63,7 +63,7 @@ SPINNER_HEIGHT = 75
 
 def make_spinner():
     spinner = Emitter(
-        center_xy=(SCREEN_WIDTH / 2, SPINNER_HEIGHT - 5),
+        center_xy=(WINDOW_WIDTH / 2, SPINNER_HEIGHT - 5),
         emit_controller=EmitterIntervalWithTime(0.025, 2.0),
         particle_factory=lambda emitter: FadeParticle(
             filename_or_texture=random.choice(STAR_TEXTURES), change_xy=(0, 6.0), lifetime=0.2
@@ -76,7 +76,7 @@ def make_spinner():
 def make_rocket(emit_done_cb):
     """Emitter that displays the smoke trail as the firework shell climbs into the sky"""
     rocket = RocketEmitter(
-        center_xy=(random.uniform(100, SCREEN_WIDTH - 100), 25),
+        center_xy=(random.uniform(100, WINDOW_WIDTH - 100), 25),
         emit_controller=EmitterIntervalWithTime(0.04, 2.0),
         particle_factory=lambda emitter: FadeParticle(
             filename_or_texture=ROCKET_SMOKE_TEXTURE,
@@ -179,9 +179,9 @@ class RocketEmitter(Emitter):
         self.change_y += -0.05 * (60 * delta_time)
 
 
-class FireworksApp(arcade.Window):
+class GameView(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.background_color = arcade.color.BLACK
         self.emitters: list[Emitter] = []
@@ -200,7 +200,7 @@ class FireworksApp(arcade.Window):
                 mid_alpha=128,
                 duration2=random.uniform(2.0, 6.0),
                 end_alpha=0,
-                center_xy=rand_in_rect(LBWH(0.0, 0.0, SCREEN_WIDTH, SCREEN_HEIGHT)),
+                center_xy=rand_in_rect(LBWH(0.0, 0.0, WINDOW_WIDTH, WINDOW_HEIGHT)),
             ),
         )
         self.emitters.append(stars)
@@ -343,7 +343,7 @@ class FireworksApp(arcade.Window):
         # prevent list from being mutated (often by callbacks) while iterating over it
         emitters_to_update = self.emitters.copy()
         # update cloud
-        if self.cloud.center_x > SCREEN_WIDTH:
+        if self.cloud.center_x > WINDOW_WIDTH:
             self.cloud.center_x = 0
         # update
         for e in emitters_to_update:
@@ -357,8 +357,8 @@ class FireworksApp(arcade.Window):
         self.clear()
         for e in self.emitters:
             e.draw()
-        arcade.draw_lrbt_rectangle_filled(0, SCREEN_WIDTH, 0, 25, arcade.color.DARK_GREEN)
-        mid = SCREEN_WIDTH / 2
+        arcade.draw_lrbt_rectangle_filled(0, WINDOW_WIDTH, 0, 25, arcade.color.DARK_GREEN)
+        mid = WINDOW_WIDTH / 2
         arcade.draw_lrbt_rectangle_filled(
             mid - 2,
             mid + 2,
@@ -390,8 +390,18 @@ def rocket_smoke_mutator(particle: LifetimeParticle):
 
 
 def main():
-    app = FireworksApp()
-    app.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

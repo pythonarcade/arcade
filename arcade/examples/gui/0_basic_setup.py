@@ -106,7 +106,16 @@ class BlueView(UIView):
         pass
 
 
-if __name__ == "__main__":
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
     window = arcade.Window(title="GUI Example: Basic Setup")
+
+    # Show the view on screen
     window.show_view(GreenView())
-    window.run()
+
+    # Start the arcade game loop
+    arcade.run()
+
+if __name__ == "__main__":
+    main()

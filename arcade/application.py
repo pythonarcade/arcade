@@ -1233,8 +1233,11 @@ class View:
             window is used. (Normally you don't need to provide this).
     """
 
-    def __init__(self, window: Window | None = None) -> None:
+    def __init__(
+        self, window: Window | None = None, background_color: RGBOrA255 | None = None
+    ) -> None:
         self.window = arcade.get_window() if window is None else window
+        self.background_color: RGBOrA255 | None = background_color
 
     def clear(
         self,
@@ -1258,6 +1261,8 @@ class View:
             viewport (optional):
                 The viewport range to clear
         """
+        if color is None and color_normalized is None:
+            color = self.background_color
         self.window.clear(color=color, color_normalized=color_normalized, viewport=viewport)
 
     def on_update(self, delta_time: float) -> bool | None:
@@ -1520,3 +1525,45 @@ class View:
             y: The y position the mouse entered the window
         """
         pass
+
+    @property
+    def size(self) -> tuple[float, float]:
+        """
+        An alias for `arcade.Window.size`
+        """
+        return self.window.size
+
+    @property
+    def width(self) -> float:
+        """
+        An alias for `arcade.Window.width`
+        """
+        return self.window.width
+
+    @property
+    def height(self) -> float:
+        """
+        An alias for `arcade.Window.height`
+        """
+        return self.window.height
+
+    @property
+    def center(self) -> tuple[float, float]:
+        """
+        An alias for `arcade.Window.center`
+        """
+        return self.window.center
+
+    @property
+    def center_x(self) -> float:
+        """
+        An alias for `arcade.Window.center_x`
+        """
+        return self.window.center_x
+
+    @property
+    def center_y(self) -> float:
+        """
+        An alias for `arcade.Window.center_y`
+        """
+        return self.window.center_y

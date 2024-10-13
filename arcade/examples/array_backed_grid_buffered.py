@@ -28,21 +28,21 @@ HEIGHT = 30
 MARGIN = 5
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-SCREEN_TITLE = "Array Backed Grid Buffered Example"
+WINDOW_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+WINDOW_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+WINDOW_TITLE = "Array Backed Grid Buffered Example"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Set up the application.
         """
-        super().__init__(width, height, title)
+        super().__init__()
         self.shape_list = None
 
         # Create a 2 dimensional array. A two dimensional
@@ -136,7 +136,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

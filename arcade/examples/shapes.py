@@ -12,9 +12,9 @@ import arcade
 import random
 
 # Set up the constants
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Shapes!"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Shapes!"
 
 NUMBER_OF_SHAPES = 200
 
@@ -41,9 +41,9 @@ class Shape:
             self.delta_x *= -1
         if self.y < 0 and self.delta_y < 0:
             self.delta_y *= -1
-        if self.x > SCREEN_WIDTH and self.delta_x > 0:
+        if self.x > WINDOW_WIDTH and self.delta_x > 0:
             self.delta_x *= -1
-        if self.y > SCREEN_HEIGHT and self.delta_y > 0:
+        if self.y > WINDOW_HEIGHT and self.delta_y > 0:
             self.delta_y *= -1
 
 
@@ -69,12 +69,12 @@ class Line(Shape):
                          self.color, 2)
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
         # Call the parent __init__
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Create a shape list
         self.shape_list = []
@@ -82,8 +82,8 @@ class MyGame(arcade.Window):
         for i in range(NUMBER_OF_SHAPES):
 
             # Random spot
-            x = random.randrange(0, SCREEN_WIDTH)
-            y = random.randrange(0, SCREEN_HEIGHT)
+            x = random.randrange(0, WINDOW_WIDTH)
+            y = random.randrange(0, WINDOW_HEIGHT)
 
             # Random size
             width = random.randrange(15, 40)
@@ -134,7 +134,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

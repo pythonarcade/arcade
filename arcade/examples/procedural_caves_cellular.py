@@ -349,9 +349,17 @@ class GameView(arcade.View):
 
 
 def main():
-    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
-    start_view = InstructionView()
-    window.show_view(start_view)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the InstructionView
+    game = InstructionView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

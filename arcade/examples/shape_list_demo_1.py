@@ -13,20 +13,20 @@ python -m arcade.examples.shape_list_demo_1
 import arcade
 import timeit
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Shape List Demo 1"
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Shape List Demo 1"
 
 SQUARE_WIDTH = 5
 SQUARE_HEIGHT = 5
 SQUARE_SPACING = 10
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         self.background_color = arcade.color.DARK_SLATE_GRAY
 
@@ -44,21 +44,30 @@ class MyGame(arcade.Window):
         draw_start_time = timeit.default_timer()
 
         # --- Draw all the rectangles
-        for x in range(0, SCREEN_WIDTH, SQUARE_SPACING):
-            for y in range(0, SCREEN_HEIGHT, SQUARE_SPACING):
+        for x in range(0, WINDOW_WIDTH, SQUARE_SPACING):
+            for y in range(0, WINDOW_HEIGHT, SQUARE_SPACING):
                 arcade.draw_rect_filled(arcade.rect.XYWH(x, y, SQUARE_WIDTH, SQUARE_HEIGHT),
                                         arcade.color.DARK_BLUE)
 
         # Print the timing
         output = f"Drawing time: {self.draw_time:.3f} seconds per frame."
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 18)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.WHITE, 18)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

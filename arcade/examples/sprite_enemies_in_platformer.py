@@ -14,9 +14,9 @@ SPRITE_SCALING = 0.5
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Enemies in a Platformer Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Enemies in a Platformer Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -29,12 +29,12 @@ JUMP_SPEED = 14
 GRAVITY = 0.5
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """Main application class."""
 
     def __init__(self):
         """Initializer"""
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Sprite lists
         self.wall_list = None
@@ -56,7 +56,7 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Draw the walls on the bottom
-        for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
+        for x in range(0, WINDOW_WIDTH, SPRITE_SIZE):
             wall = arcade.Sprite(
                 ":resources:images/tiles/grassMid.png",
                 scale=SPRITE_SCALING,
@@ -78,7 +78,7 @@ class MyGame(arcade.Window):
             self.wall_list.append(wall)
 
         # Draw the crates
-        for x in range(0, SCREEN_WIDTH, SPRITE_SIZE * 5):
+        for x in range(0, WINDOW_WIDTH, SPRITE_SIZE * 5):
             wall = arcade.Sprite(
                 ":resources:images/tiles/boxCrate_double.png",
                 scale=SPRITE_SCALING,
@@ -149,6 +149,13 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.enemy_list.draw()
 
+        if self.game_over:
+            arcade.draw_text(
+                "GAME OVER, Press R to reset",
+                self.center_x, self.center_y,
+                font_size=30, anchor_x='center'
+            )
+
     def on_key_press(self, key, modifiers):
         """
         Called whenever the mouse moves.
@@ -160,6 +167,9 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = -MOVEMENT_SPEED
         elif key == arcade.key.RIGHT:
             self.player_sprite.change_x = MOVEMENT_SPEED
+        elif key == arcade.key.R:
+            self.setup()
+            self.game_over = False
 
     def on_key_release(self, key, modifiers):
         """
@@ -200,8 +210,12 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    window.setup()
+    """ Main function """
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
+    game.setup()
+
+    window.show_view(game)
     arcade.run()
 
 

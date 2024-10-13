@@ -12,24 +12,24 @@ python -m arcade.examples.background_scrolling
 import arcade
 import arcade.future.background as background
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 
-SCREEN_TITLE = "Scrolling Background Example"
+WINDOW_TITLE = "Scrolling Background Example"
 
 PLAYER_SPEED = 300
 CAMERA_SPEED = 0.5
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__()
         self.camera = arcade.camera.Camera2D()
 
         # Load the background from file. Sized to match the screen
         self.background = background.Background.from_file(
             ":resources:/images/tiles/sandCenter.png",
-            size=(SCREEN_WIDTH, SCREEN_HEIGHT),
+            size=(WINDOW_WIDTH, WINDOW_HEIGHT),
         )
 
         # Create the player sprite.
@@ -63,16 +63,15 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
-        self.camera.use()
+        with self.camera.activate():
+            # Ensure the background aligns with the camera
+            self.background.pos = self.camera.bottom_left
 
-        # Ensure the background aligns with the camera
-        self.background.pos = self.camera.bottom_left
+            # Offset the background texture.
+            self.background.texture.offset = self.camera.bottom_left
 
-        # Offset the background texture.
-        self.background.texture.offset = self.camera.bottom_left
-
-        self.background.draw()
-        arcade.draw_sprite(self.player_sprite)
+            self.background.draw()
+            arcade.draw_sprite(self.player_sprite)
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol in (arcade.key.LEFT, arcade.key.A):
@@ -85,7 +84,7 @@ class MyGame(arcade.Window):
             self.y_direction += PLAYER_SPEED
         # Close the window if the user presses the escape key
         elif symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol in (arcade.key.LEFT, arcade.key.A):
@@ -106,8 +105,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    app = MyGame()
-    app.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

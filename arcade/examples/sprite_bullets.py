@@ -16,20 +16,20 @@ SPRITE_SCALING_COIN = 0.4
 SPRITE_SCALING_LASER = 0.8
 COIN_COUNT = 50
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprites and Bullets Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprites and Bullets Example"
 
 BULLET_SPEED = 5
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -41,7 +41,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
@@ -80,8 +80,8 @@ class MyGame(arcade.Window):
             )
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(120, SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(120, WINDOW_HEIGHT)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -162,13 +162,23 @@ class MyGame(arcade.Window):
                 arcade.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > SCREEN_HEIGHT:
+            if bullet.bottom > WINDOW_HEIGHT:
                 bullet.remove_from_sprite_lists()
 
 
 def main():
-    window = MyGame()
-    window.setup()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

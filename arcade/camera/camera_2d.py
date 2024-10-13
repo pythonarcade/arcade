@@ -318,6 +318,15 @@ class Camera2D:
         _view = generate_view_matrix(self.view_data)
         return unproject_orthographic(screen_coordinate, self.viewport.viewport, _view, _projection)
 
+    def equalise(self) -> None:
+        """
+        Forces the projection to match the size of the viewport.
+        When matching the projection to the viewport the method keeps
+        the projections center in the same relative place.
+        """
+        x, y = self._projection_data.rect.x, self._projection_data.rect.y
+        self._projection_data.rect = XYWH(x, y, self.viewport_width, self.viewport_height)
+
     def match_screen(
         self,
         and_projection: bool = True,
@@ -344,6 +353,44 @@ class Camera2D:
         """
         self.update_viewport(
             self._window.rect,
+            and_projection=and_projection,
+            and_scissor=and_scissor,
+            and_position=and_position,
+            aspect=aspect,
+        )
+
+    def match_target(
+        self,
+        and_projection: bool = True,
+        and_scissor: bool = True,
+        and_position: bool = False,
+        aspect: float | None = None,
+    ) -> None:
+        """
+        Sets the viewport to the size of the Camera2D's render target.
+
+        Args:
+            and_projection: Flag whether to also equalize the projection to the viewport.
+                On by default
+            and_scissor: Flag whether to also equalize the scissor box to the viewport.
+                On by default
+            and_position: Flag whether to also center the camera to the viewport.
+                Off by default
+            aspect_ratio: The ratio between width and height that the viewport should
+                be constrained to. If unset then the viewport just matches the window
+                size. The aspect ratio describes how much larger the width should be
+                compared to the height. i.e. for an aspect ratio of ``4:3`` you should
+                input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
+        Raises:
+            ValueError: Will be raised if the Camera2D was has no render target.
+        """
+        if self.render_target is None:
+            raise ValueError(
+                "Tried to match a non-exsistant render target. Please use `match_screen` instead"
+            )
+
+        self.update_viewport(
+            LRBT(*self.render_target.viewport),
             and_projection=and_projection,
             and_scissor=and_scissor,
             and_position=and_position,
@@ -396,7 +443,6 @@ class Camera2D:
             self.position = self.viewport.center
 
     def aabb(self) -> Rect:
-        # TODO test
         """
         Retrieve the axis-aligned bounds box of the camera's view area.
         If the camera isn't rotated , this will be precisely the view area,
@@ -819,15 +865,6 @@ class Camera2D:
         This causes sprites to appear 2.0x larger.
         """
         self._camera_data.zoom = _zoom
-
-    def equalise(self) -> None:
-        """
-        Forces the projection to match the size of the viewport.
-        When matching the projection to the viewport the method keeps
-        the projections center in the same relative place.
-        """
-        x, y = self._projection_data.rect.x, self._projection_data.rect.y
-        self._projection_data.rect = XYWH(x, y, self.viewport_width, self.viewport_height)
 
     # top_left
     @property

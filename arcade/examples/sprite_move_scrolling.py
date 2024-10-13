@@ -12,9 +12,9 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-DEFAULT_SCREEN_WIDTH = 1280
-DEFAULT_SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Move with Scrolling Screen Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -27,14 +27,14 @@ CAMERA_SPEED = 0.1
 PLAYER_MOVEMENT_SPEED = 7
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__()
 
         # Sprite lists
         self.player_list = None
@@ -187,8 +187,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

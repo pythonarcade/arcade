@@ -176,6 +176,22 @@ class WindowProxy:
     @size.setter
     def size(self, size):
         self.window.size = size
+    
+    @property
+    def center_x(self):
+        return self.window.center_x
+    
+    @property
+    def center_y(self):
+        return self.window.center_y
+
+    @property
+    def center(self):
+        return self.window.center
+
+    @property
+    def rect(self):
+        return self.window.rect
 
     @property
     def aspect_ratio(self):

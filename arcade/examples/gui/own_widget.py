@@ -157,7 +157,11 @@ class MyView(UIView):
         return None
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: Progressbar")
     window.show_view(MyView())
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()

@@ -111,7 +111,11 @@ class MyView(UIView):
         print(f"User logged in with: {username} {password}")
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: Hidden Password")
     window.show_view(MyView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

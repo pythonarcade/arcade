@@ -180,7 +180,11 @@ class LayoutView(arcade.gui.UIView):
         pass
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: Layouts")
     window.show_view(LayoutView())
     window.run()
+
+
+if __name__ == '__main__':
+    main()

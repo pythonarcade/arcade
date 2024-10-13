@@ -5,7 +5,6 @@ from typing import TypeVar
 from arcade import View
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets import UIWidget
-from arcade.types import RGBOrA255
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -30,7 +29,6 @@ class UIView(View):
     def __init__(self):
         super().__init__()
         self.ui = UIManager()
-        self.background_color: RGBOrA255 | None = None
 
     def add_widget(self, widget: W) -> W:
         """Add a widget to the UIManager of this view."""
@@ -48,7 +46,7 @@ class UIView(View):
         """To subclass UIView and add custom drawing, override on_draw_before_ui
         and on_draw_after_ui.
         """
-        self.clear(color=self.background_color)
+        self.clear()
         self.on_draw_before_ui()
         self.ui.draw()
         self.on_draw_after_ui()

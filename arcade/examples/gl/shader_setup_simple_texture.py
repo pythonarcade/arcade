@@ -8,15 +8,15 @@ python -m arcade.examples.gl.shader_setup_simple_texture
 import arcade
 from arcade.gl import geometry
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Shader Setup"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Shader Setup"
 
 
 class ShaderSetup(arcade.Window):
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
         self.program = self.ctx.program(
             vertex_shader="""
             #version 330

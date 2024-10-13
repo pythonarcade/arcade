@@ -8,9 +8,9 @@ import math
 import arcade
 
 # Constants
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Platformer"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
 TILE_SCALING = 0.5
@@ -163,8 +163,8 @@ class MainMenu(arcade.View):
         self.clear()
         arcade.draw_text(
             "Main Menu - Click To Play",
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT // 2,
+            WINDOW_WIDTH // 2,
+            WINDOW_HEIGHT // 2,
             arcade.color.BLACK,
             font_size=30,
             anchor_x="center"
@@ -553,8 +553,8 @@ class GameOverView(arcade.View):
         self.clear()
         arcade.draw_text(
             "Game Over - Click to Restart",
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT // 2,
+            WINDOW_WIDTH // 2,
+            WINDOW_HEIGHT // 2,
             arcade.color.WHITE,
             30,
             anchor_x="center"
@@ -566,7 +566,7 @@ class GameOverView(arcade.View):
 
 def main():
     """Main function"""
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     menu_view = MainMenu()
     window.show_view(menu_view)
     arcade.run()

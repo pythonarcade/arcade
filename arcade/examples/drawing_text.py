@@ -6,9 +6,9 @@ python -m arcade.examples.drawing_text
 """
 import arcade
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Drawing Text Example"
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Drawing Text Example"
 DEFAULT_LINE_HEIGHT = 45
 DEFAULT_FONT_SIZE = 20
 
@@ -16,13 +16,13 @@ DEFAULT_FONT_SIZE = 20
 arcade.resources.load_system_fonts()
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         self.background_color = arcade.color.BEIGE
         self.text_angle = 0
@@ -43,19 +43,19 @@ class MyGame(arcade.Window):
 
         # Add the screen title
         start_x = 0
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 1.5
         arcade.draw_text("Text Drawing Examples",
                          start_x,
                          start_y,
                          arcade.color.BLACK,
                          DEFAULT_FONT_SIZE * 2,
-                         width=SCREEN_WIDTH,
+                         width=WINDOW_WIDTH,
                          align="center")
 
         # start_x and start_y make the start point for the text. We draw a dot to make it
         # easy to see the text in relation to its start x and y.
         start_x = 10
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 3
         arcade.draw_text("Fonts:",
                          start_x,
                          start_y,
@@ -181,7 +181,7 @@ class MyGame(arcade.Window):
 
         # --- Column 2 ---
         start_x = 750
-        start_y = SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3
+        start_y = WINDOW_HEIGHT - DEFAULT_LINE_HEIGHT * 3
         arcade.draw_text("Text Positioning:",
                          start_x,
                          start_y,
@@ -263,11 +263,21 @@ class MyGame(arcade.Window):
     def on_key_press(self, symbol: int, modifiers: int):
         """ Handle key press events """
         if symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

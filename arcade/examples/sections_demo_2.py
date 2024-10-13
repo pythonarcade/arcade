@@ -102,7 +102,7 @@ class Player(arcade.Section):
         self.paddle.stop()
 
 
-class Pong(arcade.View):
+class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
@@ -205,9 +205,7 @@ def main():
     window = arcade.Window(title="Two player simple Pong with Sections!")
 
     # create the custom View
-    game = Pong()
-
-    # set up the game (start a game)
+    game = GameView()
     game.setup()
 
     # show the view

@@ -110,7 +110,11 @@ class MyView(UIView):
             )
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: CircleLayout")
     window.show_view(MyView())
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()
