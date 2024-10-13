@@ -1,4 +1,3 @@
-
 # Change Log
 
 You can grab pre-release versions from PyPi. See the available versions from the
@@ -10,7 +9,7 @@ Version 3.0.0 is a major update to Arcade. It breaks compatibility with the 2.6 
 
 ### Breaking Changes
 
-These are the breaking API changes, and is a quick reference for updating 2.6 code. You can find more details in later sections. Lots of behavior has changed even if the interface hasn't. If you are porting old code, read through these logs thoroughly.
+These are the breaking API changes. Use this as a quick reference for updating 2.6 code. You can find more details in later sections. Lots of behavior has changed even if the interface hasn't. If you are porting old code, read through these logs thoroughly.
 
 * Dropped Python 3.8 support completely.
 * Texture management has completely changed in  3.0. In the past, we
@@ -72,7 +71,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 
 ### Window and View
 
-* Removal of the `update` function in favor of `arcade.Window.on_update()`.
+* Removed the `update` function in favor of `arcade.Window.on_update()`.
 * The `update_rate` parameter in the constructor can no longer be set to `None` and must be a float.
 * A new `draw_rate` parameter in `arcade.Window.__init__`, controls the call interval of `arcade.Window.on_draw(). It is now possible to separate the draw and update speeds of Arcade windows. Keeping `draw_rate` close to the refresh rate of the user's monitor while setting `update_rate` to a much shorter interval can greatly improve the perceived smoothness of your application.
 * `open_window()` now accepts `**kwargs` to pass additional parameters to the `arcade.Window` constructor.
@@ -92,13 +91,13 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
 
 * Created `arcade.camera.Camera2D`, which allows for easy manipulation of Arcade and Pyglet's rendering matrices.
 * Created `arcade.camera.PerspectiveProjector` and `arcade.camera.OrthographicProjector`.
- which can manipulate the matrices in 3D space.
+ Which can manipulate the matrices in 3D space.
 * Created methods to rotate and move cameras.
 * Created methods to generate view and projection matrices needed by projector objects.
 * Created static projector classes to set the matrices with constant values.
 * Added a default camera that automatically adjusts to the active render target.
-* Added a camera shake object that makes it easy to add camera shake to a game.
-* All `Projector`s provide methods to project to and from the screen and world coordinates.
+* Added a camera shake object that makes adding a camera shake to a game easy.
+* All `Projector` classes provide methods to project to and from the screen and world coordinates.
 
 ### Textures
 
@@ -160,7 +159,7 @@ These are the breaking API changes, and is a quick reference for updating 2.6 co
   * Provides functions to create a full `Rect` object from four values.
   * Provides methods to move and scale the `Rect`.
   * Provides methods to compare against the `Rect` with 2D points and other `Rects`.
-* Added `AnchorPoint` helpers, which are aliases for `Vec2`s.
+* Added `AnchorPoint` helpers and aliases for `Vec2`s in the range (0 - 1).
 * Added several helper methods for creating `Rect` objects.
   * `LRBT(left, right, bottom, top)`
   * `LBWH(left, bottom, width, height)`
@@ -222,7 +221,7 @@ However, most people can treat it as depreciated. It is an alias to Pyglet's joy
 ### OpenGL
 
 * Support for OpenGL ES 3.1 and 3.2. 3.2 is fully supported, and 3.1 is only supported if the driver provides the `EXT_geometry_shader` extension. It is part of the minimum spec in 3.2, so it is guaranteed to be there. Arcade only needs this extension to function with 3.1.
- 	* For example, the Raspberry Pi 4/5 only supports OpenGL ES 3.1 but provides the extension, making it fully compatible with Arcade.
+ * For example, the Raspberry Pi 4/5 only supports OpenGL ES 3.1 but provides the extension, making it fully compatible with Arcade.
 * Textures now support immutable storage for OpenGL ES compatibility.
 * Arcade is now using Pyglet's projection and view matrix.
  All functions setting matrices will update the Pyglet window's
