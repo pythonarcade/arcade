@@ -60,7 +60,10 @@ else:
 import pyglet
 
 # Enable HiDPI support
-pyglet.options.dpi_scaling = "stretch"
+if os.environ.get("ARCADE_TEST"):
+    pyglet.options.dpi_scaling = "real"
+else:
+    pyglet.options.dpi_scaling = "stretch"
 
 # Env variable shortcut for headless mode
 headless: Final[bool] = bool(os.environ.get("ARCADE_HEADLESS"))
