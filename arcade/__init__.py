@@ -72,13 +72,8 @@ from arcade import utils
 if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_raspberry_pi():
     pyglet.options.shadow_window = False  # type: ignore # pending https://github.com/pyglet/pyglet/issues/1164
 
-# Enable HiDPI support on Windows
-if sys.platform == "win32":
-    pyglet.options.scale_with_dpi = True  # type: ignore # pending https://github.com/pyglet/pyglet/pull/1202
-    pyglet.options.dpi_scaling = "window_and_content"
-
-# Use the old gdi fonts on windows until directwrite is fast/stable
-# pyglet.options.win32_gdi_font = True
+# Enable HiDPI support
+pyglet.options.dpi_scaling = "scaled"
 
 # Imports from modules that don't do anything circular
 
