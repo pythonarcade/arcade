@@ -59,6 +59,8 @@ else:
 
 import pyglet
 
+# Enable HiDPI support
+pyglet.options.dpi_scaling = "stretch"
 
 # Env variable shortcut for headless mode
 headless: Final[bool] = bool(os.environ.get("ARCADE_HEADLESS"))
@@ -71,9 +73,6 @@ from arcade import utils
 # Disable shadow window on macs and in headless mode.
 if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_raspberry_pi():
     pyglet.options.shadow_window = False  # type: ignore # pending https://github.com/pyglet/pyglet/issues/1164
-
-# Enable HiDPI support
-pyglet.options.dpi_scaling = "scaled"
 
 # Imports from modules that don't do anything circular
 
