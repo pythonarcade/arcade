@@ -99,7 +99,6 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.sprite",
             "arcade.sprite.base",
             "arcade.sprite.sprite",
-            "arcade.sprite.simple",
             "arcade.sprite.colored",
             "arcade.sprite.mixins",
             "arcade.sprite.animated",
