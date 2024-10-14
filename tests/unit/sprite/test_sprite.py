@@ -125,6 +125,27 @@ def test_sprite_rgb_property_basics():
     assert sprite.color.a == 15
     assert sprite.alpha == 15
 
+def test_sprite_scale_constructor(window):
+    sprite = arcade.BasicSprite(SPRITE_TEXTURE_GOLD_COIN, scale=2.0)
+    assert sprite.scale == (2.0, 2.0)
+    sprite = arcade.BasicSprite(SPRITE_TEXTURE_GOLD_COIN, scale=(2.0, 1.0))
+    assert sprite.scale == (2.0, 1.0)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=3.0)
+    assert sprite.scale == (3.0, 3.0)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=(3.0, 1.0))
+    assert sprite.scale == (3.0, 1.0)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=(1.0, 2.0, 10.0, 100.0))
+    assert sprite.scale == (1.0, 2.0)
+    with pytest.raises(TypeError):
+        sprite = arcade.sprite(SPRITE_TEXTURE_GOLD_COIN, scale = test_sprite_scale_constructor)
+
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=1.0)
+    assert isinstance(sprite.scale, tuple)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=(1.0, 1.0))
+    assert isinstance(sprite.scale, tuple)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=[1.0, 1.0])
+    assert isinstance(sprite.scale, tuple)
+
 
 def test_sprite_scale_xy(window):
     sprite = arcade.SpriteSolidColor(20, 20, color=arcade.color.WHITE)

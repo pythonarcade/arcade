@@ -65,7 +65,7 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
         width, height = texture.size
-        self._scale = (scale, scale) if isinstance(scale, (float, int)) else scale
+        self._scale = (scale, scale) if isinstance(scale, (float, int)) else tuple(scale[:2])
         self._width = width * self._scale[0]
         self._height = height * self._scale[1]
         self._visible = bool(visible)
