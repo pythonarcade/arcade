@@ -31,7 +31,7 @@ class Sprite(BasicSprite, PymunkMixin):
     3. Call :py:meth:`SpriteList.draw() <arcade.SpriteList.draw>` on the
        instance inside your ``on_draw`` method.
 
-    For runnable examples of how to do this, please see arcade's
+    For runnable examples of how to do this, please see Arcade's
     :ref:`built-in Sprite examples <sprites>`.
 
     .. tip:: Advanced users should see :py:class:`~arcade.BasicSprite`

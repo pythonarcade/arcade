@@ -11,7 +11,7 @@ The root of the tree is the :py:class:`~arcade.gui.UIManager`. The
 :py:class:`UIManager` connects the user interactions with the GUI. Read more about
 :ref:`UIEvent`.
 
-Classes of arcade's GUI code are prefixed with ``UI-`` to make them easy to
+Classes of Arcade's GUI code are prefixed with ``UI-`` to make them easy to
 identify and search for in autocompletion.
 
 Classes
@@ -45,7 +45,7 @@ It automatically enables and disables the
 UIWidget
 ````````
 
-The :py:class:`~arcade.gui.UIWidget` class is the core of arcade's GUI system.
+The :py:class:`~arcade.gui.UIWidget` class is the core of Arcade's GUI system.
 Widgets specify the behavior and graphical representation of any UI element,
 such as buttons or labels.
 
@@ -288,7 +288,7 @@ Styling options are shown in the table below.
 |``font_size``   |Font size for the button text. Defaults to 12.              |
 +----------------+------------------------------------------------------------+
 |``font_name``   |Font name or family for the button text. If a tuple is      |
-|                |supplied then arcade will attempt to load all of the fonts, |
+|                |supplied then Arcade will attempt to load all of the fonts, |
 |                |prioritizing the first one. Defaults to                     |
 |                |``("calibri", "arial")``.                                   |
 +----------------+------------------------------------------------------------+
@@ -339,7 +339,7 @@ flat buttons.
 |``font_size``   |Font size for the button text. Defaults to 12.              |
 +----------------+------------------------------------------------------------+
 |``font_name``   |Font name or family for the button text. If a tuple is      |
-|                |supplied then arcade will attempt to load all of the fonts, |
+|                |supplied then Arcade will attempt to load all of the fonts, |
 |                |prioritizing the first one. Defaults to                     |
 |                |``("calibri", "arial")``.                                   |
 +----------------+------------------------------------------------------------+

@@ -31,7 +31,12 @@ class MyGame(arcade.Window):
         self.load_shader()
 
         # Sprites and sprite lists
-        self.player_sprite = None
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+            center_x=256,
+            center_y=512,
+        )
         self.wall_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.bomb_list = arcade.SpriteList()
@@ -100,7 +105,7 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
 
         self.channel1.use()
-        self.channel1.clear()
+        self.channel1.clear(color=arcade.color.AMAZON)
         # Draw the bombs
         self.bomb_list.draw()
 

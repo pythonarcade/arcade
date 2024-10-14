@@ -25,13 +25,13 @@ def draw_circle_filled(
             width of the circle.
         color:
             A 3 or 4 length tuple of 0-255 channel values
-            or a :py:class:`~arcade.types.Color` instance.
+            or a :py:class:`.Color` instance.
         tilt_angle:
             Angle in degrees to tilt the circle. Useful for low segment count circles
         num_segments:
             Number of triangle segments that make up this circle.
             Higher is better quality, but slower render time.
-            The default value of -1 means arcade will try to calculate a reasonable
+            The default value of -1 means Arcade will try to calculate a reasonable
             amount of segments based on the size of the circle.
     """
     draw_ellipse_filled(
@@ -66,7 +66,7 @@ def draw_circle_outline(
             width of the circle.
         color:
             A 3 or 4 length tuple of 0-255 channel values
-            or a :py:class:`~arcade.types.Color` instance.
+            or a :py:class:`.Color` instance.
         border_width:
             Width of the circle outline in pixels.
         tilt_angle:
@@ -75,7 +75,7 @@ def draw_circle_outline(
         num_segments:
             Number of triangle segments that make up this circle.
             Higher is better quality, but slower render time.
-            The default value of -1 means arcade will try to calculate a reasonable
+            The default value of -1 means Arcade will try to calculate a reasonable
             amount of segments based on the size of the circle.
     """
     draw_ellipse_outline(
@@ -113,9 +113,9 @@ def draw_ellipse_filled(
             height of the ellipse.
         color:
             A 3 or 4 length tuple of 0-255 channel values
-            or a :py:class:`~arcade.types.Color` instance.
+            or a :py:class:`.Color` instance.
         color:
-            Either a :py:class:`~arcade.types.Color` instance
+            Either a :py:class:`.Color` instance
             or an RGBA :py:class:`tuple` of 4 byte values (0 to 255).
         tilt_angle:
             Angle in degrees to tilt the ellipse (clockwise).
@@ -123,7 +123,7 @@ def draw_ellipse_filled(
         num_segments:
             Number of triangle segments that make up this circle.
             Higher is better quality, but slower render time.
-            The default value of -1 means arcade will try to calculate a reasonable
+            The default value of -1 means Arcade will try to calculate a reasonable
             amount of segments based on the size of the circle.
     """
     # Fail immediately if we have no window or context
@@ -173,7 +173,7 @@ def draw_ellipse_outline(
             height of the ellipse.
         color:
             A 3 or 4 length tuple of 0-255 channel values
-            or a :py:class:`~arcade.types.Color` instance.
+            or a :py:class:`.Color` instance.
         border_width:
             Width of the circle outline in pixels.
         tilt_angle:
@@ -182,7 +182,7 @@ def draw_ellipse_outline(
         num_segments:
             Number of triangle segments that make up this circle.
             Higher is better quality, but slower render time.
-            The default value of -1 means arcade will try to calculate a reasonable
+            The default value of -1 means Arcade will try to calculate a reasonable
             amount of segments based on the size of the circle.
     """
     # Fail immediately if we have no window or context

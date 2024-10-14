@@ -14,11 +14,15 @@ from array import array
 import arcade
 from arcade.gl import BufferDescription
 
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Transform Emit - GPU"
 
-class TransformEmit(arcade.Window):
+class GameView(arcade.View):
 
     def __init__(self):
-        super().__init__(1280, 720, "Transform Emit")
+        super().__init__()
+        self.ctx = self.window.ctx
 
         # Program to simply draw the points
         self.visualize_points_program = self.ctx.program(
@@ -189,7 +193,7 @@ class TransformEmit(arcade.Window):
             # print("Emitting", emit_count)
 
             # Emit some particles
-            self.emit_program["time"] = self.time
+            self.emit_program["time"] = self.window.time
             self.emit_geometry.transform(
                 self.emit_program,
                 [self.buffer_pos_1, self.buffer_vel_1],
@@ -210,4 +214,20 @@ class TransformEmit(arcade.Window):
         # print("after moving", self.active_points)
 
 
-TransformEmit().run()
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
+
+
+if __name__ == "__main__":
+    main()

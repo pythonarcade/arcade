@@ -13,6 +13,7 @@ import copy
 import math
 import os
 from collections import OrderedDict
+from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, cast
 
@@ -30,6 +31,7 @@ from arcade import (
     get_window,
 )
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
+from arcade.types import RGBA255
 from arcade.types import Color as ArcadeColor
 
 if TYPE_CHECKING:
@@ -699,7 +701,10 @@ class TileMap:
         )
 
         if layer.transparent_color:
-            data = my_texture.image.getdata()
+            # The pillow source doesn't annotate a return type for this method, but:
+            # 1. The docstring does specify the returned object is sequence-like
+            # 2. We convert to RGBA mode implicitly in load_or_get_texture above
+            data: Sequence[RGBA255] = my_texture.image.getdata()  # type:ignore
 
             target = layer.transparent_color
             new_data = []

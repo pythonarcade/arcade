@@ -13,7 +13,7 @@ Please note the following:
 * They are only hints, and do not guarantee that a specific size will
   be provided.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.6_size_hints
 """
 
@@ -137,7 +137,12 @@ class MyView(UIView):
         self.ui.debug()
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="UIExample: Size Hints")
     window.show_view(MyView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()
+

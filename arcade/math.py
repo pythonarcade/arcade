@@ -6,7 +6,7 @@ from typing import TypeVar
 
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import HasAddSubMul, Point, Point2
+from arcade.types import HasAddSubMul, Point, Point2, SupportsRichComparison
 from arcade.types.rect import Rect
 from arcade.types.vector_like import Point3
 
@@ -34,8 +34,12 @@ __all__ = [
     "quaternion_rotation",
 ]
 
+SupportsRichComparisonT = TypeVar("SupportsRichComparisonT", bound=SupportsRichComparison)
 
-def clamp(a, low: float, high: float) -> float:
+
+def clamp(
+    a: SupportsRichComparisonT, low: SupportsRichComparisonT, high: SupportsRichComparisonT
+) -> SupportsRichComparisonT:
     """Clamp a number between a range.
 
     Args:
@@ -43,7 +47,8 @@ def clamp(a, low: float, high: float) -> float:
         low (float): The lower bound
         high (float): The upper bound
     """
-    return high if a > high else max(a, low)
+    # Python will deal with > unsupported by falling back on <.
+    return high if a > high else max(a, low)  # type: ignore
 
 
 # This TypeVar helps match v1 and v2 as the same type below in lerp's
@@ -95,7 +100,7 @@ def lerp_2d(v1: Point2, v2: Point2, u: float) -> Vec2:
 def lerp_3d(v1: Point3, v2: Point3, u: float) -> Vec3:
     """Linearly interpolate between two 3D points passed as sequences.
 
-    .. tip:: This function returns a :py:class:`Vec2` you can use
+    .. tip:: This function returns a :py:class:`Vec3` you can use
              with :py:func`lerp`.
 
     Args:
@@ -104,6 +109,79 @@ def lerp_3d(v1: Point3, v2: Point3, u: float) -> Vec3:
         u (float): The interpolation value `(0.0 to 1.0)`
     """
     return Vec3(lerp(v1[0], v2[0], u), lerp(v1[1], v2[1], u), lerp(v1[2], v2[2], u))
+
+
+def smerp(v1: L, v2: L, dt: float, h: float) -> L:
+    """
+    Smoothly interpolate between two values indepentdant of time.
+    use as `a = smerp(a, b, delta_time, 16)`.
+
+    .. tip:: To find the ideal decay constant (half-life) you can use:
+             `h = -t / math.log2(p)` where p is how close (percentage) you'd like to be
+             to the target value in t seconds.
+             i.e if in 1 second you'd like to be within 1% then h ~= 0.15051
+
+    Args:
+        v1: The first value to interpolate from.
+        v2: The second value to interpolate to.
+        dt: The time in seconds that has passed since v1 was interpolated last
+        h: The decay constant. The higher the faster v1 reaches v2.
+           0.1-25.0 is a good range.
+    """
+
+    return v2 + (v1 - v2) * math.pow(2.0, -dt / h)
+
+
+def smerp_2d(v1: Point2, v2: Point2, dt: float, h: float) -> Vec2:
+    """
+    Smoothly interpolate between two sequences of length 2 indepentdant of time.
+    use as `a = smerp_2d(a, b, delta_time, 16)`.
+
+    .. tip:: To find the ideal decay constant (half-life) you can use:
+             `h = -t / math.log2(p)` where p is how close (percentage) you'd like to be
+             to the target value in t seconds.
+             i.e if in 1 second you'd like to be within 1% then h ~= 0.15051
+
+    .. tip::  This function returns a :py:class:`Vec2` you can use
+             with :py:func`smerp`.
+
+    Args:
+        v1: The first value to interpolate from.
+        v2: The second value to interpolate to.
+        dt: The time in seconds that has passed since v1 was interpolated last
+        h: The decay constant. The lower the faster v1 reaches v2.
+           0.1-25.0 is a good range.
+    """
+    x1, y1 = v1
+    x2, y2 = v2
+    d = math.pow(2.0, -dt / h)
+    return Vec2(x2 + (x1 - x2) * d, y2 + (y1 - y2) * d)
+
+
+def smerp_3d(v1: Point3, v2: Point3, dt: float, h: float) -> Vec3:
+    """
+    Smoothly interpolate between two sequences of length 3 indepentdant of time.
+    use as `a = smerp_3d(a, b, delta_time, 16)`.
+
+    .. tip:: To find the ideal decay constant (half-life) you can use:
+             `h = -t / math.log2(p)` where p is how close (percentage) you'd like to be
+             to the target value in t seconds.
+             i.e if in 1 second you'd like to be within 1% then h ~= 0.15051
+
+    .. tip::  This function returns a :py:class:`Vec3` you can use
+             with :py:func`smerp`.
+
+    Args:
+        v1: The first value to interpolate from.
+        v2: The second value to interpolate to.
+        dt: The time in seconds that has passed since v1 was interpolated last
+        h: The decay constant. The higher the faster v1 reaches v2.
+           0.1-25.0 is a good range.
+    """
+    x1, y1, z1 = v1
+    x2, y2, z2 = v2
+    d = math.pow(2.0, -dt / h)
+    return Vec3(x2 + (x1 - x2) * d, y2 + (y1 - y2) * d, z2 + (z1 - z2) * d)
 
 
 def lerp_angle(start_angle: float, end_angle: float, u: float) -> float:

@@ -41,7 +41,7 @@ from arcade.math import clamp
 CHOICES = ["meow", "woof"]  # Which facts to display
 
 
-class AnimalFacts(arcade.View):
+class GameView(arcade.View):
     """Display a random cat fact"""
     def __init__(self):
         super().__init__()
@@ -266,13 +266,24 @@ class DogFacts(Facts):
             return arcade.Texture(PIL.Image.open(fd).convert("RGBA"))
 
 
+def main():
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(1280, 720, "Random Animal Facts", resizable=True, vsync=True)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
+
 if __name__ == "__main__":
+    """ Main function """
     animal_service = AnimaFactsService()
     print("Starting animal fact service...")
     pid = animal_service.start()
     print("Service started. pid:", pid)
 
-    window = arcade.open_window(1280, 720, "Random Animal Facts", resizable=True)
-    window.set_vsync(True)
-    window.show_view(AnimalFacts())
-    arcade.run()
+    main()

@@ -23,7 +23,12 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title, resizable=True)
 
         # Sprites and sprite lists
-        self.player_sprite = None
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+            center_x=256,
+            center_y=512,
+        )
         self.wall_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.bomb_list = arcade.SpriteList()
@@ -33,7 +38,7 @@ class MyGame(arcade.Window):
         self.background_color = arcade.color.ARMY_GREEN
 
     def generate_sprites(self):
-        # -- Set up several columns of walls
+        # -- Set up several columns of walls (that will cast shadows)
         for x in range(0, PLAYING_FIELD_WIDTH, 128):
             for y in range(0, PLAYING_FIELD_HEIGHT, int(128 * SPRITE_SCALING)):
                 # Randomly skip a box so the player can find a way through
@@ -54,11 +59,7 @@ class MyGame(arcade.Window):
                     placed = True
             self.bomb_list.append(bomb)
 
-        # Create the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
-        self.player_sprite.center_x = 256
-        self.player_sprite.center_y = 512
+        # Add player to spritelist
         self.player_list.append(self.player_sprite)
 
         # Physics engine, so we don't run into walls

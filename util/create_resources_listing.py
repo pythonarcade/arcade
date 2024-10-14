@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from typing import List
 
-# Ensure we get utility and arcade imports first
+# Ensure we get utility and Arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
 

@@ -12,9 +12,9 @@ SPRITE_SCALING = 0.5
 SPRITE_NATIVE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_NATIVE_SIZE * SPRITE_SCALING)
 
-SCREEN_WIDTH = SPRITE_SIZE * 14
-SCREEN_HEIGHT = SPRITE_SIZE * 10
-SCREEN_TITLE = "Sprite Rooms Example"
+WINDOW_WIDTH = SPRITE_SIZE * 14
+WINDOW_HEIGHT = SPRITE_SIZE * 10
+WINDOW_TITLE = "Sprite Rooms Example"
 
 MOVEMENT_SPEED = 5
 
@@ -48,9 +48,9 @@ def setup_room_1():
     # -- Set up the walls
     # Create bottom and top row of boxes
     # This y loops a list of two, the coordinate 0, and just under the top of window
-    for y in (0, SCREEN_HEIGHT - SPRITE_SIZE):
+    for y in (0, WINDOW_HEIGHT - SPRITE_SIZE):
         # Loop for each box going across
-        for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
+        for x in range(0, WINDOW_WIDTH, SPRITE_SIZE):
             wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
                                  scale=SPRITE_SCALING)
             wall.left = x
@@ -58,9 +58,9 @@ def setup_room_1():
             room.wall_list.append(wall)
 
     # Create left and right column of boxes
-    for x in (0, SCREEN_WIDTH - SPRITE_SIZE):
+    for x in (0, WINDOW_WIDTH - SPRITE_SIZE):
         # Loop for each box going across
-        for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
+        for y in range(SPRITE_SIZE, WINDOW_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up on the right side
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x == 0:
                 wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
@@ -89,9 +89,9 @@ def setup_room_2():
     # -- Set up the walls
     # Create bottom and top row of boxes
     # This y loops a list of two, the coordinate 0, and just under the top of window
-    for y in (0, SCREEN_HEIGHT - SPRITE_SIZE):
+    for y in (0, WINDOW_HEIGHT - SPRITE_SIZE):
         # Loop for each box going across
-        for x in range(0, SCREEN_WIDTH, SPRITE_SIZE):
+        for x in range(0, WINDOW_WIDTH, SPRITE_SIZE):
             wall = arcade.Sprite(
                 ":resources:images/tiles/boxCrate_double.png",
                 scale=SPRITE_SCALING,
@@ -101,9 +101,9 @@ def setup_room_2():
             room.wall_list.append(wall)
 
     # Create left and right column of boxes
-    for x in (0, SCREEN_WIDTH - SPRITE_SIZE):
+    for x in (0, WINDOW_WIDTH - SPRITE_SIZE):
         # Loop for each box going across
-        for y in range(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
+        for y in range(SPRITE_SIZE, WINDOW_HEIGHT - SPRITE_SIZE, SPRITE_SIZE):
             # Skip making a block 4 and 5 blocks up
             if (y != SPRITE_SIZE * 4 and y != SPRITE_SIZE * 5) or x != 0:
                 wall = arcade.Sprite(
@@ -122,14 +122,14 @@ def setup_room_2():
     return room
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Sprite lists
         self.current_room = 0
@@ -182,7 +182,7 @@ class MyGame(arcade.Window):
         # Draw the background texture
         arcade.draw_texture_rect(
             self.rooms[self.current_room].background,
-            rect=arcade.LBWH(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+            rect=arcade.LBWH(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
         )
 
         # Draw all the walls in this room
@@ -222,7 +222,7 @@ class MyGame(arcade.Window):
 
         # Do some logic here to figure out what room we are in, and if we need to go
         # to a different room.
-        if self.player_sprite.center_x > SCREEN_WIDTH and self.current_room == 0:
+        if self.player_sprite.center_x > WINDOW_WIDTH and self.current_room == 0:
             self.current_room = 1
             self.physics_engine = arcade.PhysicsEngineSimple(
                 self.player_sprite,
@@ -235,13 +235,22 @@ class MyGame(arcade.Window):
                 self.player_sprite,
                 self.rooms[self.current_room].wall_list,
             )
-            self.player_sprite.center_x = SCREEN_WIDTH
+            self.player_sprite.center_x = WINDOW_WIDTH
 
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

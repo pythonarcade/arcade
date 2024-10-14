@@ -16,9 +16,9 @@ from arcade.types import Color
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Easing Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Easing Example"
 
 BACKGROUND_COLOR = "#F5D167"
 TEXT_COLOR = "#4B1DF2"
@@ -50,7 +50,7 @@ class EasingCircle(arcade.SpriteCircle):
             done, self.center_x = easing.ease_update(self.easing_x_data, delta_time)
             if done:
                 x = X_START
-                if self.center_x < SCREEN_WIDTH / 2:
+                if self.center_x < WINDOW_WIDTH / 2:
                     x = X_END
                 ex, ey = easing.ease_position(self.position,
                                               (x, self.center_y),
@@ -64,14 +64,14 @@ class EasingCircle(arcade.SpriteCircle):
                 self.easing_y_data = None
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """ Initializer """
 
         # Call the parent class initializer
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Set the background color
         self.background_color = Color.from_hex_string(BACKGROUND_COLOR)
@@ -184,8 +184,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

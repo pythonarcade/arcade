@@ -25,7 +25,7 @@ def draw_parabola_filled(
             The height of the parabola
         color:
             A 3 or 4 length tuple of 0-255 channel values
-            or a :py:class:`~arcade.types.Color` instance.
+            or a :py:class:`.Color` instance.
         tilt_angle:
             The angle of the tilt of the parabola (clockwise)
     """
@@ -60,7 +60,7 @@ def draw_parabola_outline(
             The height of the parabola
         color:
             A 3 or 4 length tuple of 0-255 channel values
-            or a :py:class:`~arcade.types.Color` instance.
+            or a :py:class:`.Color` instance.
         border_width:
             The width of the parabola
         tilt_angle:

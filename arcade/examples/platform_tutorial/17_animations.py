@@ -6,9 +6,9 @@ python -m arcade.examples.platform_tutorial.17_animations
 import arcade
 
 # Constants
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Platformer"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
 TILE_SCALING = 0.5
@@ -104,7 +104,7 @@ class PlayerCharacter(Character):
         self.texture = self.walk_textures[self.cur_texture][self.facing_direction]
         
 
-class MyGame(arcade.Window):
+class GameView(arcade.Window):
     """
     Main application class.
     """
@@ -112,7 +112,7 @@ class MyGame(arcade.Window):
     def __init__(self):
 
         # Call the parent class and set up the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
         # Track the current state of our input
         self.left_pressed = False
@@ -351,7 +351,7 @@ class MyGame(arcade.Window):
 
 def main():
     """Main function"""
-    window = MyGame()
+    window = GameView()
     window.setup()
     arcade.run()
 

@@ -6,7 +6,7 @@ The game is controlled with the arrow keys or WASD.
 
 At the beginning of the game, the UI camera is used, to apply some animations.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.4_with_camera
 """
 
@@ -260,7 +260,11 @@ class MyCoinGame(UIView):
         return False
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(1280, 720, "GUI Example: Coin Game (Camera)", resizable=False)
     window.show_view(MyCoinGame())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

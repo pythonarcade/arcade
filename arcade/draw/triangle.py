@@ -19,7 +19,7 @@ def draw_triangle_filled(
         x3: x value of third coordinate.
         y3: y value of third coordinate.
         color: Color of the triangle as an RGBA :py:class:`tuple` or
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
     """
     point_list = (
         (x1, y1),
@@ -50,7 +50,7 @@ def draw_triangle_outline(
         x3: x value of third coordinate.
         y3: y value of third coordinate.
         color: RGBOrA255 of triangle as an RGBA
-            :py:class:`tuple` or :py:class`~arcade.types.Color` instance.
+            :py:class:`tuple` or :py:class:`.Color` instance.
         border_width: Width of the border in pixels. Defaults to 1.
     """
     point_list = (

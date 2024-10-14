@@ -312,6 +312,21 @@ class Context:
         return self._info
 
     @property
+    def extensions(self) -> set[str]:
+        """
+        Get a set of supported OpenGL extensions strings for this context.
+
+        This can be used to check if a specific extension is supported::
+
+            # Check if bindless textures are supported
+            "GL_ARB_bindless_texture" in ctx.extensions
+            # Check for multiple extensions
+            expected_extensions = {"GL_ARB_bindless_texture", "GL_ARB_get_program_binary"}
+            ctx.extensions & expected_extensions == expected_extensions
+        """
+        return gl.gl_info.get_extensions()
+
+    @property
     def stats(self) -> ContextStats:
         """
         Get the stats instance containing runtime information

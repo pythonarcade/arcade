@@ -20,12 +20,12 @@ import arcade
 from arcade.gl import geometry
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 64 * 10
-SCREEN_HEIGHT = 32 * 10
-SCREEN_TITLE = "CHIP-8 Screen"
+WINDOW_WIDTH = 64 * 10
+WINDOW_HEIGHT = 32 * 10
+WINDOW_TITLE = "CHIP-8 Screen"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.Window):
 
     def __init__(self, width, height, title):
         """CHIP-8 Screen"""
@@ -70,7 +70,7 @@ class MyGame(arcade.Window):
         self.program["projection"] = self.projection
         self.program["screen"] = 0
         b = 0  # border to test scale
-        self.quad = geometry.screen_rectangle(b, b, SCREEN_WIDTH - b * 2, SCREEN_HEIGHT - b * 2)
+        self.quad = geometry.screen_rectangle(b, b, WINDOW_WIDTH - b * 2, WINDOW_HEIGHT - b * 2)
         self.texture = self.ctx.texture((8, 32), components=1, dtype="i1")
         # fmt: off
         self.texture.write(array(
@@ -123,5 +123,5 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    GameView(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     arcade.run()

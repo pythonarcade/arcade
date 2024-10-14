@@ -23,7 +23,7 @@ about the inner workings of headless, that's the right place to look.
 Enabling headless mode
 ----------------------
 
-Headless mode needs to be configured **before** arcade is imported.
+Headless mode needs to be configured **before** Arcade is imported.
 This can be done in the following ways:
 
 .. code:: py
@@ -75,7 +75,7 @@ created through the :py:class:`~arcade.ArcadeContext` if needed.
 
 .. Warning::
 
-    If you are creating and destroying a lot of arcade objects
+    If you are creating and destroying a lot of Arcade objects
     you might want to look into :py:attr:`arcade.gl.Context.gc_mode`.
     In Arcade we normally do garbage collection of OpenGL objects
     once per frame by calling :py:meth:`~arcade.gl.Context.gc`.

@@ -47,7 +47,7 @@ def get_display_size(screen_id: int = 0) -> tuple[int, int]:
     Returns:
         Tuple containing the width and height of the screen
     """
-    display = pyglet.display.Display()
+    display = pyglet.display.Display()  # type: ignore  # pending: pyglet fixes import tricks
     screen = display.get_screens()[screen_id]
     return screen.width, screen.height
 
@@ -190,7 +190,7 @@ def start_render(pixelated=False, blend=True) -> None:
     Call :py:func:`arcade.finish_render` to stop recording. The
     start_render/finish_render calls can only be called once.
 
-    When running arcade this buffer will be presented to the screen.
+    When running Arcade this buffer will be presented to the screen.
 
     A few configuration options are available in this function.
 

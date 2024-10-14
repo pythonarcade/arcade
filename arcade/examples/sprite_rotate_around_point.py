@@ -12,13 +12,13 @@ python -m arcade.examples.sprite_rotate_around_point
 import arcade
 from arcade.math import rotate_point
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-QUARTER_WIDTH = SCREEN_WIDTH // 4
-HALF_HEIGHT = SCREEN_HEIGHT // 2
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+QUARTER_WIDTH = WINDOW_WIDTH // 4
+HALF_HEIGHT = WINDOW_HEIGHT // 2
 
 
-SCREEN_TITLE = "Rotating Sprites Around Points"
+WINDOW_TITLE = "Rotating Sprites Around Points"
 
 
 class RotatingSprite(arcade.Sprite):
@@ -52,10 +52,10 @@ class RotatingSprite(arcade.Sprite):
             point[0], point[1], degrees)
 
 
-class ExampleWindow(arcade.Window):
+class GameView(arcade.View):
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         self.sprites = arcade.SpriteList()
 
@@ -71,7 +71,7 @@ class ExampleWindow(arcade.Window):
 
         self.laser_text = arcade.Text(
             "change_angle = True",
-            QUARTER_WIDTH, SCREEN_HEIGHT // 2 - 150,
+            QUARTER_WIDTH, WINDOW_HEIGHT // 2 - 150,
             anchor_x='center')
 
         # This example demonstrates how to make platforms rotate around a point
@@ -115,8 +115,18 @@ class ExampleWindow(arcade.Window):
 
 
 def main():
-    window = ExampleWindow()
-    window.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == '__main__':

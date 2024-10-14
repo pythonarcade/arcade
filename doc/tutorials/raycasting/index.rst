@@ -91,7 +91,7 @@ output.
 How does this shader work?
 For each point in our output, this ``mainImage`` function runs and
 calculates our output color. For a window that is 800x600 pixels, this function runs
-480,000 times for each frame. Modern GPUs can have anywhere between 500-5,000 "cores"
+480,000 times for each frame. Modern GPUs can have anywhere between 500-5,000 "threads"
 that can calculate these points in parallel for faster processing.
 
 Our current coordinate we are calculating we've brought in as a parameter called ``fragCoord``.
@@ -333,7 +333,9 @@ With an N of 10:
    :width: 40%
 
 We can use an N of 500 to get a good quality shadow. We might need more if
-your barriers are small, and the light range is large.
+your barriers are small, and the light range is large. Note that the effect
+gets increasingly expensive the higher N is. Some tweaks are likely needed
+to find the lowest N that still looks good.
 
 .. image:: n500.png
    :width: 40%

@@ -55,7 +55,7 @@ def _generic_draw_line_strip(
             So it is a list of lists.
         color:
             A color, specified as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
     """
     # Fail if we don't have a window, context, or right GL abstractions
     window = get_window()
@@ -70,7 +70,7 @@ def _generic_draw_line_strip(
     rgba = Color.from_iterable(color)
     num_vertices = len(point_list)  # Fail if it isn't a sized / sequence object
 
-    # Translate Python objects into types arcade's Buffer objects accept
+    # Translate Python objects into types Arcade's Buffer objects accept
     color_array = array.array("B", rgba * num_vertices)
     vertex_array = array.array("f", tuple(item for sublist in point_list for item in sublist))
     geometry.num_vertices = num_vertices
