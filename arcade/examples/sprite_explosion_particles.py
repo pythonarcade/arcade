@@ -90,7 +90,7 @@ class Smoke(arcade.SpriteCircle):
             self.alpha -= int(SMOKE_FADE_RATE * time_step)
             self.center_x += self.change_x * time_step
             self.center_y += self.change_y * time_step
-            self.scale += SMOKE_EXPANSION_RATE * time_step
+            self.add_scale(SMOKE_EXPANSION_RATE * time_step)
 
 
 class Particle(arcade.SpriteCircle):

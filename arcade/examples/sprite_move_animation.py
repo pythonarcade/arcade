@@ -112,9 +112,7 @@ class GameView(arcade.View):
         # Set up the player
         self.score = 0
         self.player = PlayerCharacter(self.idle_texture_pair, self.walk_texture_pairs)
-
-        self.player.center_x = WINDOW_WIDTH // 2
-        self.player.center_y = WINDOW_HEIGHT // 2
+        self.player.position = self.center
         self.player.scale = 0.8
 
         self.player_list.append(self.player)
