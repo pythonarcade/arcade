@@ -283,3 +283,15 @@ html[data-theme="dark"] .rst-footer-buttons .btn-neutral:hover {
     background-color: #1a1a1a !important;
 }
 
+/*
+ * .. sidebar:: directive
+ */
+ html[data-theme="dark"] .sidebar {
+    background-color: var(--color-sidebar-bg-dark) !important;
+    border: 5px solid #333 !important;
+    border-radius: 4px !important;
+}
+
+html[data-theme="dark"] .sidebar-title {
+    background-color:  #0b0c0d !important;
+}

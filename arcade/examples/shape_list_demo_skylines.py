@@ -13,9 +13,9 @@ from arcade.shape_list import (
     create_rectangles_filled_with_colors,
 )
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Skyline Using Buffered Shapes"
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 600
+WINDOW_TITLE = "Skyline Using Buffered Shapes"
 
 
 def make_star_field(star_count):
@@ -23,8 +23,8 @@ def make_star_field(star_count):
     shape_list = ShapeElementList()
 
     for _ in range(star_count):
-        x = random.randrange(SCREEN_WIDTH)
-        y = random.randrange(SCREEN_HEIGHT)
+        x = random.randrange(WINDOW_WIDTH)
+        y = random.randrange(WINDOW_HEIGHT)
         radius = random.randrange(1, 4)
         brightness = random.randrange(127, 256)
         color = (brightness, brightness, brightness)
@@ -152,19 +152,19 @@ def make_skyline(width, skyline_height, skyline_color,
     return shape_list
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
         # Enable vertical sync to make scrolling smoother
-        self.set_vsync(True)
+        self.window.set_vsync(True)
 
         self.stars = make_star_field(150)
-        self.skyline1 = make_skyline(SCREEN_WIDTH * 5, 250, (80, 80, 80))
-        self.skyline2 = make_skyline(SCREEN_WIDTH * 5, 150, (50, 50, 50))
+        self.skyline1 = make_skyline(WINDOW_WIDTH * 5, 250, (80, 80, 80))
+        self.skyline2 = make_skyline(WINDOW_WIDTH * 5, 150, (50, 50, 50))
 
         self.background_color = arcade.color.BLACK
 
@@ -192,8 +192,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    window.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

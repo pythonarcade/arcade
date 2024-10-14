@@ -15,9 +15,9 @@ import math
 
 SPRITE_SCALING = 1.0
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprite Collect Coins Moving in Circles Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Collect Coins Moving in Circles Example"
 
 
 class Coin(arcade.Sprite):
@@ -52,12 +52,12 @@ class Coin(arcade.Sprite):
         self.circle_angle += self.circle_speed
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
 
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Sprite lists
         self.all_sprites_list = None
@@ -67,7 +67,7 @@ class MyGame(arcade.Window):
         self.score = 0
         self.player_sprite = None
 
-    def start_new_game(self):
+    def setup(self):
         """ Set up the game and initialize the variables. """
 
         # Sprite lists
@@ -92,8 +92,8 @@ class MyGame(arcade.Window):
             coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING / 3)
 
             # Position the center of the circle the coin will orbit
-            coin.circle_center_x = random.randrange(SCREEN_WIDTH)
-            coin.circle_center_y = random.randrange(SCREEN_HEIGHT)
+            coin.circle_center_x = random.randrange(WINDOW_WIDTH)
+            coin.circle_center_y = random.randrange(WINDOW_HEIGHT)
 
             # Random radius from 10 to 200
             coin.circle_radius = random.randrange(10, 200)
@@ -106,7 +106,7 @@ class MyGame(arcade.Window):
             self.coin_list.append(coin)
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         # Set the background color
         self.background_color = arcade.color.AMAZON
@@ -145,8 +145,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.start_new_game()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

@@ -14,18 +14,18 @@ python -m arcade.examples.background_groups
 import arcade
 import arcade.future.background as background
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
 
-SCREEN_TITLE = "Background Group Example"
+WINDOW_TITLE = "Background Group Example"
 
 PLAYER_SPEED = 300
 CAMERA_SPEED = 0.5
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__()
         # Set the background color to equal to that of the first background.
         self.background_color = (5, 44, 70)
 
@@ -41,19 +41,19 @@ class MyGame(arcade.Window):
         self.backgrounds.add_from_file(
             ":resources:/images/cybercity_background/far-buildings.png",
             (0.0, 240.0),
-            (SCREEN_WIDTH, 576),
+            (WINDOW_WIDTH, 576),
             scale=3,
         )
         self.backgrounds.add_from_file(
             ":resources:/images/cybercity_background/back-buildings.png",
             (0.0, 120.0),
-            (SCREEN_WIDTH, 576),
+            (WINDOW_WIDTH, 576),
             scale=3,
         )
         self.backgrounds.add_from_file(
             ":resources:/images/cybercity_background/foreground.png",
             (0.0, 0.0),
-            (SCREEN_WIDTH, 576),
+            (WINDOW_WIDTH, 576),
             scale=3,
         )
 
@@ -98,13 +98,11 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
-        self.camera.use()
+        with self.camera.activate():
+            with self.window.ctx.enabled(self.window.ctx.BLEND):
+                self.backgrounds.draw()
 
-        self.ctx.enable(self.ctx.BLEND)
-        self.backgrounds.draw()
-        self.ctx.disable(self.ctx.BLEND)
-
-        arcade.draw_sprite(self.player_sprite)
+            arcade.draw_sprite(self.player_sprite)
 
     def on_key_press(self, symbol: int, modifiers: int):
         # Support arrow keys and ASWD
@@ -118,7 +116,7 @@ class MyGame(arcade.Window):
             self.y_direction += PLAYER_SPEED
         # Close the window if the user presses escape
         elif symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_key_release(self, symbol: int, modifiers: int):
         if symbol in (arcade.key.LEFT, arcade.key.A):
@@ -136,8 +134,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    app = MyGame()
-    app.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
+
+    # Create and setup the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

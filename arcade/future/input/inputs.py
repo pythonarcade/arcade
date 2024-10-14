@@ -76,6 +76,42 @@ class ControllerButtons(StrEnum):
     DPAD_DOWN = "dpdown"
 
 
+class XBoxControllerButtons(StrEnum):
+    Y = ControllerButtons.TOP_FACE
+    B = ControllerButtons.RIGHT_FACE
+    X = ControllerButtons.LEFT_FACE
+    A = ControllerButtons.BOTTOM_FACE
+    LEFT_BUMPER = ControllerButtons.LEFT_SHOULDER
+    RIGHT_BUMPER = ControllerButtons.RIGHT_SHOULDER
+    START = ControllerButtons.START
+    SELECT = ControllerButtons.BACK
+    GUIDE = ControllerButtons.GUIDE
+    LEFT_STICK = ControllerButtons.LEFT_STICK
+    RIGHT_STICK = ControllerButtons.RIGHT_STICK
+    DPAD_LEFT = ControllerButtons.DPAD_LEFT
+    DPAD_RIGHT = ControllerButtons.DPAD_RIGHT
+    DPAD_UP = ControllerButtons.DPAD_UP
+    DPAD_DOWN = ControllerButtons.DPAD_DOWN
+
+
+class PSControllerButtons(StrEnum):
+    TRIANGLE = ControllerButtons.TOP_FACE
+    CIRCLE = ControllerButtons.RIGHT_FACE
+    SQUARE = ControllerButtons.LEFT_FACE
+    CROSS = ControllerButtons.BOTTOM_FACE
+    L1 = ControllerButtons.LEFT_SHOULDER
+    R1 = ControllerButtons.RIGHT_SHOULDER
+    START = ControllerButtons.START
+    SELECT = ControllerButtons.BACK
+    GUIDE = ControllerButtons.GUIDE
+    LEFT_STICK = ControllerButtons.LEFT_STICK
+    RIGHT_STICK = ControllerButtons.RIGHT_STICK
+    DPAD_LEFT = ControllerButtons.DPAD_LEFT
+    DPAD_RIGHT = ControllerButtons.DPAD_RIGHT
+    DPAD_UP = ControllerButtons.DPAD_UP
+    DPAD_DOWN = ControllerButtons.DPAD_DOWN
+
+
 class Keys(InputEnum):
     # Key modifiers
     # Done in powers of two, so you can do a bit-wise 'and' to detect

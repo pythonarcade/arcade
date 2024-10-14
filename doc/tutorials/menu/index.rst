@@ -9,7 +9,7 @@ Making a Menu with Arcade's GUI
 .. image:: menu.gif
     :width: 80%
 
-This tutorial shows how to use most of arcade's gui's widgets.
+This tutorial shows how to use most of Arcade's gui's widgets.
 
 Step 1: Open a Window
 ---------------------
@@ -35,7 +35,7 @@ For this section we will switch the current view of the window to the menu view.
 Imports
 ~~~~~~~
 
-First we will import the arcade gui:
+First we will import the Arcade gui:
 
 .. literalinclude:: menu_02.py
     :caption: Importing arcade.gui
@@ -263,7 +263,7 @@ in the last also for those of you who are skipping through this section :P.
 Adding a Toggle Button
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Don't go on the section title much, in arcade the ``UITextureToggle`` is not
+Don't go on the section title much, in Arcade the ``UITextureToggle`` is not
 really a button it switches between two textures when clicked. Yes, it
 functions like a button but by "is not really a button" we meant that it
 doesn't inherits the button class. We also pair it up horizontally with the
@@ -298,7 +298,7 @@ Adding it to the widget layout.
 Adding a Slider
 ~~~~~~~~~~~~~~~
 
-The final widget. In arcade you can use ``UISlider`` to implement a slider. 
+The final widget. In Arcade you can use ``UISlider`` to implement a slider. 
 Theres a functionality to style the slider, this is also present for 
 ``UIFlatButton`` and ``UITextureButton``.
 

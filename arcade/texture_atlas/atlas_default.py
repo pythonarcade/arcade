@@ -14,6 +14,7 @@ from weakref import WeakSet, WeakValueDictionary, finalize
 
 import PIL.Image
 from PIL import Image, ImageDraw
+from PIL.Image import Resampling
 from pyglet.image.atlas import (
     Allocator,
     AllocatorException,
@@ -73,7 +74,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
     keeping up to date.
 
     The atlas deals with image and textures. The image is the actual
-    image data. The texture is the arcade texture object that contains
+    image data. The texture is the Arcade texture object that contains
     the image and other information about such as transforms.
     Several textures can share the same image with different transforms
     applied. The transforms are simply changing the order of the texture
@@ -170,13 +171,12 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # atlas_name: Set of textures with matching atlas name
         self._unique_textures: dict[str, WeakSet[Texture]] = dict()
 
-        # Add all the textures
-        for tex in textures or []:
-            self.add(tex)
-
         self._textures_added = 0
         self._textures_removed = 0
         self._finalizers_created = 0
+
+        for tex in textures or []:
+            self.add(tex)
 
     @property
     def max_width(self) -> int:
@@ -504,10 +504,10 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
             # Resize the strips to the border size if larger than 1
             if self._border > 1:
-                strip_top = strip_top.resize((image.width, self._border), Image.NEAREST)
-                strip_bottom = strip_bottom.resize((image.width, self._border), Image.NEAREST)
-                strip_left = strip_left.resize((self._border, image.height), Image.NEAREST)
-                strip_right = strip_right.resize((self._border, image.height), Image.NEAREST)
+                strip_top = strip_top.resize((image.width, self._border), Resampling.NEAREST)
+                strip_bottom = strip_bottom.resize((image.width, self._border), Resampling.NEAREST)
+                strip_left = strip_left.resize((self._border, image.height), Resampling.NEAREST)
+                strip_right = strip_right.resize((self._border, image.height), Resampling.NEAREST)
 
             tmp.paste(strip_top, (self._border, 0))
             tmp.paste(strip_bottom, (self._border, tmp.height - self._border))
@@ -854,7 +854,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
     def update_texture_image_from_atlas(self, texture: "Texture") -> None:
         """
-        Update the arcade Texture's internal image with the pixel data content
+        Update the Arcade Texture's internal image with the pixel data content
         from the atlas texture on the GPU. This can be useful if you render
         into the atlas and need to update the texture with the new pixel data.
 

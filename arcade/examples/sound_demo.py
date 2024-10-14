@@ -22,20 +22,20 @@ import typing
 
 import arcade
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sound Panning Demo"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sound Panning Demo"
 BUTTON_SIZE = 30
 
 
 SOUND_PANNING = [-1.0, -0.5, 0.0, 0.5, 1.0]
-MARGIN = SCREEN_WIDTH / 4
+MARGIN = WINDOW_WIDTH / 4
 BUTTON_X_POSITIONS = [
     MARGIN,
-    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 1,
-    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 2,
-    MARGIN + (SCREEN_WIDTH - MARGIN * 2) / 3 * 3,
-    SCREEN_WIDTH - MARGIN,
+    MARGIN + (WINDOW_WIDTH - MARGIN * 2) / 3 * 1,
+    MARGIN + (WINDOW_WIDTH - MARGIN * 2) / 3 * 2,
+    MARGIN + (WINDOW_WIDTH - MARGIN * 2) / 3 * 3,
+    WINDOW_WIDTH - MARGIN,
 ]
 
 
@@ -77,9 +77,9 @@ class SoundButton(arcade.SpriteSolidColor):
         self.sound.play(pan=self.pan, volume=self.volume)
 
 
-class MyGame(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+class GameView(arcade.View):
+    def __init__(self):
+        super().__init__()
         self.background_color = arcade.color.AMAZON
         self.button_sprites = None
 
@@ -93,7 +93,7 @@ class MyGame(arcade.Window):
                 pan=-1.0,
                 volume=0.1,
                 center_x=BUTTON_X_POSITIONS[0],
-                center_y=SCREEN_HEIGHT / 2 + 150,
+                center_y=WINDOW_HEIGHT / 2 + 150,
                 streaming=True
             )
         )
@@ -110,7 +110,7 @@ class MyGame(arcade.Window):
                         pan_setting,
                         vol,
                         x_pos,
-                        SCREEN_HEIGHT / 2 + y_offset,
+                        WINDOW_HEIGHT / 2 + y_offset,
                     )
                 )
 
@@ -130,8 +130,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
     game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

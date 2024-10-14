@@ -9,9 +9,9 @@ python -m arcade.examples.gl.shader_setup
 import arcade
 from arcade.gl import geometry
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Shader Setup With Pixel Manipulation"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Shader Setup With Pixel Manipulation"
 
 
 class ShaderSetup(arcade.Window):
@@ -93,4 +93,4 @@ class ShaderSetup(arcade.Window):
         self.quad.render(self.program)
 
 
-ShaderSetup(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE).run()
+ShaderSetup(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE).run()

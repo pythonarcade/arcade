@@ -16,7 +16,7 @@ def draw_line_strip(point_list: Point2List, color: RGBOrA255, line_width: float 
             List of x, y points that make up this strip
         color:
             A color, specified as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
         line_width:
             Width of the line
     """
@@ -59,7 +59,7 @@ def draw_line(
             y position of line ending point.
         color:
             A color, specified as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
         line_width:
             Width of the line in pixels.
     """
@@ -96,7 +96,7 @@ def draw_lines(point_list: Point2List, color: RGBOrA255, line_width: float = 1) 
             So it is a list of lists.
         color:
             A color, specified as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`.Color` instance.
         line_width:
             Width of the line in pixels.
     """

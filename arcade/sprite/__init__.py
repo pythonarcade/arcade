@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import PIL.Image
 
 from arcade.texture import Texture
@@ -22,9 +24,9 @@ from .enums import (
 )
 
 
-def load_animated_gif(resource_name) -> TextureAnimationSprite:
+def load_animated_gif(resource_name: str | Path) -> TextureAnimationSprite:
     """
-    Attempt to load an animated GIF as an :class:`TextureAnimationSprite`.
+    Attempt to load an animated GIF as a :class:`TextureAnimationSprite`.
 
     .. note::
 
@@ -33,16 +35,27 @@ def load_animated_gif(resource_name) -> TextureAnimationSprite:
         the format better, loading animated GIFs will be pretty buggy. A
         good workaround is loading GIFs in another program and exporting them
         as PNGs, either as sprite sheets or a frame per file.
+
+    Args:
+        resource_name: A path to a GIF as either a :py:class:`pathlib.Path`
+            or a :py:class:`str` which may include a
+            :ref:`resource handle <resource_handles>`.
+
     """
 
     file_name = resolve(resource_name)
     image_object = PIL.Image.open(file_name)
-    if not image_object.is_animated:
+
+    # Pillow doc recommends testing for the is_animated attribute as of 10.0.0
+    # https://pillow.readthedocs.io/en/stable/deprecations.html#categories
+    if not getattr(image_object, "is_animated", False) or not (
+        n_frames := getattr(image_object, "n_frames", 0)
+    ):
         raise TypeError(f"The file {resource_name} is not an animated gif.")
 
     sprite = TextureAnimationSprite()
     keyframes = []
-    for frame in range(image_object.n_frames):
+    for frame in range(n_frames):
         image_object.seek(frame)
         frame_duration = image_object.info["duration"]
         image = image_object.convert("RGBA")

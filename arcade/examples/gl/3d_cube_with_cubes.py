@@ -11,7 +11,7 @@ import arcade
 from arcade.gl import geometry
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.Window):
 
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=False)
@@ -144,4 +144,4 @@ class MyGame(arcade.Window):
 
 
 if __name__ == "__main__":
-    MyGame(720, 720, "3D Cube").run()
+    GameView(720, 720, "3D Cube").run()

@@ -9,9 +9,9 @@ import pymunk
 import timeit
 import math
 
-SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Pymunk 2 Example"
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Pymunk 2 Example"
 
 """
 Key bindings:
@@ -54,11 +54,11 @@ class BoxSprite(PhysicsSprite):
         self.height = height
 
 
-class MyApplication(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         self.background_color = arcade.color.DARK_SLATE_GRAY
 
@@ -92,7 +92,7 @@ class MyApplication(arcade.Window):
         shape = pymunk.Segment(
             body,
             (0, self.floor_height),
-            (SCREEN_WIDTH, self.floor_height),
+            (WINDOW_WIDTH, self.floor_height),
             0.0,
         )
         shape.friction = 10
@@ -134,18 +134,18 @@ class MyApplication(arcade.Window):
         # arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 20, arcade.color.WHITE)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.WHITE)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
         output = f"Mode: {self.mode}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.WHITE)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 60, arcade.color.WHITE)
 
         output = f"Physics: {self.physics}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.WHITE)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 80, arcade.color.WHITE)
 
     def make_box(self, x, y):
         size = 45
@@ -186,7 +186,7 @@ class MyApplication(arcade.Window):
         if self.shape_1 is None:
             print("Shape 1 Selected")
             self.shape_1 = shape_selected
-        elif self.shape_2 is None:
+        elif self.shape_2 is None and self.shape_1.shape != shape_selected.shape:
             print("Shape 2 Selected")
             self.shape_2 = shape_selected
             joint = pymunk.PinJoint(self.shape_1.shape.body, self.shape_2.shape.body)
@@ -195,6 +195,9 @@ class MyApplication(arcade.Window):
             self.shape_1 = None
             self.shape_2 = None
             print("Joint Made")
+        else:
+            print("Shapes Deselected")
+            self.shape_1 = self.shape_2 = None
 
     def make_damped_spring(self, x, y):
         shape_selected = self.get_shape(x, y)
@@ -204,7 +207,7 @@ class MyApplication(arcade.Window):
         if self.shape_1 is None:
             print("Shape 1 Selected")
             self.shape_1 = shape_selected
-        elif self.shape_2 is None:
+        elif self.shape_2 is None and self.shape_1.shape != shape_selected.shape:
             print("Shape 2 Selected")
             self.shape_2 = shape_selected
             joint = pymunk.DampedSpring(
@@ -218,6 +221,9 @@ class MyApplication(arcade.Window):
             self.shape_1 = None
             self.shape_2 = None
             print("Joint Made")
+        else:
+            print("Shapes deselected")
+            self.shape_1 = self.shape_2 = None
 
     def get_shape(self, x, y):
         # See if we clicked on anything
@@ -334,8 +340,18 @@ class MyApplication(arcade.Window):
 
 
 def main():
-    window = MyApplication(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.run()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":

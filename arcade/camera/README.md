@@ -5,7 +5,7 @@ This is an overview of how the new Arcade Cameras work.
 ## Key Concepts
 
 ### World Space
-Whenever an object has a position within arcade that position is in world space. How much 1 unit in world
+Whenever an object has a position within Arcade that position is in world space. How much 1 unit in world
 space represents is arbitrary. For example when a sprite has a scale of 1.0 then 1 unit in world space is
 equal to one pixel of the sprite's source texture. This does not necessarily equate to one pixel on the screen.
 

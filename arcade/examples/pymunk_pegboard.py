@@ -21,9 +21,9 @@ import random
 import timeit
 import math
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Pymunk Pegboard Example"
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Pymunk Pegboard Example"
 
 
 class CircleSprite(arcade.Sprite):
@@ -38,11 +38,11 @@ class CircleSprite(arcade.Sprite):
         self.pymunk_shape = pymunk_shape
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         self.peg_list = arcade.SpriteList()
         self.ball_list: arcade.SpriteList[CircleSprite] = arcade.SpriteList()
@@ -60,13 +60,13 @@ class MyGame(arcade.Window):
         self.ticks_to_next_ball = 10
 
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        shape = pymunk.Segment(body, (0, 10), (SCREEN_WIDTH, 10), 0.0)
+        shape = pymunk.Segment(body, (0, 10), (WINDOW_WIDTH, 10), 0.0)
         shape.friction = 10
         self.space.add(shape, body)
         self.static_lines.append(shape)
 
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        shape = pymunk.Segment(body, (SCREEN_WIDTH - 50, 10), (SCREEN_WIDTH, 30), 0.0)
+        shape = pymunk.Segment(body, (WINDOW_WIDTH - 50, 10), (WINDOW_WIDTH, 30), 0.0)
         shape.friction = 10
         self.space.add(shape, body)
         self.static_lines.append(shape)
@@ -113,10 +113,10 @@ class MyGame(arcade.Window):
 
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE, 12)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 20, arcade.color.WHITE, 12)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 12)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.WHITE, 12)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -128,8 +128,8 @@ class MyGame(arcade.Window):
             radius = 15
             inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
             body = pymunk.Body(mass, inertia)
-            x = random.randint(0, SCREEN_WIDTH)
-            y = SCREEN_HEIGHT
+            x = random.randint(0, WINDOW_WIDTH)
+            y = WINDOW_HEIGHT
             body.position = x, y
             shape = pymunk.Circle(body, radius, pymunk.Vec2d(0, 0))
             shape.friction = 0.3
@@ -162,8 +162,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

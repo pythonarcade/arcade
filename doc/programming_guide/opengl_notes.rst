@@ -31,7 +31,7 @@ Garbage Collection & Threads
 
 OpenGL is not thread safe meaning doing actions from
 anything but the main thread is not possible. You
-can still use threads with arcade, but they cannot
+can still use threads with Arcade, but they cannot
 interact with anything that affects OpenGL objects.
 This will throw an error immediately.
 
@@ -113,7 +113,7 @@ calculations such as:
 * Simple console emulators drawing their internal screen buffer
 
 There should be no typing issues when using Python's built-in buffer
-protocol objects as arguments to the ``write`` method of arcade's GL
+protocol objects as arguments to the ``write`` method of Arcade's GL
 objects. We list these built-in types in the
 ``arcade.arcade_types.BufferProtocol``
 `Union <https://docs.python.org/3/library/typing.html#typing.Union>`_

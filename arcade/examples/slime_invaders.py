@@ -20,9 +20,9 @@ SPRITE_SCALING_PLAYER = 0.75
 SPRITE_SCALING_enemy = 0.75
 SPRITE_SCALING_LASER = 1.0
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Slime Invaders"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Slime Invaders"
 
 BULLET_SPEED = 5
 ENEMY_SPEED = 2
@@ -32,7 +32,7 @@ MAX_PLAYER_BULLETS = 3
 # This margin controls how close the enemy gets to the left or right side
 # before reversing direction.
 ENEMY_VERTICAL_MARGIN = 15
-RIGHT_ENEMY_BORDER = SCREEN_WIDTH - ENEMY_VERTICAL_MARGIN
+RIGHT_ENEMY_BORDER = WINDOW_WIDTH - ENEMY_VERTICAL_MARGIN
 LEFT_ENEMY_BORDER = ENEMY_VERTICAL_MARGIN
 
 # How many pixels to move the enemy down when reversing
@@ -43,13 +43,13 @@ GAME_OVER = 1
 PLAY_GAME = 0
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.player_list = arcade.SpriteList()
@@ -74,7 +74,7 @@ class MyGame(arcade.Window):
         self.enemy_change_x = -ENEMY_SPEED
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
@@ -147,7 +147,7 @@ class MyGame(arcade.Window):
     def reset(self):
         """
         Reset the game so it can be played again.
-        This is not a standard arcade method. It's simply an example of how
+        This is not a standard Arcade method. It's simply an example of how
         you might reset the game.
         """
         self.game_state = PLAY_GAME
@@ -196,7 +196,7 @@ class MyGame(arcade.Window):
         # Draw game over if the game state is such
         if self.game_state == GAME_OVER:
             self.game_over_text.draw()
-            self.set_mouse_visible(True)
+            self.window.set_mouse_visible(True)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
@@ -358,7 +358,7 @@ class MyGame(arcade.Window):
                 arcade.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > SCREEN_HEIGHT:
+            if bullet.bottom > WINDOW_HEIGHT:
                 bullet.remove_from_sprite_lists()
 
     def on_update(self, delta_time):
@@ -376,8 +376,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    window.reset()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.reset()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

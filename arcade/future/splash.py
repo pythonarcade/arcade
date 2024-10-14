@@ -1,10 +1,10 @@
 """
-An experimental splash screen for arcade.
+An experimental splash screen for Arcade.
 
-This is a simple splash screen that shows the arcade logo
+This is a simple splash screen that shows the Arcade logo
 for a few seconds before the actual game starts.
 
-If arcade is properly installed, you can run this script with:
+If Arcade is properly installed, you can run this script with:
 python -m arcade.gui.experimental.splash
 """
 
@@ -13,7 +13,7 @@ from arcade import Sprite, SpriteList, Text, View
 
 
 class ArcadeSplash(View):
-    """This view shows an arcade splash screen before the actual game starts.
+    """This view shows an Arcade splash screen before the actual game starts.
 
     Args:
         view: Next view to show after the splash screen.
@@ -62,7 +62,7 @@ class ArcadeSplash(View):
         if self._time >= self._duration:
             self.window.show_view(self._next_view)
 
-        # fade in arcade logo
+        # fade in Arcade logo
         self._logo.alpha = min(255, int(255 * self._time / self._duration))
 
     def on_draw(self):

@@ -2,7 +2,7 @@
 Release Note History
 ====================
 
-Change log from order arcade versions.
+Change log from order Arcade versions.
 
 Version 2.6.17
 --------------
@@ -56,7 +56,7 @@ Version 2.6.14
   * :py:class:`~arcade.Camera` should no longer apply zoom on the z axis
   * Promote using :py:meth:`arcade.View.on_show_view` in examples
     and tutorials
-  * The arcade window and views now expose :py:meth:`arcade.Window.on_enter`
+  * The Arcade window and views now expose :py:meth:`arcade.Window.on_enter`
     :py:meth:`arcade.Window.on_leave`. These events are triggered
     when the mouse enters and leaves the window area.
   * Sections should now also support mouse enter/leave events
@@ -69,7 +69,7 @@ Version 2.6.14
   * Removed ``Texture.draw_transformed``
   * Add support for changing the pitch while playing a sound. See the `speed` parameter in
     :py:func:`arcade.play_sound`.
-  * Set better blending defaults for arcade GUI
+  * Set better blending defaults for Arcade GUI
   * Can now create a texture filled with a single color. See :py:meth:`Texture.create_filled`.
     The Sprite class will use this when creating a solid colored sprite.
   * Bump version numbers of Sphinx, Pillow to current release as of 17-May.
@@ -93,7 +93,7 @@ Version 2.6.14
 * Docs / Tutorials / Examples
 
   * Updated install docs
-  * Added tutorial for compiling an arcade game with Nuika
+  * Added tutorial for compiling an Arcade game with Nuitka
   * Improved/extended shadertoy tutorials
   * Added example using textures with shadertoy
   * Added sprite rotation examples
@@ -398,7 +398,7 @@ Version 2.6.10
   * Fixed a bug causing sprites to have incorrect scale when passing a texture
     during creation.
   * Removed the texture transform feature in sprites. This feature no longer
-    makes sense since arcade 2.6.0 due to the new texture atlas feature.
+    makes sense since Arcade 2.6.0 due to the new texture atlas feature.
 
 * Tiled Maps
 
@@ -586,9 +586,9 @@ Version 2.6.6
 * Window:
   
   * Added ``samples`` parameter so user can specify antialiasing quality.
-  * The arcade window should fall back to no antialiasing if the window
+  * The Arcade window should fall back to no antialiasing if the window
     creation fails. Some drivers/hardware don't support it. For example
-    when running arcade in WSL or services like Repl.it.
+    when running Arcade in WSL or services like Repl.it.
 
 * SpriteList
 
@@ -1046,7 +1046,7 @@ Version 2.5.7
 Fixes
 ~~~~~
 
-* The arcade gui should now respect the current viewport
+* The Arcade gui should now respect the current viewport
 * Fixed an issue with UILabel allocating large amounts of
   textures over time consuming a lot of memory
 * Fixed an issue with the initial viewport sometimes being
@@ -1063,7 +1063,7 @@ New Features
 **replit.com**
 
 Arcade should now work out of the box on replit.com. We detect
-when arcade runs in replit tweaking various settings. One important
+when Arcade runs in replit tweaking various settings. One important
 setting we disable is antialiasing since this doesn't work
 well with software rendering.
 
@@ -1380,7 +1380,7 @@ Version 2.4 Under-the-hood improvements
 A brand new low level rendering API wrapping OpenGL 3.3 core was added in this release.
 It's loosely based on the `ModernGL <https://github.com/moderngl/moderngl>`_ API,
 so ModernGL users should be able to pick it up fast.
-This API is used by arcade for all the higher level drawing functionality, but
+This API is used by Arcade for all the higher level drawing functionality, but
 can also be used by end users to really take advantage of their GPU. More
 guides and tutorials around this is likely to appear in the future.
 
@@ -1390,7 +1390,7 @@ A simplified list of features in the new API:
   introduced and can be found through the ``window.ctx`` property.
   This object offers methods to create opengl resources such as textures,
   programs/shaders, framebuffers, buffers and queries. It also has shortcuts for changing
-  various context states. When working with OpenGL in arcade you are encouraged to use
+  various context states. When working with OpenGL in Arcade you are encouraged to use
   ``arcade.gl`` instead of ``pyglet.gl``. This is important as the context is doing
   quite a bit of bookkeeping to make our life easier.
 * New :py:class:`~arcade.gl.Texture` class supporting a wide variety of formats such as 8/16/32 bit
@@ -1723,7 +1723,7 @@ Version 2.2.0
 * Enhancement: Added ``load_spritesheet`` for loading images from a sprite sheet
 * Enhancement: Updates to physics engine to better handle non-rectangular sprites
 * Enhancement: Add SpriteSolidColor class, for creating a single-color rectangular sprite
-* Enhancement: Expose type hints to modules that depend on arcade via PEP 561
+* Enhancement: Expose type hints to modules that depend on Arcade via PEP 561
   `Issue 533 <https://github.com/pvcraven/arcade/issues/533>`_
   and `Issue 534 <https://github.com/pvcraven/arcade/issues/534>`_
 * Enhancement: Add font_color to gui.TextButton init `Issue 521 <https://github.com/pvcraven/arcade/issues/521>`_
@@ -1766,7 +1766,7 @@ Version 2.1.5
 Version 2.1.4
 -------------
 
-* Fix: Error when importing arcade on Raspberry Pi 4  `Issue 485 <https://github.com/pvcraven/arcade/issues/485>`_
+* Fix: Error when importing Arcade on Raspberry Pi 4  `Issue 485 <https://github.com/pvcraven/arcade/issues/485>`_
 * Fix: Transparency not working in draw functions `Issue 489 <https://github.com/pvcraven/arcade/issues/489>`_
 * Fix: Order of parameters in draw_ellipse documentation `Issue 490 <https://github.com/pvcraven/arcade/issues/490>`_
 * Raise better error on data classes missing

@@ -25,6 +25,7 @@ class GameView(arcade.View):
 
         # Set up the player info
         self.player_sprite = None
+        self.score_text = arcade.Text("Score: 0", 10, 10, arcade.color.WHITE, 14)
         self.score = 0
 
         # Don't show the mouse cursor
@@ -73,7 +74,8 @@ class GameView(arcade.View):
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        self.score_text.text = output
+        self.score_text.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle Mouse Motion """

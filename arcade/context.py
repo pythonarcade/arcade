@@ -22,6 +22,7 @@ from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.framebuffer import Framebuffer
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture2D
+from arcade.gl.types import PyGLenum
 from arcade.gl.vertex_array import Geometry
 from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
 
@@ -246,7 +247,7 @@ class ArcadeContext(Context):
         """
         The default texture atlas.
 
-        This is created when arcade is initialized.
+        This is created when Arcade is initialized.
         All sprite lists will use use this atlas unless a different atlas
         is passed in the :py:class:`arcade.SpriteList` constructor.
         """
@@ -451,8 +452,12 @@ class ArcadeContext(Context):
         path: str | Path,
         *,
         flip: bool = True,
+        wrap_x: PyGLenum | None = None,
+        wrap_y: PyGLenum | None = None,
+        filter: tuple[PyGLenum, PyGLenum] | None = None,
         build_mipmaps: bool = False,
         internal_format: int | None = None,
+        immutable: bool = False,
         compressed: bool = False,
     ) -> Texture2D:
         """
@@ -479,6 +484,12 @@ class ArcadeContext(Context):
                 Path to texture
             flip:
                 Flips the image upside down. Default is ``True``.
+            wrap_x:
+                The wrap mode for the x-axis. Default is ``None``.
+            wrap_y:
+                The wrap mode for the y-axis. Default is ``None``.
+            filter:
+                The min and mag filter. Default is ``None``.
             build_mipmaps:
                 Build mipmaps for the texture. Default is ``False``.
             internal_format (optional):
@@ -492,7 +503,7 @@ class ArcadeContext(Context):
 
         path = resolve(path)
 
-        image = Image.open(str(path))
+        image: Image.Image = Image.open(str(path))  # type: ignore
 
         if flip:
             image = image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
@@ -501,7 +512,11 @@ class ArcadeContext(Context):
             image.size,
             components=4,
             data=image.convert("RGBA").tobytes(),
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            filter=filter,
             internal_format=internal_format,
+            immutable=immutable,
             compressed=compressed,
         )
         image.close()

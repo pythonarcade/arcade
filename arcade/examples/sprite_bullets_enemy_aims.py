@@ -8,17 +8,17 @@ python -m arcade.examples.sprite_bullets_enemy_aims
 import arcade
 import math
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Sprites and Bullets Enemy Aims Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprites and Bullets Enemy Aims Example"
 BULLET_SPEED = 4
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         self.background_color = arcade.color.BLACK
 
@@ -47,7 +47,7 @@ class MyGame(arcade.Window):
             scale=0.5,
         )
         enemy.center_x = 120
-        enemy.center_y = SCREEN_HEIGHT - enemy.height
+        enemy.center_y = WINDOW_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
@@ -56,8 +56,8 @@ class MyGame(arcade.Window):
             ":resources:images/space_shooter/playerShip1_green.png",
             scale=0.5,
         )
-        enemy.center_x = SCREEN_WIDTH - 120
-        enemy.center_y = SCREEN_HEIGHT - enemy.height
+        enemy.center_x = WINDOW_WIDTH - 120
+        enemy.center_y = WINDOW_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
@@ -126,14 +126,22 @@ class MyGame(arcade.Window):
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
         """Called whenever the mouse moves. """
-        self.player.center_x = x
-        self.player.center_y = y
+        self.player.position = x, y
 
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

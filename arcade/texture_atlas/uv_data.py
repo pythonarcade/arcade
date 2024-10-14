@@ -37,7 +37,7 @@ class UVData:
 
     Args:
         ctx:
-            The arcade context
+            The Arcade context
         capacity:
             The number of textures the atlas keeps track of.
             This is multiplied by 4096. Meaning capacity=2 is 8192 textures.

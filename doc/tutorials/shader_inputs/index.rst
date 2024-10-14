@@ -75,7 +75,7 @@ Drawing To Texture From The Shader
 Finally we have an example of reading from and writing to the same texture with
 a shader.
 
-We use the ``with fbo:`` syntax to tell arcade that we wish to render to the new
+We use the ``with fbo:`` syntax to tell Arcade that we wish to render to the new
 frambuffer rather than default one. 
 
 Once the shader has updated the framebuffer we need to copy its contents to the 
