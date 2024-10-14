@@ -5,6 +5,7 @@ import logging
 import math
 
 from arcade import Texture
+from arcade.types import Point2
 
 from .enums import (
     FACE_DOWN,
@@ -236,7 +237,7 @@ class AnimatedWalkingSprite(Sprite):
 
     def __init__(
         self,
-        scale: float = 1.0,
+        scale: float | Point2 = 1.0,
         center_x: float = 0.0,
         center_y: float = 0.0,
         **kwargs,
