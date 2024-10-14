@@ -237,6 +237,13 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
     assert sprite.width == 40
     assert sprite.height == 40
 
+def test_sprite_scale_invalid(window):
+    sprite = arcade.Sprite(SPRITE_TEXTURE_FEMALE_PERSON_IDLE)
+
+    with pytest.raises(ValueError):
+        sprite.scale = 1, 2, 3
+    with pytest.raises(TypeError):
+        sprite.scale = test_sprite_scale_invalid
 
 # TODO: Possibly separate into a movement module
 def test_strafe(window):
