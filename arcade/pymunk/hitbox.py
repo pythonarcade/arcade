@@ -11,7 +11,7 @@ from pymunk.autogeometry import (
 
 from arcade.types import RGBA255, Point2, Point2List
 
-from .base import HitBoxAlgorithm
+from arcade.hitbox.base import HitBoxAlgorithm
 
 
 class PymunkHitBoxAlgorithm(HitBoxAlgorithm):

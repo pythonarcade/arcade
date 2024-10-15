@@ -9,9 +9,10 @@ from arcade import Texture
 from arcade.hitbox import HitBox, RotatableHitBox
 from arcade.texture import get_default_texture
 from arcade.types import PathOrTexture, Point2
+from arcade.pymunk import PymunkMixin
 
 from .base import BasicSprite
-from .mixins import PymunkMixin
+
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.sprite_list import SpriteList

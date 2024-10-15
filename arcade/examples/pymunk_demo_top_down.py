@@ -2,14 +2,18 @@
 Example of Pymunk Physics Engine
 Top-down
 
-If Python and Arcade are installed, this example can be run from the command line with:
+If Python, Arcade, and PyMunk are installed, this example can be run from the command line with:
 python -m arcade.examples.pymunk_demo_top_down
 """
 from __future__ import annotations
+
+# we don't explictly use pymunk, but by importing you tell arcade to use it
+import pymunk #  noqa: F401
+
 import math
 import random
 import arcade
-from arcade.pymunk_physics_engine import PymunkPhysicsEngine
+from arcade.pymunk import PymunkPhysicsEngine
 
 WINDOW_TITLE = "PyMunk Top-Down"
 SPRITE_SCALING_PLAYER = 0.5

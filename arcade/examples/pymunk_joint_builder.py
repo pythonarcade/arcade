@@ -1,11 +1,12 @@
 """
 Pymunk 2
 
-If Python and Arcade are installed, this example can be run from the command line with:
+If Python, Arcade, and Pymunk are installed, this example can be run from the command line with:
 python -m arcade.examples.pymunk_joint_builder
 """
-import arcade
+
 import pymunk
+import arcade
 import timeit
 import math
 

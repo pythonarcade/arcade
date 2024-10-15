@@ -4,6 +4,7 @@ Example of Pymunk Physics Engine
 Platformer
 """
 import math
+import pymunk  # For Arcade to use pymunk it has to be imported before Arcade is.
 import arcade
 from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine

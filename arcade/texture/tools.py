@@ -8,7 +8,7 @@ from arcade.types import Size2D
 
 from .texture import ImageData, Texture
 
-_DEFAULT_TEXTURE = None
+_DEFAULT_TEXTURE: Texture = None  # type: ignore
 _DEFAULT_IMAGE_SIZE = (128, 128)
 
 

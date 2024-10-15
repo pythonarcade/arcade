@@ -1,3 +1,4 @@
+import pymunk
 import pymunk.autogeometry
 import pytest
 from PIL import Image

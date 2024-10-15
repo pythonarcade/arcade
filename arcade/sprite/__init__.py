@@ -8,7 +8,6 @@ from arcade.texture import Texture
 from arcade.resources import resolve
 from .base import BasicSprite, SpriteType
 from .sprite import Sprite
-from .mixins import PymunkMixin, PyMunk
 from .animated import (
     TextureAnimationSprite,
     TextureAnimation,

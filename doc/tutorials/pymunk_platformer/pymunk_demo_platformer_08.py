@@ -2,6 +2,7 @@
 Example of Pymunk Physics Engine Platformer
 """
 from typing import Optional
+import pymunk  # For Arcade to use pymunk it has to be imported before Arcade is.
 import arcade
 
 SCREEN_TITLE = "PyMunk Platformer"

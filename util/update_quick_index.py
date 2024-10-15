@@ -100,7 +100,6 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.sprite.base",
             "arcade.sprite.sprite",
             "arcade.sprite.colored",
-            "arcade.sprite.mixins",
             "arcade.sprite.animated",
             "arcade.sprite.enums"
         ]
@@ -163,7 +162,6 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.hitbox.base",
             "arcade.hitbox.bounding_box",
             "arcade.hitbox.simple",
-            "arcade.hitbox.pymunk",
         ],
     },
     "texture_transforms.rst": {
@@ -194,7 +192,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "title": "Physics Engines",
         "use_declarations_in": [
             "arcade.physics_engines",
-            "arcade.pymunk_physics_engine"
+            "arcade.pymunk.engines"
         ]
     },
     "geometry.rst": {

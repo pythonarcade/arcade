@@ -9,14 +9,14 @@ pip install pymunk
 
 Artwork from https://kenney.nl
 
-If Python and Arcade are installed, this example can be run from the command line with:
+If Python, Arcade, and Pymunk are installed, this example can be run from the command line with:
 python -m arcade.examples.pymunk_box_stacks
 
 Click and drag with the mouse to move the boxes.
 """
 
-import arcade
 import pymunk
+import arcade
 import timeit
 import math
 

@@ -2,6 +2,7 @@
 Test fallback for hitbox creation with empty textures.
 """
 from PIL import Image
+import pymunk
 import arcade
 
 EXPECTED = ((-50.0, -50.0), (50.0, -50.0), (50.0, 50.0), (-50.0, 50.0))

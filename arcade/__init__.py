@@ -167,8 +167,6 @@ from .sprite import load_animated_gif
 from .sprite import AnimatedWalkingSprite
 from .sprite import TextureAnimation
 from .sprite import TextureKeyframe
-from .sprite import PyMunk
-from .sprite import PymunkMixin
 from .sprite import SpriteType
 from .sprite import Sprite
 from .sprite import BasicSprite
@@ -199,9 +197,11 @@ from .tilemap import load_tilemap
 from .tilemap import read_tmx
 from .tilemap import TileMap
 
-from .pymunk_physics_engine import PymunkPhysicsEngine
-from .pymunk_physics_engine import PymunkPhysicsObject
-from .pymunk_physics_engine import PymunkException
+from .pymunk import PyMunk  # noqa
+from .pymunk import PymunkMixin  # noqa
+from .pymunk import PymunkPhysicsEngine  # noqa
+from .pymunk import PymunkPhysicsObject  # noqa
+from .pymunk import PymunkException  # noqa
 
 from .version import VERSION
 

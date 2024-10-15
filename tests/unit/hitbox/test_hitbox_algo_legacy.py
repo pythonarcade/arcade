@@ -1,4 +1,5 @@
 import pytest
+import pymunk
 from arcade import hitbox
 from PIL import Image
 

@@ -5,7 +5,6 @@ from pathlib import Path
 
 os.environ["ARCADE_TEST"] = "True"
 
-
 if os.environ.get("ARCADE_PYTEST_USE_RUST"):
     import arcade_accelerate  # pyright: ignore [reportMissingImports]
 

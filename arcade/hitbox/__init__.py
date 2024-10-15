@@ -6,7 +6,7 @@ from arcade.types import Point2List
 
 from .base import HitBox, HitBoxAlgorithm, RotatableHitBox
 from .bounding_box import BoundingHitBoxAlgorithm
-from .pymunk import PymunkHitBoxAlgorithm
+from arcade.pymunk import PymunkHitBoxAlgorithm
 from .simple import SimpleHitBoxAlgorithm
 
 #: The simple hit box algorithm.

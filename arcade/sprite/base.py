@@ -63,7 +63,7 @@ class BasicSprite:
     ) -> None:
         self._position = (center_x, center_y)
         self._depth = 0.0
-        self._texture = texture
+        self._texture: Texture = texture
         width, height = texture.size
         self._scale = (scale, scale) if isinstance(scale, (float, int)) else (scale[0], scale[1])
         self._width = width * self._scale[0]
