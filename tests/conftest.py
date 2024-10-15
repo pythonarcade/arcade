@@ -28,8 +28,10 @@ REAL_WINDOW_CLASS = arcade.Window
 WINDOW = None
 OFFSCREEN = None
 
+arcade.resources.load_system_fonts()
 
-def make_window_caption(request=None, prefix='Testing', sep=' - ') -> str:
+
+def make_window_caption(request=None, prefix="Testing", sep=" - ") -> str:
     """Centralizes test name customization.
 
     It helps with:
@@ -179,11 +181,11 @@ class WindowProxy:
     @size.setter
     def size(self, size):
         self.window.size = size
-    
+
     @property
     def center_x(self):
         return self.window.center_x
-    
+
     @property
     def center_y(self):
         return self.window.center_y
