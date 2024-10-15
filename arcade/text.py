@@ -219,6 +219,7 @@ class Text:
         batch: pyglet.graphics.Batch | None = None,
         group: pyglet.graphics.Group | None = None,
         z: float = 0,
+        **kwargs,
     ):
         # Raises a RuntimeError if no window for better user feedback
         arcade.get_window()
@@ -255,6 +256,7 @@ class Text:
             rotation=rotation,  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
             batch=batch,
             group=group,
+            **kwargs,
         )
 
     def __enter__(self):
