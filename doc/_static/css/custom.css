@@ -228,10 +228,11 @@ body:not([data-theme="light"]) .highlight .c1 {
     color: #007507;
 }
 
-/* Color tables */
-.checkered {
-    background-image: url(../checkered.png);
-    background-repeat: repeat;
+/* Color tables and resource pages*/
+.checkered, {
+    /*background: url(../checkered.png);*/
+    box-sizing: border-box;
+    background-repeat: repeat, repeat;
     margin:0px;
     padding: 0px;
 }
