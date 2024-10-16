@@ -1,7 +1,7 @@
 .. _uicolor:
 
 arcade.uicolor package
-====================
+======================
 
 .. _FlatUI: https://materialui.co/flatuicolors/
 
