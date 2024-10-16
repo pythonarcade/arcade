@@ -208,18 +208,57 @@ table.dataTable.display tbody tr.even > .sorting_1 {
     color: var(--color-foreground-primary);
 }
 
-/* Named color chart */
+/* Color tables and resource pages */
+.checkered-bg, .color-swatch{
+    background: url(../checkered.png);
+    background-repeat: repeat;
+}
+
+table.resource-table {
+    empty-cells: hide;
+}
+/* Make the resource page's table cell contents look neat */
+table.resource-table td {
+    text-align: center;
+}
+table.resource-table td > img {
+    display: inline-block;
+}
 table.colorTable {
-    border-spacing: 5px;
+    border-width: 1px;
 }
-table.colorTable tr > td:nth-child(3) {
-    border: 1px solid black;
+
+/* Named color tables for larger screens */
+table.colorTable td, table.colorTable th {
+    padding: 2px;
 }
-table.colorTable tr > td:nth-child(3) > div {
+table.colorTable tr:not(:last-child)  {
+    border-bottom-width: 1px;
+}
+
+.colorTable .color-swatch {
     display: block;
+    border: 1px solid black;
+    padding: 0px;
+    box-sizing: border-box;
     width: 80px;
     min-width: 80px;
 }
+
+/* Use compact mode for color tables on smaller screens*/
+@media screen and (width <= 700px) {
+   table.colorTable {
+       border-spacing: collapse;
+   }
+   table.colorTable td, table.colorTable th {
+    padding: 0px;
+   }
+   .colorTable .color-swatch {
+       width: 40px;
+       min-width: 40px;
+   }
+}
+
 /* Custom code syntax highlighting */
 body:not([data-theme="light"]) .highlight .c1 {
     color: #48A148;
@@ -228,13 +267,7 @@ body:not([data-theme="light"]) .highlight .c1 {
     color: #007507;
 }
 
-/* Color tables */
-.checkered {
-    background-image: url(../checkered.png);
-    background-repeat: repeat;
-    margin:0px;
-    padding: 0px;
-}
+
 
 /* Change font for headers and title*/
 @font-face {

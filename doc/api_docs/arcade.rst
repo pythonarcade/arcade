@@ -69,3 +69,4 @@ for the Python Arcade library. See also:
     arcade.key
     arcade.csscolor
     arcade.color
+    arcade.uicolor

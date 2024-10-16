@@ -331,16 +331,22 @@ def generate_color_table(filename, source):
             if not matches:
                 continue
 
-            color_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {matches.group('alpha')})"
+            name, r, g, b, a = matches.groupdict().values()
+            color_rgb_comma_sep= f"{r}, {g}, {b}"
 
             # Generate the alpha for CSS color function
-            alpha = int( matches.group('alpha') ) / 255
-            css_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {alpha!s:.4})"
+            rgba_css = f"rgba({color_rgb_comma_sep}, {int(a) / 255!s:.4})"
 
             append_text += "    <tr>"
-            append_text += f"<td>{matches.group('name')}</td>"
-            append_text += f"<td>{color_rgba}</td>"
-            append_text += f"<td class='checkered'><div style='background-color:rgba{css_rgba};'>&nbsp</div></td>"
+            append_text += (
+                f"<td>"
+                f"<code class=\"docutils literal notranslate\">"
+                f"<span class=\"pre\">{name}</span>"
+                f"</code>"
+                f"</td>"
+            )
+            append_text += f"<td class=\"color-swatch\"><div style=\"background: {rgba_css};\">&nbsp</div></td>"
+            append_text += f"<td>({color_rgb_comma_sep}, {a})</td>"
             append_text += "</tr>\n"
 
     append_text += "    </tbody></table>"
@@ -376,7 +382,8 @@ def source_read_handler(_app, doc_name: str, source):
         generate_color_table(_get_dir(_app, "color/__init__.py"), source)
     elif doc_name == "api_docs/arcade.csscolor":
         generate_color_table(_get_dir(_app, "csscolor/__init__.py"), source)
-
+    elif doc_name == "api_docs/arcade.uicolor":
+        generate_color_table(_get_dir(_app, "uicolor.py"), source)
 
 def on_autodoc_process_bases(app, name, obj, options, bases):
     """We don't care about the `object` base class, so remove it from the list of bases."""
