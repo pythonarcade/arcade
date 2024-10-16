@@ -217,6 +217,13 @@ table.dataTable.display tbody tr.even > .sorting_1 {
 table.resource-table {
     empty-cells: hide;
 }
+/* Make the resource page's table cell contents look neat */
+table.resource-table td {
+    text-align: center;
+}
+table.resource-table td > img {
+    display: inline-block;
+}
 table.colorTable {
     border-width: 1px;
 }
