@@ -70,6 +70,7 @@ def skipped_file(file_path: Path):
 
 
 MAX_COLS: dict[str, int] = defaultdict(lambda: 3)
+MAX_COLS[":resources:sounds/"] = 2
 
 
 @lru_cache(maxsize=None)
@@ -154,9 +155,10 @@ SUFFIX_TO_VIDEO_TYPE = {
 def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
 
-    prefix = create_resource_path(file_list[0].parent)
+    prefix = create_resource_path(file_list[0].parent, suffix="/")
     COLUMNS = get_header_num_cols(prefix, len(file_list))
 
+    log.info(f"Processing {prefix=!r} with {COLUMNS=!r}")
     for path in file_list:
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
         suffix = path.suffix
