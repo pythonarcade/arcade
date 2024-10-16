@@ -382,7 +382,8 @@ def source_read_handler(_app, doc_name: str, source):
         generate_color_table(_get_dir(_app, "color/__init__.py"), source)
     elif doc_name == "api_docs/arcade.csscolor":
         generate_color_table(_get_dir(_app, "csscolor/__init__.py"), source)
-
+    elif doc_name == "api_docs/arcade.uicolor":
+        generate_color_table(_get_dir(_app, "uicolor.py"), source)
 
 def on_autodoc_process_bases(app, name, obj, options, bases):
     """We don't care about the `object` base class, so remove it from the list of bases."""
