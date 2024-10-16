@@ -336,10 +336,6 @@ def generate_color_table(filename, source):
 
             # Generate the alpha for CSS color function
             rgba_css = f"rgba({color_rgb_comma_sep}, {int(a) / 255!s:.4})"
-            style = (
-                f"linear-gradient(to right, {rgba_css}, {rgba_css}), "
-                "url(/_static/checkered.png)"
-            )
 
             append_text += "    <tr>"
             append_text += (
@@ -349,8 +345,8 @@ def generate_color_table(filename, source):
                 f"</code>"
                 f"</td>"
             )
+            append_text += f"<td class=\"color-swatch\"><div style=\"background: {rgba_css};\">&nbsp</div></td>"
             append_text += f"<td>({color_rgb_comma_sep}, {a})</td>"
-            append_text += f"<td><div class=\"checkered\" style=\"background: {style};\">&nbsp</div></td>"
             append_text += "</tr>\n"
 
     append_text += "    </tbody></table>"
