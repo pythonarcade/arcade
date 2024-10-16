@@ -121,16 +121,20 @@ def process_resource_directory(out, dir: Path):
         if num_files > 0:
 
             # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
-            header_title = create_resource_path(path, suffix="/")
-            if header_title == ":resources:images/":
+            raw_header = create_resource_path(path, suffix="/")
+            header_title = raw_header[:-2] if raw_header.endswith("./") else raw_header
+
+            if raw_header == ":resources:images/":
                 for f in file_list:
                     print(f.name)
             # out.write(f"\n{header_title}\n")
             # out.write("-" * (len(header_title)) + "\n\n")
-            n_cols = get_header_num_cols(header_title, num_files)
+
+            n_cols = get_header_num_cols(raw_header, num_files)
             widths = get_column_widths_for_n(n_cols)
+
             out.write(f"\n")
-            out.write(f".. list-table:: {header_title}\n")
+            out.write(f".. list-table:: \"{header_title}\"\n")
             out.write(f"    :widths: {widths}\n")
             out.write(f"    :header-rows: 0\n")
             out.write(f"    :class: resource-table\n\n")
@@ -156,6 +160,7 @@ def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
 
     prefix = create_resource_path(file_list[0].parent, suffix="/")
+
     COLUMNS = get_header_num_cols(prefix, len(file_list))
 
     log.info(f"Processing {prefix=!r} with {COLUMNS=!r}")
