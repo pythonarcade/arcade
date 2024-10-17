@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Iterable, TypeVar
 
-from pyglet.math import Vec2
-
 import arcade
 from arcade.color import BLACK, WHITE
 from arcade.exceptions import ReplacementWarning, warning
@@ -67,7 +65,7 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
         width, height = texture.size
-        self._scale = (scale, scale) if isinstance(scale, (float, int)) else scale
+        self._scale = (scale, scale) if isinstance(scale, (float, int)) else (scale[0], scale[1])
         self._width = width * self._scale[0]
         self._height = height * self._scale[1]
         self._visible = bool(visible)
@@ -262,49 +260,24 @@ class BasicSprite:
             sprite_list._update_size(self)
 
     @property
-    def scale(self) -> Vec2:
+    def scale(self) -> Point2:
         """Get or set the x & y scale of the sprite as a pair of values.
+        You may set both the x & y with a single scalar, but scale will always return
+        a length 2 tuple of the x & y scale
 
-        You may set it to either a single value or a pair of values:
+        See :py:attr:`.scale_x` and :py:attr:`.scale_y` for individual access.
 
-        .. list-table::
-           :header-rows: 0
-
-           * - Single value
-             - ``sprite.scale = 2.0``
-
-           * - Tuple or :py:class:`~pyglet,math.Vec2`
-             - ``sprite.scale = (1.0, 3.0)``
-
-        The two-channel version is useful for making health bars and
-        other indicators.
-
-        .. note:: Returns a :py:class:`pyglet.math.Vec2` for
-                  compatibility.
-
-        Arcade versions lower than 3,0 used one or both of the following
-        for scale:
-
-        * A single :py:class:`float` on versions <= 2.6
-        * A ``scale_xy`` property and exposing only the x component
-          on some intermediate dev releases
-
-        Although scale is internally stored as a :py:class:`tuple`, we
-        return a :py:class:`pyglet.math.Vec2` to allow the in-place
-        operators to work in addition to setting values directly:
-
-        * Old-style (``sprite.scale *= 2.0``)
-        * New-style (``sprite.scale *= 2.0, 2.0``)
+        See :py:meth:`.scale_multiply_uniform` for uniform scaling.
 
         .. note:: Negative scale values are supported.
 
-                  This applies to both single-axis and dual-axis.
-                  Negatives will flip & mirror the sprite, but the
-                  with will use :py:func:`abs` to report total width
-                  and height instead of negatives.
+            This applies to both single-axis and dual-axis.
+            Negatives will flip & mirror the sprite, but the
+            with will use :py:func:`abs` to report total width
+            and height instead of negatives.
 
         """
-        return Vec2(*self._scale)
+        return self._scale
 
     @scale.setter
     def scale(self, new_scale: Point2 | AsFloat):
@@ -607,6 +580,41 @@ class BasicSprite:
 
     # --- Scale methods -----
 
+    def add_scale(self, factor: AsFloat) -> None:
+        """Add to the sprite's scale by the factor.
+        This adds the factor to both the x and y scale values.
+
+        Args:
+            factor: The factor to add to the sprite's scale.
+        """
+        self._scale = self._scale[0] + factor, self._scale[1] + factor
+        self._hit_box.scale = self._scale
+        tex_width, tex_height = self._texture.size
+        self._width = tex_width * self._scale[0]
+        self._height = tex_height * self._scale[1]
+
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+
+    def multiply_scale(self, factor: AsFloat) -> None:
+        """multiply the sprite's scale by the factor.
+        This multiplies both the x and y scale values by the factor.
+
+        Args:
+            factor: The factor to scale up the sprite by.
+        """
+
+        self._scale = self._scale[0] * factor, self._scale[1] * factor
+        self._hit_box.scale = self._scale
+        tex_width, tex_height = self._texture.size
+        self._width = tex_width * factor
+        self._height = tex_height * factor
+
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_size(self)
+
     def rescale_relative_to_point(self, point: Point2, scale_by: AsFloat | Point2) -> None:
         """Rescale the sprite and its distance from the passed point.
 
@@ -695,7 +703,7 @@ class BasicSprite:
            Use :py:meth:`.rescale_relative_to_point` instead.
 
            This was added during the 3.0 development cycle before scale was
-           made into a vector quantitity.
+           made into a vector quantity.
 
         This method can scale by different amounts on each axis. To
         scale along only one axis, set the other axis to ``1.0`` in

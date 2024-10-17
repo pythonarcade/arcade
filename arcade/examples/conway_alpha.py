@@ -4,7 +4,7 @@ Conway's Game of Life
 This code shows how to set up sprites in a grid, and then use their
 'alpha' value to quickly turn them on and off.
 
-After installing the "arcade" package version 2.4.4+, this program can be run by
+After installing the `arcade` package version 2.4.4+, this program can be run by
 typing:
 python -m arcade.examples.conway_alpha
 """
@@ -24,9 +24,9 @@ CELL_HEIGHT = 15
 CELL_MARGIN = 0
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (CELL_WIDTH + CELL_MARGIN) * COLUMN_COUNT + CELL_MARGIN
-SCREEN_HEIGHT = (CELL_HEIGHT + CELL_MARGIN) * ROW_COUNT + CELL_MARGIN
-SCREEN_TITLE = "Conway's Game of Life"
+WINDOW_WIDTH = (CELL_WIDTH + CELL_MARGIN) * COLUMN_COUNT + CELL_MARGIN
+WINDOW_HEIGHT = (CELL_HEIGHT + CELL_MARGIN) * ROW_COUNT + CELL_MARGIN
+WINDOW_TITLE = "Conway's Game of Life"
 
 # Colors and alpha values
 ALIVE_COLOR = arcade.color.BISTRE
@@ -81,16 +81,16 @@ def randomize_grid(grid: arcade.SpriteList):
             cell.alpha = ALPHA_OFF
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width: int, height: int, title: str):
+    def __init__(self):
         """
         Set up the application.
         """
-        super().__init__(width, height, title)
+        super().__init__()
 
         self.background_color = BACKGROUND_COLOR
 
@@ -120,7 +120,7 @@ class MyGame(arcade.Window):
         if symbol == arcade.key.SPACE:
             self.reset()
         elif symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_update(self, delta_time: float):
         """ Update the grid """
@@ -194,9 +194,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function - starting point to the program """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     window.center_window()
+
+    # Create and setup the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

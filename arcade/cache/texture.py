@@ -80,7 +80,7 @@ class TextureBucket:
 
 class TextureCache:
     """
-    A cache for arcade textures.
+    A cache for Arcade textures.
 
     The creation of a texture is an expensive operation for several reasons.
     * Loading an image from disk has a cost

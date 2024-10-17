@@ -38,7 +38,7 @@ class SceneKeyError(KeyError):
         except KeyError as e:
             print("Your error handling should go here")
 
-    The main purpose of this class is to help arcade's developers keep
+    The main purpose of this class is to help Arcade's developers keep
     error messages consistent.
 
     Args:

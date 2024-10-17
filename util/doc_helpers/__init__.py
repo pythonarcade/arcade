@@ -92,7 +92,7 @@ def get_module_path(module: str, root = SharedPaths.REPO_ROOT) -> Path:
     return current
 
 
-# Tools for resolving the lowest import of a member in arcade.
+# Tools for resolving the lowest import of a member in Arcade.
 # Members are imported in various `__init__` files and we want
 # present. arcade.Sprite instead of arcade.sprite.Sprite as an example.
 # Build a tree using the ast module looking at the __init__ files

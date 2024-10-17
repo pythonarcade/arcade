@@ -68,7 +68,7 @@ Install Arcade using the command line interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you prefer to use the command line interface (CLI),
-then you can install arcade directly using pip:
+then you can install Arcade directly using pip:
 
 ``pip3 install arcade``
 

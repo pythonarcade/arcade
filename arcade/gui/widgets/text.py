@@ -627,6 +627,8 @@ class UITextArea(UIWidget):
             success.
         font_size: Font size of font.
         text_color: Color of the text.
+        bold: If enabled, the label's text will be in a **bold** style.
+        italic: If enabled, the label's text will be in an *italic*
         multiline: If enabled, a ``\\n`` will start a new line.
         scroll_speed: Speed of mouse scrolling.
         size_hint: A tuple of floats between 0 and 1 defining the amount
@@ -650,6 +652,8 @@ class UITextArea(UIWidget):
         text: str = "",
         font_name=("arial", "calibri"),
         font_size: float = 12,
+        bold=False,
+        italic=False,
         text_color: RGBA255 = arcade.color.WHITE,
         multiline: bool = True,
         scroll_speed: Optional[float] = None,
@@ -689,6 +693,8 @@ class UITextArea(UIWidget):
                 font_name=font_name,
                 font_size=font_size,
                 color=Color.from_iterable(text_color),
+                bold=bold,
+                italic=italic,
             ),
         )
 

@@ -52,7 +52,10 @@ class StartFinishRenderData:
 
         Should only be called once followed by a call to :py:meth:`end`.
         """
-        self.generator_func = self.atlas.render_into(self.texture)
+        self.generator_func = self.atlas.render_into(
+            self.texture,
+            projection=(0, self.window.width, 0, self.window.height),
+        )
         fbo = self.generator_func.__enter__()
         fbo.clear(color=self.window.background_color)
 

@@ -8,7 +8,6 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 Version 3.0.0 is a major update to Arcade. It breaks compatibility with the 2.6 API.
 
 ### Breaking Changes
-
 These are the breaking API changes. Use this as a quick reference for updating 2.6 code. You can find more details in later sections. Lots of behavior has changed even if the interface hasn't. If you are porting old code, read through these logs thoroughly.
 
 * Dropped Python 3.8 support completely.
@@ -59,6 +58,7 @@ These are the breaking API changes. Use this as a quick reference for updating 2
 ### Featured Updates
 
 * The texture atlas has been heavily reworked to be more efficient.
+
 * Alpha blending (handling of transparency) is no longer globally enabled but instead enabled when needed. draw functions and objects like
   `SpriteList` and `ShapeElementList` have new arguments to toggle blending states. Blending states are now reset after drawing.
 * Arcade now supports OpenGL ES 3.1/3.2 and has been
@@ -287,7 +287,7 @@ Contributing to a release comes in many forms. It can be code, documentation, te
 We would also like to thank the contributors who spent their valuable time solving issues, squashing bugs, and writing documentation. We appreciate your help; you helped get 3.0 out the door!
 
 #### Notable contributors:
-
+* [DarkLight1337](https://github.com/DarkLight1337) helped the team untangle type annotation issues for cameras
 * [Mohammad Ibrahim](https://github.com/Ibrahim2750mi) was a massive help with the GUI and various other parts of the library.
 * [ryyst](https://github.com/ryyst) completely revitalised the Arcade Docs.
 

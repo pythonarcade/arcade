@@ -125,12 +125,33 @@ def test_sprite_rgb_property_basics():
     assert sprite.color.a == 15
     assert sprite.alpha == 15
 
+def test_sprite_scale_constructor(window):
+    sprite = arcade.BasicSprite(SPRITE_TEXTURE_GOLD_COIN, scale=2.0)
+    assert sprite.scale == (2.0, 2.0)
+    sprite = arcade.BasicSprite(SPRITE_TEXTURE_GOLD_COIN, scale=(2.0, 1.0))
+    assert sprite.scale == (2.0, 1.0)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=3.0)
+    assert sprite.scale == (3.0, 3.0)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=(3.0, 1.0))
+    assert sprite.scale == (3.0, 1.0)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=(1.0, 2.0, 10.0, 100.0))
+    assert sprite.scale == (1.0, 2.0)
+    with pytest.raises(TypeError):
+        sprite = arcade.sprite(SPRITE_TEXTURE_GOLD_COIN, scale = test_sprite_scale_constructor)
+
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=1.0)
+    assert isinstance(sprite.scale, tuple)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=(1.0, 1.0))
+    assert isinstance(sprite.scale, tuple)
+    sprite = arcade.Sprite(SPRITE_TEXTURE_GOLD_COIN, scale=[1.0, 1.0])
+    assert isinstance(sprite.scale, tuple)
+
 
 def test_sprite_scale_xy(window):
     sprite = arcade.SpriteSolidColor(20, 20, color=arcade.color.WHITE)
 
     # setting vector equivalent of previous scale doesn't change values
-    sprite.scale = 1.0
+    sprite.scale = 1.0, 1.0
     sprite.scale = (1.0, 1.0)
     assert sprite.scale == (1.0, 1.0)
     assert sprite.width, sprite.height == (20, 20)
@@ -180,6 +201,7 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # check if x dimension is properly reset
     sprite.scale = 3.0, 2.0
+    assert sprite.scale == (3.0, 2.0)
     sprite.scale = 2.0
     assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
@@ -187,14 +209,16 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # check if y dimension is properly reset
     sprite.scale = 5.0, 3.0
+    assert sprite.scale == (5.0, 3.0)
     sprite.scale = 5.0
-    assert sprite.scale_x == 5.0
+    assert sprite.scale_y == 5.0
     assert sprite.scale == (5.0, 5.0)
     assert sprite.width == 100
     assert sprite.height == 100
 
     # check if both dimensions properly reset
     sprite.scale = 0.5, 4.0
+    assert sprite.scale == (0.5, 4.0)
     sprite.scale = 1.0
     assert sprite.scale_x == 1.0
     assert sprite.scale == (1.0, 1.0)
@@ -203,6 +227,7 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # edge case: setting negative values works
     sprite.scale = 0.5, 4.0
+    assert sprite.scale == (0.5, 4.0)
     sprite.scale = -1.0
     assert sprite.scale_x == -1.0
     assert sprite.scale == (-1.0, -1.0)
@@ -211,6 +236,7 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # edge case: x scale < 0 is reset to positive
     sprite.scale = -1.0, 1.0
+    assert sprite.scale == (-1.0, 1.0)
     sprite.scale = 2.0
     assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
@@ -218,6 +244,7 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # edge case: y scale < 0 is reset to positive
     sprite.scale = 1.0, -1.0
+    assert sprite.scale == (1.0, -1.0)
     sprite.scale = 2.0
     assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
@@ -225,11 +252,19 @@ def test_sprite_scale_resets_mismatched_xy_settings(window):
 
     # edge case: x < 0, y < 0 is reset to positive
     sprite.scale = -1.0, -1.0
+    assert sprite.scale == (-1.0, -1.0)
     sprite.scale = 2.0
     assert sprite.scale == (2.0, 2.0)
     assert sprite.width == 40
     assert sprite.height == 40
 
+def test_sprite_scale_invalid(window):
+    sprite = arcade.Sprite(SPRITE_TEXTURE_FEMALE_PERSON_IDLE)
+
+    with pytest.raises(ValueError):
+        sprite.scale = 1, 2, 3
+    with pytest.raises(TypeError):
+        sprite.scale = test_sprite_scale_invalid
 
 # TODO: Possibly separate into a movement module
 def test_strafe(window):

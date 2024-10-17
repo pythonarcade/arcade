@@ -8,9 +8,9 @@ import arcade
 from arcade.types import Color
 
 # --- Constants
-SCREEN_TITLE = "Platformer"
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+WINDOW_TITLE = "Platformer"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 
 # Constants used to scale our sprites from their original size
 CHARACTER_SCALING = 1
@@ -24,15 +24,29 @@ PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
-class MyGame(arcade.Window):
+# Camera constants
+FOLLOW_DECAY_CONST = 0.3  # get within 1% of the target position within 2 seconds
+
+
+class GameView(arcade.View):
     """
     Main application class.
     """
 
     def __init__(self):
-        # Call the parent class and set up the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__()
 
+        # A Camera that can be used for scrolling the screen
+        self.camera_sprites = arcade.camera.Camera2D()
+
+        # A rectangle that is used to constrain the camera's position.
+        # we update it when we load the tilemap
+        self.camera_bounds = self.window.rect
+
+        # A non-scrolling camera that can be used to draw GUI elements
+        self.camera_gui = arcade.camera.Camera2D()
+
+        # The scene which helps draw multiple spritelists in order.
         self.scene = self.create_scene()
 
         # Set up the player, specifically placing it at these coordinates.
@@ -45,12 +59,6 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Platforms"]
         )
-
-        # A Camera that can be used for scrolling the screen
-        self.camera_sprites = arcade.camera.Camera2D()
-
-        # A non-scrolling camera that can be used to draw GUI elements
-        self.camera_gui = arcade.camera.Camera2D()
 
         # Keep track of the score
         self.score = 0
@@ -87,7 +95,17 @@ class MyGame(arcade.Window):
 
         # Set the window background color to the same as the map if it has one
         if tile_map.background_color:
-            self.background_color = Color.from_iterable(tile_map.background_color)
+            self.window.background_color = Color.from_iterable(tile_map.background_color)
+
+        # Use the tilemap's size to correctly set the camera's bounds.
+        # Because how how shallow the map is we don't offset the bounds height
+        self.camera_bounds = arcade.LRBT(
+            self.window.width/2.0,
+            tile_map.width * GRID_PIXEL_SIZE - self.window.width/2.0,
+            self.window.height/2.0,
+            tile_map.height * GRID_PIXEL_SIZE
+        )
+
 
         # Our Scene Object
         # Initialize Scene with our TileMap, this will automatically add all layers
@@ -111,20 +129,19 @@ class MyGame(arcade.Window):
         # Clear the screen to the background color
         self.clear()
 
-        # Draw the map into the sprite camera
+        # Draw the map with the sprite camera
         with self.camera_sprites.activate():
             # Draw our Scene
             # Note, if you a want pixelated look, add pixelated=True to the parameters
             self.scene.draw()
 
-        # Draw the score into the gui camera
+        # Draw the score with the gui camera
         with self.camera_gui.activate():
             # Draw our score on the screen. The camera keeps it in place.
             self.score_display.text = f"Score: {self.score}"
             self.score_display.draw()
 
     def update_player_speed(self):
-
         # Calculate speed based on the keys pressed
         self.player_sprite.change_x = 0
 
@@ -161,22 +178,17 @@ class MyGame(arcade.Window):
             self.update_player_speed()
 
     def center_camera_to_player(self):
-        # Find where player is, then calculate lower left corner from that
-        screen_center_x = self.player_sprite.center_x
-        screen_center_y = self.player_sprite.center_y
-
-        # Set some limits on how far we scroll
-        if screen_center_x - self.width / 2 < 0:
-            screen_center_x = self.width / 2
-        if screen_center_y - self.height / 2 < 0:
-            screen_center_y = self.height / 2
-
-        # Here's our center, move to it
-        player_centered = screen_center_x, screen_center_y
-        self.camera_sprites.position = arcade.math.lerp_2d(
+        # Move the camera to center on the player
+        self.camera_sprites.position = arcade.math.smerp_2d(
             self.camera_sprites.position,
-            player_centered,
-            0.1,
+            self.player_sprite.position,
+            self.window.delta_time,
+            FOLLOW_DECAY_CONST,
+        )
+
+        # Constrain the camera's position to the camera bounds.
+        self.camera_sprites.view_data.position = arcade.camera.grips.constrain_xy(
+            self.camera_sprites.view_data, self.camera_bounds
         )
 
     def on_update(self, delta_time: float):
@@ -205,13 +217,17 @@ class MyGame(arcade.Window):
         super().on_resize(width, height)
         # Update the cameras to match the new window size
         self.camera_sprites.match_screen(and_projection=True)
-        self.camera_gui.match_screen(and_projection=True)
+        # The and_position property keeps `0, 0` in the bottom left corner.
+        self.camera_gui.match_screen(and_projection=True, and_position=True)
 
 
 def main():
     """Main function"""
-    window = MyGame()
-    window.reset()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
+    game.reset()
+
+    window.show_view(game)
     arcade.run()
 
 

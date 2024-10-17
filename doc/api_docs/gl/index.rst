@@ -28,7 +28,7 @@ An instance of this type should be accessible the window
 This API can also be used with pyglet by creating an instance
 of :py:class:`arcade.gl.Context` after the window creation.
 The :py:class:`arcade.ArcadeContext` on the other hand
-extends the default Context with arcade specific helper methods
+extends the default Context with Arcade-specific helper methods
 and should only be used by arcade.
 
 Some prior knowledge of OpenGL might be needed to understand

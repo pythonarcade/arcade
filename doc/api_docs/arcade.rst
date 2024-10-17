@@ -1,5 +1,8 @@
 .. _arcade-api:
 
+API Reference
+=============
+
 This page documents the Application Programming Interface (API)
 for the Python Arcade library. See also:
 
@@ -66,3 +69,4 @@ for the Python Arcade library. See also:
     arcade.key
     arcade.csscolor
     arcade.color
+    arcade.uicolor

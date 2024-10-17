@@ -150,7 +150,7 @@ class Window(pyglet.window.Window):
         update_rate: float = 1 / 60,
         antialiasing: bool = True,
         gl_version: tuple[int, int] = (3, 3),
-        screen: pyglet.display.Screen | None = None,
+        screen: Screen | None = None,
         style: str | None = pyglet.window.Window.WINDOW_STYLE_DEFAULT,
         visible: bool = True,
         vsync: bool = False,
@@ -195,7 +195,7 @@ class Window(pyglet.window.Window):
                     alpha_size=8,
                 )
                 display = pyglet.display.get_display()
-                screen = display.get_default_screen()  # type: ignore  # pending: resolve upstream type tricks
+                screen = screen or display.get_default_screen()
                 if screen:
                     config = screen.get_best_config(config)
             except pyglet.window.NoSuchConfigException:
@@ -260,11 +260,9 @@ class Window(pyglet.window.Window):
 
         self.set_vsync(vsync)
 
-        super().set_fullscreen(fullscreen, screen)
-        # This used to be necessary on Linux, but no longer appears to be.
-        # With Pyglet 2.0+, setting this to false will not allow the screen to
-        # update. It does, however, cause flickering if creating a window that
-        # isn't derived from the Window class.
+        if fullscreen is True:
+            super().set_fullscreen(True, screen)
+
         set_window(self)
 
         self.push_handlers(on_resize=self._on_resize)
@@ -472,7 +470,7 @@ class Window(pyglet.window.Window):
         # Get the display screen using pyglet
         screen_width, screen_height = get_display_size()
 
-        window_width, window_height = self.get_size()
+        window_width, window_height = self.get_framebuffer_size()
         # Center the window
         self.set_location((screen_width - window_width) // 2, (screen_height - window_height) // 2)
 
@@ -570,7 +568,7 @@ class Window(pyglet.window.Window):
         Called once whenever a mouse button gets pressed down.
 
         Override this function to handle mouse clicks. For an example of
-        how to do this, see arcade's built-in :ref:`aiming and shooting
+        how to do this, see Arcade's built-in :ref:`aiming and shooting
         bullets <sprite_bullets_aimed>` demo.
 
         Args:
@@ -1233,8 +1231,11 @@ class View:
             window is used. (Normally you don't need to provide this).
     """
 
-    def __init__(self, window: Window | None = None) -> None:
+    def __init__(
+        self, window: Window | None = None, background_color: RGBOrA255 | None = None
+    ) -> None:
         self.window = arcade.get_window() if window is None else window
+        self.background_color: RGBOrA255 | None = background_color
 
     def clear(
         self,
@@ -1258,6 +1259,8 @@ class View:
             viewport (optional):
                 The viewport range to clear
         """
+        if color is None and color_normalized is None:
+            color = self.background_color
         self.window.clear(color=color, color_normalized=color_normalized, viewport=viewport)
 
     def on_update(self, delta_time: float) -> bool | None:
@@ -1329,7 +1332,7 @@ class View:
         Called once whenever a mouse button gets pressed down.
 
         Override this function to handle mouse clicks. For an example of
-        how to do this, see arcade's built-in :ref:`aiming and shooting
+        how to do this, see Arcade's built-in :ref:`aiming and shooting
         bullets <sprite_bullets_aimed>` demo.
 
         Args:
@@ -1520,3 +1523,45 @@ class View:
             y: The y position the mouse entered the window
         """
         pass
+
+    @property
+    def size(self) -> tuple[float, float]:
+        """
+        An alias for `arcade.Window.size`
+        """
+        return self.window.size
+
+    @property
+    def width(self) -> float:
+        """
+        An alias for `arcade.Window.width`
+        """
+        return self.window.width
+
+    @property
+    def height(self) -> float:
+        """
+        An alias for `arcade.Window.height`
+        """
+        return self.window.height
+
+    @property
+    def center(self) -> tuple[float, float]:
+        """
+        An alias for `arcade.Window.center`
+        """
+        return self.window.center
+
+    @property
+    def center_x(self) -> float:
+        """
+        An alias for `arcade.Window.center_x`
+        """
+        return self.window.center_x
+
+    @property
+    def center_y(self) -> float:
+        """
+        An alias for `arcade.Window.center_y`
+        """
+        return self.window.center_y

@@ -2,7 +2,7 @@
 
 See the other GUI examples for more indepth information about specific widgets.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.2_widgets
 """
 
@@ -612,8 +612,11 @@ class GalleryView(UIView):
         text_area.with_padding(left=10, right=10)
         text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE, width=2)
 
-
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: Widget Gallery")
     window.show_view(GalleryView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

@@ -21,7 +21,7 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Generator
 
-# Ensure we get utility & arcade imports first
+# Ensure we get utility & Arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
 
 
@@ -99,7 +99,6 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.sprite",
             "arcade.sprite.base",
             "arcade.sprite.sprite",
-            "arcade.sprite.simple",
             "arcade.sprite.colored",
             "arcade.sprite.mixins",
             "arcade.sprite.animated",
@@ -593,7 +592,7 @@ def main():
         text_file.include_file(
             REPO_ROOT /  'util' / 'template_quick_index.rst')
 
-        # text_file.write("The arcade module\n")
+        # text_file.write("The Arcade module\n")
         # text_file.write("-----------------\n\n")
 
         text_file.write(dedent(

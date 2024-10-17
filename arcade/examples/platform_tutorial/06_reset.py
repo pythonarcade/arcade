@@ -6,9 +6,9 @@ python -m arcade.examples.platform_tutorial.06_reset
 import arcade
 
 # Constants
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Platformer"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Platformer"
 
 # Constants used to scale our sprites from their original size
 TILE_SCALING = 0.5
@@ -19,7 +19,7 @@ GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.Window):
     """
     Main application class.
     """
@@ -27,7 +27,7 @@ class MyGame(arcade.Window):
     def __init__(self):
 
         # Call the parent class and set up the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
         # Variable to hold our texture for our player
         self.player_texture = None
@@ -136,7 +136,7 @@ class MyGame(arcade.Window):
 
 def main():
     """Main function"""
-    window = MyGame()
+    window = GameView()
     window.setup()
     arcade.run()
 

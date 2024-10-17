@@ -11,9 +11,9 @@ python -m arcade.examples.sprite_move_animation
 import arcade
 import random
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Move with a Sprite Animation Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Move with a Sprite Animation Example"
 
 COIN_SCALE = 0.5
 COIN_COUNT = 50
@@ -67,12 +67,12 @@ class PlayerCharacter(arcade.Sprite):
         self.texture = self.walk_textures[frame][direction]
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """ Set up the game and initialize the variables. """
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Sprite lists
         self.player_list = None
@@ -112,17 +112,15 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         self.player = PlayerCharacter(self.idle_texture_pair, self.walk_texture_pairs)
-
-        self.player.center_x = SCREEN_WIDTH // 2
-        self.player.center_y = SCREEN_HEIGHT // 2
+        self.player.position = self.center
         self.player.scale = 0.8
 
         self.player_list.append(self.player)
 
         for i in range(COIN_COUNT):
             coin = arcade.Sprite(":resources:images/items/gold_1.png", scale=0.5)
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
 
             self.coin_list.append(coin)
 
@@ -191,8 +189,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

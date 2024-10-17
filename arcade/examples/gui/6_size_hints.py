@@ -13,7 +13,7 @@ Please note the following:
 * They are only hints, and do not guarantee that a specific size will
   be provided.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.6_size_hints
 """
 
@@ -79,6 +79,7 @@ class MyView(UIView):
                 width=800,  # give text enough space to not wrap
                 font_size=14,
                 size_hint=(1, 1),
+                bold=True,
             )
         )
         text.with_padding(top=10)
@@ -97,11 +98,11 @@ class MyView(UIView):
         )
 
         width_slider_box = center_box.add(UIBoxLayout(vertical=False, size_hint=(1, 0)))
-        width_slider_box.add(UILabel("Modify size_hint:"))
+        width_slider_box.add(UILabel("Modify size_hint:", bold=True))
         width_slider = width_slider_box.add(
             arcade.gui.UISlider(min_value=0, max_value=10, value=0, size_hint=None, height=30)
         )
-        width_value = width_slider_box.add(UILabel())
+        width_value = width_slider_box.add(UILabel(bold=True))
 
         content_anchor.add(UISpace(height=50))
 
@@ -110,9 +111,9 @@ class MyView(UIView):
         demo_box.with_background(color=arcade.uicolor.GRAY_ASBESTOS)
 
         # create a dummy widget to show the effect of the sliders
-        dummy1 = demo_box.add(UILabel())
+        dummy1 = demo_box.add(UILabel(bold=True))
         dummy1.with_background(color=arcade.uicolor.YELLOW_ORANGE)
-        dummy2 = demo_box.add(UILabel())
+        dummy2 = demo_box.add(UILabel(bold=True))
         dummy2.with_background(color=arcade.uicolor.GREEN_EMERALD)
 
         def update_size_hint_value(value: float):
@@ -137,7 +138,11 @@ class MyView(UIView):
         self.ui.debug()
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="UIExample: Size Hints")
     window.show_view(MyView())
     window.run()
+
+
+if __name__ == "__main__":
+    main()

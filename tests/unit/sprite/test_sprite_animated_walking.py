@@ -16,7 +16,7 @@ def test_sprite_animated_old(window: arcade.Window):
 
     player = arcade.AnimatedWalkingSprite()
 
-    player.scale = 1
+    player.scale = 1.0
     player.stand_right_textures = []
     player.stand_right_textures.append(
         arcade.load_texture(":resources:images/animated_characters/female_person/femalePerson_idle.png"))

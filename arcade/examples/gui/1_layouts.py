@@ -1,6 +1,6 @@
 """Demonstrates the use of layouts.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.1_layouts
 
 Content:
@@ -180,7 +180,11 @@ class LayoutView(arcade.gui.UIView):
         pass
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: Layouts")
     window.show_view(LayoutView())
     window.run()
+
+
+if __name__ == '__main__':
+    main()

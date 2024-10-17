@@ -8,12 +8,12 @@ python -m arcade.examples.happy_face
 import arcade
 
 # Set constants for the screen size
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Happy Face Example"
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 600
+WINDOW_TITLE = "Happy Face Example"
 
 # Open the window. Set the window title and dimensions
-arcade.open_window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+arcade.open_window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
 
 # Set the background color
 arcade.set_background_color(arcade.color.WHITE)

@@ -31,7 +31,7 @@ Preview the next release at https://api.arcade.academy/en/development/.
 ```
     @Online{PythonArcade,
        author = {Paul Vincent Craven},
-       title = {Easy to use Python library for creating 2D arcade games.},
+       title = {Easy to use Python library for creating 2D Arcade games.},
        date = {2023-01-01},
        publisher = {GitHub},
        journal = {GitHub repository},

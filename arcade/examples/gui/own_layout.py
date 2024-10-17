@@ -4,7 +4,7 @@ This example shows how to create a custom layout.
 
 The layout will place the widgets in a rotating circle around the center of the screen.
 
-If arcade and Python are properly installed, you can run this example with:
+If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.own_layout
 """
 
@@ -110,7 +110,11 @@ class MyView(UIView):
             )
 
 
-if __name__ == "__main__":
+def main():
     window = arcade.Window(title="GUI Example: CircleLayout")
     window.show_view(MyView())
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()

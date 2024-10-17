@@ -4,7 +4,7 @@ Work with a mini-map
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.minimap
+python -m arcade.examples.minimap_texture
 """
 
 import random
@@ -14,9 +14,9 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-DEFAULT_SCREEN_WIDTH = 1280
-DEFAULT_SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Minimap Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Minimap Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
@@ -35,14 +35,14 @@ MAP_WIDTH = 2048
 MAP_HEIGHT = 2048
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__()
 
         # Sprite lists
         self.player_list = None
@@ -128,33 +128,31 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Select the camera we'll use to draw all our sprites
-        self.camera_sprites.use()
-
-        # Draw all the sprites.
-        self.wall_list.draw()
-        self.player_list.draw()
+        with self.camera_sprites.activate():
+            # Draw all the sprites.
+            self.wall_list.draw()
+            self.player_list.draw()
 
         # Select the (unscrolled) camera for our GUI
-        self.camera_gui.use()
+        with self.camera_gui.activate():
+            # Update the minimap
+            self.update_minimap()
 
-        # Update the minimap
-        self.update_minimap()
+            # Draw the minimap
+            self.minimap_sprite_list.draw()
 
-        # Draw the minimap
-        self.minimap_sprite_list.draw()
+            # Draw the GUI
+            arcade.draw_rect_filled(
+                arcade.rect.XYWH(self.width // 2, 20, self.width, 40),
+                color=arcade.color.ALMOND,
+            )
 
-        # Draw the GUI
-        arcade.draw_rect_filled(
-            arcade.rect.XYWH(self.width // 2, 20, self.width, 40),
-            color=arcade.color.ALMOND,
-        )
-
-        text = (
-            f"Scroll value: "
-            f"{self.camera_sprites.position[0]:4.1f}, "
-            f"{self.camera_sprites.position[1]:4.1f}"
-        )
-        arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
+            text = (
+                f"Scroll value: "
+                f"{self.camera_sprites.position[0]:4.1f}, "
+                f"{self.camera_sprites.position[1]:4.1f}"
+            )
+            arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -211,8 +209,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

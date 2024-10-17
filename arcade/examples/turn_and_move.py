@@ -9,9 +9,9 @@ python -m arcade.examples.turn_and_move
 import math
 import arcade
 
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-SCREEN_TITLE = "Turn and Move Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Turn and Move Example"
 
 # Image might not be lined up right, set this to offset
 IMAGE_ROTATION = -90
@@ -96,13 +96,13 @@ class Player(arcade.Sprite):
             self._destination_point = None
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
+        super().__init__()
 
         self.background_color = arcade.color.SAND
 
@@ -149,10 +149,18 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    game = MyGame()
-    game.setup()
-    arcade.run()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 if __name__ == "__main__":
     main()

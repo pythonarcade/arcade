@@ -1,5 +1,5 @@
 """
-Custom arcade errors, exceptions, and warnings.
+Custom Arcade errors, exceptions, and warnings.
 """
 
 import functools
@@ -27,7 +27,7 @@ class OutsideRangeError(ValueError):
     """
     Raised when a value is outside and expected range
 
-    This class and its subclasses are intended to be arcade-internal
+    This class and its subclasses are intended to be Arcade-internal
     helpers to clearly signal exactly what went wrong. Each helps
     type annotate and template a string describing exactly what went
     wrong.

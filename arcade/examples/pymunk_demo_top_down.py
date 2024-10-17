@@ -11,26 +11,25 @@ import random
 import arcade
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
-SCREEN_TITLE = "PyMunk Top-Down"
+WINDOW_TITLE = "PyMunk Top-Down"
 SPRITE_SCALING_PLAYER = 0.5
 MOVEMENT_SPEED = 5
 
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING_PLAYER)
 
-SCREEN_WIDTH = SPRITE_SIZE * 15
-SCREEN_HEIGHT = SPRITE_SIZE * 10
+WINDOW_WIDTH = SPRITE_SIZE * 15
+WINDOW_HEIGHT = SPRITE_SIZE * 10
 
 # Physics force used to move the player. Higher number, faster accelerating.
 PLAYER_MOVE_FORCE = 4000
 BULLET_MOVE_FORCE = 2500
 
 
-class MyWindow(arcade.Window):
-    """ Main Window """
-    def __init__(self, width, height, title):
+class GameView(arcade.View):
+    def __init__(self):
         """ Init """
-        super().__init__(width, height, title)
+        super().__init__()
 
         self.background_color = arcade.color.AMAZON
 
@@ -66,7 +65,7 @@ class MyWindow(arcade.Window):
         self.player_list.append(self.player_sprite)
 
         # Set up the walls
-        for x in range(0, SCREEN_WIDTH + 1, SPRITE_SIZE):
+        for x in range(0, WINDOW_WIDTH + 1, SPRITE_SIZE):
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
                                  scale=SPRITE_SCALING_PLAYER)
             wall.center_x = x
@@ -76,11 +75,11 @@ class MyWindow(arcade.Window):
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
                                  scale=SPRITE_SCALING_PLAYER)
             wall.center_x = x
-            wall.center_y = SCREEN_HEIGHT
+            wall.center_y = WINDOW_HEIGHT
             self.wall_list.append(wall)
 
         # Set up the walls
-        for y in range(SPRITE_SIZE, SCREEN_HEIGHT, SPRITE_SIZE):
+        for y in range(SPRITE_SIZE, WINDOW_HEIGHT, SPRITE_SIZE):
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
                                  scale=SPRITE_SCALING_PLAYER)
             wall.center_x = 0
@@ -89,7 +88,7 @@ class MyWindow(arcade.Window):
 
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
                                  scale=SPRITE_SCALING_PLAYER)
-            wall.center_x = SCREEN_WIDTH
+            wall.center_x = WINDOW_WIDTH
             wall.center_y = y
             self.wall_list.append(wall)
 
@@ -204,7 +203,7 @@ class MyWindow(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
-        bullet = arcade.SpriteSolidColor(5, 5, arcade.color.RED)
+        bullet = arcade.SpriteSolidColor(width=5, height=5, color=arcade.color.RED)
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location
@@ -313,11 +312,19 @@ class MyWindow(arcade.Window):
         self.gem_list.draw()
         self.player_list.draw()
 
-
 def main():
     """ Main function """
-    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

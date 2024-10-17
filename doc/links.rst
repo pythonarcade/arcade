@@ -1,5 +1,5 @@
 
-.. _arcade book: https://learn.arcade.academy/
+.. _Arcade book: https://learn.arcade.academy/
 .. _pyglet: https://pyglet.readthedocs.io/
 .. _PyPI: https://pypi.org/project/arcade/
 .. _Arcade GitHub: https://github.com/pythonarcade/arcade/

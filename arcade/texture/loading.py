@@ -74,7 +74,7 @@ def load_image(
     This function is useful when you want to load an image and then
     manipulate it before creating a texture.
 
-    Note that arcade mainly works with RGBA images. If you override
+    Note that Arcade mainly works with RGBA images. If you override
     the mode you might need to convert the final image to RGBA.
 
     Args:

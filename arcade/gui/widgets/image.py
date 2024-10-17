@@ -17,10 +17,16 @@ class UIImage(UIWidget):
 
     If no size given, the texture size is used.
 
+    The UIImage supports rotation and alpha values, which only apply to the texture.
+    Border, and background color are not affected by this.
+    The size of the image is reduced when rotated to stay within bounce of the widget.
+
     Args:
         texture: Texture to show
         width: width of widget
         height: height of widget
+        angle: angle of the texture in degrees
+        alpha: alpha value of the texture, value between 0 and 255
         **kwargs: passed to UIWidget
     """
 
@@ -39,9 +45,13 @@ class UIImage(UIWidget):
         texture: Union[Texture, NinePatchTexture],
         width: float | None = None,
         height: float | None = None,
+        angle: int = 0,
+        alpha: int = 255,
         **kwargs,
     ):
         self.texture = texture
+        self.angle = angle
+        self.alpha = alpha
 
         super().__init__(
             width=width if width else texture.width,

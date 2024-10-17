@@ -24,9 +24,9 @@ COIN_COUNT_INCREMENT = 500
 
 STOP_COUNT = 12000
 
-SCREEN_WIDTH = 1800
-SCREEN_HEIGHT = 1000
-SCREEN_TITLE = "Moving Sprite Stress Test"
+WINDOW_WIDTH = 1800
+WINDOW_HEIGHT = 1000
+WINDOW_TITLE = "Moving Sprite Stress Test"
 
 USE_SPATIAL_HASHING = True
 if USE_SPATIAL_HASHING:
@@ -54,13 +54,13 @@ class FPSCounter:
             return len(self.frame_times) / sum(self.frame_times)
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Our custom Window Class"""
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.coin_list = None
@@ -91,8 +91,8 @@ class MyGame(arcade.Window):
             coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
 
             # Position the coin
-            coin.center_x = random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE)
-            coin.center_y = random.randrange(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE)
+            coin.center_x = random.randrange(SPRITE_SIZE, WINDOW_WIDTH - SPRITE_SIZE)
+            coin.center_y = random.randrange(SPRITE_SIZE, WINDOW_HEIGHT - SPRITE_SIZE)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
@@ -107,8 +107,8 @@ class MyGame(arcade.Window):
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
             SPRITE_SCALING_PLAYER,
         )
-        self.player.center_x = random.randrange(SCREEN_WIDTH)
-        self.player.center_y = random.randrange(SCREEN_HEIGHT)
+        self.player.center_x = random.randrange(WINDOW_WIDTH)
+        self.player.center_y = random.randrange(WINDOW_HEIGHT)
         self.player.change_x = 3
         self.player.change_y = 5
         self.player_list.append(self.player)
@@ -125,18 +125,18 @@ class MyGame(arcade.Window):
 
         # Display info on sprites
         output = f"Sprite count: {len(self.coin_list):,}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 20, arcade.color.BLACK, 16)
 
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.BLACK, 16)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 60, arcade.color.BLACK, 16)
 
         fps = self.fps.get_fps()
         output = f"FPS: {fps:3.0f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.BLACK, 16)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 80, arcade.color.BLACK, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
@@ -152,15 +152,15 @@ class MyGame(arcade.Window):
         if self.player.center_y < 0 and self.player.change_y < 0:
             self.player.change_y *= -1
 
-        if self.player.center_x > SCREEN_WIDTH and self.player.change_x > 0:
+        if self.player.center_x > WINDOW_WIDTH and self.player.change_x > 0:
             self.player.change_x *= -1
-        if self.player.center_y > SCREEN_HEIGHT and self.player.change_y > 0:
+        if self.player.center_y > WINDOW_HEIGHT and self.player.change_y > 0:
             self.player.change_y *= -1
 
         coin_hit_list = arcade.check_for_collision_with_list(self.player, self.coin_list)
         for coin in coin_hit_list:
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
@@ -212,8 +212,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame()
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

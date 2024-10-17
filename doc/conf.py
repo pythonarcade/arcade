@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
+from __future__ import annotations
 from functools import cache
+import logging
+from pathlib import Path
 from textwrap import dedent
 from typing import Any, NamedTuple
 import docutils.nodes
@@ -11,14 +14,87 @@ import sphinx.ext.autodoc
 import sphinx.transforms
 import sys
 
+# As of pyglet==2.1.dev7, this is no longer set in pyglet/__init__.py
+# because Jupyter / IPython always load Sphinx into sys.modules. See
+# the following for more info:
+# 1. The ticket: https://github.com/pyglet/pyglet/issues/1215
+# 2. The commit: https://github.com/pyglet/pyglet/commit/97076c3a33a7d368cc9c9e44ca67769b6a16a905
+sys.is_pyglet_doc_run = True
+
 # --- Pre-processing Tasks
 
+log = logging.getLogger('conf.py')
+logging.basicConfig(level=logging.INFO)
+
+HERE = Path(__file__).resolve()
+REPO_LOCAL_ROOT = HERE.parent.parent
+ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
+UTIL_DIR = REPO_LOCAL_ROOT / "util"
+
+log.info(f"Absolute path for our conf.py       : {str(HERE)!r}")
+log.info(f"Absolute path for the repo root     : {str(REPO_LOCAL_ROOT)!r}")
+log.info(f"Absolute path for the arcade module : {str(REPO_LOCAL_ROOT)!r}")
+log.info(f"Absolute path for the util dir      : {str(UTIL_DIR)!r}")
+
+# _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
+
+sys.path.insert(0, str(REPO_LOCAL_ROOT))
+sys.path.insert(0, str(ARCADE_MODULE))
+log.info(f"Inserted elements in system path: First two are now:")
+for i in range(2):
+    log.info(f"  {i}: {sys.path[i]!r}")
+
+# Don't change to
+# from arcade.version import VERSION
+# or read the docs build will fail.
+from version import VERSION # pyright: ignore [reportMissingImports]
+log.info(f"Got version {VERSION!r}")
+
+REPO_URL_BASE="https://github.com/pythonarcade/arcade"
+if 'dev' in VERSION:
+    GIT_REF = 'development'
+    log.info(f"Got .dev release: using {GIT_REF!r}")
+else:
+    GIT_REF = VERSION
+    log.info(f"Got real release: using {GIT_REF!r}")
+
+
+# We'll pass this to our generation scripts to initialize their globals
+RESOURCE_GLOBALS = dict(
+    GIT_REF=GIT_REF,
+    BASE_URL_REPO=REPO_URL_BASE,
+    # This double-bracket escapes brackets in f-strings
+    FMT_URL_REF_PAGE=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}",
+    FMT_URL_REF_EMBED=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true",
+)
+
+def run_util(filename, run_name="__main__", init_globals=None):
+
+    full_absolute_path = UTIL_DIR / filename
+    full_str = str(full_absolute_path)
+
+    log.info(f"Running {full_str!r} with:")
+    log.info(f"  run_name={run_name!r}")
+    kwargs = dict(run_name=run_name)
+    if init_globals is not None:
+        kwargs['init_globals'] = init_globals
+        log.info(f"  init_globals={{")
+        num_left = len(init_globals)
+        for k, v in init_globals.items():
+            end = "," if num_left else ""
+            log.info(f"    {k!r} : {v!r}{end}")
+            num_left -= num_left
+        log.info(f"  }}")
+
+    runpy.run_path(full_str, **kwargs)
+
 # Make thumbnails for the example code screenshots
-runpy.run_path('../util/generate_example_thumbnails.py', run_name='__main__')
-# Create a listing of the resources
-runpy.run_path('../util/create_resources_listing.py', run_name='__main__')
+run_util("generate_example_thumbnails.py")
+# Create a tabular representation of the resources with embeds
+run_util("create_resources_listing.py", init_globals=RESOURCE_GLOBALS)
 # Run the generate quick API index script
-runpy.run_path('../util/update_quick_index.py', run_name='__main__')
+run_util('../util/update_quick_index.py')
+
 
 autodoc_inherit_docstrings = False
 autodoc_default_options = {
@@ -32,16 +108,8 @@ toc_object_entries_show_parents = 'hide'
 # Special methods in api docs gets a special prefix emoji
 prettyspecialmethods_signature_prefix = '🧙'
 
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../arcade'))
-
-# Don't change to
-# from arcade.version import VERSION
-# or read the docs build will fail.
-from version import VERSION # pyright: ignore [reportMissingImports]
 
 RELEASE = VERSION
-
 # -- General configuration ------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -263,16 +331,22 @@ def generate_color_table(filename, source):
             if not matches:
                 continue
 
-            color_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {matches.group('alpha')})"
+            name, r, g, b, a = matches.groupdict().values()
+            color_rgb_comma_sep= f"{r}, {g}, {b}"
 
             # Generate the alpha for CSS color function
-            alpha = int( matches.group('alpha') ) / 255
-            css_rgba = f"({matches.group('red')}, {matches.group('green')}, {matches.group('blue')}, {alpha!s:.4})"
+            rgba_css = f"rgba({color_rgb_comma_sep}, {int(a) / 255!s:.4})"
 
             append_text += "    <tr>"
-            append_text += f"<td>{matches.group('name')}</td>"
-            append_text += f"<td>{color_rgba}</td>"
-            append_text += f"<td class='checkered'><div style='background-color:rgba{css_rgba};'>&nbsp</div></td>"
+            append_text += (
+                f"<td>"
+                f"<code class=\"docutils literal notranslate\">"
+                f"<span class=\"pre\">{name}</span>"
+                f"</code>"
+                f"</td>"
+            )
+            append_text += f"<td class=\"color-swatch\"><div style=\"background: {rgba_css};\">&nbsp</div></td>"
+            append_text += f"<td>({color_rgb_comma_sep}, {a})</td>"
             append_text += "</tr>\n"
 
     append_text += "    </tbody></table>"
@@ -308,7 +382,8 @@ def source_read_handler(_app, doc_name: str, source):
         generate_color_table(_get_dir(_app, "color/__init__.py"), source)
     elif doc_name == "api_docs/arcade.csscolor":
         generate_color_table(_get_dir(_app, "csscolor/__init__.py"), source)
-
+    elif doc_name == "api_docs/arcade.uicolor":
+        generate_color_table(_get_dir(_app, "uicolor.py"), source)
 
 def on_autodoc_process_bases(app, name, obj, options, bases):
     """We don't care about the `object` base class, so remove it from the list of bases."""

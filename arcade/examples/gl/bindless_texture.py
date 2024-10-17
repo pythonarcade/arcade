@@ -120,7 +120,7 @@ class BindlessTexture(arcade.Window):
             // The texture handles in the buffer are 64 bit integers and are
             // automatically converted into sampler objects for us.
             struct TextureRef {
-                sampler2D tex; // 64 bit integer
+                layout (bindless_sampler) sampler2D tex; // 64 bit integer
             };
 
             // Shader storage buffer with texture handles
@@ -145,15 +145,18 @@ class BindlessTexture(arcade.Window):
 
         self.handles = []
         self.textures: List[Texture2D] = []
-        # Make a cycle iterator from arcade's resources (images)
+        # Make a cycle iterator from Arcade's resources (images)
         resources = arcade.resources.list_built_in_assets(name="female", extensions=(".png",))
         resource_cycle = cycle(resources)
 
         # Load enough textures to cover for each point/sprite
         for i in range(16 * 9):
-            texture = self.ctx.load_texture(next(resource_cycle))
-            texture.wrap_x = self.ctx.CLAMP_TO_EDGE
-            texture.wrap_y = self.ctx.CLAMP_TO_EDGE
+            texture = self.ctx.load_texture(
+                next(resource_cycle),
+                immutable=True,
+                wrap_x=self.ctx.CLAMP_TO_EDGE,
+                wrap_y=self.ctx.CLAMP_TO_EDGE,
+            )
             # Make sure we keep a reference to the texture to avoid GC
             self.textures.append(texture)
             # Create a texture handle and make it resident.

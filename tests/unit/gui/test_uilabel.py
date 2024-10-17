@@ -9,12 +9,10 @@ from arcade.types import Color, LBWH
 
 def test_constructor_only_text_no_size(window):
     """Should fit text"""
-    label = UILabel(text="Example")
+    label = UILabel(text="Example", font_name="Kenney Pixel")
 
-    assert label.rect.width == pytest.approx(
-        63, abs=10
-    )  # on windows the width differs about 6 pixel
-    assert label.rect.height == pytest.approx(19, abs=1)
+    assert label.rect.width == 43
+    assert label.rect.height == 12
 
 
 def test_constructor_text_and_size(window):
@@ -28,11 +26,11 @@ def test_constructor_size_smaller_then_text(window):
 
 
 def test_constructor_fix_width_and_multiline(window):
-    label = UILabel(text="E x a m p l e", width=10, multiline=True)
-    assert label.rect.left == pytest.approx(0, abs=2)
-    assert label.rect.bottom == pytest.approx(0, abs=2)
-    assert label.rect.width == pytest.approx(10, abs=2)
-    assert label.rect.height == pytest.approx(133, abs=7)
+    label = UILabel(text="E x a m p l e", width=10, multiline=True, font_name="Kenney Pixel")
+    assert label.rect.left == 0
+    assert label.rect.bottom == 0
+    assert label.rect.width == 10
+    assert label.rect.height == 84
 
 
 def test_constructor_adaptive_width_support_for_multiline_text(window):
@@ -47,23 +45,23 @@ def test_constructor_adaptive_width_support_for_multiline_text(window):
 
 
 def test_with_border_keeps_previous_size(window):
-    label = UILabel(text="Example")
-    assert label.rect.width == pytest.approx(63, abs=10)
-    assert label.rect.height == pytest.approx(19, abs=6)
+    label = UILabel(text="Example", font_name="Kenney Pixel")
+    assert label.rect.width == 43
+    assert label.rect.height == 12
 
     label.with_border()
-    assert label.rect.width == pytest.approx(63, abs=10)
-    assert label.rect.height == pytest.approx(19, abs=6)
+    assert label.rect.width == 43
+    assert label.rect.height == 12
 
 
 def test_with_padding_keeps_previous_size(window):
-    label = UILabel(text="Example")
-    assert label.rect.width == pytest.approx(63, abs=10)
-    assert label.rect.height == pytest.approx(19, abs=6)
+    label = UILabel(text="Example", font_name="Kenney Pixel")
+    assert label.rect.width == 43
+    assert label.rect.height == 12
 
     label.with_padding(all=2)
-    assert label.rect.width == pytest.approx(63, abs=10)
-    assert label.rect.height == pytest.approx(19, abs=6)
+    assert label.rect.width == 43
+    assert label.rect.height == 12
 
 
 def test_internals_text_placed_at_0_0(window):
@@ -187,21 +185,22 @@ def test_integration_with_layout_fit_to_content(ui):
     label = UILabel(
         text="Example",
         size_hint=(0, 0),  # default, enables auto size
+        font_name="Kenney Pixel",
     )
 
     ui.add(label)
     ui.execute_layout()
 
     # auto size should fit the text
-    assert label.rect.width == pytest.approx(63, abs=10)
-    assert label.rect.height == pytest.approx(19, abs=6)
+    assert label.rect.width == 44
+    assert label.rect.height == 12
 
     # even when text changed
     label.text = "Example, which is way longer"
     ui.execute_layout()
 
     assert label.rect.width > 63
-    assert label.rect.height == pytest.approx(19, abs=6)
+    assert label.rect.height == 12
 
     # or font
     label.text = "Example"
@@ -209,7 +208,7 @@ def test_integration_with_layout_fit_to_content(ui):
     ui.execute_layout()
 
     assert label.rect.width > 63
-    assert label.rect.height > 20
+    assert label.rect.height > 12
 
 
 def test_fit_content_overrides_width(ui):
@@ -217,12 +216,13 @@ def test_fit_content_overrides_width(ui):
         text="Example",
         width=100,
         height=50,
+        font_name="Kenney Pixel",
     )
 
     label.fit_content()
 
-    assert label.rect.width == pytest.approx(63, abs=10)
-    assert label.rect.height == pytest.approx(19, abs=6)
+    assert label.rect.width == 44
+    assert label.rect.height == 12
 
 
 def test_fit_content_uses_adaptive_multiline_width(ui):

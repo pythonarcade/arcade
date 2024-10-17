@@ -8,7 +8,7 @@ Parallax
 .. warning:: This example is experimental!
 
              The features it uses may change rapidly or be replaced in
-             future arcade releases!
+             future Arcade releases!
 
 .. image:: images/background_parallax.png
     :width: 600px

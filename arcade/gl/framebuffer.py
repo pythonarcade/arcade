@@ -330,7 +330,7 @@ class Framebuffer:
         """
         Clears the framebuffer::
 
-            # Clear the framebuffer using arcade's colors (not normalized)
+            # Clear the framebuffer using Arcade's colors (not normalized)
             fb.clear(color=arcade.color.WHITE)
 
             # Clear framebuffer using the color red in normalized form
