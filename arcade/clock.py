@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __all__ = (
     "Clock",
     "FixedClock",
@@ -35,6 +37,8 @@ class Clock:
         self._tick_delta_time: float = 0.0
         self._tick_speed: float = tick_speed
 
+        self._max_deltatime: float | None = None
+
     def tick(self, delta_time: float):
         """
         Update the clock with the time that has passed since the last tick.
@@ -42,6 +46,9 @@ class Clock:
         Args:
             delta_time: The amount of time that has passed since the last tick.
         """
+        if self._max_deltatime is not None:
+            delta_time = min(self._max_delta_time, delta_time)
+        
         self._tick_delta_time = delta_time * self._tick_speed
         self._elapsed_time += self._tick_delta_time
         self._tick += 1
@@ -56,6 +63,9 @@ class Clock:
         """
         self._tick_speed = new_tick_speed
 
+    def set_max_deltatime(self, max_deltatime: float | None = None):
+        self._max_deltatime = max_deltatime
+        
     def time_since(self, time: float) -> float:
         """
         Calculate the amount of time that has passed since the given time.
