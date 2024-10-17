@@ -165,7 +165,7 @@ These are the breaking API changes. Use this as a quick reference for updating 2
   * `LBWH(left, bottom, width, height)`
   * `XYWH(x, y, width, height, anchor = AnchorPoint.CENTER)`
   * `XYRR(center_x, center_y, half_width, half_height)` (this is mostly used for GL.)
-  * `Viewport(left, right, width, height)` (where all inputs are `int`s.)
+  * `Viewport(left, bottom, width, height)` (where all inputs are `int`s.)
 * Several properties in the library now return a `Rect`:
   * `Window.rect`
   * `BasicSprite.rect`
