@@ -11,6 +11,8 @@ from pathlib import Path
 import arcade
 import pytest
 
+import arcade.clock
+
 # File path, module path
 EXAMPLE_LOCATIONS = [
     (
@@ -83,6 +85,12 @@ def test_examples(window_proxy, module_path, file_path, allow_stdout):
         # Manually load the module as __main__ so it runs on import
         loader = SourceFileLoader("__main__", str(file_path))
         loader.exec_module(loader.load_module())
+        
+    # Reset the global clock's tick speed
+    # is this a good argument against a global scope clock?
+    # yes.
+    arcade.clock.GLOBAL_CLOCK.set_tick_speed(1.0)
+
 
     if not allow_stdout:
         output = stdout.getvalue()
