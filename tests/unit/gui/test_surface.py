@@ -1,6 +1,6 @@
 import pytest
 
-from arcade import load_texture
+from arcade import LBWH, load_texture
 from arcade.gui import Surface, NinePatchTexture
 
 
@@ -25,3 +25,14 @@ def test_surface_draw_texture_raises_not_implemented_error_on_unsupported_values
 
     with pytest.raises(NotImplementedError):
         keywords_only(alpha=10, angle=30.0)
+
+
+def test_limit_surface(window):
+    surface = Surface(size=(100, 100))
+    assert surface._cam.viewport == LBWH(0, 0, 100, 100)
+
+    surface.limit(LBWH(10, 10, 80, 80))
+    assert surface._cam.viewport == LBWH(10, 10, 80, 80)
+
+    surface.limit(None)
+    assert surface._cam.viewport == LBWH(0, 0, 100, 100)

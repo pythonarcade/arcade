@@ -12,7 +12,7 @@ from arcade.camera import CameraData, OrthographicProjectionData, OrthographicPr
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import LBWH, RGBA255, Point, Rect
+from arcade.types import LBWH, Point, RGBA255, Rect
 
 
 class Surface:
@@ -190,8 +190,11 @@ class Surface:
             # Restore blend function.
             self.ctx.blend_func = prev_blend_func
 
-    def limit(self, rect: Rect):
-        """Reduces the draw area to the given rect"""
+    def limit(self, rect: Rect | None = None):
+        """Reduces the draw area to the given rect, or resets it to the full surface."""
+
+        if rect is None:
+            rect = LBWH(0, 0, *self.size)
 
         l, b, w, h = rect.lbwh
         w = max(w, 1)
