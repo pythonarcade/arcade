@@ -47,8 +47,8 @@ class Clock:
             delta_time: The amount of time that has passed since the last tick.
         """
         if self._max_deltatime is not None:
-            delta_time = min(self._max_delta_time, delta_time)
-        
+            delta_time = min(self._max_deltatime, delta_time)
+
         self._tick_delta_time = delta_time * self._tick_speed
         self._elapsed_time += self._tick_delta_time
         self._tick += 1
@@ -64,8 +64,19 @@ class Clock:
         self._tick_speed = new_tick_speed
 
     def set_max_deltatime(self, max_deltatime: float | None = None):
+        """
+        Set the maximum deltatime that the clock will allow. If a large dt is passed into
+        the clock's tick method it will be clamped. This will desync the game's time with the
+        real world elapsed time, but can help protect against lag-spikes, debugger pauses, and
+        other pauses to the event loop. This impacts the 'raw' dt so it does not take the clock's
+        tick speed into account
+
+        Args:
+            max_deltatime: The maximum number of seconds that a clock can have as it's deltatime.
+                           If set to None the clock has no limit. Defaults to None.
+        """
         self._max_deltatime = max_deltatime
-        
+
     def time_since(self, time: float) -> float:
         """
         Calculate the amount of time that has passed since the given time.
@@ -83,6 +94,10 @@ class Clock:
             tick: The tick to compare against.
         """
         return self._tick - tick
+
+    @property
+    def max_deltatime(self) -> float | None:
+        return self._max_deltatime
 
     @property
     def time(self) -> float:
