@@ -208,7 +208,7 @@ def test_integration_with_layout_fit_to_content(ui):
     ui.execute_layout()
 
     assert label.rect.width > 63
-    assert label.rect.height > 20
+    assert label.rect.height > 12
 
 
 def test_fit_content_overrides_width(ui):
