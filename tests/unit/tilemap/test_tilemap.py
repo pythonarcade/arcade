@@ -1,5 +1,11 @@
-import arcade
+from pathlib import Path
+
+import pytiled_parser
+from pytiled_parser import LayerGroup, OrderedPair, Size, TileLayer
 from pytiled_parser.common_types import Color
+
+import arcade
+from arcade import TileMap
 
 
 def test_one():
@@ -102,3 +108,87 @@ def test_sprite_sheet():
     assert first_sprite is not None
     assert first_sprite.height == 16
     assert first_sprite.width == 16
+
+
+def test_find_layer_group():
+    child_layer = TileLayer(
+        name="P1",
+        visible=True,
+        repeat_x=False,
+        repeat_y=False,
+        parallax_factor=OrderedPair(1, 1),
+        id=0,
+        size=Size(10, 5),
+        tint_color=None,
+        data=[],
+    )
+    group = LayerGroup(
+        name="Platforms",
+        opacity=1,
+        repeat_x=False,
+        repeat_y=False,
+        tint_color=None,
+        layers=[child_layer],
+    )
+    tilemap = TileMap(
+        tiled_map=pytiled_parser.TiledMap(
+            map_file=Path(),
+            infinite=False,
+            layers=[group],
+            map_size=Size(10, 5),
+            next_layer_id=None,
+            next_object_id=0,
+            orientation="orthogonal",
+            render_order="right-down",
+            tiled_version="1.5.0",
+            tile_size=Size(32, 32),
+            tilesets={},
+            version="1.5",
+            background_color=Color(0, 160, 229, 255),
+        )
+    )
+
+    layer_group = tilemap.get_tilemap_layer("Platforms")
+    assert layer_group is layer_group
+
+
+def test_find_layer_group_child():
+    child_layer = TileLayer(
+        name="P1",
+        visible=True,
+        repeat_x=False,
+        repeat_y=False,
+        parallax_factor=OrderedPair(1, 1),
+        id=0,
+        size=Size(10, 5),
+        tint_color=None,
+        data=[],
+    )
+    group = LayerGroup(
+        name="Platforms",
+        opacity=1,
+        repeat_x=False,
+        repeat_y=False,
+        tint_color=None,
+        layers=[child_layer],
+    )
+    tilemap = TileMap(
+        tiled_map=pytiled_parser.TiledMap(
+            map_file=Path(),
+            infinite=False,
+            layers=[group],
+            map_size=Size(10, 5),
+            next_layer_id=None,
+            next_object_id=0,
+            orientation="orthogonal",
+            render_order="right-down",
+            tiled_version="1.5.0",
+            tile_size=Size(32, 32),
+            tilesets={},
+            version="1.5",
+            background_color=Color(0, 160, 229, 255),
+        )
+    )
+
+    layer = tilemap.get_tilemap_layer("Platforms/P1")
+    assert layer is child_layer
