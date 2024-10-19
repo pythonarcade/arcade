@@ -12,7 +12,7 @@ from arcade.camera import CameraData, OrthographicProjectionData, OrthographicPr
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import LBWH, Point, RGBA255, Rect
+from arcade.types import LBWH, RGBA255, Point, Rect
 
 
 class Surface:
