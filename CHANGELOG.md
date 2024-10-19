@@ -26,7 +26,7 @@ These are the breaking API changes. Use this as a quick reference for updating 2
  to support custom parameters. The same applies to `SpriteList`.
 * `Sprite.draw` has been removed. Use either `arcade.draw.draw_sprite`
  or an `arcade.SpriteList`.
-* Removed `Sprite.face_point` and `Sprite.collision_radius`. 
+* Removed `Sprite.face_point` and `Sprite.collision_radius`.
 * The deprecated `update()` function has been removed from the
   `arcade.Window`, `arcade.View`,
   `arcade.Section`, and `arcade.SectionManager` classes.
@@ -40,6 +40,36 @@ These are the breaking API changes. Use this as a quick reference for updating 2
 * Buffered shapes (shape list items) have been moved to their sub-module.
 * The `use_spatial_hash` parameter for `SpriteList` and `TileMap` is now a `bool` instead of `Optional[bool]`
 * `arcade.draw_text()` and `arcade.text.Text` arguments have changed. `x` and `y ` have replaced `start_x` and `start_y`. `align` no longer interferes with `multiline`.
+* Moved or removed items from `arcade.util`:
+  * Removed:
+    * `arcade.util.generate_uuid_from_kwargs`
+    * `arcade.util._Vec2`:
+      * This was an internal class as indicated by the `_` prefix
+      * `pyglet.math.Vec2` replaces it in all functions
+  * Moved to `arcade.math`:
+    * `arcade.util.rand_in_circle` is now:
+      * located at `arcade.math.rand_in_circle`
+      * better at returning an even distribution of points [PR2426](https://github.com/pythonarcade/arcade/pull/2426) (remove any `math.sqrt` wrapping it)
+    * `arcade.util.rand_on_circle` is now `arcade.math.rand_on_circle`
+    * `arcade.util.lerp` is now:
+      * located at `arcade.math.lerp`
+      * compatible with any type which implements numerical `+`, `-`, and `*` operators
+        * NOTE: lerping vectors may be more efficient when using dedicated functions and methods:
+            * When lerping `pylget.math.Vec2`, use one of:
+              * `pyglet.math.Vec2`'s [built in `lerp` method](https://pyglet.readthedocs.io/en/development/modules/math.html#pyglet.math.Vec2.lerp)
+              * `arcade.math.lerp_2d` for general `tuple` compatibility
+            * When lerping `pylget.math.Vec3`, use one of:
+              * `pyglet.math.Vec3`'s [built in `lerp` method](https://pyglet.readthedocs.io/en/development/modules/math.html#pyglet.math.Vec3.lerp)
+              * `arcade.math.lerp_2d` for general `tuple` compatibility
+    * `arcade.util.lerp_vec` is now `arcade.math.lerp_2d`
+    * `arcade.util.rand_in_rect` is now `arcade.math.rand_in_rect`
+    * `arcade.util.rand_on_line` is now `arcade.math.rand_on_line`
+    * `arcade.util.rand_angle_360_deg` is now `arcade.math.rand_angle_360_deg`
+    * `arcade.util.rand_angle_spread_deg` is now `arcade.math.rand_angle_spread_deg`
+    * `arcade.util.rand_spread_deg` is now `arcade.math.rand_spread_deg`
+    * `arcade.util.rand_magnitude` is now `arcade.math.rand_magnitude`
+
+ 
 * GUI
   * Removed `arcade.gui.widgets.UIWrapper`. It is now a part of `arcade.gui.widgets.UILayout`.
   * Removed `arcade.gui.widgets.UIBorder`. It is now a part of `arcade.gui.widgets.UIWidget`.
@@ -312,6 +342,7 @@ We would also like to thank the contributors who spent their valuable time solvi
 * [Natalie Fearnley](https://github.com/nfearnley)
 * [Omar Mohammed](https://github.com/osm3000)
 * [Raccoon](https://github.com/bandit-masked)
+* [Raxeli1](https://github.com/Rapen765)
 * [Rémi Vanicat](https://github.com/vanicat)
 * [Rich Saupe](https://github.com/sabadam32)
 * [Shadow](https://github.com/shadow7412)
