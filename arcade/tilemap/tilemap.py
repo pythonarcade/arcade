@@ -19,7 +19,7 @@ from typing import TYPE_CHECKING, Any, Callable, List, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
-from pytiled_parser import Color, Layer
+from pytiled_parser import Color
 
 import arcade
 from arcade import (
@@ -373,7 +373,7 @@ class TileMap:
         """
         assert isinstance(layer_path, str)
 
-        def _get_tilemap_layer(my_path: List[str], layers: List[Layer]):
+        def _get_tilemap_layer(my_path: List[str], layers):
             layer_name = my_path.pop(0)
             for my_layer in layers:
                 if my_layer.name == layer_name:
