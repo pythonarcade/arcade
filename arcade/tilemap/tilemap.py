@@ -15,11 +15,11 @@ import os
 from collections import OrderedDict
 from collections.abc import Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, cast
+from typing import List, TYPE_CHECKING, Any, Callable, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
-from pytiled_parser import Color
+from pytiled_parser import Color, Layer
 
 import arcade
 from arcade import (
@@ -373,13 +373,12 @@ class TileMap:
         """
         assert isinstance(layer_path, str)
 
-        def _get_tilemap_layer(my_path, layers):
+        def _get_tilemap_layer(my_path: List[str], layers: List[Layer]):
             layer_name = my_path.pop(0)
             for my_layer in layers:
                 if my_layer.name == layer_name:
-                    if isinstance(my_layer, pytiled_parser.LayerGroup):
-                        if len(my_path) != 0:
-                            return _get_tilemap_layer(my_path, my_layer.layers)
+                    if isinstance(my_layer, pytiled_parser.LayerGroup) and len(my_path) != 0:
+                        return _get_tilemap_layer(my_path, my_layer.layers)
                     else:
                         return my_layer
             return None
