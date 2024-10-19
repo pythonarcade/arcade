@@ -15,7 +15,7 @@ import os
 from collections import OrderedDict
 from collections.abc import Sequence
 from pathlib import Path
-from typing import List, TYPE_CHECKING, Any, Callable, cast
+from typing import TYPE_CHECKING, Any, Callable, List, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
