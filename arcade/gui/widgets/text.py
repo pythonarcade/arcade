@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Final, Optional
 
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
+from pyglet.math import Vec2
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 from typing_extensions import Literal, override
@@ -416,6 +417,7 @@ class UIInputText(UIWidget):
     # Move layout one pixel into the scissor box so the caret is also shown at
     # position 0.
     LAYOUT_OFFSET = 1
+    LAYOUT_OFFSET_VEC2: Final[Vec2] = Vec2(0.0, LAYOUT_OFFSET)
 
     def __init__(
         self,
@@ -490,29 +492,46 @@ class UIInputText(UIWidget):
             self.trigger_full_render()
 
     @override
+    def _event_pos_relative_to_self(self, mouse_event: UIMouseEvent) -> Vec2 | None:
+        if result := super()._event_pos_relative_to_self(mouse_event):
+            return result - self.LAYOUT_OFFSET_VEC2
+        return result
+
+    @override
     def on_event(self, event: UIEvent) -> Optional[bool]:
         """Handle events for the text input field.
 
-        Text input is only active when the user clicks on the input field."""
-        # If not active, check to activate, return
-        if not self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.point_in_rect(event.pos):
+        Text input and other editing events only work after a user clicks
+        inside the field (:py:class:`~arcade.gui.events.UIMousePress`).
+        Dragging to select works as expected because it is handled by a separate
+        event class (:py:class:`~arcade.gui.events.UIMouseEventDrag`).
+
+        Args:
+            event: The UI event to be handled here or in a superclass.
+        Returns:
+            ``True`` if the event was handled.
+        """
+
+        # Handle mouse presses to activate or deactivate the caret. All other mouse
+        # events, including dragging and scrolling, are handled in the next if block.
+        if isinstance(event, UIMousePressEvent):
+            inside_xy = self._event_pos_relative_to_self(event)
+            if self._active:
+                if inside_xy:
+                    x, y = map(int, inside_xy)
+                    self.caret.on_mouse_press(x, y, event.button, event.modifiers)
+                else:
+                    self.deactivate()
+                    # return unhandled to allow other widgets to activate
+                    return EVENT_UNHANDLED
+
+            elif not self._active and inside_xy:
                 self.activate()
                 # return unhandled to allow other widgets to deactivate
                 return EVENT_UNHANDLED
 
-        # If active check to deactivate
-        if self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.point_in_rect(event.pos):
-                x = int(event.x - self.left - self.LAYOUT_OFFSET)
-                y = int(event.y - self.bottom)
-                self.caret.on_mouse_press(x, y, event.button, event.modifiers)
-            else:
-                self.deactivate()
-                # return unhandled to allow other widgets to activate
-                return EVENT_UNHANDLED
-
-        # If active pass all non press events to caret
+        # When active, handle any supported non-press events by passing them
+        # to the caret object.
         if self._active:
             old_text = self.text
             # Act on events if active
@@ -526,9 +545,10 @@ class UIInputText(UIWidget):
                 self.caret.on_text_motion_select(event.selection)
                 self.trigger_full_render()
 
-            if isinstance(event, UIMouseEvent) and self.rect.point_in_rect(event.pos):
-                x = int(event.x - self.left - self.LAYOUT_OFFSET)
-                y = int(event.y - self.bottom)
+            if isinstance(event, UIMouseEvent) and (
+                inside_xy := self._event_pos_relative_to_self(event)
+            ):
+                x, y = map(int, inside_xy)
                 if isinstance(event, UIMouseDragEvent):
                     self.caret.on_mouse_drag(
                         x, y, event.dx, event.dy, event.buttons, event.modifiers
