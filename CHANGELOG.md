@@ -45,7 +45,8 @@ These are the breaking API changes. Use this as a quick reference for updating 2
     * `arcade.util.generate_uuid_from_kwargs`
     * `arcade.util._Vec2`:
       * This was an internal class as indicated by the `_` prefix
-      * `pyglet.math.Vec2` replaces it in all functions
+      * It was an old version of pyglet's `pyglet.math.Vec2`
+      * Arcade code now uses `pyglet.math.Vec2` directly
   * Moved to `arcade.math`:
     * `arcade.util.rand_in_circle` is now:
       * located at `arcade.math.rand_in_circle`
