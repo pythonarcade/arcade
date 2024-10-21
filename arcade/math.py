@@ -235,22 +235,19 @@ def rand_in_circle(center: Point2, radius: float) -> Point2:
     # random radius
     r = radius * math.sqrt(random.random())
     # calculating coordinates
-    return (r * math.cos(angle) + center[0], r * math.sin(angle) + center[1])
+    return r * math.cos(angle) + center[0], r * math.sin(angle) + center[1]
 
 
 def rand_on_circle(center: Point2, radius: float) -> Point2:
     """
     Generate a point on a circle.
 
-    .. note: by passing a random value in for float,
-             you can achieve what rand_in_circle() does
-
     Args:
         center (Point2): The center of the circle
         radius (float): The radius of the circle
     """
     angle = 2 * math.pi * random.random()
-    return (radius * math.cos(angle) + center[0], radius * math.sin(angle) + center[1])
+    return radius * math.cos(angle) + center[0], radius * math.sin(angle) + center[1]
 
 
 def rand_on_line(pos1: Point2, pos2: Point2) -> Point:
@@ -286,7 +283,7 @@ def rand_angle_spread_deg(angle: float, half_angle_spread: float) -> float:
 
 def rand_vec_spread_deg(
     angle: float, half_angle_spread: float, length: float
-) -> tuple[float, float]:
+) -> Point2:
     """
     Returns a random vector, within a spread of the given angle.
 
@@ -304,7 +301,7 @@ def rand_vec_magnitude(
     angle: float,
     lo_magnitude: float,
     hi_magnitude: float,
-) -> tuple[float, float]:
+) -> Point2:
     """
     Returns a random vector, within a spread of the given angle.
 
