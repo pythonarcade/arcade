@@ -303,10 +303,10 @@ def rand_vec_magnitude(
     hi_magnitude: float,
 ) -> Point2:
     """
-    Returns a random vector, within a spread of the given angle.
+    Returns a random vector, with random magnitude.
 
     Args:
-        angle (float): The angle to spread from
+        angle (float): The vector angle
         lo_magnitude (float): The lower magnitude
         hi_magnitude (float): The higher magnitude
     """
