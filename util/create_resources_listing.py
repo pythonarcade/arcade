@@ -11,7 +11,7 @@ import sys
 from collections import defaultdict
 from functools import lru_cache, cache
 from pathlib import Path
-from typing import List, Callable, Generator, Protocol
+from typing import List, Callable, Protocol
 import logging
 
 log = logging.getLogger(__name__)
@@ -27,6 +27,7 @@ from doc_helpers.vfs import Vfs
 def announce_templating(var_name):
     _v = globals()[var_name]
     log.warning(f"Templated {var_name} as {_v!r}")
+
 
 # The following are provided via runpy.run_path's init_globals keyword
 # in conf.py. Uncomment for easy debugger run without IDE config.
@@ -135,26 +136,45 @@ def format_title_part(raw: str):
 
 # starts at = for top of page, drill down for here
 # https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
-headings_lookup = [
-    '=',
+headings_lookup = (
+    '=', # Page root heading
     '-',
     '^',
     '"',
-]
-
-def do_heading(out, title_text: str, page_relative_heading_level: int):
-    out.write("\n")
-    print(f"doing heading: {title_text!r} {page_relative_heading_level}")
-    if page_relative_heading_level >= len(headings_lookup):
-        out.write(f".. rubric:: {title_text}")
-    else:
-        header_char = headings_lookup[page_relative_heading_level]
-        out.write(f"{title_text}\n")
-        out.write(header_char * (len(title_text)) + "\n")
-    out.write("\n")
+)
 
 
 visited_headings = set()
+
+
+def do_heading(out, relative_heading_level: int, heading_text: str) -> None:
+    """Writes a heading to the output file.
+
+    If the page heading is beyond what we have symbols for, the Sphinx
+    ``.. rubric::`` directive will be used instead.
+
+    Args:
+        out: A file-like object which acts like its opened with ``"w"``
+        relative_heading_level: Heading level relative to the page root.
+        heading_text: The heading text to display.
+
+    """
+    out.write("\n")
+    print(f"doing heading: {heading_text!r} {relative_heading_level}")
+    num_headings = len(headings_lookup)
+
+    if relative_heading_level >= num_headings:
+        # pending: post-3.0 cleanup
+        log.warning(
+            f"Using .. rubric:: due to running out of heading levels:"
+            f"({relative_heading_level} >= {num_headings})")
+        out.write(f".. rubric:: {heading_text}\n")
+    else:
+        header_char = headings_lookup[relative_heading_level]
+        out.write(f"{heading_text}\n")
+        out.write(f"{header_char * (len(heading_text))}\n")
+    out.write("\n")
+
 
 PRIVATE_NAME = re.compile(r'^__')
 
@@ -163,28 +183,24 @@ def is_nonprotected_dir(p: Path):
     return p.is_dir() and not PRIVATE_NAME.match(p.stem)
 
 
+def is_unskipped_file(p: Path):
+    return not (p.is_dir() or p.suffix in skip_extensions)
+
+
 class SupportsLT(Protocol):
    def __lt__(self, other): ...
 
 
-def dir_contents(
+def filter_dir(
         dir: Path,
         keep: Callable[[Path], bool] = lambda path: True,
         key: Callable[[Path], SupportsLT] | Callable | None = None,
-        reverse: bool = False
-) -> Generator[Path, None, None]:
-    kept = []
-    # This is "stupid" code to make it easier to debug
-    for p in dir.iterdir():
-        print("getting ", p)
-        if keep(p):
-            print("kept it")
-            kept.append(p)
+        reverse: bool = False,
+) -> list[Path]:
+    kept = [p for p in dir.iterdir() if keep(p)]
     if key or reverse:
-        kept.sort(key=key, reverse=reverse)  # type: ignore
-
-    yield from kept
-
+        kept.sort(key=key, reverse=reverse)
+    return kept
 
 
 def process_resource_directory(out, dir: Path):
@@ -192,11 +208,11 @@ def process_resource_directory(out, dir: Path):
     Go through resources in a directory.
     """
 
-    for path in dir_contents(dir, key=lambda p: str(p), keep=is_nonprotected_dir):
+    for path in filter_dir(dir, key=str, keep=is_nonprotected_dir):
         # out.write(f"\n{cur_node.name}\n")
         # out.write("-" * len(cur_node.name) + "\n\n")
 
-        file_list = [item for item in path.iterdir() if not (item.is_dir() or skipped_file(item))]
+        file_list = filter_dir(path, key=str, keep=is_unskipped_file)
         num_files = len(file_list)
 
         if num_files > 0:
@@ -206,11 +222,7 @@ def process_resource_directory(out, dir: Path):
             resource_handle = raw_resource_handle[:-2] if raw_resource_handle.endswith("./") else raw_resource_handle
 
             # pending: post-3.0 time to refactor all of this
-            parts = raw_resource_handle.replace(":resources:", "").split("/")
-            if parts[-1] == "":
-                parts.pop()
-
-            print("got parts", parts)
+            parts = raw_resource_handle.replace(":resources:", "").rstrip("/").split("/")
             display_parts = [format_title_part(part) for part in parts]
 
             for heading_level, part in enumerate(display_parts, start=1):
@@ -218,7 +230,7 @@ def process_resource_directory(out, dir: Path):
                     continue
                 as_tup = tuple(display_parts[:heading_level])
                 if as_tup not in visited_headings:
-                    do_heading(out, part, heading_level)
+                    do_heading(out, heading_level, part)
                     visited_headings.add(as_tup)
 
             if raw_resource_handle == ":resources:images/":
@@ -331,7 +343,7 @@ def resources():
 
     out.write(".. _resources:\n")
 
-    do_heading(out, "Built-In Resources", 0)
+    do_heading(out, 0, "Built-In Resources")
 
     out.write("\n")
     out.write("Resource files are images and sounds built into Arcade that "
