@@ -12,6 +12,8 @@ from itertools import chain
 from pathlib import Path
 from typing import Any, Callable, Generator, Generic, Iterable, Sequence, Type, TypeVar
 
+from arcade.types import AsFloat, Point2
+
 __all__ = [
     "as_type",
     "type_name",
@@ -285,3 +287,35 @@ def get_raspberry_pi_info() -> tuple[bool, str, str]:
             pass
 
     return False, "", ""
+
+
+def unpack_asfloat_or_point(value: AsFloat | Point2) -> Point2:
+    """
+    A utility method that converts a float or int into a Point2, or
+    validates that an iterable is a Point2.
+
+    .. note:: This should be inlined in hot code paths
+
+    Args:
+        value: The value to test.
+
+    Returns:
+        A Point2 that is either equal to value, or is equal to (value, value)
+    """
+
+    if isinstance(value, (float, int)):
+        x = y = value
+    else:
+        try:
+            x, y = value
+        except ValueError:
+            raise ValueError(
+                "value must be a float, int, or tuple-like "
+                "which unpacks as two float-like values"
+            )
+        except TypeError:
+            raise TypeError(
+                "value must be a float, int, or tuple-like unpacks as two float-like values"
+            )
+
+    return x, y
