@@ -3,12 +3,15 @@ Quick Index Generator
 
 Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
+from __future__ import annotations
+
 import math
+import re
 import sys
 from collections import defaultdict
-from functools import lru_cache
+from functools import lru_cache, cache
 from pathlib import Path
-from typing import List
+from typing import List, Callable, Generator, Protocol
 import logging
 
 log = logging.getLogger(__name__)
@@ -60,9 +63,9 @@ skip_extensions = [
     ".url",
     ".txt",
     ".tiled-project",
-    ".ttf",
     ".pyc",
 ]
+
 
 def skipped_file(file_path: Path):
     """Return True if file should be skipped."""
@@ -89,6 +92,7 @@ def create_resource_path(
     path: Path,
     prefix: str = "",
     suffix: str = "",
+    restrict_to_bases=('system', 'assets')
 ) -> str:
     """
     Create a resource path. We will use the resources handle
@@ -96,45 +100,154 @@ def create_resource_path(
     from the path.
     """
     path = path.relative_to(RESOURCE_DIR)
-    if path.parts[0] == "system":
-        path = path.relative_to("system")
-    elif path.parts[0] == "assets":
-        path = path.relative_to("assets")
+    base = path.parts[0]
+    if not restrict_to_bases or base in restrict_to_bases:
+        path = path.relative_to(base)
     else:
-        raise ValueError(f"Unexpected path: {path}")
+        raise ValueError(f"Unexpected path: {path}. Expected one of: {', '.join(repr(b) for b in expect_bases)}")
 
     return f"{prefix}:resources:{path.as_posix()}{suffix}"
+
+
+# pending: post-3.0 cleanup
+REPLACE_TITLE_WORDS = {
+    "ttf": "Kenney TTFs",
+    "gui": "GUI",
+    "window": "Window & Panel",
+    ".": "Top-level Resources"
+}
+# pending: post-3.0 cleanup
+SKIP_TITLES = {
+    "Kenney TTFs"
+}
+
+@cache
+def format_title_part(raw: str):
+    out = []
+    for word in raw.split('_'):
+        if word in REPLACE_TITLE_WORDS:
+            out.append(REPLACE_TITLE_WORDS[word])
+        else:
+            out.append(word.capitalize())
+
+    return ' '.join(out)
+
+
+# starts at = for top of page, drill down for here
+# https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
+headings_lookup = [
+    '=',
+    '-',
+    '^',
+    '"',
+]
+
+def do_heading(out, title_text: str, page_relative_heading_level: int):
+    out.write("\n")
+    print(f"doing heading: {title_text!r} {page_relative_heading_level}")
+    if page_relative_heading_level >= len(headings_lookup):
+        out.write(f".. rubric:: {title_text}")
+    else:
+        header_char = headings_lookup[page_relative_heading_level]
+        out.write(f"{title_text}\n")
+        out.write(header_char * (len(title_text)) + "\n")
+    out.write("\n")
+
+
+visited_headings = set()
+
+PRIVATE_NAME = re.compile(r'^__')
+
+
+def is_nonprotected_dir(p: Path):
+    return p.is_dir() and not PRIVATE_NAME.match(p.stem)
+
+
+class SupportsLT(Protocol):
+   def __lt__(self, other): ...
+
+
+def dir_contents(
+        dir: Path,
+        keep: Callable[[Path], bool] = lambda path: True,
+        key: Callable[[Path], SupportsLT] | Callable | None = None,
+        reverse: bool = False
+) -> Generator[Path, None, None]:
+    kept = []
+    # This is "stupid" code to make it easier to debug
+    for p in dir.iterdir():
+        print("getting ", p)
+        if keep(p):
+            print("kept it")
+            kept.append(p)
+    if key or reverse:
+        kept.sort(key=key, reverse=reverse)  # type: ignore
+
+    yield from kept
+
 
 
 def process_resource_directory(out, dir: Path):
     """
     Go through resources in a directory.
     """
-    for path in dir.iterdir():
-        if not path.is_dir() or path.name.endswith("__"):
-            continue
+
+    for path in dir_contents(dir, key=lambda p: str(p), keep=is_nonprotected_dir):
         # out.write(f"\n{cur_node.name}\n")
         # out.write("-" * len(cur_node.name) + "\n\n")
 
         file_list = [item for item in path.iterdir() if not (item.is_dir() or skipped_file(item))]
         num_files = len(file_list)
+
         if num_files > 0:
 
             # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
-            raw_header = create_resource_path(path, suffix="/")
-            header_title = raw_header[:-2] if raw_header.endswith("./") else raw_header
+            raw_resource_handle = create_resource_path(path, suffix="/")
+            resource_handle = raw_resource_handle[:-2] if raw_resource_handle.endswith("./") else raw_resource_handle
 
-            if raw_header == ":resources:images/":
+            # pending: post-3.0 time to refactor all of this
+            parts = raw_resource_handle.replace(":resources:", "").split("/")
+            if parts[-1] == "":
+                parts.pop()
+
+            print("got parts", parts)
+            display_parts = [format_title_part(part) for part in parts]
+
+            for heading_level, part in enumerate(display_parts, start=1):
+                if part in SKIP_TITLES:
+                    continue
+                as_tup = tuple(display_parts[:heading_level])
+                if as_tup not in visited_headings:
+                    do_heading(out, part, heading_level)
+                    visited_headings.add(as_tup)
+
+            if raw_resource_handle == ":resources:images/":
                 for f in file_list:
                     print(f.name)
+
+            if raw_resource_handle == ":resources:fonts/ttf/":
+                for f in file_list:
+                    print(f.name)
+                # pending: post-3.0 cleanup
+                out.write("\n")
+                out.write(".. figure:: images/fonts_blue.png\n")
+                out.write("   :alt: The bundled Kenney.nl fonts.\n")
+                out.write("\n")
+                out.write("   Arcade includes the following fonts from `Kenney.nl's font pack <https://kenney.nl/assets/kenney-fonts>`_\n")
+                out.write("   are available using the path and filenames below.\n")
+
+            n_cols = get_header_num_cols(raw_resource_handle, num_files)
+            widths = get_column_widths_for_n(n_cols)
+
             # out.write(f"\n{header_title}\n")
             # out.write("-" * (len(header_title)) + "\n\n")
 
-            n_cols = get_header_num_cols(raw_header, num_files)
-            widths = get_column_widths_for_n(n_cols)
-
             out.write(f"\n")
-            out.write(f".. list-table:: \"{header_title}\"\n")
+            out.write(f".. raw:: html\n\n")
+            out.write(f"   <code class=\"literal resource-category\">{resource_handle}</code>\n")
+
+            #out.write(f".. list-table:: \"{header_title}\"\n")
+            out.write(f".. list-table::\n")
             out.write(f"    :widths: {widths}\n")
             out.write(f"    :header-rows: 0\n")
             out.write(f"    :class: resource-table\n\n")
@@ -198,7 +311,7 @@ def process_resource_files(out, file_list: List[Path]):
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{path} <{file_path}>`_\n")
         # Link Tiled maps
-        elif suffix == ".json":
+        elif suffix in (".json", ".ttf"):
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
         else:
@@ -217,9 +330,9 @@ def resources():
     out = vfs.open(OUT_FILE, "w")
 
     out.write(".. _resources:\n")
-    out.write("\n")
-    out.write("Built-In Resources\n")
-    out.write("==================\n")
+
+    do_heading(out, "Built-In Resources", 0)
+
     out.write("\n")
     out.write("Resource files are images and sounds built into Arcade that "
               "can be used to quickly build and test simple code without having "
