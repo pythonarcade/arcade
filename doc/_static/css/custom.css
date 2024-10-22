@@ -223,7 +223,10 @@ table.resource-table td {
 }
 table.resource-table td > img {
     display: inline-block;
+    /* Maximum 20% of the smallest display dimension */
+    max-width: min(20vw, 20vh);
 }
+
 table.colorTable {
     border-width: 1px;
 }
