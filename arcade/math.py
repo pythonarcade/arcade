@@ -306,7 +306,7 @@ def rand_vec_magnitude(
     Returns a random vector, with random magnitude.
 
     Args:
-        angle (float): The vector angle
+        angle (float): The vector angle in radians
         lo_magnitude (float): The lower magnitude
         hi_magnitude (float): The higher magnitude
     """
