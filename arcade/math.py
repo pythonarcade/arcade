@@ -6,7 +6,7 @@ from typing import TypeVar
 
 from pyglet.math import Vec2, Vec3
 
-from arcade.types import HasAddSubMul, Point, Point2, SupportsRichComparison, AsFloat
+from arcade.types import AsFloat, HasAddSubMul, Point, Point2, SupportsRichComparison
 from arcade.types.rect import Rect
 from arcade.types.vector_like import Point3
 
