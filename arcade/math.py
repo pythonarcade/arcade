@@ -303,7 +303,7 @@ def rand_vec_magnitude(
     hi_magnitude: float,
 ) -> Point2:
     """
-    Returns a random vector, with random magnitude.
+    Return a vector of randomized magnitude pointing in the given direction.
 
     Args:
         angle (float): The vector angle in radians
