@@ -364,20 +364,22 @@ def rotate_point(
 
     return x, y
 
+
 # scale around point
+
 
 def rescale_relative_to_point(source: Point2, target: Point2, factor: AsFloat | Point2) -> Point2:
     """
-    Calculate where a point should be when scaled by the factor realtive to the source point 
+    Calculate where a point should be when scaled by the factor realtive to the source point.
 
     Args:
         source: Where to scaled from.
         target: The point being scaled.
-        factor: How much to scale by. If factor is less than one, target approaches source. 
+        factor: How much to scale by. If factor is less than one, target approaches source.
                 Otherwise it moves away. A factor of zero returns source.
 
     Returns:
-        The rescaled point. 
+        The rescaled point.
     """
 
     if isinstance(factor, (float, int)):
@@ -403,6 +405,31 @@ def rescale_relative_to_point(source: Point2, target: Point2, factor: AsFloat | 
     dy = target[1] - source[1]
 
     return source[0] + dx * scale_x, source[1] + dy * scale_y
+
+
+def rotate_around_point(source: Point2, target: Point2, angle: float):
+    """
+    Rotate a point around another point clockwise.
+
+    Args:
+        source: The point to rotate around
+        target: The point to rotate
+        angle: The degrees to rotate the target by.
+    """
+
+    if source == target or angle % 360.0 == 0.0:
+        return target
+
+    diff_x = target[0] - source[0]
+    diff_y = target[1] - source[1]
+    r = math.radians(angle)
+
+    c, s = math.cos(r), math.sin(r)
+
+    dx = diff_x * c - diff_y * s
+    dy = diff_x * s + diff_y * c
+
+    return target[0] + dx, target[1] + dy
 
 
 def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
