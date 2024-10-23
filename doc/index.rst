@@ -1,15 +1,10 @@
 :hide-toc:
 
-.. image:: images/logo/arcade-logo.svg
-    :width: 10%
-    :class: right-image
 
 .. _main_page:
 
 The Python Arcade Library
 =========================
-
-.. |Go| image:: images/woman_sprinter.svg
 
 
 .. container:: main-page-item-wrapper-header
