@@ -36,15 +36,15 @@ more about Arcade's license means (you agree not to claim you wrote the whole th
 Can Arcade run on...?
 ---------------------
 
-Yes: Windows, Mac, and Linux
+Windows, Mac, and Linux
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Most hardware with an Intel or AMD processor from the last ten years will do fine.
+Yes. Most hardware with an Intel or AMD processor from the last ten years will do fine.
 New :ref:`requirements_mac_mseries` can have some hiccups, but they generally work.
 
 .. _faq-raspi:
 
-Yes: Raspberry Pi 4 and 5
+Raspberry Pi 4 and 5
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following Raspberry Pi models are known to work under Linux:
@@ -70,4 +70,6 @@ Not yet. This may be possible in the future, but it will require a lot of work.
 Android, iOS, or iPad
 ^^^^^^^^^^^^^^^^^^^^^
 
-Sadly, not in the foreseeable future. Android is possible, but it will take a lot of work. iOS gets much trickier.
+Not in the foreseeable future. Android is possible, but it will take a lot of work. Both iPad and
+iOS are much trickier to implement than Android support. For mobile, you may want to try another
+framework.
