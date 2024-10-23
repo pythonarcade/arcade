@@ -58,14 +58,14 @@ else:
     GIT_REF = VERSION
     log.info(f"Got real release: using {GIT_REF!r}")
 
-
 # We'll pass this to our generation scripts to initialize their globals
+FMT_URL_REF_BASE=f"{REPO_URL_BASE}/blob/{GIT_REF}"
 RESOURCE_GLOBALS = dict(
     GIT_REF=GIT_REF,
     BASE_URL_REPO=REPO_URL_BASE,
     # This double-bracket escapes brackets in f-strings
-    FMT_URL_REF_PAGE=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}",
-    FMT_URL_REF_EMBED=f"{REPO_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true",
+    FMT_URL_REF_PAGE=f"{FMT_URL_REF_BASE}/{{}}",
+    FMT_URL_REF_EMBED=f"{FMT_URL_REF_BASE}/{{}}?raw=true",
 )
 
 def run_util(filename, run_name="__main__", init_globals=None):
@@ -247,13 +247,16 @@ intersphinx_mapping = {
 
 # These will be joined as one block and prepended to every source file.
 # Substitutions for |version| and |release| are predefined by Sphinx.
-rst_prolog = dedent(f"""
-    .. _Pymunk: https://www.pymunk.org/en/latest/index.html
+PROLOG_PARTS = [
+    #".. include:: /links.rst",
+    ".. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.Player`",
+    ".. _Arcade's License File on GitHub: {FMT_URL_REF_BASE}/license.rst"
+]
+with open("links.rst") as f:
+    PROLOG_PARTS.extend(f.readlines())
 
-    .. _Chipmunk2D: https://chipmunk-physics.net/
+rst_prolog = "\n".join(PROLOG_PARTS)
 
-    .. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.Player`
-    """.strip())
 
 
 def strip_init_return_typehint(app, what, name, obj, options, signature, return_annotation):

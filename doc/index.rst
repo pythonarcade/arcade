@@ -29,9 +29,11 @@ The Python Arcade Library
             </div>
         </div>
 
-Arcade is an easy-to-learn Python library for creating 2D video games. It is
-ideal for people learning to program, or developers that want to code a 2D
-game without learning a complex framework.
+Arcade is an easy-to-learn Python library for 2D games. The friendly API
+caters to both beginners and experts alike. Start small and cute, or build
+a lofty narrative RPG? Explore the full power of shaders?
+
+It's up to you. What will you make?
 
 .. raw:: html
 
@@ -42,35 +44,79 @@ game without learning a complex framework.
     <p><a href="https://vimeo.com/662273899">Quick Arcade Library Introduction Video</a></p>
    </div>
 
-The library was originally designed to be used in an educational setting, but
-it has evolved to be a powerful library for creating games. It is used in
-education, prototyping, and game jams. Hobbyists wanting to create a game
-quickly can benefit from the library's simple API.
+Open Source, Libre Assets
+-------------------------
 
+Arcade is free to use, and that :ref:`includes commercial projects <faq_commercial>`.
+We make sure licensing stays out of the way so you can of focus on really matters: creating.
 
-Documentation
--------------
+* :ref:`permissive_mit` for library code
+* :ref:`resources` hand-picked for quality and zero-strings licensing
+* Remixing the :ref:`examples` and other code is highly encouraged
 
-Arcade provides several forms of documentation depending on the learning style of the user.
-For beginners to programming the Arcade book is a great place to start. For those who prefer
-to learn by examples the Arcade examples are a great resource. We also have various tutorials
-for specific topics. More advanced users may prefer the API reference.
+.. pending: post-3.0 cleanup.
 
-Open Source
------------
+.. raw:: html
 
-Arcade is free and open source. It is released under the MIT License. This means you can use it for free,
-and you can even use it in commercial projects. Copying and adapting content from Arcade in educational
-materials is highly encouraged.
-
+   <br/>
 
 Get Involved
 ------------
 
-Arcade is developed by volunteers.
+Arcade exists because volunteers choose to make it better. If you see
+a bug or a typo, let us know at once the :ref:`community-locations`.
+The following are especially active:
+
+* The `Arcade Discord`_
+* The `Arcade GitHub`_ repo
+
+.. raw:: html
+
+   <br/>
+
+Testing and bug reports are crucial to making the library better,
+especially when the team is working on new features. Arcade's powerful
+OpenGL and `Shadertoy <https://www.shadertoy.com/>`_ features couldn't
+exist without help and contributions from users like you.
+
+We welcome your help. See :ref:`how-to-contribute` for more on how to
+get started.
+
+
+Documentation and Community
+---------------------------
+
+Arcade stays true to its roots in education by provoding
+documentation for different learning styles and experience levels.
+
+* The :ref:`main-page-tutorials` are guided introductions to new skills
+* The :ref:`example-code` help tinkerers get started quickly
+* The manual in the left-hand sidebar offers overviews of concepts and features
+
+Finally, there is the API documentation. It comes in two forms:
+
+* The :ref:`arcade-api` explores Arcade's layout and features
+* The :ref:`quick_index` is a single-page search tool
+
+.. raw:: html
+
+   <br/>
+
+All of these areas link to another w[hen it helps enhance user experience.
+However, if you feel overwhelmed, you may want to get :ref:`get help <how-to-get-help>`.
+
+
+
+.. pending: post-3.0 cleanup. This little linebreak keeps the hidden
+.. toctrees from  making the Get Involved heading from smooshing up.
+
+.. raw:: html
+
+   <br/>
 
 .. The main table of contents defining the sidebar navigation
    This content is not part of the main page itself.
+
 
 .. toctree::
    :hidden:
@@ -79,6 +125,8 @@ Arcade is developed by volunteers.
 
    about/intro
    about/faq
+   about/permissive_licensing
+   about/for_academia
 
 .. toctree::
    :hidden:

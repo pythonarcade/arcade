@@ -1,5 +1,3 @@
-.. include:: /links.rst
-
 .. _how-to-get-help:
 
 How to Get Help

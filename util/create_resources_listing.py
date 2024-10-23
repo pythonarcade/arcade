@@ -346,15 +346,26 @@ def resources():
     do_heading(out, 0, "Built-In Resources")
 
     out.write("\n")
-    out.write("Resource files are images and sounds built into Arcade that "
-              "can be used to quickly build and test simple code without having "
-              "to worry about copying files into the project.\n\n")
-    out.write("Any file loaded that starts with ``:resources:`` will attempt "
-              "to load that file from the library resources instead of the "
-              "project directory.\n\n")
-    out.write("Many of the resources come from `Kenney.nl <https://kenney.nl/>`_ ")
-    out.write("and are licensed under CC0 (Creative Commons Zero). Be sure to ")
-    out.write("check out his web page for a much wider selection of assets.")
+
+    out.write("Every file below is included when you :ref:`install Arcade <install>`. This includes the images,\n"
+              "sounds, fonts, and other files to help you get started quickly. You can still download them\n"
+              "separately, but Arcade's resource handle system will usually be easier.\n")
+    do_heading(out, 1, "Do I have to credit anyone?")
+    # Injecting the links.rst doesn't seem to be working?
+    out.write("That's a good question and one you should always ask when searching for assets online.\n"
+              "To help users get started quickly, the Arcade team makes sure to only bundle assets which\n"
+              # pending: post-3.0 cleanup # Why does it refuse to accept external links definitions? Who knows?
+              "are specifically released under `CC0  <https://creativecommons.org/publicdomain/#publicdomain-cc0-10>`_"
+              " or similar terms.\n")
+    out.write("Most are from `Kenney.nl <https://kenney.nl/>`_.\n") # pending: post-3.0 cleanup.
+
+    do_heading(out, 1, "How do I use these?")
+    out.write(
+        "Arcade projects can use any file on this page by passing a **resource handle** prefix.\n"
+        "These are strings which start with ``\":resources:\"``. To learn more, please see the following:\n\n"
+        "* :ref:`Sprite Examples <sprite_examples>` for example code\n"
+        "* :ref:`The Platformer Tutorial <platformer_tutorial>` for step-by-step guidance\n"
+        "* The :ref:`resource_handles` page of the manual covers them in more depth\n")
 
     out.write("\n")
     process_resource_directory(out, RESOURCE_DIR)

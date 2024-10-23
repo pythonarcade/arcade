@@ -1,5 +1,3 @@
-.. include:: /links.rst
-
 .. _community-locations:
 
 Community Locations

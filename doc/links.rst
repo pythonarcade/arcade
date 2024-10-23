@@ -1,6 +1,16 @@
 
+.. Do not include the following here:
+.. 1. the pyglet doc (use :py:mod:`pyglet` / etc to auto-link the right version)
+.. 2. links to files in the Arcade GitHub repo (use the conf.py + base URLs) (See https://github.com/pythonarcade/arcade/issues/2387)
+
+.. _CC0: https://creativecommons.org/publicdomain/#publicdomain-cc0-10
+.. _Creative Commons licenses: https://creativecommons.org/share-your-work/cclicenses/
+
+.. _Chipmunk2D: https://chipmunk-physics.net/
+.. _Pymunk: https://www.pymunk.org/en/latest/index.html
+.. _Kenney_nl: https://kenney.nl/
+
 .. _Arcade book: https://learn.arcade.academy/
-.. _pyglet: https://pyglet.readthedocs.io/
 .. _PyPI: https://pypi.org/project/arcade/
 .. _Arcade GitHub: https://github.com/pythonarcade/arcade/
 .. _Arcade Discord: https://discord.gg/ZjGDqMp
