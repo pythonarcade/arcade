@@ -61,10 +61,7 @@ also work. To learn more, please see :ref:`requirements_raspi`.
 Web
 ^^^
 
-Not yet. Although ther experimental projects in the works to help both Arcade projects cannot easily be build to run on the web.
-It can be possible in the future but will require a lot of work
-in pyglet, the underlying library that Arcade uses.
-
+Not yet. This may be possible in the future, but it will require a lot of work.
 
 .. _faq_android:
 .. _faq_ios:
