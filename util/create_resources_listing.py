@@ -3,6 +3,9 @@ Quick Index Generator
 
 Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
+# fmt: off
+# ruff: noqa
+# ( I'm not even entertaining the idea of a formatter tonight )> (┛◉Д◉)┛彡┻━┻
 from __future__ import annotations
 
 import math
@@ -40,7 +43,7 @@ try:
     _URL_BASE = "https://github.com/pythonarcade/arcade"
     _ = FMT_URL_REF_PAGE  # noqa
 except Exception as _:
-    FMT_URL_REF_PAGE  = f"{_URL_BASE}/blob/{GIT_REF}/{{}}"
+    FMT_URL_REF_PAGE = f"{_URL_BASE}/blob/{GIT_REF}/{{}}"
     announce_templating("FMT_URL_REF_PAGE")
 try:
     _ = FMT_URL_REF_EMBED  # noqa
@@ -110,17 +113,18 @@ def create_resource_path(
     return f"{prefix}:resources:{path.as_posix()}{suffix}"
 
 
-# pending: post-3.0 cleanup
+# pending: post-3.0 cleanup  # unstructured kludge
 REPLACE_TITLE_WORDS = {
     "ttf": "Kenney TTFs",
     "gui": "GUI",
     "window": "Window & Panel",
     ".": "Top-level Resources"
 }
-# pending: post-3.0 cleanup
+# pending: post-3.0 cleanup  # more unstructured filth
 SKIP_TITLES = {
     "Kenney TTFs"
 }
+
 
 @cache
 def format_title_part(raw: str):
@@ -137,7 +141,7 @@ def format_title_part(raw: str):
 # starts at = for top of page, drill down for here
 # https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections
 headings_lookup = (
-    '=', # Page root heading
+    '=',  # Page root heading
     '-',
     '^',
     '"',
@@ -194,9 +198,21 @@ class SupportsLT(Protocol):
 def filter_dir(
         dir: Path,
         keep: Callable[[Path], bool] = lambda path: True,
-        key: Callable[[Path], SupportsLT] | Callable | None = None,
+        key: Callable[[Path], SupportsLT] | Callable | None = str,
         reverse: bool = False,
 ) -> list[Path]:
+    """Iterate cleanly over directory elements as
+
+    .. warning:: Don't give this or anything in this file circular symlinks.
+
+    Args:
+        dir: the directory
+        keep: When to keep an item in the directory
+        key: how to sort the folder elements
+        reverse: whether to reverse the sort
+    Returns:
+        A list of paths matching keep and sorted by both key and reverse.
+    """
     kept = [p for p in dir.iterdir() if keep(p)]
     if key or reverse:
         kept.sort(key=key, reverse=reverse)
@@ -208,11 +224,11 @@ def process_resource_directory(out, dir: Path):
     Go through resources in a directory.
     """
 
-    for path in filter_dir(dir, key=str, keep=is_nonprotected_dir):
+    for path in filter_dir(dir, keep=is_nonprotected_dir):
         # out.write(f"\n{cur_node.name}\n")
         # out.write("-" * len(cur_node.name) + "\n\n")
 
-        file_list = filter_dir(path, key=str, keep=is_unskipped_file)
+        file_list = filter_dir(path, keep=is_unskipped_file)
         num_files = len(file_list)
 
         if num_files > 0:
@@ -258,6 +274,8 @@ def process_resource_directory(out, dir: Path):
             out.write(f".. raw:: html\n\n")
             out.write(f"   <code class=\"literal resource-category\">{resource_handle}</code>\n")
 
+            # pending: post-3.0 cleanup?
+            # ┬─┬ノ( º _ ºノ) <( We're leaving the tables here for now. Grid can be touch )
             #out.write(f".. list-table:: \"{header_title}\"\n")
             out.write(f".. list-table::\n")
             out.write(f"    :widths: {widths}\n")
@@ -346,7 +364,6 @@ def resources():
     do_heading(out, 0, "Built-In Resources")
 
     out.write("\n")
-
     out.write("Every file below is included when you :ref:`install Arcade <install>`. This includes the images,\n"
               "sounds, fonts, and other files to help you get started quickly. You can still download them\n"
               "separately, but Arcade's resource handle system will usually be easier.\n")
