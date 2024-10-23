@@ -30,8 +30,8 @@ The Python Arcade Library
         </div>
 
 Arcade is an easy-to-learn Python library for 2D games. The friendly API
-caters to both beginners and experts alike. Start small and cute, or build
-a lofty narrative RPG? Explore the full power of shaders?
+caters to both beginners and experts alike. Do you want to make something small,
+or explore the full power of shaders?
 
 It's up to you. What will you make?
 
