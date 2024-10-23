@@ -27,17 +27,21 @@ It is currently available for Windows and Linux.
                :ref:`Web <faq_web>`, :ref:`Android <faq_android>`, :ref:`iPad <faq_ipad>`,
                and :ref:`iOS <faq_ios>` are not currently supported.
 
-How Do I Do That?
-^^^^^^^^^^^^^^^^^
+How Do I Publish My Games?
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It will require patience, experimentation, and persistence.
+It takes require patience, experimentation, and persistence.
 
-To ship a game, you will need to experiment with packaging approaches in addition
-to gameplay. Please refer to the following tutorials and documentation for guidance.
+You will need to tinker with packaging and platform-specific application signing
+approaches in addition to gameplay. The following tutorials and documentation will
+help you get started on bundling:
 
 * :ref:`compile_with_nuitka`
 * :ref:`bundle_into_redistributable`
 * :ref:`resource_handles_one_file_builds`
+
+You will also need to consult the platform documentation for any app store and achievements
+tracker you use.
 
 .. tip:: Even the Arcade maintainers have trouble with this!
 
