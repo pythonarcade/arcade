@@ -1,3 +1,7 @@
+.. pending: post-3.0 cleanup:
+.. We try to include this thing in the rst_prolog in conf.py through ugly means
+.. adding the lines doesn't help with the generated resources, nor am I in the mood
+.. to clean it up right now. If it builds and looks nice, it ships. PDF comes later.
 
 .. Do not include the following here:
 .. 1. the pyglet doc (use :py:mod:`pyglet` / etc to auto-link the right version)
