@@ -39,7 +39,7 @@ Can Arcade run on...?
 Yes: Windows, Mac, and Linux
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Yes! Most hardware with an Intel or AMD processor from the last ten years will do fine.
+Most hardware with an Intel or AMD processor from the last ten years will do fine.
 New :ref:`requirements_mac_mseries` can have some hiccups, but they generally work.
 
 .. _faq-raspi:
@@ -58,8 +58,8 @@ also work. To learn more, please see :ref:`requirements_raspi`.
 
 .. _faq_web:
 
-Web?
-^^^^
+Web
+^^^
 
 Not yet. Although ther experimental projects in the works to help both Arcade projects cannot easily be build to run on the web.
 It can be possible in the future but will require a lot of work
@@ -70,7 +70,7 @@ in pyglet, the underlying library that Arcade uses.
 .. _faq_ios:
 .. _faq_ipad:
 
-Android, iOS, or iPad?
-^^^^^^^^^^^^^^^^^^^^^^
+Android, iOS, or iPad
+^^^^^^^^^^^^^^^^^^^^^
 
 Sadly, not in the foreseeable future. Android is possible, but it will take a lot of work. iOS gets much trickier.
