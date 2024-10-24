@@ -23,21 +23,22 @@ from pyglet.graphics import Batch
 import arcade
 
 # All constants are in pixels
-WIDTH, HEIGHT = 1280, 720
+WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
 
+WINDOW_TITLE = "Sprite Depth Testing Example w/ a Cosine Wave"
 NUM_SPRITES = 10
 
 SPRITE_X_START = 150
 SPRITE_X_STEP = 50
-SPRITE_Y = HEIGHT // 2
+SPRITE_Y = WINDOW_HEIGHT // 2
 
 DOT_SIZE = 10
 
 
-class MyGame(arcade.Window):
+class DepthExample(arcade.View):
 
     def __init__(self):
-        super().__init__(WIDTH, HEIGHT, "Sprite Depth Testing Example w/ a Cosine Wave")
+        super().__init__()
 
         texture = arcade.load_texture(":resources:images/test_textures/xy_square.png")
         self.text_batch = Batch()
@@ -63,9 +64,10 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
+        ctx = self.window.ctx
         if self.use_depth:
-            # This context manager temporarily enables depth testing
-            with self.ctx.enabled(self.ctx.DEPTH_TEST):
+            # This with block temporarily enables depth testing
+            with ctx.enabled(ctx.DEPTH_TEST):
                 self.sprite_list.draw()
         else:
             self.sprite_list.draw()
@@ -83,14 +85,31 @@ class MyGame(arcade.Window):
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.SPACE:
-            self.use_depth = not self.use_depth
+            window = self.window
+            window.use_depth = not window.use_depth
             self.text_use_depth.text = f"SPACE: Toggle depth testing ({self.use_depth})"
 
     def on_update(self, delta_time):
+        # We absolute time instead of the delta, so we get it from the window's clock
+        time = self.window.time
         for i, sprite in enumerate(self.sprite_list):
-            # time ticks automatically now due to Window's global clock
-            sprite.depth = math.cos(self.time + i) * SPRITE_X_STEP
+            sprite.depth = math.cos(time + i) * SPRITE_X_STEP
 
-#
+
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = DepthExample()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
+
+
 if __name__ == "__main__":
-    MyGame().run()
+    main()
