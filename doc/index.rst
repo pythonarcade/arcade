@@ -39,15 +39,17 @@ What will you make?
     <p><a href="https://vimeo.com/662273899">Quick Arcade Library Introduction Video</a></p>
    </div>
 
-Open Source, Libre Assets
--------------------------
+More than Open Source
+---------------------
 
-Arcade is free to use, and that :ref:`includes commercial projects <faq_commercial>`.
-We make sure licensing stays out of the way so you can of focus on creating.
+Arcade is more than just free to use and open source. We make sure license
+concerns stay out of the way:
 
 * :ref:`permissive_mit` for library code
 * :ref:`resources` hand-picked for quality and zero-strings licensing
 * Remixing the :ref:`examples` and other code is highly encouraged
+
+This ensures you are free to create, including :ref:`includes commercial projects <faq_commercial>`.
 
 .. pending: post-3.0 cleanup.
 
