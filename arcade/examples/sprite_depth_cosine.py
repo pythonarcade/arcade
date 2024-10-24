@@ -6,12 +6,12 @@ Press the space bar to toggle depth testing during drawing.
 During each update, the depth of each sprite is updated to follow a
 cosine wave. Afterward, the following is drawn:
 
- * All sprites in depth-sorted order
- * A white square centered over each sprite along the x-axis, and moving
-   with the wave along the y-axis
+* All sprites in depth-sorted order
+* A white square centered over each sprite along the x-axis, and moving
+  with the wave along the y-axis
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.experimental.sprite_depth_cosine
+python -m arcade.examples.sprite_depth_cosine
 """
 
 from __future__ import annotations
@@ -23,21 +23,22 @@ from pyglet.graphics import Batch
 import arcade
 
 # All constants are in pixels
-WIDTH, HEIGHT = 1280, 720
+WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
 
+WINDOW_TITLE = "Sprite Depth Testing Example w/ a Cosine Wave"
 NUM_SPRITES = 10
 
 SPRITE_X_START = 150
 SPRITE_X_STEP = 50
-SPRITE_Y = HEIGHT // 2
+SPRITE_Y = WINDOW_HEIGHT // 2
 
 DOT_SIZE = 10
 
 
-class MyGame(arcade.Window):
+class DepthExample(arcade.View):
 
     def __init__(self):
-        super().__init__(WIDTH, HEIGHT, "Sprite Depth Testing Example w/ a Cosine Wave")
+        super().__init__()
 
         texture = arcade.load_texture(":resources:images/test_textures/xy_square.png")
         self.text_batch = Batch()
@@ -53,7 +54,6 @@ class MyGame(arcade.Window):
         )
 
         self.sprite_list = arcade.SpriteList()
-        self.time = 0.0
 
         for i in range(NUM_SPRITES):
             sprite = arcade.Sprite(
@@ -64,9 +64,10 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
+        ctx = self.window.ctx
         if self.use_depth:
-            # This context manager temporarily enables depth testing
-            with self.ctx.enabled(self.ctx.DEPTH_TEST):
+            # This with block temporarily enables depth testing
+            with ctx.enabled(ctx.DEPTH_TEST):
                 self.sprite_list.draw()
         else:
             self.sprite_list.draw()
@@ -88,11 +89,26 @@ class MyGame(arcade.Window):
             self.text_use_depth.text = f"SPACE: Toggle depth testing ({self.use_depth})"
 
     def on_update(self, delta_time):
-        self.time += delta_time
-
+        # We absolute time instead of the delta, so we get it from the window's clock
+        time = self.window.time
         for i, sprite in enumerate(self.sprite_list):
-            sprite.depth = math.cos(self.time + i) * SPRITE_X_STEP
+            sprite.depth = math.cos(time + i) * SPRITE_X_STEP
+
+
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = DepthExample()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 
 if __name__ == "__main__":
-    MyGame().run()
+    main()
