@@ -6,9 +6,9 @@ Press the space bar to toggle depth testing during drawing.
 During each update, the depth of each sprite is updated to follow a
 cosine wave. Afterward, the following is drawn:
 
- * All sprites in depth-sorted order
- * A white square centered over each sprite along the x-axis, and moving
-   with the wave along the y-axis
+* All sprites in depth-sorted order
+* A white square centered over each sprite along the x-axis, and moving
+  with the wave along the y-axis
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.experimental.sprite_depth_cosine
@@ -53,7 +53,6 @@ class MyGame(arcade.Window):
         )
 
         self.sprite_list = arcade.SpriteList()
-        self.time = 0.0
 
         for i in range(NUM_SPRITES):
             sprite = arcade.Sprite(
@@ -88,11 +87,10 @@ class MyGame(arcade.Window):
             self.text_use_depth.text = f"SPACE: Toggle depth testing ({self.use_depth})"
 
     def on_update(self, delta_time):
-        self.time += delta_time
-
         for i, sprite in enumerate(self.sprite_list):
+            # time ticks automatically now due to Window's global clock
             sprite.depth = math.cos(self.time + i) * SPRITE_X_STEP
 
-
+#
 if __name__ == "__main__":
     MyGame().run()
