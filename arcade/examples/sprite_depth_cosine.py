@@ -85,7 +85,6 @@ class DepthExample(arcade.View):
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.SPACE:
-            window = self.window
             self.use_depth = not self.use_depth
             self.text_use_depth.text = f"SPACE: Toggle depth testing ({self.use_depth})"
 
