@@ -182,11 +182,7 @@ Player Movement
 
    :ref:`sprite_rotate_around_tank`
 
-.. figure:: images/thumbs/sprite_depth_cosine.png
-   :figwidth: 170px
-   :target: sprite_depth_cosine.html
 
-   :ref:`sprite_depth_cosine`
 
 
 Non-Player Movement
@@ -297,6 +293,12 @@ Sprite Properties
    :target: sprite_change_coins.html
 
    :ref:`sprite_change_coins`
+
+.. figure:: images/thumbs/sprite_depth_cosine.png
+   :figwidth: 170px
+   :target: sprite_depth_cosine.html
+
+   :ref:`sprite_depth_cosine`
 
 Games with Levels
 ^^^^^^^^^^^^^^^^^
