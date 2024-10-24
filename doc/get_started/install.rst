@@ -130,11 +130,9 @@ For example::
 Batteries Included
 ------------------
 
-You don't have to go hunting for sounds and sprites to get started. Arcade comes with
-built-in ones. They'll help you get started with the tutorials right away, but they can
-also come in handy for prototyping. Since all of Arcade's assets are :ref:``
-You can also remix these assets to create your
-own games however you like.
+:ref:`resources` mean you're ready to start right away. Since all of Arcade's assets are
+:ref:`permissive_almost_all_public` or similarly licensed, you're free to create games
+however you like.
 
 * :ref:`The Built-In Resources <resources>` page lets you preview Arcade's built-in assets
 * :ref:`The Platformer Tutorial <platformer_tutorial>` will help you get started right away

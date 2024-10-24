@@ -5,7 +5,6 @@ Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
 # fmt: off
 # ruff: noqa
-# ( I'm not even entertaining the idea of a formatter tonight )> (┛◉Д◉)┛彡┻━┻
 from __future__ import annotations
 
 import math
