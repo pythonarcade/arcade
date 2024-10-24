@@ -30,11 +30,18 @@ from typing import cast
 
 from pyglet.graphics import Batch
 
-from arcade import SpriteList, SpriteSolidColor, Text, Window, get_window
+import arcade
+from arcade import get_window, SpriteList, SpriteSolidColor, Text, Window, View
 from arcade.color import RED
 from arcade.experimental.postprocessing import GaussianBlur
 from arcade.gl import NEAREST, Program, Texture2D, geometry
 from arcade.types import RGBA255, Color
+
+WINDOW_TITLE = "Depth of Field Example"
+
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+BACKGROUND_GRAY = Color(155, 155, 155, 255)
 
 
 class DepthOfField:
@@ -50,7 +57,7 @@ class DepthOfField:
     def __init__(
         self,
         size: tuple[int, int] | None = None,
-        clear_color: RGBA255 = (155, 155, 155, 255),
+        clear_color: RGBA255 = BACKGROUND_GRAY
     ):
         self._geo = geometry.quad_2d_fs()
         self._win: Window = get_window()
@@ -171,7 +178,7 @@ class DepthOfField:
         self._geo.render(self._render_program)
 
 
-class App(Window):
+class App(View):
     """Window subclass to hold sprites and rendering helpers.
 
     Args:
@@ -223,7 +230,8 @@ class App(Window):
         self.dof = DepthOfField()
 
     def on_update(self, delta_time: float):
-        raw_focus = self.focus_range * (cos(pi * self.focus_change_speed * self.time) * 0.5 + 0.5)
+        time = self.window.time
+        raw_focus = self.focus_range * (cos(pi * self.focus_change_speed * time) * 0.5 + 0.5)
         self.dof.render_program["focus_depth"] = raw_focus / self.focus_range
         self.indicator_label.value = f"Focus depth: {raw_focus:.3f} / {self.focus_range}"
 
@@ -234,11 +242,26 @@ class App(Window):
         with self.dof.draw_into():
             self.sprites.draw(pixelated=True)
 
-        # Draw the blurred frame buffer and then the focus display
-        self.use()
+        # Draw the blurred frame buffer and then the focus display\
+        window = self.window
+        window.use()
         self.dof.render()
         self._batch.draw()
 
 
+def main():
+    # Create a Window to show the view defined above.
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the view
+    app = App()
+
+    # Show GameView on screen
+    window.show_view(app)
+
+    # Start the arcade game loop
+    window.run()
+
+
 if __name__ == "__main__":
-    App().run()
+    main()
