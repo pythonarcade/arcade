@@ -2,20 +2,30 @@
 Introduction
 ============
 
-Welcome to the official documentation of Arcade.
+.. _intro_learning_resources:
 
 Learning Resources
 ------------------
 
-Arcade offers several resources to help you get started regardless of your
-experience level. People learn in different ways, so we try to offer a variety
-of resources to help you learn.
+Arcade provides documentation for different experience levels and
+learning styles.
 
-* Examples
-* Tutorials
-* API Reference
-* Arcade Book
-* Skill Tree
+Getting Started
+^^^^^^^^^^^^^^^
+
+* The :ref:`skill_tree` is a suggested learning order for beginners
+* The :ref:`main-page-tutorials` are guided introductions to new skills
+* The :ref:`example-code` help tinkerers get started quickly
+* The manual in the left-hand sidebar has overviews of concepts and features
+
+Experienced Developers
+^^^^^^^^^^^^^^^^^^^^^^
+
+For more experienced developers, Arcade provides two forms of
+API documentation:
+
+* The :ref:`arcade-api` follows Arcade's module layout and features
+* The :ref:`quick_index` is a single-page search tool
 
 Community driven
 ----------------

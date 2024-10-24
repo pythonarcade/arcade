@@ -39,81 +39,66 @@ What will you make?
     <p><a href="https://vimeo.com/662273899">Quick Arcade Library Introduction Video</a></p>
    </div>
 
-More than Open Source
----------------------
+Documentation and Community
+---------------------------
 
-Arcade is more than just free to use and open source. We make sure license
-concerns stay out of the way:
+Arcade provides documentation for every experience level.
 
-* :ref:`permissive_mit` for library code
-* :ref:`resources` hand-picked for quality and zero-strings licensing
-* Remixing the :ref:`examples` and other code is highly encouraged
+The :ref:`skill_tree` or :ref:`main-page-tutorials` are good
+for getting started. You can explore the following to
+learn more:
 
-This ensures you are free to create, including :ref:`includes commercial projects <faq_commercial>`.
+* :ref:`faq` has fast answers to common questions
+* :ref:`intro_learning_resources` covers the documentation types
+* :ref:`how-to-get-help` if you're unsure where to start
 
-.. pending: post-3.0 cleanup.
-
+.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
 .. raw:: html
 
    <br/>
+
+More than Open Source
+---------------------
+
+Arcade makes sure licensing concerns stay out of your way:
+
+* Arcade's code uses the :ref:`permissive_mit`
+* :ref:`The built-in resources <resources>` don't require attribution
+* Remixing :ref:`example code <example-code>` is encouraged
+
+.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
+.. raw:: html
+
+   <br/>
+
+This ensures you are free to create, including :ref:`commercial projects <faq_commercial>`.
 
 Get Involved
 ------------
 
-Arcade exists because volunteers choose to make it better. If you see
-a bug or a typo, let us know at once the :ref:`community-locations`.
-The following are especially active:
+Let us know if you see a bug, a typo, or other room for improvement.
 
-* The `Arcade Discord`_
+The following :ref:`community-locations` are the best places
+to reach the team or ask for help:
+
+* The `Arcade Discord`_ server
 * The `Arcade GitHub`_ repo
 
+.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
 .. raw:: html
 
    <br/>
 
-Testing and bug reports are crucial to making the library better,
-especially when the team is working on new features. Arcade's powerful
-OpenGL and `Shadertoy <https://www.shadertoy.com/>`_ features couldn't
-exist without help and contributions from users like you.
+See :ref:`how-to-contribute` to learn how you can
+help improve Arcade.
 
-We welcome your help. See :ref:`how-to-contribute` for more on how to
-get started.
-
-
-Documentation and Community
----------------------------
-
-Arcade stays true to its roots in education by provoding
-documentation for different learning styles and experience levels.
-
-* The :ref:`main-page-tutorials` are guided introductions to new skills
-* The :ref:`example-code` help tinkerers get started quickly
-* The manual in the left-hand sidebar offers overviews of concepts and features
-
-Finally, there is the API documentation. It comes in two forms:
-
-* The :ref:`arcade-api` explores Arcade's layout and features
-* The :ref:`quick_index` is a single-page search tool
-
-.. raw:: html
-
-   <br/>
-
-All of these areas link to another w[hen it helps enhance user experience.
-However, if you feel overwhelmed, you may want to get :ref:`get help <how-to-get-help>`.
-
-
-
-.. pending: post-3.0 cleanup. This little linebreak keeps the hidden
-.. toctrees from  making the Get Involved heading from smooshing up.
-
+.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
 .. raw:: html
 
    <br/>
 
 .. The main table of contents defining the sidebar navigation
    This content is not part of the main page itself.
-
 
 .. toctree::
    :hidden:
