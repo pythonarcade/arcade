@@ -1,10 +1,71 @@
 
-.. include:: /links.rst
+.. .. include:: /links.rst
 
 .. _install:
 
 Install
 =======
+
+.. _install_requirements:
+
+Requirements
+------------
+
+All systems require Python 3.9 or higher on a desktop or laptop device.
+
+.. important:: Yes, this means and mobile are currently unsupported.
+
+               Please see the following to learn more:
+
+               * :ref:`Web browsers <faq_web>`
+               * :ref:`Android <faq_android>`, :ref:`iOS <faq_ios>`, and :ref:`iPad <faq_ipad>`
+
+
+Windows, Linux, and Intel Mac
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Convertibles with Intel or AMD processors under 10 years old will likely work.
+
+Windows
+"""""""
+
+To avoid strange issues, install Python as follows:
+
+#. Download Python from the `official Windows download page <https://www.python.org/downloads/windows/>`_
+#. While installing, look for a checkbox marked "Add Python to PATH"
+#. When you see it, make sure it is checked before proceeding
+
+.. important:: Avoid the Microsoft Store version of Python.
+
+               It has a history of hard-to-fix bugs which will make things
+               far more difficult than they need to be.
+
+.. _requirements_mac_mseries:
+
+M-Series Macs
+"""""""""""""
+Macs with Apple's M-series processors were first introduced in 2020. These mostly work aside from
+a few issues related to window focus and unsigned applications. If something odd happens, you
+can always :ref:`ask for help. <how-to-get-help>`.
+
+.. _requirements_raspi:
+
+Raspberry Pi
+""""""""""""
+For Raspberry Pi boards:
+
+* The 4, 400, and 5 series are known to work under Linux
+* None of the Zero, Pico, 3, or any earlier models work
+
+The compatible Pi boards all support OpenGL ES 3.1 plus certain extensions. Other brands
+of SBCs which support the same features may work, but the Arcade and :py:mod:`pyglet` teams
+have not tested any. If your code uses an OpenGL ES feature which is not suported by your board,
+your code will fail, but it should not damage your board.
+
+To learn more, please see the `pyglet manual page on OpenGL ES <pyglet-opengles>`_.
+
+.. pending: post-3.0 cleanup # Faster and more reliable than getting the external ref syntax to work
+.. _pyglet-opengles: https://pyglet.readthedocs.io/en/development/programming_guide/opengles.html
 
 Using pip
 ---------
@@ -65,8 +126,13 @@ For example::
 
     python -m arcade.examples.sprite_explosion_bitmapped
 
-Built-in resource
+
+Batteries Included
 ------------------
 
-Arcade comes with a set of built-in assets that can be used in simple project
-while learning the library. See the :ref:`resources` section.
+:ref:`resources` mean you're ready to start right away. Since all of Arcade's assets are
+:ref:`permissive_almost_all_public` or similarly licensed, you're free to create games
+however you like.
+
+* :ref:`The Built-In Resources <resources>` page lets you preview Arcade's built-in assets
+* :ref:`The Platformer Tutorial <platformer_tutorial>` will help you get started right away

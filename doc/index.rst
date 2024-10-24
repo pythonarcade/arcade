@@ -1,15 +1,10 @@
 :hide-toc:
 
-.. image:: images/logo/arcade-logo.svg
-    :width: 10%
-    :class: right-image
 
 .. _main_page:
 
 The Python Arcade Library
 =========================
-
-.. |Go| image:: images/woman_sprinter.svg
 
 
 .. container:: main-page-item-wrapper-header
@@ -29,9 +24,11 @@ The Python Arcade Library
             </div>
         </div>
 
-Arcade is an easy-to-learn Python library for creating 2D video games. It is
-ideal for people learning to program, or developers that want to code a 2D
-game without learning a complex framework.
+Arcade is an easy-to-learn Python library for creating 2D games and more. The
+friendly API caters to both beginners and experts alike. Do you want to make
+something small, or explore the full power of shaders? It's up to you.
+
+What will you make?
 
 .. raw:: html
 
@@ -42,32 +39,63 @@ game without learning a complex framework.
     <p><a href="https://vimeo.com/662273899">Quick Arcade Library Introduction Video</a></p>
    </div>
 
-The library was originally designed to be used in an educational setting, but
-it has evolved to be a powerful library for creating games. It is used in
-education, prototyping, and game jams. Hobbyists wanting to create a game
-quickly can benefit from the library's simple API.
+Documentation and Community
+---------------------------
 
+Arcade provides documentation for every experience level.
 
-Documentation
--------------
+The :ref:`skill_tree` or :ref:`main-page-tutorials` are good
+for getting started. You can explore the following to
+learn more:
 
-Arcade provides several forms of documentation depending on the learning style of the user.
-For beginners to programming the Arcade book is a great place to start. For those who prefer
-to learn by examples the Arcade examples are a great resource. We also have various tutorials
-for specific topics. More advanced users may prefer the API reference.
+* :ref:`faq` has fast answers to common questions
+* :ref:`intro_learning_resources` covers the documentation types
+* :ref:`how-to-get-help` if you're unsure where to start
 
-Open Source
------------
+.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
+.. raw:: html
 
-Arcade is free and open source. It is released under the MIT License. This means you can use it for free,
-and you can even use it in commercial projects. Copying and adapting content from Arcade in educational
-materials is highly encouraged.
+   <br/>
 
+More than Open Source
+---------------------
+
+Arcade makes sure licensing concerns stay out of your way:
+
+* Arcade's code uses the :ref:`permissive_mit`
+* :ref:`The built-in resources <resources>` don't require attribution
+* Remixing :ref:`example code <example-code>` is encouraged
+
+.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
+.. raw:: html
+
+   <br/>
+
+This ensures you are free to create, including :ref:`commercial projects <faq_commercial>`.
 
 Get Involved
 ------------
 
-Arcade is developed by volunteers.
+Let us know if you see a bug, a typo, or other room for improvement.
+
+The following :ref:`community-locations` are the best places
+to reach the team or ask for help:
+
+* The `Arcade Discord`_ server
+* The `Arcade GitHub`_ repo
+
+.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
+.. raw:: html
+
+   <br/>
+
+See :ref:`how-to-contribute` to learn how you can
+help improve Arcade.
+
+.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
+.. raw:: html
+
+   <br/>
 
 .. The main table of contents defining the sidebar navigation
    This content is not part of the main page itself.
@@ -79,6 +107,8 @@ Arcade is developed by volunteers.
 
    about/intro
    about/faq
+   about/permissive_licensing
+   about/for_academia
 
 .. toctree::
    :hidden:

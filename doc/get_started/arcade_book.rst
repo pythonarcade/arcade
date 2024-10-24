@@ -29,6 +29,8 @@ If you are already familiar with basic Python programming, follow the
 If you are just learning how to program, see
 the `Learn Arcade book <https://learn.arcade.academy>`_.
 
+.. _skill_tree:
+
 Arcade Skill Tree
 -----------------
 
