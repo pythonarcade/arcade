@@ -11,7 +11,7 @@ cosine wave. Afterward, the following is drawn:
   with the wave along the y-axis
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.experimental.sprite_depth_cosine
+python -m arcade.examples.sprite_depth_cosine
 """
 
 from __future__ import annotations
