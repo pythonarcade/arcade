@@ -232,6 +232,13 @@ Using the Depth Buffer
    :ref:`sprite_depth_cosine`
 
 
+.. figure:: images/thumbs/depth_of_field.png
+   :figwidth: 170px
+   :target: depth_of_field.html
+
+   :ref:`depth_of_field`
+
+
 Easing
 ^^^^^^
 
