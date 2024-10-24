@@ -182,6 +182,13 @@ Player Movement
 
    :ref:`sprite_rotate_around_tank`
 
+.. figure:: images/thumbs/sprite_depth_cosine.png
+   :figwidth: 170px
+   :target: sprite_depth_cosine.html
+
+   :ref:`sprite_depth_cosine`
+
+
 Non-Player Movement
 ^^^^^^^^^^^^^^^^^^^
 
@@ -220,23 +227,6 @@ Non-Player Movement
    :target: sprite_rotate_around_point.html
 
    :ref:`sprite_rotate_around_point`
-
-
-Using the Depth Buffer
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: images/thumbs/sprite_depth_cosine.png
-   :figwidth: 170px
-   :target: sprite_depth_cosine.html
-
-   :ref:`sprite_depth_cosine`
-
-
-.. figure:: images/thumbs/depth_of_field.png
-   :figwidth: 170px
-   :target: depth_of_field.html
-
-   :ref:`depth_of_field`
 
 
 Easing
@@ -790,6 +780,13 @@ Frame Buffers
    :target: perspective.html
 
    :ref:`perspective`
+
+.. figure:: images/thumbs/depth_of_field.png
+   :figwidth: 170px
+   :target: depth_of_field.html
+
+   :ref:`depth_of_field`
+
 
 .. _opengl:
 
