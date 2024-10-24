@@ -221,6 +221,17 @@ Non-Player Movement
 
    :ref:`sprite_rotate_around_point`
 
+
+Using the Depth Buffer
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: images/thumbs/sprite_depth_cosine.png
+   :figwidth: 170px
+   :target: sprite_depth_cosine.html
+
+   :ref:`sprite_depth_cosine`
+
+
 Easing
 ^^^^^^
 
