@@ -512,12 +512,18 @@ class BasicSprite:
 
     @property
     def alpha(self) -> int:
-        """Get or set the alpha value of the sprite"""
+        """
+        Get or set the alpha value of the sprite.
+
+        Will be clamped to the range 0-255.
+        """
         return self._color[3]
 
     @alpha.setter
     def alpha(self, alpha: int):
-        self._color = Color(self._color[0], self._color[1], self._color[2], int(alpha))
+        self._color = Color(
+            self._color[0], self._color[1], self._color[2], max(0, min(255, int(alpha)))
+        )
 
         for sprite_list in self.sprite_lists:
             sprite_list._update_color(self)
