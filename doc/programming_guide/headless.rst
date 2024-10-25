@@ -143,7 +143,7 @@ in a loop until you close the window.
 
         def on_draw(self):
             self.clear()
-            self.sprite.draw()
+            arcade.draw_sprite(self.sprite)
 
             # Dump the window framebuffer to disk
             image = arcade.get_image(0, 0, *self.get_size())
