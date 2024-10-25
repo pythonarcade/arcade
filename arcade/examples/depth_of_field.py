@@ -3,7 +3,7 @@
 It uses the depth attribute of along with blurring and shaders to
 roughly approximate depth-based blur effects. The focus bounces
 back forth automatically between a maximum and minimum depth value
-based on time. Adjust the arguments to the App class at the bottom
+based on time. Adjust the arguments to the GameView class at the bottom
 of the file to change the speed.
 
 This example works by doing the following for each frame:
@@ -178,7 +178,7 @@ class DepthOfField:
         self._geo.render(self._render_program)
 
 
-class App(View):
+class GameView(View):
     """Window subclass to hold sprites and rendering helpers.
 
     Args:
@@ -242,7 +242,7 @@ class App(View):
         with self.dof.draw_into():
             self.sprites.draw(pixelated=True)
 
-        # Draw the blurred frame buffer and then the focus display\
+        # Draw the blurred frame buffer and then the focus display
         window = self.window
         window.use()
         self.dof.render()
@@ -254,7 +254,7 @@ def main():
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
     # Create the view
-    app = App()
+    app = GameView()
 
     # Show GameView on screen
     window.show_view(app)

@@ -35,7 +35,7 @@ SPRITE_Y = WINDOW_HEIGHT // 2
 DOT_SIZE = 10
 
 
-class DepthExample(arcade.View):
+class GameView(arcade.View):
 
     def __init__(self):
         super().__init__()
@@ -89,7 +89,7 @@ class DepthExample(arcade.View):
             self.text_use_depth.text = f"SPACE: Toggle depth testing ({self.use_depth})"
 
     def on_update(self, delta_time):
-        # We absolute time instead of the delta, so we get it from the window's clock
+        # We use absolute time instead of the delta, so we get it from the window's clock
         time = self.window.time
         for i, sprite in enumerate(self.sprite_list):
             sprite.depth = math.cos(time + i) * SPRITE_X_STEP
@@ -101,7 +101,7 @@ def main():
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
     # Create the GameView
-    game = DepthExample()
+    game = GameView()
 
     # Show GameView on screen
     window.show_view(game)
