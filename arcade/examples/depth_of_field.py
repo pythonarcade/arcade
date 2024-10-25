@@ -3,8 +3,9 @@
 It uses the depth attribute of along with blurring and shaders to
 roughly approximate depth-based blur effects. The focus bounces
 back forth automatically between a maximum and minimum depth value
-based on time. Adjust the arguments to the GameView class at the bottom
-of the file to change the speed.
+based on time. Change the speed and focus via either the constants
+at the top of the file or the arguments passed to it at the bottom of
+the file.
 
 This example works by doing the following for each frame:
 
