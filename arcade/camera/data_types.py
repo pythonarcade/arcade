@@ -7,7 +7,7 @@ wide usage throughout Arcade's camera code.
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Generator, Protocol, Final
+from typing import Final, Generator, Protocol
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self
@@ -39,7 +39,7 @@ The :py:class:`~arcade.camera.perspective.PerspectiveProjector` uses
 
 DEFAULT_FAR: Final[float] = 100.0
 """The default forward-facing depth cutoff for all Arcade cameras.
- 
+
 Unless a camera is provided a different value, anything further away than this
 value will not be drawn.
 """
