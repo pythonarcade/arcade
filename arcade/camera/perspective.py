@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Generator
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
 
-from arcade.camera.data_types import CameraData, PerspectiveProjectionData, Projector, DEFAULT_FAR
+from arcade.camera.data_types import DEFAULT_FAR, CameraData, PerspectiveProjectionData, Projector
 from arcade.camera.projection_functions import (
     generate_perspective_matrix,
     generate_view_matrix,

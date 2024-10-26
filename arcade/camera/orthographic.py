@@ -6,7 +6,13 @@ from typing import TYPE_CHECKING, Generator
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
 
-from arcade.camera.data_types import CameraData, OrthographicProjectionData, Projector, DEFAULT_NEAR_ORTHO, DEFAULT_FAR
+from arcade.camera.data_types import (
+    DEFAULT_FAR,
+    DEFAULT_NEAR_ORTHO,
+    CameraData,
+    OrthographicProjectionData,
+    Projector,
+)
 from arcade.camera.projection_functions import (
     generate_orthographic_matrix,
     generate_view_matrix,
