@@ -10,7 +10,7 @@ from typing_extensions import Self
 from arcade.camera.data_types import (
     CameraData,
     OrthographicProjectionData,
-    ZeroProjectionDimension,
+    ZeroProjectionDimension, DEFAULT_NEAR_ORTHO, DEFAULT_FAR,
 )
 from arcade.camera.projection_functions import (
     generate_orthographic_matrix,
@@ -90,8 +90,8 @@ class Camera2D:
         up: tuple[float, float] = (0.0, 1.0),
         zoom: float = 1.0,
         projection: Rect | None = None,
-        near: float = -100.0,
-        far: float = 100.0,
+        near: float = DEFAULT_NEAR_ORTHO,
+        far: float = DEFAULT_FAR,
         *,
         scissor: Rect | None = None,
         render_target: Framebuffer | None = None,

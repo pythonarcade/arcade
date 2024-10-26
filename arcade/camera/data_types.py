@@ -7,7 +7,7 @@ wide usage throughout Arcade's camera code.
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Generator, Protocol
+from typing import Generator, Protocol, Final
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self
@@ -16,6 +16,8 @@ from arcade.types import LRBT, AsFloat, Point, Point3, Rect
 
 __all__ = [
     "CameraData",
+    "DEFAULT_FAR",
+    "DEFAULT_NEAR_ORTHO",
     "OrthographicProjectionData",
     "PerspectiveProjectionData",
     "Projection",
@@ -24,6 +26,23 @@ __all__ = [
     "constrain_camera_data",
     "duplicate_camera_data",
 ]
+
+DEFAULT_NEAR_ORTHO: Final[float] = -100.0
+"""The default backward-facing depth cutoff for orthographic rendering.
+
+Unless an orthographic camera is provided a different value, this will be
+used as the near cutoff for its point of view.
+
+The :py:class:`~arcade.camera.perspective.PerspectiveProjector` uses
+``0.01`` as its default near value to avoid division by zero.
+"""
+
+DEFAULT_FAR: Final[float] = 100.0
+"""The default forward-facing depth cutoff for all Arcade cameras.
+ 
+Unless a camera is provided a different value, anything further away than this
+value will not be drawn.
+"""
 
 
 class ZeroProjectionDimension(ValueError):

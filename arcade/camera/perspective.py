@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Generator
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
 
-from arcade.camera.data_types import CameraData, PerspectiveProjectionData, Projector
+from arcade.camera.data_types import CameraData, PerspectiveProjectionData, Projector, DEFAULT_FAR
 from arcade.camera.projection_functions import (
     generate_perspective_matrix,
     generate_view_matrix,
@@ -27,6 +27,12 @@ __all__ = ("PerspectiveProjector",)
 class PerspectiveProjector(Projector):
     """
     The simplest from of a perspective camera.
+
+    .. warning:: Near cutoffs for perspective projection must be greater than zero.
+
+                 This prevents division by zero errors since perspective involves
+                 dividing by distance.
+
     Using ViewData and PerspectiveProjectionData PoDs (Pack of Data)
     it generates the correct projection and view matrices. It also
     provides methods and a context manager for using the matrices in
@@ -78,7 +84,7 @@ class PerspectiveProjector(Projector):
             self._window.width / self._window.height,  # Aspect
             60,  # Field of View,
             0.01,
-            100.0,  # near, # far
+            DEFAULT_FAR,  # near, # far
         )
 
     @property

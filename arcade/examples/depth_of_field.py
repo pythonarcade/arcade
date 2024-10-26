@@ -33,6 +33,7 @@ from pyglet.graphics import Batch
 
 import arcade
 from arcade import get_window, SpriteList, SpriteSolidColor, Text, Window, View
+from arcade.camera.data_types import DEFAULT_NEAR_ORTHO, DEFAULT_FAR
 from arcade.color import RED
 from arcade.experimental.postprocessing import GaussianBlur
 from arcade.gl import NEAREST, Program, Texture2D, geometry
@@ -182,6 +183,10 @@ class DepthOfField:
 class GameView(View):
     """Window subclass to hold sprites and rendering helpers.
 
+    To keep the code simpler, this example uses a default camera. That means
+    that any sprite outside Arcade's default camera near and far render cutoffs
+    (``-100.0`` to ``100.0``) will not be drawn.
+
     Args:
         text_color:
             The color of the focus indicator.
@@ -190,6 +195,10 @@ class GameView(View):
         focus_change_speed:
             How fast the focus bounces back and forth
             between the ``-focus_range`` and ``focus_range``.
+        min_sprite_depth:
+            The minimum sprite depth we'll generate sprites between
+         max_sprite_depth:
+            The maximum sprite depth we'll generate sprites between.
     """
 
     def __init__(
@@ -197,6 +206,8 @@ class GameView(View):
         text_color: RGBA255 = RED,
         focus_range: float = 16.0,
         focus_change_speed: float = 0.1,
+        min_sprite_depth: float = DEFAULT_NEAR_ORTHO,
+        max_sprite_depth: float = DEFAULT_FAR
     ):
         super().__init__()
         self.sprites: SpriteList = SpriteList()
@@ -215,7 +226,7 @@ class GameView(View):
 
         # Randomize sprite depth, size, and angle, but set color from depth.
         for _ in range(100):
-            depth = uniform(-100, 100)
+            depth = uniform(min_sprite_depth, max_sprite_depth)
             color = Color.from_gray(int(255 * (depth + 100) / 200))
             s = SpriteSolidColor(
                 randint(100, 200),
