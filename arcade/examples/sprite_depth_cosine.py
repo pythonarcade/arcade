@@ -89,7 +89,7 @@ class GameView(arcade.View):
             self.text_use_depth.text = f"SPACE: Toggle depth testing ({self.use_depth})"
 
     def on_update(self, delta_time):
-        # We use absolute time instead of the delta, so we get it from the window's clock
+        # Using time from the window's clock simplifies the math below
         time = self.window.time
         for i, sprite in enumerate(self.sprite_list):
             sprite.depth = math.cos(time + i) * SPRITE_X_STEP
