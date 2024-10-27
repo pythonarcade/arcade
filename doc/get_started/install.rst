@@ -11,25 +11,25 @@ Using pip
 
 .. Tip::
 
-    For beginners unfamiliar with python a more in depth guide to
+    For beginners unfamiliar with Python, a more in depth guide to
     installing Python and Arcade can be found in the :ref:`arcade_book`.
 
-The most common way to install Arcade is to use ``pip``.
+The most common way to install Arcade is to use the ``pip`` package manager.
 This will install the latest version of Arcade from `PyPI`_.
 
 .. code-block:: bash
 
     pip install arcade
 
-If you are installing Arcade directly into your system python meaning
-you are not using a virtual environment (or don't know that that is)
+If you are installing Arcade directly into your system Python, meaning
+you are not using a virtual environment (or don't know what that is),
 you may need to use the ``--user`` flag to install Arcade just for your user.
 
 .. code-block:: bash
 
     pip install arcade --user
 
-Upgrading an existing installation of Arcade can be done with the following command
+Upgrading an existing installation of Arcade can be done with the following command:
 
 .. code-block:: bash
 
@@ -49,7 +49,7 @@ If you prefer to install from git::
     cd arcade
     pip install -e .
 
-This installs Arcade in editable mode so you can make changes to the code and see the changes immediately.
+This installs Arcade in editable mode, so you can make changes to the code and see the changes immediately.
 Also consider forking the repository on github installing your fork instead.
 
 Running examples
