@@ -3,7 +3,7 @@
 Own Layout
 ----------
 
-Creating own layouts is the master class of creating own widgets.
+Creating your own layouts is the master class of creating own widgets.
 It allows you to create custom layouts that can be used in your application to position widgets.
 
 General use cases for own layouts are:
@@ -14,7 +14,7 @@ General use cases for own layouts are:
 Where to start
 ~~~~~~~~~~~~~~
 
-To create own layout, you need to create a new class that inherits from :class:`arcade.gui.UILayout`.
+To create your own layout, you need to create a new class that inherits from :class:`arcade.gui.UILayout`.
 
 The main method you need to implement is:
 
