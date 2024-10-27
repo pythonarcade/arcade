@@ -3,7 +3,7 @@
 Own Widgets
 -----------
 
-Creating own widgets is a powerful feature of the GUI module.
+Creating your own widgets is a powerful feature of the GUI module.
 It allows you to create custom widgets that can be used in your application.
 
 In most cases this is even the easiest way to implement your desired interface.
@@ -15,7 +15,7 @@ The following sections will guide you through the process of creating own widget
 Where to start
 ~~~~~~~~~~~~~~
 
-To create own widgets, you need to create a new class that inherits from :class:`arcade.gui.UIWidget`.
+To create your own widgets, you need to create a new class that inherits from :class:`arcade.gui.UIWidget`.
 
 While inheriting from :class:`arcade.gui.UIWidget`, provides the highest flexibility.
 The main methods you need to implement are:
