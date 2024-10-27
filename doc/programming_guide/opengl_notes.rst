@@ -5,7 +5,7 @@ OpenGL
 
 Arcade uses OpenGL for the underlying rendering, and OpenGL
 functionality is used through pyglet when a window
-is cre    ated. The underlying representation of this is an
+is created. The underlying representation of this is an
 OpenGL context. Arcade's representation of this context
 is the :py:attr:`arcade.Window.ctx`. This is an
 :py:class:`~arcade.ArcadeContext`.
