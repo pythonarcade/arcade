@@ -10,7 +10,7 @@ The Arcade Book
 Installation
 ------------
 Arcade can be installed like any other Python
-Package. Arcade needs support for OpenGL 3.3+.
+Package. Your machine(s) need to support OpenGL 3.3+ for arcade to work.
 If you are familiar with Python package management you can just
 "pip install" Arcade.
 For more detailed instructions see :ref:`install`.
