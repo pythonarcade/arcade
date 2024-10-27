@@ -45,7 +45,7 @@ see the following:
 Sorting SpriteLists
 """""""""""""""""""
 
-Although the alternative listed above are often better, sorting sprite lists to
+Although the alternatives listed above are often better, sorting sprite lists to
 control draw order can still be useful.
 
 Like Python's built-in :py:meth:`list.sort`, you can pass a
