@@ -79,11 +79,17 @@ class GameView(arcade.View):
             scale=PIXEL_SCALE
         )
 
+        # Load the car texture and create a flipped version
+        self.car_texture_right = arcade.texture.load_texture(
+            ":resources:/images/miami_synth_parallax/car/car-idle.png")
+        self.car_texture_left = self.car_texture_right.flip_left_right()
+
         # Create & position the player sprite in the center of the camera's view
         self.player_sprite = arcade.Sprite(
-            ":resources:/images/miami_synth_parallax/car/car-idle.png",
+            self.car_texture_right,
             center_x=self.camera.viewport_width // 2, center_y=-200.0, scale=PIXEL_SCALE
         )
+
         self.player_sprite.bottom = 0
 
         # Track the player's x velocity
@@ -123,17 +129,10 @@ class GameView(arcade.View):
                 arcade.draw_sprite(self.player_sprite, pixelated=True)
 
     def update_car_direction(self):
-        """
-        Don't use the trick below in a real game!
-
-        It will cause problems! Instead, use different textures, either
-        from different files or by using Texture.flop_left_to_right().
-        """
         if self.x_velocity < 0:
-            self.player_sprite.scale_xy = (-PIXEL_SCALE, PIXEL_SCALE)
-            print(self.player_sprite.width)
+            self.player_sprite.texture = self.car_texture_left
         elif self.x_velocity > 0:
-            self.player_sprite.scale_xy = (PIXEL_SCALE, PIXEL_SCALE)
+            self.player_sprite.texture = self.car_texture_right
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.LEFT:
