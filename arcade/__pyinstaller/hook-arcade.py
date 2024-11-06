@@ -12,15 +12,13 @@ https://api.arcade.academy/en/latest/tutorials/bundling_with_pyinstaller/index.h
 
 from __future__ import annotations
 
+from importlib.util import find_spec
 from pathlib import Path
 
-import pymunk
 from PyInstaller.compat import is_darwin, is_unix, is_win
 
-import arcade
-
-pymunk_path = Path(pymunk.__file__).parent
-arcade_path = Path(arcade.__file__).parent
+pymunk_path = Path(find_spec("pymunk").origin).parent
+arcade_path = Path(find_spec("arcade").origin).parent
 
 datas = [
     (
