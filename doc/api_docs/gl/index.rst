@@ -45,6 +45,7 @@ directory (git).
    framebuffer
    query
    program
+   sampler
    utils
    exceptions
 
