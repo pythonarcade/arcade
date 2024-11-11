@@ -8,7 +8,14 @@ from pyglet import gl
 
 from ..types import BufferProtocol
 from .buffer import Buffer
-from .types import BufferOrBufferProtocol, PyGLuint, pixel_formats
+from .types import (
+    BufferOrBufferProtocol,
+    PyGLuint,
+    compare_funcs,
+    pixel_formats,
+    swizzle_enum_to_str,
+    swizzle_str_to_enum,
+)
 from .utils import data_to_ctypes
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
@@ -101,34 +108,6 @@ class Texture2D:
         "_compressed",
         "_compressed_data",
     )
-    _compare_funcs = {
-        None: gl.GL_NONE,
-        "<=": gl.GL_LEQUAL,
-        "<": gl.GL_LESS,
-        ">=": gl.GL_GEQUAL,
-        ">": gl.GL_GREATER,
-        "==": gl.GL_EQUAL,
-        "!=": gl.GL_NOTEQUAL,
-        "0": gl.GL_NEVER,
-        "1": gl.GL_ALWAYS,
-    }
-    # Swizzle conversion lookup
-    _swizzle_enum_to_str = {
-        gl.GL_RED: "R",
-        gl.GL_GREEN: "G",
-        gl.GL_BLUE: "B",
-        gl.GL_ALPHA: "A",
-        gl.GL_ZERO: "0",
-        gl.GL_ONE: "1",
-    }
-    _swizzle_str_to_enum = {
-        "R": gl.GL_RED,
-        "G": gl.GL_GREEN,
-        "B": gl.GL_BLUE,
-        "A": gl.GL_ALPHA,
-        "0": gl.GL_ZERO,
-        "1": gl.GL_ONE,
-    }
 
     def __init__(
         self,
@@ -195,7 +174,7 @@ class Texture2D:
 
         self._texture_2d(data)
 
-        # Only set texture parameters on non-multisamples textures
+        # Only set texture parameters on non-multisample textures
         if self._samples == 0:
             self.filter = filter or self._filter
             self.wrap_x = wrap_x or self._wrap_x
@@ -440,7 +419,7 @@ class Texture2D:
 
         swizzle_str = ""
         for v in [swizzle_r, swizzle_g, swizzle_b, swizzle_a]:
-            swizzle_str += self._swizzle_enum_to_str[v.value]
+            swizzle_str += swizzle_enum_to_str[v.value]
 
         return swizzle_str
 
@@ -456,9 +435,12 @@ class Texture2D:
         for c in value:
             try:
                 c = c.upper()
-                swizzle_enums.append(self._swizzle_str_to_enum[c])
+                swizzle_enums.append(swizzle_str_to_enum[c])
             except KeyError:
                 raise ValueError(f"Swizzle value '{c}' invalid. Must be one of RGBA01")
+
+        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
+        gl.glBindTexture(self._target, self._glo)
 
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_R, swizzle_enums[0])
         gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_G, swizzle_enums[1])
@@ -602,9 +584,9 @@ class Texture2D:
         if not isinstance(value, str) and value is not None:
             raise ValueError(f"value must be as string: {self._compare_funcs.keys()}")
 
-        func = self._compare_funcs.get(value, None)
+        func = compare_funcs.get(value, None)
         if func is None:
-            raise ValueError(f"value must be as string: {self._compare_funcs.keys()}")
+            raise ValueError(f"value must be as string: {compare_funcs.keys()}")
 
         self._compare_func = value
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)

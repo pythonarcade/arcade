@@ -23,6 +23,37 @@ BlendFunction: TypeAlias = Union[
     tuple[PyGLenum, PyGLenum], tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
 ]
 
+# Depth compare functions
+compare_funcs = {
+    None: gl.GL_NONE,
+    "<=": gl.GL_LEQUAL,
+    "<": gl.GL_LESS,
+    ">=": gl.GL_GEQUAL,
+    ">": gl.GL_GREATER,
+    "==": gl.GL_EQUAL,
+    "!=": gl.GL_NOTEQUAL,
+    "0": gl.GL_NEVER,
+    "1": gl.GL_ALWAYS,
+}
+
+# Swizzle conversion lookup
+swizzle_enum_to_str = {
+    gl.GL_RED: "R",
+    gl.GL_GREEN: "G",
+    gl.GL_BLUE: "B",
+    gl.GL_ALPHA: "A",
+    gl.GL_ZERO: "0",
+    gl.GL_ONE: "1",
+}
+swizzle_str_to_enum = {
+    "R": gl.GL_RED,
+    "G": gl.GL_GREEN,
+    "B": gl.GL_BLUE,
+    "A": gl.GL_ALPHA,
+    "0": gl.GL_ZERO,
+    "1": gl.GL_ONE,
+}
+
 _float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
 _int_base_format = (
     0,
