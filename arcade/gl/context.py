@@ -30,8 +30,8 @@ from .framebuffer import DefaultFrameBuffer, Framebuffer
 from .glsl import ShaderSource
 from .program import Program
 from .query import Query
-from .texture import Texture2D
 from .sampler import Sampler
+from .texture import Texture2D
 from .types import BufferDescription, GLenumLike, PyGLenum
 from .vertex_array import Geometry
 
