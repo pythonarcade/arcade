@@ -402,15 +402,17 @@ class Window(pyglet.window.Window):
         """Return a Rect describing the size of the window."""
         return LBWH(0, 0, self.width, self.height)
 
-    def run(self) -> None:
-        """
-        Run the event loop.
+    from typing import Optional
 
-        After the window has been set up, and the event hooks are in place, this
-        is usually one of the last commands on the main program. This is a blocking
-        function starting pyglet's event loop meaning it will start to dispatch
-        events such as ``on_draw`` and ``on_update``.
+    def run(self, view: Optional[View] = None) -> None:
         """
+        Run the event loop. Optionally start with a specified view.
+
+        Args:
+            view (Optional[View]): The view to display when starting the run. Defaults to None.
+        """
+        if view is not None:
+            self.show_view(view)
         arcade.run()
 
     def close(self) -> None:
