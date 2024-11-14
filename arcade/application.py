@@ -402,7 +402,7 @@ class Window(pyglet.window.Window):
         """Return a Rect describing the size of the window."""
         return LBWH(0, 0, self.width, self.height)
 
-    def run(self) -> None:
+    def run(self, view=None) -> None:
         """
         Run the event loop.
 
@@ -411,7 +411,7 @@ class Window(pyglet.window.Window):
         function starting pyglet's event loop meaning it will start to dispatch
         events such as ``on_draw`` and ``on_update``.
         """
-        arcade.run()
+        arcade.run(view=view)
 
     def close(self) -> None:
         """Close the Window."""
