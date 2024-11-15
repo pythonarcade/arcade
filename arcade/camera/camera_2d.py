@@ -484,8 +484,8 @@ class Camera2D:
         """
         # This is unwrapped from standard Vec2 operations,
         # The construction and garbage collection of the vectors would
-        # increase this method's cost by ~4x 
-        
+        # increase this method's cost by ~4x
+
         pos = self.position
         diff = point[0] - pos[0], point[1] - pos[1]
 
