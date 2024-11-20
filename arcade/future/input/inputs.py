@@ -65,6 +65,8 @@ class ControllerButtons(StrEnum):
     BOTTOM_FACE = "a"
     LEFT_SHOULDER = "leftshoulder"
     RIGHT_SHOULDER = "rightshoulder"
+    LEFT_TRIGGER = "lefttrigger"
+    RIGHT_TRIGGER = "righttrigger"
     START = "start"
     BACK = "back"
     GUIDE = "guide"
@@ -101,11 +103,13 @@ class PSControllerButtons(StrEnum):
     CROSS = ControllerButtons.BOTTOM_FACE
     L1 = ControllerButtons.LEFT_SHOULDER
     R1 = ControllerButtons.RIGHT_SHOULDER
+    L2 = ControllerButtons.LEFT_TRIGGER
+    R2 = ControllerButtons.RIGHT_TRIGGER
+    L3 = ControllerButtons.LEFT_STICK
+    R3 = ControllerButtons.RIGHT_STICK
     START = ControllerButtons.START
     SELECT = ControllerButtons.BACK
     GUIDE = ControllerButtons.GUIDE
-    LEFT_STICK = ControllerButtons.LEFT_STICK
-    RIGHT_STICK = ControllerButtons.RIGHT_STICK
     DPAD_LEFT = ControllerButtons.DPAD_LEFT
     DPAD_RIGHT = ControllerButtons.DPAD_RIGHT
     DPAD_UP = ControllerButtons.DPAD_UP
