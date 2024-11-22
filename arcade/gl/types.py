@@ -491,6 +491,26 @@ class GLTypes:
         gl.GL_UNSIGNED_BYTE: TypeInfo(
             "GL_UNSIGNED_BYTE", gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE, 1, 1
         ),
+        # Matrices
+        gl.GL_FLOAT_MAT2: TypeInfo("GL_FLOAT_MAT2", gl.GL_FLOAT_MAT2, gl.GL_FLOAT, 4, 4),
+        gl.GL_FLOAT_MAT3: TypeInfo("GL_FLOAT_MAT3", gl.GL_FLOAT_MAT3, gl.GL_FLOAT, 4, 9),
+        gl.GL_FLOAT_MAT4: TypeInfo("GL_FLOAT_MAT4", gl.GL_FLOAT_MAT4, gl.GL_FLOAT, 4, 16),
+        gl.GL_FLOAT_MAT2x3: TypeInfo("GL_FLOAT_MAT2x3", gl.GL_FLOAT_MAT2x3, gl.GL_FLOAT, 4, 6),
+        gl.GL_FLOAT_MAT2x4: TypeInfo("GL_FLOAT_MAT2x4", gl.GL_FLOAT_MAT2x4, gl.GL_FLOAT, 4, 8),
+        gl.GL_FLOAT_MAT3x2: TypeInfo("GL_FLOAT_MAT3x2", gl.GL_FLOAT_MAT3x2, gl.GL_FLOAT, 4, 6),
+        gl.GL_FLOAT_MAT3x4: TypeInfo("GL_FLOAT_MAT3x4", gl.GL_FLOAT_MAT3x4, gl.GL_FLOAT, 4, 12),
+        gl.GL_FLOAT_MAT4x2: TypeInfo("GL_FLOAT_MAT4x2", gl.GL_FLOAT_MAT4x2, gl.GL_FLOAT, 4, 8),
+        gl.GL_FLOAT_MAT4x3: TypeInfo("GL_FLOAT_MAT4x3", gl.GL_FLOAT_MAT4x3, gl.GL_FLOAT, 4, 12),
+        # Double matrices
+        gl.GL_DOUBLE_MAT2: TypeInfo("GL_DOUBLE_MAT2", gl.GL_DOUBLE_MAT2, gl.GL_DOUBLE, 8, 4),
+        gl.GL_DOUBLE_MAT3: TypeInfo("GL_DOUBLE_MAT3", gl.GL_DOUBLE_MAT3, gl.GL_DOUBLE, 8, 9),
+        gl.GL_DOUBLE_MAT4: TypeInfo("GL_DOUBLE_MAT4", gl.GL_DOUBLE_MAT4, gl.GL_DOUBLE, 8, 16),
+        gl.GL_DOUBLE_MAT2x3: TypeInfo("GL_DOUBLE_MAT2x3", gl.GL_DOUBLE_MAT2x3, gl.GL_DOUBLE, 8, 6),
+        gl.GL_DOUBLE_MAT2x4: TypeInfo("GL_DOUBLE_MAT2x4", gl.GL_DOUBLE_MAT2x4, gl.GL_DOUBLE, 8, 8),
+        gl.GL_DOUBLE_MAT3x2: TypeInfo("GL_DOUBLE_MAT3x2", gl.GL_DOUBLE_MAT3x2, gl.GL_DOUBLE, 8, 6),
+        gl.GL_DOUBLE_MAT3x4: TypeInfo("GL_DOUBLE_MAT3x4", gl.GL_DOUBLE_MAT3x4, gl.GL_DOUBLE, 8, 12),
+        gl.GL_DOUBLE_MAT4x2: TypeInfo("GL_DOUBLE_MAT4x2", gl.GL_DOUBLE_MAT4x2, gl.GL_DOUBLE, 8, 8),
+        gl.GL_DOUBLE_MAT4x3: TypeInfo("GL_DOUBLE_MAT4x3", gl.GL_DOUBLE_MAT4x3, gl.GL_DOUBLE, 8, 12),
         # TODO: Add sampler types if needed. Only needed for better uniform introspection.
     }
 
