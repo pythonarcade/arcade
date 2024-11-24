@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import struct
 from ctypes import POINTER, cast
 
 from pyglet import gl
@@ -274,12 +275,18 @@ class Uniform:
         is_matrix,
     ):
         """Create setters for OpenGL data."""
+        # Matrix uniforms
         if is_matrix:
             if ctx._ext_separate_shader_objects_enabled:
 
                 def setter_func(value):  # type: ignore #conditional function variants must have identical signature
                     """Set OpenGL matrix uniform data."""
-                    c_array[:] = value
+                    try:
+                        # FIXME: Configure the struct format on the uniform to support
+                        #        other types than float
+                        c_array[:] = struct.unpack(f"{length}f", value)
+                    except Exception:
+                        c_array[:] = value
                     gl_program_setter(program_id, location, array_length, gl.GL_FALSE, ptr)
 
             else:
@@ -290,6 +297,7 @@ class Uniform:
                     gl.glUseProgram(program_id)
                     gl_setter(location, array_length, gl.GL_FALSE, ptr)
 
+        # Single value uniforms
         elif length == 1 and count == 1:
             if ctx._ext_separate_shader_objects_enabled:
 
@@ -306,12 +314,20 @@ class Uniform:
                     gl.glUseProgram(program_id)
                     gl_setter(location, array_length, ptr)
 
+        # Uniforms types with multiple components
         elif length > 1 and count == 1:
             if ctx._ext_separate_shader_objects_enabled:
 
                 def setter_func(values):  # type: ignore #conditional function variants must have identical signature
                     """Set list of OpenGL uniform data."""
-                    c_array[:] = values
+                    # Support buffer protocol
+                    try:
+                        # FIXME: Configure the struct format on the uniform to support
+                        #        other types than float
+                        c_array[:] = struct.unpack(f"{length}f", values)
+                    except Exception:
+                        c_array[:] = values
+
                     gl_program_setter(program_id, location, array_length, ptr)
 
             else:

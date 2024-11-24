@@ -2,7 +2,7 @@ import struct
 import pytest
 import arcade
 from pyglet import gl
-from pyglet.math import Mat4
+from pyglet.math import Mat4, Mat3
 from arcade.gl import ShaderException
 from arcade.gl.uniform import UniformBlock
 from arcade.gl.glsl import ShaderSource
@@ -130,6 +130,7 @@ def test_program_basic(ctx):
         vertex_shader="""
         #version 330
 
+        uniform mat4 matrix;
         uniform vec2 pos_offset;
 
         in vec2 in_vert;
@@ -137,7 +138,7 @@ def test_program_basic(ctx):
         out vec2 v_uv;
 
         void main() {
-            gl_Position = vec4(in_vert + pos_offset, 0.0, 1.0);
+            gl_Position = matrix * vec4(in_vert + pos_offset, 0.0, 1.0);
             v_uv = in_uv;
         }
         """,
@@ -165,6 +166,16 @@ def test_program_basic(ctx):
         program['this_uniform_do_not_exist'] = 0
     with pytest.raises(KeyError):
         program['this_uniform_do_not_exist']
+
+    # uniform values using byte data. struct.unpack in uniform setters will read from
+    # objects supporting buffer protocol like glm and numpy types
+    mat44_bytes = b'\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?'
+    program['matrix'] = mat44_bytes
+    assert program['matrix'] == Mat4()
+
+    # vectors
+    program['pos_offset'] = b'\x00\x00\x80?\x00\x00\x00@'
+    assert program['pos_offset'] == (1.0, 2.0)
 
 
 def test_vertex_shader(ctx):
