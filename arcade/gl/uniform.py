@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import struct
-from ctypes import POINTER, cast
+from ctypes import POINTER, cast, c_float, c_int, c_uint, c_double
 
 from pyglet import gl
 
@@ -26,6 +26,13 @@ class Uniform:
         array_length:
             The array length of the uniform
     """
+
+    _type_to_struct = {
+        c_float: "f",
+        c_int: "i",
+        c_uint: "I",
+        c_double: "d",
+    }
 
     _uniform_getters = {
         gl.GLint: gl.glGetUniformiv,
@@ -234,6 +241,7 @@ class Uniform:
             gl_program_setter,
             gl_setter,
             c_array,
+            gl_type,
             length,
             self._array_length,
             count,
@@ -260,14 +268,16 @@ class Uniform:
         else:
             return getter_func2
 
-    @staticmethod
+    @classmethod
     def _create_setter_func(
+        cls,
         ctx,
         program_id,
         location,
         gl_program_setter,
         gl_setter,
         c_array,
+        gl_type,
         length,
         array_length,
         count,
@@ -284,7 +294,8 @@ class Uniform:
                     try:
                         # FIXME: Configure the struct format on the uniform to support
                         #        other types than float
-                        c_array[:] = struct.unpack(f"{length}f", value)
+                        fmt = cls._type_to_struct[gl_type]
+                        c_array[:] = struct.unpack(f"{length}{fmt}", value)
                     except Exception:
                         c_array[:] = value
                     gl_program_setter(program_id, location, array_length, gl.GL_FALSE, ptr)
@@ -324,7 +335,8 @@ class Uniform:
                     try:
                         # FIXME: Configure the struct format on the uniform to support
                         #        other types than float
-                        c_array[:] = struct.unpack(f"{length}f", values)
+                        fmt = cls._type_to_struct[gl_type]
+                        c_array[:] = struct.unpack(f"{length}{fmt}", values)
                     except Exception:
                         c_array[:] = values
 
