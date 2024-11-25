@@ -97,7 +97,7 @@ def close_window() -> None:
     gc.collect()
 
 
-def run():
+def run(view = None):
     """
     Run the main loop.
 
@@ -107,6 +107,10 @@ def run():
     it will start to dispatch events such as ``on_draw`` and ``on_update``.
     """
     window = get_window()
+
+    # Show the specific view if provided
+    if view is not None:
+        window.show_view(view)
 
     # Used in some unit test
     if os.environ.get("ARCADE_TEST"):
