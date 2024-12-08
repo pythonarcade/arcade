@@ -1240,7 +1240,9 @@ class View:
         self, window: Window | None = None, background_color: RGBOrA255 | None = None
     ) -> None:
         self.window = arcade.get_window() if window is None else window
-        self.background_color: RGBOrA255 | None = background_color
+        self._background_color: Color | None = background_color and Color.from_iterable(
+            background_color
+        )
 
     def clear(
         self,
@@ -1570,3 +1572,32 @@ class View:
         An alias for `arcade.Window.center_y`
         """
         return self.window.center_y
+
+    @property
+    def background_color(self) -> Color | None:
+        """
+        Get or set the background color for this window.
+        This affects what color the window will contain when
+        :py:meth:`~arcade.Window.clear` is called.
+
+        Examples::
+
+            # Use Arcade's built in Color values
+            window.background_color = arcade.color.AMAZON
+
+            # Set the background color with a custom Color instance
+            MY_RED = arcade.types.Color(255, 0, 0)
+            window.background_color = MY_RED
+
+            # Set the background color directly from an RGBA tuple
+            window.background_color = 255, 0, 0, 255
+
+            # Set the background color directly from an RGB tuple
+            # RGB tuples will assume 255 as the opacity / alpha value
+            window.background_color = 255, 0, 0
+        """
+        return self._background_color
+
+    @background_color.setter
+    def background_color(self, value: RGBOrA255) -> None:
+        self._background_color = Color.from_iterable(value)
