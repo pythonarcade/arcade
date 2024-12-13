@@ -250,7 +250,7 @@ class Text:
             color=Color.from_iterable(color),
             width=width,
             align=align,  # type: ignore
-            bold=bold,
+            weight=pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL,
             italic=italic,
             multiline=multiline,
             rotation=rotation,  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
@@ -527,11 +527,11 @@ class Text:
         * ``"light"``
 
         """
-        return self._label.bold
+        return self._label.weight == pyglet.text.Weight.BOLD
 
     @bold.setter
     def bold(self, bold: bool | str):
-        self._label.bold = bold
+        self._label.weight = pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL
 
     @property
     def italic(self) -> bool | str:

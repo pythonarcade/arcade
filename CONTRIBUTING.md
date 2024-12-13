@@ -63,6 +63,12 @@ terminal from inside the top level of the Arcade directory:
 pip install -e '.[dev]'
 ```
 
+If you are using the Windows command prompt, use double quotes:
+
+```bash
+pip install -e ".[dev]"
+```
+
 If you get an error like the one below, you probably need to update your pip version:
 
 ```
