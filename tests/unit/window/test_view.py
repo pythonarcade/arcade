@@ -29,6 +29,6 @@ def test_view_background_color(window):
     view = View(window, color.ARCADE_GREEN)
     assert view.background_color == color.ARCADE_GREEN
     window.clear()
-    # assert get_image(0, 0, 1, 1).getpixel((0, 0)) == (0, 0, 0, 255)
+    # assert get_image(0, 0, 1, 1).getpixel((0, 0)) == color.BLACK
     view.clear()
     # assert get_image(0, 0, 1, 1).getpixel((0, 0)) == color.ARCADE_GREEN
