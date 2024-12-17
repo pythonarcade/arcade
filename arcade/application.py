@@ -1252,7 +1252,7 @@ class View:
     ) -> None:
         """
         Clears the window with the configured background color
-        set through :py:attr:`arcade.Window.background_color`.
+        set through :py:attr:`arcade.View.background_color`.
 
         Args:
             color(optional):
@@ -1576,25 +1576,25 @@ class View:
     @property
     def background_color(self) -> Color | None:
         """
-        Get or set the background color for this window.
+        Get or set the background color for this view.
         This affects what color the window will contain when
-        :py:meth:`~arcade.Window.clear` is called.
+        :py:meth:`~arcade.View.clear` is called.
 
         Examples::
 
             # Use Arcade's built in Color values
-            window.background_color = arcade.color.AMAZON
+            view.background_color = arcade.color.AMAZON
 
             # Set the background color with a custom Color instance
             MY_RED = arcade.types.Color(255, 0, 0)
-            window.background_color = MY_RED
+            view.background_color = MY_RED
 
             # Set the background color directly from an RGBA tuple
-            window.background_color = 255, 0, 0, 255
+            view.background_color = 255, 0, 0, 255
 
             # Set the background color directly from an RGB tuple
             # RGB tuples will assume 255 as the opacity / alpha value
-            window.background_color = 255, 0, 0
+            view.background_color = 255, 0, 0
         """
         return self._background_color
 
