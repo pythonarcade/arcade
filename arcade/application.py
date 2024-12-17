@@ -18,7 +18,7 @@ from pyglet.window import MouseCursor
 
 import arcade
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
-from arcade.color import TRANSPARENT_BLACK
+from arcade.color import BLACK
 from arcade.context import ArcadeContext
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
 from arcade.utils import is_raspberry_pi
@@ -268,7 +268,7 @@ class Window(pyglet.window.Window):
         self.push_handlers(on_resize=self._on_resize)
 
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
-        self._background_color: Color = TRANSPARENT_BLACK
+        self._background_color: Color = BLACK
 
         self._current_view: View | None = None
 
