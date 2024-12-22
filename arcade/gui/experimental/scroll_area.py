@@ -27,8 +27,7 @@ class UIScrollBar(UIWidget):
     """Scroll bar for a UIScrollLayout.
 
     Indicating the current view position of the scroll area.
-
-    Does not support mouse interaction yet.
+    Supports mouse dragging to scroll the content.
     """
 
     _thumb_hover = Property(False)
