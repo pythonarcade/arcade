@@ -31,8 +31,8 @@ class UIScrollBar(UIWidget):
     Does not support mouse interaction yet.
     """
 
-    _thumb_hover: bool = Property(False)
-    _dragging: bool = Property(False)
+    _thumb_hover = Property(False)
+    _dragging = Property(False)
 
     def __init__(self, scroll_area: UIScrollArea, vertical: bool = True):
         size_hint = (0.05, 1) if vertical else (1, 0.05)
