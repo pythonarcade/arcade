@@ -567,7 +567,7 @@ class SpriteList(Generic[SpriteType]):
         """
         return self.sprite_list.index(sprite)
 
-    def clear(self, deep: bool = True) -> None:
+    def clear(self, deep: bool = True, capacity: int | None = None) -> None:
         """
         Remove all the sprites resetting the spritelist
         to it's initial state.
@@ -582,7 +582,9 @@ class SpriteList(Generic[SpriteType]):
         Sprite and SpriteList have a circular reference for performance reasons.
 
         Args:
-            deep: Wether to do a deep clear or not. Default is ``True``.
+            deep: Whether to do a deep clear or not. Default is ``True``.
+            capacity: The size of the internal buffers used to store the sprites.
+                      Defaults to preserving the current capacity.
         """
         from .spatial_hash import SpatialHash
 
@@ -599,8 +601,10 @@ class SpriteList(Generic[SpriteType]):
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
         # Clear the slot_idx and slot info and other states
-        self._buf_capacity = _DEFAULT_CAPACITY
-        self._idx_capacity = _DEFAULT_CAPACITY
+        capacity = abs(capacity or self._buf_capacity)
+
+        self._buf_capacity = capacity
+        self._idx_capacity = capacity
         self._sprite_buffer_slots = 0
         self._sprite_index_slots = 0
         self._sprite_buffer_free_slots = deque()
