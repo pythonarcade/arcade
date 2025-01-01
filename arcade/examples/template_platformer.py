@@ -216,9 +216,9 @@ class GameView(arcade.View):
         """ Resize window """
         super().on_resize(width, height)
         # Update the cameras to match the new window size
-        self.camera_sprites.match_screen(and_projection=True)
-        # The and_position property keeps `0, 0` in the bottom left corner.
-        self.camera_gui.match_screen(and_projection=True, and_position=True)
+        self.camera_sprites.match_window()
+        # The position argument keeps `0, 0` in the bottom left corner.
+        self.camera_gui.match_window(position=True)
 
 
 def main():

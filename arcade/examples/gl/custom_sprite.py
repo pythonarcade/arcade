@@ -150,7 +150,7 @@ class GeoSprites(arcade.Window):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera.match_screen(and_position=True)
+        self.camera.match_window(position=True)
 
     def on_draw(self):
         self.clear()

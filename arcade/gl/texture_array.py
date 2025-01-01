@@ -22,9 +22,10 @@ if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
 
 
-class Texture2D:
+class TextureArray:
     """
-    An OpenGL 2D texture.
+    An OpenGL 2D texture array.
+
     We can create an empty black texture or a texture from byte data.
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
@@ -50,7 +51,7 @@ class Texture2D:
         ctx:
             The context the object belongs to
         size:
-            The size of the texture
+            The size of the texture (width, height, layers)
         components:
             The number of components (1: R, 2: RG, 3: RGB, 4: RGBA)
         dtype:
@@ -88,6 +89,7 @@ class Texture2D:
         "_glo",
         "_width",
         "_height",
+        "_layers",
         "_dtype",
         "_target",
         "_components",
@@ -112,7 +114,7 @@ class Texture2D:
     def __init__(
         self,
         ctx: Context,
-        size: tuple[int, int],
+        size: tuple[int, int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
@@ -120,7 +122,7 @@ class Texture2D:
         filter: tuple[PyGLuint, PyGLuint] | None = None,
         wrap_x: PyGLuint | None = None,
         wrap_y: PyGLuint | None = None,
-        target=gl.GL_TEXTURE_2D,
+        target=gl.GL_TEXTURE_2D_ARRAY,
         depth=False,
         samples: int = 0,
         immutable: bool = False,
@@ -130,7 +132,7 @@ class Texture2D:
     ):
         self._glo = glo = gl.GLuint()
         self._ctx = ctx
-        self._width, self._height = size
+        self._width, self._height, self._layers = size
         self._dtype = dtype
         self._components = components
         self._component_size = 0
@@ -162,7 +164,9 @@ class Texture2D:
                 "Multisampled textures are not writable (cannot be initialized with data)"
             )
 
-        self._target = gl.GL_TEXTURE_2D if self._samples == 0 else gl.GL_TEXTURE_2D_MULTISAMPLE
+        self._target = (
+            gl.GL_TEXTURE_2D_ARRAY if self._samples == 0 else gl.GL_TEXTURE_2D_MULTISAMPLE_ARRAY
+        )
 
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
         gl.glGenTextures(1, byref(self._glo))
@@ -172,7 +176,7 @@ class Texture2D:
 
         gl.glBindTexture(self._target, self._glo)
 
-        self._texture_2d(data)
+        self._texture_2d_array(data)
 
         # Only set texture parameters on non-multisample textures
         if self._samples == 0:
@@ -181,7 +185,7 @@ class Texture2D:
             self.wrap_y = wrap_y or self._wrap_y
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, Texture2D.delete_glo, self._ctx, glo)
+            weakref.finalize(self, TextureArray.delete_glo, self._ctx, glo)
 
         self.ctx.stats.incr("texture")
 
@@ -203,14 +207,14 @@ class Texture2D:
 
         self._width, self._height = size
 
-        self._texture_2d(None)
+        self._texture_2d_array(None)
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and self._glo.value > 0:
             self._ctx.objects.append(self)
 
-    def _texture_2d(self, data):
+    def _texture_2d_array(self, data):
         """Create a 2D texture"""
         # Start by resolving the texture format
         try:
@@ -223,16 +227,17 @@ class Texture2D:
         _format, _internal_format, self._type, self._component_size = format_info
         if data is not None:
             byte_length, data = data_to_ctypes(data)
-            self._validate_data_size(data, byte_length, self._width, self._height)
+            self._validate_data_size(data, byte_length, self._width, self._height, self._layers)
 
         # If we are dealing with a multisampled texture we have less options
-        if self._target == gl.GL_TEXTURE_2D_MULTISAMPLE:
-            gl.glTexImage2DMultisample(
+        if self._target == gl.GL_TEXTURE_2D_MULTISAMPLE_ARRAY:
+            gl.glTexImage3DMultisample(
                 self._target,
                 self._samples,
                 _internal_format[self._components],
                 self._width,
                 self._height,
+                self._layers,
                 True,  # Fixed sample locations
             )
             return
@@ -244,12 +249,13 @@ class Texture2D:
 
         # Create depth 2d texture
         if self._depth:
-            gl.glTexImage2D(
+            gl.glTexImage3D(
                 self._target,
                 0,  # level
                 gl.GL_DEPTH_COMPONENT24,
                 self._width,
                 self._height,
+                self._layers,
                 0,
                 gl.GL_DEPTH_COMPONENT,
                 gl.GL_UNSIGNED_INT,  # gl.GL_FLOAT,
@@ -266,12 +272,13 @@ class Texture2D:
                 if self._immutable:
                     # Specify immutable storage for this texture.
                     # glTexStorage2D can only be called once
-                    gl.glTexStorage2D(
+                    gl.glTexStorage3D(
                         self._target,
                         1,  # Levels
                         self._internal_format,
                         self._width,
                         self._height,
+                        self._layers,
                     )
                     if data:
                         self.write(data)
@@ -279,23 +286,25 @@ class Texture2D:
                     # glTexImage2D can be called multiple times to re-allocate storage
                     # Specify mutable storage for this texture.
                     if self._compressed_data is True:
-                        gl.glCompressedTexImage2D(
+                        gl.glCompressedTexImage3D(
                             self._target,  # target
                             0,  # level
                             self._internal_format,  # internal_format
                             self._width,  # width
                             self._height,  # height
+                            self._layers,  # layers
                             0,  # border
                             len(data),  # size
                             data,  # data
                         )
                     else:
-                        gl.glTexImage2D(
+                        gl.glTexImage3D(
                             self._target,  # target
                             0,  # level
                             self._internal_format,  # internal_format
                             self._width,  # width
                             self._height,  # height
+                            self._layers,  # layers
                             0,  # border
                             self._format,  # format
                             self._type,  # type
@@ -337,14 +346,19 @@ class Texture2D:
         return self._height
 
     @property
+    def layers(self) -> int:
+        """The number of layers in the texture"""
+        return self._layers
+
+    @property
     def dtype(self) -> str:
         """The data type of each component"""
         return self._dtype
 
     @property
-    def size(self) -> tuple[int, int]:
+    def size(self) -> tuple[int, int, int]:
         """The size of the texture as a tuple"""
-        return self._width, self._height
+        return self._width, self._height, self._layers
 
     @property
     def samples(self) -> int:
@@ -619,18 +633,19 @@ class Texture2D:
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
 
             buffer = (
-                gl.GLubyte * (self.width * self.height * self._component_size * self._components)
+                gl.GLubyte
+                * (self.width * self.height * self.layers * self._component_size * self._components)
             )()
-            gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
+            gl.glGetTexImage(self._target, level, self._format, self._type, buffer)
             return string_at(buffer, len(buffer))
         elif self._ctx.gl_api == "gles":
-            fbo = self._ctx.framebuffer(color_attachments=[self])
-            return fbo.read(components=self._components, dtype=self._dtype)
+            # FIXME: Check if we can attach a layer to the framebuffer. See Texture2D.read()
+            raise ValueError("Reading texture array data not supported in GLES yet")
         else:
             raise ValueError("Unknown gl_api: '{self._ctx.gl_api}'")
 
     def write(self, data: BufferOrBufferProtocol, level: int = 0, viewport=None) -> None:
-        """Write byte data from the passed source to the texture.
+        """Write byte data into layers of the texture.
 
         The ``data`` value can be either an
         :py:class:`arcade.gl.Buffer` or anything that implements the
@@ -646,23 +661,32 @@ class Texture2D:
             data:
                 :class:`~arcade.gl.Buffer` or buffer protocol object with data to write.
             level:
-                The texture level to write
-            viewport:
-                The area of the texture to write. 2 or 4 component tuple.
-                (x, y, w, h) or (w, h). Default is the full texture.
+                The texture level to write (LoD level, now layer)
+            viewport (optional):
+                The area of the texture to write. Should be a 3 or 5-component tuple
+                `(x, y, layer, width, height)` writes to an area of a single layer.
+                If not provided the entire texture is written to.
         """
         # TODO: Support writing to layers using viewport + alignment
         if self._samples > 0:
             raise ValueError("Writing to multisampled textures not supported")
 
-        x, y, w, h = 0, 0, self._width, self._height
+        x, y, l, w, h = (
+            0,
+            0,
+            0,
+            self._width,
+            self._height,
+        )
         if viewport:
-            if len(viewport) == 2:
-                w, h = viewport
-            elif len(viewport) == 4:
-                x, y, w, h = viewport
+            # TODO: Add more options here. For now we support writing to a single layer
+            #       (width, hight, num_layers) is a suggestion from moderngl
+            # if len(viewport) == 3:
+            #     w, h, l = viewport
+            if len(viewport) == 5:
+                x, y, l, w, h = viewport
             else:
-                raise ValueError("Viewport must be of length 2 or 4")
+                raise ValueError("Viewport must be of length 5")
 
         if isinstance(data, Buffer):
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, data.glo)
@@ -670,28 +694,32 @@ class Texture2D:
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
             gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-            gl.glTexSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)
+            gl.glTexSubImage3D(self._target, level, x, y, w, h, l, self._format, self._type, 0)
             gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
         else:
             byte_size, data = data_to_ctypes(data)
-            self._validate_data_size(data, byte_size, w, h)
+            self._validate_data_size(data, byte_size, w, h, 1)  # Single layer
             gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
             gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-            gl.glTexSubImage2D(
+            gl.glTexSubImage3D(
                 self._target,  # target
                 level,  # level
                 x,  # x offset
                 y,  # y offset
+                l,  # layer
                 w,  # width
                 h,  # height
+                1,  # depth (one layer)
                 self._format,  # format
                 self._type,  # type
                 data,  # pixel data
             )
 
-    def _validate_data_size(self, byte_data, byte_size, width, height) -> None:
+    def _validate_data_size(
+        self, byte_data, byte_size: int, width: int, height: int, layers: int
+    ) -> None:
         """Validate the size of the data to be written to the texture"""
         # TODO: Validate data size for compressed textures
         #       This might be a bit tricky since the size of the compressed
@@ -699,7 +727,7 @@ class Texture2D:
         if self._compressed is True:
             return
 
-        expected_size = width * height * self._component_size * self._components
+        expected_size = width * height * layers * self._component_size * self._components
         if byte_size != expected_size:
             raise ValueError(
                 f"Data size {len(byte_data)} does not match expected size {expected_size}"
@@ -741,10 +769,10 @@ class Texture2D:
             raise ValueError("Multisampled textures don't support mimpmaps")
 
         gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._glo)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_BASE_LEVEL, base)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAX_LEVEL, max_level)
-        gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
+        gl.glBindTexture(self._target, self._glo)
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_BASE_LEVEL, base)
+        gl.glTexParameteri(self._target, gl.GL_TEXTURE_MAX_LEVEL, max_level)
+        gl.glGenerateMipmap(self._target)
 
     def delete(self):
         """
@@ -752,7 +780,7 @@ class Texture2D:
 
         Don't use this unless you know exactly what you are doing.
         """
-        Texture2D.delete_glo(self._ctx, self._glo)
+        self.delete_glo(self._ctx, self._glo)
         self._glo.value = 0
 
     @staticmethod
@@ -856,6 +884,6 @@ class Texture2D:
         return handle
 
     def __repr__(self) -> str:
-        return "<Texture glo={} size={}x{} components={}>".format(
-            self._glo.value, self._width, self._height, self._components
+        return "<TextureArray glo={} size={}x{}x{} components={}>".format(
+            self._glo.value, self._width, self._layers, self._height, self._components
         )

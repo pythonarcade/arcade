@@ -11,7 +11,7 @@ Version 3.0.0 is a major update to Arcade. It breaks compatibility with the 2.6 
 These are the breaking API changes. Use this as a quick reference for updating 2.6 code. You can find more details in later sections. Lots of behavior has changed even if the interface hasn't. If you are porting old code, read through these logs thoroughly.
 
 * Dropped Python 3.8 support completely.
-* Texture management has completely changed in  3.0. In the past, we
+* Texture management has completely changed in 3.0. In the past, we
  cached everything, which caused issues for larger
  projects that needed memory management. Functions like `Arcade.load_texture` no longer cache textures.
 * Removed the poorly named `Window.set_viewport` and `set_viewport` methods.
@@ -234,7 +234,7 @@ These are the breaking API changes. Use this as a quick reference for updating 2
 ### Controller Input
 
 Previously, controllers were usable via the `Arcade.joysticks` module. This module is still available in 3.0.
-However, most people can treat it as depreciated. It is an alias to Pyglet's joysticks sub-module. There is now an `arcade.controller` module that is an alias to Pyglet's new Controller API. This change should make a more comprehensive selection of controllers usable with Arcade. The joystick module may still be helpful if you need specialty controllers such as racing wheels or flight sticks. The example code now uses the new controller AP.
+However, most people can treat it as depreciated. It is an alias to Pyglet's joysticks sub-module. There is now an `arcade.controller` module that is an alias to Pyglet's new Controller API. This change should make a more comprehensive choice of controllers usable with Arcade. The joystick module may still be helpful if you need specialty controllers such as racing wheels or flight sticks. The example code now uses the new controller AP.
 
 ### Text
 
@@ -320,7 +320,7 @@ We would also like to thank the contributors who spent their valuable time solvi
 #### Notable contributors:
 * [DarkLight1337](https://github.com/DarkLight1337) helped the team untangle type annotation issues for cameras
 * [Mohammad Ibrahim](https://github.com/Ibrahim2750mi) was a massive help with the GUI and various other parts of the library.
-* [ryyst](https://github.com/ryyst) completely revitalised the Arcade Docs.
+* [ryyst](https://github.com/ryyst) completely revitalized the Arcade Docs.
 
 #### Contributors
 

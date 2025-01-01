@@ -30,11 +30,11 @@ world space is equal to one unit in view space
 
 ### Projection Matrices
 The projection matrix takes the positions of objects in view space and projects them into screen space. 
-depending on the type of projection matrix how this exactly applies changes. Projection matrices along
+depending on the type of projection matrix how this exactly applies changes. Projection matrices alone
 do not fully project objects into screen space, instead they transform positions into unit space. This 
 special coordinate space ranges from -1 to 1 in the x, y, and z axis. Anything within this range will
 be transformed into screen space, and everything outside this range is discarded and left undrawn.
-you can conceptualise projection matrices as taking a 6 sided 3D prism volume in view space and 
+you can conceptualise projection matrices as taking a 6 sided 3D volume in view space and 
 squashing it down into a uniformly sized cube. In every case the closest position projected along the
 z-axis is given by the near value, while the furthest is given by the far value.
 
@@ -71,8 +71,10 @@ not be drawn.
   - `arcade.camera.Projector` is a `Protocol` used internally by arcade
   - `Projector.use()` sets the internal projection and view matrices used by Arcade and Pyglet
   - `Projector.activate()` is the same as use, but works within a context manager using the `with` syntax
-  - `Projector.map_screen_to_world_coordinate(screen_coordinate, depth)` 
+  - `Projector.unproject(screen_coordinate)` 
 provides a way to find the world position of any pixel position on screen.
+  - `Projector.project(world_coordinate)` 
+provides a way to find the screen position of any position in the world.
 - There are multiple data types which provide the information required to make view and projection matrices
   - `camera.CameraData` holds the position, forward, and up vectors along with a zoom value used to create the 
 view matrix
@@ -80,10 +82,9 @@ view matrix
 orthographic projection matrix
   - `camera.PerspectiveProjectionData` holds the aspect ratio, field of view, near and far needed to create a
 perspective projection matrix.
-  - both ProjectionData data types also provide a viewport for setting the draw area when using the camera.
 - There are three primary `Projectors` in `arcade.camera`
   - `arcade.camera.Camera2D` is locked to the x-y plane and is perfect for most use cases within arcade.
   - `arcade.camera.OrthographicProjector` can be freely positioned in 3D space, but the scale of objects does not
 depend on the distance to the projector
-  - [not yet implemented ] `arcade.camera.PerspectiveProjector` can be freely position in 3D space,
+  - `arcade.camera.PerspectiveProjector` can be freely position in 3D space,
 and objects look smaller the further from the camera they are

@@ -328,8 +328,8 @@ class GameView(arcade.View):
         Handle the user grabbing the edge and resizing the window.
         """
         super().on_resize(width, height)
-        self.camera_sprites.match_screen(and_projection=True)
-        self.camera_gui.match_screen(and_projection=True)
+        self.camera_sprites.match_window()
+        self.camera_gui.match_window()
 
     def on_update(self, delta_time):
         """ Movement and game logic """

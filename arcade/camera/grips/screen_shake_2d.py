@@ -6,7 +6,7 @@ ScreenShakeController2D:
 from __future__ import annotations
 
 from math import exp, floor, log, pi, sin
-from random import uniform
+from random import randint, uniform
 
 from arcade.camera.data_types import CameraData
 from arcade.math import quaternion_rotation
@@ -40,6 +40,13 @@ class ScreenShake2D:
         shake_frequency:
             The number of peaks per second. Avoid making it a multiple of half
             the target frame-rate. (e.g. at 60 fps avoid 30, 60, 90, 120, etc.)
+        shake_angle:
+            The angle around which the shake will focus. Defaults to 0 (horizontal)
+            This is actuall 0 or 180 degress as the shake angle is mirrored.
+        shake_range:
+            The range in degrees from the shake angle that the shake may fall within.
+            defaults to 90 degrees. This gives a range of +/- 90 degrees which covers the
+            full circle because the shake angle is mirrored 180 degrees.
     """
 
     def __init__(
@@ -50,6 +57,8 @@ class ScreenShake2D:
         falloff_time: float = 1.0,
         acceleration_duration: float = 1.0,
         shake_frequency: float = 15.0,
+        shake_angle: float = 90.0,
+        shake_range: float = 90.0,
     ):
         self._data: CameraData = camera_data
 
@@ -69,6 +78,9 @@ class ScreenShake2D:
         """
 
         self._acceleration_duration: float = acceleration_duration
+
+        self.shake_angle: float = shake_angle
+        self.shake_range: float = shake_range
 
         self._shaking: bool = False
         self._length_shaking: float = 0.0
@@ -275,7 +287,13 @@ class ScreenShake2D:
             floor(self._last_update_time * 2 * self.shake_frequency)
             < floor(self._length_shaking * 2.0 * self.shake_frequency)
         ) or self._last_update_time == 0.0:
-            self._current_dir = uniform(-180, 180)
+            # Start from the shake angle and then offset by the reflected shake range,
+            # then randomly pick whether to mirror to the other side.
+            self._current_dir = (
+                self.shake_angle
+                + uniform(-self.shake_range, self.shake_range)
+                + (180 * randint(0, 1))
+            )
 
         _amp = self._calc_amplitude() * self.max_amplitude
         _vec = quaternion_rotation(self._data.forward, self._data.up, self._current_dir)
@@ -305,3 +323,10 @@ class ScreenShake2D:
             self._data.position[2] - self._last_vector[2],
         )
         self._last_vector = (0.0, 0.0, 0.0)
+
+    def __enter__(self):
+        self.update_camera()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.readjust_camera()
+        return False

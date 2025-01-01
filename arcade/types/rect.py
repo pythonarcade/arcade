@@ -717,7 +717,7 @@ class Rect(NamedTuple):
 
     def __bool__(self) -> bool:
         """Returns True if area is not 0, else False."""
-        return self.width != 0 or self.height != 0
+        return self.width != 0 and self.height != 0
 
     def __round__(self, n: int) -> Rect:
         """Rounds the left, right, bottom, and top to `n` decimals."""

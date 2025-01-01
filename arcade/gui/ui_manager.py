@@ -88,6 +88,7 @@ class UIManager(EventDispatcher):
 
     _enabled = False
 
+    DEFAULT_LAYER = 0
     OVERLAY_LAYER = 10
 
     def __init__(self, window: Optional[arcade.Window] = None):
@@ -103,7 +104,7 @@ class UIManager(EventDispatcher):
 
         self.register_event_type("on_event")
 
-    def add(self, widget: W, *, index=None, layer=0) -> W:
+    def add(self, widget: W, *, index=None, layer=DEFAULT_LAYER) -> W:
         """Add a widget to the :class:`UIManager`.
 
         Added widgets will receive ui events and be rendered.
@@ -141,7 +142,9 @@ class UIManager(EventDispatcher):
                 child.parent = None
                 self.trigger_render()
 
-    def walk_widgets(self, *, root: Optional[UIWidget] = None, layer=0) -> Iterable[UIWidget]:
+    def walk_widgets(
+        self, *, root: Optional[UIWidget] = None, layer=DEFAULT_LAYER
+    ) -> Iterable[UIWidget]:
         """Walks through widget tree, in reverse draw order (most top drawn widget first)
 
         Args:
@@ -165,7 +168,9 @@ class UIManager(EventDispatcher):
             for widget in layer[:]:
                 self.remove(widget)
 
-    def get_widgets_at(self, pos: Point2, cls: type[W] = UIWidget, layer=0) -> Iterable[W]:
+    def get_widgets_at(
+        self, pos: Point2, cls: type[W] = UIWidget, layer=DEFAULT_LAYER
+    ) -> Iterable[W]:
         """Yields all widgets containing a position, returns first top laying widgets
         which is instance of cls.
 
@@ -427,12 +432,12 @@ class UIManager(EventDispatcher):
         """Resize the UIManager and all of its surfaces."""
         # resize ui camera
         bottom_left = self.camera.bottom_left
-        self.camera.match_screen()
+        self.camera.match_window()
         self.camera.bottom_left = bottom_left
 
         # resize render to surface camera
         bottom_left = self._render_to_surface_camera.bottom_left
-        self._render_to_surface_camera.match_screen()
+        self._render_to_surface_camera.match_window()
         self._render_to_surface_camera.bottom_left = bottom_left
 
         scale = self.window.get_pixel_ratio()

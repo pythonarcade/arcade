@@ -41,7 +41,7 @@ def test_window(window: arcade.Window):
     assert v[3] == height
 
     factor = window.get_pixel_ratio()
-    assert isinstance(factor, float) 
+    assert isinstance(factor, float)
     assert factor > 0
 
     def f():
@@ -52,6 +52,19 @@ def test_window(window: arcade.Window):
     arcade.unschedule(f)
     window.test()
 
+def test_window_with_view_arg(window: arcade.Window):
+    class TestView(arcade.View):
+        def __init__(self):
+            super().__init__()
+            self.on_show_called = False
+
+        def on_show_view(self):
+            self.on_show_called = True
+    v = TestView()
+    window.run(view=v)
+
+    assert v.on_show_called
+    assert window.current_view is v
 
 def test_start_finish_render(window):
     """Test start and finish render"""
@@ -68,7 +81,7 @@ def test_start_finish_render(window):
     # Only allowed to call start_render once
     with pytest.raises(RuntimeError):
         arcade.start_render()
-  
+
     arcade.finish_render()
 
     # Make sure we rendered something to the screen

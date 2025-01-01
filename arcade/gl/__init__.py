@@ -25,6 +25,8 @@ from .enums import *  # noqa
 from .buffer import Buffer
 from .vertex_array import Geometry, VertexArray
 from .texture import Texture2D
+from .texture_array import TextureArray
+from .sampler import Sampler
 from .framebuffer import Framebuffer
 from .program import Program
 from .query import Query
@@ -42,5 +44,7 @@ __all__ = [
     "ShaderException",
     "VertexArray",
     "Texture2D",
+    "TextureArray",
+    "Sampler",
     "geometry",
 ]

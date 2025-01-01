@@ -16,7 +16,7 @@ from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:
     from arcade import Window
-
+    from arcade.application import View
 
 _window: Window | None = None
 
@@ -97,16 +97,22 @@ def close_window() -> None:
     gc.collect()
 
 
-def run():
+def run(view: View | None = None) -> None:
     """
-    Run the main loop.
+    Run the main loop. Optionally start with a specified view.
 
     After the window has been set up, and the event hooks are in place,
     this is usually one of the last commands on the main program.
     This is a blocking function starting pyglet's event loop meaning
     it will start to dispatch events such as ``on_draw`` and ``on_update``.
+
+    Args:
+        view: The view to display when starting the run. Defaults to None.
     """
     window = get_window()
+
+    if view is not None:
+        window.show_view(view)
 
     # Used in some unit test
     if os.environ.get("ARCADE_TEST"):

@@ -119,6 +119,8 @@ class UILabel(UIWidget):
             multiline=multiline,
             **kwargs,
         )
+        self._strong_background = True
+
         if adaptive_multiline:
             # +1 is required to prevent line wrap
             width = self._label.content_width + 1

@@ -225,7 +225,7 @@ class GameView(arcade.View):
     def on_resize(self, width, height):
         """ User resizes the screen. """
         super().on_resize(width, height)
-        self.camera.match_screen()
+        self.camera.match_window()
 
         # --- Light related ---
         # We need to resize the light layer to

@@ -303,9 +303,6 @@ To learn more about streaming, please see:
 .. [#meaningbestformatheader]
    See :ref:`sound-compat-easy` to learn more.
 
-.. [#staticsourcefoot]
-   See the :py:class:`pyglet.media.StaticSource` class used by Arcade.
-
 .. _sound-intermediate-playback:
 
 Intermediate-Level Playback Control

@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import NamedTuple, Iterable, Optional, Union, TYPE_CHECKING, TypeVar, Tuple, List, Dict
+from typing import Dict, Iterable, List, NamedTuple, Optional, TYPE_CHECKING, Tuple, TypeVar, Union
 
-from pyglet.event import EventDispatcher, EVENT_HANDLED, EVENT_UNHANDLED
+from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from pyglet.math import Vec2
 from typing_extensions import Self
 
 import arcade
-from arcade import Sprite, Texture, LBWH, Rect
+from arcade import LBWH, Rect, Sprite, Texture
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gui.events import (
     UIEvent,
@@ -19,9 +19,9 @@ from arcade.gui.events import (
     UIOnUpdateEvent,
 )
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.gui.property import Property, bind, ListProperty
+from arcade.gui.property import ListProperty, Property, bind
 from arcade.gui.surface import Surface
-from arcade.types import Color, AnchorPoint, AsFloat
+from arcade.types import AnchorPoint, AsFloat, Color
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
@@ -73,6 +73,11 @@ class UIWidget(EventDispatcher, ABC):
     _padding_right = Property(0)
     _padding_bottom = Property(0)
     _padding_left = Property(0)
+    _strong_background = Property(False)
+    """If True, the background will clear the surface, even if it is not fully opaque.
+    This is not part of the public API and subject to change.
+    UILabel have a strong background if set.
+    """
 
     def __init__(
         self,
@@ -116,6 +121,7 @@ class UIWidget(EventDispatcher, ABC):
         bind(self, "_padding_right", self.trigger_render)
         bind(self, "_padding_bottom", self.trigger_render)
         bind(self, "_padding_left", self.trigger_render)
+        bind(self, "_strong_background", self.trigger_render)
 
     def add(self, child: W, **kwargs) -> W:
         """Add a widget as a child.
@@ -253,7 +259,10 @@ class UIWidget(EventDispatcher, ABC):
 
         # draw background
         if self._bg_color:
-            surface.clear(self._bg_color)
+            if self._bg_color.a == 255 or self._strong_background:
+                surface.clear(self._bg_color)
+            else:
+                arcade.draw_rect_filled(LBWH(0, 0, self.width, self.height), color=self._bg_color)
         # draw background texture
         if self._bg_tex:
             surface.draw_texture(x=0, y=0, width=self.width, height=self.height, tex=self._bg_tex)

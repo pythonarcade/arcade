@@ -21,7 +21,7 @@ class ArcadeSplash(View):
         dark_mode: If True, the splash screen will be shown in dark mode. (Default False)
     """
 
-    def __init__(self, view: View, duration: int = 3, dark_mode: bool = False):
+    def __init__(self, view: View, duration: float = 1.5, dark_mode: bool = False):
         super().__init__()
         self._next_view = view
         self._duration = duration

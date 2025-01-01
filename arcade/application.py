@@ -18,7 +18,7 @@ from pyglet.window import MouseCursor
 
 import arcade
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
-from arcade.color import TRANSPARENT_BLACK
+from arcade.color import BLACK
 from arcade.context import ArcadeContext
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
 from arcade.utils import is_raspberry_pi
@@ -268,7 +268,7 @@ class Window(pyglet.window.Window):
         self.push_handlers(on_resize=self._on_resize)
 
         self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
-        self._background_color: Color = TRANSPARENT_BLACK
+        self._background_color: Color = BLACK
 
         self._current_view: View | None = None
 
@@ -402,15 +402,20 @@ class Window(pyglet.window.Window):
         """Return a Rect describing the size of the window."""
         return LBWH(0, 0, self.width, self.height)
 
-    def run(self) -> None:
+    def run(self, view: View | None = None) -> None:
         """
-        Run the event loop.
+        Run the event loop. Optionally start with a specified view.
 
         After the window has been set up, and the event hooks are in place, this
         is usually one of the last commands on the main program. This is a blocking
         function starting pyglet's event loop meaning it will start to dispatch
         events such as ``on_draw`` and ``on_update``.
+
+        Args:
+            view: The view to display when starting the run. Defaults to None.
         """
+        if view is not None:
+            self.show_view(view)
         arcade.run()
 
     def close(self) -> None:
@@ -1235,7 +1240,9 @@ class View:
         self, window: Window | None = None, background_color: RGBOrA255 | None = None
     ) -> None:
         self.window = arcade.get_window() if window is None else window
-        self.background_color: RGBOrA255 | None = background_color
+        self._background_color: Color | None = background_color and Color.from_iterable(
+            background_color
+        )
 
     def clear(
         self,
@@ -1245,7 +1252,7 @@ class View:
     ) -> None:
         """
         Clears the window with the configured background color
-        set through :py:attr:`arcade.Window.background_color`.
+        set through :py:attr:`arcade.View.background_color`.
 
         Args:
             color(optional):
@@ -1565,3 +1572,32 @@ class View:
         An alias for `arcade.Window.center_y`
         """
         return self.window.center_y
+
+    @property
+    def background_color(self) -> Color | None:
+        """
+        Get or set the background color for this view.
+        This affects what color the window will contain when
+        :py:meth:`~arcade.View.clear` is called.
+
+        Examples::
+
+            # Use Arcade's built in Color values
+            view.background_color = arcade.color.AMAZON
+
+            # Set the background color with a custom Color instance
+            MY_RED = arcade.types.Color(255, 0, 0)
+            view.background_color = MY_RED
+
+            # Set the background color directly from an RGBA tuple
+            view.background_color = 255, 0, 0, 255
+
+            # Set the background color directly from an RGB tuple
+            # RGB tuples will assume 255 as the opacity / alpha value
+            view.background_color = 255, 0, 0
+        """
+        return self._background_color
+
+    @background_color.setter
+    def background_color(self, value: RGBOrA255) -> None:
+        self._background_color = Color.from_iterable(value)

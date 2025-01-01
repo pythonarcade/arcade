@@ -13,6 +13,9 @@ from arcade.gui import (
     UILayout,
     UIMouseDragEvent,
     UIMouseEvent,
+    UIMouseMovementEvent,
+    UIMousePressEvent,
+    UIMouseReleaseEvent,
     UIMouseScrollEvent,
     UIWidget,
     bind,
@@ -24,9 +27,11 @@ class UIScrollBar(UIWidget):
     """Scroll bar for a UIScrollLayout.
 
     Indicating the current view position of the scroll area.
-
-    Does not support mouse interaction yet.
+    Supports mouse dragging to scroll the content.
     """
+
+    _thumb_hover = Property(False)
+    _dragging = Property(False)
 
     def __init__(self, scroll_area: UIScrollArea, vertical: bool = True):
         size_hint = (0.05, 1) if vertical else (1, 0.05)
@@ -37,17 +42,65 @@ class UIScrollBar(UIWidget):
         self.with_border(color=arcade.uicolor.GRAY_CONCRETE)
         self.vertical = vertical
 
+        self._scroll_bar_size = 20
+
+        bind(self, "_thumb_hover", self.trigger_render)
+        bind(self, "_dragging", self.trigger_render)
+        bind(scroll_area, "scroll_x", self.trigger_full_render)
         bind(scroll_area, "scroll_y", self.trigger_full_render)
         bind(scroll_area, "content_height", self.trigger_full_render)
+        bind(scroll_area, "content_width", self.trigger_full_render)
 
-    def do_render(self, surface: Surface):
-        """Render the scroll bar."""
-        self.prepare_render(surface)
+    def on_event(self, event: UIEvent) -> Optional[bool]:
+        # detect if event is mouse down and inside the scroll thumb
+        # if so, start dragging the thumb
+        thumb_rect_relative = self._thumb_rect()
+        thumb_rect = thumb_rect_relative.move(*self.rect.bottom_left)
 
-        # calc position and size of the scroll bar
+        if isinstance(event, UIMouseMovementEvent):
+            self._thumb_hover = thumb_rect.point_in_rect(event.pos)
+
+        if isinstance(event, UIMousePressEvent) and thumb_rect.point_in_rect(event.pos):
+            self._dragging = True
+            return True
+
+        # detect if event is mouse drag and thumb is being dragged
+        # if so, update the scroll position
+        if isinstance(event, UIMouseDragEvent) and self._dragging:
+            sx, sy = event.pos - self.rect.bottom_left
+            sx -= self._scroll_bar_size / 2
+            sy -= self._scroll_bar_size / 2
+
+            scroll_area = self.scroll_area
+
+            if self.vertical:
+                available_track_size = self.content_height - self._scroll_bar_size
+                target_progress = 1 - sy / available_track_size
+                target_progress = max(0, min(1, target_progress))
+
+                scroll_range = scroll_area.surface.height - scroll_area.content_height
+                scroll_area.scroll_y = -target_progress * scroll_range
+            else:
+                available_track_size = self.content_width - self._scroll_bar_size
+                target_progress = sx / available_track_size
+                target_progress = max(0, min(1, target_progress))
+                scroll_range = scroll_area.surface.width - scroll_area.content_width
+                scroll_area.scroll_x = -target_progress * scroll_range
+
+            return True
+
+        # detect if event is mouse up and thumb is being dragged
+        # if so, stop dragging the thumb
+        if isinstance(event, UIMouseReleaseEvent) and self._dragging:
+            self._dragging = False
+            return True
+
+        return EVENT_UNHANDLED
+
+    def _thumb_rect(self):
+        """Calculate the rect of the thumb."""
         scroll_area = self.scroll_area
 
-        # calculate the scroll bar position
         scroll_value = scroll_area.scroll_y if self.vertical else scroll_area.scroll_x
         scroll_range = (
             scroll_area.surface.height - scroll_area.content_height
@@ -57,29 +110,35 @@ class UIScrollBar(UIWidget):
 
         scroll_progress = -scroll_value / scroll_range
 
-        scroll_bar_size = 20
         content_size = self.content_height if self.vertical else self.content_width
-        available_track_size = content_size - scroll_bar_size
+        available_track_size = content_size - self._scroll_bar_size
 
         if self.vertical:
-            scroll_bar_y = scroll_bar_size / 2 + available_track_size * (1 - scroll_progress)
+            scroll_bar_y = self._scroll_bar_size / 2 + available_track_size * (1 - scroll_progress)
             scroll_bar_x = self.content_width / 2
-
-            # draw the scroll bar
-            arcade.draw_rect_filled(
-                XYWH(scroll_bar_x, scroll_bar_y, self.content_height, scroll_bar_size),
-                color=arcade.uicolor.GRAY_ASBESTOS,
-            )
+            return XYWH(scroll_bar_x, scroll_bar_y, self.content_width, self._scroll_bar_size)
 
         else:
-            scroll_bar_x = scroll_bar_size / 2 + available_track_size * scroll_progress
+            scroll_bar_x = self._scroll_bar_size / 2 + available_track_size * scroll_progress
             scroll_bar_y = self.content_height / 2
+            return XYWH(scroll_bar_x, scroll_bar_y, self._scroll_bar_size, self.content_height)
 
-            # draw the scroll bar
-            arcade.draw_rect_filled(
-                XYWH(scroll_bar_x, scroll_bar_y, scroll_bar_size, self.content_width),
-                color=arcade.uicolor.GRAY_ASBESTOS,
-            )
+    def do_render(self, surface: Surface):
+        """Render the scroll bar."""
+        self.prepare_render(surface)
+
+        if self._dragging:
+            thumb_color = arcade.uicolor.DARK_BLUE_WET_ASPHALT
+        elif self._thumb_hover:
+            thumb_color = arcade.uicolor.GRAY_CONCRETE
+        else:
+            thumb_color = arcade.uicolor.GRAY_ASBESTOS
+
+        # draw the thumb
+        arcade.draw_rect_filled(
+            rect=self._thumb_rect(),
+            color=thumb_color,
+        )
 
 
 class UIScrollArea(UILayout):

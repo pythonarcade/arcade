@@ -30,7 +30,9 @@ from .framebuffer import DefaultFrameBuffer, Framebuffer
 from .glsl import ShaderSource
 from .program import Program
 from .query import Query
+from .sampler import Sampler
 from .texture import Texture2D
+from .texture_array import TextureArray
 from .types import BufferDescription, GLenumLike, PyGLenum
 from .vertex_array import Geometry
 
@@ -1068,6 +1070,40 @@ class Context:
             compressed_data=compressed_data,
         )
 
+    def texture_array(
+        self,
+        size: Tuple[int, int, int],
+        *,
+        components: int = 4,
+        dtype: str = "f1",
+        data: BufferProtocol | None = None,
+        wrap_x: PyGLenum | None = None,
+        wrap_y: PyGLenum | None = None,
+        filter: Tuple[PyGLenum, PyGLenum] | None = None,
+    ) -> TextureArray:
+        """
+        Create a 2D Texture Array.
+
+        This is a 2D texture with multiple layers. This is useful for
+        storing multiple textures in a single texture object. This can
+        be used for texture atlases or storing multiple frames of an
+        animation in a single texture or equally sized tile textures.
+
+        Note that ``size`` is a 3-tuple where the last value is the number  of layers.
+
+        See :py:meth:`~arcade.gl.Context.texture` for arguments.
+        """
+        return TextureArray(
+            self,
+            size,
+            components=components,
+            dtype=dtype,
+            data=data,
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            filter=filter,
+        )
+
     def depth_texture(
         self, size: Tuple[int, int], *, data: BufferProtocol | None = None
     ) -> Texture2D:
@@ -1083,6 +1119,16 @@ class Context:
                 supporting the buffer protocol.
         """
         return Texture2D(self, size, data=data, depth=True)
+
+    def sampler(self, texture: Texture2D) -> Sampler:
+        """
+        Create a sampler object for a texture.
+
+        Args:
+            texture:
+                The texture to create a sampler for
+        """
+        return Sampler(self, texture)
 
     def geometry(
         self,

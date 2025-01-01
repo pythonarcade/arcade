@@ -98,7 +98,7 @@ class GameView(arcade.View):
 
     def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera.match_screen(and_projection=True)
+        self.camera.match_window()
 
         # This is to ensure the background covers the entire screen.
         self.background.size = (width, height)

@@ -22,9 +22,9 @@ jobs:
         architecture: ['x64']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: setup
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.architecture }}
@@ -69,7 +69,7 @@ jobs:
       - name: Upload a Build Artifact
         if: always() && steps.prepare-artifact.outcome == 'success'
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pull-request-payload
           path: pull_request_payload.json
@@ -87,9 +87,9 @@ jobs:
         architecture: ['x64']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: setup
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           architecture: ${{ matrix.architecture }}
@@ -121,7 +121,7 @@ jobs:
       - name: Upload a Build Artifact
         if: always() && steps.prepare-artifact.outcome == 'success'
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pull-request-payload
           path: pull_request_payload.json

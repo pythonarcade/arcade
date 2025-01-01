@@ -189,7 +189,6 @@ html_theme = 'sphinx_rtd_theme'
 # See sphinx-rtd-theme docs for details on each option:
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
-    'display_version': True,
     'logo_only': False,
     'sticky_navigation': True,
     'navigation_depth': 3,

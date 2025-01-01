@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from ctypes import POINTER, cast
+import struct
+from ctypes import POINTER, c_double, c_float, c_int, c_uint, cast
 
 from pyglet import gl
 
@@ -25,6 +26,13 @@ class Uniform:
         array_length:
             The array length of the uniform
     """
+
+    _type_to_struct = {
+        c_float: "f",
+        c_int: "i",
+        c_uint: "I",
+        c_double: "d",
+    }
 
     _uniform_getters = {
         gl.GLint: gl.glGetUniformiv,
@@ -233,6 +241,7 @@ class Uniform:
             gl_program_setter,
             gl_setter,
             c_array,
+            gl_type,
             length,
             self._array_length,
             count,
@@ -259,14 +268,16 @@ class Uniform:
         else:
             return getter_func2
 
-    @staticmethod
+    @classmethod
     def _create_setter_func(
+        cls,
         ctx,
         program_id,
         location,
         gl_program_setter,
         gl_setter,
         c_array,
+        gl_type,
         length,
         array_length,
         count,
@@ -274,12 +285,19 @@ class Uniform:
         is_matrix,
     ):
         """Create setters for OpenGL data."""
+        # Matrix uniforms
         if is_matrix:
             if ctx._ext_separate_shader_objects_enabled:
 
                 def setter_func(value):  # type: ignore #conditional function variants must have identical signature
                     """Set OpenGL matrix uniform data."""
-                    c_array[:] = value
+                    try:
+                        # FIXME: Configure the struct format on the uniform to support
+                        #        other types than float
+                        fmt = cls._type_to_struct[gl_type]
+                        c_array[:] = struct.unpack(f"{length}{fmt}", value)
+                    except Exception:
+                        c_array[:] = value
                     gl_program_setter(program_id, location, array_length, gl.GL_FALSE, ptr)
 
             else:
@@ -290,6 +308,7 @@ class Uniform:
                     gl.glUseProgram(program_id)
                     gl_setter(location, array_length, gl.GL_FALSE, ptr)
 
+        # Single value uniforms
         elif length == 1 and count == 1:
             if ctx._ext_separate_shader_objects_enabled:
 
@@ -306,12 +325,21 @@ class Uniform:
                     gl.glUseProgram(program_id)
                     gl_setter(location, array_length, ptr)
 
+        # Uniforms types with multiple components
         elif length > 1 and count == 1:
             if ctx._ext_separate_shader_objects_enabled:
 
                 def setter_func(values):  # type: ignore #conditional function variants must have identical signature
                     """Set list of OpenGL uniform data."""
-                    c_array[:] = values
+                    # Support buffer protocol
+                    try:
+                        # FIXME: Configure the struct format on the uniform to support
+                        #        other types than float
+                        fmt = cls._type_to_struct[gl_type]
+                        c_array[:] = struct.unpack(f"{length}{fmt}", values)
+                    except Exception:
+                        c_array[:] = values
+
                     gl_program_setter(program_id, location, array_length, ptr)
 
             else:

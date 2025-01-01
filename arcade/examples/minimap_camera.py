@@ -222,8 +222,8 @@ class GameView(arcade.View):
         Handle the user grabbing the edge and resizing the window.
         """
         super().on_resize(width, height)
-        self.camera_sprites.match_screen()
-        self.camera_gui.match_screen(and_position=True)
+        self.camera_sprites.match_window()
+        self.camera_gui.match_window(position=True)
         self.camera_minimap.viewport = arcade.LBWH(
             width - self.camera_minimap.viewport_width,
             height - self.camera_minimap.viewport_height,

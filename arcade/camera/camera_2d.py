@@ -329,16 +329,17 @@ class Camera2D:
         x, y = self._projection_data.rect.x, self._projection_data.rect.y
         self._projection_data.rect = XYWH(x, y, self.viewport_width, self.viewport_height)
 
-    def match_screen(
+    def match_window(
         self,
-        and_projection: bool = True,
-        and_scissor: bool = True,
-        and_position: bool = False,
+        viewport: bool = True,
+        projection: bool = True,
+        scissor: bool = True,
+        position: bool = False,
         aspect: float | None = None,
     ) -> None:
         """
-        Sets the viewport to the size of the screen.
-        Should be called when the screen is resized.
+        Sets the viewport to the size of the window.
+        Should be called when the window is resized.
 
         Args:
             and_projection: Flag whether to also equalize the projection to the viewport.
@@ -353,96 +354,102 @@ class Camera2D:
                 compared to the height. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
         """
-        self.update_viewport(
+        self.update_values(
             self._window.rect,
-            and_projection=and_projection,
-            and_scissor=and_scissor,
-            and_position=and_position,
+            viewport=viewport,
+            projection=projection,
+            scissor=scissor,
+            position=position,
             aspect=aspect,
         )
 
     def match_target(
         self,
-        and_projection: bool = True,
-        and_scissor: bool = True,
-        and_position: bool = False,
+        viewport: bool = True,
+        projection: bool = True,
+        scissor: bool = True,
+        position: bool = False,
         aspect: float | None = None,
     ) -> None:
         """
         Sets the viewport to the size of the Camera2D's render target.
 
         Args:
-            and_projection: Flag whether to also equalize the projection to the viewport.
-                On by default
-            and_scissor: Flag whether to also equalize the scissor box to the viewport.
-                On by default
-            and_position: Flag whether to also center the camera to the viewport.
+            viewport: Flag whether to equalise the viewport to the area of the render target
+            projection: Flag whether to equalise the size of the projection to
+                match the render target
+            The projection center stays fixed, and the new projection matches only in size.
+            scissor: Flag whether to update the scissor value.
+            position: Flag whether to also center the camera to the value.
                 Off by default
-            aspect_ratio: The ratio between width and height that the viewport should
-                be constrained to. If unset then the viewport just matches the window
-                size. The aspect ratio describes how much larger the width should be
-                compared to the height. i.e. for an aspect ratio of ``4:3`` you should
+            aspect_ratio: The ratio between width and height that the value should
+                be constrained to. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
+                If unset then the value will not be updated.
         Raises:
             ValueError: Will be raised if the Camera2D was has no render target.
         """
         if self.render_target is None:
             raise ValueError(
-                "Tried to match a non-exsistant render target. Please use `match_screen` instead"
+                "Tried to match a non-exsistant render target. Please use `match_window` instead"
             )
 
-        self.update_viewport(
+        self.update_values(
             LRBT(*self.render_target.viewport),
-            and_projection=and_projection,
-            and_scissor=and_scissor,
-            and_position=and_position,
+            viewport,
+            projection,
+            scissor,
+            position,
             aspect=aspect,
         )
 
-    def update_viewport(
+    def update_values(
         self,
-        new_viewport: Rect,
-        and_projection: bool = True,
-        and_scissor: bool = True,
-        and_position: bool = False,
+        value: Rect,
+        viewport: bool = True,
+        projection: bool = True,
+        scissor: bool = True,
+        position: bool = False,
         aspect: float | None = None,
     ):
         """
-        Convienence method for updating the viewport of the camera. To simply change
-        the viewport you can safely set the projection property.
+        Convienence method for updating the viewport, projection, position
+        and a few others with the same value.
 
         Args:
-            and_projection: Flag whether to also equalize the projection to the viewport.
-                On by default
-            and_scissor: Flag whether to also equalize the scissor box to the viewport.
-                On by default
-            and_position: Flag whether to also center the camera to the viewport.
+            value: The rect that the values will be derived from.
+            viewport: Flag whether to equalise the viewport to the value.
+            projection: Flag whether to equalise the size of the projection to match the value.
+            The projection center stays fixed, and the new projection matches only in size.
+            scissor: Flag whether to update the scissor value.
+            position: Flag whether to also center the camera to the value.
                 Off by default
-            aspect_ratio: The ratio between width and height that the viewport should
-                be constrained to. If unset then the viewport just matches the window
-                size. The aspect ratio describes how much larger the width should be
-                compared to the height. i.e. for an aspect ratio of ``4:3`` you should
+            aspect_ratio: The ratio between width and height that the value should
+                be constrained to. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
+                If unset then the value will not be updated.
         """
         if aspect is not None:
-            if new_viewport.height * aspect < new_viewport.width:
-                w = new_viewport.height * aspect
-                h = new_viewport.height
+            if value.height * aspect < value.width:
+                w = value.height * aspect
+                h = value.height
             else:
-                w = new_viewport.width
-                h = new_viewport.width / aspect
-            self.viewport = XYWH(new_viewport.x, new_viewport.y, w, h)
-        else:
-            self.viewport = new_viewport
+                w = value.width
+                h = value.width / aspect
+            value = XYWH(value.x, value.y, w, h)
 
-        if and_projection:
-            self.equalise()
+        if viewport:
+            self.viewport = value
 
-        if and_scissor and self.scissor:
-            self.scissor = self.viewport
+        if projection:
+            x, y = self._projection_data.rect.x, self._projection_data.rect.y
+            self._projection_data.rect = XYWH(x, y, value.width, value.height)
 
-        if and_position:
-            self.position = self.viewport.center
+        if scissor and self.scissor:
+            self.scissor = value
+
+        if position:
+            self.position = value.center
 
     def aabb(self) -> Rect:
         """
@@ -482,6 +489,10 @@ class Camera2D:
         Take a 2D point in the world, and return whether the point is inside the
         visible area of the camera.
         """
+        # This is unwrapped from standard Vec2 operations,
+        # The construction and garbage collection of the vectors would
+        # increase this method's cost by ~4x
+
         pos = self.position
         diff = point[0] - pos[0], point[1] - pos[1]
 
@@ -565,7 +576,6 @@ class Camera2D:
 
     @projection.setter
     def projection(self, value: Rect) -> None:
-
         # Unpack and validate
         if not value:
             raise ZeroProjectionDimension((f"Projection area is 0, {value.lrbt}"))
@@ -895,7 +905,6 @@ class Camera2D:
     # top_center
     @property
     def top_center(self) -> Vec2:
-        # TODO correct
         """Get the top most position the camera can see"""
         pos = self.position
 
@@ -905,7 +914,6 @@ class Camera2D:
 
     @top_center.setter
     def top_center(self, new_top: Point2):
-        # TODO correct
         ux, uy, *_ = self._camera_data.up
         top = self.top
 

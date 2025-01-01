@@ -11,7 +11,7 @@ Arcade welcomes contributions, including:
 If you're looking for a way to contribute, try checking
 [the currently active issues](https://github.com/pythonarcade/arcade/issues)
 for one that needs work. If you're new to programming or contributing, check for the
-label `good first issue`, these are issues which have been identified as good candidates for first time contributors.
+label `good first issue`, these are issues that have been identified as good candidates for first time contributors.
 
 Notifying us about issues in the code and documentation is also a valuable contribution.
 
@@ -88,14 +88,14 @@ See [this link](https://black.readthedocs.io/en/stable/integrations/editors.html
 Black integration for your specific editor.
 
 The following command will run black for you if you do not want to configure your editor to do it. It can be
-a good idea to run this command when you are finished working anyways, as our CI will use this to check that
+a good idea to run this command when you are finished working anyway, as our CI will use this to check that
 the formatting is correct.
 
 ```bash
 python make.py format
 ```
 
-In addition to Black, this will sort the imports using [Ruff](https://docs.astral.sh/ruff/). If you want to setup
+In addition to Black, this will sort the imports using [Ruff](https://docs.astral.sh/ruff/). If you want to set up
 your editor to run this, please see [this link](https://docs.astral.sh/ruff/integrations/) for more information on
 Ruff integration for your specific editor.
 
@@ -111,12 +111,12 @@ Args:
 ```
 
 * `Args:` should be used for all parameters
-* `Returns:` can be used if the return value needs additional explanation outside of
-   the current docstring. If the return type is already clear from type annotation it
+* `Returns:` can be used if the return value needs additional explanation outside
+   the current docstring. If the return type is already clear from type annotation, it
    can be omitted.
 * `Raises:` can be used if the function raises exceptions that need to be documented
 * `Yields:` can be used if the function is a generator and yields values
-* `Attributes:` we should try to avoid and instead document the attributes in the code
+* `Attributes:` we should try to avoid it and instead document the attributes in the code
 * Types are visible in the api docs. It's not mandatory to include types in docstring,
   however, simple types like `int`, `str`, `float`, `bool` can be included.
 * Using `optional` is a good way to indicate that a parameter is optional.
@@ -145,8 +145,8 @@ more discussion on this topic.
 # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
 ```
 
-This links to an issue in the 3rd party library that is causing the type error.
-This oddly-specific syntax is compatible with both mypy and pyright.
+This links to an issue in the third party library that is causing the type error.
+This oddly specific syntax is compatible with both mypy and pyright.
 See [this issue](https://github.com/pythonarcade/arcade/issues/1789) for more information.
 
 ### Use pre-commit hooks to automatically run formatting
@@ -181,7 +181,7 @@ in this repo for current tests.
 
 First, run the below command to run our linting tools automatically. This will run Mypy
 and Ruff against Arcade. The first run of this may take some as MyPy will not have any
-caches built up. Sub-sequent runs will be much faster.
+caches built up. Subsequent runs will be much faster.
 
 ```bash
 python make.py lint
@@ -266,7 +266,7 @@ sudo apt install texlive-latex-extra
 To reduce the large (300 MB+) install size of the second package, you
 may be able to use the `--no-install-recommends` flag.
 
-Other platforms may require different install steps.
+Other platforms may require different installation steps.
 
 ##### Building
 

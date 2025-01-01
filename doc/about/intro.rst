@@ -30,10 +30,8 @@ API documentation:
 Community driven
 ----------------
 
-Arcade is a community driven project. We cannot exist without the help of our users.
-You don't need to be an experienced programmer or a game developer to help us.
-You can help us by reporting bugs, suggesting improvements, pointing out issues
-in documentation or even by sharing your projects with us.
+Arcade is a community-driven project, and we rely on support from users like you.
+You don't need to be an expert programmer or game developer to contribute.
 
 * More information about ways to contribute: :ref:`how-to-contribute`.
 * Also see :ref:`community-locations` for more information about where to find the

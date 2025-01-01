@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from arcade import Window, View
+from arcade import Window, View, color, get_image
 
 
 def test_on_show_view_called(window):
@@ -24,3 +24,11 @@ def test_on_hide_view_called(window):
     window.show_view(view2)
 
     hide_mock.assert_called_once()
+    
+def test_view_background_color(window):
+    view = View(window, color.ARCADE_GREEN)
+    assert view.background_color == color.ARCADE_GREEN
+    window.clear()
+    # assert get_image(0, 0, 1, 1).getpixel((0, 0)) == color.BLACK
+    view.clear()
+    # assert get_image(0, 0, 1, 1).getpixel((0, 0)) == color.ARCADE_GREEN
