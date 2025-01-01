@@ -5,7 +5,7 @@ Freedom to Remix and Share
 
 Arcade makes sure you are free to build and share without worrying about fees or licenses.
 
-All parts of the library are available free of charge without
+All parts of the library are available free of charge and without
 complicated red tape:
 
 * Arcade's code uses the widely-adopted commercial-friendly
