@@ -349,7 +349,7 @@ class PhysicsEngineSimple:
     def walls(self) -> None:
         self._walls.clear()
 
-    def update(self) -> list[SpriteType]:
+    def update(self) -> list[BasicSprite]:
         """Move :py:attr:`player_sprite` and return any colliding sprites.
 
         Returns:
