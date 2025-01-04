@@ -15,8 +15,9 @@ python -m arcade.examples.drawing_text_objects_batch
 import arcade
 from pyglet.graphics import Batch
 
-# Load fonts bumbled with Arcade such as the Kenney fonts
+# Load fonts bundled with Arcade such as the Kenney fonts
 arcade.resources.load_kenney_fonts()
+arcade.resources.load_liberation_fonts()
 
 WINDOW_WIDTH = 1280  # Window width in pixels
 WINDOW_HEIGHT = 800  # Window height in pixels
@@ -193,7 +194,8 @@ class GameView(arcade.View):
             font_name=(
                 "Times New Roman",  # Comes with Windows
                 "Times",  # MacOS may sometimes have this variant
-                "Liberation Serif"  # Common on Linux systems
+                # Common on Linux systems + we ship it with Arcade
+                "Liberation Serif"
             ),
             batch=self.batch,
         )

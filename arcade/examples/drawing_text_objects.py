@@ -13,8 +13,9 @@ WINDOW_TITLE = "Drawing Text Example"
 DEFAULT_LINE_HEIGHT = 45
 DEFAULT_FONT_SIZE = 20
 
-# Load fonts bumbled with Arcade such as the Kenney fonts
+# Load fonts bundled with Arcade such as the Kenney fonts
 arcade.resources.load_kenney_fonts()
+arcade.resources.load_liberation_fonts()
 
 
 class GameView(arcade.View):
@@ -171,7 +172,8 @@ class GameView(arcade.View):
             font_name=(
                 "Times New Roman",  # Comes with Windows
                 "Times",  # MacOS may sometimes have this variant
-                "Liberation Serif"  # Common on Linux systems
+                # Common on Linux systems + we ship it with Arcade
+                "Liberation Serif"
             )
         )
 

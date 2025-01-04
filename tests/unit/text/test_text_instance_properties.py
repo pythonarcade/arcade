@@ -13,7 +13,7 @@ def instance() -> arcade.Text:
         ("value", "New test value"),
         ("x", 12.0),
         ("y", 12.0),
-        ("font_name", "Times New Roman"),
+        ("font_name", "Liberation Serif"),  # Generic Times New Roman we ship in-box
         ("font_size", 20.0),
         ("width", 600),
         ("bold", True),
