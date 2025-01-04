@@ -51,7 +51,7 @@ void main() {
     //     0.0, 1.0,
     //     1.0, 1.0
     // )
-    vec2 hp = 0.5 / textureSize(sprite_texture, 0) * uv_offset_bias;
+    vec2 hp = 0.5 / vec2(textureSize(sprite_texture, 0)) * uv_offset_bias;
     uv0 += hp;
     uv1 += vec2(-hp.x, hp.y);
     uv2 += vec2(hp.x, -hp.y);
