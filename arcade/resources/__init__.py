@@ -237,17 +237,17 @@ def load_kenney_fonts() -> None:
     """
     from arcade.text import load_font
 
-    load_font(":system:fonts/ttf/Kenney_Blocks.ttf")
-    load_font(":system:fonts/ttf/Kenney_Future.ttf")
-    load_font(":system:fonts/ttf/Kenney_Future_Narrow.ttf")
-    load_font(":system:fonts/ttf/Kenney_High.ttf")
-    load_font(":system:fonts/ttf/Kenney_High_Square.ttf")
-    load_font(":system:fonts/ttf/Kenney_Mini.ttf")
-    load_font(":system:fonts/ttf/Kenney_Mini_Square.ttf")
-    load_font(":system:fonts/ttf/Kenney_Pixel.ttf")
-    load_font(":system:fonts/ttf/Kenney_Pixel_Square.ttf")
-    load_font(":system:fonts/ttf/Kenney_Rocket.ttf")
-    load_font(":system:fonts/ttf/Kenney_Rocket_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Blocks.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Future.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Future_Narrow.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_High.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_High_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Mini.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Mini_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Pixel.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Pixel_Square.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Rocket.ttf")
+    load_font(":system:fonts/ttf/Kenney/Kenney_Rocket_Square.ttf")
 
 
 def load_liberation_fonts() -> None:
@@ -270,5 +270,3 @@ def load_liberation_fonts() -> None:
     load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Bold.ttf")
     load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Italic.ttf")
     load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Regular.ttf")
-
-load_liberation_fonts()
