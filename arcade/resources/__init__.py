@@ -6,8 +6,15 @@ from arcade.exceptions import warning, ReplacementWarning
 
 #: The absolute path to this directory
 RESOURCE_DIR = Path(__file__).parent.resolve()
+
+# The "system" resources common to Arcade
 SYSTEM_PATH = RESOURCE_DIR / "system"
+FONTS_PATH = SYSTEM_PATH / "fonts"
+TTF_PATH = FONTS_PATH / "ttf"
+
+# Basic resources in the :assets: handle
 ASSET_PATH = RESOURCE_DIR / "assets"
+
 
 handles: dict[str, list[Path]] = {
     "resources": [SYSTEM_PATH, ASSET_PATH],
@@ -212,9 +219,9 @@ def list_built_in_assets(
 
 
 def load_kenney_fonts() -> None:
-    """Loads all the fonts in arcade's system directory.
+    """Loads all the Kenney.nl fonts bundled with Arcade.
 
-    Currently, this is only the Kenney fonts::
+    Currently, this includes the following fonts::
 
         Kenney_Blocks.ttf          - Kenney Blocks
         Kenney_Future.ttf          - Kenney Future
@@ -241,3 +248,27 @@ def load_kenney_fonts() -> None:
     load_font(":system:fonts/ttf/Kenney_Pixel_Square.ttf")
     load_font(":system:fonts/ttf/Kenney_Rocket.ttf")
     load_font(":system:fonts/ttf/Kenney_Rocket_Square.ttf")
+
+
+def load_liberation_fonts() -> None:
+    """Loads generic versions of Arial, Courier, and Times New Roman.
+
+    The Liberation font family is a permissively-licensed set of built-ins
+    which should be layout-compatible with popular fonts.
+    """
+    from arcade.text import load_font
+
+    load_font(":system:fonts/ttf/Liberation/Liberation_Mono_BoldItalic.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Mono_Bold.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Mono_Italic.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Mono_Regular.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Sans_BoldItalic.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Sans_Bold.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Sans_Italic.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Sans_Regular.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Serif_BoldItalic.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Bold.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Italic.ttf")
+    load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Regular.ttf")
+
+load_liberation_fonts()
