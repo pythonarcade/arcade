@@ -27,7 +27,7 @@ WINDOW_HEIGHT = 720
 WINDOW_TITLE = 'Threaded Tilemap Loading'
 
 # Because the tilesets we use aren't all that large this delay helps
-# illistrate the utility of threaded loading. You don't need to add this
+# illustrate the utility of threaded loading. You don't need to add this
 ARTIFICIAL_DELAY = 1
 
 LEVELS = (
@@ -139,7 +139,7 @@ class LevelLoader:
 
 class LevelRenderer:
     """
-    This is a small ustility class for drawing the levels while they load.
+    This is a small utility class for drawing the levels while they load.
     """
 
     def __init__(
