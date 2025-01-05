@@ -15,7 +15,7 @@ python -m arcade.examples.threaded_loading
 from __future__ import annotations
 import time
 
-# Threading is built into arcade and provides many tools for
+# Threading is built into python and provides many tools for
 # working with multiple threads
 import threading
 
@@ -51,7 +51,7 @@ class LevelLoader:
     a single object.
 
     While it is viable to create a thread when it
-    is needed, many more advanced systems keep the thread
+    is needed, more advanced systems keep the thread
     alive waiting for tasks. That is beyond the scope of
     this example.
     """
@@ -236,6 +236,11 @@ class GameView(arcade.View):
         self.loading_sprite.angle = (360 * self.window.time) % 360
         for renderer in self.level_renderers:
             renderer.update()
+
+        if self.dragging is not None:
+            self.window.set_mouse_cursor(self.window.get_system_mouse_cursor(self.window.CURSOR_SIZE))
+        else:
+            self.window.set_mouse_cursor(None)
 
     def on_draw(self):
         self.clear()
