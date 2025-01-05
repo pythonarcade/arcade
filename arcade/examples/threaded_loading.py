@@ -35,7 +35,7 @@ LEVELS = (
     'test_map_2',
     'test_map_3',
     'test_map_4',  # Intentionally omitted to allow its loading to fail
-    'test_map_5',
+    'test_map_5',  # Intentionally blank file
     'test_map_6',
     'test_map_7',
 )
