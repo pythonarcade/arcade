@@ -567,7 +567,7 @@ class SpriteList(Generic[SpriteType]):
         """
         return self.sprite_list.index(sprite)
 
-    def clear(self, deep: bool = True, capacity: int | None = None) -> None:
+    def clear(self, *, capacity: int | None = None, deep: bool = True) -> None:
         """
         Remove all the sprites resetting the spritelist
         to it's initial state.
