@@ -43,6 +43,7 @@ LEVEL_LOCATION = ':assets:tiled_maps/'
 COLUMN_COUNT = 4
 LEVEL_RENDERER_SIZE = WINDOW_WIDTH // 5 - 10, WINDOW_HEIGHT // 5 - 10
 
+
 class LevelLoader:
     """
     While threading Threads run a method its often
@@ -137,6 +138,7 @@ class LevelLoader:
         with self._interaction_lock:
             return self._loaded_levels.get(level, None)
 
+
 class LevelRenderer:
     """
     This is a small utility class for drawing the levels while they load.
@@ -198,6 +200,7 @@ class LevelRenderer:
 
     def scroll(self, scroll):
         self.camera.zoom = max(0.1, min(10, self.camera.zoom + scroll / 10))
+
 
 class GameView(arcade.View):
 
@@ -262,6 +265,7 @@ class GameView(arcade.View):
                 renderer.scroll(scroll_y)
                 break
 
+
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
@@ -275,6 +279,7 @@ def main():
 
     # Start the arcade game loop
     arcade.run()
+
 
 if __name__ == "__main__":
     main()
