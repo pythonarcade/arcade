@@ -10,7 +10,7 @@ working. This isn't strictly the best way to do such level loading
 but it will hopefully explain how it is possible.
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.threaded_loading 
+python -m arcade.examples.threaded_loading
 """
 from __future__ import annotations
 import time
@@ -96,7 +96,7 @@ class LevelLoader:
                 with self._interaction_lock:
                     self._failed_levels.add(level)
                 continue
-            
+
             with self._interaction_lock:
                 self._loaded_levels[level] = tilemap
 
@@ -113,7 +113,7 @@ class LevelLoader:
     def current_level(self) -> str:
         with self._interaction_lock:
             return self._current_level
-        
+
     @property
     def begun(self):
         with self._interaction_lock:
@@ -123,16 +123,16 @@ class LevelLoader:
     def finished(self):
         with self._interaction_lock:
             return self._finished
-        
+
     def is_level_loaded(self, level: str) -> bool:
         with self._interaction_lock:
             return level in self._loaded_levels
-        
+
     def did_level_fail(self, level: str) -> bool:
         with self._interaction_lock:
             return level in self._failed_levels
-        
-    def get_level(self, level: str) -> arcade.TileMap:
+
+    def get_level(self, level: str) -> arcade.TileMap | None:
         with self._interaction_lock:
             return self._loaded_levels.get(level, None)
 
@@ -141,16 +141,30 @@ class LevelRenderer:
     This is a small ustility class for drawing the levels while they load.
     """
 
-    def __init__(self, level: str, level_loader: LevelLoader, location: arcade.types.Point2, size: tuple[int, int]):
+    def __init__(
+            self,
+            level: str,
+            level_loader: LevelLoader,
+            location: arcade.types.Point2,
+            size: tuple[int, int]
+        ):
         self.level_name = level
         self.loader = level_loader
 
         self.location = location
         self.size = size
 
-        self.camera: arcade.Camera2D = arcade.Camera2D(arcade.XYWH(self.location[0], self.location[1], self.size[0], self.size[1]))
-        self.level: arcade.TileMap = None
-        self.level_text: arcade.Text = arcade.Text(level, self.camera.position.x, self.camera.position.y, anchor_x='center', anchor_y='center')
+        self.camera: arcade.Camera2D = arcade.Camera2D(
+            arcade.XYWH(self.location[0], self.location[1], self.size[0], self.size[1])
+        )
+        self.level: arcade.TileMap | None = None
+        self.level_text: arcade.Text = arcade.Text(
+            level,
+            self.camera.position.x,
+            self.camera.position.y,
+            anchor_x='center',
+            anchor_y='center'
+        )
 
     def update(self):
         if self.level is None and self.loader.is_level_loaded(self.level_name):
@@ -182,7 +196,7 @@ class LevelRenderer:
         self.camera.position = pos.x - dx / self.camera.zoom, pos.y - dy / self.camera.zoom
 
     def scroll(self, scroll):
-        self.camera.zoom = max(0.1, min(10, self.camera.zoom + scroll / 10))        
+        self.camera.zoom = max(0.1, min(10, self.camera.zoom + scroll / 10))
 
 class GameView(arcade.View):
 
@@ -190,17 +204,22 @@ class GameView(arcade.View):
         super().__init__(window, background_color)
         self.level_loader = LevelLoader(LEVELS, LEVEL_LOCATION)
         self.level_renderers: list[LevelRenderer] = []
-        
-        start_x = 0.2 * self.width
-        start_y = 0.75 * self.height
 
         for idx, level in enumerate(LEVELS):
             row = idx // COLUMN_COUNT
             column = idx % COLUMN_COUNT
             pos = (1 + column) / 5 * self.width, (3 - row) / 4 * self.height
-            self.level_renderers.append(LevelRenderer(level, self.level_loader, pos, LEVEL_RENDERER_SIZE))
+            self.level_renderers.append(
+                LevelRenderer(level, self.level_loader, pos, LEVEL_RENDERER_SIZE)
+            )
 
-        self.loading_sprite = arcade.SpriteSolidColor(64, 64, self.center_x, 200, (255, 255, 255, 255))
+        self.loading_sprite = arcade.SpriteSolidColor(
+            64,
+            64,
+            self.center_x,
+            200,
+            (255, 255, 255, 255)
+        )
 
         self.dragging = None
 
