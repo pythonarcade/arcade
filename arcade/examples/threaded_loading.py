@@ -167,6 +167,8 @@ class LevelRenderer:
             color = (0, 255, 0, 255)
         elif self.loader.did_level_fail(self.level_name):
             color = (255, 0, 0, 255)
+        elif self.loader.current_level == self.level_name:
+            color = (0, 0, 255, 255)
         else:
             color = (255, 255, 255, 255)
 
