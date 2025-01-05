@@ -10,7 +10,7 @@ def make_named_sprites(amount):
 
     sprites = []
     for i in range(amount):
-        c = i + 1
+        c = min(255, i + 1)
         sprite = arcade.SpriteSolidColor(16, 16, color=(c, c, c, 1))
         sprite.name = i
         sprites.append(sprite)
@@ -219,19 +219,25 @@ def test_sort(ctx):
     assert spritelist._sprite_index_data[0:3] == array("f", [0, 1, 2])
 
 
-def test_clear(ctx):
-    sp = arcade.SpriteList()
-    sp.clear()
-    sp.extend(make_named_sprites(100))
-    sp.clear()
+@pytest.mark.parametrize('capacity', (128, 512, 1024))
+def test_clear(ctx, capacity):
+    sp = arcade.SpriteList(capacity=capacity)
+    sp.clear(capacity=None)
+    assert len(sp._sprite_index_data) == capacity
+    assert len(sp._sprite_pos_data) == capacity * 3
+    assert sp._sprite_index_buf.size == capacity * 4
+    assert sp._sprite_pos_buf.size == capacity * 4 * 3
+
+    sp.extend(make_named_sprites(capacity))
+    sp.clear(capacity=capacity)
     assert len(sp) == 0
     assert sp._sprite_index_slots == 0
     assert sp._sprite_buffer_slots == 0
     assert sp.atlas is not None
-    assert len(sp._sprite_index_data) == 100
-    assert len(sp._sprite_pos_data) == 100 * 3
-    assert sp._sprite_index_buf.size == 100 * 4
-    assert sp._sprite_pos_buf.size == 100 * 4 * 3
+    assert len(sp._sprite_index_data) == capacity
+    assert len(sp._sprite_pos_data) == capacity * 3
+    assert sp._sprite_index_buf.size == capacity * 4
+    assert sp._sprite_pos_buf.size == capacity * 4 * 3
 
 
 def test_color():
