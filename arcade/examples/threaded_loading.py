@@ -20,6 +20,7 @@ import time
 import threading
 
 import arcade
+from arcade.color import RED, GREEN, BLUE, WHITE
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -178,13 +179,13 @@ class LevelRenderer:
             self.level_text.draw()
 
         if self.level is not None:
-            color = (0, 255, 0, 255)
+            color = GREEN
         elif self.loader.did_level_fail(self.level_name):
-            color = (255, 0, 0, 255)
+            color = RED
         elif self.loader.current_level == self.level_name:
-            color = (0, 0, 255, 255)
+            color = BLUE
         else:
-            color = (255, 255, 255, 255)
+            color = WHITE
 
         arcade.draw_rect_outline(self.camera.viewport, color, 3)
 
@@ -218,7 +219,7 @@ class GameView(arcade.View):
             64,
             self.center_x,
             200,
-            (255, 255, 255, 255)
+            WHITE
         )
 
         self.dragging = None
