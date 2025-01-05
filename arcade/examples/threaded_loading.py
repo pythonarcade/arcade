@@ -1,7 +1,7 @@
 """
 Loading large Levels can take a lot of time.
-To combat this the process can be offloaded to a seperate thread.
-Python multi-threading doesn't neccisarily speed up your program,
+To combat this the process can be offloaded to a separate thread.
+Python multi-threading doesn't necessarily speed up your program,
 but it can help protect against your game freezing.
 
 This example uses the built-in threading module to load a list of
@@ -35,7 +35,7 @@ LEVELS = (
     'test_map_2',
     'test_map_3',
     'test_map_4',  # Intentionally omitted to allow its loading to fail
-    'test_map_5',
+    'test_map_5',  # Intentionally blank file
     'test_map_6',
     'test_map_7',
 )
@@ -79,9 +79,9 @@ class LevelLoader:
         # will freeze forever.
         self._interaction_lock = threading.Lock()
 
-    # An underscore at the start of a method is short-hand
-    # for private methods. This makes it clear that
-    # only LevelLoader should call `_load_levels`
+    # An underscore at the start of a method is how
+    # Python hints to treat things as private. In this
+    # case, it means only LevelLoader should call `_load_levels`.
     def _load_levels(self):
         for level in self._levels:
             with self._interaction_lock:
