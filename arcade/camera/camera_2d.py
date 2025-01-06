@@ -263,7 +263,7 @@ class Camera2D:
         _view = generate_view_matrix(self.view_data)
 
         self._window.ctx.viewport = self.viewport.lbwh_int
-        self._window.ctx.scissor = None if not self.scissor else self.scissor.viewport
+        self._window.ctx.scissor = None if not self.scissor else self.scissor.lbwh_int
         self._window.projection = _projection
         self._window.view = _view
 
