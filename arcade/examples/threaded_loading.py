@@ -238,7 +238,8 @@ class GameView(arcade.View):
             renderer.update()
 
         if self.dragging is not None:
-            self.window.set_mouse_cursor(self.window.get_system_mouse_cursor(self.window.CURSOR_SIZE))
+            self.window.set_mouse_cursor(
+                self.window.get_system_mouse_cursor(self.window.CURSOR_SIZE))
         else:
             self.window.set_mouse_cursor(None)
 
