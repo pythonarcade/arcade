@@ -162,7 +162,7 @@ class PerspectiveProjector(Projector):
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        self._window.ctx.viewport = self.viewport.viewport
+        self._window.ctx.viewport = self.viewport.lbwh_int
         self._window.ctx.scissor = None if not self.scissor else self.scissor.viewport
         self._window.projection = _projection
         self._window.view = _view
@@ -196,7 +196,7 @@ class PerspectiveProjector(Projector):
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        pos = project_perspective(Vec3(x, y, z), self.viewport.viewport, _view, _projection)
+        pos = project_perspective(Vec3(x, y, z), self.viewport.lbwh_int, _view, _projection)
 
         return pos
 
@@ -228,5 +228,5 @@ class PerspectiveProjector(Projector):
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        pos = unproject_perspective(Vec3(x, y, z), self.viewport.viewport, _view, _projection)
+        pos = unproject_perspective(Vec3(x, y, z), self.viewport.lbwh_int, _view, _projection)
         return pos
