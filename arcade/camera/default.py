@@ -60,7 +60,7 @@ class ViewportProjector:
         """
         self._ctx.current_camera = self
 
-        self._ctx.viewport = self.viewport.viewport  # get the integer 4-tuple LBWH
+        self._ctx.viewport = self.viewport.lbwh_int  # get the integer 4-tuple LBWH
 
         self._ctx.view_matrix = Mat4()
         self._ctx.projection_matrix = self._projection_matrix
@@ -121,7 +121,7 @@ class DefaultProjector(ViewportProjector):
         cache's the window viewport to determine the projection matrix.
         """
 
-        viewport = self.viewport.viewport
+        viewport = self.viewport.lbwh_int
         # If the viewport is correct and the default camera is in use,
         # then don't waste time resetting the view and projection matrices
         if self._ctx.viewport == viewport and self._ctx.current_camera == self:
