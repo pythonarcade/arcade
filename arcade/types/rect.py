@@ -11,7 +11,7 @@ from arcade.types.numbers import AsFloat
 from arcade.types.vector_like import AnchorPoint, Point2
 
 RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
-ViewportParams = tuple[int, int, int, int]
+IntRectParams = tuple[int, int, int, int]
 
 
 class RectKwargs(TypedDict):
@@ -624,9 +624,24 @@ class Rect(NamedTuple):
         return (self.x, self.y, self.width / 2, self.height / 2)
 
     @property
-    def viewport(self) -> ViewportParams:
-        """Provides a tuple in the format of (left, bottom, width, height), coerced to integers."""
+    def lbwh_int(self) -> IntRectParams:
+        """Provides a tuple in the format of (left, bottom, width, height), casted to ints."""
         return (int(self.left), int(self.bottom), int(self.width), int(self.height))
+
+    @property
+    def lrbt_int(self) -> IntRectParams:
+        """Provides a tuple in the format of (left, right, bottom, top), casted to ints."""
+        return (int(self.left), int(self.right), int(self.bottom), int(self.top))
+
+    @property
+    def xywh_int(self) -> IntRectParams:
+        """Provides a tuple in the format of (x, y, width, height), casted to ints."""
+        return (int(self.x), int(self.y), int(self.width), int(self.height))
+
+    @property
+    def xyrr_int(self) -> RectParams:
+        """Provides a tuple in the format of (x, y, width / 2, height / 2), casted to ints."""
+        return (int(self.x), int(self.y), int(self.width) / 2, int(self.height) / 2)
 
     @classmethod
     def from_kwargs(cls, **kwargs: AsFloat) -> Rect:
