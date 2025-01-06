@@ -207,7 +207,7 @@ class Surface:
             round(w * self._pixel_ratio),
             round(h * self._pixel_ratio),
         )
-        self.fbo.viewport = viewport_rect.viewport
+        self.fbo.viewport = viewport_rect.lbwh_int
 
         self._cam.projection.rect = LBWH(0, 0, w, h)
         self._cam.viewport = viewport_rect
