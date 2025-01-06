@@ -26,20 +26,25 @@ WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 WINDOW_TITLE = 'Threaded Tilemap Loading'
 
-# Because the tilesets we use aren't all that large this delay helps
-# illustrate the utility of threaded loading. You don't need to add this
+# We'll simulate loading large files by adding a loading delay to
+# each map we load. You can omit the delay in your own projects.
 ARTIFICIAL_DELAY = 1
 
+
+# The resource handle prefix to load map files from
+LEVEL_LOCATION = ':assets:tiled_maps/'
+# Level filenames in the resource folder
 LEVELS = (
     'test_map_1',
     'test_map_2',
     'test_map_3',
-    'test_map_4',  # Intentionally omitted to allow its loading to fail
-    'test_map_5',  # Intentionally blank file
+    'test_map_4',  # Doesn't exist so we can simulate failed reads
+    'test_map_5',  # Intentionally empty file
     'test_map_6',
     'test_map_7',
 )
-LEVEL_LOCATION = ':assets:tiled_maps/'
+
+# Rendering layout controls
 COLUMN_COUNT = 4
 LEVEL_RENDERER_SIZE = WINDOW_WIDTH // 5 - 10, WINDOW_HEIGHT // 5 - 10
 
