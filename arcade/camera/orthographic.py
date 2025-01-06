@@ -126,7 +126,7 @@ class OrthographicProjector(Projector):
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
 
-        self._window.ctx.viewport = self.viewport.viewport
+        self._window.ctx.viewport = self.viewport.lbwh_int
         self._window.ctx.scissor = None if not self.scissor else self.scissor.viewport
         self._window.projection = _projection
         self._window.view = _view
@@ -165,7 +165,7 @@ class OrthographicProjector(Projector):
 
         return project_orthographic(
             world_coordinate,
-            self.viewport.viewport,
+            self.viewport.lbwh_int,
             _view,
             _projection,
         )
@@ -188,4 +188,4 @@ class OrthographicProjector(Projector):
 
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
-        return unproject_orthographic(screen_coordinate, self.viewport.viewport, _view, _projection)
+        return unproject_orthographic(screen_coordinate, self.viewport.lbwh_int, _view, _projection)
