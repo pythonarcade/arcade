@@ -1,27 +1,45 @@
 """
-Loading large Levels can take a lot of time.
-To combat this the process can be offloaded to a separate thread.
-Python multi-threading doesn't necessarily speed up your program,
-but it can help protect against your game freezing.
+Load level data in the background with interactive previews.
 
-This example uses the built-in threading module to load a list of
-tiled maps from memory without stopping the rest of the game from
-working. This isn't strictly the best way to do such level loading
-but it will hopefully explain how it is possible.
+Level preview borders will turn green when their data loads:
+
+1. Pan the camera by clicking and dragging
+2. Zoom in and out by scrolling up or down
+
+Loading data during gameplay always risks slowdowns. These risks grow
+grow with number, size, and loading complexity of files. Some games
+avoid the problem by using non-interactive loading screens. This example
+uses a different approach.
+
+Background loading works if a game has enough RAM and CPU cycles to
+run light features while loading. These can be the UI or menus, or even
+gameplay light enough to avoid interfering with the loading thread. For
+example, players can handle inventory or communication while data loads.
+
+Although Python's threading module has many pitfalls, we'll avoid them
+by keeping things simple:
+
+1. There is only one background loader thread
+2. The loader thread will load each map in order, one after another
+3. If a map loads successfully, the UI an interactive preview
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.threaded_loading
 """
 from __future__ import annotations
+
+import sys
 import time
 
-# Threading is built into python and provides many tools for
-# working with multiple threads
+# Python's threading module has proven tools for working with threads, but
+# veteran developers may want to explore 3.13's new 'No-GIL' concurrency.
 import threading
 
 import arcade
 from arcade.color import RED, GREEN, BLUE, WHITE
+from arcade.math import clamp
 
+# Window size and title
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 WINDOW_TITLE = 'Threaded Tilemap Loading'
@@ -50,15 +68,14 @@ LEVEL_RENDERER_SIZE = WINDOW_WIDTH // 5 - 10, WINDOW_HEIGHT // 5 - 10
 
 
 class LevelLoader:
-    """
-    While threading Threads run a method its often
-    safer to contain the threaded operations inside
-    a single object.
+    """Wrap a loader thread which runs level loading in the background.
 
-    While it is viable to create a thread when it
-    is needed, more advanced systems keep the thread
-    alive waiting for tasks. That is beyond the scope of
-    this example.
+    IMPORTANT: NEVER call graphics code from threads! They break OpenGL!
+
+    It's common to group threading tasks into manager objects which track
+    and coordinate them. Advanced thread managers often keep idle threads
+    'alive' to re-use when needed. These complex techniques are beyond the
+    scope of this tutorial.
     """
 
     def __init__(self, levels: tuple[str, ...], location: str):
@@ -68,38 +85,37 @@ class LevelLoader:
         self._begun: bool = False
         self._finished: bool = False
 
-        # Creating a Thread object does not start the thread.
-        # That requires the thread's `start` method to be called
+        # Threads do not start until their `start` method is called.
         self.loading_thread = threading.Thread(target=self._load_levels)
 
         self._loaded_levels: dict[str, arcade.TileMap] = {}
         self._failed_levels: set[str] = set()
         self._current_level: str = ''
 
-        # Locks are used to protect a thread from values
-        # changing while its working.
-        # The LevelLoader carefully uses only one lock.
-        # This can be dangerous because you ask for the
-        # lock while it is in use. If that happens the thread
-        # will freeze forever.
+        # Avoid the difficulties of coordinating threads without
+        # freezing by using one loading thread with a one lock.
         self._interaction_lock = threading.Lock()
 
-    # An underscore at the start of a method is how
-    # Python hints to treat things as private. In this
-    # case, it means only LevelLoader should call `_load_levels`.
+    # An underscore at the start of a name is how Python code tells
+    # others to treat things as private. Here, it means that only
+    # LevelLoader should ever call `_load_levels` directly.
     def _load_levels(self):
         for level in self._levels:
+
+            # Loading each level will pretend to be "slow"
             with self._interaction_lock:
                 self._current_level = level
-            time.sleep(ARTIFICIAL_DELAY) # Don't include in actual implementations
 
-            # With this simple implementation if the thread throws an error
-            # it simple dies so we catch the only major error we might face
+            time.sleep(ARTIFICIAL_DELAY)  # "Slow" down (delete this line before use)
+
+            # Since unhandled exceptions "kill" threads, we catch the only major
+            # exception we expect. Level 4 is intentionally missing to test cases
+            # such as this one when building map loading code.
             try:
                 path = f'{self._location}{level}.json'
                 tilemap = arcade.load_tilemap(path, lazy=True)
             except FileNotFoundError:
-                print(f"{level} doesn't exist. It will be skipped")
+                print(f"ERROR: {level} doesn't exist, skipping!", file=sys.stderr)
                 with self._interaction_lock:
                     self._failed_levels.add(level)
                 continue
@@ -145,7 +161,9 @@ class LevelLoader:
 
 
 class LevelRenderer:
-    """
+    """Draws previews of loaded data and colored borders to show status.
+
+
     This is a small utility class for drawing the levels while they load.
     """
 
@@ -161,30 +179,36 @@ class LevelRenderer:
 
         self.location = location
         self.size = size
-
+        x, y = location
         self.camera: arcade.Camera2D = arcade.Camera2D(
-            arcade.XYWH(self.location[0], self.location[1], self.size[0], self.size[1])
+            arcade.XYWH(x, y, size[0], size[1])
         )
+        camera_x, camera_y = self.camera.position
         self.level: arcade.TileMap | None = None
         self.level_text: arcade.Text = arcade.Text(
             level,
-            self.camera.position.x,
-            self.camera.position.y,
+            camera_x, camera_y,
             anchor_x='center',
             anchor_y='center'
         )
 
     def update(self):
-        if self.level is None and self.loader.is_level_loaded(self.level_name):
+        level = self.level
+        loader = self.loader
+        if level:
+            return
+        elif loader.is_level_loaded(self.level_name):
             self.level = self.loader.get_level(self.level_name)
 
     def draw(self):
+        # Activate the camera to render into its viewport rectangle
         with self.camera.activate():
-            if self.level is not None:
+            if self.level:
                 for spritelist in self.level.sprite_lists.values():
                     spritelist.draw()
             self.level_text.draw()
 
+        # Choose a color based on the load status
         if self.level is not None:
             color = GREEN
         elif self.loader.did_level_fail(self.level_name):
@@ -194,17 +218,25 @@ class LevelRenderer:
         else:
             color = WHITE
 
+        # Draw the outline over any thumbnail
         arcade.draw_rect_outline(self.camera.viewport, color, 3)
 
     def point_in_area(self, x, y):
         return self.camera.viewport.point_in_rect((x, y))
 
     def drag(self, dx, dy):
-        pos = self.camera.position
-        self.camera.position = pos.x - dx / self.camera.zoom, pos.y - dy / self.camera.zoom
+        # Store a few values locally to make the math easier to read
+        camera = self.camera
+        x, y = camera.position
+        zoom = camera.zoom
+
+        # Move the camera while accounting for zoom
+        camera.position = x - dx / zoom, y - dy / zoom
 
     def scroll(self, scroll):
-        self.camera.zoom = max(0.1, min(10, self.camera.zoom + scroll / 10))
+        camera = self.camera
+        zoom = camera.zoom
+        camera.zoom = clamp(zoom + scroll / 10, 0.1, 10)
 
 
 class GameView(arcade.View):
