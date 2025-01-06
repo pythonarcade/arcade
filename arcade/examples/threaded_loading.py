@@ -31,7 +31,7 @@ from __future__ import annotations
 import sys
 import time
 
-# Python's threading module has proven tools for working with threads, but
+# Python's threading module has proven tools for working with threads, and
 # veteran developers may want to explore 3.13's new 'No-GIL' concurrency.
 import threading
 
@@ -96,13 +96,11 @@ class LevelLoader:
         # freezing by using one loading thread with a one lock.
         self._interaction_lock = threading.Lock()
 
-    # An underscore at the start of a name is how Python code tells
+    # An underscore at the start of a name is how a developer tells
     # others to treat things as private. Here, it means that only
     # LevelLoader should ever call `_load_levels` directly.
     def _load_levels(self):
         for level in self._levels:
-
-            # Loading each level will pretend to be "slow"
             with self._interaction_lock:
                 self._current_level = level
 
@@ -161,10 +159,8 @@ class LevelLoader:
 
 
 class LevelRenderer:
-    """Draws previews of loaded data and colored borders to show status.
-
-
-    This is a small utility class for drawing the levels while they load.
+    """
+    Draws previews of loaded data and colored borders to show status.
     """
 
     def __init__(
@@ -195,9 +191,7 @@ class LevelRenderer:
     def update(self):
         level = self.level
         loader = self.loader
-        if level:
-            return
-        elif loader.is_level_loaded(self.level_name):
+        if not level and loader.is_level_loaded(self.level_name):
             self.level = self.loader.get_level(self.level_name)
 
     def draw(self):
