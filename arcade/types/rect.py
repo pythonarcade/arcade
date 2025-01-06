@@ -818,7 +818,7 @@ def Viewport(left: int, bottom: int, width: int, height: int) -> Rect:
 
 
 __all__ = [
-    "ViewportParams",
+    "IntRectParams",
     "RectParams",
     "RectKwargs",
     "Rect",
