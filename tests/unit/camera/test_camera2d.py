@@ -99,7 +99,7 @@ def test_camera2d_init_uses_render_target_size(window: Window, width, height):
     assert ortho_camera.viewport_width == width
     assert ortho_camera.viewport_height == height
 
-    assert ortho_camera.viewport.viewport == (0, 0, width, height)
+    assert ortho_camera.viewport.lbwh_int == (0, 0, width, height)
     assert ortho_camera.viewport_left == 0
     assert ortho_camera.viewport_right == width
     assert ortho_camera.viewport_bottom == 0
@@ -116,7 +116,7 @@ def test_camera2d_from_camera_data_uses_render_target_size(window: Window, width
     assert ortho_camera.viewport_width == width
     assert ortho_camera.viewport_height == height
 
-    assert ortho_camera.viewport.viewport == (0, 0, width, height)
+    assert ortho_camera.viewport.lbwh_int == (0, 0, width, height)
     assert ortho_camera.viewport_left == 0
     assert ortho_camera.viewport_right == width
     assert ortho_camera.viewport_bottom == 0

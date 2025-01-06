@@ -20,6 +20,6 @@ def test_viewport_projector_unproject(window: Window, wrld_pos: Point):
 @pytest.mark.parametrize("viewport", [LBWH(0.0, 0.0, 100, 200), LBWH(100, 100, 20, 40), LBWH(300, 20, 20, 700)])
 def test_viewport_projector_viewport(window: Window, viewport: Rect):
     cam = camera.default.ViewportProjector()
-    assert cam.viewport.viewport == window.ctx.viewport
+    assert cam.viewport.lbwh_int == window.ctx.viewport
     cam.viewport = viewport
     assert cam.viewport == viewport
