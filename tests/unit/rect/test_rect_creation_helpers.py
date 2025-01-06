@@ -121,7 +121,7 @@ def test_kwargtangle_none_args():
         _ = Rect.from_kwargs(left=0, bottom=0, width=None, height=0)
 
     with pytest.raises(ValueError):
-        _ = Rect.from_kwargs(left=0, botto=None, width=0, height=0)
+        _ = Rect.from_kwargs(left=0, bottom=None, width=0, height=0)
 
     with pytest.raises(ValueError):
         _ = Rect.from_kwargs(left=None, bottom=0, width=0, height=0)
