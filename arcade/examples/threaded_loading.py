@@ -53,13 +53,13 @@ ARTIFICIAL_DELAY = 1
 LEVEL_LOCATION = ':assets:tiled_maps/'
 # Level filenames in the resource folder
 LEVELS = (
-    'test_map_1',
-    'test_map_2',
-    'test_map_3',
-    'test_map_4',  # Doesn't exist so we can simulate failed reads
-    'test_map_5',  # Intentionally empty file
-    'test_map_6',
-    'test_map_7',
+    'test_map_1.json',
+    'test_map_2.json',
+    'test_map_3.json',
+    'test_map_4.json',  # Doesn't exist so we can simulate failed reads
+    'test_map_5.json',  # Intentionally empty file
+    'test_map_6.json',
+    'test_map_7.json',
 )
 
 # Rendering layout controls
@@ -112,7 +112,7 @@ class LevelLoader:
             # exception we expect. Level 4 is intentionally missing to test cases
             # such as this one when building map loading code.
             try:
-                path = f'{self._location}{level}.json'
+                path = f'{self._location}{level}'
                 tilemap = arcade.load_tilemap(path, lazy=True)
             except FileNotFoundError:
                 print(f"ERROR: {level} doesn't exist, skipping!", file=sys.stderr)
