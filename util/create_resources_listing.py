@@ -67,6 +67,7 @@ skip_extensions = [
     ".txt",
     ".tiled-project",
     ".pyc",
+    ""  # Zero-extension stuff like LICENSE and README
 ]
 
 
