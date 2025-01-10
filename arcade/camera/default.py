@@ -92,8 +92,8 @@ class ViewportProjector:
 
         Due to the nature of viewport projector this does not do anything.
         """
-        x, y, *z = screen_coordinate
-        z = 0.0 if not z else z[0]
+        x, y, *_z = screen_coordinate
+        z = 0.0 if not _z else _z[0]
 
         return Vec3(x, y, z)
 

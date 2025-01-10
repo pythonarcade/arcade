@@ -16,7 +16,6 @@ from pyglet.graphics import Batch
 
 
 class Sphere3D(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=True)
         self.sphere = geometry.sphere(1.0, 32, 32, uvs=False)
@@ -69,20 +68,36 @@ class Sphere3D(arcade.Window):
 
         self.text_batch = Batch()
         self.text_cull = arcade.Text(
-            "F2: Toggle cull face (True)", x=10, y=10, font_size=15, color=arcade.color.WHITE,
-            batch=self.text_batch
+            "F2: Toggle cull face (True)",
+            x=10,
+            y=10,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
         self.text_depth = arcade.Text(
-            "F1: Toggle depth test (True)", x=10, y=30, font_size=15, color=arcade.color.WHITE,
-            batch=self.text_batch
+            "F1: Toggle depth test (True)",
+            x=10,
+            y=30,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
         self.text_wireframe = arcade.Text(
-            "SPACE: Toggle wireframe (False)", x=10, y=50, font_size=15, color=arcade.color.WHITE,
-            batch=self.text_batch
+            "SPACE: Toggle wireframe (False)",
+            x=10,
+            y=50,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
         self.text_fs = arcade.Text(
-            "F: Toggle fullscreen (False)", x=10, y=70, font_size=15, color=arcade.color.WHITE,
-            batch=self.text_batch
+            "F: Toggle fullscreen (False)",
+            x=10,
+            y=70,
+            font_size=15,
+            color=arcade.color.WHITE,
+            batch=self.text_batch,
         )
         self.text_vert_count = arcade.Text(
             "Use mouse wheel to add/remove vertices",
@@ -169,7 +184,7 @@ class Sphere3D(arcade.Window):
     def on_mouse_release(self, x, y, button, modifiers):
         self.drag_time = None
 
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: float, scroll_y: float):
         self.vert_count = clamp(self.vert_count + scroll_y / 500, 0.0, 1.0)
 
 

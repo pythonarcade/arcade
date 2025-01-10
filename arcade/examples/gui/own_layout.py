@@ -11,9 +11,12 @@ python -m arcade.examples.gui.own_layout
 from __future__ import annotations
 
 from math import cos, sin
+from typing import TypeVar
 
 import arcade
 from arcade.gui import UIAnchorLayout, UIFlatButton, UILayout, UIView, UIWidget
+
+W = TypeVar("W", bound="UIWidget")
 
 
 class CircleLayout(UILayout):
@@ -27,7 +30,7 @@ class CircleLayout(UILayout):
         super().__init__(size_hint=size_hint, **kwargs)
         self._time = 0  # used for rotation
 
-    def add(self, child: UIWidget, **kwargs) -> UIWidget:
+    def add(self, child: W, **kwargs) -> W:
         """Add a widget to the layout.
 
         The widget is placed in a circle around the center of the screen.

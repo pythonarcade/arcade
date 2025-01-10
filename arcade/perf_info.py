@@ -151,7 +151,7 @@ def enable_timings(max_history: int = 100) -> None:
     _pyglets_dispatch_event = pyglet.window.BaseWindow.dispatch_event
 
     # Override the pyglet dispatch event function
-    pyglet.window.BaseWindow.dispatch_event = _dispatch_event
+    pyglet.window.BaseWindow.dispatch_event = _dispatch_event  # type: ignore
     _max_history = max_history
 
 

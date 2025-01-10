@@ -9,14 +9,14 @@ This is a submodule of :py:mod:`arcade.types` to avoid issues with:
 
 from __future__ import annotations
 
-from typing import Sequence, Union
+from typing import Sequence, Tuple, Union
 
 from pyglet.math import Vec2, Vec3
 
 from arcade.types.numbers import AsFloat
 
 #: Matches both :py:class:`~pyglet.math.Vec2` and tuples of two numbers.
-Point2 = Union[tuple[AsFloat, AsFloat], Vec2]
+Point2 = Union[Tuple[AsFloat, AsFloat], Vec2]
 
 #: Matches both :py:class:`~pyglet.math.Vec3` and tuples of three numbers.
 Point3 = Union[tuple[AsFloat, AsFloat, AsFloat], Vec3]
