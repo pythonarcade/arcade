@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Sequence
 
 import pyglet
 import pyglet.gl as gl
@@ -317,6 +317,14 @@ class Window(pyglet.window.Window):
         # start_render and finish_render calls. The framebuffer is repeatedly
         # rendered to the window when the event loop starts.
         self._start_finish_render_data: StartFinishRenderData | None = None
+
+    def _create(self) -> None:
+        """Internal function to create the window."""
+        pass
+
+    def _recreate(self, changes: Sequence[str]) -> None:
+        """Internal function to recreate the window."""
+        pass
 
     @property
     def current_view(self) -> View | None:

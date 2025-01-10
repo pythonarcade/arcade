@@ -900,7 +900,7 @@ class Camera2D:
         left = self.left
 
         x, y = new_corner
-        self.position = (x - ux * top - rx * left, y - uy * top - ry * left)
+        self.position = Vec2(x - ux * top - rx * left, y - uy * top - ry * left)
 
     # top_center
     @property
@@ -982,7 +982,7 @@ class Camera2D:
         right = self.right
 
         x, y = new_corner
-        self.position = (
+        self.position = Vec2(
             x - ux * bottom - rx * right,
             y - uy * bottom - ry * right,
         )
@@ -1003,7 +1003,7 @@ class Camera2D:
         bottom = self.bottom
 
         x, y = new_bottom
-        self.position = x - ux * bottom, y - uy * bottom
+        self.position = Vec2(x - ux * bottom, y - uy * bottom)
 
     # bottom_left
     @property
@@ -1044,4 +1044,4 @@ class Camera2D:
         left = self.left
 
         x, y = new_left
-        self.position = x - uy * left, y + ux * left
+        self.position = Vec2(x - uy * left, y + ux * left)

@@ -169,7 +169,7 @@ class Sphere3D(arcade.Window):
     def on_mouse_release(self, x, y, button, modifiers):
         self.drag_time = None
 
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: float, scroll_y: float):
         self.vert_count = clamp(self.vert_count + scroll_y / 500, 0.0, 1.0)
 
 

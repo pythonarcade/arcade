@@ -182,15 +182,15 @@ class PerspectiveProjector(Projector):
         Returns:
             A 2D screen pixel coordinate.
         """
-        x, y, *z = world_coordinate
+        x, y, *zp = world_coordinate
         z = (
             (
                 0.5
                 * self.viewport.height
                 / tan(radians(0.5 * self._projection.fov / self._view.zoom))
             )
-            if not z
-            else z[0]
+            if not zp
+            else zp[0]
         )
 
         _projection = generate_perspective_matrix(self._projection, self._view.zoom)
