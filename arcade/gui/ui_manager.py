@@ -169,7 +169,7 @@ class UIManager(EventDispatcher):
                 self.remove(widget)
 
     def get_widgets_at(
-        self, pos: Point2, cls: type[W] = UIWidget, layer=DEFAULT_LAYER
+        self, pos: Point2, cls: type[W] | type[UIWidget] = UIWidget, layer=DEFAULT_LAYER
     ) -> Iterable[W]:
         """Yields all widgets containing a position, returns first top laying widgets
         which is instance of cls.

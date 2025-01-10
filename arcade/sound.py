@@ -143,7 +143,7 @@ class Sound:
             # we need to delete this function.
             player.on_player_eos = None  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
 
-        player.on_player_eos = _on_player_eos
+        player.on_player_eos = _on_player_eos  # type: ignore
         return player
 
     def stop(self, player: media.Player) -> None:

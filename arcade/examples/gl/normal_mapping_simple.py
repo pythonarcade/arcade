@@ -21,7 +21,6 @@ from arcade.gl import geometry
 
 
 class NormalMapping(arcade.Window):
-
     def __init__(self):
         super().__init__(512, 512, "Normal Mapping")
 
@@ -130,7 +129,7 @@ class NormalMapping(arcade.Window):
         # (0.0, 0.0) is bottom left, (1.0, 1.0) is top right
         self.mouse_x, self.mouse_y = x / self.width, y / self.height
 
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int):
+    def on_mouse_scroll(self, x: int, y: int, scroll_x: float, scroll_y: float):
         """Zoom in/out with the mouse wheel."""
         self.mouse_z += scroll_y * 0.05
 

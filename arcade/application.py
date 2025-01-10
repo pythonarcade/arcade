@@ -8,19 +8,20 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import TYPE_CHECKING
+from typing import Sequence, TYPE_CHECKING
 
 import pyglet
 import pyglet.gl as gl
 import pyglet.window.mouse
 from pyglet.display.base import Screen, ScreenMode
+from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor
 
 import arcade
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
 from arcade.color import BLACK
 from arcade.context import ArcadeContext
-from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
+from arcade.types import Color, LBWH, RGBANormalized, RGBOrA255, Rect
 from arcade.utils import is_raspberry_pi
 from arcade.window_commands import get_display_size, set_window
 
@@ -28,7 +29,6 @@ if TYPE_CHECKING:
     from arcade.camera import Projector
     from arcade.camera.default import DefaultProjector
     from arcade.start_finish_data import StartFinishRenderData
-
 
 LOG = logging.getLogger(__name__)
 
@@ -180,7 +180,7 @@ class Window(pyglet.window.Window):
         # Attempt to make window with antialiasing
         if antialiasing:
             try:
-                config = pyglet.gl.Config(
+                config = gl.Config(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
                     opengl_api=gl_api,  # type: ignore  # pending: upstream fix
@@ -204,7 +204,7 @@ class Window(pyglet.window.Window):
                 antialiasing = False
         # If we still don't have a config
         if not config:
-            config = pyglet.gl.Config(
+            config = gl.Config(
                 major_version=gl_version[0],
                 minor_version=gl_version[1],
                 opengl_api=gl_api,  # type: ignore  # pending: upstream fix
@@ -239,7 +239,7 @@ class Window(pyglet.window.Window):
         if antialiasing:
             try:
                 gl.glEnable(gl.GL_MULTISAMPLE_ARB)
-            except pyglet.gl.GLException:
+            except gl.GLException:
                 LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
         _setup_clock()
@@ -338,7 +338,7 @@ class Window(pyglet.window.Window):
         """
         return self._ctx
 
-    def clear(
+    def clear(  # type: ignore # not sure what to do here, BaseWindow.clear is static
         self,
         color: RGBOrA255 | None = None,
         color_normalized: RGBANormalized | None = None,
@@ -554,7 +554,7 @@ class Window(pyglet.window.Window):
         pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
         pyglet.clock.schedule_interval(pyglet.app.event_loop._redraw_windows, self._draw_rate)
 
-    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> EVENT_HANDLE_STATE:
         """
         Called repeatedly while the mouse is moving in the window area.
 
@@ -568,7 +568,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> EVENT_HANDLE_STATE:
         """
         Called once whenever a mouse button gets pressed down.
 
@@ -596,7 +596,7 @@ class Window(pyglet.window.Window):
 
     def on_mouse_drag(
         self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int
-    ) -> bool | None:
+    ) -> EVENT_HANDLE_STATE:
         """
         Called repeatedly while the mouse moves with a button down.
 
@@ -619,7 +619,7 @@ class Window(pyglet.window.Window):
         """
         return self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> bool | None:
+    def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> EVENT_HANDLE_STATE:
         """
         Called once whenever a mouse button gets released.
 
@@ -642,9 +642,11 @@ class Window(pyglet.window.Window):
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                 active during this event. See :ref:`keyboard_modifiers`.
         """
-        return False
+        return EVENT_UNHANDLED
 
-    def on_mouse_scroll(self, x: int, y: int, scroll_x: int, scroll_y: int) -> bool | None:
+    def on_mouse_scroll(
+        self, x: int, y: int, scroll_x: float, scroll_y: float
+    ) -> EVENT_HANDLE_STATE:
         """
         Called repeatedly while a mouse scroll wheel moves.
 
@@ -676,7 +678,7 @@ class Window(pyglet.window.Window):
             scroll_y:
                 Number of steps scrolled vertically since the last call of this function
         """
-        return False
+        return EVENT_UNHANDLED
 
     def set_mouse_visible(self, visible: bool = True) -> None:
         """
@@ -724,7 +726,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+    def on_key_press(self, symbol: int, modifiers: int) -> EVENT_HANDLE_STATE:
         """
         Called once when a key gets pushed down.
 
@@ -741,9 +743,9 @@ class Window(pyglet.window.Window):
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                 active during this event. See :ref:`keyboard_modifiers`.
         """
-        return False
+        return EVENT_UNHANDLED
 
-    def on_key_release(self, symbol: int, modifiers: int) -> bool | None:
+    def on_key_release(self, symbol: int, modifiers: int) -> EVENT_HANDLE_STATE:
         """
         Called once when a key gets released.
 
@@ -763,9 +765,9 @@ class Window(pyglet.window.Window):
                       ctrl, num lock) active during this event.
                       See :ref:`keyboard_modifiers`.
         """
-        return False
+        return EVENT_UNHANDLED
 
-    def on_draw(self) -> bool | None:
+    def on_draw(self) -> EVENT_HANDLE_STATE:
         """
         Override this function to add your custom drawing code.
 
@@ -781,9 +783,9 @@ class Window(pyglet.window.Window):
             self._start_finish_render_data.draw()
             return True
 
-        return False
+        return EVENT_UNHANDLED
 
-    def _on_resize(self, width: int, height: int) -> bool | None:
+    def _on_resize(self, width: int, height: int) -> EVENT_HANDLE_STATE:
         """
         The internal method called when the window is resized.
 
@@ -799,9 +801,9 @@ class Window(pyglet.window.Window):
         # Retain viewport
         self.viewport = (0, 0, width, height)
 
-        return False
+        return EVENT_UNHANDLED
 
-    def on_resize(self, width: int, height: int) -> bool | None:
+    def on_resize(self, width: int, height: int) -> EVENT_HANDLE_STATE:
         """
         Override this method to add custom actions when the window is resized.
 
@@ -855,7 +857,7 @@ class Window(pyglet.window.Window):
 
     def get_location(self) -> tuple[int, int]:
         """Get the current X/Y coordinates of the window."""
-        return super().get_location()
+        return super().get_location()  # type: ignore # Window typed at runtime
 
     def set_visible(self, visible: bool = True):
         """
@@ -1038,34 +1040,34 @@ class Window(pyglet.window.Window):
         num_collected = self.ctx.gc()
         LOG.debug("Garbage collected %s OpenGL resource(s)", num_collected)
 
-        super().flip()
+        super().flip()  # type: ignore # Window typed at runtime
 
     def switch_to(self) -> None:
         """Switch the this window context.
 
         This is normally only used in multi-window applications.
         """
-        super().switch_to()
+        super().switch_to()  # type: ignore # Window typed at runtime
 
     def set_caption(self, caption) -> None:
         """Set the caption/title of the window."""
-        super().set_caption(caption)
+        super().set_caption(caption)  # type: ignore # Window typed at runtime
 
     def set_location(self, x, y) -> None:
         """Set location of the window."""
-        super().set_location(x, y)
+        super().set_location(x, y)  # type: ignore # Window typed at runtime
 
     def activate(self) -> None:
         """Activate this window."""
-        super().activate()
+        super().activate()  # type: ignore # Window typed at runtime
 
     def minimize(self) -> None:
         """Minimize the window."""
-        super().minimize()
+        super().minimize()  # type: ignore # Window typed at runtime
 
     def maximize(self) -> None:
         """Maximize  the window."""
-        super().maximize()
+        super().maximize()  # type: ignore # Window typed at runtime
 
     def set_vsync(self, vsync: bool) -> None:
         """Set if we sync our draws to the monitors vertical sync rate."""
@@ -1097,9 +1099,9 @@ class Window(pyglet.window.Window):
 
     def dispatch_events(self) -> None:
         """Dispatch events"""
-        super().dispatch_events()
+        super().dispatch_events()  # type: ignore # Window typed at runtime
 
-    def on_mouse_enter(self, x: int, y: int) -> bool | None:
+    def on_mouse_enter(self, x: int, y: int) -> EVENT_HANDLE_STATE:
         """
         Called once whenever the mouse enters the window area on screen.
 
@@ -1112,7 +1114,7 @@ class Window(pyglet.window.Window):
         """
         pass
 
-    def on_mouse_leave(self, x: int, y: int) -> bool | None:
+    def on_mouse_leave(self, x: int, y: int) -> EVENT_HANDLE_STATE:
         """
         Called once whenever the mouse leaves the window area on screen.
 
@@ -1182,6 +1184,15 @@ class Window(pyglet.window.Window):
     def fixed_delta_time(self) -> float:
         """The configured fixed update rate"""
         return self._fixed_rate
+
+    # required because pyglet marks the method as abstract methods,
+    # but resolves class during runtime
+    def _create(self) -> None:
+        """Internal method to create the window."""
+        super()._create()  # type: ignore
+
+    def _recreate(self, changes: Sequence[str]) -> None:
+        super()._recreate(changes)  # type: ignore
 
 
 def open_window(

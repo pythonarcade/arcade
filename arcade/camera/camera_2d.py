@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from math import atan2, cos, degrees, radians, sin
-from typing import TYPE_CHECKING, Generator
+from typing import Generator, TYPE_CHECKING
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self
 
 from arcade.camera.data_types import (
+    CameraData,
     DEFAULT_FAR,
     DEFAULT_NEAR_ORTHO,
-    CameraData,
     OrthographicProjectionData,
     ZeroProjectionDimension,
 )
@@ -20,7 +20,7 @@ from arcade.camera.projection_functions import (
     project_orthographic,
     unproject_orthographic,
 )
-from arcade.types import LBWH, LRBT, XYWH, Point, Rect
+from arcade.types import LBWH, LRBT, Point, Rect, XYWH
 from arcade.types.vector_like import Point2
 from arcade.window_commands import get_window
 
@@ -544,10 +544,12 @@ class Camera2D:
         """The 2D world position of the camera along the X and Y axes."""
         return Vec2(self._camera_data.position[0], self._camera_data.position[1])
 
+    # Setter with different signature will cause mypy issues
+    # https://github.com/python/mypy/issues/3004
     @position.setter
     def position(self, _pos: Point) -> None:
-        x, y, *z = _pos
-        z = self._camera_data.position[2] if not z else z[0]
+        x, y, *_z = _pos
+        z = self._camera_data.position[2] if not _z else _z[0]
         self._camera_data.position = (x, y, z)
 
     @property
@@ -900,7 +902,7 @@ class Camera2D:
         left = self.left
 
         x, y = new_corner
-        self.position = (x - ux * top - rx * left, y - uy * top - ry * left)
+        self.position = (x - ux * top - rx * left, y - uy * top - ry * left)  # type: ignore
 
     # top_center
     @property
@@ -918,7 +920,7 @@ class Camera2D:
         top = self.top
 
         x, y = new_top
-        self.position = x - ux * top, y - uy * top
+        self.position = x - ux * top, y - uy * top  # type: ignore
 
     # top_right
     @property
@@ -942,7 +944,7 @@ class Camera2D:
         right = self.right
 
         x, y = new_corner
-        self.position = (x - ux * top - rx * right, y - uy * top - ry * right)
+        self.position = (x - ux * top - rx * right, y - uy * top - ry * right)  # type: ignore
 
     # center_right
     @property
@@ -959,7 +961,7 @@ class Camera2D:
         right = self.right
 
         x, y = new_right
-        self.position = x - uy * right, y + ux * right
+        self.position = x - uy * right, y + ux * right  # type: ignore
 
     # bottom_right
     @property
@@ -985,7 +987,7 @@ class Camera2D:
         self.position = (
             x - ux * bottom - rx * right,
             y - uy * bottom - ry * right,
-        )
+        )  # type: ignore
 
     # bottom_center
     @property
@@ -995,7 +997,7 @@ class Camera2D:
         ux, uy, *_ = self._camera_data.up
         bottom = self.bottom
 
-        return Vec2(pos.x + ux * bottom, pos.y + uy * bottom)
+        return pos.x + ux * bottom, pos.y + uy * bottom  # type: ignore
 
     @bottom_center.setter
     def bottom_center(self, new_bottom: Point2):
@@ -1003,7 +1005,7 @@ class Camera2D:
         bottom = self.bottom
 
         x, y = new_bottom
-        self.position = x - ux * bottom, y - uy * bottom
+        self.position = x - ux * bottom, y - uy * bottom  # type: ignore
 
     # bottom_left
     @property
@@ -1027,7 +1029,7 @@ class Camera2D:
         left = self.left
 
         x, y = new_corner
-        self.position = (x - ux * bottom - rx * left, y - uy * bottom - ry * left)
+        self.position = x - ux * bottom - rx * left, y - uy * bottom - ry * left  # type: ignore
 
     # center_left
     @property
@@ -1044,4 +1046,4 @@ class Camera2D:
         left = self.left
 
         x, y = new_left
-        self.position = x - uy * left, y + ux * left
+        self.position = Vec2(x - uy * left, y + ux * left)

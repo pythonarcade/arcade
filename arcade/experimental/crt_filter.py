@@ -25,7 +25,7 @@ class CRTFilter:
         resolution_down_scale: float = 6.0,
         hard_scan: float = -8.0,
         hard_pix: float = -3.0,
-        display_warp: Vec2 = (1.0 / 32.0, 1.0 / 24.0),
+        display_warp: Vec2 = Vec2(1.0 / 32.0, 1.0 / 24.0),
         mask_dark: float = 0.5,
         mask_light: float = 1.5,
     ):

@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import weakref
 from contextlib import contextmanager
-from ctypes import c_int, string_at
-from typing import TYPE_CHECKING, Generator
+from ctypes import Array, c_int, c_uint, string_at
+from typing import Generator, TYPE_CHECKING
 
 from pyglet import gl
 
 from arcade.types import RGBOrA255, RGBOrANormalized
-
 from .texture import Texture2D
 from .types import pixel_formats
 
@@ -124,7 +123,7 @@ class Framebuffer:
         # we use in the use() method to activate the different color attachment layers
         layers = [gl.GL_COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)]
         # pyglet wants this as a ctypes thingy, so let's prepare it
-        self._draw_buffers = (gl.GLuint * len(layers))(*layers)
+        self._draw_buffers: Array[c_uint] | None = (gl.GLuint * len(layers))(*layers)
 
         # Restore the original bound framebuffer to avoid confusion
         self.ctx.active_framebuffer.use(force=True)
