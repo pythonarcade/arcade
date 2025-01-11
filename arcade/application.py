@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING, Sequence
 
 import pyglet
 import pyglet.gl as gl
@@ -21,7 +21,7 @@ import arcade
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
 from arcade.color import BLACK
 from arcade.context import ArcadeContext
-from arcade.types import Color, LBWH, RGBANormalized, RGBOrA255, Rect
+from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
 from arcade.utils import is_raspberry_pi
 from arcade.window_commands import get_display_size, set_window
 

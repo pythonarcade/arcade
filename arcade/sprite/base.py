@@ -7,7 +7,7 @@ from arcade.color import BLACK, WHITE
 from arcade.exceptions import ReplacementWarning, warning
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.types import LRBT, Point2List, RGBA255, AsFloat, Color, Point, Point2, Rect, RGBOrA255
+from arcade.types import LRBT, RGBA255, AsFloat, Color, Point, Point2, Point2List, Rect, RGBOrA255
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
