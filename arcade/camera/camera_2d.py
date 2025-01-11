@@ -997,7 +997,7 @@ class Camera2D:
         ux, uy, *_ = self._camera_data.up
         bottom = self.bottom
 
-        return pos.x + ux * bottom, pos.y + uy * bottom  # type: ignore
+        return Vec2(pos.x + ux * bottom, pos.y + uy * bottom)
 
     @bottom_center.setter
     def bottom_center(self, new_bottom: Point2):

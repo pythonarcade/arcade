@@ -4,7 +4,7 @@ Box is the 3D counterpart to :py:class:`~arcade.types.rect.Rect`.
 
 from __future__ import annotations
 
-from typing import NamedTuple, TypedDict
+from typing import Any, NamedTuple, TypedDict
 
 from pyglet.math import Vec3
 
@@ -352,12 +352,17 @@ class Box(NamedTuple):
             and (self.near <= z <= self.far)
         )
 
-    def __contains__(self, point: Point3) -> bool:
+    def __contains__(self, point: Point3 | Any) -> bool:
         """Shorthand for :py:meth:`Box.point_in_box(point) <point_in_box>`.
 
         Args:
             point: A tuple of :py:class:`int` or :py:class:`float` values.
         """
+        from arcade.utils import is_iterable
+
+        if not is_iterable(point):
+            return False
+
         return self.point_in_box(point)
 
     def to_points(self) -> tuple[Vec3, Vec3, Vec3, Vec3, Vec3, Vec3, Vec3, Vec3]:

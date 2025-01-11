@@ -9,7 +9,6 @@ from pyglet.math import Vec2
 
 from arcade.types.numbers import AsFloat
 from arcade.types.vector_like import AnchorPoint, Point2
-from arcade.utils import is_iterable
 
 RectParams = tuple[AsFloat, AsFloat, AsFloat, AsFloat]
 IntRectParams = tuple[int, int, int, int]
@@ -469,6 +468,8 @@ class Rect(NamedTuple):
         Args:
             point: A tuple of :py:class:`int` or :py:class:`float` values.
         """
+        from arcade.utils import is_iterable
+
         if not is_iterable(point):
             return False
 
