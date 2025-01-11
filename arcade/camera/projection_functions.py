@@ -125,8 +125,8 @@ def project_orthographic(
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec2:
-    x, y, *z = world_coordinate
-    z = 0.0 if not z else z[0]
+    x, y, *_z = world_coordinate
+    z = 0.0 if not _z else _z[0]
 
     world_position = Vec4(x, y, z, 1.0)
 
@@ -144,8 +144,8 @@ def unproject_orthographic(
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec3:
-    x, y, *z = screen_coordinate
-    z = 0.0 if not z else z[0]
+    x, y, *_z = screen_coordinate
+    z = 0.0 if not _z else _z[0]
 
     screen_x = 2.0 * (x - viewport[0]) / viewport[2] - 1
     screen_y = 2.0 * (y - viewport[1]) / viewport[3] - 1
@@ -165,8 +165,8 @@ def project_perspective(
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec2:
-    x, y, *z = world_coordinate
-    z = 1.0 if not z else z[0]
+    x, y, *_z = world_coordinate
+    z = 1.0 if not _z else _z[0]
 
     world_position = Vec4(x, y, z, 1.0)
 
@@ -188,8 +188,8 @@ def unproject_perspective(
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec3:
-    x, y, *z = screen_coordinate
-    z = 1.0 if not z else z[0]
+    x, y, *_z = screen_coordinate
+    z = 1.0 if not _z else _z[0]
 
     screen_x = 2.0 * (x - viewport[0]) / viewport[2] - 1
     screen_y = 2.0 * (y - viewport[1]) / viewport[3] - 1
