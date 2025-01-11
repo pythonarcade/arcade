@@ -108,6 +108,10 @@ class UIScrollBar(UIWidget):
             else scroll_area.surface.width - scroll_area.content_width
         )
 
+        if scroll_range <= 0:
+            # content is smaller than the scroll area, no need for a thumb
+            return XYWH(0, 0, 0, 0)
+
         scroll_progress = -scroll_value / scroll_range
 
         content_size = self.content_height if self.vertical else self.content_width
@@ -319,13 +323,17 @@ class UIScrollArea(UILayout):
             # clip scrolling to canvas size
             if not self.overscroll_x:
                 # clip scroll_x between 0 and -(self.surface.width - self.width)
+                scroll_range = int(self.content_width - self.surface.width)
+                scroll_range = min(0, scroll_range)  # clip to 0 if content is smaller than surface
                 self.scroll_x = min(0, self.scroll_x)
-                self.scroll_x = max(self.scroll_x, -int(self.surface.width - self.content_width))
+                self.scroll_x = max(self.scroll_x, scroll_range)
 
             if not self.overscroll_y:
                 # clip scroll_y between 0 and -(self.surface.height - self.height)
+                scroll_range = int(self.content_height - self.surface.height)
+                scroll_range = min(0, scroll_range)  # clip to 0 if content is smaller than surface
                 self.scroll_y = min(0, self.scroll_y)
-                self.scroll_y = max(self.scroll_y, -int(self.surface.height - self.content_height))
+                self.scroll_y = max(self.scroll_y, scroll_range)
 
             return True
 
