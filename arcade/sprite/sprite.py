@@ -150,8 +150,8 @@ class Sprite(BasicSprite, PymunkMixin):
 
         self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(angle=self._angle)
 
-        self._width = self._texture.width * self.scale[0]
-        self._height = self._texture.height * self.scale[1]
+        self._width = self._texture.width * self._scale[0]
+        self._height = self._texture.height * self._scale[1]
 
     # --- Properties ---
 
