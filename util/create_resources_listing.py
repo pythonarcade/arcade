@@ -113,16 +113,27 @@ def create_resource_path(
     return f"{prefix}:resources:{path.as_posix()}{suffix}"
 
 
+KENNEY_TTFS = "Kenney TTFs"
+LIBERATION_TTFS = "Liberation TTFs"
+
 # pending: post-3.0 cleanup  # unstructured kludge
 REPLACE_TITLE_WORDS = {
-    "ttf": "Kenney TTFs",
+    "Kenney": KENNEY_TTFS,
+    "Liberation": LIBERATION_TTFS,
     "gui": "GUI",
     "window": "Window & Panel",
     ".": "Top-level Resources"
 }
+# NASTY! # pending: post-3.0 cleanup
+OVERRIDE_LEVELS = {
+    KENNEY_TTFS: 2,
+    LIBERATION_TTFS: 2
+}
+
 # pending: post-3.0 cleanup  # more unstructured filth
 SKIP_TITLES = {
-    "Kenney TTFs"
+    "Ttf"
+    # "Kenney TTFs"
 }
 
 
@@ -230,6 +241,10 @@ def process_resource_directory(out, dir: Path):
 
         file_list = filter_dir(path, keep=is_unskipped_file)
         num_files = len(file_list)
+        def _debug_print_files() -> None:  # pending: post-3.0 cleanup
+            """Nasty little temp helper"""
+            for file in file_list:
+                print(file.name)
 
         if num_files > 0:
 
@@ -246,23 +261,48 @@ def process_resource_directory(out, dir: Path):
                     continue
                 as_tup = tuple(display_parts[:heading_level])
                 if as_tup not in visited_headings:
+                    # NASTY! # pending: post 3.0 cleanup
+                    if part in OVERRIDE_LEVELS:
+                        heading_level = OVERRIDE_LEVELS[part]
+
+                    # print("!!!", heading_level, part, as_tup)
+
                     do_heading(out, heading_level, part)
                     visited_headings.add(as_tup)
 
             if raw_resource_handle == ":resources:images/":
-                for f in file_list:
-                    print(f.name)
+                _debug_print_files()
 
-            if raw_resource_handle == ":resources:fonts/ttf/":
-                for f in file_list:
-                    print(f.name)
-                # pending: post-3.0 cleanup
-                out.write("\n")
-                out.write(".. figure:: images/fonts_blue.png\n")
-                out.write("   :alt: The bundled Kenney.nl fonts.\n")
-                out.write("\n")
-                out.write("   Arcade includes the following fonts from `Kenney.nl's font pack <https://kenney.nl/assets/kenney-fonts>`_\n")
-                out.write("   are available using the path and filenames below.\n")
+            if raw_resource_handle.startswith(":resources:fonts/ttf/"):
+                _debug_print_files()
+                if raw_resource_handle.endswith("Kenney/"):
+                    out.write("\n")
+
+                    out.write(".. figure:: images/fonts_blue.png\n")
+                    # out.write("   :align: center\n")
+                    out.write("   :alt: The bundled Kenney.nl fonts.\n")
+                    out.write("\n")
+                    # Put the text *after* the CSS, or add <br> via .. raw:: html blocks
+                    # since the CSS may be broken.
+                    out.write("Arcade includes the following fonts from `Kenney.nl's font pack <https://kenney.nl/assets/kenney-fonts>`_\n")
+                    out.write("are available using the path and filenames below.\n")
+                    out.write("\n")
+
+                elif raw_resource_handle.endswith("Liberation/"):
+                    out.write(
+                        "\n"
+                        ".. figure:: images/fonts_liberation.png\n"
+                        "   :alt: The bundled Liberation font family trio.\n"
+                        #"   :align: center\n"
+                        # Put the text *after* the CSS, or add <br> via .. raw:: html blocks
+                        # since the CSS may be broken.
+                        "\n"
+                        "Arcade also includes the Liberation font family. This trio of fonts is designed as\n"
+                        "generic, drop-in replacements for Times New Roman, Arial, and Courier.\n"
+                        "\n"
+                        "The Liberation font family uses the proven, commercial-friendly\n"
+                        "`SIL Open Font License`_ widely accepted within games and design spaces.\n"
+                    )
 
             n_cols = get_header_num_cols(raw_resource_handle, num_files)
             widths = get_column_widths_for_n(n_cols)

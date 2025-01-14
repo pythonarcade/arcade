@@ -29,6 +29,7 @@
 .. Concepts
 .. _CC0: https://creativecommons.org/publicdomain/#publicdomain-cc0-10
 .. _Creative Commons licenses: https://creativecommons.org/share-your-work/cclicenses/
+.. _SIL Open Font License: https://openfontlicense.org/
 
 .. Licensing
 .. _BibTeX: https://www.bibtex.org/Format/
