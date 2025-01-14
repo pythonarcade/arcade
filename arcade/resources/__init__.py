@@ -221,19 +221,34 @@ def list_built_in_assets(
 def load_kenney_fonts() -> None:
     """Loads all the Kenney.nl fonts bundled with Arcade.
 
-    Currently, this includes the following fonts::
+    .. tip:: This function is best for prototyping and experimenting!
 
-        Kenney_Blocks.ttf          - Kenney Blocks
-        Kenney_Future.ttf          - Kenney Future
-        Kenney_Future_Narrow.ttf   - Kenney Future Narrow
-        Kenney_High.ttf            - Kenney High
-        Kenney_High_Square.ttf     - Kenney High Square
-        Kenney_Mini.ttf            - Kenney Mini
-        Kenney_Mini_Square.ttf     - Kenney Mini Square
-        Kenney_Pixel.ttf           - Kenney Pixel
-        Kenney_Pixel_Square.ttf    - Kenney Pixel Square
-        Kenney_Rocket.ttf          - Kenney Rocket
-        Kenney_Rocket_Square.ttf   - Kenney Rocket Square
+         For best performance, you may want to switch to
+         :py:class:`arcade.load_font` before release.
+
+    Please see :ref:`resources-fonts-kenney` for previews and
+    license information. The filename to load and ``font_name`` to use
+    when drawing text are summarized below:
+
+    .. might swap to this style for the resources listing once I figure out how to
+    .. cleanly modify the file to use it.
+
+    =========================================  =========================================================================
+    ``font_name`` for :py:class:`arcade.Text`  :ref:`Resource handle <resource_handles>` for :py:func:`arcade.load_font`
+    =========================================  =========================================================================
+    ``"Kenney Blocks"``                        ``:resources:fonts/ttf/Kenney/Kenney_Blocks.ttf``
+    ``"Kenney Future"``                        ``:resources:fonts/ttf/Kenney/Kenney_Future.ttf``
+    ``"Kenney Future Narrow"``                 ``:resources:fonts/ttf/Kenney/Kenney_Future_Narrow.ttf``
+    ``"Kenney High"``                          ``:resources:fonts/ttf/Kenney/Kenney_High.ttf``
+    ``"Kenney High Square"``                   ``:resources:fonts/ttf/Kenney/Kenney_High_Square.ttf``
+    ``"Kenney Mini"``                          ``:resources:fonts/ttf/Kenney/Kenney_Mini.ttf``
+    ``"Kenney Mini Square"``                   ``:resources:fonts/ttf/Kenney/Kenney_Mini_Square.ttf``
+    ``"Kenney Pixel"``                         ``:resources:fonts/ttf/Kenney/Kenney_Pixel.ttf``
+    ``"Kenney Pixel Square"``                  ``:resources:fonts/ttf/Kenney/Kenney_Pixel_Square.ttf``
+    ``"Kenney Rocket"``                        ``:resources:fonts/ttf/Kenney/Kenney_Rocket.ttf``
+    ``"Kenney Rocket Square"``                 ``:resources:fonts/ttf/Kenney/Kenney_Rocket_Square.ttf``
+    =========================================  =========================================================================
+
     """
     from arcade.text import load_font
 
@@ -251,10 +266,32 @@ def load_kenney_fonts() -> None:
 
 
 def load_liberation_fonts() -> None:
-    """Loads generic versions of Arial, Courier, and Times New Roman.
+    """Loads all styles for generic Arial, Courier, and Times New Roman replacements.
 
-    The Liberation font family is a permissively-licensed set of built-ins
-    which should be layout-compatible with popular fonts.
+    .. tip:: This function is best for prototyping and experimenting!
+
+             For best performance, you may want to switch to
+             :py:class:`arcade.load_font` before release.
+
+    The Liberation fonts are proven, permissively-licensed fonts.[
+    For previews and additional information, please see
+    :ref:`resources-fonts-liberation`.
+
+    .. list-table:: ``font_name`` values for :py:class:`arcade.Text`
+       :header-rows: 1
+
+       * - Proprietary Font(s)
+         - Liberation Replacemetn
+
+       * - ``"Courier"``
+         - ``"Liberation Mono"``
+
+       * - ``"Times New Roman"``, ``"Times"``
+         - ``"Liberation Serif"``
+
+       * - ``"Arial"``
+         - ``"Liberation Sans"``
+
     """
     from arcade.text import load_font
 

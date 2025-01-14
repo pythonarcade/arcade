@@ -116,6 +116,11 @@ def create_resource_path(
 KENNEY_TTFS = "Kenney TTFs"
 LIBERATION_TTFS = "Liberation TTFs"
 
+PREFIX_REF_TARGET = {
+    KENNEY_TTFS: "resources-fonts-kenney",
+    LIBERATION_TTFS: "resources-fonts-liberation"
+}
+
 # pending: post-3.0 cleanup  # unstructured kludge
 REPLACE_TITLE_WORDS = {
     "Kenney": KENNEY_TTFS,
@@ -267,6 +272,9 @@ def process_resource_directory(out, dir: Path):
 
                     # print("!!!", heading_level, part, as_tup)
 
+                    if ref_target := PREFIX_REF_TARGET.get(part, None):
+                        out.write(f".. _{ref_target}:\n")
+
                     do_heading(out, heading_level, part)
                     visited_headings.add(as_tup)
 
@@ -297,11 +305,15 @@ def process_resource_directory(out, dir: Path):
                         # Put the text *after* the CSS, or add <br> via .. raw:: html blocks
                         # since the CSS may be broken.
                         "\n"
-                        "Arcade also includes the Liberation font family. This trio of fonts is designed as\n"
-                        "generic, drop-in replacements for Times New Roman, Arial, and Courier.\n"
+                        "Arcade also includes the Liberation font family. This trio is designed and\n"
+                        "licensed specifically to be a portable, drop-in set of substitutes for Times, Arial,\n"
+                        "and Courier fonts. It uses the proven, commercial-friendly `SIL Open Font License`_.\n"
                         "\n"
-                        "The Liberation font family uses the proven, commercial-friendly\n"
-                        "`SIL Open Font License`_ widely accepted within games and design spaces.\n"
+                        "To use these fonts, you may use either approach:\n"
+                        "\n"
+                        "* load files for specific variants via :py:func:`arcade.load_font`\n"
+                        "* load all variants at once with :py:func:`arcade.resources.load_liberation_fonts`.\n"
+                        "\n"
                     )
 
             n_cols = get_header_num_cols(raw_resource_handle, num_files)
