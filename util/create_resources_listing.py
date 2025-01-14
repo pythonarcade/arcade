@@ -320,8 +320,12 @@ def process_resource_files(out, file_list: List[Path]):
             # IMPORTANT:
             # 1. 11 chars to match the start of "image" above
             # 2. :class: checkered-bg to apply the checkers to transparent images
-            out.write(f"           :class: checkered-bg\n\n")
+            out.write(f"           :class: checkered-bg\n")
+            # 3. :loading: lazy stops GitHub 429ing us ("chill pls") # pending: stop using GH raw as a CDN
+            out.write(f"           :loading: lazy\n")
+            out.write("\n")
             out.write(f"        {name}\n")
+
         elif suffix in SUFFIX_TO_AUDIO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
