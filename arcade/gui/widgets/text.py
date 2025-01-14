@@ -87,7 +87,7 @@ class UILabel(UIWidget):
         font_name=("calibri", "arial"),
         font_size: float = 12,
         text_color: RGBOrA255 = arcade.color.WHITE,
-        bold=False,
+        bold: str | bool = False,
         italic=False,
         align="left",
         multiline: bool = False,
@@ -235,7 +235,9 @@ class UILabel(UIWidget):
                 success.
             font_size: Font size of font.
             font_color: Color of the text.
-            bold: If enabled, the label's text will be in a **bold** style.
+            bold: May be any value in :py:obj:`pyglet.text.Weight`,
+                ``True`` (converts to ``"bold"``), or ``False``
+                (converts to ``"regular"``).
             italic: If enabled, the label's text will be in an *italic*
         """
         font_name = font_name or self._label.font_name
