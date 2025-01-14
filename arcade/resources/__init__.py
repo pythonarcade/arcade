@@ -249,7 +249,7 @@ def load_kenney_fonts() -> None:
     ``"Kenney Rocket Square"``                 ``:resources:fonts/ttf/Kenney/Kenney_Rocket_Square.ttf``
     =========================================  =========================================================================
 
-    """
+    """  # noqa: E501  # Silence ruff  # pending: better generation
     from arcade.text import load_font
 
     load_font(":system:fonts/ttf/Kenney/Kenney_Blocks.ttf")
