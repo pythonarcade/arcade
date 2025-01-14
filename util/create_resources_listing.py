@@ -298,6 +298,7 @@ SUFFIX_TO_VIDEO_TYPE = {
     '.avi': 'avi'
 }
 
+
 def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
 
@@ -343,8 +344,12 @@ def process_resource_files(out, file_list: List[Path]):
         elif suffix == ".glsl":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{path} <{file_path}>`_\n")
-        # Link Tiled maps
-        elif suffix in (".json", ".ttf"):
+        # Fonts
+        elif suffix == ".ttf":
+            file_path = FMT_URL_REF_PAGE.format(resource_path)
+            out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
+        # Tiled maps
+        elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
         else:
