@@ -76,7 +76,7 @@ def skipped_file(file_path: Path):
     return file_path.suffix in skip_extensions
 
 
-MAX_COLS: dict[str, int] = defaultdict(lambda: 3)
+MAX_COLS: dict[str, int] = defaultdict(lambda: 2)
 MAX_COLS[":resources:sounds/"] = 2
 
 
@@ -96,14 +96,15 @@ def create_resource_path(
     path: Path,
     prefix: str = "",
     suffix: str = "",
-    restrict_to_bases=('system', 'assets')
+    restrict_to_bases=('system', 'assets'),
+    relative_to: str | Path = RESOURCE_DIR
 ) -> str:
     """
     Create a resource path. We will use the resources handle
     and will need to the "assets" and "system" directory
     from the path.
     """
-    path = path.relative_to(RESOURCE_DIR)
+    path = path.relative_to(relative_to)
     base = path.parts[0]
     if not restrict_to_bases or base in restrict_to_bases:
         path = path.relative_to(base)
@@ -112,7 +113,7 @@ def create_resource_path(
 
     return f"{prefix}:resources:{path.as_posix()}{suffix}"
 
-
+# NOTE: Max cols up above
 KENNEY_TTFS = "Kenney TTFs"
 LIBERATION_TTFS = "Liberation TTFs"
 
@@ -278,8 +279,8 @@ def process_resource_directory(out, dir: Path):
                     do_heading(out, heading_level, part)
                     visited_headings.add(as_tup)
 
-            if raw_resource_handle == ":resources:images/":
-                _debug_print_files()
+            # if raw_resource_handle == ":resources:images/":
+            #     _debug_print_files()
 
             if raw_resource_handle.startswith(":resources:fonts/ttf/"):
                 _debug_print_files()
@@ -351,6 +352,25 @@ SUFFIX_TO_VIDEO_TYPE = {
 }
 
 
+def code_literal(inner: str) -> str:
+    return f"<code class='literal'>{inner}</code>"
+
+def code_str(inner: str) -> str:
+    code_literal(f"&quot;{inner}&quot;")
+
+BRITTLE_CAP_WORD_REGEX = re.compile(r"[A-Z][a-z0-9]*")
+BRITTLE_FONT_NAME_REGEX = re.compile(
+    r"""^
+    # The 'redundant' \_ escaping improves readability. 
+    (?P<face_name>
+        [A-Z][a-z0-9]*         # first capitalized word
+        (?:\_[A-Z][a-z0-9]*)?  # Optional second title _Word
+    ) 
+    (?:\_  # Optional FaceStyleWords (Bold, Italic, etc)
+        (?P<styles>(?:[A-Z][a-z0-9]*)+)
+    )?
+    """, re.X)
+
 def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
 
@@ -369,6 +389,8 @@ def process_resource_files(out, file_list: List[Path]):
             start_row = " "
         name = path.name
         resource_copyable = f"{create_resource_path(path)}"
+        code_html = f"<code class='literal'>&quot;{resource_copyable}&quot;</code>"
+
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
             out.write(f"    {start_row} - .. image:: ../../{resource_path}\n")
             # IMPORTANT:
@@ -385,21 +407,35 @@ def process_resource_files(out, file_list: List[Path]):
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <audio controls><source src='{file_path}' type='audio/{src_type}'></audio>\n")
-            out.write(f"            <br /><code class='literal'>&quot;{resource_copyable}&quot;</code>\n")
+            out.write(f"            <br />{code_html}\n")
             # out.write(f"            <br /><a href={FMT_URL_REF_PAGE.format(resource_path)}>{path.name} on GitHub</a>\n")
         elif suffix in SUFFIX_TO_VIDEO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <video style=\"max-width: 100%\" controls><source src='{file_path}' type='video/{src_type}'></video>\n")
-            out.write(f"            <br /><code class='literal'>&quot;{resource_copyable}&quot;</code>\n")
+            out.write(f"            <br />{code_html}\n")
         elif suffix == ".glsl":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{path} <{file_path}>`_\n")
         # Fonts
         elif suffix == ".ttf":
-            file_path = FMT_URL_REF_PAGE.format(resource_path)
-            out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
+            face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
+            print(face_name_parts)
+            face_name = (face_name_parts.get("face_name") or '').replace("_", " ")
+            styles = tuple(BRITTLE_CAP_WORD_REGEX.findall(
+                face_name_parts.get('styles', None) or ''))
+
+            # file_path = FMT_URL_REF_PAGE.format(resource_path)
+            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"            {code_str(face_name)}\n")
+            out.write(f"\n")
+            out.write(f"      - .. raw:: html\n\n")
+            #out.write(f"            ")
+            out.write(f"            {code_html}\n")
+            out.write(f"\n")
+            cell_count += 1
+            # out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
         # Tiled maps
         elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
