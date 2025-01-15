@@ -11,10 +11,14 @@ import math
 import re
 import sys
 from collections import defaultdict
+from collections.abc import Mapping
+from dataclasses import dataclass, fields, field
 from functools import lru_cache, cache
 from pathlib import Path
-from typing import List, Callable, Protocol
+from typing import List, Callable, Protocol, Sequence, Iterable, Iterator
 import logging
+
+from typing_extensions import TypedDict, NotRequired
 
 log = logging.getLogger(__name__)
 
@@ -78,7 +82,8 @@ def skipped_file(file_path: Path):
 
 MAX_COLS: dict[str, int] = defaultdict(lambda: 2)
 MAX_COLS[":resources:sounds/"] = 2
-
+# MAX_COLS[":resources:fonts/ttf/Kenney/"] = 3
+# MAX_COLS[":resources:fonts/ttf/Liberation/"] = 3
 
 @lru_cache(maxsize=None)
 def get_header_num_cols(resource_stub: str, n_files = math.inf) -> int:
@@ -236,6 +241,82 @@ def filter_dir(
     return kept
 
 
+
+@dataclass
+class TableCfg(Mapping):
+    """
+    https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#toc-entry-60
+    """
+    header_rows: tuple[tuple[str, ...]] | None = None
+    widths: tuple[str|int, ...] | None = None
+    """Series of widths as lengths or %s (like CSS sorta)"""
+    width: str | int | None = None
+    """One width as a length."""
+    _n_cols: int | None = field(init=False,default=None)
+
+    def __post_init__(self):
+        n_none = 0
+        first_row = None
+        if (header_rows := self.header_rows) is not None:
+            first_row = header_rows[0]
+            r_len = len(first_row)
+            for i, r in enumerate(header_rows, start=1):
+                if len(r) == r_len:
+                    continue
+                raise ValueError(f"mismatched columns at header row {i}: {r}")
+        else:
+            n_none += 1
+
+        if (widths := self.widths) is None:
+            n_none += 1
+
+        if n_none == 1:
+            self._n_cols = len(widths or header_rows)
+        if n_none == 0 and (len(header_rows[0]) != len(widths)):
+            raise ValueError(f"num columns mismatch: {header_rows=} ({len(header_rows)}, {widths=} ({len(widths)})")
+        elif n_none < 2:
+            if widths:
+                self._n_cols = len(widths)
+            elif header_rows:
+                self._n_cols = len(header_rows[0])
+    @property
+    def n_columns(self) -> int | None:
+        return self._n_cols
+
+    def __getitem__(self, __k):
+        try:
+            return getattr(self, __k)
+        except AttributeError as e:
+            raise KeyError(
+                f"key {__k} does not match a known attribute of {self.__class__.__name__}"
+            ) from e
+
+    def __len__(self) -> int:
+        return 3
+
+    def __iter__(self):
+        yield self.header_rows
+        yield self.widths
+        yield self.width
+
+
+STOCK_FONT_TABLE: TableCfg = TableCfg(
+        header_rows=((
+            '``font_name`` :py:class:`arcade.Text`',
+            "Style(s)",
+            ":ref:`Resource Handle <resource_handles>`",
+        ),),
+        widths=(30, 15, 55),
+)
+
+FANCY_TABLES: defaultdict[str, TableCfg] = defaultdict(default=TableCfg(widths=(20,20)))
+FANCY_TABLES.update(
+{
+    "Kenney TTFs": STOCK_FONT_TABLE,
+    "Liberation TTFs" : STOCK_FONT_TABLE
+})
+
+
 def process_resource_directory(out, dir: Path):
     """
     Go through resources in a directory.
@@ -261,27 +342,33 @@ def process_resource_directory(out, dir: Path):
             # pending: post-3.0 time to refactor all of this
             parts = raw_resource_handle.replace(":resources:", "").rstrip("/").split("/")
             display_parts = [format_title_part(part) for part in parts]
-
+            heading_text = None
+            heading_level = None
+            # Get current heading level
             for heading_level, part in enumerate(display_parts, start=1):
+                print("ff", (heading_level, part))
                 if part in SKIP_TITLES:
                     continue
                 as_tup = tuple(display_parts[:heading_level])
-                if as_tup not in visited_headings:
-                    # NASTY! # pending: post 3.0 cleanup
-                    if part in OVERRIDE_LEVELS:
-                        heading_level = OVERRIDE_LEVELS[part]
+                if as_tup in visited_headings:
+                    continue
 
-                    # print("!!!", heading_level, part, as_tup)
+                # NASTY! # pending: post 3.0 cleanup
+                if part in OVERRIDE_LEVELS:
+                    heading_level = OVERRIDE_LEVELS[part]
 
-                    if ref_target := PREFIX_REF_TARGET.get(part, None):
-                        out.write(f".. _{ref_target}:\n")
+                # print("!!!", heading_level, part, as_tup)
 
-                    do_heading(out, heading_level, part)
-                    visited_headings.add(as_tup)
+                if ref_target := PREFIX_REF_TARGET.get(part, None):
+                    out.write(f".. _{ref_target}:\n")
+                heading_text = part
+
+                do_heading(out, heading_level, heading_text)
+                visited_headings.add(as_tup)
 
             # if raw_resource_handle == ":resources:images/":
             #     _debug_print_files()
-
+            print("HT", heading_text, heading_level)
             if raw_resource_handle.startswith(":resources:fonts/ttf/"):
                 _debug_print_files()
                 if raw_resource_handle.endswith("Kenney/"):
@@ -316,23 +403,51 @@ def process_resource_directory(out, dir: Path):
                         "* load all variants at once with :py:func:`arcade.resources.load_liberation_fonts`.\n"
                         "\n"
                     )
-
-            n_cols = get_header_num_cols(raw_resource_handle, num_files)
-            widths = get_column_widths_for_n(n_cols)
-
+            n_cols = None
+            widths = None
+            header_row_data = None
+            header_rows = 0
+            if (fancy_maybe := FANCY_TABLES.get(heading_text)):
+                print("GOT FANCY", fancy_maybe)
+                n_cols = fancy_maybe.n_columns
+                if isinstance(fancy_maybe.widths, tuple):
+                    widths = ' '.join((str(w) for w in fancy_maybe.widths))
+                header_row_data = fancy_maybe.header_rows
+                if header_row_data:
+                    header_rows = len(header_row_data)
+            if n_cols is None:
+                n_cols = get_header_num_cols(raw_resource_handle, num_files)
+            if widths is None:
+                widths = (get_column_widths_for_n(n_cols))
+            header_row_data = header_row_data or ()
+            # m = {
+            #     dict(widths=widths,header)
+            #     **FANCY_TABLES.get(heading_text)
+            # }
             # out.write(f"\n{header_title}\n")
             # out.write("-" * (len(header_title)) + "\n\n")
 
             out.write(f"\n")
-            out.write(f".. raw:: html\n\n")
-            out.write(f"   <code class=\"literal resource-category\">{resource_handle}</code>\n")
+            # out.write(f".. raw:: html\n\n")
+            # out.write(f"   <code class=\"literal resource-category\">{resource_handle}</code>\n\n")
 
             # pending: post-3.0 cleanup?
             #out.write(f".. list-table:: \"{header_title}\"\n")
             out.write(f".. list-table::\n")
-            out.write(f"    :widths: {widths}\n")
-            out.write(f"    :header-rows: 0\n")
+            print("widths ", widths)
+            if widths:
+                out.write(f"    :widths: {widths}\n")
+            if header_rows:
+                out.write(f"    :header-rows: {header_rows}\n")
+
             out.write(f"    :class: resource-table\n\n")
+
+            for row in (header_row_data ):
+                r_iter = iter(row)
+                out.write(f"    * - {next(r_iter)}\n\n")
+                for item in r_iter:
+                    out.write(f"      - {item}\n\n")
+                out.write("\n")
 
             process_resource_files(out, file_list)
             out.write("\n\n")
@@ -352,11 +467,22 @@ SUFFIX_TO_VIDEO_TYPE = {
 }
 
 
-def code_literal(inner: str) -> str:
-    return f"<code class='literal'>{inner}</code>"
+@lru_cache(maxsize=None)
+def _css_classes(css_classes: tuple[str, ...]) -> str:
+    return " ".join(css_classes)
 
-def code_str(inner: str) -> str:
-    code_literal(f"&quot;{inner}&quot;")
+
+def css_classes(css_classes: Iterable[str]) -> str:
+    return _css_classes(tuple(css_classes))
+
+
+def code_literal(inner: str, classes: Sequence = ('literal',)) -> str:
+    classes_str = css_classes(classes)
+    return f"<code class=\"{classes_str}\">{inner}</code>"
+
+def code_str(inner: str, classes: Sequence = ('literal', 'arcade-ez-copy')) -> str:
+    return code_literal(f"&quot;{inner}&quot;", classes=classes)
+
 
 BRITTLE_CAP_WORD_REGEX = re.compile(r"[A-Z][a-z0-9]*")
 BRITTLE_FONT_NAME_REGEX = re.compile(
@@ -374,9 +500,13 @@ BRITTLE_FONT_NAME_REGEX = re.compile(
 def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
 
-    prefix = create_resource_path(file_list[0].parent, suffix="/")
-
-    COLUMNS = get_header_num_cols(prefix, len(file_list))
+    _root = file_list[0].parent
+    prefix = create_resource_path(_root, suffix="/")
+    _KLUDGE = None
+    if (_r_name := _root.name) in ('Kenney', 'Liberation')\
+        and (_fancy := FANCY_TABLES.get(_r_name[2] + " TTFs") ) is not None:
+        _KLUDGE = _fancy.n_columns
+    COLUMNS = _KLUDGE or get_header_num_cols(prefix, len(file_list))
 
     log.info(f"Processing {prefix=!r} with {COLUMNS=!r}")
     for path in file_list:
@@ -420,21 +550,34 @@ def process_resource_files(out, file_list: List[Path]):
             out.write(f"    {start_row} - `{path} <{file_path}>`_\n")
         # Fonts
         elif suffix == ".ttf":
+            # The worst code you've ever seen ; v ; 7  # pending: post-3.0 cleanup
             face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
+            face_name_pieces = (face_name_parts.get("face_name") or '').split('_')
+            _KLUDGE = face_name_pieces[0]  + " TTFs"
+            face_name = code_str(' '.join(face_name_pieces))
             print(face_name_parts)
-            face_name = (face_name_parts.get("face_name") or '').replace("_", " ")
+
             styles = tuple(BRITTLE_CAP_WORD_REGEX.findall(
                 face_name_parts.get('styles', None) or ''))
 
+            ob =  FANCY_TABLES.get(_KLUDGE)
+            print("aaa",  _KLUDGE, ob, ob.n_columns)
+
+            n_row = ob.n_columns
+
+            style_string = ", ".join(styles or ("Regular",))
+            print("row: ", face_name, style_string, code_html)
             # file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(f"            {code_str(face_name)}\n")
-            out.write(f"\n")
+            out.write(f"            {face_name}\n\n")
+            # out.write(f"      - .. raw:: html\n\n")
+            # out.write(f"            ")
+            out.write(f"      - {style_string}\n\n")
             out.write(f"      - .. raw:: html\n\n")
-            #out.write(f"            ")
-            out.write(f"            {code_html}\n")
-            out.write(f"\n")
-            cell_count += 1
+
+            out.write(f"            {code_html}\n\n")
+
+            cell_count += (COLUMNS - 1)
             # out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
         # Tiled maps
         elif suffix == ".json":
