@@ -216,16 +216,33 @@ table.dataTable.display tbody tr.even > .sorting_1 {
 
 table.resource-table {
     empty-cells: hide;
+    white-space: normal;  /* table behavior for CSS styling? maybe dupe of below. */
 }
+
 /* Make the resource page's table cell contents look neat */
-table.resource-table td {
+
+/* Only center the contents of tiles which have images in them
+ * NOTE: The * instead of table alloes for non-table resource tiles
+ */
+*.resource-table td:has(:first-child.resource-thumb) {
     text-align: center;
 }
-table.resource-table td > img {
+.resource-table { width: 100%; max-width: 100%; }
+.wy-response-table,
+.resource-table {}
+ {
+    width: 100%;
+    max-width: 100%;
+}
+.wy-responsive-table table :is(th, td) {
+    white-space: normal;
+}
+table.resource-table td > img.resource-thumb {
     display: inline-block;
     /* Maximum 20% of the smallest display dimension */
     max-width: min(20vw, 20vh);
 }
+
 
 table.colorTable {
     border-width: 1px;

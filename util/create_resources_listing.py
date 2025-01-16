@@ -302,7 +302,7 @@ class TableCfg(Mapping):
 
 STOCK_FONT_TABLE: TableCfg = TableCfg(
         header_rows=((
-            '``font_name`` :py:class:`arcade.Text`',
+            ':py:class:`font_name <arcade.Text>`',
             "Style(s)",
             ":ref:`Resource Handle <resource_handles>`",
         ),),
@@ -316,6 +316,8 @@ FANCY_TABLES.update(
     "Liberation TTFs" : STOCK_FONT_TABLE
 })
 
+ALL_THE_PATHS = []
+
 
 def process_resource_directory(out, dir: Path):
     """
@@ -325,6 +327,7 @@ def process_resource_directory(out, dir: Path):
     for path in filter_dir(dir, keep=is_nonprotected_dir):
         # out.write(f"\n{cur_node.name}\n")
         # out.write("-" * len(cur_node.name) + "\n\n")
+        ALL_THE_PATHS.append(path)
 
         file_list = filter_dir(path, keep=is_unskipped_file)
         num_files = len(file_list)
@@ -375,7 +378,7 @@ def process_resource_directory(out, dir: Path):
                     out.write("\n")
 
                     out.write(".. figure:: images/fonts_blue.png\n")
-                    # out.write("   :align: center\n")
+                    out.write("   :align: center\n")
                     out.write("   :alt: The bundled Kenney.nl fonts.\n")
                     out.write("\n")
                     # Put the text *after* the CSS, or add <br> via .. raw:: html blocks
@@ -389,7 +392,7 @@ def process_resource_directory(out, dir: Path):
                         "\n"
                         ".. figure:: images/fonts_liberation.png\n"
                         "   :alt: The bundled Liberation font family trio.\n"
-                        #"   :align: center\n"
+                        "   :align: center\n"
                         # Put the text *after* the CSS, or add <br> via .. raw:: html blocks
                         # since the CSS may be broken.
                         "\n"
@@ -405,6 +408,7 @@ def process_resource_directory(out, dir: Path):
                     )
             n_cols = None
             widths = None
+            width = str(100)
             header_row_data = None
             header_rows = 0
             if (fancy_maybe := FANCY_TABLES.get(heading_text)):
@@ -439,7 +443,9 @@ def process_resource_directory(out, dir: Path):
                 out.write(f"    :widths: {widths}\n")
             if header_rows:
                 out.write(f"    :header-rows: {header_rows}\n")
+            if width:
 
+                out.write(f"    :width: {width}\n")
             out.write(f"    :class: resource-table\n\n")
 
             for row in (header_row_data ):
@@ -480,10 +486,12 @@ def code_literal(inner: str, classes: Sequence = ('literal',)) -> str:
     classes_str = css_classes(classes)
     return f"<code class=\"{classes_str}\">{inner}</code>"
 
+
 def code_str(inner: str, classes: Sequence = ('literal', 'arcade-ez-copy')) -> str:
     return code_literal(f"&quot;{inner}&quot;", classes=classes)
 
 
+# Regex because it's easier to make complicated
 BRITTLE_CAP_WORD_REGEX = re.compile(r"[A-Z][a-z0-9]*")
 BRITTLE_FONT_NAME_REGEX = re.compile(
     r"""^
@@ -496,6 +504,7 @@ BRITTLE_FONT_NAME_REGEX = re.compile(
         (?P<styles>(?:[A-Z][a-z0-9]*)+)
     )?
     """, re.X)
+
 
 def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
@@ -519,35 +528,38 @@ def process_resource_files(out, file_list: List[Path]):
             start_row = " "
         name = path.name
         resource_copyable = f"{create_resource_path(path)}"
-        code_html = f"<code class='literal'>&quot;{resource_copyable}&quot;</code>"
+        code_html = code_str(resource_copyable)
 
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
             out.write(f"    {start_row} - .. image:: ../../{resource_path}\n")
             # IMPORTANT:
             # 1. 11 chars to match the start of "image" above
             # 2. :class: checkered-bg to apply the checkers to transparent images
-            out.write(f"           :class: checkered-bg\n")
+            out.write(f"           :class: checkered-bg resource-thumb\n")
             # 3. :loading: lazy stops GitHub 429ing us ("chill pls") # pending: stop using GH raw as a CDN
             out.write(f"           :loading: lazy\n")
-            out.write("\n")
-            out.write(f"        {name}\n")
+            out.write("\n\n")
+            out.write(f"        .. raw:: html\n\n")
+            out.write(f"           <br />{code_html}\n")
+
 
         elif suffix in SUFFIX_TO_AUDIO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(f"            <audio controls><source src='{file_path}' type='audio/{src_type}'></audio>\n")
+            out.write(f"            <audio class=\"resource-thumb\" controls><source src='{file_path}' type='audio/{src_type}'></audio>\n")
             out.write(f"            <br />{code_html}\n")
             # out.write(f"            <br /><a href={FMT_URL_REF_PAGE.format(resource_path)}>{path.name} on GitHub</a>\n")
+
         elif suffix in SUFFIX_TO_VIDEO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(f"            <video style=\"max-width: 100%\" controls><source src='{file_path}' type='video/{src_type}'></video>\n")
+            out.write(f"            <video class=\"resource-thumb\" style=\"max-width: 100%\" controls><source src='{file_path}' type='video/{src_type}'></video>\n")
             out.write(f"            <br />{code_html}\n")
         elif suffix == ".glsl":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
-            out.write(f"    {start_row} - `{path} <{file_path}>`_\n")
+            out.write(f"    {start_row} - `{code_html} <{file_path}>`_\n")
         # Fonts
         elif suffix == ".ttf":
             # The worst code you've ever seen ; v ; 7  # pending: post-3.0 cleanup
@@ -563,7 +575,6 @@ def process_resource_files(out, file_list: List[Path]):
             ob =  FANCY_TABLES.get(_KLUDGE)
             print("aaa",  _KLUDGE, ob, ob.n_columns)
 
-            n_row = ob.n_columns
 
             style_string = ", ".join(styles or ("Regular",))
             print("row: ", face_name, style_string, code_html)
@@ -582,9 +593,13 @@ def process_resource_files(out, file_list: List[Path]):
         # Tiled maps
         elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
-            out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
+            icon = "tiled_icon_digi_pls_replace.png"
+            out.write(f"    {start_row} - .. image:: images/{icon}\n")
+            out.write(f"                     :class: resource-thumb\n\n")
+            out.write(f"        .. raw:: html\n\n")
+            out.write(f"            <br /><a target=\"_blank\" href=\"{file_path}\">{code_html}</a>\n\n")
         else:
-            out.write(f"    {start_row} - {name}\n")
+            out.write(f"    {start_row} - {code_html}\n")
         # The below doesn't work because of how raw HTML / Sphinx images interact:
         # out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
         cell_count += 1
