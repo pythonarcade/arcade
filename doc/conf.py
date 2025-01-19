@@ -162,7 +162,7 @@ language = "en"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = [
-    "links.rst",
+    "_includes/*",
     "substitutions.rst",
     "_archive/*",
 ]
@@ -243,7 +243,6 @@ intersphinx_mapping = {
     'pymunk': ('https://www.pymunk.org/en/latest/', None),
 }
 
-
 # These will be joined as one block and prepended to every source file.
 # Substitutions for |version| and |release| are predefined by Sphinx.
 PROLOG_PARTS = [
@@ -251,7 +250,7 @@ PROLOG_PARTS = [
     ".. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.Player`",
     ".. _Arcade's License File on GitHub: {FMT_URL_REF_BASE}/license.rst"
 ]
-with open("links.rst") as f:
+with open("_includes/links.rst") as f:
     PROLOG_PARTS.extend(f.readlines())
 
 rst_prolog = "\n".join(PROLOG_PARTS)

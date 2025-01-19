@@ -59,7 +59,9 @@ except Exception as _:
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
 RESOURCE_DIR = ARCADE_ROOT / "arcade" / "resources"
-OUT_FILE = ARCADE_ROOT / "doc" / "api_docs" / "resources.rst"
+DOC_ROOT = ARCADE_ROOT / "doc"
+INCLUDES_ROOT = DOC_ROOT / "_includes"
+OUT_FILE = DOC_ROOT / "api_docs" / "resources.rst"
 
 
 # Metadata for the resource list: utils\create_resource_list.py
@@ -375,38 +377,13 @@ def process_resource_directory(out, dir: Path):
             print("HT", heading_text, heading_level)
             if raw_resource_handle.startswith(":resources:fonts/ttf/"):
                 _debug_print_files()
+                out.write("\n")
                 if raw_resource_handle.endswith("Kenney/"):
-                    out.write("\n")
-
-                    out.write(".. figure:: images/fonts_blue.png\n")
-                    out.write("   :align: center\n")
-                    out.write("   :alt: The bundled Kenney.nl fonts.\n")
-                    out.write("\n")
-                    # Put the text *after* the CSS, or add <br> via .. raw:: html blocks
-                    # since the CSS may be broken.
-                    out.write("Arcade includes the following fonts from `Kenney.nl's font pack <https://kenney.nl/assets/kenney-fonts>`_\n")
-                    out.write("are available using the path and filenames below.\n")
-                    out.write("\n")
+                    out.include_file(INCLUDES_ROOT / "resources_Kenney.rst")
 
                 elif raw_resource_handle.endswith("Liberation/"):
-                    out.write(
-                        "\n"
-                        ".. figure:: images/fonts_liberation.png\n"
-                        "   :alt: The bundled Liberation font family trio.\n"
-                        "   :align: center\n"
-                        # Put the text *after* the CSS, or add <br> via .. raw:: html blocks
-                        # since the CSS may be broken.
-                        "\n"
-                        "Arcade also includes the Liberation font family. This trio is designed and\n"
-                        "licensed specifically to be a portable, drop-in set of substitutes for Times, Arial,\n"
-                        "and Courier fonts. It uses the proven, commercial-friendly `SIL Open Font License`_.\n"
-                        "\n"
-                        "To use these fonts, you may use either approach:\n"
-                        "\n"
-                        "* load files for specific variants via :py:func:`arcade.load_font`\n"
-                        "* load all variants at once with :py:func:`arcade.resources.load_liberation_fonts`.\n"
-                        "\n"
-                    )
+                    out.include_file(INCLUDES_ROOT / "resources_Liberation.rst")
+
             n_cols = None
             widths = None
             width = str(100)
@@ -445,7 +422,6 @@ def process_resource_directory(out, dir: Path):
             if header_rows:
                 out.write(f"    :header-rows: {header_rows}\n")
             if width:
-
                 out.write(f"    :width: {width}\n")
             out.write(f"    :class: resource-table\n\n")
 
