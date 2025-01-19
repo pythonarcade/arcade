@@ -31,14 +31,14 @@ Keep the following in mind:
 ## What did Sphinx break this time?
 
 1. Sphinx has a long-standing bug which fails to copy static files
-   https://github.com/sphinx-doc/sphinx/issues/181
+   https://github.com/sphinx-doc/sphinx/issues/1810
 
-2. They only merged a PR for this into their dev branch on Jan 13, 2025:
+2. The fix is slated for 8.2.0 and the fix PR merged on Jan 13, 2025:
    https://github.com/sphinx-doc/sphinx/pull/13236
 
 3. No, Arcade 3.0 **will not wait** for the following:
 
-   1. Sphinx 3.1.4+ to ship the fix for the problem
+   1. Sphinx 3.2.0 to ship the fix for the problem
    2. Themes to become compatible
    3. Plugins to become compatible
    4. Our customizations to be tested with all of the above
