@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
 from __future__ import annotations
+
+import shutil
 from functools import cache
 import logging
 from pathlib import Path
@@ -27,14 +29,59 @@ log = logging.getLogger('conf.py')
 logging.basicConfig(level=logging.INFO)
 
 HERE = Path(__file__).resolve()
-REPO_LOCAL_ROOT = HERE.parent.parent
+DOC_DIR = HERE.parent
+REPO_LOCAL_ROOT = DOC_DIR.parent
+
+STATIC_SOURCE_DIR = DOC_DIR / "_static"
 ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
 UTIL_DIR = REPO_LOCAL_ROOT / "util"
+BUILD_DIR = REPO_LOCAL_ROOT / "build"
+BUILD_HTML_DIR = BUILD_DIR / "html"
+BUILD_STATIC_DIR = BUILD_HTML_DIR / "_static"
+
 
 log.info(f"Absolute path for our conf.py       : {str(HERE)!r}")
 log.info(f"Absolute path for the repo root     : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the arcade module : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the util dir      : {str(UTIL_DIR)!r}")
+
+STATIC_CSS_DIR = STATIC_SOURCE_DIR / "css"
+# Make it move because Sphinx only fixed the copy issue as of a few days ago
+# https://github.com/sphinx-doc/sphinx/pull/13236
+# https://github.com/sphinx-doc/sphinx/issues/1810
+force_copy_on_change = {  # pending: sphinx >= 8.1.4
+    source_file: BUILD_STATIC_DIR / f"css/{source_file.name}"
+    for source_file in STATIC_CSS_DIR.glob("*.css")
+}
+
+
+def force_sync(src, dest, dry: bool = False):
+    if sphinx.__version__ >= '8.1.4':
+        log.warning(
+            'Sphinx >= 8.1.4 may patch broken _static copy\n'
+            '  (see https://github.com/sphinx-doc/sphinx/issues/1810)')
+    try:
+        if src.read_text() != dest.read_text():
+            if dry:
+                log.info(f" DRY : {src} was out of date, but dry run left it as-is!")
+            # shutil.copyfile(src, dest)
+            else:
+                log.info(f" SYNC: {src} was out of date!")
+
+        else:
+            log.info(f" SKIP: {src} is current!")
+    except Exception as e:
+        log.error(f" FAIL: {src} failed: {e}")
+        raise e
+
+
+if BUILD_HTML_DIR.exists():
+    for src, dest in force_copy_on_change.items():
+        force_sync(src, dest)
+else:
+    log.info("Skipping force-sync due to no build dir")
+
+
 
 # _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
 
@@ -43,6 +90,7 @@ sys.path.insert(0, str(ARCADE_MODULE))
 log.info(f"Inserted elements in system path: First two are now:")
 for i in range(2):
     log.info(f"  {i}: {sys.path[i]!r}")
+
 
 # Don't change to
 # from arcade.version import VERSION
