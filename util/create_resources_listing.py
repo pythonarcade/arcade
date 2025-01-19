@@ -176,7 +176,12 @@ headings_lookup = (
 visited_headings = set()
 
 
-def do_heading(out, relative_heading_level: int, heading_text: str) -> None:
+def do_heading(
+        out,
+        relative_heading_level: int,
+        heading_text: str,
+        ref_target: str | None = None
+) -> None:
     """Writes a heading to the output file.
 
     If the page heading is beyond what we have symbols for, the Sphinx
@@ -186,11 +191,14 @@ def do_heading(out, relative_heading_level: int, heading_text: str) -> None:
         out: A file-like object which acts like its opened with ``"w"``
         relative_heading_level: Heading level relative to the page root.
         heading_text: The heading text to display.
-
+        ref_target: ``True`` to auto-generate it or a str to use a specific one.
     """
     out.write("\n")
     print(f"doing heading: {heading_text!r} {relative_heading_level}")
     num_headings = len(headings_lookup)
+
+    if ref_target:
+        out.write(f".. _{ref_target}:\n\n")
 
     if relative_heading_level >= num_headings:
         # pending: post-3.0 cleanup
@@ -365,11 +373,10 @@ def process_resource_directory(out, dir: Path):
 
                 # print("!!!", heading_level, part, as_tup)
 
-                if ref_target := PREFIX_REF_TARGET.get(part, None):
-                    out.write(f".. _{ref_target}:\n")
+                ref_target = PREFIX_REF_TARGET.get(part, None)
                 heading_text = part
 
-                do_heading(out, heading_level, heading_text)
+                do_heading(out, heading_level, heading_text, ref_target=ref_target)
                 visited_headings.add(as_tup)
 
             # if raw_resource_handle == ":resources:images/":
