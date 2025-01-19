@@ -1,28 +1,47 @@
 #!/usr/bin/env python3
 """
-A quick, ugly fix for a broken static file handler.
+Gets 3.0 out the door by temp fixing Sphinx rebuild not copying CSS.
 
-This runs sync over static folders entries crucial for web dev
-which Sphinx <= 8.1.3 does not properly handle due to early exit
-checks. Keep the following in mind:
+IMPORTANT: ONLY LOCAL DEVELOPER MACHINES NEED THIS!
 
-1. It is not tested to work with sphinx-autobuild or ./make.py serve
-2. It was created for use with Arcade' ./make.py html
+## Who should use this?
 
-To enable it on your system:
+Does `./make.py html` fail to copy modified CSS files on your dev machine?
 
-1. cd to your repo root
-2. `touch  .ENABLE_DEVMACHINE_SPHINX_STATIC_FIX`
+| Behavior                  | Action                             |
+|---------------------------|------------------------------------|
+| I use `./make.py serve`.  | Don't worry about it               |
+| It won't copy CSS changes.| Keep reading                       |
+| Works on my machine       | Check if you use `./make.py serve` |
 
-Removal requires:
+## How do I use this?
 
-1. Sphinx 8.1.4 or another version ships the fixes:
+1. `cd` to the repo root
+2. `touch .ENABLE_DEVMACHINE_SPHINX_STATIC_FIX`
+3. `./make.py html` with working CSS change updates copying
 
-   * https://github.com/sphinx-doc/sphinx/pull/13236
-   * https://github.com/sphinx-doc/sphinx/issues/181
+## When should I be careful?
 
-2. We verify it as compatible with Arcade's dependencies
+Keep the following in mind:
 
+1. It is not tested to work with sphinx-autobuild or `./make.py serve`
+2. It was created for use with Arcade's `./make.py html`
+3. No real config options atm (PRs welcome)
+
+## What did Sphinx break this time?
+
+1. Sphinx has a long-standing bug which fails to copy static files
+   https://github.com/sphinx-doc/sphinx/issues/181
+
+2. They only merged a PR for this into their dev branch on Jan 13, 2025:
+   https://github.com/sphinx-doc/sphinx/pull/13236
+
+3. No, Arcade 3.0 **will not wait** for the following:
+
+   1. Sphinx 3.1.4+ to ship the fix for the problem
+   2. Themes to become compatible
+   3. Plugins to become compatible
+   4. Our customizations to be tested with all of the above
 
 """
 
@@ -33,6 +52,7 @@ from sphinx import __version__ as sphinx_version
 
 UTIL_DIR = Path(__file__).parent.resolve()
 REPO_ROOT = UTIL_DIR.parent.resolve()
+
 # Ensure we get utility & Arcade imports first
 sys.path.insert(0, str(REPO_ROOT))
 
@@ -54,7 +74,17 @@ force_copy_on_change = {  # pending: sphinx >= 8.1.4
     for source_file in STATIC_CSS_DIR.glob("*.css")
 }
 
-def force_sync(src, dest, dry: bool = False):
+
+def force_sync(src: Path, dest: Path, dry: bool = False) -> None:
+    """Sync a single file from ``src`` to ``dest``.
+
+    Caveats:
+
+    1. Assumes both are `pathlib.Path` instances
+    2. Assumes both are small
+    3. Fails hard when a file isn't found
+
+    """
     if sphinx_version >= '8.1.4':
         log.warning(
             'Sphinx >= 8.1.4 may patch broken _static copy\n'

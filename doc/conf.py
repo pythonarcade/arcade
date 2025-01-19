@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
 from __future__ import annotations
-
-import shutil
 from functools import cache
 import logging
 from pathlib import Path
@@ -29,20 +27,15 @@ log = logging.getLogger('conf.py')
 logging.basicConfig(level=logging.INFO)
 
 HERE = Path(__file__).resolve()
-DOC_DIR = HERE.parent
-REPO_LOCAL_ROOT = DOC_DIR.parent
+REPO_LOCAL_ROOT = HERE.parent.parent
 
 ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
 UTIL_DIR = REPO_LOCAL_ROOT / "util"
-BUILD_DIR = REPO_LOCAL_ROOT / "build"
-BUILD_HTML_DIR = BUILD_DIR / "html"
-
 
 log.info(f"Absolute path for our conf.py       : {str(HERE)!r}")
 log.info(f"Absolute path for the repo root     : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the arcade module : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the util dir      : {str(UTIL_DIR)!r}")
-
 
 # _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
 
@@ -51,7 +44,6 @@ sys.path.insert(0, str(ARCADE_MODULE))
 log.info(f"Inserted elements in system path: First two are now:")
 for i in range(2):
     log.info(f"  {i}: {sys.path[i]!r}")
-
 
 # Don't change to
 # from arcade.version import VERSION
@@ -97,6 +89,8 @@ def run_util(filename, run_name="__main__", init_globals=None):
 
     runpy.run_path(full_str, **kwargs)
 
+# Temp fix for Sphinx not copying static files  # pending: post-3.0 refactor
+# Enable by creating a .ENABLE_DEVMACHINE_SPHINX_STATIC_FIX
 run_util("sphinx_static_file_temp_fix.py")
 
 # Make thumbnails for the example code screenshots
