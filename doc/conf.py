@@ -32,28 +32,30 @@ HERE = Path(__file__).resolve()
 DOC_DIR = HERE.parent
 REPO_LOCAL_ROOT = DOC_DIR.parent
 
+# pending: Sphinx 8.1.4 + deps verified as compatible with Arcade to fix static copy
+# Make it move because Sphinx only fixed the copy issue as of a few days ago
+# https://github.com/sphinx-doc/sphinx/pull/13236
+# https://github.com/sphinx-doc/sphinx/issues/181
+ENABLE_DEVMACHINE_SPHINX_STATIC_FIX = REPO_LOCAL_ROOT / ".ENABLE_DEVMACHINE_SPHINX_STATIC_FIX"
 STATIC_SOURCE_DIR = DOC_DIR / "_static"
+
 ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
 UTIL_DIR = REPO_LOCAL_ROOT / "util"
 BUILD_DIR = REPO_LOCAL_ROOT / "build"
 BUILD_HTML_DIR = BUILD_DIR / "html"
 BUILD_STATIC_DIR = BUILD_HTML_DIR / "_static"
 
-
 log.info(f"Absolute path for our conf.py       : {str(HERE)!r}")
 log.info(f"Absolute path for the repo root     : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the arcade module : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the util dir      : {str(UTIL_DIR)!r}")
 
+
 STATIC_CSS_DIR = STATIC_SOURCE_DIR / "css"
-# Make it move because Sphinx only fixed the copy issue as of a few days ago
-# https://github.com/sphinx-doc/sphinx/pull/13236
-# https://github.com/sphinx-doc/sphinx/issues/1810
 force_copy_on_change = {  # pending: sphinx >= 8.1.4
     source_file: BUILD_STATIC_DIR / f"css/{source_file.name}"
     for source_file in STATIC_CSS_DIR.glob("*.css")
 }
-
 
 def force_sync(src, dest, dry: bool = False):
     if sphinx.__version__ >= '8.1.4':
@@ -75,12 +77,14 @@ def force_sync(src, dest, dry: bool = False):
         raise e
 
 
-if BUILD_HTML_DIR.exists():
+if not ENABLE_DEVMACHINE_SPHINX_STATIC_FIX.exists():
+    log.info(f"SKIP: Force-sync found no {ENABLE_DEVMACHINE_SPHINX_STATIC_FIX} file!")
+elif BUILD_HTML_DIR.exists():
+    log.info(f"SYNC: Force-sync enable file found")
     for src, dest in force_copy_on_change.items():
         force_sync(src, dest)
 else:
     log.info("Skipping force-sync due to no build dir")
-
 
 
 # _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')

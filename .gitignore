@@ -58,3 +58,7 @@ temp/
 .python-version
 
 .flake8
+
+# pending: Sphinx 8.1.4 + deps are verified as workin with arcade
+# this works around an annoying static copy issue
+.ENABLE_DEVMACHINE_SPHINX_STATIC_FIX
