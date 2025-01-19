@@ -107,6 +107,7 @@ def force_sync(src: Path, dest: Path, dry: bool = False) -> None:
 def main():
     if not ENABLE_DEVMACHINE_SPHINX_STATIC_FIX.exists():
         log.info(f"SKIP: Force-sync found no {ENABLE_DEVMACHINE_SPHINX_STATIC_FIX} file!")
+        return
     elif BUILD_HTML_DIR.exists():
         log.info(f"SYNC: Force-sync enable file found")
         for src, dest in force_copy_on_change.items():
