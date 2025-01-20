@@ -6,13 +6,8 @@ IMPORTANT: ONLY LOCAL DEVELOPER MACHINES NEED THIS!
 
 ## Who should use this?
 
-Does `./make.py html` fail to copy modified CSS files on your dev machine?
-
-| Behavior                  | Action                             |
-|---------------------------|------------------------------------|
-| I use `./make.py serve`.  | Don't worry about it               |
-| It won't copy CSS changes.| Keep reading                       |
-| Works on my machine       | Check if you use `./make.py serve` |
+If `./make.py clean` seems like the only way to get `./make.py html` or
+`./make.py serve` to serve your modified CSS, then yes, it's for you.
 
 ## How do I use this?
 
@@ -24,11 +19,14 @@ Does `./make.py html` fail to copy modified CSS files on your dev machine?
 
 Keep the following in mind:
 
-1. It is not tested to work with sphinx-autobuild or `./make.py serve`
-2. It was created for use with Arcade's `./make.py html`
-3. No real config options atm (PRs welcome)
+1. It is a temp fix which *seems* to work with both:
 
-## What did Sphinx break this time?
+   * `./make.py html`
+   * `./make.py serve`
+
+3. No real config options other on/off via file presence
+
+## What's Broken in Sphinx?
 
 1. Sphinx has a long-standing bug which fails to copy static files
    https://github.com/sphinx-doc/sphinx/issues/1810
@@ -64,13 +62,13 @@ STATIC_SOURCE_DIR = DOC_DIR / "_static"
 ENABLE_DEVMACHINE_SPHINX_STATIC_FIX = REPO_ROOT / ".ENABLE_DEVMACHINE_SPHINX_STATIC_FIX"
 
 BUILD_DIR = REPO_ROOT / "build"
-BUILD_HTML_DIR = BUILD_DIR / "html"
+BUILD_HTML_DIR = BUILD_DIR / "html" / "doc"
 BUILD_STATIC_DIR = BUILD_HTML_DIR / "_static"
-
+BUILD_CSS_DIR = BUILD_STATIC_DIR / "css"
 
 STATIC_CSS_DIR = STATIC_SOURCE_DIR / "css"
 force_copy_on_change = {  # pending: sphinx >= 8.1.4
-    source_file: BUILD_STATIC_DIR / f"css/{source_file.name}"
+    source_file: BUILD_CSS_DIR / source_file.name
     for source_file in STATIC_CSS_DIR.glob("*.css")
 }
 
@@ -108,12 +106,13 @@ def main():
     if not ENABLE_DEVMACHINE_SPHINX_STATIC_FIX.exists():
         log.info(f"SKIP: Force-sync found no {ENABLE_DEVMACHINE_SPHINX_STATIC_FIX} file!")
         return
-    elif BUILD_HTML_DIR.exists():
-        log.info(f"SYNC: Force-sync enable file found")
-        for src, dest in force_copy_on_change.items():
-            force_sync(src, dest)
-    else:
+    elif not BUILD_HTML_DIR.exists():
         log.info("Skipping force-sync due to no build dir")
+        return
+
+    log.info(f"SYNC: Force-sync enable file found")
+    for src, dest in force_copy_on_change.items():
+        force_sync(src, dest)
 
 
 if __name__ == "__main__":
