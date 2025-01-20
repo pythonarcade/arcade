@@ -28,6 +28,7 @@ logging.basicConfig(level=logging.INFO)
 
 HERE = Path(__file__).resolve()
 REPO_LOCAL_ROOT = HERE.parent.parent
+
 ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
 UTIL_DIR = REPO_LOCAL_ROOT / "util"
 
@@ -88,13 +89,16 @@ def run_util(filename, run_name="__main__", init_globals=None):
 
     runpy.run_path(full_str, **kwargs)
 
+# Temp fix for Sphinx not copying static files  # pending: post-3.0 refactor
+# Enable by creating a .ENABLE_DEVMACHINE_SPHINX_STATIC_FIX
+run_util("sphinx_static_file_temp_fix.py")
+
 # Make thumbnails for the example code screenshots
 run_util("generate_example_thumbnails.py")
 # Create a tabular representation of the resources with embeds
 run_util("create_resources_listing.py", init_globals=RESOURCE_GLOBALS)
 # Run the generate quick API index script
 run_util('../util/update_quick_index.py')
-
 
 autodoc_inherit_docstrings = False
 autodoc_default_options = {
