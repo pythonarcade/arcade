@@ -42,19 +42,19 @@ Keep the following in mind:
    4. Our customizations to be tested with all of the above
 
 """
-
+import shutil
 import sys
 import logging
 from pathlib import Path
-from sphinx import __version__ as sphinx_version
 
-UTIL_DIR = Path(__file__).parent.resolve()
+FILE = Path(__file__)
+UTIL_DIR = FILE.parent.resolve()
 REPO_ROOT = UTIL_DIR.parent.resolve()
 
 # Ensure we get utility & Arcade imports first
 sys.path.insert(0, str(REPO_ROOT))
 
-log = logging.getLogger(__name__)
+log = logging.getLogger(str(FILE.relative_to(REPO_ROOT)))
 
 DOC_DIR = REPO_ROOT / "doc"
 STATIC_SOURCE_DIR = DOC_DIR / "_static"
@@ -65,15 +65,25 @@ BUILD_DIR = REPO_ROOT / "build"
 BUILD_HTML_DIR = BUILD_DIR / "html"
 BUILD_STATIC_DIR = BUILD_HTML_DIR / "_static"
 BUILD_CSS_DIR = BUILD_STATIC_DIR / "css"
-
 STATIC_CSS_DIR = STATIC_SOURCE_DIR / "css"
-force_copy_on_change = {  # pending: sphinx >= 8.1.4
-    source_file: BUILD_CSS_DIR / source_file.name
-    for source_file in STATIC_CSS_DIR.glob("*.css")
+
+force_copy_on_change: dict[Path, Path] = {  # pending: sphinx >= 8.1.4
+    # You can add per-dir config the lazy way:
+    # 1. copy & paste this block
+    # 2. modifying it with filtering
+    **{
+        source_file: BUILD_CSS_DIR / source_file.name
+        for source_file in STATIC_CSS_DIR.glob("*.*")
+    },
 }
 
 
-def force_sync(src: Path, dest: Path, dry: bool = False) -> None:
+# pending: some clever use of util/doc_helpers/vfs.py
+def force_sync(
+    src: Path,
+    dest: Path,
+    dry: bool = False
+) -> None:
     """Sync a single file from ``src`` to ``dest``.
 
     Caveats:
@@ -83,36 +93,43 @@ def force_sync(src: Path, dest: Path, dry: bool = False) -> None:
     3. Fails hard when a file isn't found
 
     """
-    if sphinx_version >= '8.1.4':
-        log.warning(
-            'Sphinx >= 8.1.4 may patch broken _static copy\n'
-            '  (see https://github.com/sphinx-doc/sphinx/issues/1810)')
-    try:
-        if src.read_text() != dest.read_text():
-            if dry:
-                log.info(f" DRY : {src} was out of date, but dry run left it as-is!")
-            # shutil.copyfile(src, dest)
-            else:
-                log.info(f" SYNC: {src} was out of date!")
 
+    try:
+        if src.read_text() == dest.read_text():
+            log.info(f"   SKIP: {src} is current!")
+        elif dry:
+            log.info(f"   DRY : {src} was out of date, but dry run left it as-is!")
         else:
-            log.info(f" SKIP: {src} is current!")
+            log.info(f"   SYNC: {src} was out of date!")
+            shutil.copyfile(src, dest)
     except Exception as e:
-        log.error(f" FAIL: {src} failed: {e}")
+        log.error(f"   FAIL: {src} failed: {e}")
         raise e
 
 
 def main():
-    if not ENABLE_DEVMACHINE_SPHINX_STATIC_FIX.exists():
-        log.info(f"SKIP: Force-sync found no {ENABLE_DEVMACHINE_SPHINX_STATIC_FIX} file!")
-        return
-    elif not BUILD_HTML_DIR.exists():
-        log.info(f"SKIP: {BUILD_HTML_DIR} does not exist yet.")
-        return
+    skip_reason = None
 
-    log.info(f"SYNC: Force-sync enable file found")
-    for src, dest in force_copy_on_change.items():
-        force_sync(src, dest)
+    if not ENABLE_DEVMACHINE_SPHINX_STATIC_FIX.exists():
+        skip_reason = f"SKIP: Force sync not enabled by a {ENABLE_DEVMACHINE_SPHINX_STATIC_FIX} file!"
+    elif not BUILD_HTML_DIR.exists():
+        skip_reason = f"SKIP: {BUILD_HTML_DIR} does not exist yet."
+
+    if skip_reason is not None:
+        log.info(" " + skip_reason)
+    else:
+        # indented so we can grep for Done force-syncing in the logs
+        from sphinx import __version__ as sphinx_version
+        log.info(f" SYNC: Force-sync enable file found and build-dir exists")
+        if sphinx_version >= '8.1.4':
+            log.warning(
+                ' Sphinx >= 8.1.4 may patch broken _static copy\n'
+                '  (see https://github.com/sphinx-doc/sphinx/issues/1810)')
+
+        for src, dest in force_copy_on_change.items():
+            force_sync(src, dest)
+
+    log.info(" Done force-syncing.")
 
 
 if __name__ == "__main__":
