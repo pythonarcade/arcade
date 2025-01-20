@@ -135,9 +135,10 @@ class Camera2D:
                 f"projection depth is 0 due to equal {near=}" f"and {far=} values"
             )
 
-        _pos = position or (half_width, half_height)
+        pos_x = position[0] if position is not None else half_width
+        pos_y = position[1] if position is not None else half_height
         self._camera_data = CameraData(
-            position=(_pos[0], _pos[1], 0.0),
+            position=(pos_x, pos_y, 0.0),
             up=(up[0], up[1], 0.0),
             forward=(0.0, 0.0, -1.0),
             zoom=zoom,
@@ -240,9 +241,9 @@ class Camera2D:
             render_target=render_target, window=window, viewport=viewport, scissor=scissor
         )
 
-        if camera_data:
+        if camera_data is not None:
             new_camera._camera_data = camera_data
-        if projection_data:
+        if projection_data is not None:
             new_camera._projection_data = projection_data
 
         return new_camera
