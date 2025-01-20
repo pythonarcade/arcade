@@ -62,7 +62,7 @@ STATIC_SOURCE_DIR = DOC_DIR / "_static"
 ENABLE_DEVMACHINE_SPHINX_STATIC_FIX = REPO_ROOT / ".ENABLE_DEVMACHINE_SPHINX_STATIC_FIX"
 
 BUILD_DIR = REPO_ROOT / "build"
-BUILD_HTML_DIR = BUILD_DIR / "html" / "doc"
+BUILD_HTML_DIR = BUILD_DIR / "html"
 BUILD_STATIC_DIR = BUILD_HTML_DIR / "_static"
 BUILD_CSS_DIR = BUILD_STATIC_DIR / "css"
 
@@ -107,7 +107,7 @@ def main():
         log.info(f"SKIP: Force-sync found no {ENABLE_DEVMACHINE_SPHINX_STATIC_FIX} file!")
         return
     elif not BUILD_HTML_DIR.exists():
-        log.info("Skipping force-sync due to no build dir")
+        log.info(f"SKIP: {BUILD_HTML_DIR} does not exist yet.")
         return
 
     log.info(f"SYNC: Force-sync enable file found")
