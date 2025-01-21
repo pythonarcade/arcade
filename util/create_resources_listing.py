@@ -16,7 +16,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, fields, field
 from functools import lru_cache, cache
 from pathlib import Path
-from typing import List, Callable, Protocol, Sequence, Iterable, Iterator
+from typing import List, Callable, Protocol, Sequence, Iterable, Iterator, Any
 import logging
 
 import PIL.Image
@@ -394,7 +394,7 @@ def process_resource_directory(out, dir: Path):
 
             n_cols = None
             widths = None
-            width = str(100)
+            width = None
             header_row_data = None
             header_rows = 0
             if (fancy_maybe := FANCY_TABLES.get(heading_text)):
@@ -498,6 +498,13 @@ BRITTLE_FONT_NAME_REGEX = re.compile(
     """, re.X)
 
 
+# def html(name, attributes: Mapping[str, Any], *children, out = None):
+#     parts = [f"<{name}",]
+#     attribs = []
+#     for name, value in attributes:
+#
+#
+
 def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
 
@@ -509,7 +516,9 @@ def process_resource_files(out, file_list: List[Path]):
         _KLUDGE = _fancy.n_columns
     COLUMNS = _KLUDGE or get_header_num_cols(prefix, len(file_list))
 
+    columns_iter = ('*',)  + (' ', ) * (COLUMNS - 1)
     log.info(f"Processing {prefix=!r} with {COLUMNS=!r}")
+
     for path in file_list:
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
         suffix = path.suffix
@@ -524,20 +533,17 @@ def process_resource_files(out, file_list: List[Path]):
 
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
             out.write(f"    {start_row} - .. raw:: html\n\n"
-                      f"             <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_copyable}\">\n"
-            )
-            out.write(f"             <img src=\"/_static/copy-button.svg\"/>\n")
-
-            #out.write(textwrap.indent("             ", f'                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">\n  <title>Copy to clipboard</title>\n  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>\n  <rect x="8" y="8" width="12" height="12" rx="2"></rect>\n  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>\n</svg>\n'))
-            out.write(
-                      f"             </button>\n"
                       f"             <code class=\"docutils literal notranslate\">\n"
                       f"                 <span class=\"pre\">{path.name}</span>\n"
                       f"             </code>\n"
+                      f"             <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_copyable}\">\n"
+                      f"                 <img src=\"/_static/copy-button.svg\"/>\n"
+                      f"             </button>\n"
+                      f"             <br/>\n"
                       "\n")
-            out.write(f"        .. figure:: ../../{resource_path}\n")
 
-
+            # Render the image itself
+            out.write(f"        .. image:: ../../{resource_path}\n")
             # IMPORTANT:
             # 1. 11 chars to match the start of "image" above
             # 2. :class: checkered-bg to apply the checkers to transparent images
@@ -555,7 +561,7 @@ def process_resource_files(out, file_list: List[Path]):
                 im_width, im_height = im.size
                 # out.write(f"           .. raw:: html\n\n"
                 #           f"              <p>{im_width} x {im_height}</p><br/>\n\n")
-                out.write(f"           {im_width} x {im_height}\n\n")
+                out.write(f"        {im_width} x {im_height}\n\n")
 
             # out.write(f"        .. code-block:: python\n\n")
             # out.write(f"           {resource_copyable!r}\n\n")
@@ -617,12 +623,19 @@ def process_resource_files(out, file_list: List[Path]):
         # Tiled maps
         elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
+            out.write(f"    {start_row} - .. raw:: html\n\n"
+                      f"             <code class=\"docutils literal notranslate\">\n"
+                      f"                 <span class=\"pre\">{path.name}</span>\n"
+                      f"             </code>\n"
+                      f"             <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_copyable}\">\n"
+                      f"                 <img src=\"/_static/copy-button.svg\"/>\n"
+                      f"             </button>\n"
+                      f"             <br/>\n"
+                      "\n")
             icon = "tiled_icon_digi_pls_replace.png"
-            out.write(f"    {start_row} - .. image:: images/{icon}\n")
+            out.write(f"        .. image:: images/{icon}\n")
             out.write(f"                     :class: resource-thumb\n\n")
 
-            # out.write(f"        .. code-block:: python\n\n")
-            # out.write(f"           {resource_copyable!r}\n\n")
             # out.write(f"        .. raw:: html\n\n")
             # out.write(f"            <br /><a target=\"_blank\" href=\"{file_path}\">{code_html}</a>\n\n")
         else:

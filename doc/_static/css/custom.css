@@ -231,19 +231,22 @@ table.resource-table {
 /* Only center the contents of tiles which have images in them
  * NOTE: The * instead of table alloes for non-table resource tiles
  */
-*.resource-table td:has(:first-child.resource-thumb) {
+*.resource-table td:has(.resource-thumb) {
     text-align: center;
 }
-.resource-table { width: 100%; max-width: 100%; }
-.wy-response-table,
-.resource-table {}
+.resource-table,
+.resource-table table
  {
     width: 100%;
     max-width: 100%;
 }
-.wy-responsive-table table :is(th, td) {
-    white-space: normal;
+.wy-table-responsive table :is(th, td) { white-space: normal; }
+/* Prevent huge copyable areas for .. code:: boxes using sphinx-copybutton  */
+.resource-table div.highlight > pre {
+    padding: 8px;
 }
+
+
 table.resource-table td > img.resource-thumb {
     display: inline-block;
     /* Maximum 20% of the smallest display dimension */
