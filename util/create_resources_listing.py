@@ -517,6 +517,43 @@ def html_copyable(
     return raw
 
 
+def smash_iterable(i: str | Iterable[str]):
+    if isinstance(i, str):
+        return i
+    else:
+        return ' '.join(i)
+
+
+_sphinx_option_handlers: dict[str, Callable] = defaultdict(lambda: str)
+_sphinx_option_handlers.update({
+    'class': smash_iterable,
+    'widths': smash_iterable
+})
+
+def sphinx_directive(
+        name: str,
+        *arguments: str,
+        options: Mapping[str, str | int | Iterable] | None = None,
+        body: str | Iterable | None = None
+) -> str:
+    lines = [f".. {name}:: {' '.join(arguments)}"]
+
+    for name, value in options.items():
+        converter = _sphinx_option_handlers[name]
+        lines.append(
+            f"   :{name}: {converter(value)}")
+    lines.append("\n")
+    if body:
+        if isinstance(body, str):
+            lines.append(body)
+        else:
+            # We could use extend but this is nice for debugging
+            for i, value in enumerate(body):
+                lines.append(f"   {value}")
+
+    return '\n'.join(lines)
+
+
 def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
 
@@ -546,22 +583,35 @@ def process_resource_files(out, file_list: List[Path]):
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(html_copyable(path.name, resource_copyable, "             "))
 
-            # Render the image itself
-            out.write(f"        .. image:: ../../{resource_path}\n")
-            # IMPORTANT:
-            # 1. 11 chars to match the start of "image" above
-            # 2. :class: checkered-bg to apply the checkers to transparent images
-            out.write(f"           :class: checkered-bg resource-thumb\n")
-            # 3. :loading: lazy stops GitHub 429ing us ("chill pls") # pending: stop using GH raw as a CDN
-            out.write(f"           :loading: lazy\n")
-            out.write(f"           :name: {resource_path}\n\n")
+            tile_rst_code = sphinx_directive(
+                'image', f'../../{resource_path}',
+                options={
+                    'class':(
+                        'checkered-bg',  # Show transparency via gray tile bg
+                        'resource-thumb',  # Clamp max display size
+                    ),
+                    # lazy helps avoid GitHub and readthedocs from 429ing us ("chill pls")
+                    'loading': 'lazy',
+                    'name': resource_path
+                }
+            )
+            out.write(textwrap.indent(tile_rst_code, "        "))
 
-            if suffix != ".svg":
-                im = PIL.Image.open(path)
-                im_width, im_height = im.size
-                # out.write(f"           .. raw:: html\n\n"
-                #           f"              <p>{im_width} x {im_height}</p><br/>\n\n")
-                out.write(f"        {im_width} x {im_height}\n\n")
+            size_info = None
+            if suffix == ".svg":
+                size_info = "Scalable Vector Graphic"
+            else:
+                try:
+                    im = PIL.Image.open(path)
+                    im_width, im_height = im.size
+                    size_info = f"{im_width}px x {im_height}px"
+                except Exception as e:
+                    log.warning(f"FAILED to read size info for {path}:\n {e}")
+
+            if size_info is None:
+                size_info = "Could not read size info"
+            out.write(f"        *({size_info})*\n")
+            out.write("\n")
 
         elif suffix in SUFFIX_TO_AUDIO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
