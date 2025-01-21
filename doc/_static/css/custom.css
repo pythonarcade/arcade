@@ -246,11 +246,34 @@ table.resource-table {
     padding: 8px;
 }
 
-
-table.resource-table td > img.resource-thumb {
+table.resource-table td > .resource-thumb {
     display: inline-block;
+}
+table.resource-table td > img.resource-thumb {
     /* Maximum 20% of the smallest display dimension */
     max-width: min(20vw, 20vh);
+}
+table.resource-table td > .resource-thumb.file-icon {
+    width: 128px;
+    height: 128px;
+    max-width: 128px;
+    max-height: 128px;
+}
+
+.file-icon.unknown-file-type {
+    padding: 0.5em;
+    border: 10px solid white;
+    display: inline flex !important;
+    color: white;
+    background: red;
+    font-size: 1.5em;
+    align: center;
+    flex-direction: column;
+}
+
+.file-icon.unknown-filetype > * {
+   color: white !important;
+   flex: 1;
 }
 
 /* Imitate sphinx-copybutton style */
