@@ -275,18 +275,38 @@ table.resource-table td > .resource-thumb.file-icon {
    color: white !important;
    flex: 1;
 }
-
+.resource-table .resource-handle {
+    display: inline-block;
+    border-radius: 0.4em;
+    border: 1px solid rgb(0, 0, 0, 0);
+    width: fit-content !important;
+}
+.resource-table .resource-handle:has(button.arcade-ezcopy:hover) {
+    border-color: #54c079;
+    color: #54c079;
+}
+.resource-table .resource-handle > .literal {
+    height: 1.5em;
+    min-height: 1.5em;
+    border-radius: 0.4em 0 0 0.4em;
+    border: 1px solid #1b1f2426;
+    vertical-align: middle;
+    font-size: 1em;
+}
 /* Imitate sphinx-copybutton style */
 button.arcade-ezcopy {
-    width: 2em;
-    height: 2em;
-    min-width: 2em;
-    min-height: 2em;
+    width: 1.5em;
+    height: 1.5em;
+    min-width: 1.5em;
+    min-height: 1.5em;
     padding: 0;
 
-    /* Imitiate sphinx-copybutton minus styling spacing issues */
-    border-radius: 0.4em;
+    /* Imitate sphinx-copybutton minus styling spacing issues */
+    border-radius: 0 0.4em 0.4em 0;
     border: 1px solid #1b1f2426;
+
+    border-left: 0;
+
     color: #57606a;
     background-color: #f6f8fa;
 
@@ -295,6 +315,9 @@ button.arcade-ezcopy > img {
     margin: 0;
     width: 100%;
     height: 100%;
+}
+button.arcade-ezcopy:hover {
+  background-color: #54c079;
 }
 
 table.colorTable {

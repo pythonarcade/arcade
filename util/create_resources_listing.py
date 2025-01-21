@@ -554,18 +554,18 @@ def indent(  # pending: post-3.0 refactor  # why would indent come after the tex
 def html_copyable(
         name: str,
         resource_handle: str,
-        indent: str = ""
 ) -> str:
     raw = (
-        f"<code class=\"docutils literal notranslate\">\n"
-        f"    <span class=\"pre\">{name}</span>\n"
-        f"</code>\n"
-        f"<button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
-        f"    <img src=\"/_static/copy-button.svg\"/>\n"
-        f"</button>\n"
+        f"<span class=\"resource-handle\">\n"
+        f"    <code class=\"docutils literal notranslate\">\n"
+        f"        <span class=\"pre\">{name}</span>\n"
+        f"    </code>\n"
+        f"    <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
+        f"        <img src=\"/_static/copy-button.svg\"/>\n"
+        f"    </button>\n"
+        f"</span>\n"
         f"<br/>\n")
-    if indent:
-        return textwrap.indent(raw, indent)
+
     return raw
 
 
@@ -632,7 +632,7 @@ def process_resource_files(out, file_list: List[Path]):
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(html_copyable(path.name, resource_copyable, "             "))
+            out.write(indent("             ", html_copyable(path.name, resource_copyable)))
 
             out.write(f"        .. raw:: html\n\n")
             out.write(indent("              ",
