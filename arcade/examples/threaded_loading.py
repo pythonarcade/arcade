@@ -29,7 +29,7 @@ python -m arcade.examples.threaded_loading
 from __future__ import annotations
 
 import sys
-import time
+from time import sleep
 
 # Python's threading module has proven tools for working with threads, and
 # veteran developers may want to explore 3.13's new 'No-GIL' concurrency.
@@ -104,7 +104,7 @@ class LevelLoader:
             with self._interaction_lock:
                 self._current_level = level
 
-            time.sleep(ARTIFICIAL_DELAY)  # "Slow" down (delete this line before use)
+            sleep(ARTIFICIAL_DELAY)  # "Slow" down (delete this line before use)
 
             # Since unhandled exceptions "kill" threads, we catch the only major
             # exception we expect. Level 4 is intentionally missing to test cases
