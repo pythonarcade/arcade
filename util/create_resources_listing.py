@@ -498,12 +498,24 @@ BRITTLE_FONT_NAME_REGEX = re.compile(
     """, re.X)
 
 
-# def html(name, attributes: Mapping[str, Any], *children, out = None):
-#     parts = [f"<{name}",]
-#     attribs = []
-#     for name, value in attributes:
-#
-#
+
+def html_copyable(
+        name: str,
+        resource_handle: str,
+        indent: str = ""
+) -> str:
+    raw = (
+        f"<code class=\"docutils literal notranslate\">\n"
+        f"    <span class=\"pre\">{name}</span>\n"
+        f"</code>\n"
+        f"<button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
+        f"    <img src=\"/_static/copy-button.svg\"/>\n"
+        f"</button>\n"
+        f"<br/>\n")
+    if indent:
+        return textwrap.indent(raw, indent)
+    return raw
+
 
 def process_resource_files(out, file_list: List[Path]):
     cell_count = 0
@@ -516,7 +528,6 @@ def process_resource_files(out, file_list: List[Path]):
         _KLUDGE = _fancy.n_columns
     COLUMNS = _KLUDGE or get_header_num_cols(prefix, len(file_list))
 
-    columns_iter = ('*',)  + (' ', ) * (COLUMNS - 1)
     log.info(f"Processing {prefix=!r} with {COLUMNS=!r}")
 
     for path in file_list:
@@ -527,20 +538,13 @@ def process_resource_files(out, file_list: List[Path]):
             start_row = "*"
         else:
             start_row = " "
-        name = path.name
+
         resource_copyable = f"{create_resource_path(path)}"
         code_html = code_str(resource_copyable)
 
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
-            out.write(f"    {start_row} - .. raw:: html\n\n"
-                      f"             <code class=\"docutils literal notranslate\">\n"
-                      f"                 <span class=\"pre\">{path.name}</span>\n"
-                      f"             </code>\n"
-                      f"             <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_copyable}\">\n"
-                      f"                 <img src=\"/_static/copy-button.svg\"/>\n"
-                      f"             </button>\n"
-                      f"             <br/>\n"
-                      "\n")
+            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(html_copyable(path.name, resource_copyable, "             "))
 
             # Render the image itself
             out.write(f"        .. image:: ../../{resource_path}\n")
@@ -551,10 +555,6 @@ def process_resource_files(out, file_list: List[Path]):
             # 3. :loading: lazy stops GitHub 429ing us ("chill pls") # pending: stop using GH raw as a CDN
             out.write(f"           :loading: lazy\n")
             out.write(f"           :name: {resource_path}\n\n")
-            # out.write("\n\n")
-            # out.write(f"        .. raw:: html\n\n")
-            # out.write(f"           <br />{code_html}\n")
-            # highlight_copyable(out, resource_copyable)
 
             if suffix != ".svg":
                 im = PIL.Image.open(path)
@@ -563,29 +563,20 @@ def process_resource_files(out, file_list: List[Path]):
                 #           f"              <p>{im_width} x {im_height}</p><br/>\n\n")
                 out.write(f"        {im_width} x {im_height}\n\n")
 
-            # out.write(f"        .. code-block:: python\n\n")
-            # out.write(f"           {resource_copyable!r}\n\n")
-
         elif suffix in SUFFIX_TO_AUDIO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(html_copyable(path.name, resource_copyable, "             "))
             out.write(f"            <audio class=\"resource-thumb\" controls><source src='{file_path}' type='audio/{src_type}'></audio>\n")
-            # out.write(f"            <br />{code_html}\n")
-            # out.write(f"            <br /><a href={FMT_URL_REF_PAGE.format(resource_path)}>{path.name} on GitHub</a>\n")
-
-            out.write(f"        .. code-block:: python\n\n")
-            out.write(f"           {resource_copyable!r}\n\n")
 
         elif suffix in SUFFIX_TO_VIDEO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(html_copyable(path.name, resource_copyable, "             "))
             out.write(f"            <video class=\"resource-thumb\" style=\"max-width: 100%\" controls><source src='{file_path}' type='video/{src_type}'></video>\n")
 
-            out.write(f"        .. code-block:: python\n\n")
-            out.write(f"           {resource_copyable!r}\n\n")
-            # out.write(f"            <br />{code_html}\n")
         elif suffix == ".glsl":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - `{code_html} <{file_path}>`_\n")
@@ -608,36 +599,27 @@ def process_resource_files(out, file_list: List[Path]):
 
             style_string = ", ".join(styles or ("Regular",))
             print("row: ", face_name, style_string, code_html)
-            # file_path = FMT_URL_REF_PAGE.format(resource_path)
+
             out.write(f"    {start_row} - .. code-block:: python\n\n")
             out.write(f"          {raw_name!r}\n\n")
-            # out.write(f"      - .. raw:: html\n\n")
-            # out.write(f"            ")
+
             out.write(f"      - {style_string}\n\n")
 
             out.write(f"      - .. code-block:: python\n\n")
             out.write(f"          {resource_copyable!r}\n\n")
 
             cell_count += (COLUMNS - 1)
-            # out.write(f"    {start_row} - `{name} <{file_path}>`_\n")
+
         # Tiled maps
         elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
-            out.write(f"    {start_row} - .. raw:: html\n\n"
-                      f"             <code class=\"docutils literal notranslate\">\n"
-                      f"                 <span class=\"pre\">{path.name}</span>\n"
-                      f"             </code>\n"
-                      f"             <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_copyable}\">\n"
-                      f"                 <img src=\"/_static/copy-button.svg\"/>\n"
-                      f"             </button>\n"
-                      f"             <br/>\n"
-                      "\n")
+            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(html_copyable(path.name, resource_copyable, "             "))
+
             icon = "tiled_icon_digi_pls_replace.png"
             out.write(f"        .. image:: images/{icon}\n")
             out.write(f"                     :class: resource-thumb\n\n")
 
-            # out.write(f"        .. raw:: html\n\n")
-            # out.write(f"            <br /><a target=\"_blank\" href=\"{file_path}\">{code_html}</a>\n\n")
         else:
             out.write(f"    {start_row} - {code_html}\n")
         # The below doesn't work because of how raw HTML / Sphinx images interact:
