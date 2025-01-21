@@ -63,5 +63,7 @@ function handleSidebarHeaderToggle() {
  * Notice that jQuery is already available in this file.
  */
 $(document).ready(() => {
-  handleSidebarHeaderToggle()
+  handleSidebarHeaderToggle();
+  // Re-use the base ClipboardJS provided by Sphinx copybutton
+  document.ezcopy = new ClipboardJS('.arcade-ezcopy');
 });

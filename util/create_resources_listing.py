@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import List, Callable, Protocol, Sequence, Iterable, Iterator
 import logging
 
+import PIL.Image
 from typing_extensions import TypedDict, NotRequired
 
 log = logging.getLogger(__name__)
@@ -522,19 +523,42 @@ def process_resource_files(out, file_list: List[Path]):
         code_html = code_str(resource_copyable)
 
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
-            out.write(f"    {start_row} - .. image:: ../../{resource_path}\n")
+            out.write(f"    {start_row} - .. raw:: html\n\n"
+                      f"             <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_copyable}\">\n"
+            )
+            out.write(f"             <img src=\"/_static/copy-button.svg\"/>\n")
+
+            #out.write(textwrap.indent("             ", f'                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copy" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">\n  <title>Copy to clipboard</title>\n  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>\n  <rect x="8" y="8" width="12" height="12" rx="2"></rect>\n  <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"></path>\n</svg>\n'))
+            out.write(
+                      f"             </button>\n"
+                      f"             <code class=\"docutils literal notranslate\">\n"
+                      f"                 <span class=\"pre\">{path.name}</span>\n"
+                      f"             </code>\n"
+                      "\n")
+            out.write(f"        .. figure:: ../../{resource_path}\n")
+
+
             # IMPORTANT:
             # 1. 11 chars to match the start of "image" above
             # 2. :class: checkered-bg to apply the checkers to transparent images
             out.write(f"           :class: checkered-bg resource-thumb\n")
             # 3. :loading: lazy stops GitHub 429ing us ("chill pls") # pending: stop using GH raw as a CDN
-            out.write(f"           :loading: lazy\n\n")
-            out.write("\n\n")
+            out.write(f"           :loading: lazy\n")
+            out.write(f"           :name: {resource_path}\n\n")
+            # out.write("\n\n")
             # out.write(f"        .. raw:: html\n\n")
             # out.write(f"           <br />{code_html}\n")
             # highlight_copyable(out, resource_copyable)
-            out.write(f"        .. code-block:: python\n\n")
-            out.write(f"           {resource_copyable!r}\n\n")
+
+            if suffix != ".svg":
+                im = PIL.Image.open(path)
+                im_width, im_height = im.size
+                # out.write(f"           .. raw:: html\n\n"
+                #           f"              <p>{im_width} x {im_height}</p><br/>\n\n")
+                out.write(f"           {im_width} x {im_height}\n\n")
+
+            # out.write(f"        .. code-block:: python\n\n")
+            # out.write(f"           {resource_copyable!r}\n\n")
 
         elif suffix in SUFFIX_TO_AUDIO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
@@ -543,13 +567,16 @@ def process_resource_files(out, file_list: List[Path]):
             out.write(f"            <audio class=\"resource-thumb\" controls><source src='{file_path}' type='audio/{src_type}'></audio>\n")
             # out.write(f"            <br />{code_html}\n")
             # out.write(f"            <br /><a href={FMT_URL_REF_PAGE.format(resource_path)}>{path.name} on GitHub</a>\n")
+
             out.write(f"        .. code-block:: python\n\n")
             out.write(f"           {resource_copyable!r}\n\n")
+
         elif suffix in SUFFIX_TO_VIDEO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(f"            <video class=\"resource-thumb\" style=\"max-width: 100%\" controls><source src='{file_path}' type='video/{src_type}'></video>\n")
+
             out.write(f"        .. code-block:: python\n\n")
             out.write(f"           {resource_copyable!r}\n\n")
             # out.write(f"            <br />{code_html}\n")
@@ -593,8 +620,9 @@ def process_resource_files(out, file_list: List[Path]):
             icon = "tiled_icon_digi_pls_replace.png"
             out.write(f"    {start_row} - .. image:: images/{icon}\n")
             out.write(f"                     :class: resource-thumb\n\n")
-            out.write(f"        .. code-block:: python\n\n")
-            out.write(f"           {resource_copyable!r}\n\n")
+
+            # out.write(f"        .. code-block:: python\n\n")
+            # out.write(f"           {resource_copyable!r}\n\n")
             # out.write(f"        .. raw:: html\n\n")
             # out.write(f"            <br /><a target=\"_blank\" href=\"{file_path}\">{code_html}</a>\n\n")
         else:

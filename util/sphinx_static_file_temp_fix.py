@@ -57,15 +57,20 @@ sys.path.insert(0, str(REPO_ROOT))
 log = logging.getLogger(str(FILE.relative_to(REPO_ROOT)))
 
 DOC_DIR = REPO_ROOT / "doc"
-STATIC_SOURCE_DIR = DOC_DIR / "_static"
 
 ENABLE_DEVMACHINE_SPHINX_STATIC_FIX = REPO_ROOT / ".ENABLE_DEVMACHINE_SPHINX_STATIC_FIX"
 
-BUILD_DIR = REPO_ROOT / "build"
-BUILD_HTML_DIR = BUILD_DIR / "html"
+BUILD_ROOT = REPO_ROOT / "build"
+BUILD_HTML_DIR = BUILD_ROOT / "html"
+
+SOURCE_STATIC_DIR = DOC_DIR / "_static"
 BUILD_STATIC_DIR = BUILD_HTML_DIR / "_static"
+
 BUILD_CSS_DIR = BUILD_STATIC_DIR / "css"
-STATIC_CSS_DIR = STATIC_SOURCE_DIR / "css"
+SOURCE_CSS_DIR = SOURCE_STATIC_DIR / "css"
+
+BUILD_JS_DIR = BUILD_STATIC_DIR / "js"
+SOURCE_JS_DIR = SOURCE_STATIC_DIR / "js"
 
 force_copy_on_change: dict[Path, Path] = {  # pending: sphinx >= 8.1.4
     # You can add per-dir config the lazy way:
@@ -73,7 +78,11 @@ force_copy_on_change: dict[Path, Path] = {  # pending: sphinx >= 8.1.4
     # 2. modifying it with filtering
     **{
         source_file: BUILD_CSS_DIR / source_file.name
-        for source_file in STATIC_CSS_DIR.glob("*.*")
+        for source_file in SOURCE_CSS_DIR.glob("*.*")
+    },
+    **{
+        source_file: BUILD_JS_DIR / source_file.name
+        for source_file in SOURCE_JS_DIR.glob("*.*")
     },
 }
 

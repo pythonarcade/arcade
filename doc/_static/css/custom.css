@@ -214,12 +214,19 @@ table.dataTable.display tbody tr.even > .sorting_1 {
     background-repeat: repeat;
 }
 
+
+/*Test*/
 table.resource-table {
     empty-cells: hide;
     white-space: normal;  /* table behavior for CSS styling? maybe dupe of below. */
 }
 
 /* Make the resource page's table cell contents look neat */
+
+/* copy button doesn't need so much margin in here */
+.resource-table div.highlight-python {
+  margin-bottom: 0;
+}
 
 /* Only center the contents of tiles which have images in them
  * NOTE: The * instead of table alloes for non-table resource tiles
@@ -243,6 +250,26 @@ table.resource-table td > img.resource-thumb {
     max-width: min(20vw, 20vh);
 }
 
+/* Imitate sphinx-copybutton style */
+button.arcade-ezcopy {
+    width: 2em;
+    height: 2em;
+    min-width: 2em;
+    min-height: 2em;
+    padding: 0;
+
+    /* Imitiate sphinx-copybutton minus styling spacing issues */
+    border-radius: 0.4em;
+    border: 1px solid #1b1f2426;
+    color: #57606a;
+    background-color: #f6f8fa;
+
+}
+button.arcade-ezcopy > img {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
 
 table.colorTable {
     border-width: 1px;
