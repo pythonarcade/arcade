@@ -100,7 +100,9 @@ class Section:
         assert isinstance(self.prevent_dispatch, Iterable)
         """prevents events to propagate"""
 
-        self.prevent_dispatch_view: Iterable = {True} if prevent_dispatch_view is None else prevent_dispatch_view
+        self.prevent_dispatch_view: Iterable = (
+            {True} if prevent_dispatch_view is None else prevent_dispatch_view
+        )
         assert isinstance(self.prevent_dispatch_view, Iterable)
         """prevents events to propagate to the view"""
 
