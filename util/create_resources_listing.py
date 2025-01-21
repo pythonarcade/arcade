@@ -690,11 +690,13 @@ def process_resource_files(out, file_list: List[Path]):
         elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(html_copyable(path.name, resource_copyable, "             "))
+            out.write(indent("             ",
+                html_copyable(path.name, resource_copyable)))
 
             icon = "tiled_icon_digi_pls_replace.png"
-            out.write(f"        .. image:: images/{icon}\n")
-            out.write(f"           :class: resource-thumb\n\n")
+            out.write(indent(f"        ",
+                      f".. image:: images/{icon}\n"
+                      f"   :class: resource-thumb\n\n"))
 
         else:
             out.write(f"    {start_row} - .. raw:: html\n\n")
