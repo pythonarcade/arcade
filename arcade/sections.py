@@ -96,10 +96,12 @@ class Section:
         self.accept_mouse_events: bool | Iterable = accept_mouse_events
         """Arcade mouse events to accept."""
 
-        self.prevent_dispatch: Iterable = prevent_dispatch or {True}
+        self.prevent_dispatch: Iterable = {True} if prevent_dispatch is None else prevent_dispatch
+        assert isinstance(self.prevent_dispatch, Iterable)
         """prevents events to propagate"""
 
-        self.prevent_dispatch_view: Iterable = prevent_dispatch_view or {True}
+        self.prevent_dispatch_view: Iterable = {True} if prevent_dispatch_view is None else prevent_dispatch_view
+        assert isinstance(self.prevent_dispatch_view, Iterable)
         """prevents events to propagate to the view"""
 
         self.local_mouse_coordinates: bool = local_mouse_coordinates
