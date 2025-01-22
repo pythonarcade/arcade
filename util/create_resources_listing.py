@@ -68,6 +68,10 @@ INCLUDES_ROOT = DOC_ROOT / "_includes"
 OUT_FILE = DOC_ROOT / "api_docs" / "resources.rst"
 
 
+class SupportsLT(Protocol):
+   def __lt__(self, other): ...
+
+
 # Metadata for the resource list: utils\create_resource_list.py
 skip_extensions = [
     ".glsl",
@@ -228,9 +232,6 @@ def is_unskipped_file(p: Path):
     return not (p.is_dir() or p.suffix in skip_extensions)
 
 
-class SupportsLT(Protocol):
-   def __lt__(self, other): ...
-
 
 def filter_dir(
         dir: Path,
@@ -257,9 +258,49 @@ def filter_dir(
 
 
 
+def smash_iterable(i: str | Iterable[str]):
+    if isinstance(i, str):
+        return i
+    else:
+        return ' '.join(i)
+
+
+_sphinx_option_handlers: dict[str, Callable] = defaultdict(lambda: str)
+_sphinx_option_handlers.update({
+    'class': smash_iterable,
+    'widths': smash_iterable
+})
+
+
+def sphinx_directive(
+        name: str,
+        *arguments: str,
+        options: Mapping[str, str | int | Iterable] | None = None,
+        body: str | Iterable | None = None
+) -> str:
+    lines = [f".. {name}:: {' '.join(arguments)}\n"]
+
+    if options:
+        for name, value in options.items():
+            converter = _sphinx_option_handlers[name]
+            lines.append(
+                f"   :{name}: {converter(value)}\n")
+        lines.append("\n")
+    if body:
+        if isinstance(body, str):
+            body = (body,)
+        # We could use extend but this is nice for debugging
+        for i, value in enumerate(body):
+            lines.append(indent("   ", value))
+        lines.append("\n\n")
+
+    return ''.join(lines)
+
 @dataclass
-class TableCfg(Mapping):
+class TableCfg(Mapping):  # pending: remove ASAP, kludge
     """
+    This exists because table generation and file tree reading concerns were mixed.
+
     https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#toc-entry-60
     """
     header_rows: tuple[tuple[str, ...]] | None = None
@@ -362,6 +403,7 @@ def process_resource_directory(out, dir: Path):
             display_parts = [format_title_part(part) for part in parts]
             heading_text = None
             heading_level = None
+
             # Get current heading level
             for heading_level, part in enumerate(display_parts, start=1):
                 print("ff", (heading_level, part))
@@ -459,44 +501,6 @@ SUFFIX_TO_VIDEO_TYPE = {
     '.webm': 'webm',
     '.avi': 'avi'
 }
-
-def smash_iterable(i: str | Iterable[str]):
-    if isinstance(i, str):
-        return i
-    else:
-        return ' '.join(i)
-
-
-_sphinx_option_handlers: dict[str, Callable] = defaultdict(lambda: str)
-_sphinx_option_handlers.update({
-    'class': smash_iterable,
-    'widths': smash_iterable
-})
-
-
-def sphinx_directive(
-        name: str,
-        *arguments: str,
-        options: Mapping[str, str | int | Iterable] | None = None,
-        body: str | Iterable | None = None
-) -> str:
-    lines = [f".. {name}:: {' '.join(arguments)}\n"]
-
-    if options:
-        for name, value in options.items():
-            converter = _sphinx_option_handlers[name]
-            lines.append(
-                f"   :{name}: {converter(value)}\n")
-        lines.append("\n")
-    if body:
-        if isinstance(body, str):
-            body = (body,)
-        # We could use extend but this is nice for debugging
-        for i, value in enumerate(body):
-            lines.append(indent("   ", value))
-        lines.append("\n\n")
-
-    return ''.join(lines)
 
 
 def code_block(
@@ -630,10 +634,11 @@ def process_resource_files(out, file_list: List[Path]):
 
         elif suffix in SUFFIX_TO_AUDIO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
-            src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(indent("             ", html_copyable(path.name, resource_copyable)))
+            out.write(indent(
+                "             ", html_copyable(path.name, resource_copyable)))
 
+            src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"        .. raw:: html\n\n")
             out.write(indent("              ",
                       f"<audio class=\"resource-thumb\" controls>\n"
@@ -642,10 +647,11 @@ def process_resource_files(out, file_list: List[Path]):
 
         elif suffix in SUFFIX_TO_VIDEO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
-            src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"    {start_row} - .. raw:: html\n\n")
             out.write(indent(
                       f"             ", html_copyable(path.name, resource_copyable)))
+
+            src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"        .. raw:: html\n\n")
             out.write(indent(
                       f"              ",
