@@ -108,7 +108,7 @@ def get_column_widths_for_n(n: int) -> str:
 
 
 @lru_cache(maxsize=None)  # Cache b/c re-using elsewhere
-def create_resource_path(
+def path_as_resource_handle(
     path: Path,
     prefix: str = "",
     suffix: str = "",
@@ -125,7 +125,7 @@ def create_resource_path(
     if not restrict_to_bases or base in restrict_to_bases:
         path = path.relative_to(base)
     else:
-        raise ValueError(f"Unexpected path: {path}. Expected one of: {', '.join(repr(b) for b in expect_bases)}")
+        raise ValueError(f"Unexpected path: {path}. Expected one of: {', '.join(repr(b) for b in restrict_to_bases)}")
 
     return f"{prefix}:resources:{path.as_posix()}{suffix}"
 
@@ -394,7 +394,7 @@ def process_resource_directory(out, dir: Path):
         if num_files > 0:
 
             # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
-            raw_resource_handle = create_resource_path(path, suffix="/")
+            raw_resource_handle = path_as_resource_handle(path, suffix="/")
             resource_handle = raw_resource_handle[:-2] if raw_resource_handle.endswith("./") else raw_resource_handle
             print("RES HANDLE", resource_handle)
             # pending: post-3.0 time to refactor all of this
@@ -609,7 +609,7 @@ def process_resource_files(out, file_list: List[Path], prefix: str = None, path:
     cell_count = 0
     path = path or file_list[0].parent
     if not prefix:
-        prefix = create_resource_path(path, suffix="/")
+        prefix = path_as_resource_handle(path, suffix="/")
 
     if len(file_list) == 1:
         COLUMNS = 1
@@ -632,7 +632,7 @@ def process_resource_files(out, file_list: List[Path], prefix: str = None, path:
 
         # Shared items
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
-        resource_copyable = f"{quote(create_resource_path(path))}"
+        resource_copyable = f"{quote(path_as_resource_handle(path))}"
 
         # Decide how we're going to render the file
         suffix = path.suffix
