@@ -478,15 +478,36 @@ def process_resource_directory(out, dir: Path):
         process_resource_directory(out, path)
 
 
-SUFFIX_TO_AUDIO_TYPE = {
-    '.wav': 'x-wav',
-    '.ogg': 'ogg',
-    '.mp3': 'mpeg',
-}
-SUFFIX_TO_VIDEO_TYPE = {
-    '.mp4': 'mp4',
-    '.webm': 'webm',
-    '.avi': 'avi'
+class MediaTypeConfig(TypedDict):
+    media_kind: str
+    mime_suffix: str
+
+
+MEDIA_EMBED = {
+    '.wav': {
+        'media_kind': 'audio',
+        'mime_suffix': 'x-wav'
+    },
+    '.ogg': {
+        'media_kind': 'audio',
+        'mime_suffix': 'x-wav'
+    },
+    '.mp3': {
+        'media_kind': 'audio',
+        'mime_suffix': 'mpeg'
+    },
+    '.mp4': {
+        'media_kind': 'video',
+        'mime_suffix': 'mp4'
+    },
+    '.webm': {
+        'media_kind': 'video',
+        'mime_suffix': 'webm'
+    },
+    '.avi': {
+        'media_kind': 'video',
+        'mime_suffix': 'avi'
+    }
 }
 
 
@@ -658,32 +679,21 @@ def process_resource_files(
             out.write(f"        *({size_info})*\n")
             out.write("\n\n")
 
-        elif suffix in SUFFIX_TO_AUDIO_TYPE:
+        elif suffix in MEDIA_EMBED:
+            config = MEDIA_EMBED[suffix]
+            kind = config.get('media_kind')
+            mime_suffix = config.get('mime_suffix')
             file_path = FMT_URL_REF_EMBED.format(resource_path)
+
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent(
                 "           ", resource_copyable))
 
-            src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"        .. raw:: html\n\n")
             out.write(indent("           ",
-                      f"<audio class=\"resource-thumb\" controls>\n"
-                      f"  <source src='{file_path}' type='audio/{src_type}'>\n"
-                      f"</audio>\n\n"))
-
-        elif suffix in SUFFIX_TO_VIDEO_TYPE:
-            file_path = FMT_URL_REF_EMBED.format(resource_path)
-            out.write(f"    {start()} - .. raw:: html\n\n")
-            out.write(indent(
-                      f"             ", resource_copyable))
-            out.write("\n")
-            src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
-            out.write(f"        .. raw:: html\n\n")
-            out.write(indent(
-                      f"           ",
-                      f"<video class=\"resource-thumb\" controls>\n"
-                      f"  <source src='{file_path}' type='video/{src_type}'>\n"
-                      f"</video>\n\n"))
+                      f"<{kind} class=\"resource-thumb\" controls>\n"
+                      f"  <source src='{file_path}' type='{kind}/{mime_suffix}'>\n"
+                      f"</{kind}>\n\n"))
 
         # elif suffix == ".glsl":
         #     file_path = FMT_URL_REF_PAGE.format(resource_path)
