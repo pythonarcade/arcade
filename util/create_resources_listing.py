@@ -19,7 +19,7 @@ from io import StringIO
 from itertools import chain, cycle, repeat
 from pathlib import Path
 from tokenize import String
-from typing import List, Callable, Protocol, Sequence, Iterable, Iterator, Any
+from typing import List, Callable, Protocol, Sequence, Iterable, Iterator, Any, TypeVar
 import logging
 
 import PIL.Image
@@ -96,6 +96,7 @@ MAX_COLS[":resources:sounds/"] = 2
 # MAX_COLS[":resources:fonts/ttf/Kenney/"] = 3
 # MAX_COLS[":resources:fonts/ttf/Liberation/"] = 3
 
+
 @lru_cache(maxsize=None)
 def get_header_num_cols(resource_stub: str, n_files = math.inf) -> int:
     return int(min(MAX_COLS[resource_stub], n_files))
@@ -127,7 +128,15 @@ def path_as_resource_handle(
     else:
         raise ValueError(f"Unexpected path: {path}. Expected one of: {', '.join(repr(b) for b in restrict_to_bases)}")
 
-    return f"{prefix}:resources:{path.as_posix()}{suffix}"
+    parts = [
+        prefix, ":resources:"
+    ]
+    as_posix = path.as_posix()
+    if not as_posix.startswith('/'):
+        parts.append('/')
+    parts.extend((as_posix, suffix))
+    return ''.join(parts)
+    #return f"{prefix}:resources:{path.as_posix()}{suffix}"
 
 # NOTE: Max cols up above
 KENNEY_TTFS = "Kenney TTFs"
@@ -152,11 +161,99 @@ OVERRIDE_LEVELS = {
     LIBERATION_TTFS: 2
 }
 
-# pending: post-3.0 cleanup  # more unstructured filth
-SKIP_TITLES = {
-    "Ttf"
-    # "Kenney TTFs"
+
+class TableConfigDict(TypedDict):
+    widths: NotRequired[str | Sequence[str | int ]]
+    header_row: NotRequired[Sequence[str]]
+
+
+class HeadingConfigDict(TypedDict):
+    ref_target: NotRequired[str]
+    skip: NotRequired[bool]
+    value: NotRequired[str]
+    level: NotRequired[int]
+
+
+class HandleLevelConfigDict(TypedDict):
+    heading: NotRequired[HeadingConfigDict]
+    include: NotRequired[str]
+    list_table: NotRequired[TableConfigDict]
+
+
+FONT_TABLE_DEFAULTS: TableConfigDict= {
+    'widths' : (30, 15, 55),
+    'header_row': (
+        ':py:class:`font_name <arcade.Text>`',
+        "Style(s)",
+        ":ref:`Resource Handle <resource_handles>`",
+    ),
 }
+
+HANDLE_TO_OVERRIDES: dict[str,HandleLevelConfigDict] = {
+    ":resources:/": {
+        "heading": {
+            "value": "Top-Level Resources"
+        }
+    },
+    ":resources:/fonts/ttf/": {
+        "heading": {"skip": True}
+    },
+    ":resources:/fonts/ttf/Kenney/": {
+        "heading": {
+            "ref_target": "resources-fonts-kenney",
+            "value": "Kenney TTFs",
+            "level": 2,
+        },
+        "include": "resources_Kenney.rst",
+        "list-table": {**FONT_TABLE_DEFAULTS}
+    },
+    ":resources:/fonts/ttf/Liberation/": {
+        "heading": {
+            "ref_target": "resources-fonts-liberation",
+            "value": "Liberation TTFs",
+            "level": 2,
+        },
+        "include": "resources_Liberation.rst",
+        "list-table": {**FONT_TABLE_DEFAULTS}
+    },
+    ":resources:/gui_basic_assets/": {
+        "heading": {"value": "GUI Basic Assets"},
+    },
+    ":resources:/gui_basic_assets/window/": {
+        "heading": {"value": "Window & Panel"}
+    }
+}
+
+T = TypeVar('T')
+
+
+# We have benedict at home
+def drill_get(
+        m: Mapping[str, Mapping[str, T] | T],
+        key: str | Iterable[str],
+        default: T
+) -> T:
+    if isinstance(key, str):
+        key = str.split('/')
+    current = m
+    try:
+        for k in key:
+            current = current[k]
+    except Exception as _:
+        return default
+    return current
+
+
+# pending: post-3.0 cleanup  # more unstructured filth
+SKIP_TITLES = {"Ttf"}
+SKIP_HANDLES = set([
+    handle for handle, d in HANDLE_TO_OVERRIDES.items()
+    if (
+        'heading' in d and d['heading'].get('skip', None)
+    )
+])
+print("ALL_HANDLES", SKIP_HANDLES)
+visited_headings = set()
 
 
 @cache
@@ -181,7 +278,6 @@ headings_lookup = (
 )
 
 
-visited_headings = set()
 
 
 def do_heading(
@@ -296,6 +392,7 @@ def sphinx_directive(
 
     return ''.join(lines)
 
+
 @dataclass
 class TableCfg(Mapping):  # pending: remove ASAP, kludge
     """
@@ -392,76 +489,99 @@ def process_resource_directory(out, dir: Path):
                 print(file.name)
 
         if num_files > 0:
-
+            # broken logic
             # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
             raw_resource_handle = path_as_resource_handle(path, suffix="/")
-            # resource_handle = raw_resource_handle[:-2] if raw_resource_handle.endswith("./") else raw_resource_handle
-            resource_handle = raw_resource_handle
+            config: HandleLevelConfigDict = HANDLE_TO_OVERRIDES.get(raw_resource_handle, {})
+            print("CONFIG:\n", "raw", raw_resource_handle, "\n",config)
+
+            # Handles top-level resources suffix
+            resource_handle = raw_resource_handle.removesuffix('./')
+
+            #resource_handle = raw_resource_handle
             print("RES HANDLE", resource_handle)
             # pending: post-3.0 time to refactor all of this
 
-            parts = raw_resource_handle.replace(":resources:", "").rstrip("/").split("/")
+            parts = raw_resource_handle.replace(":resources:", "").lstrip("/").rstrip("/").split("/")
             display_parts = [format_title_part(part) for part in parts]
+            print("RENDER:")
+            for items in zip(parts, display_parts):
+                print("   ", *map(repr, items))
             heading_text = None
             heading_level = None
+
+            full = [':resources:/']
+            for i, part in enumerate(parts, start=1):
+                full.append(f"{full[-1]}{part}/")
+            print("ALL_TO", full)
 
             # Process headings and render any new ones we haven't seen
             for heading_level, part in enumerate(display_parts, start=1):
                 print("ff", (heading_level, part))
-
-                if part in SKIP_TITLES:
+                res_handle_step = full[heading_level]
+                if res_handle_step in SKIP_HANDLES:
                     continue
-                as_tup = tuple(display_parts[:heading_level])
-                if as_tup in visited_headings:
+                if res_handle_step in visited_headings:
                     continue
 
-                # NASTY! # pending: post 3.0 cleanup
-                if part in OVERRIDE_LEVELS:
-                    heading_level = OVERRIDE_LEVELS[part]
+                local_config = drill_get(
+                    HANDLE_TO_OVERRIDES, (res_handle_step, 'heading'), {})
 
-                # print("!!!", heading_level, part, as_tup)
+                use_level = local_config.get('level', heading_level)
+                use_value = local_config.get('value', None)
+                if use_value is None:
+                    use_value = format_title_part(part)
+                use_target = local_config.get('ref_target', None)
+                # # NASTY! # pending: post 3.0 cleanup
+                # if part in OVERRIDE_LEVELS:
+                #     heading_level = OVERRIDE_LEVELS[part]
+                #
+                print("!!!", use_value, use_value, use_target)
 
-                ref_target = PREFIX_REF_TARGET.get(part, None)
-                heading_text = part
+                #ref_target = PREFIX_REF_TARGET.get(part, None)
+                #heading_text = part
 
-                do_heading(out, heading_level, heading_text, ref_target=ref_target)
-                visited_headings.add(as_tup)
+                do_heading(out, use_level, use_value, ref_target=use_target)
+                visited_headings.add(res_handle_step)
 
             # Do heading info text
 
-            # if raw_resource_handle == ":resources:images/":
-            #     _debug_print_files()
-            print("HT", heading_text, heading_level)
-            if raw_resource_handle.startswith(":resources:fonts/ttf/"):
-                _debug_print_files()
-                out.write("\n")
-                if raw_resource_handle.endswith("Kenney/"):
-                    out.include_file(INCLUDES_ROOT / "resources_Kenney.rst")
+            if include := config.get("include", None):
+                if isinstance(include, str):
+                    include = INCLUDES_ROOT / include
+                out.include_file(include)
 
-                elif raw_resource_handle.endswith("Liberation/"):
-                    out.include_file(INCLUDES_ROOT / "resources_Liberation.rst")
 
             # Ugly table header stuff?
-            opts = {}
+            opts = config.get('list_table', {})
 
             n_cols = None
-            widths = None
+            widths = config.get('widths', None)
+            header_rows = opts.get('header_row', ())
+            if isinstance(widths, str):
+                n_cols = len(widths.split()) + 1
+            elif widths is not None:
+                n_cols = len(widths)
+                widths = ''.join(map(str, widths))
+            elif widths is None and header_rows:
+                n_cols = len(header_rows)
+                widths = get_column_widths_for_n(n_cols)
             width = None
-            header_row_data = None
-            header_rows = 0
-            if (fancy_maybe := FANCY_TABLES.get(heading_text)):
-                print("GOT FANCY", fancy_maybe)
-                n_cols = fancy_maybe.n_columns
-                if isinstance(fancy_maybe.widths, tuple):
-                    widths = ' '.join((str(w) for w in fancy_maybe.widths))
-                header_row_data = fancy_maybe.header_rows
-                if header_row_data:
-                    header_rows = len(header_row_data)
-            if n_cols is None:
-                n_cols = get_header_num_cols(raw_resource_handle, num_files)
-            if widths is None:
-                widths = (get_column_widths_for_n(n_cols))
-            header_row_data = header_row_data or ()
+
+#            header_rows = 0
+#             if (fancy_maybe := FANCY_TABLES.get(heading_text)):
+#                 print("GOT FANCY", fancy_maybe)
+#                 n_cols = fancy_maybe.n_columns
+#                 if isinstance(fancy_maybe.widths, tuple):
+#                     widths = ' '.join((str(w) for w in fancy_maybe.widths))
+#                 header_row_data = fancy_maybe.header_rows
+#                 if header_row_data:
+#                     header_rows = len(header_row_data)
+            # if n_cols is None:
+            #     n_cols = get_header_num_cols(raw_resource_handle, num_files)
+            # if widths is None:
+            #     widths = (get_column_widths_for_n(n_cols))
+            #header_row_data = header_row_data or ()
             # m = {
             #     dict(widths=widths,header)
             #     **FANCY_TABLES.get(heading_text)
@@ -481,13 +601,13 @@ def process_resource_directory(out, dir: Path):
             if widths:
                 out.write(f"    :widths: {widths}\n")
             if header_rows:
-                out.write(f"    :header-rows: {header_rows}\n")
+                out.write(f"    :header-rows: {len(header_rows)}\n")
             if width:
                 out.write(f"    :width: {width}\n")
             out.write(f"    :class: resource-table\n\n")
 
             # Write header row
-            for row in (header_row_data ):
+            for row in header_rows:
                 r_iter = iter(row)
                 out.write(f"    * - {next(r_iter)}\n\n")
                 for item in r_iter:
@@ -613,7 +733,8 @@ def process_resource_files(
         out,
         file_list: List[Path],
         prefix: str = None,
-        path: Path = None
+        path: Path = None,
+        header_row: Iterable[str] = ()
 ) -> None:
     """
     Render the table without any recursion or real FS navigation.
@@ -740,12 +861,12 @@ def process_resource_files(
             # print("row: ", face_name, style_string, code_html)
 
             out.write(f"    {start()} - .. code-block:: python\n\n")
-            out.write(f"          {raw_name!r}\n\n")
+            out.write(f"           {raw_name!r}\n\n")
 
             out.write(f"    {start()} - {style_string}\n\n")
             # out.write(indent(f"        ", code_block(resource_copyable, language='python')))
             out.write(f"    {start()} - .. code-block:: python\n\n")
-            out.write(f"          {resource_handle_raw!r}\n\n")
+            out.write(f"           {resource_handle_raw!r}\n\n")
 
             # cell_count += (COLUMNS - 1)
 
