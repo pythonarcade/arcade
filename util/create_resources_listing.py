@@ -183,7 +183,7 @@ HANDLE_TO_OVERRIDES: dict[str,HandleLevelConfigDict] = {
             "level": 2,
         },
         "include": "resources_Kenney.rst",
-        "list-table": {**FONT_TABLE_DEFAULTS}
+        "list_table": {**FONT_TABLE_DEFAULTS}
     },
     ":resources:/fonts/ttf/Liberation/": {
         "heading": {
@@ -192,7 +192,7 @@ HANDLE_TO_OVERRIDES: dict[str,HandleLevelConfigDict] = {
             "level": 2,
         },
         "include": "resources_Liberation.rst",
-        "list-table": {**FONT_TABLE_DEFAULTS}
+        "list_table": {**FONT_TABLE_DEFAULTS}
     },
     ":resources:/gui_basic_assets/": {
         "heading": {"value": "GUI Basic Assets"},
@@ -439,14 +439,14 @@ def process_resource_directory(out, dir: Path):
 
             n_cols = None
             widths = config.get('widths', None)
-            header_rows = opts.get('header_row', ())
+            header_row = opts.get('header_row', None)
             if isinstance(widths, str):
                 n_cols = len(widths.split()) + 1
             elif widths is not None:
                 n_cols = len(widths)
                 widths = ''.join(map(str, widths))
-            elif widths is None and header_rows:
-                n_cols = len(header_rows)
+            elif widths is None and header_row:
+                n_cols = len(header_row)
                 widths = get_column_widths_for_n(n_cols)
             width = None
 
@@ -456,18 +456,17 @@ def process_resource_directory(out, dir: Path):
             print("widths ", widths)
             if widths:
                 out.write(f"    :widths: {widths}\n")
-            if header_rows:
-                out.write(f"    :header-rows: {len(header_rows)}\n")
+            if header_row:
+                out.write(f"    :header-rows: 1\n")
             if width:
                 out.write(f"    :width: {width}\n")
             out.write(f"    :class: resource-table\n\n")
+            print("HROWS", header_row)
 
             # Write header row
-            for row in header_rows:
-                r_iter = iter(row)
-                out.write(f"    * - {next(r_iter)}\n\n")
-                for item in r_iter:
-                    out.write(f"      - {item}\n\n")
+            if header_row:
+                for prefix, col in zip(('*' + ' ' * (len(header_row) - 1)), header_row):
+                    out.write(f"    {prefix} - {col}\n")
                 out.write("\n")
 
             # Write table body after header
@@ -478,49 +477,6 @@ def process_resource_directory(out, dir: Path):
         process_resource_directory(out, path)
 
 
-class MediaTypeConfig(TypedDict):
-    media_kind: str
-    mime_suffix: str
-
-
-MEDIA_EMBED = {
-    '.wav': {
-        'media_kind': 'audio',
-        'mime_suffix': 'x-wav'
-    },
-    '.ogg': {
-        'media_kind': 'audio',
-        'mime_suffix': 'x-wav'
-    },
-    '.mp3': {
-        'media_kind': 'audio',
-        'mime_suffix': 'mpeg'
-    },
-    '.mp4': {
-        'media_kind': 'video',
-        'mime_suffix': 'mp4'
-    },
-    '.webm': {
-        'media_kind': 'video',
-        'mime_suffix': 'webm'
-    },
-    '.avi': {
-        'media_kind': 'video',
-        'mime_suffix': 'avi'
-    }
-}
-
-
-def code_block(
-        inner: str,
-        language: str | None = None,
-        options: Mapping[str, str | int | Iterable] | None = None
-) -> str:
-    return sphinx_directive(
-        "code-block", language if language else None, "\n",
-        options=options,
-        body=inner
-    )
 
 
 def indent(  # pending: post-3.0 refactor  # why would indent come after the text?!
@@ -600,6 +556,51 @@ class BrittleFontData(NamedTuple):
             face_name_parts.get('styles', None) or ''))
 
         return cls(raw_name, styles)
+
+
+class MediaTypeConfig(TypedDict):
+    media_kind: str
+    mime_suffix: str
+
+
+MEDIA_EMBED = {
+    '.wav': {
+        'media_kind': 'audio',
+        'mime_suffix': 'x-wav'
+    },
+    '.ogg': {
+        'media_kind': 'audio',
+        'mime_suffix': 'x-wav'
+    },
+    '.mp3': {
+        'media_kind': 'audio',
+        'mime_suffix': 'mpeg'
+    },
+    '.mp4': {
+        'media_kind': 'video',
+        'mime_suffix': 'mp4'
+    },
+    '.webm': {
+        'media_kind': 'video',
+        'mime_suffix': 'webm'
+    },
+    '.avi': {
+        'media_kind': 'video',
+        'mime_suffix': 'avi'
+    }
+}
+
+
+def code_block(
+        inner: str,
+        language: str | None = None,
+        options: Mapping[str, str | int | Iterable] | None = None
+) -> str:
+    return sphinx_directive(
+        "code-block", language if language else None, "\n",
+        options=options,
+        body=inner
+    )
 
 
 def process_resource_files(
