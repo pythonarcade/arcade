@@ -8,19 +8,16 @@ Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 from __future__ import annotations
 
 import html
-import math
 import re
 import sys
 import textwrap
 from collections import defaultdict
 from collections.abc import Mapping
-from dataclasses import dataclass, fields, field
 from functools import lru_cache, cache
 from io import StringIO
-from itertools import chain, cycle, repeat
+from itertools import chain, cycle
 from pathlib import Path
-from tokenize import String
-from typing import List, Callable, Protocol, Sequence, Iterable, Iterator, Any, TypeVar
+from typing import List, Callable, Protocol, Sequence, Iterable, TypeVar
 import logging
 
 import PIL.Image
@@ -92,17 +89,6 @@ def skipped_file(file_path: Path):
     return file_path.suffix in skip_extensions
 
 
-MAX_COLS: dict[str, int] = defaultdict(lambda: 2)
-MAX_COLS[":resources:sounds/"] = 2
-# MAX_COLS[":resources:fonts/ttf/Kenney/"] = 3
-# MAX_COLS[":resources:fonts/ttf/Liberation/"] = 3
-
-
-@lru_cache(maxsize=None)
-def get_header_num_cols(resource_stub: str, n_files = math.inf) -> int:
-    return int(min(MAX_COLS[resource_stub], n_files))
-
-
 @lru_cache(maxsize=None)
 def get_column_widths_for_n(n: int) -> str:
     width = str(100 // n)
@@ -129,13 +115,13 @@ def path_as_resource_handle(
     else:
         raise ValueError(f"Unexpected path: {path}. Expected one of: {', '.join(repr(b) for b in restrict_to_bases)}")
 
-    parts = [
-        prefix, ":resources:"
-    ]
+    parts = [prefix, ":resources:"]
     as_posix = path.as_posix()
+
     if not as_posix.startswith('/'):
         parts.append('/')
     parts.extend((as_posix, suffix))
+
     return ''.join(parts)
     #return f"{prefix}:resources:{path.as_posix()}{suffix}"
 
@@ -143,10 +129,6 @@ def path_as_resource_handle(
 KENNEY_TTFS = "Kenney TTFs"
 LIBERATION_TTFS = "Liberation TTFs"
 
-PREFIX_REF_TARGET = {
-    KENNEY_TTFS: "resources-fonts-kenney",
-    LIBERATION_TTFS: "resources-fonts-liberation"
-}
 
 # pending: post-3.0 cleanup  # unstructured kludge
 REPLACE_TITLE_WORDS = {
@@ -241,14 +223,13 @@ def drill_get(
 
 
 # pending: post-3.0 cleanup  # more unstructured filth
-SKIP_TITLES = {"Ttf"}
 SKIP_HANDLES = set([
     handle for handle, d in HANDLE_TO_OVERRIDES.items()
     if (
         'heading' in d and d['heading'].get('skip', None)
     )
 ])
-print("ALL_HANDLES", SKIP_HANDLES)
+# print("ALL_HANDLES", SKIP_HANDLES)
 visited_headings = set()
 
 
@@ -272,8 +253,6 @@ headings_lookup = (
     '^',
     '"',
 )
-
-
 
 
 def do_heading(
@@ -408,26 +387,21 @@ def process_resource_directory(out, dir: Path):
                 print(file.name)
 
         if num_files > 0:
-            # broken logic
-            # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
             raw_resource_handle = path_as_resource_handle(path, suffix="/")
             config: HandleLevelConfigDict = HANDLE_TO_OVERRIDES.get(raw_resource_handle, {})
-            print("CONFIG:\n", "raw", raw_resource_handle, "\n",config)
-
-            # Handles top-level resources suffix
             resource_handle = raw_resource_handle.removesuffix('./')
 
-            #resource_handle = raw_resource_handle
-            print("RES HANDLE", resource_handle)
-            # pending: post-3.0 time to refactor all of this
+            # print("CONFIG:\n",
+            #       "raw    :", raw_resource_handle, "\n",
+            #       "handle :", resource_handle, "\n",
+            #       "config :", config)
 
-            parts = raw_resource_handle.replace(":resources:", "").lstrip("/").rstrip("/").split("/")
+            parts = raw_resource_handle.replace(":resources:", "").strip("/").split("/")
             display_parts = [format_title_part(part) for part in parts]
-            print("RENDER:")
-            for items in zip(parts, display_parts):
-                print("   ", *map(repr, items))
-            heading_text = None
-            heading_level = None
+
+            # print("RENDER:")
+            # for items in zip(parts, display_parts):
+            #     print("   ", *map(repr, items))
 
             full = [':resources:/']
             for i, part in enumerate(parts, start=1):
@@ -452,7 +426,7 @@ def process_resource_directory(out, dir: Path):
                     use_value = format_title_part(part)
                 use_target = local_config.get('ref_target', None)
 
-                print("!!!", use_value, use_value, use_target)
+                # print("!!!", use_value, use_value, use_target)
 
                 do_heading(out, use_level, use_value, ref_target=use_target)
                 visited_headings.add(res_handle_step)
@@ -481,11 +455,6 @@ def process_resource_directory(out, dir: Path):
             width = None
 
             out.write(f"\n")
-            # out.write(f".. raw:: html\n\n")
-            # out.write(f"   <code class=\"literal resource-category\">{resource_handle}</code>\n\n")
-            #
-            # pending: post-3.0 cleanup?
-            #out.write(f".. list-table:: \"{header_title}\"\n")
             # sphinx_directive('list-table', options=opts)
             out.write(f".. list-table:: ``{resource_handle!r}``\n")
             print("widths ", widths)
@@ -735,8 +704,6 @@ def process_resource_files(
             out.write(f"    {start()} - .. code-block:: python\n\n")
             out.write(f"           {resource_handle_raw!r}\n\n")
 
-            # cell_count += (COLUMNS - 1)
-
         # Tiled maps
         elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
@@ -761,7 +728,6 @@ def process_resource_files(
             ))
         # The below doesn't work because of how raw HTML / Sphinx images interact:
         # out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
-        # cell_count += 1
 
     # Finish any remaining columns with empty cells
     while cell_count % COLUMNS > 0:
