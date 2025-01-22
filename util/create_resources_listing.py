@@ -303,7 +303,6 @@ def is_unskipped_file(p: Path):
     return not (p.is_dir() or p.suffix in skip_extensions)
 
 
-
 def filter_dir(
         dir: Path,
         keep: Callable[[Path], bool] = lambda path: True,
@@ -326,7 +325,6 @@ def filter_dir(
     if key or reverse:
         kept.sort(key=key, reverse=reverse)
     return kept
-
 
 
 def smash_iterable(i: str | Iterable[str]):
@@ -367,8 +365,6 @@ def sphinx_directive(
 
     return ''.join(lines)
 
-
-ALL_THE_PATHS = {}
 
 def process_resource_directory(out, dir: Path):
     """
