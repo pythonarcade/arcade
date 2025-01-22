@@ -17,11 +17,11 @@ from functools import lru_cache, cache
 from io import StringIO
 from itertools import chain, cycle
 from pathlib import Path
-from typing import List, Callable, Protocol, Sequence, Iterable, TypeVar
+from typing import List, Callable, Protocol, Sequence, Iterable, TypeVar, NamedTuple
 import logging
 
 import PIL.Image
-from typing_extensions import TypedDict, NotRequired
+from typing_extensions import TypedDict, NotRequired, Self
 
 log = logging.getLogger(__name__)
 
@@ -548,7 +548,7 @@ def highlight_copyable(out, inner: str) -> None:
     out.write(f"   {inner!r}\n\n", "")
 
 
-# Regex because it's easier to make complicated
+# Regex because why not? We're detecting CapitalWordBounds.
 BRITTLE_CAP_WORD_REGEX = re.compile(r"[A-Z][a-z0-9]*")
 BRITTLE_FONT_NAME_REGEX = re.compile(
     r"""^
@@ -563,10 +563,22 @@ BRITTLE_FONT_NAME_REGEX = re.compile(
     """, re.X)
 
 
-def extract_ttf_name_data(
-        path: Path
-):  # pending: find a non-awful way to read metadata?
-    face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
+class BrittleFontData(NamedTuple):
+    face_name: str
+    styles: Iterable[str]
+
+    @classmethod
+    def from_path(cls, path: Path) -> Self:
+        face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
+        face_name_pieces = (face_name_parts.get("face_name") or '').split('_')
+
+        raw_name = ' '.join(face_name_pieces)
+        print(face_name_parts)
+
+        styles = tuple(BRITTLE_CAP_WORD_REGEX.findall(
+            face_name_parts.get('styles', None) or ''))
+
+        return cls(raw_name, styles)
 
 
 def process_resource_files(
@@ -678,22 +690,14 @@ def process_resource_files(
         #     out.write(f"    {start_row} - `{code_html} <{file_path}>`_\n")
         # Fonts
         elif suffix == ".ttf":
-            # The worst code you've ever seen ; v ; 7  # pending: post-3.0 cleanup
-            face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
-            face_name_pieces = (face_name_parts.get("face_name") or '').split('_')
 
-            raw_name = ' '.join(face_name_pieces)
-            face_name = repr(raw_name)
-            print(face_name_parts)
+            data = BrittleFontData.from_path(path)
 
-            styles = tuple(BRITTLE_CAP_WORD_REGEX.findall(
-                face_name_parts.get('styles', None) or ''))
-
-            style_string = ", ".join(styles or ("Regular",))
+            style_string = ", ".join(data.styles or ("Regular",))
             # print("row: ", face_name, style_string, code_html)
 
             out.write(f"    {start()} - .. code-block:: python\n\n")
-            out.write(f"           {raw_name!r}\n\n")
+            out.write(f"           {data.face_name!r}\n\n")
 
             out.write(f"    {start()} - {style_string}\n\n")
             # out.write(indent(f"        ", code_block(resource_copyable, language='python')))
