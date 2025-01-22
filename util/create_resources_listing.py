@@ -395,17 +395,20 @@ def process_resource_directory(out, dir: Path):
 
             # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
             raw_resource_handle = path_as_resource_handle(path, suffix="/")
-            resource_handle = raw_resource_handle[:-2] if raw_resource_handle.endswith("./") else raw_resource_handle
+            # resource_handle = raw_resource_handle[:-2] if raw_resource_handle.endswith("./") else raw_resource_handle
+            resource_handle = raw_resource_handle
             print("RES HANDLE", resource_handle)
             # pending: post-3.0 time to refactor all of this
+
             parts = raw_resource_handle.replace(":resources:", "").rstrip("/").split("/")
             display_parts = [format_title_part(part) for part in parts]
             heading_text = None
             heading_level = None
 
-            # Get current heading level
+            # Process headings and render any new ones we haven't seen
             for heading_level, part in enumerate(display_parts, start=1):
                 print("ff", (heading_level, part))
+
                 if part in SKIP_TITLES:
                     continue
                 as_tup = tuple(display_parts[:heading_level])
@@ -424,6 +427,8 @@ def process_resource_directory(out, dir: Path):
                 do_heading(out, heading_level, heading_text, ref_target=ref_target)
                 visited_headings.add(as_tup)
 
+            # Do heading info text
+
             # if raw_resource_handle == ":resources:images/":
             #     _debug_print_files()
             print("HT", heading_text, heading_level)
@@ -436,6 +441,7 @@ def process_resource_directory(out, dir: Path):
                 elif raw_resource_handle.endswith("Liberation/"):
                     out.include_file(INCLUDES_ROOT / "resources_Liberation.rst")
 
+            # Ugly table header stuff?
             opts = {}
 
             n_cols = None
@@ -480,6 +486,7 @@ def process_resource_directory(out, dir: Path):
                 out.write(f"    :width: {width}\n")
             out.write(f"    :class: resource-table\n\n")
 
+            # Write header row
             for row in (header_row_data ):
                 r_iter = iter(row)
                 out.write(f"    * - {next(r_iter)}\n\n")
@@ -487,9 +494,11 @@ def process_resource_directory(out, dir: Path):
                     out.write(f"      - {item}\n\n")
                 out.write("\n")
 
+            # Write table body after header
             process_resource_files(out, file_list)
             out.write("\n\n")
 
+        # Recurse dirs
         process_resource_directory(out, path)
 
 
@@ -517,7 +526,7 @@ def code_block(
     )
 
 
-def quote(s: str) -> str:
+def html_quote(s: str) -> str:
     """Wrap the passed string in HTML-friendly quotes.
 
     This allows embedding quoted strings insdie HTML attributes,
@@ -537,12 +546,14 @@ def quote(s: str) -> str:
     """
     return f"&quot;{s}&quot;"
 
+
 def indent(  # pending: post-3.0 refactor  # why would indent come after the text?!
         spacing: str,
         to_indent: str,
         as_row: bool = False
 ) -> str:
-    """Readable ergonomics for text wrapping."""
+    """More readable ergonomics for text wrapping."""
+
     if not as_row:
         return textwrap.indent(to_indent, spacing)
     raw = StringIO(to_indent)
@@ -598,7 +609,12 @@ def extract_ttf_name_data(
     face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
 
 
-def process_resource_files(out, file_list: List[Path], prefix: str = None, path: Path = None) -> None:
+def process_resource_files(
+        out,
+        file_list: List[Path],
+        prefix: str = None,
+        path: Path = None
+) -> None:
     """
     Render the table without any recursion or real FS navigation.
 
@@ -632,7 +648,8 @@ def process_resource_files(out, file_list: List[Path], prefix: str = None, path:
 
         # Shared items
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
-        resource_copyable = f"{quote(path_as_resource_handle(path))}"
+        resource_handle_raw = path_as_resource_handle(path)
+        resource_copyable = f"{html_quote(path_as_resource_handle(path))}"
 
         # Decide how we're going to render the file
         suffix = path.suffix
@@ -649,7 +666,7 @@ def process_resource_files(out, file_list: List[Path], prefix: str = None, path:
                     ),
                     # lazy helps avoid GitHub and readthedocs from 429ing us ("chill pls")
                     'loading': 'lazy',
-                    'name': resource_copyable
+                    'name': resource_handle_raw
                 }
             )
             out.write(indent("        ", tile_rst_code))
@@ -728,7 +745,7 @@ def process_resource_files(out, file_list: List[Path], prefix: str = None, path:
             out.write(f"    {start()} - {style_string}\n\n")
             # out.write(indent(f"        ", code_block(resource_copyable, language='python')))
             out.write(f"    {start()} - .. code-block:: python\n\n")
-            out.write(f"          {resource_copyable!r}\n\n")
+            out.write(f"          {resource_handle_raw!r}\n\n")
 
             # cell_count += (COLUMNS - 1)
 
