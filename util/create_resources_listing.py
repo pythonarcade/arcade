@@ -516,6 +516,23 @@ def code_block(
 
 
 def quote(s: str) -> str:
+    """Wrap the passed string in HTML-friendly quotes.
+
+    This allows embedding quoted strings insdie HTML attributes,
+    primarily for CopybuttonJS and the ``data-clipboard-text``
+    attribute it uses.
+
+    .. code-block:: html
+
+       <div data-example="&quot;:resources:/file.ext&quot;">
+
+    When copied, this will send the following to the clipboard:
+
+    .. code-block:: python
+
+       ":resources:/file.ext"
+
+    """
     return f"&quot;{s}&quot;"
 
 
@@ -595,7 +612,7 @@ def process_resource_files(out, file_list: List[Path]):
         else:
             start_row = " "
 
-        resource_copyable = f"{create_resource_path(path)}"
+        resource_copyable = f"{quote(create_resource_path(path))}"
 
 
         if suffix in [".png", ".jpg", ".gif", ".svg"]:

@@ -55,8 +55,6 @@ function handleSidebarHeaderToggle() {
     registerOnScrollEvent(mediaQuery);
   }
 }
-
-
 /**
  * Load all custom code only once the DOM document has fully loaded.
  *
@@ -64,6 +62,6 @@ function handleSidebarHeaderToggle() {
  */
 $(document).ready(() => {
   handleSidebarHeaderToggle();
-  // Re-use the base ClipboardJS provided by Sphinx copybutton
+  // Re-use the base ClipboardJS provided by sphinx-copybutton
   document.ezcopy = new ClipboardJS('.arcade-ezcopy');
 });
