@@ -7,6 +7,7 @@ Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 # ruff: noqa
 from __future__ import annotations
 
+import html
 import math
 import re
 import sys
@@ -482,11 +483,11 @@ def process_resource_directory(out, dir: Path):
             out.write(f"\n")
             # out.write(f".. raw:: html\n\n")
             # out.write(f"   <code class=\"literal resource-category\">{resource_handle}</code>\n\n")
-
+            #
             # pending: post-3.0 cleanup?
             #out.write(f".. list-table:: \"{header_title}\"\n")
-            sphinx_directive('list-table', options=opts)
-            out.write(f".. list-table::\n")
+            # sphinx_directive('list-table', options=opts)
+            out.write(f".. list-table:: ``{resource_handle!r}``\n")
             print("widths ", widths)
             if widths:
                 out.write(f"    :widths: {widths}\n")
@@ -536,27 +537,6 @@ def code_block(
     )
 
 
-def html_quote(s: str) -> str:
-    """Wrap the passed string in HTML-friendly quotes.
-
-    This allows embedding quoted strings insdie HTML attributes,
-    primarily for CopybuttonJS and the ``data-clipboard-text``
-    attribute it uses.
-
-    .. code-block:: html
-
-       <div data-example="&quot;:resources:/file.ext&quot;">
-
-    When copied, this will send the following to the clipboard:
-
-    .. code-block:: python
-
-       ":resources:/file.ext"
-
-    """
-    return f"&quot;{s}&quot;"
-
-
 def indent(  # pending: post-3.0 refactor  # why would indent come after the text?!
         spacing: str,
         to_indent: str,
@@ -576,13 +556,18 @@ def indent(  # pending: post-3.0 refactor  # why would indent come after the tex
 
 
 def html_copyable(
-        name: str,
+        value: str,
         resource_handle: str,
+        string_quote_char: str | None = "'"
 ) -> str:
+    if string_quote_char:
+        value = f"{string_quote_char}{value}{string_quote_char}"
+    escaped = html.escape(value)
+
     raw = (
         f"<span class=\"resource-handle\">\n"
         f"    <code class=\"docutils literal notranslate\">\n"
-        f"        <span class=\"pre\">{name}</span>\n"
+        f"        <span class=\"pre\">{escaped}</span>\n"
         f"    </code>\n"
         f"    <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
         f"        <img src=\"/_static/copy-button.svg\"/>\n"
@@ -658,13 +643,13 @@ def process_resource_files(
         # Shared items
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
         resource_handle_raw = path_as_resource_handle(path)
-        resource_copyable = f"{html_quote(path_as_resource_handle(path))}"
+        resource_copyable = html_copyable(path.name, resource_handle_raw)
 
         # Decide how we're going to render the file
         suffix = path.suffix
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
             out.write(f"    {start()} - .. raw:: html\n\n")
-            out.write(indent("           ", html_copyable(path.name, resource_copyable)))
+            out.write(indent("           ", resource_copyable))
 
             tile_rst_code = sphinx_directive(
                 'image', f'../../{resource_path}',
@@ -700,7 +685,7 @@ def process_resource_files(
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent(
-                "           ", html_copyable(path.name, resource_copyable)))
+                "           ", resource_copyable))
 
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"        .. raw:: html\n\n")
@@ -713,7 +698,7 @@ def process_resource_files(
             file_path = FMT_URL_REF_EMBED.format(resource_path)
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent(
-                      f"             ", html_copyable(path.name, resource_copyable)))
+                      f"             ", resource_copyable))
             out.write("\n")
             src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"        .. raw:: html\n\n")
@@ -757,7 +742,7 @@ def process_resource_files(
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent("             ",
-                html_copyable(path.name, resource_copyable)))
+                 resource_copyable))
 
             icon = "tiled_icon_digi_pls_replace.png"
             out.write(indent(f"        ",
@@ -766,7 +751,7 @@ def process_resource_files(
 
         else:
             out.write(f"    {start()} - .. raw:: html\n\n")
-            out.write(indent("             ", html_copyable(path.name, resource_copyable)))
+            out.write(indent("             ", resource_copyable))
             out.write(indent("             ",
                 # SVG styling and alignment seems odd, so we're doing this the flexbox way
                 f"<div class=\"resource-thumb file-icon unknown-file-type\">\n"

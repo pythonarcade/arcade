@@ -285,14 +285,24 @@ table.resource-table td > .resource-thumb.file-icon {
     border-color: #54c079;
     color: #54c079;
 }
+.resource-table .caption-text > .literal,
 .resource-table .resource-handle > .literal {
+    font-style: normal;
     height: 1.5em;
     min-height: 1.5em;
-    border-radius: 0.4em 0 0 0.4em;
+    border-radius: 0.4em;
     border: 1px solid #1b1f2426;
     vertical-align: middle;
-    font-size: 1em;
+    /* Not clear why this doesn't work for the .caption-text */
+    font-size: 1em !important;
 }
+/* Disable items which haven adjacent button
+   CAVEAT: not compatible with RTL flex flows!
+ */
+.resource-table * > .literal:has(+ button.arcade-ezcopy) {
+     border-radius: 0.4em 0 0 0.4em;
+}
+
 /* Imitate sphinx-copybutton style */
 button.arcade-ezcopy {
     width: 1.5em;
