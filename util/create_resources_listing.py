@@ -155,11 +155,6 @@ REPLACE_TITLE_WORDS = {
     "window": "Window & Panel",
     ".": "Top-level Resources"
 }
-# NASTY! # pending: post-3.0 cleanup
-OVERRIDE_LEVELS = {
-    KENNEY_TTFS: 2,
-    LIBERATION_TTFS: 2
-}
 
 
 class TableConfigDict(TypedDict):
@@ -393,84 +388,7 @@ def sphinx_directive(
     return ''.join(lines)
 
 
-@dataclass
-class TableCfg(Mapping):  # pending: remove ASAP, kludge
-    """
-    This exists because table generation and file tree reading concerns were mixed.
-
-    https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#toc-entry-60
-    """
-    header_rows: tuple[tuple[str, ...]] | None = None
-    widths: tuple[str|int, ...] | None = None
-    """Series of widths as lengths or %s (like CSS sorta)"""
-    width: str | int | None = None
-    """One width as a length."""
-    _n_cols: int | None = field(init=False,default=None)
-
-    def __post_init__(self):
-        n_none = 0
-        first_row = None
-        if (header_rows := self.header_rows) is not None:
-            first_row = header_rows[0]
-            r_len = len(first_row)
-            for i, r in enumerate(header_rows, start=1):
-                if len(r) == r_len:
-                    continue
-                raise ValueError(f"mismatched columns at header row {i}: {r}")
-        else:
-            n_none += 1
-
-        if (widths := self.widths) is None:
-            n_none += 1
-
-        if n_none == 1:
-            self._n_cols = len(widths or header_rows)
-        if n_none == 0 and (len(header_rows[0]) != len(widths)):
-            raise ValueError(f"num columns mismatch: {header_rows=} ({len(header_rows)}, {widths=} ({len(widths)})")
-        elif n_none < 2:
-            if widths:
-                self._n_cols = len(widths)
-            elif header_rows:
-                self._n_cols = len(header_rows[0])
-    @property
-    def n_columns(self) -> int | None:
-        return self._n_cols
-
-    def __getitem__(self, __k):
-        try:
-            return getattr(self, __k)
-        except AttributeError as e:
-            raise KeyError(
-                f"key {__k} does not match a known attribute of {self.__class__.__name__}"
-            ) from e
-
-    def __len__(self) -> int:
-        return 3
-
-    def __iter__(self):
-        yield self.header_rows
-        yield self.widths
-        yield self.width
-
-
-STOCK_FONT_TABLE: TableCfg = TableCfg(
-        header_rows=((
-            ':py:class:`font_name <arcade.Text>`',
-            "Style(s)",
-            ":ref:`Resource Handle <resource_handles>`",
-        ),),
-        widths=(30, 15, 55),
-)
-_DEFAULT = TableCfg(widths=(50,50))
-FANCY_TABLES: defaultdict[str, TableCfg] = defaultdict(lambda: _DEFAULT)
-FANCY_TABLES.update(
-{
-    "Kenney TTFs": STOCK_FONT_TABLE,
-    "Liberation TTFs" : STOCK_FONT_TABLE
-})
-
 ALL_THE_PATHS = {}
-
 
 def process_resource_directory(out, dir: Path):
     """
@@ -532,14 +450,8 @@ def process_resource_directory(out, dir: Path):
                 if use_value is None:
                     use_value = format_title_part(part)
                 use_target = local_config.get('ref_target', None)
-                # # NASTY! # pending: post 3.0 cleanup
-                # if part in OVERRIDE_LEVELS:
-                #     heading_level = OVERRIDE_LEVELS[part]
-                #
-                print("!!!", use_value, use_value, use_target)
 
-                #ref_target = PREFIX_REF_TARGET.get(part, None)
-                #heading_text = part
+                print("!!!", use_value, use_value, use_target)
 
                 do_heading(out, use_level, use_value, ref_target=use_target)
                 visited_headings.add(res_handle_step)
@@ -550,7 +462,6 @@ def process_resource_directory(out, dir: Path):
                 if isinstance(include, str):
                     include = INCLUDES_ROOT / include
                 out.include_file(include)
-
 
             # Ugly table header stuff?
             opts = config.get('list_table', {})
@@ -567,27 +478,6 @@ def process_resource_directory(out, dir: Path):
                 n_cols = len(header_rows)
                 widths = get_column_widths_for_n(n_cols)
             width = None
-
-#            header_rows = 0
-#             if (fancy_maybe := FANCY_TABLES.get(heading_text)):
-#                 print("GOT FANCY", fancy_maybe)
-#                 n_cols = fancy_maybe.n_columns
-#                 if isinstance(fancy_maybe.widths, tuple):
-#                     widths = ' '.join((str(w) for w in fancy_maybe.widths))
-#                 header_row_data = fancy_maybe.header_rows
-#                 if header_row_data:
-#                     header_rows = len(header_row_data)
-            # if n_cols is None:
-            #     n_cols = get_header_num_cols(raw_resource_handle, num_files)
-            # if widths is None:
-            #     widths = (get_column_widths_for_n(n_cols))
-            #header_row_data = header_row_data or ()
-            # m = {
-            #     dict(widths=widths,header)
-            #     **FANCY_TABLES.get(heading_text)
-            # }
-            # out.write(f"\n{header_title}\n")
-            # out.write("-" * (len(header_title)) + "\n\n")
 
             out.write(f"\n")
             # out.write(f".. raw:: html\n\n")
@@ -748,13 +638,11 @@ def process_resource_files(
     if not prefix:
         prefix = path_as_resource_handle(path, suffix="/")
 
+    COLUMNS: int = 2
     if len(file_list) == 1:
         COLUMNS = 1
     elif path.parent.name == "ttf":
         COLUMNS = 3
-        widths = '25 15 60'
-    else:
-        COLUMNS = 2
 
     column_iter = cycle(chain('*', ' ' * (COLUMNS - 1)))
 
@@ -840,22 +728,16 @@ def process_resource_files(
         #     out.write(f"    {start_row} - `{code_html} <{file_path}>`_\n")
         # Fonts
         elif suffix == ".ttf":
-
             # The worst code you've ever seen ; v ; 7  # pending: post-3.0 cleanup
             face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
             face_name_pieces = (face_name_parts.get("face_name") or '').split('_')
-            _KLUDGE = face_name_pieces[0]  + " TTFs"
 
-            raw_name =' '.join(face_name_pieces)
+            raw_name = ' '.join(face_name_pieces)
             face_name = repr(raw_name)
             print(face_name_parts)
 
             styles = tuple(BRITTLE_CAP_WORD_REGEX.findall(
                 face_name_parts.get('styles', None) or ''))
-
-            ob =  FANCY_TABLES.get(_KLUDGE)
-            print("aaa",  _KLUDGE, ob, ob.n_columns)
-
 
             style_string = ", ".join(styles or ("Regular",))
             # print("row: ", face_name, style_string, code_html)
