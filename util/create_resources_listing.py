@@ -16,7 +16,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, fields, field
 from functools import lru_cache, cache
 from io import StringIO
-from itertools import chain, cycle
+from itertools import chain, cycle, repeat
 from pathlib import Path
 from tokenize import String
 from typing import List, Callable, Protocol, Sequence, Iterable, Iterator, Any
@@ -364,15 +364,15 @@ STOCK_FONT_TABLE: TableCfg = TableCfg(
         ),),
         widths=(30, 15, 55),
 )
-
-FANCY_TABLES: defaultdict[str, TableCfg] = defaultdict(default=TableCfg(widths=(20,20)))
+_DEFAULT = TableCfg(widths=(50,50))
+FANCY_TABLES: defaultdict[str, TableCfg] = defaultdict(lambda: _DEFAULT)
 FANCY_TABLES.update(
 {
     "Kenney TTFs": STOCK_FONT_TABLE,
     "Liberation TTFs" : STOCK_FONT_TABLE
 })
 
-ALL_THE_PATHS = []
+ALL_THE_PATHS = {}
 
 
 def process_resource_directory(out, dir: Path):
@@ -383,7 +383,6 @@ def process_resource_directory(out, dir: Path):
     for path in filter_dir(dir, keep=is_nonprotected_dir):
         # out.write(f"\n{cur_node.name}\n")
         # out.write("-" * len(cur_node.name) + "\n\n")
-        ALL_THE_PATHS.append(path)
 
         file_list = filter_dir(path, keep=is_unskipped_file)
         num_files = len(file_list)
@@ -397,7 +396,7 @@ def process_resource_directory(out, dir: Path):
             # header_title = f":resources:{path.relative_to(RESOURCE_DIR).as_posix()}/"
             raw_resource_handle = create_resource_path(path, suffix="/")
             resource_handle = raw_resource_handle[:-2] if raw_resource_handle.endswith("./") else raw_resource_handle
-
+            print("RES HANDLE", resource_handle)
             # pending: post-3.0 time to refactor all of this
             parts = raw_resource_handle.replace(":resources:", "").rstrip("/").split("/")
             display_parts = [format_title_part(part) for part in parts]
@@ -437,6 +436,8 @@ def process_resource_directory(out, dir: Path):
                 elif raw_resource_handle.endswith("Liberation/"):
                     out.include_file(INCLUDES_ROOT / "resources_Liberation.rst")
 
+            opts = {}
+
             n_cols = None
             widths = None
             width = None
@@ -468,6 +469,7 @@ def process_resource_directory(out, dir: Path):
 
             # pending: post-3.0 cleanup?
             #out.write(f".. list-table:: \"{header_title}\"\n")
+            sphinx_directive('list-table', options=opts)
             out.write(f".. list-table::\n")
             print("widths ", widths)
             if widths:
@@ -535,6 +537,40 @@ def quote(s: str) -> str:
     """
     return f"&quot;{s}&quot;"
 
+def indent(  # pending: post-3.0 refactor  # why would indent come after the text?!
+        spacing: str,
+        to_indent: str,
+        as_row: bool = False
+) -> str:
+    """Readable ergonomics for text wrapping."""
+    if not as_row:
+        return textwrap.indent(to_indent, spacing)
+    raw = StringIO(to_indent)
+    new = StringIO()
+    it = chain((spacing,), cycle((' ' * len(spacing),)))
+    for prefix, line in zip(it, raw.readlines()):
+        new.write(textwrap.indent(line, prefix))
+
+    return new.getvalue()
+
+
+def html_copyable(
+        name: str,
+        resource_handle: str,
+) -> str:
+    raw = (
+        f"<span class=\"resource-handle\">\n"
+        f"    <code class=\"docutils literal notranslate\">\n"
+        f"        <span class=\"pre\">{name}</span>\n"
+        f"    </code>\n"
+        f"    <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
+        f"        <img src=\"/_static/copy-button.svg\"/>\n"
+        f"    </button>\n"
+        f"</span>\n"
+        f"<br/>\n\n")
+
+    return raw
+
 
 def highlight_copyable(out, inner: str) -> None:
     out.write(f".. code-block:: python\n\n")
@@ -556,68 +592,53 @@ BRITTLE_FONT_NAME_REGEX = re.compile(
     """, re.X)
 
 
-def indent(  # pending: post-3.0 refactor  # why would indent come after the text?!
-        spacing: str,
-        to_indent: str,
-        as_row: bool = False
-) -> str:
-    """Readable ergonomics for text wrapping."""
-    if not as_row:
-        return textwrap.indent(to_indent, spacing)
-    raw = StringIO(to_indent)
-    new = StringIO()
-    it = chain((spacing,), cycle((' ' * len(spacing),)))
-    for prefix, line in zip(it, raw.readlines()):
-        new.write(textwrap.indent(line, prefix))
-
-    return new.getvalue()
-
-def html_copyable(
-        name: str,
-        resource_handle: str,
-) -> str:
-    raw = (
-        f"<span class=\"resource-handle\">\n"
-        f"    <code class=\"docutils literal notranslate\">\n"
-        f"        <span class=\"pre\">{name}</span>\n"
-        f"    </code>\n"
-        f"    <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
-        f"        <img src=\"/_static/copy-button.svg\"/>\n"
-        f"    </button>\n"
-        f"</span>\n"
-        f"<br/>\n")
-
-    return raw
+def extract_ttf_name_data(
+        path: Path
+):  # pending: find a non-awful way to read metadata?
+    face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
 
 
-def process_resource_files(out, file_list: List[Path]):
+def process_resource_files(out, file_list: List[Path], prefix: str = None, path: Path = None) -> None:
+    """
+    Render the table without any recursion or real FS navigation.
+
+    :param out:
+    :param file_list:
+    :return:
+    """
     cell_count = 0
+    path = path or file_list[0].parent
+    if not prefix:
+        prefix = create_resource_path(path, suffix="/")
 
-    _root = file_list[0].parent
-    prefix = create_resource_path(_root, suffix="/")
-    _KLUDGE = None
-    if (_r_name := _root.name) in ('Kenney', 'Liberation')\
-        and (_fancy := FANCY_TABLES.get(_r_name[2] + " TTFs") ) is not None:
-        _KLUDGE = _fancy.n_columns
-    COLUMNS = _KLUDGE or get_header_num_cols(prefix, len(file_list))
+    if len(file_list) == 1:
+        COLUMNS = 1
+    elif path.parent.name == "ttf":
+        COLUMNS = 3
+        widths = '25 15 60'
+    else:
+        COLUMNS = 2
 
-    log.info(f"Processing {prefix=!r} with {COLUMNS=!r}")
+    column_iter = cycle(chain('*', ' ' * (COLUMNS - 1)))
+
+    log.info(f"Processing {prefix=!r} with {COLUMNS=!r}, {path.parent.name!r}")
+
+    def start():
+        nonlocal cell_count
+        cell_count += 1
+        return next(column_iter)
 
     for path in file_list:
+
+        # Shared items
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
-        suffix = path.suffix
-
-        if cell_count % COLUMNS == 0:
-            start_row = "*"
-        else:
-            start_row = " "
-
         resource_copyable = f"{quote(create_resource_path(path))}"
 
-
+        # Decide how we're going to render the file
+        suffix = path.suffix
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
-            out.write(f"    {start_row} - .. raw:: html\n\n")
-            out.write(indent("             ", html_copyable(path.name, resource_copyable)))
+            out.write(f"    {start()} - .. raw:: html\n\n")
+            out.write(indent("           ", html_copyable(path.name, resource_copyable)))
 
             tile_rst_code = sphinx_directive(
                 'image', f'../../{resource_path}',
@@ -651,27 +672,27 @@ def process_resource_files(out, file_list: List[Path]):
 
         elif suffix in SUFFIX_TO_AUDIO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
-            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent(
-                "             ", html_copyable(path.name, resource_copyable)))
+                "           ", html_copyable(path.name, resource_copyable)))
 
             src_type=SUFFIX_TO_AUDIO_TYPE[suffix]
             out.write(f"        .. raw:: html\n\n")
-            out.write(indent("              ",
+            out.write(indent("           ",
                       f"<audio class=\"resource-thumb\" controls>\n"
                       f"  <source src='{file_path}' type='audio/{src_type}'>\n"
                       f"</audio>\n\n"))
 
         elif suffix in SUFFIX_TO_VIDEO_TYPE:
             file_path = FMT_URL_REF_EMBED.format(resource_path)
-            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent(
                       f"             ", html_copyable(path.name, resource_copyable)))
-
+            out.write("\n")
             src_type = SUFFIX_TO_VIDEO_TYPE[suffix]
             out.write(f"        .. raw:: html\n\n")
             out.write(indent(
-                      f"              ",
+                      f"           ",
                       f"<video class=\"resource-thumb\" controls>\n"
                       f"  <source src='{file_path}' type='video/{src_type}'>\n"
                       f"</video>\n\n"))
@@ -681,10 +702,12 @@ def process_resource_files(out, file_list: List[Path]):
         #     out.write(f"    {start_row} - `{code_html} <{file_path}>`_\n")
         # Fonts
         elif suffix == ".ttf":
+
             # The worst code you've ever seen ; v ; 7  # pending: post-3.0 cleanup
             face_name_parts = BRITTLE_FONT_NAME_REGEX.match(path.name).groupdict()
             face_name_pieces = (face_name_parts.get("face_name") or '').split('_')
             _KLUDGE = face_name_pieces[0]  + " TTFs"
+
             raw_name =' '.join(face_name_pieces)
             face_name = repr(raw_name)
             print(face_name_parts)
@@ -699,20 +722,20 @@ def process_resource_files(out, file_list: List[Path]):
             style_string = ", ".join(styles or ("Regular",))
             # print("row: ", face_name, style_string, code_html)
 
-            out.write(f"    {start_row} - .. code-block:: python\n\n")
+            out.write(f"    {start()} - .. code-block:: python\n\n")
             out.write(f"          {raw_name!r}\n\n")
 
-            out.write(f"      - {style_string}\n\n")
+            out.write(f"    {start()} - {style_string}\n\n")
             # out.write(indent(f"        ", code_block(resource_copyable, language='python')))
-            out.write(f"      - .. code-block:: python\n\n")
+            out.write(f"    {start()} - .. code-block:: python\n\n")
             out.write(f"          {resource_copyable!r}\n\n")
 
-            cell_count += (COLUMNS - 1)
+            # cell_count += (COLUMNS - 1)
 
         # Tiled maps
         elif suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
-            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent("             ",
                 html_copyable(path.name, resource_copyable)))
 
@@ -722,7 +745,7 @@ def process_resource_files(out, file_list: List[Path]):
                       f"   :class: resource-thumb\n\n"))
 
         else:
-            out.write(f"    {start_row} - .. raw:: html\n\n")
+            out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent("             ", html_copyable(path.name, resource_copyable)))
             out.write(indent("             ",
                 # SVG styling and alignment seems odd, so we're doing this the flexbox way
@@ -733,12 +756,11 @@ def process_resource_files(out, file_list: List[Path]):
             ))
         # The below doesn't work because of how raw HTML / Sphinx images interact:
         # out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
-        cell_count += 1
+        # cell_count += 1
 
     # Finish any remaining columns with empty cells
     while cell_count % COLUMNS > 0:
-        out.write(f"      -\n")
-        cell_count += 1
+        out.write(f"    {start()} -\n")
 
 
 def resources():
