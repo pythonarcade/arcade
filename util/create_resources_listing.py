@@ -7,6 +7,7 @@ Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 # ruff: noqa
 from __future__ import annotations
 
+import copy
 import html
 import re
 import sys
@@ -15,9 +16,9 @@ from collections import defaultdict
 from collections.abc import Mapping
 from functools import lru_cache, cache
 from io import StringIO
-from itertools import chain, cycle
+from itertools import chain, cycle, repeat
 from pathlib import Path
-from typing import List, Callable, Protocol, Sequence, Iterable, TypeVar, NamedTuple
+from typing import List, Callable, Protocol, Sequence, Iterable, TypeVar, NamedTuple, Generator
 import logging
 
 import PIL.Image
@@ -170,7 +171,7 @@ FONT_TABLE_DEFAULTS: TableConfigDict= {
 }
 
 
-HANDLE_TO_OVERRIDES: dict[str,HandleLevelConfigDict] = {
+RESOURCE_HANDLE_CONFIGS: dict[str,HandleLevelConfigDict] = {
     ":resources:/": {
         "heading": {
             "value": "Top-Level Resources",
@@ -214,7 +215,7 @@ HANDLE_TO_OVERRIDES: dict[str,HandleLevelConfigDict] = {
 }
 
 T = TypeVar('T')
-
+R = TypeVar('R')  # Result type
 
 # We have benedict at home
 def drill_get(
@@ -235,13 +236,14 @@ def drill_get(
 
 # pending: post-3.0 cleanup  # more unstructured filth
 SKIP_HANDLES = set([
-    handle for handle, d in HANDLE_TO_OVERRIDES.items()
+    handle for handle, d in RESOURCE_HANDLE_CONFIGS.items()
     if (
         'heading' in d and d['heading'].get('skip', None)
     )
 ])
 # print("ALL_HANDLES", SKIP_HANDLES)
 visited_headings = set()
+
 
 
 @cache
@@ -303,14 +305,16 @@ def do_heading(
     out.write("\n")
 
 
+# Yes, this *is* used: we have a PyInstaller folder!
 PRIVATE_NAME = re.compile(r'^__')
 
 
-def is_nonprotected_dir(p: Path):
+def is_nonprotected_dir(p: Path) -> bool:
+    """True if ``p`` is a folder which isn't marked with ``__`` or other privacy checks."""
     return p.is_dir() and not PRIVATE_NAME.match(p.stem)
 
 
-def is_unskipped_file(p: Path):
+def is_unskipped_file(p: Path) -> bool:
     return not (p.is_dir() or p.suffix in skip_extensions)
 
 
@@ -338,17 +342,21 @@ def filter_dir(
     return kept
 
 
-def smash_iterable(i: str | Iterable[str]):
+def coerce_iterable_to_str(
+        i: str | Iterable[T],
+        converter: Callable[[T], R] = str
+) -> str:
     if isinstance(i, str):
         return i
     else:
-        return ' '.join(i)
+        return ' '.join(map(converter, i))
 
 
 _sphinx_option_handlers: dict[str, Callable] = defaultdict(lambda: str)
 _sphinx_option_handlers.update({
-    'class': smash_iterable,
-    'widths': smash_iterable
+    'class': coerce_iterable_to_str,
+    'widths': coerce_iterable_to_str,
+    'header-row': coerce_iterable_to_str
 })
 
 
@@ -377,28 +385,28 @@ def sphinx_directive(
     return ''.join(lines)
 
 
+known_dirs = {}
+
 
 def process_resource_directory(out, dir: Path):
     """
     Go through resources in a directory.
     """
-    children = filter_dir(dir, keep=is_nonprotected_dir)
+
+    child_directories = filter_dir(dir, keep=is_nonprotected_dir)
     if dir == RESOURCE_DIR:
-        children.sort(reverse=True)
-    for path in children:
+        child_directories.sort(reverse=True)
+
+    for path in child_directories:
         # out.write(f"\n{cur_node.name}\n")
         # out.write("-" * len(cur_node.name) + "\n\n")
 
         file_list = filter_dir(path, keep=is_unskipped_file)
         num_files = len(file_list)
-        def _debug_print_files() -> None:  # pending: post-3.0 cleanup
-            """Nasty little temp helper"""
-            for file in file_list:
-                print(file.name)
 
         if num_files > 0:
             raw_resource_handle = path_as_resource_handle(path, suffix="/")
-            config: HandleLevelConfigDict = HANDLE_TO_OVERRIDES.get(raw_resource_handle, {})
+            config: HandleLevelConfigDict = RESOURCE_HANDLE_CONFIGS.get(raw_resource_handle, {})
             resource_handle = raw_resource_handle.removesuffix('./')
 
             # print("CONFIG:\n",
@@ -412,6 +420,7 @@ def process_resource_directory(out, dir: Path):
             # for items in zip(parts, display_parts):
             #     print("   ", *map(repr, items))
 
+            # Generate a list of full-length resource handles
             full = []
             for i, part in enumerate(parts, start=1):
                 _p = '' if len(full) == 0 else full[-1]
@@ -421,7 +430,8 @@ def process_resource_directory(out, dir: Path):
 
             print("RAW     ", parts)
             print("ALL_TO  ", full)
-            print("DISPLAY ", display_parts)
+            # print("DISPLAY ", display_parts)
+
             # Process headings and render any new ones we haven't seen
             for heading_level, part in enumerate(full, start=0):
                 print("ff", (heading_level, part))
@@ -432,17 +442,18 @@ def process_resource_directory(out, dir: Path):
                 if res_handle_step in visited_headings:
                     print("skipping visited")
                     continue
+
                 print("proceeding...")
-                local_config = HANDLE_TO_OVERRIDES.get(res_handle_step, {})
+                local_config = RESOURCE_HANDLE_CONFIGS.get(res_handle_step, {})
                 local_heading_config = local_config.get('heading', {})
 
                 use_level = local_heading_config.get('level', heading_level)
-                use_value = local_heading_config.get('value', None)
-                if use_value is None:
-                    use_value = format_title_part(display_parts[heading_level])
                 use_target = local_heading_config.get('ref_target', None)
 
                 # print("!!!", use_value, use_value, use_target)
+                use_value = local_heading_config.get('value', None)
+                if use_value is None:
+                    use_value = format_title_part(display_parts[heading_level])
 
                 do_heading(out, use_level, use_value, ref_target=use_target)
                 visited_headings.add(res_handle_step)
@@ -454,50 +465,15 @@ def process_resource_directory(out, dir: Path):
                     log.info(f" INCLUDE: Include resolving to {include})")
                     out.include_file(include)
 
-
             # Ugly table header stuff?
-            opts = config.get('list_table', {})
+            opts = copy.deepcopy(config.get('list_table', {}))
 
-            n_cols = None
-            widths = config.get('widths', None)
-            header_row = opts.get('header_row', None)
-            if isinstance(widths, str):
-                n_cols = len(widths.split()) + 1
-            elif widths is not None:
-                n_cols = len(widths)
-                widths = ''.join(map(str, widths))
-            elif widths is None and header_row:
-                n_cols = len(header_row)
-                widths = get_column_widths_for_n(n_cols)
-            width = None
-
-            out.write(f"\n")
-            # sphinx_directive('list-table', options=opts)
-            out.write(f".. list-table:: ``{resource_handle!r}``\n")
-            print("widths ", widths)
-            if widths:
-                out.write(f"    :widths: {widths}\n")
-            if header_row:
-                out.write(f"    :header-rows: 1\n")
-            if width:
-                out.write(f"    :width: {width}\n")
-            out.write(f"    :class: resource-table\n\n")
-            print("HROWS", header_row)
-
-            # Write header row
-            if header_row:
-                for prefix, col in zip(('*' + ' ' * (len(header_row) - 1)), header_row):
-                    out.write(f"    {prefix} - {col}\n")
-                out.write("\n")
-
-            # Write table body after header
+            # Write table, header, and stuff after it
+            write_list_table_header(out, resource_handle, opts)
             process_resource_files(out, file_list)
-            out.write("\n\n")
 
         # Recurse dirs
         process_resource_directory(out, path)
-
-
 
 
 def indent(  # pending: post-3.0 refactor  # why would indent come after the text?!
@@ -624,6 +600,30 @@ def code_block(
     )
 
 
+def write_list_table_header(out, handle: str, options: Mapping | None = None):
+    merged = {
+        'class': 'resource-table',
+        **(options or {})
+    }
+    if (header_row := merged.pop('header_row', None)) is not None:
+        merged['header-rows'] = 1
+
+    out.write(f"\n.. list-table:: ``{handle!r}``\n")
+    for k, v in merged.items():
+        new_k = k.replace('_', '-')
+        new_v = _sphinx_option_handlers[new_k](v)
+        out.write(f"    :{new_k}: {new_v}\n")
+    out.write("\n")
+
+    # Write header row
+    if header_row is not None:
+        # this non-repeeating style is best for broken header row detection?
+        # todo: add strict=True
+        for prefix, col in zip(('*' + ' ' * (len(header_row) - 1)), header_row):
+            out.write(f"    {prefix} - {col}\n")
+        out.write("\n")
+
+
 def process_resource_files(
         out,
         file_list: List[Path],
@@ -643,14 +643,10 @@ def process_resource_files(
     if not prefix:
         prefix = path_as_resource_handle(path, suffix="/")
 
-    COLUMNS: int = 2
-    if len(file_list) == 1:
-        COLUMNS = 1
-    elif path.parent.name == "ttf":
-        COLUMNS = 3
+    # 3 if special case, else min of 2 or 1
+    COLUMNS = 3 if path.parent.name == "ttf" else min(len(file_list), 2)
 
     column_iter = cycle(chain('*', ' ' * (COLUMNS - 1)))
-
     log.info(f"Rendering table for {prefix=!r} with {COLUMNS=!r}, {path.parent.name!r}")
 
     def start():
