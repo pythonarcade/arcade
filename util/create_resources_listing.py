@@ -23,7 +23,9 @@ import logging
 import PIL.Image
 from typing_extensions import TypedDict, NotRequired, Self
 
-log = logging.getLogger(__name__)
+FILE = Path(__file__)
+
+log = logging.getLogger(FILE.name)
 
 # Ensure we get utility and Arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
@@ -167,11 +169,14 @@ FONT_TABLE_DEFAULTS: TableConfigDict= {
     ),
 }
 
+
 HANDLE_TO_OVERRIDES: dict[str,HandleLevelConfigDict] = {
     ":resources:/": {
         "heading": {
-            "value": "Top-Level Resources"
-        }
+            "value": "Top-Level Resources",
+            "level": 1
+        },
+        "include": "resources_Top-Level_Resources.rst"
     },
     ":resources:/fonts/ttf/": {
         "heading": {"skip": True}
@@ -193,6 +198,12 @@ HANDLE_TO_OVERRIDES: dict[str,HandleLevelConfigDict] = {
         },
         "include": "resources_Liberation.rst",
         "list_table": {**FONT_TABLE_DEFAULTS}
+    },
+    ":resources:/images/": {
+        "heading": {
+            "value": "Image Theme Sets",
+        },
+        "include": "resources_Image_Theme_Sets.rst"
     },
     ":resources:/gui_basic_assets/": {
         "heading": {"value": "GUI Basic Assets"},
@@ -366,12 +377,15 @@ def sphinx_directive(
     return ''.join(lines)
 
 
+
 def process_resource_directory(out, dir: Path):
     """
     Go through resources in a directory.
     """
-
-    for path in filter_dir(dir, keep=is_nonprotected_dir):
+    children = filter_dir(dir, keep=is_nonprotected_dir)
+    if dir == RESOURCE_DIR:
+        children.sort(reverse=True)
+    for path in children:
         # out.write(f"\n{cur_node.name}\n")
         # out.write("-" * len(cur_node.name) + "\n\n")
 
@@ -392,47 +406,54 @@ def process_resource_directory(out, dir: Path):
             #       "handle :", resource_handle, "\n",
             #       "config :", config)
 
-            parts = raw_resource_handle.replace(":resources:", "").strip("/").split("/")
-            display_parts = [format_title_part(part) for part in parts]
+            parts = resource_handle.strip("/").split("/")
 
             # print("RENDER:")
             # for items in zip(parts, display_parts):
             #     print("   ", *map(repr, items))
 
-            full = [':resources:/']
+            full = []
             for i, part in enumerate(parts, start=1):
-                full.append(f"{full[-1]}{part}/")
-            print("ALL_TO", full)
+                _p = '' if len(full) == 0 else full[-1]
+                full.append(f"{_p}{part}/")
 
+            display_parts = [format_title_part(part) for part in parts]
+
+            print("RAW     ", parts)
+            print("ALL_TO  ", full)
+            print("DISPLAY ", display_parts)
             # Process headings and render any new ones we haven't seen
-            for heading_level, part in enumerate(display_parts, start=1):
+            for heading_level, part in enumerate(full, start=0):
                 print("ff", (heading_level, part))
-                res_handle_step = full[heading_level]
+                res_handle_step = part
                 if res_handle_step in SKIP_HANDLES:
+                    print("skipping excluded")
                     continue
                 if res_handle_step in visited_headings:
+                    print("skipping visited")
                     continue
+                print("proceeding...")
+                local_config = HANDLE_TO_OVERRIDES.get(res_handle_step, {})
+                local_heading_config = local_config.get('heading', {})
 
-                local_config = drill_get(
-                    HANDLE_TO_OVERRIDES, (res_handle_step, 'heading'), {})
-
-                use_level = local_config.get('level', heading_level)
-                use_value = local_config.get('value', None)
+                use_level = local_heading_config.get('level', heading_level)
+                use_value = local_heading_config.get('value', None)
                 if use_value is None:
-                    use_value = format_title_part(part)
-                use_target = local_config.get('ref_target', None)
+                    use_value = format_title_part(display_parts[heading_level])
+                use_target = local_heading_config.get('ref_target', None)
 
                 # print("!!!", use_value, use_value, use_target)
 
                 do_heading(out, use_level, use_value, ref_target=use_target)
                 visited_headings.add(res_handle_step)
 
-            # Do heading info text
+                if include := local_config.get("include", None):
+                    if isinstance(include, str):
+                        include = INCLUDES_ROOT / include
 
-            if include := config.get("include", None):
-                if isinstance(include, str):
-                    include = INCLUDES_ROOT / include
-                out.include_file(include)
+                    log.info(f" INCLUDE: Include resolving to {include})")
+                    out.include_file(include)
+
 
             # Ugly table header stuff?
             opts = config.get('list_table', {})
@@ -630,7 +651,7 @@ def process_resource_files(
 
     column_iter = cycle(chain('*', ' ' * (COLUMNS - 1)))
 
-    log.info(f"Processing {prefix=!r} with {COLUMNS=!r}, {path.parent.name!r}")
+    log.info(f"Rendering table for {prefix=!r} with {COLUMNS=!r}, {path.parent.name!r}")
 
     def start():
         nonlocal cell_count
@@ -768,11 +789,18 @@ def resources():
 
     do_heading(out, 1, "How do I use these?")
     out.write(
-        "Arcade projects can use any file on this page by passing a **resource handle** prefix.\n"
-        "These are strings which start with ``\":resources:\"``. To learn more, please see the following:\n\n"
+        "Arcade helps save time through  **resource handle** strings. These strings start with\n"
+        "``':resources:'``. After you've installed Arcade, you'll need to:\n\n"
+        "#. Find the copy button (|Copy Button|) after a filename below\n"
+        "#. Click it to copy the string, such as ``':resources:/logo.png'``\n"
+        "#. Use the appropriate loading functions to load and display the data\n\n"
+        "Try it below with the Arcade logo, or see the following to learn more\n:"
+        "\n\n"
         "* :ref:`Sprite Examples <sprite_examples>` for example code\n"
         "* :ref:`The Platformer Tutorial <platformer_tutorial>` for step-by-step guidance\n"
-        "* The :ref:`resource_handles` page of the manual covers them in more depth\n")
+        "* The :ref:`resource_handles` page of the manual covers them in more depth\n"
+        "\n"
+    )
 
     out.write("\n")
     process_resource_directory(out, RESOURCE_DIR)

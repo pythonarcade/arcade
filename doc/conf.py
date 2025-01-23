@@ -252,7 +252,13 @@ intersphinx_mapping = {
 PROLOG_PARTS = [
     #".. include:: /links.rst",
     ".. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.Player`",
-    ".. _Arcade's License File on GitHub: {FMT_URL_REF_BASE}/license.rst"
+    ".. _Arcade's License File on GitHub: {FMT_URL_REF_BASE}/license.rst",
+
+    (  # Allows explaining how to copy anywhere in the doc.
+        '.. |Copy Button| raw:: html\n\n'
+        '   <img src="/_static/copy-button.svg" style="display: inline-block; height: 1.2em; width: 1.2em; background: #aaa;;" />\n\n'
+    )
+
 ]
 with open("_includes/links.rst") as f:
     PROLOG_PARTS.extend(f.readlines())
