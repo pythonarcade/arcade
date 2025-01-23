@@ -72,7 +72,7 @@ class MyView(UIView):
         # add warning label
         self.warning_label = grid.add(
             UILabel(
-                text="Use [enter] to switch fields, then enter to login",
+                text="Use 'TAB' to switch fields, then enter to login",
                 width=150,
                 font_size=10,
                 font_name="Kenney Future",
@@ -93,13 +93,21 @@ class MyView(UIView):
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         # if username field active, switch fields with enter
         if self.username_input.active:
-            if symbol == arcade.key.ENTER:
+            if symbol == arcade.key.TAB:
                 self.username_input.deactivate()
                 self.password_input.activate()
                 return True
+            elif symbol == arcade.key.ENTER:
+                self.username_input.deactivate()
+                self.on_login(None)
+                return True
         # if password field active, login with enter
         elif self.password_input.active:
-            if symbol == arcade.key.ENTER:
+            if symbol == arcade.key.TAB:
+                self.username_input.activate()
+                self.password_input.deactivate()
+                return True
+            elif symbol == arcade.key.ENTER:
                 self.password_input.deactivate()
                 self.on_login(None)
                 return True
