@@ -16,9 +16,9 @@ from collections import defaultdict
 from collections.abc import Mapping
 from functools import lru_cache, cache
 from io import StringIO
-from itertools import chain, cycle, repeat, islice
+from itertools import chain, cycle, islice
 from pathlib import Path
-from typing import List, Callable, Protocol, Sequence, Iterable, TypeVar, NamedTuple, Generator
+from typing import List, Callable, Protocol, Sequence, Iterable, TypeVar, NamedTuple
 import logging
 
 import PIL.Image
@@ -601,8 +601,8 @@ def write_list_table_header(out, handle: str, options: Mapping | None = None):
 
     # Write header row
     if header_row is not None:
-        # this non-repeeating style is best for broken header row detection?
-        # todo: add strict=True
+        # this non-repeating style is best for broken header row detection?
+        # todo: add strict=True?
         for prefix, col in zip(('*' + ' ' * (len(header_row) - 1)), header_row):
             out.write(f"    {prefix} - {col}\n")
         out.write("\n")
@@ -711,9 +711,6 @@ def process_resource_files(
                       f"  <source src='{file_path}' type='{kind}/{mime_suffix}'>\n"
                       f"</{kind}>\n\n"))
 
-        # elif suffix == ".glsl":
-        #     file_path = FMT_URL_REF_PAGE.format(resource_path)
-        #     out.write(f"    {start_row} - `{code_html} <{file_path}>`_\n")
         # Fonts
         elif suffix == ".ttf":
 
@@ -730,7 +727,7 @@ def process_resource_files(
             out.write(f"    {start()} - .. code-block:: python\n\n")
             out.write(f"           {resource_handle_raw!r}\n\n")
 
-        # Tiled maps
+        # File tiles we don't have previews for
         else:#  suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start()} - .. raw:: html\n\n")
@@ -742,19 +739,6 @@ def process_resource_files(
             #           f".. raw:: html\n\n"
             #           f"   <img class=\"resource-thumb\" src=\"/_static/filetiles/type-json.png\"/>\n\n"))
             do_filetile(out, suffix=suffix)
-
-        # else:
-        #     out.write(f"    {start()} - .. raw:: html\n\n")
-        #     out.write(indent("             ", resource_copyable))
-        #     out.write(indent("             ",
-        #         # SVG styling and alignment seems odd, so we're doing this the flexbox way
-        #         f"<div class=\"resource-thumb file-icon unknown-file-type\">\n"
-        #         f"  <p>???</p>\n"
-        #         f"  <p>Unknown Filetype</p>\n"
-        #         f"</div>\n\n"
-        #     ))
-        # The below doesn't work because of how raw HTML / Sphinx images interact:
-        # out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
 
     # Finish any remaining columns with empty cells
     while cell_count % columns > 0:

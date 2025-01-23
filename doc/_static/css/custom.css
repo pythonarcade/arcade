@@ -260,21 +260,6 @@ table.resource-table td > .resource-thumb.file-icon {
     max-height: 128px;
 }
 
-.file-icon.unknown-file-type {
-    padding: 0.5em;
-    border: 10px solid white;
-    display: inline flex !important;
-    color: white;
-    background: red;
-    font-size: 1.5em;
-    align: center;
-    flex-direction: column;
-}
-
-.file-icon.unknown-filetype > * {
-   color: white !important;
-   flex: 1;
-}
 .resource-table .resource-handle {
     display: inline-block;
     border-radius: 0.4em;
