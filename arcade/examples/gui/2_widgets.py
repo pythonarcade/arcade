@@ -13,27 +13,27 @@ from copy import deepcopy
 
 import arcade
 from arcade.gui import (
+    NinePatchTexture,
     UIAnchorLayout,
+    UIBoxLayout,
     UIButtonRow,
+    UIDropdown,
+    UIDummy,
     UIFlatButton,
+    UIImage,
     UIInputText,
     UILabel,
-    UISpace,
-    UIOnActionEvent,
-    UITextArea,
-    UIOnChangeEvent,
-    UITextureButton,
-    UITextureToggle,
-    UISlider,
-    UITextureSlider,
-    UIBoxLayout,
-    UIImage,
-    UIDummy,
-    UISpriteWidget,
-    NinePatchTexture,
-    UIDropdown,
-    UIMessageBox,
     UIManager,
+    UIMessageBox,
+    UIOnActionEvent,
+    UIOnChangeEvent,
+    UISlider,
+    UISpace,
+    UISpriteWidget,
+    UITextArea,
+    UITextureButton,
+    UITextureSlider,
+    UITextureToggle,
     UIView,
 )
 
@@ -611,6 +611,7 @@ class GalleryView(UIView):
         )
         text_area.with_padding(left=10, right=10)
         text_area.with_border(color=arcade.uicolor.GRAY_CONCRETE, width=2)
+
 
 def main():
     window = arcade.Window(title="GUI Example: Widget Gallery")
