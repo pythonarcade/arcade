@@ -88,7 +88,7 @@ class UIManager(EventDispatcher):
 
     _enabled = False
     _pixelated = False
-    """Experimental feature to pixelate the UI, all textures will be rendered pixelated, 
+    """Experimental feature to pixelate the UI, all textures will be rendered pixelated,
     which will mostly influence scaled background images.
     This property has to be set right after the UIManager is created."""
 

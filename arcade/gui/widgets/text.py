@@ -210,13 +210,13 @@ class UILabel(UIWidget):
         return self._label.color
 
     @property
-    def bold(self) -> bool:
+    def bold(self) -> bool | str:
         """Return if the label is in bold style.
         Use :py:meth:`~arcade.gui.UILabel.update_font` to change."""
         return self._label.bold
 
     @property
-    def italic(self) -> bool:
+    def italic(self) -> bool | str:
         """Return if the label is in italic style.
         Use :py:meth:`~arcade.gui.UILabel.update_font` to change."""
         return self._label.italic
