@@ -242,19 +242,14 @@ SKIP_HANDLES = set([
     )
 ])
 # print("ALL_HANDLES", SKIP_HANDLES)
-visited_headings = set()
 
+
+visited_headings = set()
 
 
 @cache
 def format_title_part(raw: str):
-    out = []
-    for word in raw.split('_'):
-        if word in REPLACE_TITLE_WORDS:
-            out.append(REPLACE_TITLE_WORDS[word])
-        else:
-            out.append(word.capitalize())
-
+    out = [word.capitalize() for word in raw.split('_')]
     return ' '.join(out)
 
 
@@ -400,11 +395,15 @@ def process_resource_directory(out, dir: Path):
     for path in child_directories:
         # out.write(f"\n{cur_node.name}\n")
         # out.write("-" * len(cur_node.name) + "\n\n")
+        temp_rel = path.relative_to(RESOURCE_DIR.parent)
+        log.info(f" Checking subdir {temp_rel}...")
 
         file_list = filter_dir(path, keep=is_unskipped_file)
         num_files = len(file_list)
-
-        if num_files > 0:
+        if num_files <= 0:
+            print(f" SKIP: No files... {num_files}")
+        else:
+            print("  HAS FILES!")
             raw_resource_handle = path_as_resource_handle(path, suffix="/")
             config: HandleLevelConfigDict = RESOURCE_HANDLE_CONFIGS.get(raw_resource_handle, {})
             resource_handle = raw_resource_handle.removesuffix('./')
@@ -414,23 +413,21 @@ def process_resource_directory(out, dir: Path):
             #       "handle :", resource_handle, "\n",
             #       "config :", config)
 
-            parts = resource_handle.strip("/").split("/")
-
-            # print("RENDER:")
-            # for items in zip(parts, display_parts):
-            #     print("   ", *map(repr, items))
-
             # Generate a list of full-length resource handles
+            parts = resource_handle.strip("/").split("/")
             full = []
             for i, part in enumerate(parts, start=1):
                 _p = '' if len(full) == 0 else full[-1]
                 full.append(f"{_p}{part}/")
 
-            display_parts = [format_title_part(part) for part in parts]
-
-            print("RAW     ", parts)
-            print("ALL_TO  ", full)
-            # print("DISPLAY ", display_parts)
+            print("  Subdir Config:")
+            _l = locals()
+            for k in (
+                    'raw_resources_handle', 'resource_handle', 'config',
+                    None, 'parts', 'full'):
+                print(
+                    '' if k is None
+                    else  f"    {k} : {_l.get(k, None)!r}")
 
             # Process headings and render any new ones we haven't seen
             for heading_level, part in enumerate(full, start=0):
@@ -443,25 +440,28 @@ def process_resource_directory(out, dir: Path):
                     print("skipping visited")
                     continue
 
-                print("proceeding...")
+                visited_headings.add(res_handle_step)
+
                 local_config = RESOURCE_HANDLE_CONFIGS.get(res_handle_step, {})
                 local_heading_config = local_config.get('heading', {})
 
+                # print("proceeding...",
+                #       "\n   config         ", local_config,
+                #       "\n   heading_config ", local_heading_config, sep = "")
+
+                # Heading config fetch and write
                 use_level = local_heading_config.get('level', heading_level)
                 use_target = local_heading_config.get('ref_target', None)
-
-                # print("!!!", use_value, use_value, use_target)
                 use_value = local_heading_config.get('value', None)
                 if use_value is None:
-                    use_value = format_title_part(display_parts[heading_level])
+                    use_value = format_title_part(parts[heading_level])
 
                 do_heading(out, use_level, use_value, ref_target=use_target)
-                visited_headings.add(res_handle_step)
 
+                # Include any include .rst  # pending: inline via pluginification
                 if include := local_config.get("include", None):
                     if isinstance(include, str):
                         include = INCLUDES_ROOT / include
-
                     log.info(f" INCLUDE: Include resolving to {include})")
                     out.include_file(include)
 
@@ -647,7 +647,7 @@ def process_resource_files(
     COLUMNS = 3 if path.parent.name == "ttf" else min(len(file_list), 2)
 
     column_iter = cycle(chain('*', ' ' * (COLUMNS - 1)))
-    log.info(f"Rendering table for {prefix=!r} with {COLUMNS=!r}, {path.parent.name!r}")
+    log.info(f" Rendering table for {prefix=!r} with {COLUMNS=!r}, {path.parent.name!r}")
 
     def start():
         nonlocal cell_count
