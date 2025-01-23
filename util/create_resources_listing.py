@@ -16,7 +16,7 @@ from collections import defaultdict
 from collections.abc import Mapping
 from functools import lru_cache, cache
 from io import StringIO
-from itertools import chain, cycle, repeat
+from itertools import chain, cycle, repeat, islice
 from pathlib import Path
 from typing import List, Callable, Protocol, Sequence, Iterable, TypeVar, NamedTuple, Generator
 import logging
@@ -127,20 +127,6 @@ def path_as_resource_handle(
 
     return ''.join(parts)
     #return f"{prefix}:resources:{path.as_posix()}{suffix}"
-
-# NOTE: Max cols up above
-KENNEY_TTFS = "Kenney TTFs"
-LIBERATION_TTFS = "Liberation TTFs"
-
-
-# pending: post-3.0 cleanup  # unstructured kludge
-REPLACE_TITLE_WORDS = {
-    "Kenney": KENNEY_TTFS,
-    "Liberation": LIBERATION_TTFS,
-    "gui": "GUI",
-    "window": "Window & Panel",
-    ".": "Top-level Resources"
-}
 
 
 class TableConfigDict(TypedDict):
@@ -404,9 +390,9 @@ def process_resource_directory(out, dir: Path):
             print(f" SKIP: No files... {num_files}")
         else:
             print("  HAS FILES!")
-            raw_resource_handle = path_as_resource_handle(path, suffix="/")
-            config: HandleLevelConfigDict = RESOURCE_HANDLE_CONFIGS.get(raw_resource_handle, {})
-            resource_handle = raw_resource_handle.removesuffix('./')
+            handle_raw = path_as_resource_handle(path, suffix="/")
+            config: HandleLevelConfigDict = RESOURCE_HANDLE_CONFIGS.get(handle_raw, {})
+            resource_handle = handle_raw.removesuffix('./')
 
             # print("CONFIG:\n",
             #       "raw    :", raw_resource_handle, "\n",
@@ -414,35 +400,29 @@ def process_resource_directory(out, dir: Path):
             #       "config :", config)
 
             # Generate a list of full-length resource handles
-            parts = resource_handle.strip("/").split("/")
-            full = []
-            for i, part in enumerate(parts, start=1):
-                _p = '' if len(full) == 0 else full[-1]
-                full.append(f"{_p}{part}/")
+            handle_steps_parts = resource_handle.strip("/").split("/")
+            handle_steps_wholes = [f"{handle_steps_parts[0]}/"]
+            for handle_step_whole in islice(handle_steps_parts, 1, len(handle_steps_parts)):
+                handle_steps_wholes.append(
+                    f"{handle_steps_wholes[-1]}{handle_step_whole}/")
 
             print("  Subdir Config:")
             _l = locals()
-            for k in (
-                    'raw_resources_handle', 'resource_handle', 'config',
-                    None, 'parts', 'full'):
-                print(
-                    '' if k is None
-                    else  f"    {k} : {_l.get(k, None)!r}")
+            for k in filter(lambda _k: 'handle' in _k and('steps' in _k or _k.count('_') <2), _l.keys()):
+                print(f"    {k} : {_l.get(k, None)!r}" if k else '')
 
             # Process headings and render any new ones we haven't seen
-            for heading_level, part in enumerate(full, start=0):
-                print("ff", (heading_level, part))
-                res_handle_step = part
-                if res_handle_step in SKIP_HANDLES:
-                    print("skipping excluded")
+            for heading_level, handle_step_whole in enumerate(handle_steps_wholes, start=0):
+                print("  heading check", (heading_level, handle_step_whole))
+                if handle_step_whole in SKIP_HANDLES:
+                    print("    skipping excluded")
                     continue
-                if res_handle_step in visited_headings:
-                    print("skipping visited")
+                if handle_step_whole in visited_headings:
+                    print("    skipping visited")
                     continue
+                visited_headings.add(handle_step_whole)
 
-                visited_headings.add(res_handle_step)
-
-                local_config = RESOURCE_HANDLE_CONFIGS.get(res_handle_step, {})
+                local_config = RESOURCE_HANDLE_CONFIGS.get(handle_step_whole, {})
                 local_heading_config = local_config.get('heading', {})
 
                 # print("proceeding...",
@@ -454,23 +434,27 @@ def process_resource_directory(out, dir: Path):
                 use_target = local_heading_config.get('ref_target', None)
                 use_value = local_heading_config.get('value', None)
                 if use_value is None:
-                    use_value = format_title_part(parts[heading_level])
+                    use_value = format_title_part(handle_steps_parts[heading_level])
 
                 do_heading(out, use_level, use_value, ref_target=use_target)
+                out.write(f"\n.. comment `{handle_step_whole!r}``\n\n")
 
                 # Include any include .rst  # pending: inline via pluginification
                 if include := local_config.get("include", None):
                     if isinstance(include, str):
                         include = INCLUDES_ROOT / include
-                    log.info(f" INCLUDE: Include resolving to {include})")
+                    log.info(f"     INCLUDE: Include resolving to {include})")
                     out.include_file(include)
 
-            # Ugly table header stuff?
-            opts = copy.deepcopy(config.get('list_table', {}))
-
             # Write table, header, and stuff after it
+            # Calculate configuration
+            opts = copy.deepcopy(config.get('list_table', {}))
+            parent_name = path.parent.name
+            columns = 3 if parent_name == "ttf" else min(len(file_list), 2)
+
+            log.info(f" Rendering table for {path=!r} with {columns=!r}, {parent_name!r}")
             write_list_table_header(out, resource_handle, opts)
-            process_resource_files(out, file_list)
+            process_resource_files(out, file_list, columns)
 
         # Recurse dirs
         process_resource_directory(out, path)
@@ -627,9 +611,7 @@ def write_list_table_header(out, handle: str, options: Mapping | None = None):
 def process_resource_files(
         out,
         file_list: List[Path],
-        prefix: str = None,
-        path: Path = None,
-        header_row: Iterable[str] = ()
+        columns: int,
 ) -> None:
     """
     Render the table without any recursion or real FS navigation.
@@ -639,15 +621,8 @@ def process_resource_files(
     :return:
     """
     cell_count = 0
-    path = path or file_list[0].parent
-    if not prefix:
-        prefix = path_as_resource_handle(path, suffix="/")
 
-    # 3 if special case, else min of 2 or 1
-    COLUMNS = 3 if path.parent.name == "ttf" else min(len(file_list), 2)
-
-    column_iter = cycle(chain('*', ' ' * (COLUMNS - 1)))
-    log.info(f" Rendering table for {prefix=!r} with {COLUMNS=!r}, {path.parent.name!r}")
+    column_iter = cycle(chain('*', ' ' * (columns - 1)))
 
     def start():
         nonlocal cell_count
@@ -758,7 +733,7 @@ def process_resource_files(
         # out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
 
     # Finish any remaining columns with empty cells
-    while cell_count % COLUMNS > 0:
+    while cell_count % columns > 0:
         out.write(f"    {start()} -\n")
 
 
