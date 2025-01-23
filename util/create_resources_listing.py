@@ -75,7 +75,7 @@ class SupportsLT(Protocol):
 
 # Metadata for the resource list: utils\create_resource_list.py
 skip_extensions = [
-    ".glsl",
+    #".glsl",
     ".md",
     ".py",
     ".yml",
@@ -608,6 +608,29 @@ def write_list_table_header(out, handle: str, options: Mapping | None = None):
         out.write("\n")
 
 
+
+FILETILE_DIR = DOC_ROOT / "_static" / "filetiles"
+
+
+def do_filetile(out, suffix: str | None = None, state: str = None):
+    name = None
+    if suffix is not None:
+        p = FILETILE_DIR / f"type-{suffix.strip('.')}.png"
+        log.info(f" FILETILE: {p}")
+        if p.exists():
+            print("    KNOWN!")
+            name = p.name
+        else:
+            name = f"type-unknown.png"
+            print("    ... unknown :(")
+    else:
+        name = "state-error.png"
+
+    out.write(indent(f"        ",
+                     f".. raw:: html\n\n"
+                     f"   <img class=\"resource-thumb\" src=\"/_static/filetiles/{name}\"/>\n\n"))
+
+
 def process_resource_files(
         out,
         file_list: List[Path],
@@ -708,27 +731,28 @@ def process_resource_files(
             out.write(f"           {resource_handle_raw!r}\n\n")
 
         # Tiled maps
-        elif suffix == ".json":
+        else:#  suffix == ".json":
             file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent("             ",
                  resource_copyable))
 
-            icon = "tiled_icon_digi_pls_replace.png"
-            out.write(indent(f"        ",
-                      f".. image:: images/{icon}\n"
-                      f"   :class: resource-thumb\n\n"))
+            # icon = "tiled_icon_digi_pls_replace.png"
+            # out.write(indent(f"        ",
+            #           f".. raw:: html\n\n"
+            #           f"   <img class=\"resource-thumb\" src=\"/_static/filetiles/type-json.png\"/>\n\n"))
+            do_filetile(out, suffix=suffix)
 
-        else:
-            out.write(f"    {start()} - .. raw:: html\n\n")
-            out.write(indent("             ", resource_copyable))
-            out.write(indent("             ",
-                # SVG styling and alignment seems odd, so we're doing this the flexbox way
-                f"<div class=\"resource-thumb file-icon unknown-file-type\">\n"
-                f"  <p>???</p>\n"
-                f"  <p>Unknown Filetype</p>\n"
-                f"</div>\n\n"
-            ))
+        # else:
+        #     out.write(f"    {start()} - .. raw:: html\n\n")
+        #     out.write(indent("             ", resource_copyable))
+        #     out.write(indent("             ",
+        #         # SVG styling and alignment seems odd, so we're doing this the flexbox way
+        #         f"<div class=\"resource-thumb file-icon unknown-file-type\">\n"
+        #         f"  <p>???</p>\n"
+        #         f"  <p>Unknown Filetype</p>\n"
+        #         f"</div>\n\n"
+        #     ))
         # The below doesn't work because of how raw HTML / Sphinx images interact:
         # out.write(f"            <br /><code class='literal'>{resource_copyable}</code>\n")
 
