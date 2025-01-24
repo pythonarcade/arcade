@@ -141,7 +141,7 @@ class Color(RGBA255):
         return super().__new__(cls, (r, g, b, a))  # type: ignore
 
     def __getnewargs__(self) -> tuple[int, int, int, int]:
-       return self.r, self.g, self.b, self.a
+        return self.r, self.g, self.b, self.a
 
     def __deepcopy__(self, _) -> Self:
         """Allow :py:func:`~copy.deepcopy` to be used with Color"""
