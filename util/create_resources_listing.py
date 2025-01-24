@@ -75,7 +75,7 @@ class SupportsLT(Protocol):
 
 # Metadata for the resource list: utils\create_resource_list.py
 skip_extensions = [
-    #".glsl",
+    ".glsl",
     ".md",
     ".py",
     ".yml",
