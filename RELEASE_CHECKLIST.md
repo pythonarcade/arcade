@@ -14,9 +14,13 @@
 11. Make sure last check-in ran clean on GitHub actions, viewable on Discord
 12. Merge development branch into maintenance.
 13. Add label to release
-14. Push code. Check for clean compile on GitHub.
-15. Type `make clean`
-16. Type `make dist`
-17. Type `make deploy_pypi`
+14. Push code. Check for "clean compile on GitHub.
+15. Run "Distribute built to PyPi Production" (See below for manual deployment)
 18. Confirm release notes appear on website.
 19. Announce on Arcade Discord, Python Discord, Reddit Python Arcade, etc.
+
+## Manual Deployment
+
+1. Type `make clean`
+2. Type `make dist`
+3. Type `make deploy_pypi`
