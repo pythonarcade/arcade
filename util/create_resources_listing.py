@@ -717,7 +717,6 @@ def process_resource_files(
             data = BrittleFontData.from_path(path)
 
             style_string = ", ".join(data.styles or ("Regular",))
-            # print("row: ", face_name, style_string, code_html)
 
             out.write(f"    {start()} - .. code-block:: python\n\n")
             out.write(f"           {data.face_name!r}\n\n")
@@ -734,10 +733,6 @@ def process_resource_files(
             out.write(indent("             ",
                  resource_copyable))
 
-            # icon = "tiled_icon_digi_pls_replace.png"
-            # out.write(indent(f"        ",
-            #           f".. raw:: html\n\n"
-            #           f"   <img class=\"resource-thumb\" src=\"/_static/filetiles/type-json.png\"/>\n\n"))
             do_filetile(out, suffix=suffix)
 
     # Finish any remaining columns with empty cells
