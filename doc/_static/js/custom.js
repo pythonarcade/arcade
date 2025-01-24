@@ -63,5 +63,6 @@ function handleSidebarHeaderToggle() {
 $(document).ready(() => {
   handleSidebarHeaderToggle();
   // Re-use the base ClipboardJS provided by sphinx-copybutton
-  document.ezcopy = new ClipboardJS('.arcade-ezcopy');
+  // .doc-ui-example-dummy marks a button as a training dummy on the resources page and elsewhere
+  document.ezcopy = new ClipboardJS('.arcade-ezcopy:not(.doc-ui-example-dummy');
 });

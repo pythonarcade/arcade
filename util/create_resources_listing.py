@@ -768,9 +768,14 @@ def resources():
 
     do_heading(out, 1, "How do I use these?")
     out.write(
+        # '.. |Example Copy Button| raw:: html\n\n'
+        # '   <div class="arcade-ezcopy doc-ui-example-dummy" style="display: inline-block;">\n'
+        # '      <img src="/_static/copy-button.svg"/>\n\n'
+        # '   </div>\n\n'
+        # +
         "Arcade helps save time through  **resource handle** strings. These strings start with\n"
         "``':resources:'``. After you've installed Arcade, you'll need to:\n\n"
-        "#. Find the copy button (|Copy Button|) after a filename below\n"
+        "#. Find the copy button (|Example Copy Button|) after a filename below\n"
         "#. Click it to copy the string, such as ``':resources:/logo.png'``\n"
         "#. Use the appropriate loading functions to load and display the data\n\n"
         "Try it below with the Arcade logo, or see the following to learn more\n:"

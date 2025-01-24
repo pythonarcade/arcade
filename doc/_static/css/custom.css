@@ -260,18 +260,19 @@ table.resource-table td > .resource-thumb.file-icon {
     max-height: 128px;
 }
 
-.resource-table .resource-handle {
+
+.resource-handle {
     display: inline-block;
     border-radius: 0.4em;
     border: 1px solid rgb(0, 0, 0, 0);
     width: fit-content !important;
 }
-.resource-table .resource-handle:has(button.arcade-ezcopy:hover) {
+.resource-handle:has(button.arcade-ezcopy:hover) {
     border-color: #54c079;
     color: #54c079;
 }
 .resource-table .caption-text > .literal,
-.resource-table .resource-handle > .literal {
+.resource-handle > .literal {
     font-style: normal;
     height: 1.5em;
     min-height: 1.5em;
@@ -281,15 +282,10 @@ table.resource-table td > .resource-thumb.file-icon {
     /* Not clear why this doesn't work for the .caption-text */
     font-size: 1em !important;
 }
-/* Disable items which haven adjacent button
-   CAVEAT: not compatible with RTL flex flows!
- */
-.resource-table * > .literal:has(+ button.arcade-ezcopy) {
-     border-radius: 0.4em 0 0 0.4em;
-}
+
 
 /* Imitate sphinx-copybutton style */
-button.arcade-ezcopy {
+.arcade-ezcopy {
     width: 1.5em;
     height: 1.5em;
     min-width: 1.5em;
@@ -297,7 +293,7 @@ button.arcade-ezcopy {
     padding: 0;
 
     /* Imitate sphinx-copybutton minus styling spacing issues */
-    border-radius: 0 0.4em 0.4em 0;
+    border-radius: 0.4em 0.4em 0.4em 0.4em;
     border: 1px solid #1b1f2426;
 
     border-left: 0;
@@ -306,12 +302,30 @@ button.arcade-ezcopy {
     background-color: #f6f8fa;
 
 }
-button.arcade-ezcopy > img {
+/* Hide left border on items which haven adjacent copy button
+
+   CAVEAT: This won't currently work with right-to-left layout modes!
+
+   This is because of the following assume left-to-right:
+
+   1. The + here assumes the button element's next in the DOM order
+   2. The right border of the box gets switched off
+ */
+.resource-table * > .literal:has(+ button.arcade-ezcopy) {
+     border-radius: 0.4em 0 0 0.4em !important;
+}
+.resource-table  .literal + button.arcade-ezcopy {
+     border-radius: 0 0.4em 0.4em 0 !important;
+}
+
+
+
+.arcade-ezcopy > img {
     margin: 0;
     width: 100%;
     height: 100%;
 }
-button.arcade-ezcopy:hover {
+.arcade-ezcopy:hover {
   background-color: #54c079;
 }
 
