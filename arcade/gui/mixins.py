@@ -5,7 +5,8 @@ from typing import Optional
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from typing_extensions import override
 
-from arcade.gui.events import UIMouseDragEvent, UIMouseEvent
+import arcade
+from arcade.gui.events import UIMouseDragEvent, UIMouseEvent, UIMousePressEvent, UIMouseReleaseEvent
 from arcade.gui.widgets import UILayout, UIWidget
 
 
@@ -17,8 +18,7 @@ class UIDraggableMixin(UILayout):
         class DraggablePane(UITexturePane, UIDraggableMixin):
             ...
 
-    This does overwrite :class:`UILayout` behavior which position themselves,
-    like :class:`UIAnchorWidget`
+    This will not work when placed in a layout, as the layout will overwrite the position.
 
     warning:
 
@@ -27,18 +27,13 @@ class UIDraggableMixin(UILayout):
             It does not respect the layout system and can break other widgets
             which rely on the layout system.
 
-            Further the dragging is not smooth, as it uses a very simple approach.
-
-            Will be fixed in future versions, but might break existing code within a minor update.
-
     """
+
+    _dragging = False
 
     @override
     def do_layout(self):
-        # FIXME this breaks all rules, let us not do this
-
-        # Preserve top left alignment, this overwrites self placing behavior like
-        # from :class:`UIAnchorWidget`
+        # FIXME this breaks core UI rules "Widgets are placed by parents", let us not do this
         rect = self.rect
         super().do_layout()
         self.rect = self.rect.align_top(rect.top).align_left(rect.left)
@@ -46,14 +41,23 @@ class UIDraggableMixin(UILayout):
     @override
     def on_event(self, event) -> Optional[bool]:
         """Handle dragging of the widget."""
-        if isinstance(event, UIMouseDragEvent) and self.rect.point_in_rect(event.pos):
+        if isinstance(event, UIMousePressEvent):
+            if event.button == arcade.MOUSE_BUTTON_LEFT and self.rect.point_in_rect(event.pos):
+                self._dragging = True
+                return EVENT_HANDLED
+
+        if isinstance(event, UIMouseDragEvent) and self._dragging:
             self.rect = self.rect.move(event.dx, event.dy)
             self.trigger_full_render()
-
-        if super().on_event(event):
             return EVENT_HANDLED
 
-        return EVENT_UNHANDLED
+        if isinstance(event, UIMouseReleaseEvent):
+            if event.button == arcade.MOUSE_BUTTON_LEFT and self._dragging:
+                self._dragging = False
+                self.trigger_full_render()
+                return EVENT_HANDLED
+
+        return super().on_event(event)
 
 
 class UIMouseFilterMixin(UIWidget):

@@ -38,6 +38,7 @@ class Surface:
         self._size = size
         self._pos = position
         self._pixel_ratio = pixel_ratio
+        self._pixelated = False
 
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
@@ -142,7 +143,9 @@ class Surface:
 
             tex.draw_rect(rect=LBWH(0, 0, width, height))
         else:
-            arcade.draw_texture_rect(tex, LBWH(x, y, width, height), angle=angle, alpha=alpha)
+            arcade.draw_texture_rect(
+                tex, LBWH(x, y, width, height), angle=angle, alpha=alpha, pixelated=self._pixelated
+            )
 
     def draw_sprite(self, x: float, y: float, width: float, height: float, sprite: arcade.Sprite):
         """Draw a sprite to the surface
@@ -157,7 +160,7 @@ class Surface:
         sprite.position = x + width // 2, y + height // 2
         sprite.width = width
         sprite.height = height
-        arcade.draw_sprite(sprite)
+        arcade.draw_sprite(sprite, pixelated=self._pixelated)
 
     @contextmanager
     def activate(self) -> Generator[Self, None, None]:
@@ -226,10 +229,17 @@ class Surface:
         Args:
             area: Limit the area in the surface we're drawing
                 (l, b, w, h)
+            pixelated: If True, the texture will be rendered pixelated
         """
         # Set blend function
         blend_func = self.ctx.blend_func
         self.ctx.blend_func = self.blend_func_render
+
+        # Handle the pixelated shortcut if filter is not set
+        if self._pixelated:
+            self.texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+        else:
+            self.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         self.texture.use(0)
         self._program["pos"] = self._pos

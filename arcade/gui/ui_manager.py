@@ -87,6 +87,10 @@ class UIManager(EventDispatcher):
     """
 
     _enabled = False
+    _pixelated = False
+    """Experimental feature to pixelate the UI, all textures will be rendered pixelated,
+    which will mostly influence scaled background images.
+    This property has to be set right after the UIManager is created."""
 
     DEFAULT_LAYER = 0
     OVERLAY_LAYER = 10
@@ -198,6 +202,7 @@ class UIManager(EventDispatcher):
                 size=self.window.get_size(),
                 pixel_ratio=self.window.get_pixel_ratio(),
             )
+            self._surfaces[layer]._pixelated = self._pixelated
 
         return self._surfaces[layer]
 
@@ -316,7 +321,7 @@ class UIManager(EventDispatcher):
         """Dispatches an update event to all widgets in the UIManager."""
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
-    def draw(self) -> None:
+    def draw(self, pixelated=False) -> None:
         """Will draw all widgets to the window.
 
         UIManager caches all rendered widgets into a framebuffer (something like a

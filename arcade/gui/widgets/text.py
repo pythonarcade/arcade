@@ -194,6 +194,33 @@ class UILabel(UIWidget):
             else:
                 self.trigger_full_render()
 
+    @property
+    def font_name(self) -> FontNameOrNames:
+        """Font name of the label. Use :py:meth:`~arcade.gui.UILabel.update_font` to change."""
+        return self._label.font_name
+
+    @property
+    def font_size(self) -> float:
+        """Font size of the label. Use :py:meth:`~arcade.gui.UILabel.update_font` to change."""
+        return self._label.font_size
+
+    @property
+    def font_color(self) -> Color:
+        """Font color of the label. Use :py:meth:`~arcade.gui.UILabel.update_font` to change."""
+        return self._label.color
+
+    @property
+    def bold(self) -> bool | str:
+        """Return if the label is in bold style.
+        Use :py:meth:`~arcade.gui.UILabel.update_font` to change."""
+        return self._label.bold
+
+    @property
+    def italic(self) -> bool | str:
+        """Return if the label is in italic style.
+        Use :py:meth:`~arcade.gui.UILabel.update_font` to change."""
+        return self._label.italic
+
     def _update_label(self):
         """Update the position and size of the label.
 

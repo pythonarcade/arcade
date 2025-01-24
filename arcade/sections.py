@@ -64,8 +64,8 @@ class Section:
         name: str | None = None,
         accept_keyboard_keys: bool | Iterable = True,
         accept_mouse_events: bool | Iterable = True,
-        prevent_dispatch: Iterable | None = None,
-        prevent_dispatch_view: Iterable | None = None,
+        prevent_dispatch: Iterable | bool | None = None,
+        prevent_dispatch_view: Iterable | bool | None = None,
         local_mouse_coordinates: bool = False,
         enabled: bool = True,
         modal: bool = False,
@@ -96,10 +96,18 @@ class Section:
         self.accept_mouse_events: bool | Iterable = accept_mouse_events
         """Arcade mouse events to accept."""
 
-        self.prevent_dispatch: Iterable = prevent_dispatch or {True}
+        if isinstance(prevent_dispatch, bool):
+            prevent_dispatch = {prevent_dispatch}
+        self.prevent_dispatch: Iterable = {True} if prevent_dispatch is None else prevent_dispatch
+        assert isinstance(self.prevent_dispatch, Iterable)
         """prevents events to propagate"""
 
-        self.prevent_dispatch_view: Iterable = prevent_dispatch_view or {True}
+        if isinstance(prevent_dispatch_view, bool):
+            prevent_dispatch_view = {prevent_dispatch_view}
+        self.prevent_dispatch_view: Iterable = (
+            {True} if prevent_dispatch_view is None else prevent_dispatch_view
+        )
+        assert isinstance(self.prevent_dispatch_view, Iterable)
         """prevents events to propagate to the view"""
 
         self.local_mouse_coordinates: bool = local_mouse_coordinates
