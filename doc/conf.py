@@ -440,7 +440,6 @@ def setup(app):
     app.connect('autodoc-process-bases', on_autodoc_process_bases)
     # app.add_transform(Transform)
 
-
 # ------------------------------------------------------
 # Old hacks that breaks the api docs. !!! DO NOT USE !!!
 # ------------------------------------------------------

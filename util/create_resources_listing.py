@@ -642,12 +642,23 @@ def process_resource_files(
         resource_path = path.relative_to(ARCADE_ROOT).as_posix()
         resource_handle_raw = path_as_resource_handle(path)
         resource_copyable = html_copyable(path.name, resource_handle_raw)
+        resource_handle_no_prefix = resource_handle_raw\
+            .replace(':', '')\
+            .replace('/', '-')\
+            .replace('_', '-')\
+            .replace('.', '-')
 
         # Decide how we're going to render the file
         suffix = path.suffix
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
-            out.write(f"    {start()} - .. raw:: html\n\n")
-            out.write(indent("           ", resource_copyable))
+
+            out.write(f"    {start()} - .. index:: single: {path.name}\n")
+            out.write(f"    "  +  f"       :name: {resource_handle_no_prefix}\n\n")
+            parts = []
+            parts.append(f".. raw:: html\n\n"
+                         + indent("   ", resource_copyable))
+
+            # out.write(indent("           ", resource_copyable))
 
             tile_rst_code = sphinx_directive(
                 'image', f'../../{resource_path}',
@@ -658,10 +669,11 @@ def process_resource_files(
                     ),
                     # lazy helps avoid GitHub and readthedocs from 429ing us ("chill pls")
                     'loading': 'lazy',
-                    'name': resource_handle_raw
+                    # 'name': resource_handle_raw
                 }
             )
-            out.write(indent("        ", tile_rst_code))
+            parts.append(tile_rst_code + "\n")
+            #out.write(indent("        ", tile_rst_code))
 
             size_info = None
             if suffix == ".svg":
@@ -676,7 +688,8 @@ def process_resource_files(
 
             if size_info is None:
                 size_info = "Could not read size info"
-            out.write(f"        *({size_info})*\n")
+            parts.append(f"*({size_info})*\n")
+            out.write(indent("        ", '\n'.join(parts)))
             out.write("\n\n")
 
         elif suffix in MEDIA_EMBED:
@@ -732,7 +745,7 @@ def resources():
     do_heading(out, 0, "Built-In Resources")
 
     out.write("\n")
-    out.write("Linking test: :ref:`:resources:gui_basic_assets/window/panel_green.png:`.\n")
+    # out.write("Linking test: :ref:`resources-gui-basic-assets-window-panel-green-png`.\n")
     out.write("Every file below is included when you :ref:`install Arcade <install>`. This includes the images,\n"
               "sounds, fonts, and other files to help you get started quickly. You can still download them\n"
               "separately, but Arcade's resource handle system will usually be easier.\n")
