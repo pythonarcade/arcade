@@ -203,22 +203,6 @@ RESOURCE_HANDLE_CONFIGS: dict[str,HandleLevelConfigDict] = {
 T = TypeVar('T')
 R = TypeVar('R')  # Result type
 
-# We have benedict at home
-def drill_get(
-        m: Mapping[str, Mapping[str, T] | T],
-        key: str | Iterable[str],
-        default: T
-) -> T:
-    if isinstance(key, str):
-        key = str.split('/')
-    current = m
-    try:
-        for k in key:
-            current = current[k]
-    except Exception as _:
-        return default
-    return current
-
 
 # pending: post-3.0 cleanup  # more unstructured filth
 SKIP_HANDLES = set([
@@ -510,11 +494,11 @@ def highlight_copyable(out, inner: str) -> None:
 BRITTLE_CAP_WORD_REGEX = re.compile(r"[A-Z][a-z0-9]*")
 BRITTLE_FONT_NAME_REGEX = re.compile(
     r"""^
-    # The 'redundant' \_ escaping improves readability. 
+    # The 'redundant' \_ escaping improves readability.
     (?P<face_name>
         [A-Z][a-z0-9]*         # first capitalized word
         (?:\_[A-Z][a-z0-9]*)?  # Optional second title _Word
-    ) 
+    )
     (?:\_  # Optional FaceStyleWords (Bold, Italic, etc)
         (?P<styles>(?:[A-Z][a-z0-9]*)+)
     )?
