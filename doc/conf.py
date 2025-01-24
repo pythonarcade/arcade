@@ -14,6 +14,10 @@ import sphinx.ext.autodoc
 import sphinx.transforms
 import sys
 
+from docutils import nodes
+from docutils.nodes import literal
+from sphinx.util.docutils import SphinxRole
+
 # As of pyglet==2.1.dev7, this is no longer set in pyglet/__init__.py
 # because Jupyter / IPython always load Sphinx into sys.modules. See
 # the following for more info:
@@ -416,6 +420,29 @@ APP_CONFIG_DIRS = (
     A('doctreedir'),
 )
 
+
+class ResourceRole(SphinxRole):  # pending: 3.1
+    """Get resource file and category cross-references sorta working.
+
+    This needs improvement.
+    """
+    def run(self) -> tuple[list[nodes.Node], list[nodes.system_message]]:
+        raw = self.text.removeprefix(":resource:")
+        page_id =  self.text\
+            .replace(':', '')\
+            .replace('/', '-')\
+            .replace('_', '-')\
+            .replace('.', '-')
+
+        filename = f"'{raw.split('/')[-1]}'"
+        node = nodes.reference(text=filename, refuri=''.join([
+             '/api_docs/resources.html#', page_id]),
+            )
+
+        print("HALP?", locals())
+        return [node], []
+
+
 def setup(app):
     print("Diagnostic info since readthedocs doesn't use our make.py:")
     for attr, comment in APP_CONFIG_DIRS:
@@ -439,6 +466,7 @@ def setup(app):
     app.connect('autodoc-process-signature', strip_init_return_typehint, -1000)
     app.connect('autodoc-process-bases', on_autodoc_process_bases)
     # app.add_transform(Transform)
+    app.add_role('resource', ResourceRole())
 
 # ------------------------------------------------------
 # Old hacks that breaks the api docs. !!! DO NOT USE !!!

@@ -652,12 +652,9 @@ def process_resource_files(
         suffix = path.suffix
         if suffix in [".png", ".jpg", ".gif", ".svg"]:
 
-            out.write(f"    {start()} - .. index:: single: {path.name}\n")
-            out.write(f"    "  +  f"       :name: {resource_handle_no_prefix}\n\n")
+            out.write(f"    {start()} - .. raw:: html\n\n"
+                      + indent("         ", resource_copyable + "\n"))
             parts = []
-            parts.append(f".. raw:: html\n\n"
-                         + indent("   ", resource_copyable))
-
             # out.write(indent("           ", resource_copyable))
 
             tile_rst_code = sphinx_directive(
@@ -669,7 +666,7 @@ def process_resource_files(
                     ),
                     # lazy helps avoid GitHub and readthedocs from 429ing us ("chill pls")
                     'loading': 'lazy',
-                    # 'name': resource_handle_raw
+                    'name': resource_handle_no_prefix
                 }
             )
             parts.append(tile_rst_code + "\n")
@@ -744,7 +741,7 @@ def resources():
 
     do_heading(out, 0, "Built-In Resources")
 
-    out.write("\n")
+    out.write("\n\n:resource:`:resources:/gui_basic_assets/window/panel_green.png`\n\n")
     # out.write("Linking test: :ref:`resources-gui-basic-assets-window-panel-green-png`.\n")
     out.write("Every file below is included when you :ref:`install Arcade <install>`. This includes the images,\n"
               "sounds, fonts, and other files to help you get started quickly. You can still download them\n"
@@ -766,7 +763,7 @@ def resources():
         # '   </div>\n\n'
         # +
         "Arcade helps save time through  **resource handle** strings. These strings start with\n"
-        "``':resources:'``. After you've installed Arcade, you'll need to:\n\n"
+        "``':resources:'``. After  you've installed Arcade, you'll need to:\n\n"
         "#. Find the copy button (|Example Copy Button|) after a filename below\n"
         "#. Click it to copy the string, such as ``':resources:/logo.png'``\n"
         "#. Use the appropriate loading functions to load and display the data\n\n"
