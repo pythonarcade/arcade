@@ -746,7 +746,7 @@ def create_text_sprite(
             Valid options: ``"left"``, ``"center"``, ``"right"``.
         font_name (optional): A font name, path to a font file, or list of names
         bold (optional): Whether to draw the text as bold, and if a string,
-              how bold. See :py:attr:`.bold` to learn more.
+              how bold. See :py:attr:`arcade.gui.widgets.text.bold` to learn more.
         italic (optional): Whether to draw the text as italic
         anchor_x (optional): How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
@@ -852,7 +852,7 @@ def draw_text(
             Valid options: ``"left"``, ``"center"``, ``"right"``.
         font_name (optional): A font name, path to a font file, or list of names
         bold (optional): Whether to draw the text as bold, and if a string,
-              how bold. See :py:attr:`.bold` to learn more.
+              how bold. See :py:attr:`arcade.gui.widgets.text.bold` to learn more.
         italic (optional): Whether to draw the text as italic
         anchor_x (optional): How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
