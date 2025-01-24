@@ -19,7 +19,7 @@ jobs:
         uses: remorses/bump-version@js
         with:
             version_file: ./arcade/VERSION
-            prerelease_tag: dev
+            prerelease_tag: rc
         env:
             GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
 
