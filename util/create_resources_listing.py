@@ -695,9 +695,8 @@ def process_resource_files(
             kind = config.get('media_kind')
             mime_suffix = config.get('mime_suffix')
             # file_path = FMT_URL_REF_EMBED.format(resource_path)
-            folder = 'audio' if kind else 'video'
             rel = path.relative_to(RESOURCE_DIR)
-            file_path = f"/_static/resources/{path.name}"
+            file_path = f"/_static/{str(rel)}"
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent(
                 "           ", resource_copyable))
@@ -705,7 +704,7 @@ def process_resource_files(
             out.write(f"        .. raw:: html\n\n")
             out.write(indent("           ",
                       f"<{kind} class=\"resource-thumb\" controls>\n"
-                      f"  <source src='/_static/{str(rel)}' type='{kind}/{mime_suffix}'>\n"
+                      f"  <source src='{file_path}' type='{kind}/{mime_suffix}'>\n"
                       f"</{kind}>\n\n"))
 
         # Fonts
