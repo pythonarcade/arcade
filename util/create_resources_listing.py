@@ -484,7 +484,7 @@ def indent(  # pending: post-3.0 refactor  # why would indent come after the tex
     return new.getvalue()
 
 # pending: post-3.0 cleanup, I don't have time to make this CSS nice right now.
-COPY_BUTTON_PATH = "_static/icons/tabler/copy.svg"
+COPY_BUTTON_PATH = "/_static/icons/tabler/copy.svg"
 #COPY_BUTTON_RAW = (DOC_ROOT / "_static/icons/tabler/copy.svg").read_text().strip() + "\n"
 
 
@@ -502,7 +502,7 @@ def html_copyable(
         f"        <span class=\"pre\">{escaped}</span>\n"
         f"    </code>\n"
         f"    <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
-        f"        <img src=\"/{src_kludge(COPY_BUTTON_PATH)}\"/>\n"
+        f"        <img src=\"{src_kludge(COPY_BUTTON_PATH)}\"/>\n"
         # + indent("    " * 2, COPY_BUTTON_RAW) +  # pending: post-3.0 cleanup
         f"    </button>\n"
         f"</span>\n"
