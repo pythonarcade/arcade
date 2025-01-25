@@ -732,6 +732,7 @@ def process_resource_files(
                       # Using preload="none" is gentler on GitHub and readthedocs
                       f"<{kind} class=\"resource-thumb\" controls preload=\"none\">\n"
                       f"  <source src=\"{file_path}\" type=\"{kind}/{mime_suffix}\">\n"
+                      f"  <source src=\"{src_kludge(file_path)}\" type=\"{kind}/{mime_suffix}\">\n"
                       f"</{kind}>\n\n"))
 
         # Fonts
