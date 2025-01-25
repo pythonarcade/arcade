@@ -9,7 +9,7 @@ import logging
 from itertools import chain
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, NamedTuple, Iterable
+from typing import Any, NamedTuple, Iterable, Generator, Hashable, TypeVar
 import docutils.nodes
 import os
 import re
@@ -470,27 +470,78 @@ class ResourceRole(SphinxRole):  # pending: 3.1
         print("HALP?", locals())
         return [node], []
 
-media_dirs: dict[Path, Path] = {}
-
-
 
 def dest_older(src: Path | str, dest: Path | str) -> bool:
+    """True if ``dest`` is older than ``src``.
+
+    This works because git does not bother syncing the modified times
+    on files. It delegates that data to the commit history.
+
+    Args:
+         src: A str or :py:class:`pathlib.Path`.
+         src: A str or :py:class:`pathlib.Path`.
+    """
     return Path(src).stat().st_mtime > dest.stat().st_mtime
 
 
-def super_glob(p: str | Path, *globs: str, unique: set | None = None):
-    if unique is None:
-        unique = set()
+def multi_glob(
+        p: str | Path,
+        *globs: str,
+) -> Generator[Path, None, None]:
+    """Merge multiple :py:class:`pathlib.Path.glob` results into one  multiple :py:class in a row into one
+
+    Args:
+        p: the path to merge glob args for
+        globs: The glob strings to use.
+        unique: If passed, this :py:class:`set` is used to decide
+    :return:
+    """
     p = Path(p)
     for glob in globs:
-        for item in p.glob(glob):
-            if item  in unique:
-                continue
-            yield item
-            unique.add(item)
+        yield from p.glob(glob)
 
 
-def copy_media(): #app, exc):
+H = TypeVar('H', bound=Hashable)
+
+
+def unique(items: Iterable[H], seen: set | None = None) -> Generator[H, None, None]:
+    """Filter hashable ``items`` by adding them to a ``seen`` set during iteration.
+
+    Passing a re-used set in allows efficiently visiting nodes.
+
+    Args:
+        items: An iterable of hashables to reject duplicates from.
+        seen: specify a set rather than creating a new one for this call.
+    """
+    if seen is None:
+        seen = set()
+    for new in (elt for elt in items if elt not in seen):
+        seen.add(new)
+        yield new
+
+
+def sync_dir(src_dir, dest_dir, *globs: str, done: set | None = None):
+    if not src_dir.is_dir():
+        raise ValueError(f"source is not a directory: {src_dir}")
+    if dest_dir.is_file():
+        raise ValueError(f"dest dir is not a directory: {dest_dir}")
+
+    for src_file in unique(multi_glob(src_dir, *globs), seen=done):
+        dest_file = dest_dir / src_file.name
+
+        if not dest_file.exists() or dest_older(src_file, dest_file):
+            dest_file.parent.mkdir(parents=True, exist_ok=True)
+            log.info(f' Copying media file {src_file} to {dest_file}')
+
+            shutil.copyfile(src_file, dest_file)
+
+
+def copy_media(done: set | None = None) -> None: #app, exc):
+    """A more configurable version of the file syncing scripts we use.
+
+    :return:
+    """
+    # pending: post-3.0 cleanup to find the right source events to make this work?
     # if exc or app.builder.format != "html":
     #     return
     # static_dir = (app.outdir / '_static').resolve()
@@ -498,7 +549,7 @@ def copy_media(): #app, exc):
     src_res_dir = module_root / 'resources/assets'
     out_res_dir = REPO_LOCAL_ROOT / 'build/html/_static/assets'
 
-    copy_what = {
+    copy_what = {  # pending: post-3.0 cleanup to tie this into resource generation correctly
         'sounds': ('*.wav', '*.ogg', '*.mp3'),
         'music': ('*.wav', '*.ogg', '*.mp3'),
         'video': ('*.mp4', '*.webm', )
@@ -507,23 +558,12 @@ def copy_media(): #app, exc):
     log.info(" Copying media...")
     print("   ", src_res_dir)
     print("   ", out_res_dir)
-    visited = set()
+    done = set()
     for dir_name, items in copy_what.items():
         src_dir = (src_res_dir / dir_name).resolve()
-        if not src_dir.is_dir():
-            raise ValueError(f"source is not a directory: {src_dir}")
         dest_dir = out_res_dir / dir_name
-        if dest_dir.is_file():
-            raise ValueError(f"dest dir is not a directory: {dest_dir}")
+        sync_dir(src_dir, dest_dir, *items, done=done)
 
-        for src_file in super_glob(src_dir, *items, unique=visited):
-            dest_file = dest_dir / src_file.name
-
-            if not dest_file.exists() or dest_older(src_file, dest_file):
-                dest_file.parent.mkdir(parents=True, exist_ok=True)
-                log.info(f' Copying media file {src_file} to {dest_file}')
-
-                shutil.copyfile(src_file, dest_file)
 
 copy_media()
 
@@ -551,7 +591,8 @@ def setup(app):
     app.connect('autodoc-process-bases', on_autodoc_process_bases)
     # app.add_transform(Transform)
     app.add_role('resource', ResourceRole())
-    #app.connect('s-config', copy_media)
+    # Don't do anything that can fail on this event or it'll kill your build hard
+    # app.connect('build-finished', throws_exception)
 
 # ------------------------------------------------------
 # Old hacks that breaks the api docs. !!! DO NOT USE !!!
