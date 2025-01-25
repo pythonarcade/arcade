@@ -487,6 +487,7 @@ def setup(app):
             print(f"    {comment}")
 
     # Separate stylesheets loosely by category.
+    # pending:  sphinx >= 8.1.4 to remove the sphinx_static_file_temp_fix.py
     app.add_css_file("css/colors.css")
     app.add_css_file("css/layout.css")
     app.add_css_file("css/custom.css")
