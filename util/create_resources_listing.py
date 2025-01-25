@@ -64,6 +64,7 @@ except Exception as _:
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
 RESOURCE_DIR = ARCADE_ROOT / "arcade" / "resources"
+ASSET_DIR = RESOURCE_DIR / "assets"
 DOC_ROOT = ARCADE_ROOT / "doc"
 INCLUDES_ROOT = DOC_ROOT / "_includes"
 OUT_FILE = DOC_ROOT / "api_docs" / "resources.rst"
@@ -693,8 +694,10 @@ def process_resource_files(
             config = MEDIA_EMBED[suffix]
             kind = config.get('media_kind')
             mime_suffix = config.get('mime_suffix')
-            file_path = FMT_URL_REF_EMBED.format(resource_path)
-
+            # file_path = FMT_URL_REF_EMBED.format(resource_path)
+            folder = 'audio' if kind else 'video'
+            rel = path.relative_to(RESOURCE_DIR)
+            file_path = f"/_static/resources/{path.name}"
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent(
                 "           ", resource_copyable))
@@ -702,7 +705,7 @@ def process_resource_files(
             out.write(f"        .. raw:: html\n\n")
             out.write(indent("           ",
                       f"<{kind} class=\"resource-thumb\" controls>\n"
-                      f"  <source src='{file_path}' type='{kind}/{mime_suffix}'>\n"
+                      f"  <source src='/_static/{str(rel)}' type='{kind}/{mime_suffix}'>\n"
                       f"</{kind}>\n\n"))
 
         # Fonts

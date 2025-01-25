@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
 from __future__ import annotations
+
+import shutil
+from dataclasses import dataclass
 from functools import cache
 import logging
+from itertools import chain
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, Iterable
 import docutils.nodes
 import os
 import re
@@ -438,6 +442,7 @@ APP_CONFIG_DIRS = (
 )
 
 
+
 class ResourceRole(SphinxRole):  # pending: 3.1
     """Get resource file and category cross-references sorta working.
 
@@ -459,6 +464,62 @@ class ResourceRole(SphinxRole):  # pending: 3.1
         print("HALP?", locals())
         return [node], []
 
+media_dirs: dict[Path, Path] = {}
+
+
+
+def dest_older(src: Path | str, dest: Path | str) -> bool:
+    return Path(src).stat().st_mtime > dest.stat().st_mtime
+
+
+def super_glob(p: str | Path, *globs: str, unique: set | None = None):
+    if unique is None:
+        unique = set()
+    p = Path(p)
+    for glob in globs:
+        for item in p.glob(glob):
+            if item  in unique:
+                continue
+            yield item
+            unique.add(item)
+
+
+def copy_media(): #app, exc):
+    # if exc or app.builder.format != "html":
+    #     return
+    # static_dir = (app.outdir / '_static').resolve()
+    module_root = REPO_LOCAL_ROOT / 'arcade'
+    src_res_dir = module_root / 'resources/assets'
+    out_res_dir = REPO_LOCAL_ROOT / 'build/html/_static/assets'
+
+    copy_what = {
+        'sounds': ('*.wav', '*.ogg', '*.mp3'),
+        'music': ('*.wav', '*.ogg', '*.mp3'),
+        'video': ('*.mp4', '*.webm', )
+    }
+
+    log.info(" Copying media...")
+    print("   ", src_res_dir)
+    print("   ", out_res_dir)
+    visited = set()
+    for dir_name, items in copy_what.items():
+        src_dir = (src_res_dir / dir_name).resolve()
+        if not src_dir.is_dir():
+            raise ValueError(f"source is not a directory: {src_dir}")
+        dest_dir = out_res_dir / dir_name
+        if dest_dir.is_file():
+            raise ValueError(f"dest dir is not a directory: {dest_dir}")
+
+        for src_file in super_glob(src_dir, *items, unique=visited):
+            dest_file = dest_dir / src_file.name
+
+            if not dest_file.exists() or dest_older(src_file, dest_file):
+                dest_file.parent.mkdir(parents=True, exist_ok=True)
+                log.info(f' Copying media file {src_file} to {dest_file}')
+
+                shutil.copyfile(src_file, dest_file)
+
+copy_media()
 
 def setup(app):
     print("Diagnostic info since readthedocs doesn't use our make.py:")
@@ -484,6 +545,7 @@ def setup(app):
     app.connect('autodoc-process-bases', on_autodoc_process_bases)
     # app.add_transform(Transform)
     app.add_role('resource', ResourceRole())
+    #app.connect('s-config', copy_media)
 
 # ------------------------------------------------------
 # Old hacks that breaks the api docs. !!! DO NOT USE !!!
