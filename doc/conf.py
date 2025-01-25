@@ -2,25 +2,32 @@
 """Sphinx configuration file"""
 from __future__ import annotations
 
-import shutil
-from dataclasses import dataclass
 from functools import cache
 import logging
-from itertools import chain
 from pathlib import Path
-from textwrap import dedent
-from typing import Any, NamedTuple, Iterable, Generator, Hashable, TypeVar
-import docutils.nodes
-import os
+from typing import Any, NamedTuple
 import re
 import runpy
-import sphinx.ext.autodoc
-import sphinx.transforms
 import sys
 
 from docutils import nodes
-from docutils.nodes import literal
 from sphinx.util.docutils import SphinxRole
+
+HERE = Path(__file__).resolve()
+REPO_LOCAL_ROOT = HERE.parent.parent
+ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
+UTIL_DIR = REPO_LOCAL_ROOT / "util"
+
+log = logging.getLogger('conf.py')
+logging.basicConfig(level=logging.INFO)
+
+sys.path.insert(0, str(REPO_LOCAL_ROOT))
+sys.path.insert(0, str(ARCADE_MODULE))
+log.info(f"Inserted elements in system path: First two are now:")
+for i in range(2):
+    log.info(f"  {i}: {sys.path[i]!r}")
+
+from util.doc_helpers.real_filesystem import copy_media
 
 # As of pyglet==2.1.dev7, this is no longer set in pyglet/__init__.py
 # because Jupyter / IPython always load Sphinx into sys.modules. See
@@ -31,27 +38,13 @@ sys.is_pyglet_doc_run = True
 
 # --- Pre-processing Tasks
 
-log = logging.getLogger('conf.py')
-logging.basicConfig(level=logging.INFO)
-
-HERE = Path(__file__).resolve()
-REPO_LOCAL_ROOT = HERE.parent.parent
-
-ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
-UTIL_DIR = REPO_LOCAL_ROOT / "util"
-
+# Report our diagnostic info
 log.info(f"Absolute path for our conf.py       : {str(HERE)!r}")
 log.info(f"Absolute path for the repo root     : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the arcade module : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the util dir      : {str(UTIL_DIR)!r}")
 
 # _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
-
-sys.path.insert(0, str(REPO_LOCAL_ROOT))
-sys.path.insert(0, str(ARCADE_MODULE))
-log.info(f"Inserted elements in system path: First two are now:")
-for i in range(2):
-    log.info(f"  {i}: {sys.path[i]!r}")
 
 # Don't change to
 # from arcade.version import VERSION
@@ -124,6 +117,22 @@ run_util("generate_example_thumbnails.py")
 run_util("create_resources_listing.py", init_globals=RESOURCE_GLOBALS)
 # Run the generate quick API index script
 run_util('../util/update_quick_index.py')
+
+
+src_res_dir = ARCADE_MODULE / 'resources/assets'
+out_res_dir = REPO_LOCAL_ROOT / 'build/html/_static/assets'
+
+# pending: post-3.0 cleanup to find the right source events to make this work?
+# if exc or app.builder.format != "html":
+#     return
+# static_dir = (app.outdir / '_static').resolve()
+copy_what = {  # pending: post-3.0 cleanup to tie this into resource generation correctly
+    'sounds': ('*.wav', '*.ogg', '*.mp3'),
+    'music': ('*.wav', '*.ogg', '*.mp3'),
+    'video': ('*.mp4', '*.webm', )
+}
+copy_media(src_res_dir, out_res_dir, copy_what)
+
 
 autodoc_inherit_docstrings = False
 autodoc_default_options = {
@@ -299,7 +308,6 @@ with open("_includes/links.rst") as f:
 rst_prolog = "\n".join(PROLOG_PARTS)
 
 
-
 def strip_init_return_typehint(app, what, name, obj, options, signature, return_annotation):
     # Prevent a the `-> None` annotation from appearing after classes.
     # This annotation comes from the `__init__`, but it renders on the class,
@@ -307,6 +315,7 @@ def strip_init_return_typehint(app, what, name, obj, options, signature, return_
     # From the user's perspective, this is wrong: `Foo() -> Foo` not `None`
     if what == "class" and return_annotation is None:
         return (signature, None)
+
 
 def inspect_docstring_for_member(
     _app,
@@ -434,7 +443,6 @@ def on_autodoc_process_bases(app, name, obj, options, bases):
     bases[:] = [base for base in bases if base is not object]
 
 
-
 class A(NamedTuple):
     dirname: str
     comment: str = ""
@@ -446,7 +454,6 @@ APP_CONFIG_DIRS = (
     A('confdir'),
     A('doctreedir'),
 )
-
 
 
 class ResourceRole(SphinxRole):  # pending: 3.1
@@ -467,105 +474,9 @@ class ResourceRole(SphinxRole):  # pending: 3.1
              '/api_docs/resources.html#', page_id]),
             )
 
-        print("HALP?", locals())
+        log.info(" Attempted ResourceRole", locals())
         return [node], []
 
-
-def dest_older(src: Path | str, dest: Path | str) -> bool:
-    """True if ``dest`` is older than ``src``.
-
-    This works because git does not bother syncing the modified times
-    on files. It delegates that data to the commit history.
-
-    Args:
-         src: A str or :py:class:`pathlib.Path`.
-         src: A str or :py:class:`pathlib.Path`.
-    """
-    return Path(src).stat().st_mtime > dest.stat().st_mtime
-
-
-def multi_glob(
-        p: str | Path,
-        *globs: str,
-) -> Generator[Path, None, None]:
-    """Merge multiple :py:class:`pathlib.Path.glob` results into one  multiple :py:class in a row into one
-
-    Args:
-        p: the path to merge glob args for
-        globs: The glob strings to use.
-        unique: If passed, this :py:class:`set` is used to decide
-    :return:
-    """
-    p = Path(p)
-    for glob in globs:
-        yield from p.glob(glob)
-
-
-H = TypeVar('H', bound=Hashable)
-
-
-def unique(items: Iterable[H], seen: set | None = None) -> Generator[H, None, None]:
-    """Filter hashable ``items`` by adding them to a ``seen`` set during iteration.
-
-    Passing a re-used set in allows efficiently visiting nodes.
-
-    Args:
-        items: An iterable of hashables to reject duplicates from.
-        seen: specify a set rather than creating a new one for this call.
-    """
-    if seen is None:
-        seen = set()
-    for new in (elt for elt in items if elt not in seen):
-        seen.add(new)
-        yield new
-
-
-def sync_dir(src_dir, dest_dir, *globs: str, done: set | None = None):
-    if not src_dir.is_dir():
-        raise ValueError(f"source is not a directory: {src_dir}")
-    if dest_dir.is_file():
-        raise ValueError(f"dest dir is not a directory: {dest_dir}")
-
-    for src_file in unique(multi_glob(src_dir, *globs), seen=done):
-        dest_file = dest_dir / src_file.name
-
-        if not dest_file.exists() or dest_older(src_file, dest_file):
-            dest_file.parent.mkdir(parents=True, exist_ok=True)
-            log.info(f' Copying media file {src_file} to {dest_file}')
-
-            shutil.copyfile(src_file, dest_file)
-
-
-def copy_media(done: set | None = None) -> None: #app, exc):
-    """A more configurable version of the file syncing scripts we use.
-
-    :return:
-    """
-    # pending: post-3.0 cleanup to find the right source events to make this work?
-    # if exc or app.builder.format != "html":
-    #     return
-    # static_dir = (app.outdir / '_static').resolve()
-    module_root = REPO_LOCAL_ROOT / 'arcade'
-    src_res_dir = module_root / 'resources/assets'
-    out_res_dir = REPO_LOCAL_ROOT / 'build/html/_static/assets'
-
-    copy_what = {  # pending: post-3.0 cleanup to tie this into resource generation correctly
-        'sounds': ('*.wav', '*.ogg', '*.mp3'),
-        'music': ('*.wav', '*.ogg', '*.mp3'),
-        'video': ('*.mp4', '*.webm', )
-    }
-
-    log.info(" Copying media...")
-    print("   ", src_res_dir)
-    print("   ", out_res_dir)
-    done = set()
-    for dir_name, items in copy_what.items():
-        src_dir = (src_res_dir / dir_name).resolve()
-        dest_dir = out_res_dir / dir_name
-        sync_dir(src_dir, dest_dir, *items, done=done)
-
-
-copy_media()
 
 def setup(app):
     print("Diagnostic info since readthedocs doesn't use our make.py:")
