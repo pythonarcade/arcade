@@ -326,7 +326,6 @@ table.resource-table td > .resource-thumb.file-icon {
 }
 
 
-
 .arcade-ezcopy > *:is(img, svg) {
     margin: 0;
     width: 100%;
@@ -336,6 +335,13 @@ table.resource-table td > .resource-thumb.file-icon {
 }
 .arcade-ezcopy:hover {
   background-color: #54c079;
+}
+/* Give it some breathing room inside the inline HTML we're using for the moment
+  # pending: post-3.0 clean-up
+*/
+li .arcade-ezcopy.doc-ui-example-dummy {
+    margin-left: 0.2em;
+    margin-right: 0.2em;
 }
 
 table.colorTable {
