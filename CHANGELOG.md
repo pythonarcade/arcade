@@ -12,8 +12,8 @@ These are the breaking API changes. Use this as a quick reference for updating 2
 
 * Dropped Python 3.8 support completely.
 * Texture management has completely changed in 3.0. In the past, we
- cached everything, which caused issues for larger
- projects that needed memory management. Functions like `Arcade.load_texture` no longer cache textures.
+ cached everything, which caused issues for larger projects that needed
+ memory management. Functions like `Arcade.load_texture` no longer cache textures.
 * Removed the poorly named `Window.set_viewport` and `set_viewport` methods.
  `Camera2D` has completely superseded their functionality.
 * Fixed `ArcadeContext` assuming that the projection and view matrices were aligned to the xy-plane and Orthographic. It is now safe to use full 3D matrices with Arcade.
@@ -218,6 +218,10 @@ These are the breaking API changes. Use this as a quick reference for updating 2
 * Added a `Color` object with a plethora of useful methods.
 * Windows Text glyphs are now created with DirectWrite instead of GDI.
 * Removal of various deprecated functions and parameters.
+* OpenGL matrix uniforms are now supported properly
+* OpenGL uniforms now accept buffer protocol objects
+* Sprite's visible flag is now handled correctly
+* `Window.run()` now supports a view argument.
 * OpenGL examples moved to _`examples/gl <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gl>`_
  from _"experiments/examples"_
 
@@ -354,4 +358,4 @@ We would also like to thank the contributors who spent their valuable time solvi
 
 Finally, thank you to the [Pyglet](https://github.com/pyglet/pyglet) team! Pyglet is the backbone of Arcade, and this library wouldn't be possible without them.
 
-3.0.0 changes span from Mar 12, 2022 – <TBC>
+3.0.0 changes span from Dec 31, 2022 – Jan 25, 2025 (756 days!!) 
