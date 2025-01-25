@@ -808,40 +808,6 @@ def resources():
         "Click the button above a preview to copy the **resource handle** string for loading the asset.\n"
         "Any image or sound on this page should work after installing Arcade with zero additional dependencies.\n"
         "Full example code and manual sections for any relevant functions are linked below."
-        # "may  find helpful.\n""
-        # "\n"
-        # "To try it out, skip to either :ref:`Top-Level Resources <resources-top-level-resources>`\n"
-        # "or the examples linked below the heading of each resource table group.\n"
-        # "\n"
-        # "* :ref:`Sprite Examples <sprite_examples>` for example code\n"
-        # "* :ref:`The Platformer Tutorial <platformer_tutorial>` for step-by-step guidance\n"
-        # "* The :ref:`resource_handles` page of the manual covers them in more depth\n"
-        # "\n\n"
-
-        # "#. Click the button to copy the **resource handle** string\n"
-        # "#. Paste it into your code as a variable, or an argument to a :py:class:`~arcade.Sprite`\n"
-                                                                                                       
-        # "#. If you aren't sure, see"
-        # 
-        #         "preview table. Most work out of the box, but video and some audio formats may"
-        # "require installing additional software. to learn which "
-        # "#.  for the file. You can pasten\" strings start with\n"
-        # "``':resources:'``. After installing Arcade, you can click the copy button next to a"
-        # "resource filename to copy the full handle:\n\n"
-        # # "#. Find the copy button (|Example Copy Button|) after a filename below\n"
-        # "#. Click it to copy the string, such as ``':resources:/logo.png'``\n"
-        # "#. Use the appropriate loading functions to load and display the data\n\n"
-  
-        # ".. raw:: html\n\n"
-        # "   <ol class=\"arabic simple\">\n"
-        # "   <li>Find the copy button after the filename below (<div class=\"arcade-ezcopy doc-ui-example-dummy\" style=\"display: inline-block;\">\n"
-        # "      <img src=\"/_static/icons/tabler/copy.svg\">\n"
-        # "   </div>)</li>\n"
-        # "   <li><p>Click it to copy the string, such as <code class=\"docutils literal notranslate\"><span class=\"pre\">':resources:/logo.png'</span></code></p></li>\n"
-        # "   <li><p>Paste the string as an argument to the appropriate loading function to get started.</p></li>\n"
-        # "   </ol>\n\n"
-        # 
-
     )
 
     out.write("\n")
