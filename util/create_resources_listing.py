@@ -744,8 +744,10 @@ def resources():
 
     do_heading(out, 0, "Built-In Resources")
 
-    out.write("\n\n:resource:`:resources:/gui_basic_assets/window/panel_green.png`\n\n")
+    # pending: post-3.0 cleanup: get the linking working
+    # out.write("\n\n:resource:`:resources:/gui_basic_assets/window/panel_green.png`\n\n")
     # out.write("Linking test: :ref:`resources-gui-basic-assets-window-panel-green-png`.\n")
+
     out.write("Every file below is included when you :ref:`install Arcade <install>`. This includes the images,\n"
               "sounds, fonts, and other files to help you get started quickly. You can still download them\n"
               "separately, but Arcade's resource handle system will usually be easier.\n")
