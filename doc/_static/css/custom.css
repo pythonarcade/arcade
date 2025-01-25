@@ -262,11 +262,18 @@ table.resource-table td > .resource-thumb.file-icon {
 
 
 .resource-handle {
-    display: inline-block;
+    /* Flex props keep this all on one line when the viewport with's small */
+    display: inline-flex;
+    flex-direction: row;
+    flex-shrink: 0;
+
+    /* Make the button round so it's nice-looking */
     border-radius: 0.4em;
     border: 1px solid rgb(0, 0, 0, 0);
+
     width: fit-content !important;
 }
+
 .resource-handle:has(button.arcade-ezcopy:hover) {
     border-color: #54c079;
     color: #54c079;
