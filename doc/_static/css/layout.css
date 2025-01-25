@@ -26,11 +26,11 @@
     content: none;
 }
 .wy-side-nav-search .icon-home img.logo {
-    margin: 0 !important;
+    margin: 0 auto;
     padding: 0;
     max-width: 100px;
-    padding-bottom: 16px;
 }
+
 .wy-side-nav-search > div.version {
     font-size: 85%;
     /* Same monospace as our `pre` blocks */
