@@ -13,7 +13,7 @@ H = TypeVar('H', bound=Hashable)
 
 FILE = Path(__file__)
 REPO_ROOT = Path(__file__).parent.parent.resolve()
-log = logging.getLogger(str(FILE.relative_to(REPO_ROOT)))
+log = logging.getLogger(FILE.name)
 
 
 def dest_older(src: Path | str, dest: Path | str) -> bool:
@@ -89,7 +89,8 @@ def sync_dir(src_dir: Path, dest_dir: Path, *globs: str, done: set | None = None
             log.info(f' Copying media file {src_file} to {dest_file}')
 
             shutil.copyfile(src_file, dest_file)
-
+        else:
+            log.info(f" Skipping media file {src_file} to {dest_file}")
 
 def copy_media(
         src_root: Path | str,

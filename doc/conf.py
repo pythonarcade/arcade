@@ -2,6 +2,7 @@
 """Sphinx configuration file"""
 from __future__ import annotations
 
+import os
 from functools import cache
 import logging
 from pathlib import Path
@@ -27,7 +28,22 @@ log.info(f"Inserted elements in system path: First two are now:")
 for i in range(2):
     log.info(f"  {i}: {sys.path[i]!r}")
 
+
+# Grab readthedocs env variables for logging + use
+# https://docs.readthedocs.com/platform/stable/reference/environment-variables.html
+# Their GH comments suggest they want to move away from "magic" injection as
+# part of the readthedocs theme, so this seems like the best option for us.
+log.info(" Env variables...")
+col_width = max(map(len, os.environ.keys()))
+READTHEDOCS = dict()
+ENV = dict()
+for k, v in os.environ.items():
+    if k.startswith('READTHEDOCS_'):
+        READTHEDOCS[k.removeprefix('READTHEDOCS_')] = v
+    ENV[k] = v
+
 from util.doc_helpers.real_filesystem import copy_media
+
 
 # As of pyglet==2.1.dev7, this is no longer set in pyglet/__init__.py
 # because Jupyter / IPython always load Sphinx into sys.modules. See
@@ -44,6 +60,10 @@ log.info(f"Absolute path for the repo root     : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the arcade module : {str(REPO_LOCAL_ROOT)!r}")
 log.info(f"Absolute path for the util dir      : {str(UTIL_DIR)!r}")
 
+print()
+for k, v in ENV.items():
+    log.info(f"Env variable {k:{col_width}} : {v!r}")
+
 # _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
 
 # Don't change to
@@ -52,26 +72,23 @@ log.info(f"Absolute path for the util dir      : {str(UTIL_DIR)!r}")
 from version import VERSION # pyright: ignore [reportMissingImports]
 log.info(f" Got version {VERSION!r}")
 
-
 # Check whether the version ends in an all-digit string
-VERSION_PARTS = []
+ARCADE_VERSION_PARTS = []
 for part in VERSION.split('.'):
     if part.isdigit():
-        VERSION_PARTS.append(int(part))
+        ARCADE_VERSION_PARTS.append(part)
     else:
-        VERSION_PARTS.append(part)
+        ARCADE_VERSION_PARTS.append(part)
 
 print()
-if VERSION_PARTS[-1].isdigit():
-    GIT_REF = VERSION
-    log.info(" !!!!! APPEARS TO BE A REAL RELEASE  !!!!!")
+GIT_REF = 'development'
+if READTHEDOCS:
+    if READTHEDOCS.get('VERSION') in ('latest', 'stable'):
+        log.info(" !!!!! APPEARS TO BE A REAL RELEASE  !!!!!")
+    else:
+        log.info(" +++++ Building a PR or development  +++++")
 else:
-    GIT_REF = 'development'
-    log.info(" - - -   Building as a dev release   - - -")
-
-print()
-print(f"   {GIT_REF=!r}")
-print(f"   {VERSION=!r}")
+    log.info(" - - -  Building outside readthedocs  +++++")
 print()
 
 
@@ -80,11 +97,14 @@ REPO_URL_BASE="https://github.com/pythonarcade/arcade"
 FMT_URL_REF_BASE=f"{REPO_URL_BASE}/blob/{GIT_REF}"
 
 RESOURCE_GLOBALS = dict(
-    GIT_REF=GIT_REF,
+    GIT_REF=GIT_REF,  # pending: post-3.0 clean-up, not sure if things use it now?
+    # This may be more useful according to some doc? (It's unclear)
+    # https://docs.readthedocs.com/platform/stable/reference/environment-variables.html#envvar-READTHEDOCS_GIT_COMMIT_HASH
     BASE_URL_REPO=REPO_URL_BASE,
     # This double-bracket escapes brackets in f-strings
     FMT_URL_REF_PAGE=f"{FMT_URL_REF_BASE}/{{}}",
     FMT_URL_REF_EMBED=f"{FMT_URL_REF_BASE}/{{}}?raw=true",
+    RTD_EVIL=READTHEDOCS['CANONICAL_URL'] if READTHEDOCS else ""  # pending: post-3.0 cleanup
 )
 
 def run_util(filename, run_name="__main__", init_globals=None):
@@ -119,6 +139,8 @@ run_util("create_resources_listing.py", init_globals=RESOURCE_GLOBALS)
 run_util('../util/update_quick_index.py')
 
 
+OUT_STATIC = REPO_LOCAL_ROOT / 'build/html/_static/'
+
 src_res_dir = ARCADE_MODULE / 'resources/assets'
 out_res_dir = REPO_LOCAL_ROOT / 'build/html/_static/assets'
 
@@ -132,6 +154,25 @@ copy_what = {  # pending: post-3.0 cleanup to tie this into resource generation 
     'video': ('*.mp4', '*.webm', )
 }
 copy_media(src_res_dir, out_res_dir, copy_what)
+
+# We are no longer asking. We are copying.
+copy_media(
+   REPO_LOCAL_ROOT / "doc/_static/icons",
+   OUT_STATIC / "icons" ,
+   {
+       'tabler': ("*.svg",)
+   }
+)
+copy_media(
+   REPO_LOCAL_ROOT / "doc/_static/",
+   OUT_STATIC ,
+   {
+       'filetiles': ("*.png",)
+   }
+)
+#copy_media(
+#    REP / ""
+#)
 
 
 autodoc_inherit_docstrings = False
