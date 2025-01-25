@@ -484,7 +484,7 @@ def indent(  # pending: post-3.0 refactor  # why would indent come after the tex
     return new.getvalue()
 
 # pending: post-3.0 cleanup, I don't have time to make this CSS nice right now.
-COPY_BUTTON_PATH = "/_static/icons/tabler/copy.svg"
+COPY_BUTTON_PATH = "https://raw.githubusercontent.com/pythonarcade/arcade/refs/heads/development/doc/_static/icons/tabler/copy.svg"
 #COPY_BUTTON_RAW = (DOC_ROOT / "_static/icons/tabler/copy.svg").read_text().strip() + "\n"
 
 
@@ -496,13 +496,15 @@ def html_copyable(
     if string_quote_char:
         value = f"{string_quote_char}{value}{string_quote_char}"
     escaped = html.escape(value)
+    # src = src_kludge(COPY_BUTTON_PATH)
+    src = FMT_URL_REF_EMBED.format(COPY_BUTTON_PATH)
     raw = (
         f"<span class=\"resource-handle\">\n"
         f"    <code class=\"docutils literal notranslate\">\n"
         f"        <span class=\"pre\">{escaped}</span>\n"
         f"    </code>\n"
         f"    <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
-        f"        <img src=\"{src_kludge(COPY_BUTTON_PATH)}\"/>\n"
+        f"        <img src=\"{COPY_BUTTON_PATH}\"/>\n"
         # + indent("    " * 2, COPY_BUTTON_RAW) +  # pending: post-3.0 cleanup
         f"    </button>\n"
         f"</span>\n"
@@ -718,9 +720,9 @@ def process_resource_files(
             config = MEDIA_EMBED[suffix]
             kind = config.get('media_kind')
             mime_suffix = config.get('mime_suffix')
-            # file_path = FMT_URL_REF_EMBED.format(resource_path)
-            rel = path.relative_to(RESOURCE_DIR)
-            file_path = f"/_static/{str(rel)}"
+            file_path = FMT_URL_REF_EMBED.format(resource_path)
+            #rel = path.relative_to(RESOURCE_DIR)
+            #file_path = src_kludge(f"/_static/{str(rel)}")
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent(
                 "           ", resource_copyable))
@@ -729,7 +731,7 @@ def process_resource_files(
             out.write(indent("           ",
                       # Using preload="none" is gentler on GitHub and readthedocs
                       f"<{kind} class=\"resource-thumb\" controls preload=\"none\">\n"
-                      f"  <source src=\"{src_kludge(file_path)}\" type=\"{kind}/{mime_suffix}\">\n"
+                      f"  <source src=\"{file_path}\" type=\"{kind}/{mime_suffix}\">\n"
                       f"</{kind}>\n\n"))
 
         # Fonts
