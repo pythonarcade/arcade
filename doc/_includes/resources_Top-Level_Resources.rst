@@ -6,7 +6,7 @@ This logo of the snake doubles as a quick way to test Arcade's resource handles.
       <li>Look down toward the Arcade logo below until you see the file name</li>
       <li>Look to the right edge of the file name (<code class="docutils literal notranslate"><span class="pre">'logo.png'</span></code>)</li>
       <li>There should be a copy button (<div class="arcade-ezcopy doc-ui-example-dummy" style="display: inline-block;">
-        <img src="/_static/icons/tabler/copy.svg"></div>) </li>
+        <img src="https://api.arcade.academy/en/development/_static/icons/tabler/copy.svg"></div>) </li>
       <li>Click or tap it.</li>
    </ol>
 
