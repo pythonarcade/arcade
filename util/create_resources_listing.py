@@ -43,7 +43,10 @@ def announce_templating(var_name):
 
 # The following are provided via runpy.run_path's init_globals keyword
 # in conf.py. Uncomment for easy debugger run without IDE config.
+_ = RTD_EVIL  # noqa  # explode ASAP or the links will all be broken
+log.info(f" RTD EVIL: {RTD_EVIL!r}")  # noqa
 try:
+
     _ = GIT_REF  # noqa
 except Exception as _:
     GIT_REF = "development"
@@ -60,6 +63,9 @@ except Exception as _:
     FMT_URL_REF_EMBED = f"{_URL_BASE}/blob/{GIT_REF}/{{}}?raw=true"
     announce_templating("FMT_URL_REF_EMBED")
 
+
+def src_kludge(strpath): # pending: post-3.0 cleanup: # evil evil evil evil
+   return f"{RTD_EVIL}{strpath}"
 
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
@@ -495,7 +501,7 @@ def html_copyable(
         f"        <span class=\"pre\">{escaped}</span>\n"
         f"    </code>\n"
         f"    <button class=\"arcade-ezcopy\" data-clipboard-text=\"{resource_handle}\">\n"
-        f"        <img src=\"/{COPY_BUTTON_PATH}\"/>\n"
+        f"        <img src=\"/{src_kludge(COPY_BUTTON_PATH)}\"/>\n"
         # + indent("    " * 2, COPY_BUTTON_RAW) +  # pending: post-3.0 cleanup
         f"    </button>\n"
         f"</span>\n"
@@ -621,17 +627,16 @@ def do_filetile(out, suffix: str | None = None, state: str = None):
         p = FILETILE_DIR / f"type-{suffix.strip('.')}.png"
         log.info(f" FILETILE: {p}")
         if p.exists():
-            print("    KNOWN!")
+            print(f"    KNOWN! {p.name!r}")
             name = p.name
         else:
             name = f"type-unknown.png"
             print("    ... unknown :(")
     else:
         name = "state-error.png"
-
     out.write(indent(f"        ",
                      f".. raw:: html\n\n"
-                     f"   <img class=\"resource-thumb\" src=\"/_static/filetiles/{name}\"/>\n\n"))
+                     f"   <img class=\"resource-thumb\" src=\"{src_kludge('/_static/filetiles/' + name)}\"/>\n\n"))
 
 
 def process_resource_files(
@@ -723,7 +728,7 @@ def process_resource_files(
             out.write(indent("           ",
                       # Using preload="none" is gentler on GitHub and readthedocs
                       f"<{kind} class=\"resource-thumb\" controls preload=\"none\">\n"
-                      f"  <source src='{file_path}' type='{kind}/{mime_suffix}'>\n"
+                      f"  <source src=\"{src_kludge(file_path)}\" type=\"{kind}/{mime_suffix}\">\n"
                       f"</{kind}>\n\n"))
 
         # Fonts
@@ -743,7 +748,7 @@ def process_resource_files(
 
         # File tiles we don't have previews for
         else:#  suffix == ".json":
-            file_path = FMT_URL_REF_PAGE.format(resource_path)
+            # file_path = FMT_URL_REF_PAGE.format(resource_path)
             out.write(f"    {start()} - .. raw:: html\n\n")
             out.write(indent("             ",
                  resource_copyable))
@@ -802,7 +807,7 @@ def resources():
         f"   <ol>\n"
         f"      <li>A <strong>file name</strong> as a single-quoted string (<code class=\"docutils literal notranslate\"><span class=\"pre\">{logo}</span></code>)</li>\n"
         f"      <li>A <strong>copy button</strong> to the right of the string (<div class=\"arcade-ezcopy doc-ui-example-dummy\" style=\"display: inline-block;\">"
-        f"<img src=\"/_static/icons/tabler/copy.svg\"></div>)</li>\n"
+        f"<img src=\"{src_kludge('/_static/icons/tabler/copy.svg')}\"></div>)</li>\n"
         f"   </ol>\n\n"
         +
         "Click the button above a preview to copy the **resource handle** string for loading the asset.\n"
