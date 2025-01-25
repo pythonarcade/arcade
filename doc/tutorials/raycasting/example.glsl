@@ -1,4 +1,4 @@
-#define N 500
+#define N 150
 
 float terrain(vec2 p)
 {

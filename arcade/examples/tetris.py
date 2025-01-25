@@ -7,8 +7,8 @@ https://gist.github.com/silvasur/565419/d9de6a84e7da000797ac681976442073045c74a4
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.tetris
 """
-# flake8: noqa: E241
 import arcade
+from arcade.clock import GLOBAL_CLOCK
 import random
 import PIL
 
@@ -25,9 +25,9 @@ HEIGHT = 30
 MARGIN = 5
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-SCREEN_TITLE = "Tetris"
+WINDOW_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+WINDOW_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+WINDOW_TITLE = "Tetris"
 
 colors = [
     (0,   0,   0, 255),
@@ -68,9 +68,8 @@ def create_textures():
     """ Create a list of images for sprites based on the global colors. """
     new_textures = []
     for color in colors:
-        # noinspection PyUnresolvedReferences
         image = PIL.Image.new('RGBA', (WIDTH, HEIGHT), color)
-        new_textures.append(arcade.Texture(str(color), image=image))
+        new_textures.append(arcade.Texture(image))
     return new_textures
 
 
@@ -120,18 +119,15 @@ def new_board():
     return board
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
-        """ Set up the application. """
-
-        super().__init__(width, height, title)
-
-        arcade.set_background_color(arcade.color.WHITE)
+    def __init__(self):
+        super().__init__()
+        self.window.background_color = arcade.color.WHITE
 
         self.board = None
-        self.frame_count = 0
+        self.start_frame = 0
         self.game_over = False
         self.paused = False
         self.board_sprite_list = None
@@ -140,12 +136,20 @@ class MyGame(arcade.Window):
         self.stone_x = 0
         self.stone_y = 0
 
+        self.stones = []
+
     def new_stone(self):
         """
-        Randomly grab a new stone and set the stone location to the top.
+        Randomly grab a new stone from the bag of stones,
+        if the bag is empty refill the bag and shuffle it.
+        Then set the stone's location to the top.
         If we immediately collide, then game-over.
         """
-        self.stone = random.choice(tetris_shapes)
+        if not self.stones:
+            self.stones = tetris_shapes[:]
+
+        random.shuffle(self.stones)
+        self.stone = self.stones.pop()
         self.stone_x = int(COLUMN_COUNT / 2 - len(self.stone[0]) / 2)
         self.stone_y = 0
 
@@ -154,16 +158,15 @@ class MyGame(arcade.Window):
 
     def setup(self):
         self.board = new_board()
+        self.start_frame = GLOBAL_CLOCK.ticks
 
         self.board_sprite_list = arcade.SpriteList()
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
-                sprite = arcade.Sprite()
-                for texture in texture_list:
-                    sprite.append_texture(texture)
-                sprite.set_texture(0)
+                sprite = arcade.Sprite(texture_list[0])
+                sprite.textures = texture_list
                 sprite.center_x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
-                sprite.center_y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
+                sprite.center_y = WINDOW_HEIGHT - (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
                 self.board_sprite_list.append(sprite)
 
@@ -203,10 +206,9 @@ class MyGame(arcade.Window):
             if not check_collision(self.board, new_stone, (self.stone_x, self.stone_y)):
                 self.stone = new_stone
 
-    def on_update(self, dt):
-        """ Update, drop stone if warrented """
-        self.frame_count += 1
-        if self.frame_count % 10 == 0:
+    def on_update(self, delta_time):
+        """ Update, drop stone if warranted """
+        if GLOBAL_CLOCK.ticks_since(self.start_frame) % 10 == 0:
             self.drop()
 
     def move(self, delta_x):
@@ -237,7 +239,6 @@ class MyGame(arcade.Window):
         elif key == arcade.key.DOWN:
             self.drop()
 
-    # noinspection PyMethodMayBeStatic
     def draw_grid(self, grid, offset_x, offset_y):
         """
         Draw the grid. Used to draw the falling stones. The board is drawn
@@ -250,11 +251,17 @@ class MyGame(arcade.Window):
                 if grid[row][column]:
                     color = colors[grid[row][column]]
                     # Do the math to figure out where the box is
-                    x = (MARGIN + WIDTH) * (column + offset_x) + MARGIN + WIDTH // 2
-                    y = SCREEN_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y) + MARGIN + HEIGHT // 2
+                    x = (
+                        (MARGIN + WIDTH) * (column + offset_x)
+                        + MARGIN + WIDTH // 2
+                    )
+                    y = (
+                        WINDOW_HEIGHT - (MARGIN + HEIGHT) * (row + offset_y)
+                        + MARGIN + HEIGHT // 2
+                    )
 
                     # Draw the box
-                    arcade.draw_rectangle_filled(x, y, WIDTH, HEIGHT, color)
+                    arcade.draw_rect_filled(arcade.rect.XYWH(x, y, WIDTH, HEIGHT), color)
 
     def update_board(self):
         """
@@ -277,8 +284,11 @@ class MyGame(arcade.Window):
 
 def main():
     """ Create the game window, setup, run """
-    my_game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    my_game.setup()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
+    game.setup()
+
+    window.show_view(game)
     arcade.run()
 
 

@@ -1,12 +1,16 @@
-from ctypes import byref, string_at
+from __future__ import annotations
+
 import weakref
-from typing import Any, Optional, TYPE_CHECKING
+from ctypes import byref, string_at
+from typing import TYPE_CHECKING
 
 from pyglet import gl
 
+from arcade.types import BufferProtocol
+
 from .utils import data_to_ctypes
 
-if TYPE_CHECKING:  # handle import cycle caused by type hinting
+if TYPE_CHECKING:
     from arcade.gl import Context
 
 
@@ -16,13 +20,26 @@ class Buffer:
     They are used for storage of vertex data,
     element data (vertex indexing), uniform block data etc.
 
-    Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
+    The ``data`` parameter can be anything that implements the
+    `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
 
-    :param Context ctx: The context this buffer belongs to
-    :param Any data: The data this buffer should contain.
-                     It can be bytes or any object supporting the buffer protocol.
-    :param int reserve: Create a buffer of a specific byte size
-    :param str usage: A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
+    This includes ``bytes``, ``bytearray``, ``array.array``, and
+    more. You may need to use typing workarounds for non-builtin
+    types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
+    information.
+
+    .. warning:: Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
+
+    Args:
+        ctx:
+            The context this buffer belongs to
+        data:
+            The data this buffer should contain. It can be a ``bytes`` instance or any
+            object supporting the buffer protocol.
+        reserve:
+            Create a buffer of a specific byte size
+        usage:
+            A hit of this buffer is ``static`` or ``dynamic`` (can mostly be ignored)
     """
 
     __slots__ = "_ctx", "_glo", "_size", "_usage", "__weakref__"
@@ -33,7 +50,11 @@ class Buffer:
     }
 
     def __init__(
-        self, ctx: "Context", data: Optional[Any] = None, reserve: int = 0, usage: str = "static"
+        self,
+        ctx: Context,
+        data: BufferProtocol | None = None,
+        reserve: int = 0,
+        usage: str = "static",
     ):
 
         self._ctx = ctx
@@ -50,13 +71,13 @@ class Buffer:
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         # print(f"glBufferData(gl.GL_ARRAY_BUFFER, {self._size}, data, {self._usage})")
 
-        if data is not None and len(data) > 0:
+        if data is not None and len(data) > 0:  # type: ignore
             self._size, data = data_to_ctypes(data)
             gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         elif reserve > 0:
             self._size = reserve
             # populate the buffer with zero byte values
-            data = (gl.GLubyte * self._size)(0)
+            data = (gl.GLubyte * self._size)()
             gl.glBufferData(gl.GL_ARRAY_BUFFER, self._size, data, self._usage)
         else:
             raise ValueError("Buffer takes byte data or number of reserved bytes")
@@ -76,44 +97,40 @@ class Buffer:
 
     @property
     def size(self) -> int:
-        """
-        The byte size of the buffer.
-
-        :type: int
-        """
+        """The byte size of the buffer."""
         return self._size
 
     @property
     def ctx(self) -> "Context":
-        """
-        The context this resource belongs to.
-
-        :type: :py:class:`arcade.gl.Context`
-        """
+        """The context this resource belongs to."""
         return self._ctx
 
     @property
     def glo(self) -> gl.GLuint:
-        """
-        The OpenGL resource id
-
-        :type: gl.GLuint
-        """
+        """The OpenGL resource id."""
         return self._glo
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Destroy the underlying OpenGL resource.
-        Don't use this unless you know exactly what you are doing.
+
+        .. warning:: Don't use this unless you know exactly what you are doing.
         """
         Buffer.delete_glo(self._ctx, self._glo)
         self._glo.value = 0
 
     @staticmethod
-    def delete_glo(ctx: "Context", glo: gl.GLuint):
+    def delete_glo(ctx: Context, glo: gl.GLuint):
         """
         Release/delete open gl buffer.
+
         This is automatically called when the object is garbage collected.
+
+        Args:
+            ctx:
+                The context the buffer belongs to
+            glo:
+                The OpenGL buffer id
         """
         # If we have no context, then we are shutting down, so skip this
         if gl.current_context is None:
@@ -128,9 +145,11 @@ class Buffer:
     def read(self, size: int = -1, offset: int = 0) -> bytes:
         """Read data from the buffer.
 
-        :param int size: The bytes to read. -1 means the entire buffer (default)
-        :param int offset: Byte read offset
-        :rtype: bytes
+        Args:
+            size:
+                The bytes to read. -1 means the entire buffer (default)
+            offset:
+                Byte read offset
         """
         if size == -1:
             size = self._size - offset
@@ -158,23 +177,48 @@ class Buffer:
         gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
         return data
 
-    def write(self, data: Any, offset: int = 0):
-        """Write byte data to the buffer.
+    def write(self, data: BufferProtocol, offset: int = 0):
+        """Write byte data to the buffer from a buffer protocol object.
 
-        :param bytes data: The byte data to write. This can be bytes or any object supporting the buffer protocol.
-        :param int offset: The byte offset
+        The ``data`` value can be anything that implements the
+        `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+
+        This includes ``bytes``, ``bytearray``, ``array.array``, and
+        more. You may need to use typing workarounds for non-builtin
+        types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
+        information.
+
+        If the supplied data is larger than the buffer, it will be
+        truncated to fit. If the supplied data is smaller than the
+        buffer, the remaining bytes will be left unchanged.
+
+        Args:
+            data:
+                The byte data to write. This can be bytes or any object
+                supporting the buffer protocol.
+            offset:
+                The byte offset
         """
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         size, data = data_to_ctypes(data)
+        # Ensure we don't write outside the buffer
+        size = min(size, self._size - offset)
+        if size < 0:
+            raise ValueError("Attempting to write negative number bytes to buffer")
         gl.glBufferSubData(gl.GL_ARRAY_BUFFER, gl.GLintptr(offset), size, data)
 
-    def copy_from_buffer(self, source: "Buffer", size=-1, offset=0, source_offset=0):
-        """Copy data into this buffer from another buffer
+    def copy_from_buffer(self, source: Buffer, size=-1, offset=0, source_offset=0):
+        """Copy data into this buffer from another buffer.
 
-        :param Buffer source: The buffer to copy from
-        :param int size: The amount of bytes to copy
-        :param int offset: The byte offset to write the data in this buffer
-        :param int source_offset: The byte offset to read from the source buffer
+        Args:
+            source:
+                The buffer to copy from
+            size:
+                The amount of bytes to copy
+            offset:
+                The byte offset to write the data in this buffer
+            source_offset:
+                The byte offset to read from the source buffer
         """
         # Read the entire source buffer into this buffer
         if size == -1:
@@ -205,13 +249,17 @@ class Buffer:
         If the current buffer is busy in rendering operations
         it will be deallocated by OpenGL when completed.
 
-        :param int size: New size of buffer. -1 will retain the current size.
-        :param bool double: Is passed in with `True` the buffer size will be doubled
+        Args:
+            size: (optional)
+                New size of buffer. -1 will retain the current size.
+                Takes precedence over ``double`` parameter if specified.
+            double (optional):
+                Is passed in with `True` the buffer size will be doubled
+                from its current size.
         """
-        if size > -1:
+        if size > 0:
             self._size = size
-
-        if double:
+        elif double is True:
             self._size *= 2
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
@@ -221,9 +269,13 @@ class Buffer:
         """Bind this buffer to a uniform block location.
         In most cases it will be sufficient to only provide a binding location.
 
-        :param int binding: The binding location
-        :param int offset: byte offset
-        :param int size: size of the buffer to bind.
+        Args:
+            binding:
+                The binding location
+            offset:
+                Byte offset
+            size:
+                Size of the buffer to bind.
         """
         if size < 0:
             size = self.size
@@ -234,9 +286,13 @@ class Buffer:
         """
         Bind this buffer as a shader storage buffer.
 
-        :param int binding: The binding location
-        :param int offset: Byte offset in the buffer
-        :param int size: The size in bytes. The entire buffer will be mapped by default.
+        Args:
+            binding:
+                The binding location
+            offset:
+                Byte offset in the buffer
+            size:
+                The size in bytes. The entire buffer will be mapped by default.
         """
         if size < 0:
             size = self.size

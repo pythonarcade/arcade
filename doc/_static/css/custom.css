@@ -1,21 +1,137 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&family=Roboto+Mono:ital,wght@0,400;0,700;1,400&family=Roboto+Slab&display=swap');
-
 body {
-    font-family: Lato, sans-serif;
+    counter-reset: listing;
 }
-p {
-    line-height: 30px;
-    font-size: 18px;
-    margin: 0 0 24px;
+/* TOC - Main landing page */
+/* Show two columns if screen is wide enough */
+@media screen and (min-width: 700px) {
+    /* For regular items */
+    .toctree-wrapper > ul {
+        columns: 2;
+    }
+    /* For Social and Learning Resources sections */
+    .toc-outside-links {
+        columns: 2;
+    }
 }
-h1, h2 {
-    font-family: Roboto Slab, Georgia, serif;
+
+
+/* Wrap individual main page items for easier group manipulation
+ of contents and images. See PR #2027 for main page css changes */
+.main-page-item-wrapper {
+    align-items: flex-start;
+    display: flex;
+    margin: 10px;
 }
-.toctree-wrapper.compound .caption {
-    font-family: Roboto Slab, Georgia, serif;
-    font-size: 2em;
-    text-transform: None;
+.main-page-item-wrapper > .toctree-wrapper {
+    width: 100%;
 }
+
+/* single-col-box for items on main page with 2 bullet points, use if
+ wanting to avoid having 2 columns with 1 item each inside */
+.main-page-item-wrapper > .single-col-box {
+    width: 100%;
+}
+.main-page-item-wrapper > .single-col-box ul {
+    columns: 1;
+}
+
+/* For Social and Learning Resources to make
+title + list appear like other categories */
+.main-page-item-wrapper > .main-page-item-sub-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 0px;
+    width: 100%;
+}
+.main-page-item-wrapper > .main-page-item-title {
+    width: 100%;
+}
+.main-page-item-title > p {
+    font-size: var(--font-size--small);
+    margin-bottom: 0;
+    text-align: initial;
+    text-transform: uppercase;
+}
+.main-page-item-sub-wrapper > .toc-outside-links {
+    margin-left: 0px;
+    width: 100%;
+}
+
+/* Wrappers and formatting for sprinter, START HERE, github star button
+to align them neatly */
+.main-page-item-wrapper-header {
+    align-items: center;
+    display: flex;
+    margin: 10px;
+}
+.main-page-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main-page-box > .main-page-link {
+    display: flex;
+    width: 100%;
+}
+.main-page-box > .main-page-link a {
+    display: flex;
+}
+.sprinter-box {
+    margin-left: 10px;
+    height: 55px;
+    display: flex;
+}
+.start-here-box {
+    align-items: center;
+    display: flex;
+    margin-left: -10px;
+}
+/* #the-python-arcade-library h2 {
+    font-size: var(--font-size--small);
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-top: .5rem;
+    text-align: initial;
+    text-transform: uppercase;
+    width: 100%;
+    display: flex;
+} */
+.main-page-box > .main-page-box-gh {
+    display: flex;
+    align-items: center;
+    margin-right: 0px;
+}
+#github-stars {
+    width: 141px;
+    height: 30px;
+    margin-bottom: -9px;
+}
+
+/* Formatting for list items */
+.toctree-l1 {
+    margin-left: 5px;
+}
+.toctree-wrapper a {
+    text-decoration: none;
+}
+.toctree-wrapper a:hover {
+    text-decoration: underline;
+}
+#the-python-arcade-library ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.heading-icon {
+    columns: 2;
+    position: relative;
+    left: -20px;
+    top: -4px;
+    float: left;
+    width: 55px;
+}
+
+/* Put logo next to text */
 .sidebar-brand {
   flex-direction: row;
 }
@@ -25,7 +141,7 @@ h1, h2 {
 .sidebar-brand-text {
   flex: 3;
 }
-
+/* Example code section */
 #how-to-example-code section {
 	display: flex;
 	flex-direction: row;
@@ -37,60 +153,13 @@ h1, h2 {
 #how-to-example-code section h3 {
   width: 100%;
 }
-#github-stars {
-    width: 170px;
-    height: 30px;
-    margin-bottom: -18px;
-}
+/* Right side image, for longer text */
 img.right-image {
-   float: right;
-   margin-left: 8px;
-   margin-bottom: 4px;
-   margin-top: 10px;
-}
-a {
-    text-decoration: none;
-}
-a:hover {
-    text-decoration: underline;
-    color: var(--color-link);
-}
-
-li {
-    list-style: disc;
-    line-height: 30px;
-    margin-left: 24px;
-}
-li p {
-    margin-bottom: 0;
-}
-.toc-tree li {
-    list-style: None;
-    margin-left: 0;
-}
-ul {
-    margin-left: 0;
-}
-.section-header {
-    display: flex;
-}
-.section-logo-div {
-    display: block;
-    width: 80px;
-}
-.section-title {
-    display: block;
-}
-.section-title h2 {
-    margin-top: 0.25em;
-}
-.section-logo {
-    width: 78px;
-    padding-right: 15px;
-}
-.main-page-table {
-    width: 100%;
-}
+    float: right;
+    margin-left: 8px;
+    margin-bottom: 4px;
+    margin-top: 10px;
+ }
 .vimeo-video {
     border: 0;
     position:absolute;
@@ -99,15 +168,12 @@ ul {
     width:100%;
     height:100%;
 }
-.sidebar-tree ul {
-    margin-left: 7px;
+/* Make signatures look nice */
+.sig:not(.sig-inline) {
+    /* Highlight even when not hovering */
+    background: var(--color-api-background-hover);
 }
-.sidebar-tree ul li {
-    list-style-type: None;
-}
-
 /* Make Function API look nice */
-
 .sig-param .n:first-of-type {
     margin-left: 10px;
 }
@@ -119,12 +185,13 @@ ul {
 /* Make code look nice */
 .code-block-caption::before {
     counter-increment: listing;
-    content: "Listing " counter(listing) ": ";
+    content: "Listing " counter(listing) ":\00a0 ";
 }
 .code-block-caption {
     font-family: 'Consolas', 'courier new', 'courier', monospace;
     font-size: 15px;
 }
+/* Datatable - mostly for quick api index */
 table.dataTable.display tbody tr.odd {
     background-color: var(--color-background-primary);
 }
@@ -137,12 +204,249 @@ table.dataTable.display tbody tr.odd > .sorting_1 {
 table.dataTable.display tbody tr.even > .sorting_1 {
     background-color: var(--color-background-secondary);
 }
-p code.literal {
-    border: None;
-}
-code.literal {
-    background: None;
-}
 .dataTables_wrapper .dataTables_filter {
     color: var(--color-foreground-primary);
+}
+
+/* Color tables and resource pages */
+.checkered-bg, .color-swatch{
+    background: url(../checkered.png);
+    background-repeat: repeat;
+}
+
+
+/*Test*/
+table.resource-table {
+    empty-cells: hide;
+    white-space: normal;  /* table behavior for CSS styling? maybe dupe of below. */
+}
+
+/* Make the resource page's table cell contents look neat */
+
+/* copy button doesn't need so much margin in here */
+.resource-table div.highlight-python {
+  margin-bottom: 0;
+}
+
+/* Only center the contents of tiles which have images in them
+ * NOTE: The * instead of table alloes for non-table resource tiles
+ */
+*.resource-table td:has(.resource-thumb) {
+    text-align: center;
+}
+.resource-table,
+.resource-table table
+ {
+    width: 100%;
+    max-width: 100%;
+}
+.wy-table-responsive table :is(th, td) { white-space: normal; }
+/* Prevent huge copyable areas for .. code:: boxes using sphinx-copybutton  */
+.resource-table div.highlight > pre {
+    padding: 8px;
+}
+
+table.resource-table td > .resource-thumb {
+    display: inline-block;
+}
+table.resource-table td > img.resource-thumb {
+    /* Maximum 20% of the smallest display dimension */
+    max-width: min(20vw, 20vh);
+}
+table.resource-table td > .resource-thumb.file-icon {
+    width: 128px;
+    height: 128px;
+    max-width: 128px;
+    max-height: 128px;
+}
+
+
+.resource-handle {
+    /* Flex props keep this all on one line when the viewport with's small */
+    display: inline-flex;
+    flex-direction: row;
+    flex-shrink: 0;
+
+    /* Make the button round so it's nice-looking */
+    border-radius: 0.4em;
+    border: 1px solid rgb(0, 0, 0, 0);
+
+    width: fit-content !important;
+}
+
+.resource-handle:has(button.arcade-ezcopy:hover) {
+    border-color: #54c079;
+    color: #54c079;
+}
+.resource-table .caption-text > .literal,
+.resource-handle > .literal {
+    font-style: normal;
+    height: 1.5em;
+    min-height: 1.5em;
+    border-radius: 0.4em;
+    border: 1px solid #1b1f2426;
+    vertical-align: middle;
+    /* Not clear why this doesn't work for the .caption-text */
+    font-size: 1em !important;
+}
+
+
+/* Imitate sphinx-copybutton style */
+.arcade-ezcopy {
+    width: 1.5em;
+    height: 1.5em;
+    min-width: 1.5em;
+    min-height: 1.5em;
+    padding: 0;
+
+    /* Imitate sphinx-copybutton minus styling spacing issues */
+    border-radius: 0.4em 0.4em 0.4em 0.4em;
+    border: 1px solid #1b1f2426;
+
+    border-left: 0;
+
+    color: #57606a;
+    background-color: #f6f8fa;
+
+}
+/* Hide left border on items which haven adjacent copy button
+
+   CAVEAT: This won't currently work with right-to-left layout modes!
+
+   This is because of the following assume left-to-right:
+
+   1. The + here assumes the button element's next in the DOM order
+   2. The right border of the box gets switched off
+ */
+.resource-table * > .literal:has(+ button.arcade-ezcopy) {
+     border-radius: 0.4em 0 0 0.4em !important;
+}
+.resource-table * > .literal + button.arcade-ezcopy {
+     border-radius: 0 0.4em 0.4em 0 !important;
+}
+
+
+.arcade-ezcopy > *:is(img, svg) {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+}
+.arcade-ezcopy:hover {
+  background-color: #54c079;
+}
+/* Give it some breathing room inside the inline HTML we're using for the moment
+  # pending: post-3.0 clean-up
+*/
+li .arcade-ezcopy.doc-ui-example-dummy {
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+}
+
+table.colorTable {
+    border-width: 1px;
+}
+
+/* Named color tables for larger screens */
+table.colorTable td, table.colorTable th {
+    padding: 2px;
+}
+table.colorTable tr:not(:last-child)  {
+    border-bottom-width: 1px;
+}
+
+.colorTable .color-swatch {
+    display: block;
+    border: 1px solid black;
+    padding: 0px;
+    box-sizing: border-box;
+    width: 80px;
+    min-width: 80px;
+}
+
+/* Use compact mode for color tables on smaller screens*/
+@media screen and (width <= 700px) {
+   table.colorTable {
+       border-spacing: collapse;
+   }
+   table.colorTable td, table.colorTable th {
+    padding: 0px;
+   }
+   .colorTable .color-swatch {
+       width: 40px;
+       min-width: 40px;
+   }
+}
+
+/* Custom code syntax highlighting */
+body:not([data-theme="light"]) .highlight .c1 {
+    color: #48A148;
+}
+.highlight .c1 {
+    color: #007507;
+}
+
+
+
+/* Change font for headers and title*/
+@font-face {
+    font-family: 'Josefin Sans';
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/josefinsans/v32/Qw3aZQNVED7rKGKxtqIqX5EUDXx4.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+.rst-content .toctree-wrapper>p.caption,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+legend {
+  font-family:"Josefin Sans", Arial, Helvetica, sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.rst-content h1 {
+    font-weight: 600;
+}
+
+.rst-content h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 500;
+}
+
+.icon-home, .wy-nav-top a {
+  font-weight: 500;
+  font-family:"Josefin Sans", Arial, Helvetica, sans-serif;
+  font-size: larger;
+  letter-spacing: -0.5px;
+}
+
+
+/*
+ * Override grid for field list. We want things stacked vertically.
+ */
+html.writer-html5 .rst-content dl.field-list {
+    display: block;
+}
+
+
+/*
+ * Make all tip/hint/warning boxes rounder
+ */
+.rst-content .admonition {
+    border-radius: 4px;
+}
+.rst-content .admonition-title {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding-top: 8px;
 }

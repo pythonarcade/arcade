@@ -52,22 +52,11 @@ DEAD_ZONE = 0.1
 RIGHT_FACING = 0
 LEFT_FACING = 1
 
-def load_texture_pair(filename):
-    """
-    Load a texture pair, with the second being a mirror image.
-    """
-    return [
-        arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True)
-    ]
 
 class PlayerSprite(arcade.Sprite):
     def __init__(self):
         # Let parent initialize
-        super().__init__()
-
-        # Set our scale
-        self.scale = SPRITE_SCALING_PLAYER
+        super().__init__(scale=SPRITE_SCALING_PLAYER)
 
         # Images from Kenney.nl's Character pack
         # main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
@@ -77,16 +66,20 @@ class PlayerSprite(arcade.Sprite):
         # main_path = ":resources:images/animated_characters/zombie/zombie"
         # main_path = ":resources:images/animated_characters/robot/robot"
 
+        idle_texture = arcade.load_texture(f"{main_path}_idle.png")
+        jump_texture = arcade.load_texture(f"{main_path}_jump.png")
+        fall_texture = arcade.load_texture(f"{main_path}_fall.png")
+
         # Load textures for idle standing
-        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
-        self.jump_texture_pair = load_texture_pair(f"{main_path}_jump.png")
-        self.fall_texture_pair = load_texture_pair(f"{main_path}_fall.png")
+        self.idle_texture_pair = idle_texture, idle_texture.flip_left_right()
+        self.jump_texture_pair = jump_texture, jump_texture.flip_left_right()
+        self.fall_texture_pair = fall_texture, fall_texture.flip_left_right()
 
         # Load textures for walking
         self.walk_textures = []
         for i in range(8):
-            texture = load_texture_pair(f"{main_path}_walk{i}.png")
-            self.walk_textures.append(texture)
+            texture = arcade.load_texture(f"{main_path}_walk{i}.png")
+            self.walk_textures.append((texture, texture.flip_left_right()))
 
         # Load textures for climbing
         self.climbing_textures = []
@@ -101,7 +94,7 @@ class PlayerSprite(arcade.Sprite):
         # Hit box will be set based on the first image used. If you want to specify
         # a different hit box, you can do it like the code below.
         # self.set_hit_box([[-22, -64], [22, -64], [22, 28], [-22, 28]])
-        self.set_hit_box(self.texture.hit_box_points)
+        # self.set_hit_box(self.texture.hit_box_points)
 
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
@@ -192,7 +185,7 @@ class GameWindow(arcade.Window):
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
         # Set background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # # Turn on logging
         # format = '%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d %(funcName)s()] %(message)s'
@@ -218,12 +211,11 @@ class GameWindow(arcade.Window):
         map_name = ":resources:/tiled_maps/pymunk_test_map.json"
 
         # Read in the tiled map
-        my_map = arcade.tilemap.read_map(map_name)
+        my_map = arcade.load_tilemap(map_name, SPRITE_SCALING_TILES)
 
         # --- Read in layers ---
-        self.wall_list = arcade.tilemap.process_layer(my_map, 'Platforms', SPRITE_SCALING_TILES)
-        self.item_list = arcade.tilemap.process_layer(my_map, 'Dynamic Items', SPRITE_SCALING_TILES)
-
+        self.wall_list = my_map.sprite_lists["Platforms"]
+        self.item_list = my_map.sprite_lists["Dynamic Items"]
         # --- Pymunk Physics Engine Setup ---
 
         # The default damping for every object controls the percent of velocity
@@ -258,7 +250,7 @@ class GameWindow(arcade.Window):
         # For the player, we set the damping to a lower value, which increases
         # the damping rate. This prevents the character from traveling too far
         # after the player lets off the movement keys.
-        # Setting the moment to PymunkPhysicsEngine.MOMENT_INF prevents it from
+        # Setting the moment of intertia to PymunkPhysicsEngine.MOMENT_INF prevents it from
         # rotating.
         # Friction normally goes between 0 (no friction) and 1.0 (high friction)
         # Friction is between two objects in contact. It is important to remember
@@ -268,7 +260,7 @@ class GameWindow(arcade.Window):
                                        friction=1.0,
                                        damping=0.4,
                                        mass=2,
-                                       moment=PymunkPhysicsEngine.MOMENT_INF,
+                                       moment_of_inertia=PymunkPhysicsEngine.MOMENT_INF,
                                        collision_type="player",
                                        max_horizontal_velocity=PLAYER_MAX_HORIZONTAL_SPEED,
                                        max_vertical_velocity=PLAYER_MAX_VERTICAL_SPEED)
@@ -293,7 +285,7 @@ class GameWindow(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
-        bullet = arcade.SpriteSolidColor(20, 5, arcade.color.DARK_YELLOW)
+        bullet = arcade.SpriteSolidColor(width=20, height=5, color=arcade.color.DARK_YELLOW)
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location
@@ -347,11 +339,11 @@ class GameWindow(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.LEFT:
+        if key in (arcade.key.LEFT, arcade.key.A):
             self.left_pressed = True
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = True
-        elif key == arcade.key.UP:
+        elif key in (arcade.key.UP, arcade.key.W):
             # find out if player is standing on ground
             if self.physics_engine.is_on_ground(self.player_sprite):
                 # She is! Go ahead and jump
@@ -361,13 +353,13 @@ class GameWindow(arcade.Window):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP:
+        if key in (arcade.key.UP, arcade.key.W):
             self.up_pressed = False
-        elif key == arcade.key.DOWN:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.down_pressed = False
-        elif key == arcade.key.LEFT:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.left_pressed = False
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = False
 
     def on_update(self, delta_time):

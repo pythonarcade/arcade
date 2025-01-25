@@ -1,0 +1,297 @@
+/*
+ * This files is dedicated purely to color scheme overrides of the stock light RTD
+ * theme as well as the dark-mode theme provided by separate extension.
+ */
+
+:root {
+    /* --color-emphasis: #73c054; */
+    --color-emphasis: #54c079;
+
+    --color-sidebar-bg-light: #2b2b2b;
+    --color-sidebar-bg-dark: #171716;
+
+    --color-main-bg-light: #f2f2f2;
+    --color-main-bg-dark: #202020;
+
+    /* Variable defined by the rtd dark mode extension.
+     * Explicitly redefined to match the light mode link color. */
+    ---dark-link-color: #2980b9;
+}
+
+
+/*
+ * Basic html element dark mode color fixes.
+ */
+html[data-theme="dark"] input,
+html[data-theme="dark"] label {
+    color: var(--dark-text-color);
+}
+
+
+/*
+ * Dark mode scrollbar color fixes, mostly for Chrome-based browsers.
+ */
+html[data-theme="dark"] * {
+  scrollbar-color: #424242 #242424;
+}
+html[data-theme="dark"] > *::-webkit-scrollbar-track {
+  background: #242424;
+}
+html[data-theme="dark"] > *::-webkit-scrollbar-thumb {
+  background-color: #424242;
+  border: 1px none #000000;
+}
+
+
+/*
+ * Sidebar and top left logo area.
+ */
+.wy-side-nav-search,
+.wy-nav-side {
+    background-color: var(--color-sidebar-bg-light) !important;
+}
+html[data-theme="dark"] .wy-side-nav-search,
+html[data-theme="dark"] .wy-nav-side {
+    background-color: var(--color-sidebar-bg-dark) !important;
+}
+
+/* Sidebar big headers, same for both themes. */
+.wy-menu-vertical p.caption {
+    color: var(--color-emphasis);
+}
+/* 1st level sections */
+html[data-theme="dark"] .wy-menu-vertical li.current > a {
+    background-color: var(--color-main-bg-dark) !important;
+}
+html[data-theme="dark"] .wy-menu-vertical li.toctree-l2 a {
+    background-color: #131313 !important;
+}
+/* 2nd level sections */
+html[data-theme="dark"] .wy-menu-vertical li.toctree-l2.current a {
+    background-color: #222222 !important;
+}
+/* 3rd level sections */
+html[data-theme="dark"] .wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a {
+    background-color: #222222 !important;
+    border-right: currentcolor;
+}
+
+/* Fix nav tree item visibility for API reference page titles */
+.toctree-l3 code,
+html[data-theme="dark"] .toctree-l3 code {
+    background: none;
+    border: none;
+    font-size: 90%;
+}
+
+
+/*
+ * Mobile top header bar.
+ */
+.wy-nav-top,
+.wy-nav-top a {
+    color: var(--color-emphasis) !important;
+    background-color: var(--color-sidebar-bg-light) !important;
+}
+html[data-theme="dark"] .wy-nav-top,
+html[data-theme="dark"] .wy-nav-top a {
+    color: var(--color-emphasis) !important;
+    background-color: var(--color-sidebar-bg-light) !important;
+}
+
+
+/*
+ * The main content area
+ */
+.wy-nav-content {
+    background-color: var(--color-main-bg-light);
+}
+html[data-theme="dark"] .wy-nav-content {
+    background-color: var(--color-main-bg-dark) !important;
+}
+
+
+/*
+ * The area under main content, when content doesn't fill the full height of the window
+ */
+.wy-nav-content-wrap {
+    background-color: #e8e8e8;
+}
+html[data-theme="dark"] .wy-nav-content-wrap {
+    background-color: #252525 !important;
+}
+
+
+/*
+ * Fix the monospaced fonts in API quick reference listing
+ */
+#quickapi code {
+    background: none;
+    border: none;
+    font-size: 85%;
+    color: var(--dark-link-color);
+}
+
+
+/*
+ * Mid-article notification box color fixes.
+ */
+/* Tips & Hints */
+html[data-theme="dark"] .rst-content .admonition.hint .admonition-title,
+html[data-theme="dark"] .rst-content .admonition.tip .admonition-title,
+html[data-theme="dark"] .rst-content .admonition.note .admonition-title {
+    background-color: #478352 !important;
+}
+html[data-theme="dark"] .rst-content .admonition.hint,
+html[data-theme="dark"] .rst-content .admonition.tip,
+html[data-theme="dark"] .rst-content .admonition.note {
+    background-color: #304a32 !important;
+    color: #dedede;
+}
+
+/* Warnings */
+html[data-theme="dark"] .rst-content .admonition.attention .admonition-title,
+html[data-theme="dark"] .rst-content .admonition.warning .admonition-title {
+    background-color: #965f36 !important;
+}
+html[data-theme="dark"] .rst-content .admonition.attention,
+html[data-theme="dark"] .rst-content .admonition.warning {
+    background-color: #543f28 !important;
+    color: #dedede;
+}
+
+/* Important */
+html[data-theme="dark"] .rst-content .admonition.important .admonition-title {
+    background-color: #33678a !important;
+}
+html[data-theme="dark"] .rst-content .admonition.important {
+    background-color: #27445a !important;
+    color: #dedede;
+}
+
+
+/*
+ * Syntax highlight color fixes for basic code blocks in dark mode.
+ * <code_colors>
+ */
+html[data-theme="dark"] pre {
+    /* baseline */
+    background-color: #282828 !important;
+    color: #e0e0e0 !important;
+}
+html[data-theme="dark"] pre .linenos {
+    /* line numbers */
+    color: #888 !important;
+    border-right-color: #404040 !important;
+}
+html[data-theme="dark"] pre .nc {
+    /* class declarations */
+    color: #0880FF !important;
+}
+html[data-theme="dark"] pre .kc,
+html[data-theme="dark"] pre .kn,
+html[data-theme="dark"] pre .nb,
+html[data-theme="dark"] pre .bp,
+html[data-theme="dark"] pre .k {
+    /* `None` + `import` + typehints + `self` + keywords */
+    color: var(--color-emphasis) !important;
+}
+html[data-theme="dark"] pre .fm,
+html[data-theme="dark"] pre .vm,
+html[data-theme="dark"] pre .nf {
+    /* function + method declarations + `__name__` */
+    color: #00B7FF !important;
+    font-weight: bold;
+}
+html[data-theme="dark"] pre .nd,
+html[data-theme="dark"] pre .ow,
+html[data-theme="dark"] pre .si,
+html[data-theme="dark"] pre .sa {
+    /* decorators + `in` + f-string tokens */
+    color: #D56CF2 !important;
+}
+html[data-theme="dark"] pre .s1,
+html[data-theme="dark"] pre .s2,
+html[data-theme="dark"] pre .sd {
+    /* strings + docstrings */
+    color: #FF873F !important;
+}
+html[data-theme="dark"] pre .c1 {
+    /* comments */
+    color: #4c8831 !important;
+}
+html[data-theme="dark"] pre .o,
+html[data-theme="dark"] pre .mf,
+html[data-theme="dark"] pre .mi {
+    /* operators + numeral variable values */
+    color: #afafaf !important;
+}
+html[data-theme="dark"] pre .gp {
+    /* The REPL `>>>` token */
+    color: var(--color-emphasis) !important;
+}
+html[data-theme="dark"] pre .hll {
+    /* Line highlights background */
+    background-color: #323331 !important;
+}
+
+html[data-theme="dark"] .rst-content code.literal {
+    /* in-line code blocks */
+    color: #FF873F;
+}
+/* </code_colors> */
+
+
+/*
+ * Color fixes for Sphinx-generated class and function info boxes in dark mode.
+ * <sphinx_colors>
+ */
+html.writer-html4 .rst-content dl:not(.docutils) > dt,
+html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) > dt {
+    border-color: var(--color-emphasis);
+    color: #383838;
+    background-color: #eef6eb;
+}
+html[data-theme="dark"].writer-html4 .rst-content dl:not(.docutils) > dt,
+html[data-theme="dark"].writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) > dt {
+    border-color: #689d52 !important;
+    color: #ababab !important;
+    background-color: #262826 !important;
+}
+
+html[data-theme="dark"] .sig.py .descname .pre,
+html[data-theme="dark"] .sig.py .descclassname .pre {
+    color: #eee !important;
+}
+html[data-theme="dark"] .rst-content .viewcode-link {
+    /* make the "[source]" link less popping in the definition boxes */
+    color: var(--dark-link-color);
+    opacity: 0.3;
+}
+/* </sphinx_colors> */
+
+
+/*
+ * Footer prev/next buttons
+ */
+html[data-theme="dark"] .rst-footer-buttons .btn-neutral {
+    color: #c1c1c1 !important;
+    background-color: #1a1a1a !important;
+}
+html[data-theme="dark"] .rst-footer-buttons .btn-neutral:hover {
+    color: var(--color-emphasis) !important;
+    background-color: #1a1a1a !important;
+}
+
+/*
+ * .. sidebar:: directive
+ */
+ html[data-theme="dark"] .sidebar {
+    background-color: var(--color-sidebar-bg-dark) !important;
+    border: 5px solid #333 !important;
+    border-radius: 4px !important;
+}
+
+html[data-theme="dark"] .sidebar-title {
+    background-color:  #0b0c0d !important;
+}

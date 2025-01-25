@@ -7,25 +7,35 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.light_demo
 """
 import arcade
-from arcade.experimental.lights import Light, LightLayer
+from arcade.future.light import Light, LightLayer
 
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 768
-SCREEN_TITLE = "Lighting Demo"
-VIEWPORT_MARGIN = 200
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Lighting Demo"
 MOVEMENT_SPEED = 5
+
+VIEWPORT_MARGIN = 200
+HORIZONTAL_BOUNDARY = WINDOW_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = WINDOW_HEIGHT / 2.0 - VIEWPORT_MARGIN
+# If the player moves further than this boundary away from
+# the camera we use a constraint to move the camera
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY,
+    HORIZONTAL_BOUNDARY,
+    -VERTICAL_BOUNDARY,
+    VERTICAL_BOUNDARY,
+)
 
 # This is the color used for 'ambient light'. If you don't want any
 # ambient light, set it to black.
-AMBIENT_COLOR = (10, 10, 10)
+AMBIENT_COLOR = (10, 10, 10, 255)
 
 
-class MyGame(arcade.Window):
-    """ Main Game Window """
+class GameView(arcade.View):
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """ Set up the class. """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__()
 
         # Sprite lists
         self.background_sprite_list = None
@@ -36,9 +46,8 @@ class MyGame(arcade.Window):
         # Physics engine
         self.physics_engine = None
 
-        # Used for scrolling
-        self.view_left = 0
-        self.view_bottom = 0
+        # Camera
+        self.cam: arcade.camera.Camera2D = None
 
         # --- Light related ---
         # List of all the lights
@@ -49,23 +58,26 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Create everything """
 
+        # Create camera
+        self.camera = arcade.camera.Camera2D()
+
         # Create sprite lists
         self.background_sprite_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
 
         # Create player sprite
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           0.4)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=0.4)
         self.player_sprite.center_x = 64
         self.player_sprite.center_y = 270
         self.player_list.append(self.player_sprite)
 
         # --- Light related ---
         # Lights must shine on something. If there is no background sprite or color,
-        # you will just see black. Therefore, we use a loop to create a whole bunch of brick tiles to go in the
-        # background.
+        # you will just see black. Therefore, we use a loop to create a whole
+        # bunch of brick tiles to go in the background.
         for x in range(-128, 2000, 128):
             for y in range(-128, 1000, 128):
                 sprite = arcade.Sprite(":resources:images/tiles/brickTextureWhite.png")
@@ -74,7 +86,7 @@ class MyGame(arcade.Window):
 
         # Create a light layer, used to render things to, then post-process and
         # add lights. This must match the screen size.
-        self.light_layer = LightLayer(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.light_layer = LightLayer(WINDOW_WIDTH, WINDOW_HEIGHT)
         # We can also set the background color that will be lit by lights,
         # but in this instance we just want a black background
         self.light_layer.set_background_color(arcade.color.BLACK)
@@ -187,11 +199,6 @@ class MyGame(arcade.Window):
         # Create the physics engine
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
-
     def on_draw(self):
         """ Draw everything. """
         self.clear()
@@ -210,12 +217,15 @@ class MyGame(arcade.Window):
         self.light_layer.draw(ambient_color=AMBIENT_COLOR)
 
         # Now draw anything that should NOT be affected by lighting.
+        left, bottom = self.camera.bottom_left
         arcade.draw_text("Press SPACE to turn character light on/off.",
-                         10 + self.view_left, 10 + self.view_bottom,
+                         10 + int(left), 10 + int(bottom),
                          arcade.color.WHITE, 20)
 
     def on_resize(self, width, height):
         """ User resizes the screen. """
+        super().on_resize(width, height)
+        self.camera.match_window()
 
         # --- Light related ---
         # We need to resize the light layer to
@@ -255,37 +265,12 @@ class MyGame(arcade.Window):
     def scroll_screen(self):
         """ Manage Scrolling """
 
-        # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
+        # --- Manage Scrolling ---
+        self.camera.position = arcade.camera.grips.constrain_boundary_xy(
+            self.camera.view_data, CAMERA_BOUNDARY, self.player_sprite.position
+        )
 
-        # Scroll right
-        right_boundary = self.view_left + self.width - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
-
-        # Scroll up
-        top_boundary = self.view_bottom + self.height - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
-
-        # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
-
-        # Make sure our boundaries are integer values. While the viewport does
-        # support floating point numbers, for this application we want every pixel
-        # in the view port to map directly onto a pixel on the screen. We don't want
-        # any rounding errors.
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
-
-        arcade.set_viewport(self.view_left,
-                            self.width + self.view_left,
-                            self.view_bottom,
-                            self.height + self.view_bottom)
+        self.camera.use()
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -303,7 +288,21 @@ class MyGame(arcade.Window):
         self.scroll_screen()
 
 
-if __name__ == "__main__":
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
+
+
+if __name__ == "__main__":
+    main()

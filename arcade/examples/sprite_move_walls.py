@@ -13,21 +13,21 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Move with Walls Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Move with Walls Example"
 
 MOVEMENT_SPEED = 5
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Sprite lists
         self.coin_list = None
@@ -46,8 +46,10 @@ class MyGame(arcade.Window):
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 64
         self.player_list.append(self.player_sprite)
@@ -56,7 +58,7 @@ class MyGame(arcade.Window):
         # Create a row of boxes
         for x in range(173, 650, 64):
             wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
-                                 SPRITE_SCALING)
+                                 scale=SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = 200
             self.wall_list.append(wall)
@@ -64,7 +66,7 @@ class MyGame(arcade.Window):
         # Create a column of boxes
         for y in range(273, 500, 64):
             wall = arcade.Sprite(":resources:images/tiles/boxCrate_double.png",
-                                 SPRITE_SCALING)
+                                 scale=SPRITE_SCALING)
             wall.center_x = 465
             wall.center_y = y
             self.wall_list.append(wall)
@@ -73,7 +75,7 @@ class MyGame(arcade.Window):
                                                          self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """
@@ -117,8 +119,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

@@ -5,21 +5,31 @@ Dependencies:
     pip install opencv-python
 
 """
+
+from __future__ import annotations
+
+import cv2  # type: ignore
+
 import arcade
 from arcade.experimental.shadertoy import Shadertoy
-import cv2  # type: ignore
 
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 300
 SCREEN_TITLE = "ShaderToy Video"
 
 
-class ShadertoyVideo(arcade.Window):
+class ShadertoyVideo(arcade.View):
+    """
+    Can be used to add effects like rain to the background of the game.
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+    Make sure to inherit this view and call super for `__init__`,
+    `on_draw`, `on_update` and `on_resize`.
+    """
+
+    def __init__(self, path: str):
+        super().__init__()
         self.shadertoy = Shadertoy(
-            self.get_framebuffer_size(),
+            self.window.get_framebuffer_size(),
             """
                 void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 {
@@ -37,18 +47,17 @@ class ShadertoyVideo(arcade.Window):
                 }
             """,
         )
-        # INSERT YOUR OWN VIDEO HERE
-        self.video = cv2.VideoCapture("C:/Users/efors/Desktop/BigBuckBunny.mp4")
+        self.video = cv2.VideoCapture(str(arcade.resources.resolve(path)))
         width, height = (
             int(self.video.get(cv2.CAP_PROP_FRAME_WIDTH)),
             int(self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)),
         )
-        self.video_texture = self.ctx.texture((width, height), components=3)
-        self.video_texture.wrap_x = self.ctx.CLAMP_TO_EDGE
-        self.video_texture.wrap_y = self.ctx.CLAMP_TO_EDGE
+        self.video_texture = self.window.ctx.texture((width, height), components=3)
+        self.video_texture.wrap_x = self.window.ctx.CLAMP_TO_EDGE
+        self.video_texture.wrap_y = self.window.ctx.CLAMP_TO_EDGE
         self.video_texture.swizzle = "BGR1"
         self.shadertoy.channel_0 = self.video_texture
-        self.set_size(width, height)
+        self.window.set_size(width, height)
 
     def on_draw(self):
         self.clear()
@@ -58,17 +67,12 @@ class ShadertoyVideo(arcade.Window):
         self.shadertoy.time += delta_time
         self.next_frame()
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.shadertoy.resize(self.get_framebuffer_size())
+        self.shadertoy.resize(self.window.get_framebuffer_size())
 
     def next_frame(self):
         exists, frame = self.video.read()
         frame = cv2.flip(frame, 0)
         if exists:
             self.video_texture.write(frame)
-
-
-if __name__ == "__main__":
-    ShadertoyVideo(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    arcade.run()

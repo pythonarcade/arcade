@@ -6,7 +6,7 @@ This example has enemy sprites follow a set path.
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_follow_path
+python -m arcade.examples.follow_path
 """
 
 import arcade
@@ -15,11 +15,11 @@ import math
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_ENEMY = 0.5
-ENEMY_SPEED = 3.0
+ENEMY_SPEED = 5.0
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Follow Path Simple Example"
+WINDOW_WIDTH = 1289
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Follow Path Simple Example"
 
 
 class Enemy(arcade.Sprite):
@@ -28,14 +28,13 @@ class Enemy(arcade.Sprite):
     """
 
     def __init__(self, image, scale, position_list):
-        super().__init__(image, scale)
+        super().__init__(image, scale=scale)
         self.position_list = position_list
         self.cur_position = 0
         self.speed = ENEMY_SPEED
 
-    def update(self):
-        """ Have a sprite follow a path """
-
+    def update(self, delta_time: float = 1 / 60):
+        """Have a sprite follow a path"""
         # Where are we
         start_x = self.center_x
         start_y = self.center_y
@@ -78,13 +77,12 @@ class Enemy(arcade.Sprite):
                 self.cur_position = 0
 
 
-class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+class GameView(arcade.View):
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -95,9 +93,9 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -111,28 +109,33 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
         # List of points the enemy will travel too.
-        position_list = [[50, 50],
-                         [700, 50],
-                         [700, 500],
-                         [50, 500]]
+        position_list = [
+            [50, 50],
+            [self.width - 50, 50],
+            [self.width - 50, self.height - 50],
+            [50, self.height - 50],
+        ]
+        # Spawn a few enemies
+        self.spawn_enemy((50, 50), position_list)
+        self.spawn_enemy((50, 250), position_list)
+        self.spawn_enemy((50, 450), position_list)
+        self.spawn_enemy((50, 650), position_list)
 
-        # Create the enemy
+    def spawn_enemy(self, position, position_list):
+        # Spawn a new enemy
         enemy = Enemy(":resources:images/animated_characters/robot/robot_idle.png",
                       SPRITE_SCALING_ENEMY,
                       position_list)
-
         # Set initial location of the enemy at the first point
-        enemy.center_x = position_list[0][0]
-        enemy.center_x = position_list[0][1]
-
-        # Add the enemy to the enemy list
+        enemy.position = position
         self.enemy_list.append(enemy)
 
     def on_draw(self):
@@ -143,7 +146,6 @@ class MyGame(arcade.Window):
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle Mouse Motion """
-
         # Move the center of the player sprite to match the mouse x, y
         self.player_sprite.center_x = x
         self.player_sprite.center_y = y
@@ -152,11 +154,24 @@ class MyGame(arcade.Window):
         """ Movement and game logic """
         self.enemy_list.update()
 
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.ESCAPE:
+            self.window.close()
+
 
 def main():
     """ Main function """
-    window = MyGame()
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

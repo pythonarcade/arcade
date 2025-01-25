@@ -11,16 +11,15 @@ python -m arcade.examples.sprite_explosion_bitmapped
 """
 import random
 import arcade
-import os
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = 0.2
 SPRITE_SCALING_LASER = 0.8
 COIN_COUNT = 50
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Explosion Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Explosion Example"
 
 BULLET_SPEED = 5
 
@@ -31,56 +30,61 @@ class Explosion(arcade.Sprite):
     """ This class creates an explosion animation """
 
     def __init__(self, texture_list):
-        super().__init__()
+        super().__init__(texture_list[0])
+        # How long the explosion has been around.
+        self.time_elapsed = 0
 
         # Start at the first frame
         self.current_texture = 0
         self.textures = texture_list
 
-    def update(self):
-
+    def update(self, delta_time=1 / 60):
+        self.time_elapsed += delta_time
         # Update to the next frame of the animation. If we are at the end
         # of our frames, then delete this sprite.
-        self.current_texture += 1
+        self.current_texture = int(self.time_elapsed * 60)
         if self.current_texture < len(self.textures):
             self.set_texture(self.current_texture)
         else:
             self.remove_from_sprite_lists()
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
+        super().__init__()
 
         # Variables that will hold sprite lists
-        self.player_list = None
-        self.coin_list = None
-        self.bullet_list = None
-        self.explosions_list = None
+        self.player_list = arcade.SpriteList()
+        self.enemy_list = arcade.SpriteList()
+        self.bullet_list = arcade.SpriteList()
+        self.explosions_list = arcade.SpriteList()
 
         # Set up the player info
-        self.player_sprite = None
+        # Image from kenney.nl
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER,
+        )
+        self.player_sprite.center_x = 50
+        self.player_sprite.center_y = 70
+        self.player_list.append(self.player_sprite)
+
+        # Player score
         self.score = 0
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         # Pre-load the animation frames. We don't do this in the __init__
         # of the explosion sprite because it
         # takes too long and would cause the game to pause.
         self.explosion_texture_list = []
 
+        # Load the explosion from a sprite sheet
         columns = 16
         count = 60
         sprite_width = 256
@@ -88,61 +92,54 @@ class MyGame(arcade.Window):
         file_name = ":resources:images/spritesheets/explosion.png"
 
         # Load the explosions from a sprite sheet
-        self.explosion_texture_list = arcade.load_spritesheet(file_name, sprite_width, sprite_height, columns, count)
+        spritesheet = arcade.load_spritesheet(file_name)
+        self.explosion_texture_list = spritesheet.get_texture_grid(
+            size=(sprite_width, sprite_height),
+            columns=columns,
+            count=count,
+        )
 
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.sound.load_sound(":resources:sounds/laser2.wav")
         self.hit_sound = arcade.sound.load_sound(":resources:sounds/explosion2.wav")
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
+        self.spawn_enemies()
 
-    def setup(self):
+    def reset(self):
+        """Restart the game."""
 
-        """ Set up the game and initialize the variables. """
+        # Clear out the sprite lists
+        self.enemy_list.clear()
+        self.bullet_list.clear()
+        self.explosions_list.clear()
 
-        # Sprite lists
-        self.player_list = arcade.SpriteList()
-        self.coin_list = arcade.SpriteList()
-        self.bullet_list = arcade.SpriteList()
-        self.explosions_list = arcade.SpriteList()
-
-        # Set up the player
+        # Reset the score
         self.score = 0
 
-        # Image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
-        self.player_sprite.center_x = 50
-        self.player_sprite.center_y = 70
-        self.player_list.append(self.player_sprite)
+        self.spawn_enemies()
 
-        # Create the coins
+    def spawn_enemies(self):
         for coin_index in range(COIN_COUNT):
-
-            # Create the coin instance
-            # Coin image from kenney.nl
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
-
-            # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(150, SCREEN_HEIGHT)
-
-            # Add the coin to the lists
-            self.coin_list.append(coin)
-
-        # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+            # Create the enemy instance. Image from kenney.nl
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png",
+                scale=SPRITE_SCALING_COIN,
+                center_x=random.randrange(25, WINDOW_WIDTH - 25),
+                center_y=random.randrange(150, WINDOW_HEIGHT),
+            )
+            # Add the coin to enemy list
+            self.enemy_list.append(coin)
 
     def on_draw(self):
         """
         Render the screen.
         """
-
         # This command has to happen before we start drawing
         self.clear()
 
         # Draw all the sprites.
-        self.coin_list.draw()
+        self.enemy_list.draw()
         self.bullet_list.draw()
         self.player_list.draw()
         self.explosions_list.draw()
@@ -160,16 +157,18 @@ class MyGame(arcade.Window):
         """
         Called whenever the mouse button is clicked.
         """
-
         # Gunshot sound
         arcade.sound.play_sound(self.gun_sound)
 
         # Create a bullet
-        bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png", SPRITE_SCALING_LASER)
+        bullet = arcade.Sprite(
+            ":resources:images/space_shooter/laserBlue01.png",
+            scale=SPRITE_SCALING_LASER,
+        )
 
         # The image points to the right, and we want it to point up. So
         # rotate it.
-        bullet.angle = 90
+        bullet.angle = 270
 
         # Give it a speed
         bullet.change_y = BULLET_SPEED
@@ -181,8 +180,15 @@ class MyGame(arcade.Window):
         # Add the bullet to the appropriate lists
         self.bullet_list.append(bullet)
 
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.R:
+            self.reset()
+        # Close the window
+        elif symbol == arcade.key.ESCAPE:
+            self.window.close()
+
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
 
         # Call update on bullet sprites
         self.bullet_list.update()
@@ -192,7 +198,7 @@ class MyGame(arcade.Window):
         for bullet in self.bullet_list:
 
             # Check this bullet to see if it hit a coin
-            hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
+            hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
 
             # If it did...
             if len(hit_list) > 0:
@@ -222,15 +228,24 @@ class MyGame(arcade.Window):
                 arcade.sound.play_sound(self.hit_sound)
 
             # If the bullet flies off-screen, remove it.
-            if bullet.bottom > SCREEN_HEIGHT:
+            if bullet.bottom > WINDOW_HEIGHT:
                 bullet.remove_from_sprite_lists()
 
 
-def main():
-    window = MyGame()
-    window.setup()
-    arcade.run()
 
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 if __name__ == "__main__":
     main()

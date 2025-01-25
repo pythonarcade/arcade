@@ -2,12 +2,15 @@
 Use texture layers with shadertoy.
 We simply mix the two texture layers.
 """
+
+from __future__ import annotations
+
 import arcade
 from arcade.experimental.shadertoy import Shadertoy
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "ShaderToy Texture Layers"
 
 
@@ -33,8 +36,12 @@ class MyGame(arcade.Window):
             """,
         )
         # Add two OpenGL textures to different channels
-        self.shadertoy.channel_0 = self.ctx.load_texture(":resources:images/backgrounds/abstract_1.jpg")
-        self.shadertoy.channel_1 = self.ctx.load_texture(":resources:images/backgrounds/abstract_2.jpg")
+        self.shadertoy.channel_0 = self.ctx.load_texture(
+            ":resources:images/backgrounds/abstract_1.jpg"
+        )
+        self.shadertoy.channel_1 = self.ctx.load_texture(
+            ":resources:images/backgrounds/abstract_2.jpg"
+        )
 
     def on_draw(self):
         self.clear()
@@ -43,7 +50,7 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time: float):
         self.shadertoy.time += delta_time
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.shadertoy.resize(self.get_framebuffer_size())
 

@@ -1,5 +1,5 @@
 import arcade
-from arcade.experimental.texture_render_target import RenderTargetTexture
+from arcade.future import RenderTargetTexture
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -55,7 +55,6 @@ class MyGame(arcade.Window):
         self.clear()
         self.filter.clear()
         self.filter.use()
-        print(self.width / 2)
         arcade.draw_circle_filled(self.width / 2, self.height / 2, 100, arcade.color.RED)
         arcade.draw_circle_filled(400, 300, 100, arcade.color.GREEN)
 

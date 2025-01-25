@@ -11,9 +11,9 @@ python -m arcade.examples.sprite_move_animation
 import arcade
 import random
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Move with a Sprite Animation Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Move with a Sprite Animation Example"
 
 COIN_SCALE = 0.5
 COIN_COUNT = 50
@@ -28,52 +28,22 @@ RIGHT_FACING = 0
 LEFT_FACING = 1
 
 
-def load_texture_pair(filename):
-    """
-    Load a texture pair, with the second being a mirror image.
-    """
-    return [
-        arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True)
-    ]
-
-
 class PlayerCharacter(arcade.Sprite):
-    def __init__(self):
-
-        # Set up parent class
-        super().__init__()
-
+    def __init__(self, idle_texture_pair, walk_texture_pairs):
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
 
         # Used for flipping between image sequences
         self.cur_texture = 0
-
-        self.scale = CHARACTER_SCALING
+        self.idle_texture_pair = idle_texture_pair
+        self.walk_textures = walk_texture_pairs
 
         # Adjust the collision box. Default includes too much empty space
         # side-to-side. Box is centered at sprite center, (0, 0)
         self.points = [[-22, -64], [22, -64], [22, 28], [-22, 28]]
+        # Set up parent class
+        super().__init__(self.idle_texture_pair[0], scale=CHARACTER_SCALING)
 
-        # --- Load Textures ---
-
-        # Images from Kenney.nl's Asset Pack 3
-        main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
-        # main_path = ":resources:images/animated_characters/female_person/femalePerson"
-        # main_path = ":resources:images/animated_characters/male_person/malePerson"
-        # main_path = ":resources:images/animated_characters/male_adventurer/maleAdventurer"
-        # main_path = ":resources:images/animated_characters/zombie/zombie"
-        # main_path = ":resources:images/animated_characters/robot/robot"
-
-        # Load textures for idle standing
-        self.idle_texture_pair = load_texture_pair(f"{main_path}_idle.png")
-
-        # Load textures for walking
-        self.walk_textures = []
-        for i in range(8):
-            texture = load_texture_pair(f"{main_path}_walk{i}.png")
-            self.walk_textures.append(texture)
 
     def update_animation(self, delta_time: float = 1 / 60):
 
@@ -97,12 +67,12 @@ class PlayerCharacter(arcade.Sprite):
         self.texture = self.walk_textures[frame][direction]
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """ Set up the game and initialize the variables. """
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Sprite lists
         self.player_list = None
@@ -110,7 +80,30 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
+        self.score_text = arcade.Text("Score: 0", 10, 20, arcade.color.WHITE, 14)
         self.player = None
+
+        # --- Load Textures for the player ---
+        # Images from Kenney.nl's Asset Pack 3. We pick one randomly
+        character_types = [
+            ":resources:images/animated_characters/female_adventurer/femaleAdventurer",
+            ":resources:images/animated_characters/female_person/femalePerson",
+            ":resources:images/animated_characters/male_person/malePerson",
+            ":resources:images/animated_characters/male_adventurer/maleAdventurer",
+            ":resources:images/animated_characters/zombie/zombie",
+            ":resources:images/animated_characters/robot/robot",
+        ]
+        chosen_character = random.choice(character_types)
+
+        # Load textures for idle standing
+        idle_texture = arcade.load_texture(f"{chosen_character}_idle.png")
+        self.idle_texture_pair = idle_texture, idle_texture.flip_left_right()
+
+        # Load textures for walking
+        self.walk_texture_pairs = []
+        for i in range(8):
+            texture = arcade.load_texture(f"{chosen_character}_walk{i}.png")
+            self.walk_texture_pairs.append((texture, texture.flip_left_right()))
 
     def setup(self):
         self.player_list = arcade.SpriteList()
@@ -118,24 +111,21 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player = PlayerCharacter()
-
-        self.player.center_x = SCREEN_WIDTH // 2
-        self.player.center_y = SCREEN_HEIGHT // 2
+        self.player = PlayerCharacter(self.idle_texture_pair, self.walk_texture_pairs)
+        self.player.position = self.center
         self.player.scale = 0.8
 
         self.player_list.append(self.player)
 
         for i in range(COIN_COUNT):
-            coin = arcade.Sprite(":resources:images/items/gold_1.png",
-                                 scale=0.5)
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin = arcade.Sprite(":resources:images/items/gold_1.png", scale=0.5)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
 
             self.coin_list.append(coin)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """
@@ -150,29 +140,33 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
         # Put the text on the screen.
-        output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        self.score_text.text = f"Score: {self.score}"
+        self.score_text.draw()
 
     def on_key_press(self, key, modifiers):
         """
         Called whenever a key is pressed.
         """
-        if key == arcade.key.UP:
+        # Player controls for movement using arrow keys and WASD
+        if key in (arcade.key.UP, arcade.key.W):
             self.player.change_y = MOVEMENT_SPEED
-        elif key == arcade.key.DOWN:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.player.change_y = -MOVEMENT_SPEED
-        elif key == arcade.key.LEFT:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.player.change_x = -MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.player.change_x = MOVEMENT_SPEED
+        # Quit
+        elif key in (arcade.key.ESCAPE, arcade.key.Q):
+            arcade.close_window()
 
     def on_key_release(self, key, modifiers):
         """
         Called when the user releases a key.
         """
-        if key == arcade.key.UP or key == arcade.key.DOWN:
+        if key in (arcade.key.UP, arcade.key.DOWN, arcade.key.W, arcade.key.S):
             self.player.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+        elif key in (arcade.key.LEFT, arcade.key.RIGHT, arcade.key.A, arcade.key.D):
             self.player.change_x = 0
 
     def on_update(self, delta_time):
@@ -195,8 +189,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

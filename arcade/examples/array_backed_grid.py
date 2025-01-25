@@ -28,22 +28,22 @@ HEIGHT = 30
 MARGIN = 5
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-SCREEN_TITLE = "Array Backed Grid Example"
+WINDOW_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+WINDOW_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+WINDOW_TITLE = "Array Backed Grid Example"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Set up the application.
         """
 
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Create a 2 dimensional array. A two-dimensional
         # array is simply a list of lists.
@@ -55,7 +55,7 @@ class MyGame(arcade.Window):
             for column in range(COLUMN_COUNT):
                 self.grid[row].append(0)  # Append a cell
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
     def on_draw(self):
         """
@@ -79,7 +79,7 @@ class MyGame(arcade.Window):
                 y = (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
                 # Draw the box
-                arcade.draw_rectangle_filled(x, y, WIDTH, HEIGHT, color)
+                arcade.draw_rect_filled(arcade.rect.XYWH(x, y, WIDTH, HEIGHT), color)
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
@@ -104,8 +104,17 @@ class MyGame(arcade.Window):
 
 
 def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

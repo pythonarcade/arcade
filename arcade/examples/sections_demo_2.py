@@ -14,11 +14,14 @@ Note:
       one.
     - How keyboard events can be redirected to each section depending on the
       pressed key automatically.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.sections_demo_2
 """
+
 import random
 
-from arcade import Window, Section, View, SpriteList, SpriteSolidColor, \
-    SpriteCircle, draw_text, draw_line
+import arcade
 from arcade.color import BLACK, BLUE, RED, BEAU_BLUE, GRAY
 from arcade.key import W, S, UP, DOWN
 
@@ -26,23 +29,30 @@ PLAYER_SECTION_WIDTH = 100
 PLAYER_PADDLE_SPEED = 10
 
 
-class Player(Section):
+class Player(arcade.Section):
     """
     A Section representing the space in the screen where the player
     paddle can move
     """
 
-    def __init__(self, left: int, bottom: int, width: int, height: int,
-                 key_up: int, key_down: int, **kwargs):
-        super().__init__(left, bottom, width, height,
-                         accept_keyboard_events={key_up, key_down}, **kwargs)
+    def __init__(
+        self, left: int, bottom: int, width: int, height: int, key_up: int, key_down: int, **kwargs
+    ):
+        super().__init__(
+            left,
+            bottom,
+            width,
+            height,
+            accept_keyboard_keys={key_up, key_down},
+            **kwargs,
+        )
 
         # keys assigned to move the paddle
         self.key_up: int = key_up
         self.key_down: int = key_down
 
         # the player paddle
-        self.paddle: SpriteSolidColor = SpriteSolidColor(30, 100, BLACK)
+        self.paddle: arcade.SpriteSolidColor = arcade.SpriteSolidColor(30, 100, color=BLACK)
 
         # player score
         self.score: int = 0
@@ -57,19 +67,28 @@ class Player(Section):
 
     def on_draw(self):
         # draw sections info and score
-        if self.name == 'Left':
-            keys = 'W and S'
+        if self.name == "Left":
+            keys = "W and S"
             start_x = self.left + 5
         else:
-            keys = 'UP and DOWN'
+            keys = "UP and DOWN"
             start_x = self.left - 290
-        draw_text(f'Player {self.name} (move paddle with: {keys})',
-                  start_x, self.top - 20, BLUE, 9)
-        draw_text(f'Score: {self.score}', self.left + 20,
-                  self.bottom + 20, BLUE)
+        arcade.draw_text(
+            f"Player {self.name} (move paddle with: {keys})",
+            start_x,
+            self.top - 20,
+            BLUE,
+            9,
+        )
+        arcade.draw_text(
+            f"Score: {self.score}",
+            self.left + 20,
+            self.bottom + 20,
+            BLUE,
+        )
 
         # draw the paddle
-        self.paddle.draw()
+        arcade.draw_sprite(self.paddle)
 
     def on_key_press(self, symbol: int, modifiers: int):
         # set the paddle direction and movement speed
@@ -83,33 +102,39 @@ class Player(Section):
         self.paddle.stop()
 
 
-class Pong(View):
-
+class GameView(arcade.View):
     def __init__(self):
         super().__init__()
 
         # a sprite list that will hold each player paddle to
         # check for collisions
-        self.paddles: SpriteList = SpriteList()
+        self.paddles: arcade.SpriteList = arcade.SpriteList()
 
         # we store each Section
         self.left_player: Player = Player(
-            0, 0, PLAYER_SECTION_WIDTH, self.window.height, key_up=W,
-            key_down=S, name='Left')
+            0, 0, PLAYER_SECTION_WIDTH, self.window.height, key_up=W, key_down=S, name="Left"
+        )
         self.right_player: Player = Player(
-            self.window.width - PLAYER_SECTION_WIDTH, 0, PLAYER_SECTION_WIDTH,
-            self.window.height, key_up=UP, key_down=DOWN, name='Right')
+            self.window.width - PLAYER_SECTION_WIDTH,
+            0,
+            PLAYER_SECTION_WIDTH,
+            self.window.height,
+            key_up=UP,
+            key_down=DOWN,
+            name="Right",
+        )
 
         # add the sections to the SectionManager so Sections start to work
-        self.add_section(self.left_player)
-        self.add_section(self.right_player)
+        self.section_manager = arcade.SectionManager(self)
+        self.section_manager.add_section(self.left_player)
+        self.section_manager.add_section(self.right_player)
 
         # add each paddle to the sprite list
         self.paddles.append(self.left_player.paddle)
         self.paddles.append(self.right_player.paddle)
 
         # create the ball
-        self.ball: SpriteCircle = SpriteCircle(20, RED)
+        self.ball: arcade.SpriteCircle = arcade.SpriteCircle(20, RED)
 
     def setup(self):
         # set up a new game
@@ -124,6 +149,12 @@ class Pong(View):
         # setup player paddles
         self.left_player.setup()
         self.right_player.setup()
+
+    def on_show_view(self) -> None:
+        self.section_manager.enable()
+
+    def on_hide_view(self) -> None:
+        self.section_manager.disable()
 
     def on_update(self, delta_time: float):
         self.ball.update()  # update the ball
@@ -154,29 +185,27 @@ class Pong(View):
             self.end_game(self.left_player)
 
     def end_game(self, winner: Player):
-        """ Called when one player wins """
+        """Called when one player wins"""
         winner.score += 1  # increment the winner score
         self.setup()  # prepare a new game
 
     def on_draw(self):
-        self.clear(BEAU_BLUE)  # clear the screen
+        self.clear(color=BEAU_BLUE)  # clear the screen
 
-        self.ball.draw()  # draw the ball
+        arcade.draw_sprite(self.ball)  # draw the ball
 
         half_window_x = self.window.width / 2  # middle x
 
         # draw a line diving the screen in half
-        draw_line(half_window_x, 0, half_window_x, self.window.height, GRAY, 2)
+        arcade.draw_line(half_window_x, 0, half_window_x, self.window.height, GRAY, 2)
 
 
 def main():
     # create the window
-    window = Window(title='Two player simple Pong with Sections!')
+    window = arcade.Window(title="Two player simple Pong with Sections!")
 
     # create the custom View
-    game = Pong()
-
-    # set up the game (start a game)
+    game = GameView()
     game.setup()
 
     # show the view
@@ -186,5 +215,5 @@ def main():
     window.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

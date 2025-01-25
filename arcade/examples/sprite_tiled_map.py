@@ -15,18 +15,12 @@ import arcade
 TILE_SCALING = 0.5
 PLAYER_SCALING = 1
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Tiled Map Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Tiled Map Example"
 SPRITE_PIXEL_SIZE = 128
 GRID_PIXEL_SIZE = SPRITE_PIXEL_SIZE * TILE_SCALING
-
-# How many pixels to keep as a minimum margin between the character
-# and the edge of the screen.
-VIEWPORT_MARGIN_TOP = 60
-VIEWPORT_MARGIN_BOTTOM = 60
-VIEWPORT_RIGHT_MARGIN = 270
-VIEWPORT_LEFT_MARGIN = 270
+CAMERA_PAN_SPEED = 0.30
 
 # Physics
 MOVEMENT_SPEED = 5
@@ -34,14 +28,14 @@ JUMP_SPEED = 23
 GRAVITY = 1.1
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """Main application class."""
 
     def __init__(self):
         """
         Initializer
         """
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Tilemap Object
         self.tile_map = None
@@ -60,11 +54,27 @@ class MyGame(arcade.Window):
         self.game_over = False
         self.last_time = None
         self.frame_count = 0
-        self.fps_message = None
 
         # Cameras
         self.camera = None
+        self.camera_bounds = None
         self.gui_camera = None
+
+        # Text
+        self.fps_text = arcade.Text(
+            "",
+            x=10,
+            y=40,
+            color=arcade.color.BLACK,
+            font_size=14
+        )
+        self.distance_text = arcade.Text(
+            "0.0",
+            x=10,
+            y=20,
+            color=arcade.color.BLACK,
+            font_size=14,
+        )
 
     def setup(self):
         """Set up the game and initialize the variables."""
@@ -75,7 +85,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.player_sprite = arcade.Sprite(
             ":resources:images/animated_characters/female_person/femalePerson_idle.png",
-            PLAYER_SCALING,
+            scale=PLAYER_SCALING,
         )
 
         # Starting position of the player
@@ -103,7 +113,7 @@ class MyGame(arcade.Window):
         # --- Other stuff
         # Set the background color
         if self.tile_map.background_color:
-            arcade.set_background_color(self.tile_map.background_color)
+            self.window.background_color = self.tile_map.background_color
 
         # Keep player from running through the wall_list layer
         walls = [self.wall_list, ]
@@ -111,8 +121,17 @@ class MyGame(arcade.Window):
             self.player_sprite, walls, gravity_constant=GRAVITY
         )
 
-        self.camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
-        self.gui_camera = arcade.Camera(SCREEN_WIDTH, SCREEN_HEIGHT)
+        self.camera = arcade.camera.Camera2D()
+        self.gui_camera = arcade.camera.Camera2D()
+
+        # Use the tilemap to limit the camera's position
+        # we don't offset the max_y position to give a better experience.
+        max_x = GRID_PIXEL_SIZE * self.tile_map.width
+        max_y = GRID_PIXEL_SIZE * self.tile_map.height
+        self.camera_bounds = arcade.LRBT(
+            self.window.width / 2.0, max_x - self.window.width / 2.0,
+            self.window.height / 2.0, max_y
+        )
 
         # Center camera on user
         self.pan_camera_to_user()
@@ -142,18 +161,11 @@ class MyGame(arcade.Window):
 
         # Calculate FPS if conditions are met
         if self.last_time and self.frame_count % 60 == 0:
-            fps = 1.0 / (time.time() - self.last_time) * 60
-            self.fps_message = f"FPS: {fps:5.0f}"
+            fps = round(1.0 / (time.time() - self.last_time) * 60)
+            self.fps_text.text = f"FPS: {fps:3d}"
 
         # Draw FPS text
-        if self.fps_message:
-            arcade.draw_text(
-                self.fps_message,
-                10,
-                40,
-                arcade.color.BLACK,
-                14
-            )
+        self.fps_text.draw()
 
         # Get time for every 60 frames
         if self.frame_count % 60 == 0:
@@ -165,10 +177,8 @@ class MyGame(arcade.Window):
 
         # Get distance and draw text
         distance = self.player_sprite.right
-        output = f"Distance: {distance}"
-        arcade.draw_text(
-            output, 10, 20, arcade.color.BLACK, 14
-        )
+        self.distance_text.text = f"Distance: {distance}"
+        self.distance_text.draw()
 
         # Draw game over text if condition met
         if self.game_over:
@@ -217,29 +227,30 @@ class MyGame(arcade.Window):
             self.score += 1
 
         # Pan to the user
-        self.pan_camera_to_user(panning_fraction=0.12)
+        self.pan_camera_to_user(CAMERA_PAN_SPEED)
 
     def pan_camera_to_user(self, panning_fraction: float = 1.0):
         """ Manage Scrolling """
-
-        # This spot would center on the user
-        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        screen_center_y = self.player_sprite.center_y - (
-            self.camera.viewport_height / 2
+        self.camera.position = arcade.math.smerp_2d(
+            self.camera.position,
+            self.player_sprite.position,
+            self.window.delta_time,
+            panning_fraction,
         )
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
-        user_centered = screen_center_x, screen_center_y
 
-        self.camera.move_to(user_centered, panning_fraction)
+        self.camera.position = arcade.camera.grips.constrain_xy(
+            self.camera.view_data,
+            self.camera_bounds
+        )
 
 
 def main():
-    window = MyGame()
-    window.setup()
-    arcade.run()
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    game = GameView()
+    game.setup()
+
+    window.show_view(game)
+    window.run()
 
 
 if __name__ == "__main__":

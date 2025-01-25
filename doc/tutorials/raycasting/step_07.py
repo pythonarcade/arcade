@@ -1,6 +1,4 @@
 import random
-from pathlib import Path
-from pyglet.math import Vec2
 
 import arcade
 from arcade.experimental import Shadertoy
@@ -33,24 +31,26 @@ class MyGame(arcade.Window):
         self.load_shader()
 
         # Sprites and sprite lists
-        self.player_sprite = None
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+            center_x=256,
+            center_y=512,
+        )
         self.wall_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.bomb_list = arcade.SpriteList()
         self.physics_engine = None
 
         self.generate_sprites()
-        arcade.set_background_color(arcade.color.ARMY_GREEN)
+        self.background_color = arcade.color.ARMY_GREEN
 
     def load_shader(self):
-        # Where is the shader file? Must be specified as a path.
-        shader_file_path = Path("step_06.glsl")
-
         # Size of the window
         window_size = self.get_size()
 
-        # Create the shader toy
-        self.shadertoy = Shadertoy.create_from_file(window_size, shader_file_path)
+        # Create the shader toy, passing in a path for the shader source
+        self.shadertoy = Shadertoy.create_from_file(window_size, "step_06.glsl")
 
         # Create the channels 0 and 1 frame buffers.
         # Make the buffer the size of the window, with 4 channels (RGBA)
@@ -87,11 +87,7 @@ class MyGame(arcade.Window):
                     placed = True
             self.bomb_list.append(bomb)
 
-        # Create the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
-        self.player_sprite.center_x = 256
-        self.player_sprite.center_y = 512
+        # Add the player to the player list
         self.player_list.append(self.player_sprite)
 
         # Physics engine, so we don't run into walls
@@ -105,7 +101,7 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
 
         self.channel1.use()
-        self.channel1.clear()
+        self.channel1.clear(color=arcade.color.AMAZON)
         # Draw the bombs
         self.bomb_list.draw()
 
@@ -151,7 +147,7 @@ class MyGame(arcade.Window):
         # example though.)
         self.physics_engine.update()
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
         self.shadertoy.resize((width, height))
 

@@ -8,9 +8,6 @@ class MyGame(arcade.Window):
         # Call the parent constructor
         super().__init__(width=1920, height=1080, title="Shader Demo", resizable=True)
 
-        # Keep track of total run-time
-        self.time = 0.0
-
         # File name of GLSL code
         # file_name = "fractal_pyramid.glsl"
         # file_name = "cyber_fuji_2020.glsl"
@@ -26,10 +23,6 @@ class MyGame(arcade.Window):
         self.clear()
         mouse_pos = self.mouse["x"], self.mouse["y"]
         self.shadertoy.render(time=self.time, mouse_position=mouse_pos)
-
-    def on_update(self, dt):
-        # Keep track of elapsed time
-        self.time += dt
 
 
 if __name__ == "__main__":

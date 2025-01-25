@@ -1,6 +1,7 @@
 import arcade
 from arcade.experimental import Shadertoy
 
+
 # Derive an application window from Arcade's parent Window class
 class MyGame(arcade.Window):
 

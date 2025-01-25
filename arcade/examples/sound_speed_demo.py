@@ -5,7 +5,7 @@ If Python and Arcade are installed, this example can be run from the
 command line with:
 python -m arcade.examples.sound_speed_demo
 
-Left click a button to play a sound. 
+Left click a button to play a sound.
 
 Each button plays the same sound sample in a slightly different way.
 
@@ -18,20 +18,20 @@ import typing
 
 import arcade
 
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sound Speed Demo"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sound Speed Demo"
 BUTTON_SIZE = 30
 
 
 SPEED_VARIATION = [0.1, 0.5, 1.0, 2.0, 4.0]
+MARGIN = WINDOW_WIDTH / 4
 BUTTON_X_POSITIONS = [
-    BUTTON_SIZE,
-    SCREEN_WIDTH / 4,
-    SCREEN_WIDTH / 2,
-    SCREEN_WIDTH / 4 * 3,
-    SCREEN_WIDTH - BUTTON_SIZE,
+    MARGIN,
+    MARGIN + (WINDOW_WIDTH - MARGIN * 2) / 3 * 1,
+    MARGIN + (WINDOW_WIDTH - MARGIN * 2) / 3 * 2,
+    MARGIN + (WINDOW_WIDTH - MARGIN * 2) / 3 * 3,
+    WINDOW_WIDTH - MARGIN,
 ]
 
 
@@ -46,9 +46,8 @@ class SoundButton(arcade.SpriteSolidColor):
     You can tell it to play a sound faster or slower, as well as adjust
     the volume of the sound.
     """
-
     def __init__(self, sound_file, speed, volume, center_x, center_y):
-        super().__init__(BUTTON_SIZE, BUTTON_SIZE, arcade.color.WHITE)
+        super().__init__(BUTTON_SIZE, BUTTON_SIZE, color=arcade.color.WHITE)
         self.sound = arcade.Sound(sound_file)
         self.speed = speed
         self.volume = volume
@@ -59,14 +58,11 @@ class SoundButton(arcade.SpriteSolidColor):
         self.sound.play(speed=self.speed, volume=self.volume)
 
 
-class MyGame(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+class GameView(arcade.View):
+    def __init__(self):
+        super().__init__()
 
-        arcade.set_background_color(arcade.color.AMAZON)
-        self.button_sprites = None
-
-    def setup(self):
+        self.background_color = arcade.color.AMAZON
         self.button_sprites = arcade.SpriteList()
 
         # Position the grid of buttons
@@ -81,7 +77,7 @@ class MyGame(arcade.Window):
                         speed,
                         vol,
                         x_pos,
-                        SCREEN_HEIGHT / 2 + y_offset,
+                        WINDOW_HEIGHT / 2 + y_offset,
                     )
                 )
 
@@ -101,8 +97,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

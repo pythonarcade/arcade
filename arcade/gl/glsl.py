@@ -1,40 +1,74 @@
-from typing import Dict, List
+from __future__ import annotations
+
 import re
+from typing import TYPE_CHECKING, Iterable
 
 from pyglet import gl
 
+if TYPE_CHECKING:
+    from .context import Context as ArcadeGlContext
+
 from .exceptions import ShaderException
-from .types import SHADER_TYPE_NAMES
+from .types import SHADER_TYPE_NAMES, PyGLenum
 
 
 class ShaderSource:
     """
     GLSL source container for making source parsing simpler.
-    We support locating out attributes and applying #defines values.
 
-    This wrapper should ideally contain an unmodified version
-    of the original source for caching. Getting the specific
-    source with defines applied through ``get_source``.
+    We support locating out attributes, applying ``#defines`` values
+    and injecting common source.
 
-    NOTE: We do assume the source is neat enough to be parsed
-    this way and don't contain several statements on one line.
+    .. note:::
+        We do assume the source is neat enough to be parsed
+        this way and don't contain several statements on one line.
 
-    :param Context ctx: The context this framebuffer belongs to
-    :param List[arcade.gl.Texture] color_attachments: List of color attachments.
-    :param arcade.gl.Texture depth_attachment: A depth attachment (optional)
+    Args:
+        ctx:
+            The context this framebuffer belongs to
+        source:
+            The GLSL source code
+        common:
+            Common source code to inject
+        source_type:
+            The shader type
+        depth_attachment:
+            A depth attachment (optional)
     """
 
-    def __init__(self, source: str, source_type: gl.GLenum):
-        """Create a shader source wrapper."""
+    def __init__(
+        self,
+        ctx: "ArcadeGlContext",
+        source: str,
+        common: Iterable[str] | None,
+        source_type: PyGLenum,
+    ):
         self._source = source.strip()
         self._type = source_type
         self._lines = self._source.split("\n") if source else []
-        self._out_attributes = []  # type: List[str]
+        self._out_attributes: list[str] = []
 
         if not self._lines:
             raise ValueError("Shader source is empty")
 
         self._version = self._find_glsl_version()
+
+        # GLES specific modifications
+        if ctx.gl_api == "gles":
+            # TODO: Use the version from the context
+            self._lines[0] = "#version 310 es"
+            self._lines.insert(1, "precision mediump float;")
+
+            if self._type == gl.GL_GEOMETRY_SHADER:
+                self._lines.insert(1, "#extension GL_EXT_geometry_shader : require")
+
+            if self._type == gl.GL_COMPUTE_SHADER:
+                self._lines.insert(1, "precision mediump image2D;")
+
+            self._version = self._find_glsl_version()
+
+        # Inject common source
+        self.inject_common_sources(common)
 
         if self._type in [gl.GL_VERTEX_SHADER, gl.GL_GEOMETRY_SHADER]:
             self._parse_out_attributes()
@@ -45,17 +79,41 @@ class ShaderSource:
         return self._version
 
     @property
-    def out_attributes(self) -> List[str]:
+    def out_attributes(self) -> list[str]:
         """The out attributes for this program"""
         return self._out_attributes
 
-    def get_source(self, *, defines: Dict[str, str] = None) -> str:
+    def inject_common_sources(self, common: Iterable[str] | None) -> None:
+        """
+        Inject common source code into the shader source.
+
+        Args:
+            common:
+                A list of common source code strings to inject
+        """
+        if not common:
+            return
+
+        # Find the main function
+        for line_number, line in enumerate(self._lines):
+            if "main()" in line:
+                break
+        else:
+            raise ShaderException("No main() function found when injecting common source")
+
+        # Insert all common sources
+        for source in common:
+            lines = source.split("\n")
+            self._lines = self._lines[:line_number] + lines + self._lines[line_number:]
+
+    def get_source(self, *, defines: dict[str, str] | None = None) -> str:
         """Return the shader source
 
-        :param dict defines: Defines to replace in the source.
+        Args:
+            defines: Defines to replace in the source.
         """
         if not defines:
-            return self._source
+            return "\n".join(self._lines)
 
         lines = ShaderSource.apply_defines(self._lines, defines)
         return "\n".join(lines)
@@ -67,9 +125,7 @@ class ShaderSource:
             except Exception:
                 pass
 
-        source = "\n".join(
-            f"{str(i+1).zfill(3)}: {line} " for i, line in enumerate(self._lines)
-        )
+        source = "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines))
 
         raise ShaderException(
             (
@@ -81,19 +137,22 @@ class ShaderSource:
         )
 
     @staticmethod
-    def apply_defines(lines: List[str], defines: Dict[str, str]) -> List[str]:
+    def apply_defines(lines: list[str], defines: dict[str, str]) -> list[str]:
         """Locate and apply #define values
 
-        :param List[str] lines: List of source lines
-        :param dict defines: dict with ``name: value`` pairs.
+        Args:
+            lines:
+                List of source lines
+            defines:
+                dict with ``name: value`` pairs.
         """
         for nr, line in enumerate(lines):
             line = line.strip()
             if line.startswith("#define"):
                 try:
                     name = line.split()[1]
-                    value = defines.get(name)
-                    if not value:
+                    value = defines.get(name, None)
+                    if value is None:
                         continue
 
                     lines[nr] = "#define {} {}".format(name, str(value))
@@ -103,10 +162,12 @@ class ShaderSource:
         return lines
 
     def _parse_out_attributes(self):
-        """Locates out attributes so we don't have to manually supply them"""
+        """
+        Locates out attributes so we don't have to manually supply them.
+
+        Note that this currently doesn't work for structs.
+        """
         for line in self._lines:
-            res = re.match(
-                r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip()
-            )
+            res = re.match(r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip())
             if res:
                 self._out_attributes.append(res.groups()[-1])

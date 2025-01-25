@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import arcade
 from arcade.experimental.shadertoy import Shadertoy
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 SCREEN_TITLE = "ShaderToy Demo"
 
 
@@ -20,8 +22,8 @@ class MyGame(arcade.Window):
                     // This interpolates from 0,0 to 1,1 from lower left to upper right
                     vec2 uv = fragCoord.xy / iResolution.xy;
                     // Write the fragment color
-                    fragColor = vec4(uv, 0.0, 1.0);	                
-                }                    
+                    fragColor = vec4(uv, 0.0, 1.0);
+                }
             """,
         )
 

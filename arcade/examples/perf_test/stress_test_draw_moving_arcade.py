@@ -8,10 +8,8 @@ Artwork from https://kenney.nl
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.stress_test_draw_moving
 """
-
 import random
 import arcade
-import os
 import timeit
 import time
 import collections
@@ -26,9 +24,9 @@ COIN_COUNT_INCREMENT = 1000
 STOP_COUNT = 15000
 RESULTS_FILE = "stress_test_draw_moving_arcade.csv"
 
-SCREEN_WIDTH = 1800
-SCREEN_HEIGHT = 1000
-SCREEN_TITLE = "Moving Sprite Stress Test"
+WINDOW_WIDTH = 1800
+WINDOW_HEIGHT = 1000
+WINDOW_TITLE = "Moving Sprite Stress Test"
 
 
 class FPSCounter:
@@ -52,27 +50,20 @@ class FPSCounter:
 
 class Coin(arcade.Sprite):
 
-    def update(self):
+    def update(self, delta_times):
         """
         Update the sprite.
         """
         self.position = (self.position[0] + self.change_x, self.position[1] + self.change_y)
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Our custom Window Class"""
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.coin_list = None
@@ -87,7 +78,7 @@ class MyGame(arcade.Window):
         self.last_fps_reading = 0
         self.fps = FPSCounter()
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         # Open file to save timings
         self.results_file = open(RESULTS_FILE, "w")
@@ -101,8 +92,8 @@ class MyGame(arcade.Window):
             coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
 
             # Position the coin
-            coin.center_x = random.randrange(SPRITE_SIZE, SCREEN_WIDTH - SPRITE_SIZE)
-            coin.center_y = random.randrange(SPRITE_SIZE, SCREEN_HEIGHT - SPRITE_SIZE)
+            coin.center_x = random.randrange(SPRITE_SIZE, WINDOW_WIDTH - SPRITE_SIZE)
+            coin.center_y = random.randrange(SPRITE_SIZE, WINDOW_HEIGHT - SPRITE_SIZE)
 
             coin.change_x = random.randrange(-3, 4)
             coin.change_y = random.randrange(-3, 4)
@@ -127,23 +118,23 @@ class MyGame(arcade.Window):
 
         # Display info on sprites
         # output = f"Sprite count: {len(self.coin_list):,}"
-        # arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.BLACK, 16)
+        # arcade.draw_text(output, 20, WINDOW_HEIGHT - 20, arcade.color.BLACK, 16)
         #
         # # Display timings
         # output = f"Processing time: {self.processing_time:.3f}"
-        # arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.BLACK, 16)
+        # arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.BLACK, 16)
         #
         # output = f"Drawing time: {self.draw_time:.3f}"
-        # arcade.draw_text(output, 20, SCREEN_HEIGHT - 60, arcade.color.BLACK, 16)
+        # arcade.draw_text(output, 20, WINDOW_HEIGHT - 60, arcade.color.BLACK, 16)
         #
         # fps = self.fps.get_fps()
         # output = f"FPS: {fps:3.0f}"
-        # arcade.draw_text(output, 20, SCREEN_HEIGHT - 80, arcade.color.BLACK, 16)
+        # arcade.draw_text(output, 20, WINDOW_HEIGHT - 80, arcade.color.BLACK, 16)
 
         self.draw_time = timeit.default_timer() - draw_start_time
         self.fps.tick()
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         # Start update timer
         start_time = timeit.default_timer()
 
@@ -153,11 +144,11 @@ class MyGame(arcade.Window):
 
             if sprite.position[0] < 0:
                 sprite.change_x *= -1
-            elif sprite.position[0] > SCREEN_WIDTH:
+            elif sprite.position[0] > WINDOW_WIDTH:
                 sprite.change_x *= -1
             if sprite.position[1] < 0:
                 sprite.change_y *= -1
-            elif sprite.position[1] > SCREEN_HEIGHT:
+            elif sprite.position[1] > WINDOW_HEIGHT:
                 sprite.change_y *= -1
 
         # Save the time it took to do this.
@@ -183,8 +174,13 @@ class MyGame(arcade.Window):
                 if total_program_time % 2 == 1:
 
                     # Take timings
-                    output = f"{total_program_time}, {len(self.coin_list)}, {self.fps.get_fps():.1f}, " \
-                             f"{self.processing_time:.4f}, {self.draw_time:.4f}\n"
+                    output = (
+                        f"{total_program_time}, "
+                        f"{len(self.coin_list)}, "
+                        f"{self.fps.get_fps():.1f}, "
+                        f"{self.processing_time:.4f}, "
+                        f"{self.draw_time:.4f}\n"
+                    )
 
                     self.results_file.write(output)
                     print(output, end="")
@@ -203,8 +199,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame()
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

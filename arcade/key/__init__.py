@@ -1,7 +1,9 @@
-# flake8: noqa
 """
 Constants used to signify what keys on the keyboard were pressed.
 """
+
+from __future__ import annotations
+from sys import platform
 
 # Key modifiers
 # Done in powers of two, so you can do a bit-wise 'and' to detect
@@ -15,7 +17,11 @@ MOD_WINDOWS = 32
 MOD_COMMAND = 64
 MOD_OPTION = 128
 MOD_SCROLLLOCK = 256
-MOD_ACCEL = 2
+
+# Platform-specific base hotkey modifier
+MOD_ACCEL = MOD_CTRL
+if platform == "darwin":
+    MOD_ACCEL = MOD_COMMAND
 
 # Keys
 BACKSPACE = 65288
@@ -122,6 +128,14 @@ F13 = 65482
 F14 = 65483
 F15 = 65484
 F16 = 65485
+F17 = 65486
+F18 = 65487
+F19 = 65488
+F20 = 65489
+F21 = 65490
+F22 = 65491
+F23 = 65492
+F24 = 65493
 LSHIFT = 65505
 RSHIFT = 65506
 LCTRL = 65507
@@ -188,14 +202,12 @@ E = 101
 F = 102
 G = 103
 H = 104
-# noinspection PyPep8
 I = 105
 J = 106
 K = 107
 L = 108
 M = 109
 N = 110
-# noinspection PyPep8
 O = 111
 P = 112
 Q = 113

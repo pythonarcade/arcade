@@ -14,28 +14,31 @@ two buffers so we always work on the previous state.
 Using transforms in this way makes us able to process
 a system that is reacting to external forces in this way.
 There are no predetermined paths and they system just lives on its own.
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.transform_feedback
 """
 from array import array
 import math
-import time
 import random
 import arcade
 from arcade.gl import BufferDescription
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Transform Feedback"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Transform Feedback"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
-        self.time = 0
+    def __init__(self):
+        super().__init__()
+        # get the GL context from the window
+        context = self.window.ctx
 
         # Program to visualize the points
-        self.points_progran = self.ctx.program(
+        self.points_program = context.program(
             vertex_shader="""
             #version 330
             in vec2 in_pos;
@@ -43,9 +46,9 @@ class MyGame(arcade.Window):
             void main() {
                 // Let's just give them a "random" color based on the vertex id
                 color = vec3(
-                    mod((gl_VertexID * 100 % 11) / 10.0, 1.0),
-                    mod((gl_VertexID * 100 % 27) / 10.0, 1.0),
-                    mod((gl_VertexID * 100 % 71) / 10.0, 1.0));
+                    mod(float(gl_VertexID * 100 % 11) / 10.0, 1.0),
+                    mod(float(gl_VertexID * 100 % 27) / 10.0, 1.0),
+                    mod(float(gl_VertexID * 100 % 71) / 10.0, 1.0));
                 // Pass the point position to primitive assembly
                 gl_Position = vec4(in_pos, 0.0, 1.0);
             }
@@ -66,7 +69,7 @@ class MyGame(arcade.Window):
         )
 
         # A program transforming points being affected by a gravity point
-        self.gravity_program = self.ctx.program(
+        self.gravity_program = context.program(
             vertex_shader="""
             #version 330
 
@@ -98,19 +101,22 @@ class MyGame(arcade.Window):
         )
         N = 50_000
         # Make two buffers we transform between so we can work on the previous result
-        self.buffer_1 = self.ctx.buffer(data=array('f', self.gen_initial_data(N)))
-        self.buffer_2 = self.ctx.buffer(reserve=self.buffer_1.size)
+        self.buffer_1 = context.buffer(data=array('f', self.gen_initial_data(N)))
+        self.buffer_2 = context.buffer(reserve=self.buffer_1.size)
 
         # We also need to be able to visualize both versions (draw to the screen)
-        self.vao_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2x4', ['in_pos'])])
-        self.vao_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2x4', ['in_pos'])])
+        self.vao_1 = context.geometry([BufferDescription(self.buffer_1, '2f 2x4', ['in_pos'])])
+        self.vao_2 = context.geometry([BufferDescription(self.buffer_2, '2f 2x4', ['in_pos'])])
 
         # We need to be able to transform both buffers (ping-pong)
-        self.gravity_1 = self.ctx.geometry([BufferDescription(self.buffer_1, '2f 2f', ['in_pos', 'in_vel'])])
-        self.gravity_2 = self.ctx.geometry([BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])])
+        self.gravity_1 = context.geometry(
+            [BufferDescription(self.buffer_1, '2f 2f', ['in_pos', 'in_vel'])]
+        )
+        self.gravity_2 = context.geometry(
+            [BufferDescription(self.buffer_2, '2f 2f', ['in_pos', 'in_vel'])]
+        )
 
-        self.ctx.enable_only()  # Ensure no context flags are set
-        self.time = time.time()
+        context.enable_only()  # Ensure no context flags are set
 
     def gen_initial_data(self, count):
         for _ in range(count):
@@ -121,30 +127,40 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        self.ctx.point_size = 2 * self.get_pixel_ratio()
-
-        # Calculate the actual delta time and current time
-        t = time.time()
-        frame_time = t - self.time
-        self.time = t
+        self.window.ctx.point_size = 2 * self.window.get_pixel_ratio()
 
         # Set uniforms in the program
-        self.gravity_program['dt'] = frame_time
+        self.gravity_program['dt'] = self.window.delta_time
         self.gravity_program['force'] = 0.25
-        self.gravity_program['gravity_pos'] = math.sin(self.time * 0.77) * 0.25, math.cos(self.time) * 0.25
+        self.gravity_program['gravity_pos'] = (
+            math.sin(self.window.time * 0.77) * 0.25, math.cos(self.window.time) * 0.25
+        )
 
         # Transform data in buffer_1 into buffer_2
         self.gravity_1.transform(self.gravity_program, self.buffer_2)
         # Render the result (Draw buffer_2)
-        self.vao_2.render(self.points_progran, mode=self.ctx.POINTS)
+        self.vao_2.render(self.points_program, mode=arcade.gl.POINTS)
 
         # Swap around stuff around so we transform back and fourth between the two buffers
         self.gravity_1, self.gravity_2 = self.gravity_2, self.gravity_1
         self.vao_1, self.vao_2 = self.vao_2, self.vao_1
         self.buffer_1, self.buffer_2 = self.buffer_2, self.buffer_1
 
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
+
+
 
 if __name__ == "__main__":
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.center_window()
-    arcade.run()
+    main()

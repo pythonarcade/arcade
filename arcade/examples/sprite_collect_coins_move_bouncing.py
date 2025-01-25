@@ -13,25 +13,25 @@ import random
 import arcade
 
 # --- Constants ---
-SPRITE_SCALING_PLAYER = 0.5
-SPRITE_SCALING_COIN = 0.2
+SPRITE_SCALING_PLAYER = 0.75
+SPRITE_SCALING_COIN = 0.3
 COIN_COUNT = 50
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Collect Moving and Bouncing Coins Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Collect Moving and Bouncing Coins Example"
 
 
 class Coin(arcade.Sprite):
 
-    def __init__(self, filename, sprite_scaling):
+    def __init__(self, filename, scale):
 
-        super().__init__(filename, sprite_scaling)
+        super().__init__(filename, scale=scale)
 
         self.change_x = 0
         self.change_y = 0
 
-    def update(self):
+    def update(self, delta_time: float = 1 / 60):
 
         # Move the coin
         self.center_x += self.change_x
@@ -41,23 +41,22 @@ class Coin(arcade.Sprite):
         if self.left < 0:
             self.change_x *= -1
 
-        if self.right > SCREEN_WIDTH:
+        if self.right > WINDOW_WIDTH:
             self.change_x *= -1
 
         if self.bottom < 0:
             self.change_y *= -1
 
-        if self.top > SCREEN_HEIGHT:
+        if self.top > WINDOW_HEIGHT:
             self.change_y *= -1
 
 
-class MyGame(arcade.Window):
-    """ Our custom Window Class"""
+class GameView(arcade.View):
 
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.all_sprites_list = None
@@ -68,9 +67,9 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -84,8 +83,10 @@ class MyGame(arcade.Window):
 
         # Set up the player
         # Character image from kenney.nl
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.all_sprites_list.append(self.player_sprite)
@@ -95,11 +96,11 @@ class MyGame(arcade.Window):
 
             # Create the coin instance
             # Coin image from kenney.nl
-            coin = Coin(":resources:images/items/coinGold.png", SPRITE_SCALING_COIN)
+            coin = Coin(":resources:images/items/coinGold.png", scale=SPRITE_SCALING_COIN)
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
             coin.change_x = random.randrange(-3, 4)
             coin.change_y = random.randrange(-3, 4)
 
@@ -128,7 +129,7 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.all_sprites_list.update()
+        self.all_sprites_list.update(delta_time)
 
         # Generate a list of all sprites that collided with the player.
         hit_list = arcade.check_for_collision_with_list(self.player_sprite,
@@ -141,8 +142,18 @@ class MyGame(arcade.Window):
 
 
 def main():
-    window = MyGame()
-    window.setup()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

@@ -20,14 +20,18 @@ import pymunk
 import timeit
 import math
 
-SCREEN_WIDTH = 1800
-SCREEN_HEIGHT = 800
-SCREEN_TITLE = "Pymunk test"
+WINDOW_WIDTH = 1800
+WINDOW_HEIGHT = 800
+WINDOW_TITLE = "Pymunk test"
 
 
 class PhysicsSprite(arcade.Sprite):
     def __init__(self, pymunk_shape, filename):
-        super().__init__(filename, center_x=pymunk_shape.body.position.x, center_y=pymunk_shape.body.position.y)
+        super().__init__(
+            filename,
+            center_x=pymunk_shape.body.position.x,
+            center_y=pymunk_shape.body.position.y,
+        )
         self.pymunk_shape = pymunk_shape
 
 
@@ -45,13 +49,13 @@ class BoxSprite(PhysicsSprite):
         self.height = height
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
-        arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
+        self.background_color = arcade.color.DARK_SLATE_GRAY
 
         # -- Pymunk
         self.space = pymunk.Space()
@@ -72,7 +76,7 @@ class MyGame(arcade.Window):
         # Create the floor
         floor_height = 80
         body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        shape = pymunk.Segment(body, [0, floor_height], [SCREEN_WIDTH, floor_height], 0.0)
+        shape = pymunk.Segment(body, [0, floor_height], [WINDOW_WIDTH, floor_height], 0.0)
         shape.friction = 10
         self.space.add(shape, body)
         self.static_lines.append(shape)
@@ -93,7 +97,12 @@ class MyGame(arcade.Window):
                 self.space.add(body, shape)
                 # body.sleep()
 
-                sprite = BoxSprite(shape, ":resources:images/tiles/boxCrate_double.png", width=size, height=size)
+                sprite = BoxSprite(
+                    shape,
+                    ":resources:images/tiles/boxCrate_double.png",
+                    width=size,
+                    height=size,
+                )
                 self.sprite_list.append(sprite)
 
     def on_draw(self):
@@ -120,10 +129,10 @@ class MyGame(arcade.Window):
 
         # Display timings
         output = f"Processing time: {self.processing_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 20, arcade.color.WHITE, 12)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 20, arcade.color.WHITE, 12)
 
         output = f"Drawing time: {self.draw_time:.3f}"
-        arcade.draw_text(output, 20, SCREEN_HEIGHT - 40, arcade.color.WHITE, 12)
+        arcade.draw_text(output, 20, WINDOW_HEIGHT - 40, arcade.color.WHITE, 12)
 
         self.draw_time = timeit.default_timer() - draw_start_time
 
@@ -191,15 +200,24 @@ class MyGame(arcade.Window):
         for sprite in self.sprite_list:
             sprite.center_x = sprite.pymunk_shape.body.position.x
             sprite.center_y = sprite.pymunk_shape.body.position.y
-            sprite.angle = math.degrees(sprite.pymunk_shape.body.angle)
+            sprite.angle = -math.degrees(sprite.pymunk_shape.body.angle)
 
         # Save the time it took to do this.
         self.processing_time = timeit.default_timer() - start_time
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

@@ -1,41 +1,81 @@
-"""
-Sound Library.
-"""
+"""Sound Library."""
 
+from __future__ import annotations
+
+import logging
 import math
 import os
 from pathlib import Path
-from typing import Optional, Union
 
-from arcade.resources import resolve_resource_path
 import pyglet
+from pyglet.media import Source
+
+from arcade.resources import resolve
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
-    pyglet.options["audio"] = tuple(
-        v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(",")
-    )
+    pyglet.options.audio = tuple(v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(","))
 else:
-    pyglet.options["audio"] = ("openal", "xaudio2", "directsound", "pulse", "silent")
+    pyglet.options.audio = ("openal", "xaudio2", "directsound", "pulse", "silent")
 
 import pyglet.media as media
 
+__all__ = ["Sound", "load_sound", "play_sound", "stop_sound"]
+
+logger = logging.getLogger("arcade")
+
 
 class Sound:
-    """This class represents a sound you can play."""
+    """Holds :ref:`playable <sound-basics-playing>` loaded audio data.
 
-    def __init__(self, file_name: Union[str, Path], streaming: bool = False):
+    .. important:: :ref:`Streaming <sound-loading-modes>` disables features!
+
+    When ``streaming=True``, :py:meth:`.play` and :py:func:`play_sound`:
+
+    * raise a :py:class:`RuntimeError` if there is already another
+      active playback
+    * do not support looping
+
+    To learn about the restrictions on :ref:`streaming <sound-loading-modes>`,
+    please see:
+
+    * :ref:`sound-loading-modes-streaming`
+    * The :py:class:`pyglet.media.codecs.base.StreamingSource` class used
+      internally
+
+    To learn about cross-platform loading and file format concerns,
+    please see:
+
+    * Arcade's sound documentation:
+
+      * :ref:`sound-loading-modes`
+      * :ref:`sound-compat-easy`
+      * :ref:`sound-compat-loading`
+
+    * The pyglet guide to :external+pyglet:ref:`guide-media`
+
+    Args:
+         file_name:
+            The path of a file to load, optionally prefixed with a
+            :ref:`resource handle <resource_handles>`.
+         streaming:
+            If ``True``, attempt to load data from ``file_path`` via
+            via :ref:`streaming <sound-loading-modes>`.
+    """
+
+    def __init__(self, file_name: str | Path, streaming: bool = False):
         self.file_name: str = ""
-        file_name = resolve_resource_path(file_name)
+        file_name = resolve(file_name)
 
         if not Path(file_name).is_file():
-            raise FileNotFoundError(
-                f"The sound file '{file_name}' is not a file or can't be read."
-            )
+            raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
-        self.source: Union[media.StaticSource, media.StreamingSource] = media.load(
-            self.file_name, streaming=streaming
-        )
+        self.source: Source = media.load(self.file_name, streaming=streaming)
+
+        if self.source.duration is None:
+            raise ValueError(
+                "Audio duration must be known when loaded, but this audio source returned `None`"
+            )
 
         self.min_distance = (
             100000000  # setting the players to this allows for 2D panning with 3D audio
@@ -48,18 +88,24 @@ class Sound:
         loop: bool = False,
         speed: float = 1.0,
     ) -> media.Player:
-        """
-        Play the sound.
+        """Try to play this :py:class:`Sound` and return a |pyglet Player|.
 
-        :param float volume: Volume, from 0=quiet to 1=loud
-        :param float pan: Pan, from -1=left to 0=centered to 1=right
-        :param bool loop: Loop, false to play once, true to loop continuously
-        :param float speed: Change the speed of the sound which also changes pitch, default 1.0
+        .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
+
+                       Neither ``loop`` nor simultaneous playbacks will work. See
+                       :py;class:`Sound` and :ref:`sound-loading-modes`.
+
+        Args:
+            volume: Volume (``0.0`` is silent, ``1.0`` is loudest).
+            pan: Left / right channel balance (``-1`` is left,  ``0.0`` is
+                center, and ``1.0`` is right).
+            loop: ``True`` attempts to restart playback after finishing.
+            speed: Change the speed (and pitch) of the sound. Default speed is
+                ``1.0``.
+        Returns:
+            A |pyglet Player| for this playback.
         """
-        if (
-            isinstance(self.source, media.StreamingSource)
-            and self.source.is_player_source
-        ):
+        if isinstance(self.source, media.StreamingSource) and self.source.is_player_source:
             raise RuntimeError(
                 "Tried to play a streaming source more than once."
                 " Streaming sources should only be played in one instance."
@@ -84,17 +130,29 @@ class Sound:
         media.Source._players.append(player)
 
         def _on_player_eos():
-            media.Source._players.remove(player)
+            # Some race condition within Pyglet can cause the player to be removed
+            # from this list before we get to it, so we try and catch the ValueError
+            # raised by the removal if it's already been removed.
+            try:
+                media.Source._players.remove(player)
+            except ValueError:
+                pass
             # There is a closure on player. To get the refcount to 0,
             # we need to delete this function.
-            player.on_player_eos = None
+            player.on_player_eos = None  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/845
 
-        player.on_player_eos = _on_player_eos
+        player.on_player_eos = _on_player_eos  # type: ignore
         return player
 
     def stop(self, player: media.Player) -> None:
-        """
-        Stop a currently playing sound.
+        """Stop and :py:meth:`~pyglet.media.player.Player.delete` ``player``.
+
+        All references to it in the internal table for
+        :py:class:`pyglet.media.Source` will be deleted.
+
+        Args:
+            player: A pyglet |pyglet Player| from :func:`play_sound`
+                or :py:meth:`Sound.play`.
         """
         player.pause()
         player.delete()
@@ -102,125 +160,181 @@ class Sound:
             media.Source._players.remove(player)
 
     def get_length(self) -> float:
-        """Get length of audio in seconds"""
-        return self.source.duration
+        """Get length of the loaded audio in seconds"""
+        # We validate that duration is known when loading the source
+        return self.source.duration  # type: ignore
 
     def is_complete(self, player: media.Player) -> bool:
-        """Return true if the sound is done playing."""
-        if player.time >= self.source.duration:
-            return True
-        else:
-            return False
+        """``True`` if the sound is done playing."""
+        # We validate that duration is known when loading the source
+        return player.time >= self.source.duration  # type: ignore
 
     def is_playing(self, player: media.Player) -> bool:
-        """
-        Return if the sound is currently playing or not
+        """``True`` if ``player`` is currently playing, otherwise ``False``.
 
-        :param pyglet.media.Player player: Player returned from :func:`play_sound`.
-        :returns: A boolean, ``True`` if the sound is playing.
-        :rtype: bool
+        Args:
+            player: A |pyglet Player| from :func:`play_sound` or
+                :py:meth:`Sound.play`.
 
+        Returns:
+            ``True`` if the passed pyglet player is playing.
         """
         return player.playing
 
     def get_volume(self, player: media.Player) -> float:
-        """
-        Get the current volume.
+        """Get the current volume.
 
-        :param pyglet.media.Player player: Player returned from :func:`play_sound`.
-        :returns: A float, 0 for volume off, 1 for full volume.
-        :rtype: float
+        Args:
+            player: A |pyglet Player| from :func:`play_sound` or
+                :py:meth:`Sound.play`.
+        Returns:
+            A volume between ``0.0`` (silent) and ``1.0`` (full volume).
         """
-        return player.volume
+        return player.volume  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/847
 
-    def set_volume(self, volume, player: media.Player) -> None:
-        """
-        Set the volume of a sound as it is playing.
+    def set_volume(self, volume: float, player: media.Player) -> None:
+        """Set the volume of a sound as it is playing.
 
-        :param float volume: Floating point volume. 0 is silent, 1 is full.
-        :param pyglet.media.Player player: Player returned from :func:`play_sound`.
+        Args:
+            volume: Floating point volume. 0 is silent, 1 is full.
+            player: A |pyglet Player| from :func:`play_sound` or
+                :py:meth:`Sound.play`.
         """
         player.volume = volume
 
     def get_stream_position(self, player: media.Player) -> float:
-        """
-        Return where we are in the stream. This will reset back to
+        """Return where we are in the stream. This will reset back to
         zero when it is done playing.
 
-        :param pyglet.media.Player player: Player returned from :func:`play_sound`.
-
+        Args:
+            player: A |pyglet Player| from :func:`play_sound` or
+                 :py:meth:`Sound.play`.
         """
         return player.time
 
 
-def load_sound(path: Union[str, Path], streaming: bool = False) -> Optional[Sound]:
-    """
-    Load a sound.
+def load_sound(path: str | Path, streaming: bool = False) -> Sound:
+    """Load a file as a :py:class:`Sound` data object.
 
-    :param Path path: Name of the sound file to load.
-    :param bool streaming: Boolean for determining if we stream the sound
-                           or load it all into memory. Set to ``True`` for long sounds to save
-                           memory, ``False`` for short sounds to speed playback.
-    :returns: Sound object which can be used by the  :func:`play_sound` function.
-    :rtype: Sound
+    .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
+
+                   Neither ``loop`` nor simultaneous playbacks will work. See
+                   :py;class:`Sound` and :ref:`sound-loading-modes`.
+
+    Args:
+        path: a path which may be prefixed with a
+            :ref:`resource_handle <resource_handles>`.
+        streaming: Boolean for determining if we stream the sound or
+            load it all into memory. Set to ``True`` for long sounds to
+            save memory, ``False`` for short sounds to speed playback.
+
+    Returns:
+        A :ref:playable <sound-basics-playing>` instance of a
+        :py:class:`Sound` object.
     """
+    # Initialize the audio driver if it hasn't been already.
+    # This call is to avoid audio driver initialization
+    # the first time a sound is played.
+    # This call is inexpensive if the driver is already initialized.
+    media.get_audio_driver()
 
     file_name = str(path)
     try:
-        sound = Sound(file_name, streaming)
-        return sound
+        return Sound(file_name, streaming)
     except Exception as ex:
         raise FileNotFoundError(
             f'Unable to load sound file: "{file_name}". Exception: {ex}'
-        )
+        ) from ex
 
 
 def play_sound(
-    sound: Sound,
+    sound: Sound | None,
     volume: float = 1.0,
     pan: float = 0.0,
-    looping: bool = False,
+    loop: bool = False,
     speed: float = 1.0,
-) -> media.Player:
-    """
-    Play a sound.
+) -> media.Player | None:
+    """Try to play the ``sound`` and return a |pyglet Player|.
 
-    :param Sound sound: Sound loaded by :func:`load_sound`. Do NOT use a string here for the filename.
-    :param float volume: Volume, from 0=quiet to 1=loud
-    :param float pan: Pan, from -1=left to 0=centered to 1=right
-    :param bool looping: Should we loop the sound over and over?
-    :param float speed: Change the speed of the sound which also changes pitch, default 1.0
+    The ``sound`` must be a loaded :py:class:`Sound` object. If you
+    pass a path or :py:class:`str`, the function will raise a
+    :py:class:`TypeError.`
+
+    .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
+
+                   Neither ``loop`` nor simultaneous playbacks will work. See
+                   :py;class:`Sound` and :ref:`sound-loading-modes`.
+
+    The output and return value depend on whether playback succeeded:
+    .. # Note: substitutions don't really work inside tables, so the
+    .. # pyglet player below is left as a normal class cross-reference.
+
+    .. list-table::
+       :header-rows: 1
+
+       * - Success?
+         - Console output
+         - Return value
+
+       * - No / ``sound`` is ``None``
+         - Log a warning
+         - ``None``
+
+       * - Yes
+         - N/A
+         - A pyglet :py:class:`~pyglet.media.player.Player`
+
+    To learn more about the ``streaming`` keyword and restrictions, please see:
+
+    * :py:class:`Sound`
+    * :ref:`sound-intermediate-playback-change-aspects-ongoing`
+    * :ref:`sound-intermediate-playback-change-aspects-new`
+
+    Args:
+        sound: A :py:class:`Sound` instance or ``None``.
+        volume: From ``0.0`` (silent) to ``1.0`` (max volume).
+        pan: The left / right ear balance (``-1`` is left, ``0`` is center,
+        and ``1`` is right)
+        loop: ``True`` makes playback restart each time it reaches the end.
+        speed: How fast to play. Slower than ``1.0`` deepens sound while
+            values higher than ``1.0`` raise the pitch.
+
+    Returns:
+        A |pyglet Player| instance for this playback or
+        ``None`` if playback failed.
     """
     if sound is None:
-        print("Unable to play sound, no data passed in.")
+        logger.warning("Unable to play sound, no data passed in.")
         return None
-    elif isinstance(sound, str):
-        msg = (
-            "Error, passed in a string as a sound. "
-            "Make sure to use load_sound first, and use that result in play_sound."
+
+    elif not isinstance(sound, Sound):
+        raise TypeError(
+            f"Error, got {sound!r} instead of an arcade.Sound."
+            if not isinstance(sound, (str, Path, bytes))
+            else " Make sure to use load_sound first, then play the result with play_sound."
         )
-        raise Exception(msg)
+
     try:
-        return sound.play(volume, pan, looping, speed)
+        return sound.play(volume, pan, loop, speed)
     except Exception as ex:
-        print("Error playing sound.", ex)
+        logger.warn("Error playing sound.", ex)
+        return None
 
 
-def stop_sound(player: media.Player):
+def stop_sound(player: media.Player) -> None:
+    """Stop and delete a |pyglet Player| which is currently playing.
+
+    Args:
+        player: A pyglet |pyglet Player| from :py:func:`play_sound`
+            or :py:meth:`Sound.play`.
     """
-    Stop a sound that is currently playing.
-
-    :param pyglet.media.Player player: Player returned from :func:`play_sound`.
-    """
-    if isinstance(player, Sound):
-        raise ValueError(
-            "stop_sound takes the media player object returned from the play() command, "
-            "not the loaded Sound object."
-        )
 
     if not isinstance(player, media.Player):
-        raise ValueError(
-            "stop_sound takes a media player object returned from the play() command."
+        raise TypeError(
+            "stop_sound takes a media player object returned from the play_sound() command, not a "
+            "loaded Sound object."
+            if isinstance(player, Sound)
+            else f"{player!r}"
         )
 
     player.pause()

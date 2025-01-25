@@ -80,10 +80,7 @@ class PlayerSprite(arcade.Sprite):
     def __init__(self):
         """ Init """
         # Let parent initialize
-        super().__init__()
-
-        # Set our scale
-        self.scale = SPRITE_SCALING_PLAYER
+        super().__init__(scale=SPRITE_SCALING_PLAYER)
 
         # Images from Kenney.nl's Character pack
         # main_path = ":resources:images/animated_characters/female_adventurer/femaleAdventurer"
@@ -93,22 +90,23 @@ class PlayerSprite(arcade.Sprite):
         # main_path = ":resources:images/animated_characters/zombie/zombie"
         # main_path = ":resources:images/animated_characters/robot/robot"
 
-        # Load textures for idle standing
-        self.idle_texture_pair = arcade.load_texture_pair(f"{main_path}_idle.png")
-        self.jump_texture_pair = arcade.load_texture_pair(f"{main_path}_jump.png")
-        self.fall_texture_pair = arcade.load_texture_pair(f"{main_path}_fall.png")
+        # Load textures for idle, jump, and fall states
+        idle_texture = arcade.load_texture(f"{main_path}_idle.png")
+        jump_texture = arcade.load_texture(f"{main_path}_jump.png")
+        fall_texture = arcade.load_texture(f"{main_path}_fall.png") 
+        # Make pairs of textures facing left and right
+        self.idle_texture_pair = idle_texture, idle_texture.flip_left_right()
+        self.jump_texture_pair = jump_texture, jump_texture.flip_left_right()
+        self.fall_texture_pair = fall_texture, fall_texture.flip_left_right()
 
-        # Load textures for walking
+        # Load textures for walking and make pairs of textures facing left and right
         self.walk_textures = []
         for i in range(8):
-            texture = arcade.load_texture_pair(f"{main_path}_walk{i}.png")
-            self.walk_textures.append(texture)
+            texture = arcade.load_texture(f"{main_path}_walk{i}.png")
+            self.walk_textures.append((texture, texture.flip_left_right()))
 
         # Set the initial texture
         self.texture = self.idle_texture_pair[0]
-
-        # Hit box will be set based on the first image used.
-        self.hit_box = self.texture.hit_box_points
 
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
@@ -195,7 +193,7 @@ class GameWindow(arcade.Window):
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
 
         # Set background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up everything with the game """
@@ -259,7 +257,7 @@ class GameWindow(arcade.Window):
         # For the player, we set the damping to a lower value, which increases
         # the damping rate. This prevents the character from traveling too far
         # after the player lets off the movement keys.
-        # Setting the moment to PymunkPhysicsEngine.MOMENT_INF prevents it from
+        # Setting the moment of inertia to PymunkPhysicsEngine.MOMENT_INF prevents it from
         # rotating.
         # Friction normally goes between 0 (no friction) and 1.0 (high friction)
         # Friction is between two objects in contact. It is important to remember
@@ -268,7 +266,7 @@ class GameWindow(arcade.Window):
         self.physics_engine.add_sprite(self.player_sprite,
                                        friction=PLAYER_FRICTION,
                                        mass=PLAYER_MASS,
-                                       moment=arcade.PymunkPhysicsEngine.MOMENT_INF,
+                                       moment_of_inertia=arcade.PymunkPhysicsEngine.MOMENT_INF,
                                        collision_type="player",
                                        max_horizontal_velocity=PLAYER_MAX_HORIZONTAL_SPEED,
                                        max_vertical_velocity=PLAYER_MAX_VERTICAL_SPEED)
@@ -315,7 +313,7 @@ class GameWindow(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
-        bullet = BulletSprite(20, 5, arcade.color.DARK_YELLOW)
+        bullet = BulletSprite(width=20, height=5, color=arcade.color.DARK_YELLOW)
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location

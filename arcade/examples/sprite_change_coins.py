@@ -11,38 +11,30 @@ python -m arcade.examples.sprite_change_coins
 
 import random
 import arcade
-import os
 
-SPRITE_SCALING = 1
+SPRITE_SCALING = 0.4
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Change Coins"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Change Coins"
 
 
 class Collectable(arcade.Sprite):
     """ This class represents something the player collects. """
 
     def __init__(self, filename, scale):
-        super().__init__(filename, scale)
+        super().__init__(filename, scale=scale)
         # Flip this once the coin has been collected.
         self.changed = False
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.a
     """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
-
-        # Set the working directory (where we expect to find files) to the same
-        # directory this .py file is in. You can leave this out of your own
-        # code, but it is needed to easily run the examples using "python -m"
-        # as mentioned at the top of this program.
-        file_path = os.path.dirname(os.path.abspath(__file__))
-        os.chdir(file_path)
+    def __init__(self):
+        super().__init__()
 
         # Sprite lists
         self.player_list = None
@@ -51,6 +43,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
         self.player_sprite = None
+        self.bumper_texture = arcade.load_texture(":resources:images/pinball/bumper.png")
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -61,30 +54,33 @@ class MyGame(arcade.Window):
 
         # Set up the player
         self.score = 0
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png", 0.5)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=0.75,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
 
         for i in range(50):
             # Create the coin instance
-            coin = Collectable(":resources:images/items/coinGold.png", SPRITE_SCALING)
-            coin.width = 30
-            coin.height = 30
+            coin = Collectable(
+                ":resources:images/items/coinGold.png",
+                scale=SPRITE_SCALING,
+            )
 
             # Position the coin
-            coin.center_x = random.randrange(SCREEN_WIDTH)
-            coin.center_y = random.randrange(SCREEN_HEIGHT)
+            coin.center_x = random.randrange(WINDOW_WIDTH)
+            coin.center_y = random.randrange(WINDOW_HEIGHT)
 
             # Add the coin to the lists
             self.coin_list.append(coin)
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.window.set_mouse_visible(False)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """
@@ -125,8 +121,7 @@ class MyGame(arcade.Window):
             # Have we collected this?
             if not coin.changed:
                 # No? Then do so
-                coin.append_texture(arcade.load_texture(":resources:images/pinball/bumper.png"))
-                coin.set_texture(1)
+                coin.texture = self.bumper_texture
                 coin.changed = True
                 coin.width = 30
                 coin.height = 30
@@ -135,10 +130,18 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
-    arcade.run()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
+    arcade.run()
 
 if __name__ == "__main__":
     main()

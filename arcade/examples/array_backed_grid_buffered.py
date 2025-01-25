@@ -28,28 +28,28 @@ HEIGHT = 30
 MARGIN = 5
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-SCREEN_TITLE = "Array Backed Grid Buffered Example"
+WINDOW_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+WINDOW_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+WINDOW_TITLE = "Array Backed Grid Buffered Example"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Set up the application.
         """
-        super().__init__(width, height, title)
+        super().__init__()
         self.shape_list = None
 
         # Create a 2 dimensional array. A two dimensional
         # array is simply a list of lists.
         # This array can be altered later to contain 0 or 1
         # to show a white or green cell.
-        # 
+        #
         # A 4 x 4 grid would look like this
         #
         # grid = [
@@ -82,7 +82,7 @@ class MyGame(arcade.Window):
         If the cell contains 0 we crate a white shape.
         If the cell contains 1 we crate a green shape.
         """
-        self.shape_list = arcade.ShapeElementList()
+        self.shape_list = arcade.shape_list.ShapeElementList()
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 if self.grid[row][column] == 0:
@@ -93,7 +93,9 @@ class MyGame(arcade.Window):
                 x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
                 y = (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
-                current_rect = arcade.create_rectangle_filled(x, y, WIDTH, HEIGHT, color)
+                current_rect = arcade.shape_list.create_rectangle_filled(
+                    x, y, WIDTH, HEIGHT, color,
+                )
                 self.shape_list.append(current_rect)
 
     def on_draw(self):
@@ -134,7 +136,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

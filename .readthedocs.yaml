@@ -5,15 +5,21 @@ version: 2
 sphinx:
   configuration: doc/conf.py
 
+build:
+  os: ubuntu-22.04
+  tools:
+    # If you change this, you also need to update .github/workflows/test.yml
+    # to make sure doc test builds run on the same version.
+    python: "3.10"  # July 2024 | See autobuild info in pyproject.toml's dev dependencies
+
 python:
-  version: 3.8
   install:
     - method: pip
       path: .
       extra_requirements:
-        - docs
+        - dev
 
 # Build PDF & ePub
-formats:
-  - epub
-  - pdf
+# formats:
+#  - epub
+#  - pdf

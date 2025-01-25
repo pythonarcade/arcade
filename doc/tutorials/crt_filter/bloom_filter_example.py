@@ -1,15 +1,13 @@
-from pathlib import Path
 import arcade
 from arcade.experimental import BloomFilter
 import random
-from arcade.color import *
+from arcade.color import RED, YELLOW, ORANGE, GREEN, BLUEBERRY, AMETHYST
 
 
 # Do the math to figure out our screen dimensions
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "ShaderToy Demo"
-RESOURCE_DIR = Path(__file__).parent
 
 
 class MyGame(arcade.Window):
@@ -27,8 +25,9 @@ class MyGame(arcade.Window):
         self.sprite_list = arcade.SpriteList()
 
         for y in range(10, self.height, 50):
-            color = random.choice([RED, YELLOW, ORANGE, GREEN, BLUEBERRY, AMETHYST])
-            my_sprite = arcade.SpriteCircle(random.randrange(40), color)
+            color = random.choice(
+                [RED, YELLOW, ORANGE, GREEN, BLUEBERRY, AMETHYST])
+            my_sprite = arcade.SpriteCircle(random.randrange(1, 40), color)
             self.sprite_list.append(my_sprite)
             my_sprite.change_x = random.random() * 5
             my_sprite.center_y = y
@@ -39,7 +38,8 @@ class MyGame(arcade.Window):
             self.bloom_filter.use()
             self.bloom_filter.clear()
             self.sprite_list.draw()
-            # arcade.draw_lrtb_rectangle_outline(0, self.width - 25, self.height - 5, 0, arcade.color.WHITE, 5)
+            # arcade.draw_lrbt_rectangle_outline(
+            # 0, self.width - 25, 0, self.height - 5, arcade.color.WHITE, 5)
 
             # Switch back to our window and draw the CRT filter do
             # draw its stuff to the screen

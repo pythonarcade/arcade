@@ -23,7 +23,7 @@ to. The ``View`` class has methods for ``on_update`` and ``on_draw`` just like
 managing what is drawn on the window and handling user input.
 
 If you know ahead of time you want to use views, you can build your code around
-the :ref:`view-examples`. However, typically a programmer wants to add these
+the :ref:`view_examples`. However, typically a programmer wants to add these
 items to a game that already exists.
 
 This tutorial steps you through how to do just that.

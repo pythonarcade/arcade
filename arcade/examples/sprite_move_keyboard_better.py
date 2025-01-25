@@ -15,16 +15,16 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Better Move Sprite with Keyboard Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Better Move Sprite with Keyboard Example"
 
 MOVEMENT_SPEED = 5
 
 
 class Player(arcade.Sprite):
 
-    def update(self):
+    def update(self, delta_time: float = 1/60):
         """ Move the player """
         # Move player.
         # Remove these lines if physics engine is moving player.
@@ -34,27 +34,27 @@ class Player(arcade.Sprite):
         # Check for out-of-bounds
         if self.left < 0:
             self.left = 0
-        elif self.right > SCREEN_WIDTH - 1:
-            self.right = SCREEN_WIDTH - 1
+        elif self.right > WINDOW_WIDTH - 1:
+            self.right = WINDOW_WIDTH - 1
 
         if self.bottom < 0:
             self.bottom = 0
-        elif self.top > SCREEN_HEIGHT - 1:
-            self.top = SCREEN_HEIGHT - 1
+        elif self.top > WINDOW_HEIGHT - 1:
+            self.top = WINDOW_HEIGHT - 1
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
 
         # Call the parent class initializer
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
         self.down_pressed = False
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -78,8 +78,10 @@ class MyGame(arcade.Window):
         self.player_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = Player(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                    SPRITE_SCALING)
+        self.player_sprite = Player(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+        )
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 50
         self.player_list.append(self.player_sprite)
@@ -114,7 +116,7 @@ class MyGame(arcade.Window):
         # Call update to move the sprite
         # If using a physics engine, call update player to rely on physics engine
         # for movement, and call physics engine here.
-        self.player_list.update()
+        self.player_list.update(delta_time)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -151,8 +153,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

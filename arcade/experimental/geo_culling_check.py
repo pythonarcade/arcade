@@ -6,38 +6,49 @@ leave the screen.
 Simply run the program and move draw the sprites around using the mouse.
 """
 
-from arcade.sprite import Sprite
+from __future__ import annotations
+
 import PIL
+from pyglet.math import Mat4
+
 import arcade
+from arcade.sprite import Sprite
 
 
 class GeoCullingTest(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 400, "Cull test", resizable=True)
-        self.proj = self.ctx.projection_2d
-        self.texture = arcade.Texture("weird_texture", image=PIL.Image.new("RGBA", (2048, 2), (255, 255, 255, 255)))
+        super().__init__(1280, 720, "Cull test", resizable=True)
+        self.proj = 0, self.width, 0, self.height
+        self.texture = arcade.Texture(
+            PIL.Image.new("RGBA", (2048, 2), (255, 255, 255, 255)),
+            hash="weird_texture",
+        )
 
         self.spritelist = arcade.SpriteList()
-        self.spritelist.append(Sprite(
-            ":resources:images/tiles/boxCrate_double.png",
-            center_x=400, center_y=300, scale=6)
+        self.spritelist.append(
+            Sprite(
+                ":resources:images/tiles/boxCrate_double.png",
+                center_x=400,
+                center_y=300,
+                scale=6,
+            )
         )
         for i in range(0, 360, 36):
-            self.spritelist.append(
-                arcade.Sprite(texture=self.texture, center_x=400, center_y=300, angle=i)
-            )
+            self.spritelist.append(arcade.Sprite(self.texture, center_x=400, center_y=300, angle=i))
 
-        self.spritelist.append(Sprite(":resources:images/items/gold_1.png", center_x=400, center_y=300))
+        self.spritelist.append(
+            Sprite(":resources:images/items/gold_1.png", center_x=400, center_y=300)
+        )
 
     def on_draw(self):
         self.clear()
-        self.ctx.projection_2d = self.proj
-        self.spritelist.draw()
+        self.ctx.projection_matrix = Mat4.orthogonal_projection(*self.proj, -100, 100)
+        self.spritelist.draw(pixelated=True)
 
     def on_resize(self, width, height):
         super().on_resize(width, height)
-        self.proj = self.ctx.projection_2d
+        self.proj = 0, width, 0, height
 
     def on_mouse_drag(self, x: float, y: float, dx: float, dy: float, buttons: int, modifiers: int):
         self.proj = (

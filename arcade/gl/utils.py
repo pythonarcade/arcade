@@ -1,19 +1,34 @@
+"""
+Various utility functions for the gl module.
+"""
+
+from __future__ import annotations
+
 from array import array
-from typing import Any, Tuple
 from ctypes import c_byte
+from typing import Any
 
 
-def data_to_ctypes(data: Any) -> Tuple[int, Any]:
+def data_to_ctypes(data: Any) -> tuple[int, Any]:
     """
     Attempts to convert the data to ctypes if needed by using the buffer protocol.
 
-    Returns the byte size and the data.
+    - bytes will be returned as is
+    - Tuples will be converted to array
+    - Other types will be converted to ctypes by using the buffer protocol
+      by creating a memoryview and then a ctypes array of bytes.
+
+    Args:
+        data: The data to convert to ctypes.
+    Returns:
+        A tuple containing the size of the data in bytes
+        and the data object optionally converted to ctypes.
     """
     if isinstance(data, bytes):
         return len(data), data
     else:
         if isinstance(data, tuple):
-            data = array('f', data)
+            data = array("f", data)
         try:
             m_view = memoryview(data)
             c_bytes = c_byte * m_view.nbytes

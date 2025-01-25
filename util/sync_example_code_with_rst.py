@@ -3,7 +3,7 @@ from pathlib import Path
 # .. literalinclude:: ../../arcade/examples/array_backed_grid_buffered.py
 # :ref:`platformer_tutorial`
 import re
-literal_include_pattern = re.compile("literalinclude:: .*/(.*\.py)$")
+literal_include_pattern = re.compile(r"literalinclude:: .*/(.*\.py)$")
 ref_pattern = re.compile(":ref:`(.*)`")
 
 

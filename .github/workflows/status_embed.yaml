@@ -1,0 +1,61 @@
+name: Status Embed
+
+on:
+  workflow_run:
+    workflows:
+      - GitHub Ubuntu test
+      - Windows self-hosted test
+    types:
+      - completed
+
+jobs:
+  status_embed:
+    name:  Send Status Embed to Discord
+    runs-on: ubuntu-latest
+
+    steps:
+      # Process the artifact uploaded in the `pull_request`-triggered workflow:
+      - name: Get Pull Request Information
+        id: pr_info
+        if: github.event.workflow_run.event == 'pull_request'
+        run: |
+          curl -s -H "Authorization: token $GITHUB_TOKEN" ${{ github.event.workflow_run.artifacts_url }} > artifacts.json
+          DOWNLOAD_URL=$(cat artifacts.json | jq -r '.artifacts[] | select(.name == "pull-request-payload") | .archive_download_url')
+          [ -z "$DOWNLOAD_URL" ] && exit 1
+          wget --quiet --header="Authorization: token $GITHUB_TOKEN" -O pull_request_payload.zip $DOWNLOAD_URL || exit 2
+          unzip -p pull_request_payload.zip > pull_request_payload.json
+          [ -s pull_request_payload.json ] || exit 3
+          echo "::set-output name=pr_author_login::$(jq -r '.user.login // empty' pull_request_payload.json)"
+          echo "::set-output name=pr_number::$(jq -r '.number // empty' pull_request_payload.json)"
+          echo "::set-output name=pr_title::$(jq -r '.title // empty' pull_request_payload.json)"
+          echo "::set-output name=pr_source::$(jq -r '.head.label // empty' pull_request_payload.json)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Send an informational status embed to Discord instead of the
+      # standard embeds that Discord sends. This embed will contain
+      # more information and we can fine tune when we actually want
+      # to send an embed.
+      - name: GitHub Actions Status Embed for Discord
+        uses: SebastiaanZ/github-status-embed-for-discord@v0.2.1
+        with:
+          # Webhook token
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+
+          # We need to provide the information of the workflow that
+          # triggered this workflow instead of this workflow.
+          workflow_name: ${{ github.event.workflow_run.name }}
+          run_id: ${{ github.event.workflow_run.id }}
+          run_number: ${{ github.event.workflow_run.run_number }}
+          status: ${{ github.event.workflow_run.conclusion }}
+          actor: ${{ github.actor }}
+          repository:  ${{ github.repository }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.event.workflow_run.head_sha }}
+
+          # Now we can use the information extracted in the previous step:
+          pr_author_login: ${{ steps.pr_info.outputs.pr_author_login }}
+          pr_number: ${{ steps.pr_info.outputs.pr_number }}
+          pr_title: ${{ steps.pr_info.outputs.pr_title }}
+          pr_source: ${{ steps.pr_info.outputs.pr_source }}

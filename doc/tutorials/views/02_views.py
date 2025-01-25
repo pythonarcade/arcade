@@ -4,7 +4,7 @@ import arcade
 # --- Constants ---
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_COIN = .25
-COIN_COUNT = 50
+COIN_COUNT = 25
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -25,12 +25,13 @@ class GameView(arcade.View):
 
         # Set up the player info
         self.player_sprite = None
+        self.score_text = arcade.Text("Score: 0", 10, 10, arcade.color.WHITE, 14)
         self.score = 0
 
         # Don't show the mouse cursor
         self.window.set_mouse_visible(False)
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.window.background_color = arcade.color.AMAZON
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -73,7 +74,8 @@ class GameView(arcade.View):
 
         # Put the text on the screen.
         output = f"Score: {self.score}"
-        arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        self.score_text.text = output
+        self.score_text.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Handle Mouse Motion """

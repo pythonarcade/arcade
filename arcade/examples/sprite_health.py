@@ -10,11 +10,13 @@ import math
 from typing import Tuple
 
 import arcade
-from arcade.resources import (
-    image_female_person_idle,
-    image_laser_blue01,
-    image_zombie_idle,
+from arcade.types import Color
+
+IMAGE_FEMALE_PERSON_IDLE = (
+    ":assets:images/animated_characters/female_person/femalePerson_idle.png"
 )
+IMAGE_LASER_BLUE01 = ":assets:images/space_shooter/laserBlue01.png"
+IMAGE_ZOMBIE_IDLE = ":assets:images/animated_characters/zombie/zombie_idle.png"
 
 SPRITE_SCALING_PLAYER = 0.5
 SPRITE_SCALING_ENEMY = 0.5
@@ -25,33 +27,33 @@ BULLET_SPEED = 150
 BULLET_DAMAGE = 1
 PLAYER_HEALTH = 5
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Health Bars"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Health Bars"
 
 
 def sprite_off_screen(
     sprite: arcade.Sprite,
-    screen_height: int = SCREEN_HEIGHT,
-    screen_width: int = SCREEN_WIDTH,
+    WINDOW_HEIGHT: int = WINDOW_HEIGHT,
+    WINDOW_WIDTH: int = WINDOW_WIDTH,
 ) -> bool:
     """Checks if a sprite is off-screen or not."""
     return (
         sprite.top < 0
-        or sprite.bottom > screen_height
+        or sprite.bottom > WINDOW_HEIGHT
         or sprite.right < 0
-        or sprite.left > screen_width
+        or sprite.left > WINDOW_WIDTH
     )
 
 
 class Player(arcade.Sprite):
     def __init__(self, bar_list: arcade.SpriteList) -> None:
         super().__init__(
-            filename=image_female_person_idle,
+            IMAGE_FEMALE_PERSON_IDLE,
             scale=SPRITE_SCALING_PLAYER,
         )
         self.indicator_bar: IndicatorBar = IndicatorBar(
-            self, bar_list, (self.center_x, self.center_y)
+            self, bar_list, (self.center_x, self.center_y), scale=(1.5, 1.5),
         )
         self.health: int = PLAYER_HEALTH
 
@@ -59,11 +61,11 @@ class Player(arcade.Sprite):
 class Bullet(arcade.Sprite):
     def __init__(self) -> None:
         super().__init__(
-            filename=image_laser_blue01,
+            IMAGE_LASER_BLUE01,
             scale=SPRITE_SCALING_BULLET,
         )
 
-    def on_update(self, delta_time: float = 1 / 60) -> None:
+    def update(self, delta_time: float = 1 / 60) -> None:
         """Updates the bullet's position."""
         self.position = (
             self.center_x + self.change_x * delta_time,
@@ -75,15 +77,25 @@ class IndicatorBar:
     """
     Represents a bar which can display information about a sprite.
 
-    :param Player owner: The owner of this indicator bar.
-    :param arcade.SpriteList sprite_list: The sprite list used to draw the indicator
-    bar components.
-    :param Tuple[float, float] position: The initial position of the bar.
-    :param arcade.Color full_color: The color of the bar.
-    :param arcade.Color background_color: The background color of the bar.
-    :param int width: The width of the bar.
-    :param int height: The height of the bar.
-    :param int border_size: The size of the bar's border.
+    Args:
+        owner:
+            The owner of this indicator bar.
+        sprite_list:
+            The sprite list used to draw the indicator bar components.
+        position:
+            The initial position of the bar.
+        full_color:
+            The color of the bar.
+        background_color:
+            The background color of the bar.
+        width:
+            The width of the bar.
+        height:
+            The height of the bar.
+        border_size:
+            The size of the bar's border.
+        scale:
+            The scale of the indicator bar.
     """
 
     def __init__(
@@ -91,41 +103,43 @@ class IndicatorBar:
         owner: Player,
         sprite_list: arcade.SpriteList,
         position: Tuple[float, float] = (0, 0),
-        full_color: arcade.Color = arcade.color.GREEN,
-        background_color: arcade.Color = arcade.color.BLACK,
+        full_color: Color = arcade.color.GREEN,
+        background_color: Color = arcade.color.BLACK,
         width: int = 100,
         height: int = 4,
         border_size: int = 4,
+        scale: Tuple[float, float] = (1.0, 1.0),
     ) -> None:
         # Store the reference to the owner and the sprite list
         self.owner: Player = owner
         self.sprite_list: arcade.SpriteList = sprite_list
 
         # Set the needed size variables
-        self._box_width: int = width
-        self._box_height: int = height
-        self._half_box_width: int = self._box_width // 2
+        self._bar_width: int = width
+        self._bar_height: int = height
         self._center_x: float = 0.0
         self._center_y: float = 0.0
         self._fullness: float = 0.0
+        self._scale: Tuple[float, float] = (1.0, 1.0)
 
         # Create the boxes needed to represent the indicator bar
         self._background_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
-            self._box_width + border_size,
-            self._box_height + border_size,
-            background_color,
+            self._bar_width + border_size,
+            self._bar_height + border_size,
+            color=background_color,
         )
         self._full_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
-            self._box_width,
-            self._box_height,
-            full_color,
+            self._bar_width,
+            self._bar_height,
+            color=full_color,
         )
         self.sprite_list.append(self._background_box)
         self.sprite_list.append(self._full_box)
 
-        # Set the fullness and position of the bar
-        self.fullness: float = 1.0
-        self.position: Tuple[float, float] = position
+        # Set the fullness, position and scale of the bar
+        self.fullness = 1.0
+        self.position = position
+        self.scale = scale
 
     def __repr__(self) -> str:
         return f"<IndicatorBar (Owner={self.owner})>"
@@ -139,6 +153,46 @@ class IndicatorBar:
     def full_box(self) -> arcade.SpriteSolidColor:
         """Returns the full box of the indicator bar."""
         return self._full_box
+
+    @property
+    def bar_width(self) -> int:
+        """Gets the width of the bar."""
+        return self._bar_width
+
+    @property
+    def bar_height(self) -> int:
+        """Gets the height of the bar."""
+        return self._bar_height
+
+    @property
+    def center_x(self) -> float:
+        """Gets the x position of the bar."""
+        return self._center_x
+
+    @property
+    def center_y(self) -> float:
+        """Gets the y position of the bar."""
+        return self._center_y
+
+    @property
+    def top(self) -> float:
+        """Gets the y coordinate of the top of the bar."""
+        return self.background_box.top
+
+    @property
+    def bottom(self) -> float:
+        """Gets the y coordinate of the bottom of the bar."""
+        return self.background_box.bottom
+
+    @property
+    def left(self) -> float:
+        """Gets the x coordinate of the left of the bar."""
+        return self.background_box.left
+
+    @property
+    def right(self) -> float:
+        """Gets the x coordinate of the right of the bar."""
+        return self.background_box.right
 
     @property
     def fullness(self) -> float:
@@ -162,8 +216,8 @@ class IndicatorBar:
         else:
             # Set the full_box to be visible incase it wasn't then update the bar
             self.full_box.visible = True
-            self.full_box.width = self._box_width * new_fullness
-            self.full_box.left = self._center_x - (self._box_width // 2)
+            self.full_box.width = self._bar_width * new_fullness * self.scale[0]
+            self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale[0]
 
     @property
     def position(self) -> Tuple[float, float]:
@@ -180,16 +234,42 @@ class IndicatorBar:
             self.full_box.position = new_position
 
             # Make sure full_box is to the left of the bar instead of the middle
-            self.full_box.left = self._center_x - (self._box_width // 2)
+            self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale[0]
+
+    @property
+    def scale(self) -> Tuple[float, float]:
+        """Returns the scale of the bar."""
+        return self._scale
+
+    @scale.setter
+    def scale(self, value: Tuple[float, float]) -> None:
+        """Sets the new scale of the bar."""
+        # Check if the scale has changed. If so, change the bar's scale
+        if value != self.scale:
+            self._scale = value
+            self.background_box.scale = value
+            self.full_box.scale = value
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     def __init__(self) -> None:
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-        self.bullet_list = arcade.SpriteList()
-        self.bar_list = arcade.SpriteList()
+        super().__init__()
+
+        # Create sprite lists
+        self.bullet_list: arcade.SpriteList = arcade.SpriteList()
+        self.bar_list: arcade.SpriteList = arcade.SpriteList()
+        self.player_sprite_list: arcade.SpriteList = arcade.SpriteList()
+        self.enemy_sprite_list: arcade.SpriteList = arcade.SpriteList()
+
+        # Create player sprite
         self.player_sprite = Player(self.bar_list)
-        self.enemy_sprite = arcade.Sprite(image_zombie_idle, SPRITE_SCALING_ENEMY)
+        self.player_sprite_list.append(self.player_sprite)
+
+        # Create enemy Sprite
+        self.enemy_sprite = arcade.Sprite(IMAGE_ZOMBIE_IDLE, scale=SPRITE_SCALING_ENEMY)
+        self.enemy_sprite_list.append(self.enemy_sprite)
+
+        # Create text objects
         self.top_text: arcade.Text = arcade.Text(
             "Dodge the bullets by moving the mouse!",
             self.width // 2,
@@ -219,8 +299,8 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw all the sprites
-        self.player_sprite.draw()
-        self.enemy_sprite.draw()
+        self.player_sprite_list.draw()
+        self.enemy_sprite_list.draw()
         self.bullet_list.draw()
         self.bar_list.draw()
 
@@ -248,7 +328,7 @@ class MyGame(arcade.Window):
         )
 
         # Call updates on bullet sprites
-        self.bullet_list.on_update(delta_time)
+        self.bullet_list.update(delta_time)
 
         # Check if the enemy can attack. If so, shoot a bullet from the
         # enemy towards the player
@@ -261,18 +341,24 @@ class MyGame(arcade.Window):
             # Set the bullet's position
             bullet.position = self.enemy_sprite.position
 
-            # Set the bullet's angle to face the player
+            # Calculate the trajectory.
+            # Zero degrees is up, 90 to the right.
+            # atan returns 0 degrees to the right instead of up, so shift by 90 degrees.
             diff_x = self.player_sprite.center_x - self.enemy_sprite.center_x
             diff_y = self.player_sprite.center_y - self.enemy_sprite.center_y
-            angle = math.atan2(diff_y, diff_x)
+            angle = -math.atan2(diff_y, diff_x) + 3.14 / 2
             angle_deg = math.degrees(angle)
+
             if angle_deg < 0:
                 angle_deg += 360
-            bullet.angle = angle_deg
+
+            # Set the bullet's angle to face the player.
+            # Bullet graphic isn't pointed up, so rotate 90
+            bullet.angle = angle_deg - 90
 
             # Give the bullet a velocity towards the player
-            bullet.change_x = math.cos(angle) * BULLET_SPEED
-            bullet.change_y = math.sin(angle) * BULLET_SPEED
+            bullet.change_x = math.sin(angle) * BULLET_SPEED
+            bullet.change_y = math.cos(angle) * BULLET_SPEED
 
             # Add the bullet to the bullet list
             self.bullet_list.append(bullet)
@@ -296,10 +382,19 @@ class MyGame(arcade.Window):
                 )
 
 
-def main() -> None:
-    """Main Program."""
-    window = MyGame()
-    window.setup()
+def main():
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

@@ -7,18 +7,18 @@ python -m arcade.examples.sprite_bullets_random
 import arcade
 import random
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprites and Random Bullets Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprites and Random Bullets Example"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
         self.frame_count = 0
         self.player_list = None
@@ -34,20 +34,29 @@ class MyGame(arcade.Window):
         self.bullet_list = arcade.SpriteList()
 
         # Add player ship
-        self.player = arcade.Sprite(":resources:images/space_shooter/playerShip1_orange.png", 0.5)
+        self.player = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_orange.png",
+            scale=0.5,
+        )
         self.player_list.append(self.player)
 
         # Add top-left enemy ship
-        enemy = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.5)
+        enemy = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_green.png",
+            scale=0.5,
+        )
         enemy.center_x = 120
-        enemy.center_y = SCREEN_HEIGHT - enemy.height
+        enemy.center_y = WINDOW_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
         # Add top-right enemy ship
-        enemy = arcade.Sprite(":resources:images/space_shooter/playerShip1_green.png", 0.5)
-        enemy.center_x = SCREEN_WIDTH - 120
-        enemy.center_y = SCREEN_HEIGHT - enemy.height
+        enemy = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_green.png",
+            scale=0.5,
+        )
+        enemy.center_x = WINDOW_WIDTH - 120
+        enemy.center_y = WINDOW_HEIGHT - enemy.height
         enemy.angle = 180
         self.enemy_list.append(enemy)
 
@@ -75,7 +84,7 @@ class MyGame(arcade.Window):
             if random.randrange(adj_odds) == 0:
                 bullet = arcade.Sprite(":resources:images/space_shooter/laserBlue01.png")
                 bullet.center_x = enemy.center_x
-                bullet.angle = -90
+                bullet.angle = 90
                 bullet.top = enemy.bottom
                 bullet.change_y = -2
                 self.bullet_list.append(bullet)
@@ -95,8 +104,17 @@ class MyGame(arcade.Window):
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

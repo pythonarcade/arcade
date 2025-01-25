@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import math
 import time
+
 import arcade
 
 # Do the math to figure out our screen dimensions
@@ -18,25 +21,29 @@ class MyGame(arcade.Window):
         start = time.time()
         self.sprites = arcade.SpriteList()
         num_sprites = 100_000
-        # sprite_scale = 0.01  # All sprites covering the screen
-        sprite_scale = 1.0  # default
+        sprite_scale = 0.02  # All sprites covering the screen
+        # sprite_scale = 1.0  # default
+        self.texture = arcade.load_texture(":assets:images/tiles/boxCrate.png")
+
         r = int(math.sqrt(num_sprites))
         for y in range(r):
             for x in range(r):
-                self.sprites.append(arcade.Sprite(
-                    arcade.resources.image_box_crate,
-                    scale=sprite_scale,
-                    center_x=128 * sprite_scale * x,
-                    center_y=128 * sprite_scale * y,
-                ))
+                self.sprites.append(
+                    arcade.Sprite(
+                        self.texture,
+                        scale=sprite_scale,
+                        center_x=128 * sprite_scale * x,
+                        center_y=128 * sprite_scale * y,
+                    )
+                )
         self.sprites.draw()  # Force the list to build
 
         self.sprites.program = self.ctx.sprite_list_program_no_cull
-        print(f"Initialization time: {time.time() -start}")
+        print(f"Initialization time: {time.time() - start}")
 
         self.query = self.ctx.query()
         self.frames = 0
-        self.frame_step = 600
+        self.frame_step = 60
         self.time_elapsed_total = 0
 
     def on_draw(self):

@@ -1,46 +1,47 @@
 """
-Path-related functions.
-
-"""
-from arcade import Point, check_for_collision_with_list, SpriteList, Sprite
-from typing import Union, List, Tuple, Set
-
-import sys
-
-
-if 'shapely' in sys.modules:
-    from .paths_shapely import has_line_of_sight  # noqa: F401
-else:
-    from .paths_python import has_line_of_sight  # noqa: F401
-
-"""
 Classic A-star algorithm for path finding.
 """
 
+from __future__ import annotations
 
-def _spot_is_blocked(position: Union[Tuple[float, float], List[float]],
-                     moving_sprite: Sprite,
-                     blocking_sprites: SpriteList)\
-        -> bool:
+import math
+
+from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point
+from arcade.math import get_distance, lerp_2d
+from arcade.types import Point2
+
+__all__ = ["AStarBarrierList", "astar_calculate_path", "has_line_of_sight"]
+
+
+def _spot_is_blocked(position: Point2, moving_sprite: Sprite, blocking_sprites: SpriteList) -> bool:
+    """
+    Return if position is blocked
+
+    Args:
+        position (Point2): position to put moving_sprite at
+        moving_sprite (Sprite): Sprite to use
+        blocking_sprites (SpriteList): List of Sprites to check against
+
+    Returns:
+        bool: If the Sprite would hit anything in blocking_sprites at the position
+    """
     original_pos = moving_sprite.position
     moving_sprite.position = position
     hit_list = check_for_collision_with_list(moving_sprite, blocking_sprites)
     moving_sprite.position = original_pos
-    if len(hit_list) > 0:
-        return True
-    else:
-        return False
+    return len(hit_list) > 0
 
 
-def _heuristic(start: Point, goal: Point):
+def _heuristic(start: Point2, goal: Point2) -> float:
     """
+    Returns a heuristic value for the passed points.
 
     Args:
-        start:
-        goal:
+        start (Point2): The 1st point to compare
+        goal (Point2): The 2nd point to compare
 
     Returns:
-
+        float: The heuristic of the 2 points
     """
     # Use Chebyshev distance heuristic if we can move one square either
     # adjacent or diagonal
@@ -52,19 +53,35 @@ def _heuristic(start: Point, goal: Point):
 
 
 class _AStarGraph(object):
-    # Define a class board like grid with two barriers
+    """
+    A grid which tracks 2 barriers and a moving sprite.
 
-    def __init__(self, barriers: Union[List, Tuple, Set],
-                 left: int,
-                 right: int,
-                 bottom: int,
-                 top: int,
-                 diagonal_movement: bool):
-        if barriers is set:
-            self.barriers = barriers
-        else:
-            self.barriers = set(barriers)
+    Args:
+        barriers:
+            Barriers to use in the AStarSearch Algorithm.
+            These are turned into a set.
+        left (int):
+            Far left side x value
+        right (int):
+            Far right side x value
+        bottom (int):
+            Far bottom side y value
+        top (int):
+            Far top side y value
+        diagonal_movement (bool):
+            Whether or not to use diagonals in the AStarSearch Algorithm
+    """
 
+    def __init__(
+        self,
+        barriers: list | tuple | set,
+        left: int,
+        right: int,
+        bottom: int,
+        top: int,
+        diagonal_movement: bool,
+    ):
+        self.barriers = barriers if barriers is set else set(barriers)
         self.left = left
         self.right = right
         self.top = top
@@ -72,15 +89,29 @@ class _AStarGraph(object):
 
         if diagonal_movement:
             self.movement_directions = (  # type: ignore
-                (1, 0), (-1, 0),
-                (0, 1), (0, -1),
-                (1, 1), (-1, 1),
-                (1, -1), (-1, -1)
+                (1, 0),
+                (-1, 0),
+                (0, 1),
+                (0, -1),
+                (1, 1),
+                (-1, 1),
+                (1, -1),
+                (-1, -1),
             )
         else:
             self.movement_directions = (1, 0), (-1, 0), (0, 1), (0, -1)  # type: ignore
 
-    def get_vertex_neighbours(self, pos: Point) -> List[Tuple[float, float]]:
+    def get_vertex_neighbours(self, pos: Point2) -> list[tuple[float, float]]:
+        """
+        Return neighbors for this point according to ``self.movement_directions``
+
+        These are not guaranteed to be reachable or valid points.
+
+        Args:
+            pos: Which position to search around
+        Returns:
+            Vertices around the point
+        """
         n = []
         # Moves allow link a chess king
         for dx, dy in self.movement_directions:
@@ -91,10 +122,22 @@ class _AStarGraph(object):
             n.append((x2, y2))
         return n
 
-    def move_cost(self, a: Point, b: Point):
+    def move_cost(self, a: Point2, b: Point2) -> float:
+        """
+        Returns a float of the cost to move
+
+        Moving diagonally costs more than to the side.
+        A barrier's cost is float("inf) so that that
+        the Algorithm will never go on it
+
+        Args:
+            a: The 1st point to compare
+            b: The 2nd point to compare
+        Returns:
+            The move cost of moving between of the 2 points
+        """
         if b in self.barriers:
-            # print("Ping")
-            return float('inf')  # Infitely high cost to enter barrier squares
+            return float("inf")  # Infinitely high cost to enter barrier squares
 
         elif a[0] == b[0] or a[1] == b[1]:
             return 1  # Normal movement cost
@@ -102,16 +145,30 @@ class _AStarGraph(object):
             return 1.42
 
 
-def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
-    G = {}  # Actual movement cost to each position from the start position
-    F = {}  # Estimated movement cost of start to end going via this position
+def _AStarSearch(start: Point2, end: Point2, graph: _AStarGraph) -> list[Point2] | None:
+    """
+    Returns a path from start to end using the AStarSearch Algorithm
+
+    Graph is used to check for barriers.
+
+    Args:
+        start: point to start at
+        end: point to end at
+        graph: Graph to use
+    Returns:
+        The path from start to end. Returns ``None`` if is path is not found
+    """
+    G: dict[Point2, float] = dict()  # Actual movement cost to each position from the start position
+    F: dict[Point2, float] = (
+        dict()
+    )  # Estimated movement cost of start to end going via this position
 
     # Initialize starting values
     G[start] = 0
     F[start] = _heuristic(start, end)
 
     closed_vertices = set()
-    open_vertices = {start}
+    open_vertices = {start}  # type: ignore
     came_from = {}  # type: ignore
 
     count = 0
@@ -121,14 +178,14 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
             break
         # Get the vertex in the open list with the lowest F score
         current = None
-        current_fscore = None
+        current_fscore = math.inf
         for pos in sorted(open_vertices):
             if current is None or F[pos] < current_fscore:
                 current_fscore = F[pos]
                 current = pos
 
         # Check if we have reached the goal
-        if current == end:
+        if current == end and current is not None:
             # Retrace our route backward
             path = [current]
             while current in came_from:
@@ -166,11 +223,13 @@ def _AStarSearch(start: Point, end: Point, graph: _AStarGraph):
     return None
 
 
-def _collapse(pos: Point, grid_size: float):
+def _collapse(pos: Point2, grid_size: float) -> tuple[int, int]:
+    """Makes Point pos smaller by grid_size"""
     return int(pos[0] // grid_size), int(pos[1] // grid_size)
 
 
-def _expand(pos: Point, grid_size: float):
+def _expand(pos: Point2, grid_size: float) -> tuple[int, int]:
+    """Makes Point pos larger by grid_size"""
     return int(pos[0] * grid_size), int(pos[1] * grid_size)
 
 
@@ -179,23 +238,55 @@ class AStarBarrierList:
     Class that manages a list of barriers that can be encountered during
     A* path finding.
 
-    :param Sprite moving_sprite: Sprite that will be moving
-    :param SpriteList blocking_sprites: Sprites that can block movement
-    :param int grid_size: Size of the grid, in pixels
-    :param int left: Left border of playing field
-    :param int right: Right border of playing field
-    :param int bottom: Bottom of playing field
-    :param int top: Top of playing field
-    """
-    def __init__(self,
-                 moving_sprite: Sprite,
-                 blocking_sprites: SpriteList,
-                 grid_size: int,
-                 left: int,
-                 right: int,
-                 bottom: int,
-                 top: int):
+    Args:
+        moving_sprite:
+            Sprite that will be moving
+        blocking_sprites:
+            Sprites that can block movement
+        grid_size (int):
+            Size of the grid, in pixels
+        left (int):
+            Left border of playing field
+        right (int):
+            Right border of playing field
+        bottom (int):
+            Bottom of playing field
+        top (int):
+            Top of playing field
+        barrier_list:
+            SpriteList of barriers to use in _AStarSearch,
+            ``None`` if not recalculated
 
+    Attributes:
+        grid_size:
+            Grid size
+        bottom:
+            Bottom of playing field
+        top:
+            Top of playing field
+        left:
+            Left border of playing field
+        right:
+            Right border of playing field
+        moving_sprite:
+            Sprite that will be moving
+        blocking_sprites:
+            Sprites that can block movement
+        barrier_list:
+            SpriteList of barriers to use in _AStarSearch,
+            ``None`` if not recalculated
+    """
+
+    def __init__(
+        self,
+        moving_sprite: Sprite,
+        blocking_sprites: SpriteList,
+        grid_size: int,
+        left: int,
+        right: int,
+        bottom: int,
+        top: int,
+    ):
         self.grid_size = grid_size
         self.bottom = int(bottom // grid_size)
         self.top = int(top // grid_size)
@@ -208,9 +299,7 @@ class AStarBarrierList:
         self.recalculate()
 
     def recalculate(self):
-        """
-        Recalculate blocking sprites.
-        """
+        """Recalculate blocking sprites."""
         # --- Iterate through the blocking sprites and find where we are blocked
 
         # Save original location
@@ -227,7 +316,10 @@ class AStarBarrierList:
 
                 # See if we'll have a collision if our sprite is at this location
                 self.moving_sprite.position = pos
-                if len(check_for_collision_with_list(self.moving_sprite, self.blocking_sprites)) > 0:
+                if (
+                    len(check_for_collision_with_list(self.moving_sprite, self.blocking_sprites))
+                    > 0
+                ):
                     self.barrier_list.add(cpos)
 
         # Restore original location
@@ -235,18 +327,27 @@ class AStarBarrierList:
         self.barrier_list = sorted(self.barrier_list)
 
 
-def astar_calculate_path(start_point: Point,
-                         end_point: Point,
-                         astar_barrier_list: AStarBarrierList,
-                         diagonal_movement=True):
+def astar_calculate_path(
+    start_point: Point2,
+    end_point: Point2,
+    astar_barrier_list: AStarBarrierList,
+    diagonal_movement: bool = True,
+) -> list[Point2] | None:
     """
-    :param Point start_point:
-    :param Point end_point:
-    :param AStarBarrierList astar_barrier_list:
-    :param bool diagonal_movement:
+    Calculates the path using AStarSearch Algorithm and returns the path
 
-    Returns: List
+    Args:
+        start_point:
+            Where it starts
+        end_point:
+            Where it ends
+        astar_barrier_list:
+            AStarBarrierList with the boundaries to use in the AStarSearch Algorithm
+        diagonal_movement:
+            Whether of not to use diagonals in the AStarSearch Algorithm
 
+    Returns:
+        List of points (the path), or ``None`` if no path is found
     """
 
     grid_size = astar_barrier_list.grid_size
@@ -269,5 +370,87 @@ def astar_calculate_path(start_point: Point,
 
     # Currently 'result' is in grid locations. We need to convert them to pixel
     # locations.
-    revised_result = [_expand(p, grid_size) for p in result]
+    revised_result: list[Point2] = [_expand(p, grid_size) for p in result]
     return revised_result
+
+
+def has_line_of_sight(
+    observer: Point2,
+    target: Point2,
+    walls: SpriteList,
+    max_distance: float = float("inf"),
+    check_resolution: int = 2,
+) -> bool:
+    """
+    Determine if we have line of sight between two points.
+
+    .. warning:: Try to make sure spatial hashing is enabled on ``walls``!
+
+        If spatial hashing is not enabled, this function may run
+        very slowly!
+
+    Args:
+        observer:
+            Start position
+        target:
+            End position position
+        walls:
+            List of all blocking sprites
+        max_distance:
+            Max distance point 1 can see
+        check_resolution:
+            Check every x pixels for a sprite.
+            Trade-off between accuracy and speed.
+
+    Returns:
+        Whether or not observer to target is blocked by any wall in walls
+    """
+    if max_distance <= 0:
+        raise ValueError("max_distance must be greater than zero")
+    if check_resolution <= 0:
+        raise ValueError("check_resolution must be greater than zero")
+
+    distance = get_distance(observer[0], observer[1], target[0], target[1])
+    if distance == 0:
+        return True
+
+    steps = int(distance // check_resolution)
+    for step in range(steps + 1):
+        step_distance = step * check_resolution
+        u = step_distance / distance
+        midpoint = lerp_2d(observer, target, u)
+        if step_distance > max_distance:
+            return False
+        sprite_list = get_sprites_at_point(midpoint, walls)
+        if len(sprite_list) > 0:
+            return False
+    return True
+
+
+# NOTE: Rewrite this
+# def dda_step(start: Point2, end: Point2):
+#     """
+#     Bresenham's line algorithm
+
+#     """
+#     x1, y1 = start
+#     x2, y2 = end
+
+#     dx = x2 - x1
+#     dy = y2 - y1
+
+#     steps = max(abs(dx), abs(dy))
+
+#     x_inc = dx / steps
+#     y_inc = dy / steps
+
+#     x = x1
+#     y = y1
+
+#     points = []
+#     for _ in range(steps):
+#         points.append((int(x), int(y)))
+#         x += x_inc
+#         y += y_inc
+
+#     return points

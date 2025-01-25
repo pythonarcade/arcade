@@ -1,36 +1,37 @@
 """
 Example of Pymunk Physics Engine
-
 Top-down
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.pymunk_demo_top_down
 """
+from __future__ import annotations
 import math
 import random
 import arcade
-from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
-SCREEN_TITLE = "PyMunk Top-Down"
+WINDOW_TITLE = "PyMunk Top-Down"
 SPRITE_SCALING_PLAYER = 0.5
 MOVEMENT_SPEED = 5
 
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING_PLAYER)
 
-SCREEN_WIDTH = SPRITE_SIZE * 15
-SCREEN_HEIGHT = SPRITE_SIZE * 10
+WINDOW_WIDTH = SPRITE_SIZE * 15
+WINDOW_HEIGHT = SPRITE_SIZE * 10
 
 # Physics force used to move the player. Higher number, faster accelerating.
 PLAYER_MOVE_FORCE = 4000
 BULLET_MOVE_FORCE = 2500
 
 
-class MyWindow(arcade.Window):
-    """ Main Window """
-    def __init__(self, width, height, title):
+class GameView(arcade.View):
+    def __init__(self):
         """ Init """
-        super().__init__(width, height, title)
+        super().__init__()
 
-        arcade.set_background_color(arcade.color.AMAZON)
+        self.background_color = arcade.color.AMAZON
 
         self.player_list = None
         self.wall_list = None
@@ -38,7 +39,7 @@ class MyWindow(arcade.Window):
         self.rock_list = None
         self.gem_list = None
         self.player_sprite = None
-        self.physics_engine: Optional[PymunkPhysicsEngine] = None
+        self.physics_engine: PymunkPhysicsEngine | None = None
 
         # Track the current state of what key is pressed
         self.left_pressed = False
@@ -56,38 +57,38 @@ class MyWindow(arcade.Window):
         self.gem_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 250
         self.player_sprite.center_y = 250
         self.player_list.append(self.player_sprite)
 
         # Set up the walls
-        for x in range(0, SCREEN_WIDTH + 1, SPRITE_SIZE):
+        for x in range(0, WINDOW_WIDTH + 1, SPRITE_SIZE):
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             wall.center_x = x
             wall.center_y = 0
             self.wall_list.append(wall)
 
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             wall.center_x = x
-            wall.center_y = SCREEN_HEIGHT
+            wall.center_y = WINDOW_HEIGHT
             self.wall_list.append(wall)
 
         # Set up the walls
-        for y in range(SPRITE_SIZE, SCREEN_HEIGHT, SPRITE_SIZE):
+        for y in range(SPRITE_SIZE, WINDOW_HEIGHT, SPRITE_SIZE):
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             wall.center_x = 0
             wall.center_y = y
             self.wall_list.append(wall)
 
             wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
-            wall.center_x = SCREEN_WIDTH
+                                 scale=SPRITE_SCALING_PLAYER)
+            wall.center_x = WINDOW_WIDTH
             wall.center_y = y
             self.wall_list.append(wall)
 
@@ -95,7 +96,7 @@ class MyWindow(arcade.Window):
         for x in range(SPRITE_SIZE * 2, SPRITE_SIZE * 13, SPRITE_SIZE):
             rock = random.randrange(4) + 1
             item = arcade.Sprite(f":resources:images/space_shooter/meteorGrey_big{rock}.png",
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             item.center_x = x
             item.center_y = 400
             self.rock_list.append(item)
@@ -108,7 +109,7 @@ class MyWindow(arcade.Window):
                      ":resources:images/items/keyBlue.png"]
             item_name = random.choice(items)
             item = arcade.Sprite(item_name,
-                                 SPRITE_SCALING_PLAYER)
+                                 scale=SPRITE_SCALING_PLAYER)
             item.center_x = x
             item.center_y = 300
             self.gem_list.append(item)
@@ -144,8 +145,16 @@ class MyWindow(arcade.Window):
             bullet_sprite.remove_from_sprite_lists()
             print("Wall")
 
-        self.physics_engine.add_collision_handler("bullet", "rock", post_handler=rock_hit_handler)
-        self.physics_engine.add_collision_handler("bullet", "wall", post_handler=wall_hit_handler)
+        self.physics_engine.add_collision_handler(
+            "bullet",
+            "rock",
+            post_handler=rock_hit_handler,
+        )
+        self.physics_engine.add_collision_handler(
+            "bullet",
+            "wall",
+            post_handler=wall_hit_handler,
+        )
 
         # Add the player.
         # For the player, we set the damping to a lower value, which increases
@@ -194,7 +203,7 @@ class MyWindow(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
-        bullet = arcade.SpriteSolidColor(5, 5, arcade.color.RED)
+        bullet = arcade.SpriteSolidColor(width=5, height=5, color=arcade.color.RED)
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location
@@ -303,11 +312,19 @@ class MyWindow(arcade.Window):
         self.gem_list.draw()
         self.player_list.draw()
 
-
 def main():
     """ Main function """
-    window = MyWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

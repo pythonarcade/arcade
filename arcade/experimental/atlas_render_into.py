@@ -1,20 +1,24 @@
 """
 Render into a sub-section of a texture atlas
 """
+
+from __future__ import annotations
+
 import math
+
 import arcade
 
 
 class AtlasRenderDemo(arcade.Window):
 
     def __init__(self):
-        super().__init__(800, 600, "Atlas Render Demo")
-        self.atlas = arcade.TextureAtlas((600, 600))
+        super().__init__(1280, 720, "Atlas Render Demo")
+        self.atlas = arcade.DefaultTextureAtlas((600, 600))
 
         self.texture_1 = arcade.Texture.create_empty("render_area_1", size=(256, 256))
         self.texture_2 = arcade.Texture.create_empty("render_area_2", size=(256, 256))
-        self.sprite_1 = arcade.Sprite(center_x=200, center_y=300, texture=self.texture_1)
-        self.sprite_2 = arcade.Sprite(center_x=600, center_y=300, texture=self.texture_2)
+        self.sprite_1 = arcade.Sprite(self.texture_1, center_x=400, center_y=360)
+        self.sprite_2 = arcade.Sprite(self.texture_2, center_x=850, center_y=360)
 
         self.spritelist = arcade.SpriteList(atlas=self.atlas)
         self.spritelist.extend([self.sprite_1, self.sprite_2])
@@ -30,12 +34,16 @@ class AtlasRenderDemo(arcade.Window):
     def render_into_sprite_texture(self):
         # Render shape into texture atlas in the first sprite texture's space
         with self.spritelist.atlas.render_into(self.texture_1) as fbo:
-            fbo.clear((255, 0, 0, 255))
-            arcade.draw_rectangle_filled(128, 128, 160, 160, arcade.color.WHITE, self.elapsed_time * 100)
+            fbo.clear(color=(255, 0, 0, 255))
+            arcade.draw_rect_filled(
+                arcade.rect.XYWH(128, 128, 160, 160),
+                arcade.color.WHITE,
+                self.elapsed_time * 100,
+            )
 
         # Render a shape into the second texture in the atlas
         with self.spritelist.atlas.render_into(self.texture_2) as fbo:
-            fbo.clear((0, 255, 0, 255))
+            fbo.clear(color=(0, 255, 0, 255))
             arcade.draw_circle_filled(
                 128,
                 128,

@@ -4,7 +4,7 @@ Scroll around a large screen.
 Artwork from https://kenney.nl
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.sprite_move_scrolling
+python -m arcade.examples.sprite_move_scrolling_box
 """
 
 import random
@@ -12,13 +12,23 @@ import arcade
 
 SPRITE_SCALING = 0.5
 
-DEFAULT_SCREEN_WIDTH = 800
-DEFAULT_SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Sprite Move with Scrolling Screen Example"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Sprite Move with Scrolling Screen Example"
 
 # How many pixels to keep as a minimum margin between the character
 # and the edge of the screen.
 VIEWPORT_MARGIN = 200
+HORIZONTAL_BOUNDARY = WINDOW_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = WINDOW_HEIGHT / 2.0 - VIEWPORT_MARGIN
+# If the player moves further than this boundary away from the camera we use a
+# constraint to move the camera
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY,
+      HORIZONTAL_BOUNDARY,
+      -VERTICAL_BOUNDARY,
+      VERTICAL_BOUNDARY,
+)
 
 # How fast the camera pans to the player. 1.0 is instant.
 CAMERA_SPEED = 0.1
@@ -27,14 +37,14 @@ CAMERA_SPEED = 0.1
 PLAYER_MOVEMENT_SPEED = 7
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
-        super().__init__(width, height, title, resizable=True)
+        super().__init__()
 
         # Sprite lists
         self.player_list = None
@@ -45,18 +55,14 @@ class MyGame(arcade.Window):
 
         self.physics_engine = None
 
-        # Used in scrolling
-        self.view_bottom = 0
-        self.view_left = 0
-
         # Track the current state of what key is pressed
         self.left_pressed = False
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
 
-        self.camera_sprites = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
-        self.camera_gui = arcade.Camera(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT)
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -66,8 +72,10 @@ class MyGame(arcade.Window):
         self.wall_list = arcade.SpriteList()
 
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=0.4)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=0.4,
+        )
         self.player_sprite.center_x = 256
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
@@ -77,7 +85,10 @@ class MyGame(arcade.Window):
             for y in range(0, 1600, 64):
                 # Randomly skip a box so the player can find a way through
                 if random.randrange(5) > 0:
-                    wall = arcade.Sprite(":resources:images/tiles/grassCenter.png", SPRITE_SCALING)
+                    wall = arcade.Sprite(
+                        ":resources:images/tiles/grassCenter.png",
+                        scale=SPRITE_SCALING,
+                    )
                     wall.center_x = x
                     wall.center_y = y
                     self.wall_list.append(wall)
@@ -85,12 +96,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
-        arcade.set_background_color(arcade.color.AMAZON)
-
-        # Set the viewport boundaries
-        # These numbers set where we have 'scrolled' to.
-        self.view_left = 0
-        self.view_bottom = 0
+        self.background_color = arcade.color.AMAZON
 
     def on_draw(self):
         """
@@ -107,23 +113,30 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.player_list.draw()
 
+        # Draw the box that we work to make sure the user stays inside of.
+        # This is just for illustration purposes. You'd want to remove this
+        # in your game.
+        camera_x, camera_y = self.camera_sprites.position
+        arcade.draw_rect_outline(
+            arcade.XYWH(camera_x, camera_y, CAMERA_BOUNDARY.width, CAMERA_BOUNDARY.height),
+            arcade.color.RED, 2
+        )
+
         # Select the (unscrolled) camera for our GUI
         self.camera_gui.use()
 
         # Draw the GUI
-        arcade.draw_rectangle_filled(self.width // 2, 20, self.width, 40, arcade.color.ALMOND)
-        text = f"Scroll value: ({self.camera_sprites.position[0]:5.1f}, {self.camera_sprites.position[1]:5.1f})"
+        arcade.draw_rect_filled(
+            arcade.rect.XYWH(self.width // 2, 20, self.width, 40),
+            color=arcade.color.ALMOND
+        )
+        text = (
+            f"Scroll value: ("
+            f"{self.camera_sprites.position[0]:5.1f}",
+            f"{self.camera_sprites.position[1]:5.1f})"
+        )
         arcade.draw_text(text, 10, 10, arcade.color.BLACK_BEAN, 20)
 
-        # Draw the box that we work to make sure the user stays inside of.
-        # This is just for illustration purposes. You'd want to remove this
-        # in your game.
-        left_boundary = VIEWPORT_MARGIN
-        right_boundary = self.width - VIEWPORT_MARGIN
-        top_boundary = self.height - VIEWPORT_MARGIN
-        bottom_boundary = VIEWPORT_MARGIN
-        arcade.draw_lrtb_rectangle_outline(left_boundary, right_boundary, top_boundary, bottom_boundary,
-                                           arcade.color.RED, 2)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -184,44 +197,37 @@ class MyGame(arcade.Window):
         """
 
         # --- Manage Scrolling ---
+        new_position = arcade.camera.grips.constrain_boundary_xy(
+            self.camera_sprites.view_data, CAMERA_BOUNDARY, self.player_sprite.position
+        )
 
-        # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
-        if self.player_sprite.left < left_boundary:
-            self.view_left -= left_boundary - self.player_sprite.left
+        self.camera_sprites.position = arcade.math.lerp_2d(
+            self.camera_sprites.position, (new_position[0], new_position[1]), CAMERA_SPEED
+        )
 
-        # Scroll right
-        right_boundary = self.view_left + self.width - VIEWPORT_MARGIN
-        if self.player_sprite.right > right_boundary:
-            self.view_left += self.player_sprite.right - right_boundary
-
-        # Scroll up
-        top_boundary = self.view_bottom + self.height - VIEWPORT_MARGIN
-        if self.player_sprite.top > top_boundary:
-            self.view_bottom += self.player_sprite.top - top_boundary
-
-        # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
-        if self.player_sprite.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player_sprite.bottom
-
-        # Scroll to the proper location
-        position = self.view_left, self.view_bottom
-        self.camera_sprites.move_to(position, CAMERA_SPEED)
-
-    def on_resize(self, width, height):
+    def on_resize(self, width: int, height: int):
         """
         Resize window
         Handle the user grabbing the edge and resizing the window.
         """
-        self.camera_sprites.resize(int(width), int(height))
-        self.camera_gui.resize(int(width), int(height))
+        super().on_resize(width, height)
+        self.camera_sprites.match_window()
+        self.camera_gui.match_window(position=True)
 
 
 def main():
     """ Main function """
-    window = MyGame(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

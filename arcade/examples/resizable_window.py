@@ -6,23 +6,23 @@ python -m arcade.examples.resizable_window
 """
 import arcade
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 500
-SCREEN_TITLE = "Resizing Window Example"
+WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 500
+WINDOW_TITLE = "Resizing Window Example"
 START = 0
 END = 2000
 STEP = 50
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True)
+    def __init__(self):
+        super().__init__()
 
-        arcade.set_background_color(arcade.color.WHITE)
+        self.background_color = arcade.color.WHITE
 
     def on_resize(self, width, height):
         """ This method is automatically called when the window is resized. """
@@ -59,7 +59,17 @@ class MyGame(arcade.Window):
 
 
 def main():
-    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
+
+    # Create the GameView
+    game = GameView()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

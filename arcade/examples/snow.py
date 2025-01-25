@@ -13,94 +13,102 @@ import random
 import math
 import arcade
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Snow"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "Snow"
+SNOWFLAKE_COUNT = 800
 
 
-class Snowflake:
+class Snowflake(arcade.SpriteCircle):
     """
     Each instance of this class represents a single snowflake.
     Based on drawing filled-circles.
     """
 
-    def __init__(self):
-        self.x = 0
-        self.y = 0
+    def __init__(self, size, speed, drift):
+        super().__init__(size, arcade.color.WHITE)
+        self.speed = speed
+        self.drift = drift
 
     def reset_pos(self):
         # Reset flake to random position above screen
-        self.y = random.randrange(SCREEN_HEIGHT, SCREEN_HEIGHT + 100)
-        self.x = random.randrange(SCREEN_WIDTH)
+        self.position = (
+            random.randrange(WINDOW_WIDTH),
+            random.randrange(WINDOW_HEIGHT, WINDOW_HEIGHT + 100),
+        )
+
+    def update(self, delta_time: float = 1/60) -> None:
+        self.center_y -= self.speed * delta_time
+
+        # Check if snowflake has fallen below screen
+        if self.center_y < 0:
+            self.reset_pos()
+
+        # Some math to make the snowflakes move side to side
+        self.center_x += self.speed * math.cos(self.drift) * delta_time
+        self.drift += 1 * delta_time
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """ Initializer """
         # Calls "__init__" of parent class (arcade.Window) to setup screen
-        super().__init__(width, height, title)
+        super().__init__()
 
-        # Sprite lists
-        self.snowflake_list = None
+        self.snowflake_list = arcade.SpriteList()
+
+        # Don't show the mouse pointer
+        self.window.set_mouse_visible(False)
+
+        # Set the background color
+        self.background_color = arcade.color.BLACK
 
     def start_snowfall(self):
         """ Set up snowfall and initialize variables. """
-        self.snowflake_list = []
-
-        for i in range(50):
+        for i in range(SNOWFLAKE_COUNT):
             # Create snowflake instance
-            snowflake = Snowflake()
-
+            snowflake = Snowflake(
+                size=random.randrange(1, 4),
+                speed=random.randrange(20, 40),
+                drift=random.uniform(math.pi, math.pi * 2),
+            )
             # Randomly position snowflake
-            snowflake.x = random.randrange(SCREEN_WIDTH)
-            snowflake.y = random.randrange(SCREEN_HEIGHT + 200)
-
-            # Set other variables for the snowflake
-            snowflake.size = random.randrange(4)
-            snowflake.speed = random.randrange(20, 40)
-            snowflake.angle = random.uniform(math.pi, math.pi * 2)
-
+            snowflake.position = (
+                random.randrange(WINDOW_WIDTH),
+                random.randrange(WINDOW_HEIGHT + 200),
+            )
             # Add snowflake to snowflake list
             self.snowflake_list.append(snowflake)
 
-        # Don't show the mouse pointer
-        self.set_mouse_visible(False)
-
-        # Set the background color
-        arcade.set_background_color(arcade.color.BLACK)
-
     def on_draw(self):
         """ Render the screen. """
-
-        # This command is necessary before drawing
+        # Clear the screen to the background color
         self.clear()
 
         # Draw the current position of each snowflake
-        for snowflake in self.snowflake_list:
-            arcade.draw_circle_filled(snowflake.x, snowflake.y,
-                                      snowflake.size, arcade.color.WHITE)
+        self.snowflake_list.draw()
 
     def on_update(self, delta_time):
         """ All the logic to move, and the game logic goes here. """
-
-        # Animate all the snowflakes falling
-        for snowflake in self.snowflake_list:
-            snowflake.y -= snowflake.speed * delta_time
-
-            # Check if snowflake has fallen below screen
-            if snowflake.y < 0:
-                snowflake.reset_pos()
-
-            # Some math to make the snowflakes move side to side
-            snowflake.x += snowflake.speed * math.cos(snowflake.angle) * delta_time
-            snowflake.angle += 1 * delta_time
+        # Call update on all the snowflakes
+        self.snowflake_list.update(delta_time)
 
 
 def main():
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.start_snowfall()
+    """ Main function """
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.start_snowfall()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 

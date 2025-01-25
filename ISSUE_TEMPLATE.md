@@ -2,7 +2,7 @@
 
 ## System Info
 
-Run this and paste the output here: python -m arcade
+Run `python -m arcade` and paste the output here.
 
 ### Actual behavior:
 

@@ -6,6 +6,7 @@ import time
 import math
 from array import array
 from dataclasses import dataclass
+
 import arcade
 import arcade.gl
 
@@ -81,7 +82,8 @@ class MyWindow(arcade.Window):
                 red = random.uniform(0.5, 1.0)
                 green = random.uniform(0, red)
                 blue = 0
-                fade_rate = random.uniform(1 / MAX_FADE_TIME, 1 / MIN_FADE_TIME)
+                fade_rate = random.uniform(
+                    1 / MAX_FADE_TIME, 1 / MIN_FADE_TIME)
 
                 yield initial_x
                 yield initial_y
@@ -103,13 +105,12 @@ class MyWindow(arcade.Window):
         # Create a buffer with that data
         buffer = self.ctx.buffer(data=array('f', initial_data))
 
-        # Create a buffer description that says how the buffer data is formatted.
-        buffer_description = arcade.gl.BufferDescription(buffer,
-                                                         '2f 2f 3f f',
-                                                         ['in_pos',
-                                                          'in_vel',
-                                                          'in_color',
-                                                          'in_fade_rate'])
+        # Create a buffer description specifying the buffer's data format
+        buffer_description = arcade.gl.BufferDescription(
+            buffer,
+            '2f 2f 3f f',
+            ['in_pos', 'in_vel', 'in_color', 'in_fade_rate'])
+
         # Create our Vertex Attribute Object
         vao = self.ctx.geometry([buffer_description])
 

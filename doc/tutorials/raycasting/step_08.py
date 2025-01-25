@@ -1,5 +1,4 @@
 import random
-from pathlib import Path
 from pyglet.math import Vec2
 
 import arcade
@@ -33,32 +32,34 @@ class MyGame(arcade.Window):
         self.load_shader()
 
         # Sprites and sprite lists
-        self.player_sprite = None
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            scale=SPRITE_SCALING,
+            center_x=256,
+            center_y=512,
+        )
         self.wall_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.bomb_list = arcade.SpriteList()
         self.physics_engine = None
 
         # Create cameras used for scrolling
-        self.camera_sprites = arcade.Camera(width, height)
-        self.camera_gui = arcade.Camera(width, height)
+        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_gui = arcade.camera.Camera2D()
 
         self.generate_sprites()
 
         # Our sample GUI text
         self.score_text = arcade.Text("Score: 0", 10, 10, arcade.color.WHITE, 24)
 
-        arcade.set_background_color(arcade.color.ARMY_GREEN)
+        self.background_color = arcade.color.ARMY_GREEN
 
     def load_shader(self):
-        # Where is the shader file? Must be specified as a path.
-        shader_file_path = Path("step_06.glsl")
-
         # Size of the window
         window_size = self.get_size()
 
-        # Create the shader toy
-        self.shadertoy = Shadertoy.create_from_file(window_size, shader_file_path)
+        # Create the shader toy, passing in a path for the shader source
+        self.shadertoy = Shadertoy.create_from_file(window_size, "step_06.glsl")
 
         # Create the channels 0 and 1 frame buffers.
         # Make the buffer the size of the window, with 4 channels (RGBA)
@@ -95,11 +96,7 @@ class MyGame(arcade.Window):
                     placed = True
             self.bomb_list.append(bomb)
 
-        # Create the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           scale=SPRITE_SCALING)
-        self.player_sprite.center_x = 256
-        self.player_sprite.center_y = 512
+        # Add the player to the player list
         self.player_list.append(self.player_sprite)
 
         # Physics engine, so we don't run into walls
@@ -107,8 +104,6 @@ class MyGame(arcade.Window):
 
         # Start centered on the player
         self.scroll_to_player(1.0)
-        self.camera_sprites.update()
-
 
     def on_draw(self):
         # Use our scrolled camera
@@ -121,7 +116,7 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
 
         self.channel1.use()
-        self.channel1.clear()
+        self.channel1.clear(color=arcade.color.AMAZON)
         # Draw the bombs
         self.bomb_list.draw()
 
@@ -132,8 +127,9 @@ class MyGame(arcade.Window):
 
         # Calculate the light position. We have to subtract the camera position
         # from the player position to get screen-relative coordinates.
-        p = (self.player_sprite.position[0] - self.camera_sprites.position[0],
-             self.player_sprite.position[1] - self.camera_sprites.position[1])
+        left, bottom = self.camera_sprites.bottom_left
+        p = (self.player_sprite.position[0] - left,
+             self.player_sprite.position[1] - bottom)
 
         # Set the uniform data
         self.shadertoy.program['lightPosition'] = p
@@ -191,14 +187,13 @@ class MyGame(arcade.Window):
         pan.
         """
 
-        position = Vec2(self.player_sprite.center_x - self.width / 2,
-                        self.player_sprite.center_y - self.height / 2)
-        self.camera_sprites.move_to(position, speed)
+        position = (self.player_sprite.center_x, self.player_sprite.center_y)
+        self.camera_sprites.position = arcade.math.lerp_2d(self.camera_sprites.position, position, CAMERA_SPEED)
 
-    def on_resize(self, width: float, height: float):
+    def on_resize(self, width: int, height: int):
         super().on_resize(width, height)
-        self.camera_sprites.resize(width, height)
-        self.camera_gui.resize(width, height)
+        self.camera_sprites.match_window()
+        self.camera_gui.match_window()
         self.shadertoy.resize((width, height))
 
 

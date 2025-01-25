@@ -38,7 +38,7 @@ Imports
 First, we'll import some more items for our program:
 
 .. literalinclude:: gpu_particle_burst_02.py
-    :lines: 4-7
+    :lines: 4-8
 
 Burst Dataclass
 ~~~~~~~~~~~~~~~
@@ -165,7 +165,7 @@ update call.
 Imports
 ~~~~~~~
 
-First, we'll import both the random and time libraries:
+First, we'll add imports for both the ``random`` and ``time`` libraries:
 
 .. literalinclude:: gpu_particle_burst_03.py
     :lines: 4-5
@@ -176,7 +176,7 @@ Constants
 Then we need to create a constant that contains the number of particles to create:
 
 .. literalinclude:: gpu_particle_burst_03.py
-    :lines: 15
+    :lines: 16
 
 Burst Dataclass
 ~~~~~~~~~~~~~~~
@@ -208,7 +208,7 @@ Finally, our burst object needs to track the time we created the burst.
 
 .. literalinclude:: gpu_particle_burst_03.py
     :pyobject: MyWindow.on_mouse_press
-    :emphasize-lines: 6-12, 27-28, 33
+    :emphasize-lines: 6-12, 28-29, 35
     :linenos:
 
 Set Time in on_draw
@@ -299,7 +299,7 @@ Another option is to use a gaussian function to produce more of a 'splat'
 look:
 
 .. literalinclude:: gpu_particle_burst_05.py
-    :lines: 66
+    :lines: 69
 
 Program Listings
 ~~~~~~~~~~~~~~~~
@@ -318,12 +318,13 @@ need to generate it for each particle. Shaders take colors in the form of
 RGB floats, so we'll generate a random number for red, and add in some green
 to get our yellows. Don't add more green than red, or else you get a green tint.
 
-Finally, pass in the three floats as ``in_color`` to the shader buffer (VBO).
+Finally, make sure to update the shader buffer description (VBO) to accept
+the three color channel floats (``3f``) under the name ``in_color``.
 
 .. literalinclude:: gpu_particle_burst_06.py
     :pyobject: MyWindow.on_mouse_press
     :linenos:
-    :emphasize-lines: 11-13, 18-20, 34-36
+    :emphasize-lines: 11-13, 18-20, 36-37
 
 Then, update the shader to use the color instead of always using white:
 
@@ -353,11 +354,11 @@ Once a burst has faded out, let's remove it from ``burst_list``.
 Constants
 ~~~~~~~~~
 
-First, let's add a couple constants to control the minimum and maximum tile to
-fade a particle:
+First, let's add a couple constants to control the minimum and maximum times
+to fade a particle:
 
 .. literalinclude:: gpu_particle_burst_07.py
-    :lines: 18-19
+    :lines: 19-20
 
 Update Init
 ~~~~~~~~~~~
@@ -372,12 +373,12 @@ back to the ``__init__`` method and update the ``enable_only`` call to:
 Add Fade Rate to Buffer
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Next, add the fade rate to the VBO:
+Next, add the fade rate float to the VBO:
 
 .. literalinclude:: gpu_particle_burst_07.py
     :pyobject: MyWindow.on_mouse_press
     :linenos:
-    :emphasize-lines: 14, 23, 37-42
+    :emphasize-lines: 14-15, 24, 40-41
 
 Update Shader
 ~~~~~~~~~~~~~

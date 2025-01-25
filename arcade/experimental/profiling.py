@@ -1,10 +1,13 @@
 """
 Simple experimental profiler. This api is not stable.
 """
+
+from __future__ import annotations
+
 import cProfile
 import pstats
-from io import StringIO
 from contextlib import contextmanager
+from io import StringIO
 
 
 class Profiler:
@@ -30,8 +33,10 @@ class Profiler:
         The same profiler instance can be enabled multiple times
         to accumulate data.
 
-    :param str sort_by: function sort order
+    Args:
+        sort_by: function sort order
     """
+
     def __init__(self, sort_by="tottime"):
         self._sort_by = sort_by
         self._profiler = cProfile.Profile()

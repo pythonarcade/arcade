@@ -1,24 +1,27 @@
-from ctypes import (
-    c_char,
-    c_int,
-    c_buffer,
-    c_char_p,
-    cast,
-    POINTER,
-    pointer,
-    byref,
-    create_string_buffer,
-)
-from typing import Any, Dict, Iterable, Tuple, List, TYPE_CHECKING, Union
+from __future__ import annotations
+
+import typing
 import weakref
+from ctypes import (
+    POINTER,
+    byref,
+    c_buffer,
+    c_char,
+    c_char_p,
+    c_int,
+    cast,
+    create_string_buffer,
+    pointer,
+)
+from typing import TYPE_CHECKING, Any, Iterable
 
 from pyglet import gl
 
-from .uniform import Uniform, UniformBlock
-from .types import AttribFormat, GLTypes, SHADER_TYPE_NAMES
 from .exceptions import ShaderException
+from .types import SHADER_TYPE_NAMES, AttribFormat, GLTypes, PyGLenum
+from .uniform import Uniform, UniformBlock
 
-if TYPE_CHECKING:  # handle import cycle caused by type hinting
+if TYPE_CHECKING:
     from arcade.gl import Context
 
 
@@ -26,29 +29,40 @@ class Program:
     """
     Compiled and linked shader program.
 
-    Currently supports vertex, fragment and geometry shaders.
+    Currently supports
+
+    - vertex shader
+    - fragment shader
+    - geometry shader
+    - tessellation control shader
+    - tessellation evaluation shader
+
     Transform feedback also supported when output attributes
     names are passed in the varyings parameter.
 
     The best way to create a program instance is through :py:meth:`arcade.gl.Context.program`
 
-    Access Uniforms via the ``[]`` operator.
-    Example::
-
-        program['MyUniform'] = value
-
-    :param Context ctx: The context this program belongs to
-    :param str vertex_shader: vertex shader source
-    :param str fragment_shader: fragment shader source
-    :param str geometry_shader: geometry shader source
-    :param str tess_control_shader: tessellation control shader source
-    :param str tess_evaluation_shader: tessellation evaluation shader source
-    :param List[str] varyings: List of out attributes used in transform feedback.
-    :param str varyings_capture_mode: The capture mode for transforms.
-                                        ``"interleaved"`` means all out attribute will be written to a single buffer.
-                                        ``"separate"`` means each out attribute will be written separate buffers.
-                                        Based on these settings the `transform()` method will accept a single
-                                        buffer or a list of buffer.
+    Args:
+        ctx:
+            The context this program belongs to
+        vertex_shader (optional):
+            Vertex shader source
+        fragment_shader (optional):
+            Fragment shader source
+        geometry_shader (optional)v:
+            Geometry shader source
+        tess_control_shader (optional):
+            Tessellation control shader source
+        tess_evaluation_shader (optional):
+            Tessellation evaluation shader source
+        varyings (optional):
+            List of out attributes used in transform feedback.
+        varyings_capture_mode (optional):
+            The capture mode for transforms.
+            ``"interleaved"`` means all out attribute will be written to a single buffer.
+            ``"separate"`` means each out attribute will be written separate buffers.
+            Based on these settings the `transform()` method will accept a single
+            buffer or a list of buffer.
     """
 
     __slots__ = (
@@ -70,24 +84,22 @@ class Program:
         ctx: "Context",
         *,
         vertex_shader: str,
-        fragment_shader: str = None,
-        geometry_shader: str = None,
-        tess_control_shader: str = None,
-        tess_evaluation_shader: str = None,
-        varyings: List[str] = None,
+        fragment_shader: str | None = None,
+        geometry_shader: str | None = None,
+        tess_control_shader: str | None = None,
+        tess_evaluation_shader: str | None = None,
+        varyings: list[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ):
-        """Create a Program."""
-
         self._ctx = ctx
         self._glo = glo = gl.glCreateProgram()
         self._varyings = varyings or []
         self._varyings_capture_mode = varyings_capture_mode.strip().lower()
         self._geometry_info = (0, 0, 0)
-        self._attributes = []  # type: List[AttribFormat]
+        self._attributes = []  # type: list[AttribFormat]
         #: Internal cache key used with vertex arrays
         self.attribute_key = "INVALID"  # type: str
-        self._uniforms: Dict[str, Uniform] = {}
+        self._uniforms: dict[str, Uniform | UniformBlock] = {}
 
         if self._varyings_capture_mode not in self._valid_capture_modes:
             raise ValueError(
@@ -95,7 +107,7 @@ class Program:
                 f"Valid modes are: {self._valid_capture_modes}."
             )
 
-        shaders = [(vertex_shader, gl.GL_VERTEX_SHADER)]
+        shaders: list[tuple[str, int]] = [(vertex_shader, gl.GL_VERTEX_SHADER)]
         if fragment_shader:
             shaders.append((fragment_shader, gl.GL_FRAGMENT_SHADER))
         if geometry_shader:
@@ -104,6 +116,16 @@ class Program:
             shaders.append((tess_control_shader, gl.GL_TESS_CONTROL_SHADER))
         if tess_evaluation_shader:
             shaders.append((tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER))
+
+        # Inject a dummy fragment shader on gles when doing transforms
+        if self._ctx.gl_api == "gles" and not fragment_shader:
+            dummy_frag_src = """
+                #version 310 es
+                precision mediump float;
+                out vec4 fragColor;
+                void main() { fragColor = vec4(1.0); }
+            """
+            shaders.append((dummy_frag_src, gl.GL_FRAGMENT_SHADER))
 
         shaders_id = []
         for shader_code, shader_type in shaders:
@@ -116,6 +138,7 @@ class Program:
             self._configure_varyings()
 
         Program.link(self._glo)
+
         if geometry_shader:
             geometry_in = gl.GLint()
             geometry_out = gl.GLint()
@@ -151,46 +174,30 @@ class Program:
 
     @property
     def ctx(self) -> "Context":
-        """
-        The context this program belongs to
-
-        :type: :py:class:`arcade.gl.Context`
-        """
+        """The context this program belongs to."""
         return self._ctx
 
     @property
     def glo(self) -> int:
-        """
-        The OpenGL resource id for this program
-
-        :type: int
-        """
+        """The OpenGL resource id for this program."""
         return self._glo
 
     @property
     def attributes(self) -> Iterable[AttribFormat]:
-        """
-        List of attribute information
-        """
+        """List of attribute information."""
         return self._attributes
 
     @property
-    def varyings(self) -> List[str]:
-        """
-        Out attributes names used in transform feedback
-
-        :type: list of str
-        """
+    def varyings(self) -> list[str]:
+        """Out attributes names used in transform feedback."""
         return self._varyings
 
     @property
-    def out_attributes(self) -> List[str]:
+    def out_attributes(self) -> list[str]:
         """
         Out attributes names used in transform feedback.
 
-        .. Warning:: Old alias for ``varyings``. May be removed in the future.
-
-        :type: list of str
+        Alias for `varyings`.
         """
         return self._varyings
 
@@ -208,20 +215,18 @@ class Program:
     def geometry_input(self) -> int:
         """
         The geometry shader's input primitive type.
+
         This an be compared with ``GL_TRIANGLES``, ``GL_POINTS`` etc.
         and is queried when the program is created.
-
-        :type: int
         """
         return self._geometry_info[0]
 
     @property
     def geometry_output(self) -> int:
         """The geometry shader's output primitive type.
+
         This an be compared with ``GL_TRIANGLES``, ``GL_POINTS`` etc.
         and is queried when the program is created.
-
-        :type: int
         """
         return self._geometry_info[1]
 
@@ -230,14 +235,13 @@ class Program:
         """
         The maximum number of vertices that can be emitted.
         This is queried when the program is created.
-
-        :type: int
         """
         return self._geometry_info[2]
 
     def delete(self):
         """
         Destroy the underlying OpenGL resource.
+
         Don't use this unless you know exactly what you are doing.
         """
         Program.delete_glo(self._ctx, self._glo)
@@ -245,6 +249,16 @@ class Program:
 
     @staticmethod
     def delete_glo(ctx, prog_id):
+        """
+        Deletes a program. This is normally called automatically when the
+        program is garbage collected.
+
+        Args:
+            ctx:
+                The context this program belongs to
+            prog_id:
+                The OpenGL resource id
+        """
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
         if gl.current_context is None:
@@ -253,7 +267,7 @@ class Program:
         gl.glDeleteProgram(prog_id)
         ctx.stats.decr("program")
 
-    def __getitem__(self, item) -> Union[Uniform, UniformBlock]:
+    def __getitem__(self, item) -> Uniform | UniformBlock:
         """Get a uniform or uniform block"""
         try:
             uniform = self._uniforms[item]
@@ -263,11 +277,20 @@ class Program:
         return uniform.getter()
 
     def __setitem__(self, key, value):
-        """Set a uniform value"""
-        # Ensure we are setting the uniform on this program
-        if self._ctx.active_program != self:
-            self.use()
+        """
+        Set a uniform value.
 
+        Example::
+
+            program['color'] = 1.0, 1.0, 1.0, 1.0
+            program['mvp'] = projection @ view @ model
+
+        Args:
+            key:
+                The uniform name
+            value:
+                The uniform value
+        """
         try:
             uniform = self._uniforms[key]
         except KeyError:
@@ -279,29 +302,36 @@ class Program:
         """
         Safely set a uniform catching KeyError.
 
-        :param str name: The uniform name
-        :param Any value: The uniform value
+        Args:
+            name:
+                The uniform name
+            value:
+                The uniform value
         """
         try:
             self[name] = value
         except KeyError:
             pass
 
-    def set_uniform_array_safe(self, name: str, value: List[Any]):
+    def set_uniform_array_safe(self, name: str, value: list[Any]):
         """
-        Safely set a uniform array. Arrays can be shortened
-        by the glsl compiler not all elements are determined
-        to be in use. This function checks the length of the
-        actual array and sets a subset of the values if needed.
-        If the uniform don't exist no action will be done.
+        Safely set a uniform array.
 
-        :param str name: Name of uniform
-        :param List[Any] value: List of values
+        Arrays can be shortened by the glsl compiler not all elements are determined
+        to be in use. This function checks the length of the actual array and sets a
+        subset of the values if needed. If the uniform don't exist no action will be
+        done.
+
+        Args:
+            name:
+                Name of uniform
+            value:
+                List of values
         """
         if name not in self._uniforms:
             return
 
-        uniform = self._uniforms[name]
+        uniform = typing.cast(Uniform, self._uniforms[name])
         _len = uniform._array_length * uniform._components
         if _len == 1:
             self.set_uniform_safe(name, value[0])
@@ -311,13 +341,14 @@ class Program:
     def use(self):
         """
         Activates the shader.
+
         This is normally done for you automatically.
         """
         # IMPORTANT: This is the only place glUseProgram should be called
         #            so we can track active program.
-        if self._ctx.active_program != self:
-            gl.glUseProgram(self._glo)
-            self._ctx.active_program = self
+        # if self._ctx.active_program != self:
+        gl.glUseProgram(self._glo)
+        # self._ctx.active_program = self
 
     def _configure_varyings(self):
         """Set up transform feedback varyings"""
@@ -332,14 +363,15 @@ class Program:
         ptr = cast(c_array, POINTER(POINTER(c_char)))
 
         # Are we capturing in interlaved or separate buffers?
-        mode = gl.GL_INTERLEAVED_ATTRIBS if self._varyings_capture_mode == "interleaved" \
+        mode = (
+            gl.GL_INTERLEAVED_ATTRIBS
+            if self._varyings_capture_mode == "interleaved"
             else gl.GL_SEPARATE_ATTRIBS
+        )
 
         gl.glTransformFeedbackVaryings(
             self._glo,  # program
-            len(
-                self._varyings
-            ),  # number of varying variables used for transform feedback
+            len(self._varyings),  # number of varying variables used for transform feedback
             ptr,  # zero-terminated strings specifying the names of the varying variables
             mode,
         )
@@ -385,8 +417,7 @@ class Program:
 
         # The attribute key is used to cache VertexArrays
         self.attribute_key = ":".join(
-            f"{attr.name}[{attr.gl_type}/{attr.components}]"
-            for attr in self._attributes
+            f"{attr.name}[{attr.gl_type}/{attr.components}]" for attr in self._attributes
         )
 
     def _introspect_uniforms(self):
@@ -409,14 +440,12 @@ class Program:
 
             u_name = u_name.replace("[0]", "")  # Remove array suffix
             self._uniforms[u_name] = Uniform(
-                self._glo, u_location, u_name, u_type, u_size
+                self._ctx, self._glo, u_location, u_name, u_type, u_size
             )
 
     def _introspect_uniform_blocks(self):
         active_uniform_blocks = gl.GLint(0)
-        gl.glGetProgramiv(
-            self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks)
-        )
+        gl.glGetProgramiv(self._glo, gl.GL_ACTIVE_UNIFORM_BLOCKS, byref(active_uniform_blocks))
         # print('GL_ACTIVE_UNIFORM_BLOCKS', active_uniform_blocks)
 
         for loc in range(active_uniform_blocks.value):
@@ -424,7 +453,7 @@ class Program:
             block = UniformBlock(self._glo, index, size, name)
             self._uniforms[name] = block
 
-    def _query_uniform(self, location: int) -> Tuple[str, int, int]:
+    def _query_uniform(self, location: int) -> tuple[str, int, int]:
         """Retrieve Uniform information at given location.
 
         Returns the name, the type as a GLenum (GL_FLOAT, ...) and the size. Size is
@@ -446,7 +475,7 @@ class Program:
         )
         return u_name.value.decode(), u_type.value, u_size.value
 
-    def _query_uniform_block(self, location: int) -> Tuple[int, int, str]:
+    def _query_uniform_block(self, location: int) -> tuple[int, int, str]:
         """Query active uniform block by retrieving the name and index and size"""
         # Query name
         u_size = gl.GLint()
@@ -463,18 +492,23 @@ class Program:
         index = gl.glGetUniformBlockIndex(self._glo, u_name)
         # Query size
         b_size = gl.GLint()
-        gl.glGetActiveUniformBlockiv(
-            self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size
-        )
+        gl.glGetActiveUniformBlockiv(self._glo, index, gl.GL_UNIFORM_BLOCK_DATA_SIZE, b_size)
         return index, b_size.value, u_name.value.decode()
 
     @staticmethod
-    def compile_shader(source: str, shader_type: gl.GLenum) -> gl.GLuint:
-        """Compile the shader code of the given type.
+    def compile_shader(source: str, shader_type: PyGLenum) -> gl.GLuint:
+        """
+        Compile the shader code of the given type.
 
-        `shader_type` could be GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...
+        Args:
+            source:
+                The shader source code
+            shader_type:
+                The type of shader to compile.
+                ``GL_VERTEX_SHADER``, ``GL_FRAGMENT_SHADER`` etc.
 
-        Returns the shader id as a GLuint
+        Returns:
+            The created shader id
         """
         shader = gl.glCreateShader(shader_type)
         source_bytes = source.encode("utf-8")
@@ -497,8 +531,7 @@ class Program:
                     f"---- [{SHADER_TYPE_NAMES[shader_type]}] ---\n"
                 )
                 + "\n".join(
-                    f"{str(i+1).zfill(3)}: {line} "
-                    for i, line in enumerate(source.split("\n"))
+                    f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(source.split("\n"))
                 )
             )
         return shader

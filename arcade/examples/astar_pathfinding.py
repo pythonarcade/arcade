@@ -8,33 +8,44 @@ python -m arcade.examples.astar_pathfinding
 """
 
 import arcade
+from arcade import camera
 import random
 
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SCALING = 0.25
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "A-Star Path-finding"
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
+WINDOW_TITLE = "A-Star Path-finding"
 
 MOVEMENT_SPEED = 5
 
 VIEWPORT_MARGIN = 100
+HORIZONTAL_BOUNDARY = WINDOW_WIDTH / 2.0 - VIEWPORT_MARGIN
+VERTICAL_BOUNDARY = WINDOW_HEIGHT / 2.0 - VIEWPORT_MARGIN
 
+# If the player moves further than this boundary away from the camera we use a
+# constraint to move the camera
+CAMERA_BOUNDARY = arcade.LRBT(
+    -HORIZONTAL_BOUNDARY,
+    HORIZONTAL_BOUNDARY,
+    -VERTICAL_BOUNDARY,
+    VERTICAL_BOUNDARY,
+)
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, width, height, title):
+    def __init__(self):
         """
         Initializer
         """
 
         # Call the parent class initializer
-        super().__init__(width, height, title)
+        super().__init__()
 
         # Variables that will hold sprite lists
         self.player_list = None
@@ -58,12 +69,11 @@ class MyGame(arcade.Window):
         # List of points we checked to see if there is a barrier there
         self.barrier_list = None
 
-        # Used in scrolling
-        self.view_bottom = 0
-        self.view_left = 0
-
         # Set the window background color
         self.background_color = arcade.color.AMAZON
+
+        # Camera
+        self.camera = None
 
     def setup(self):
         """ Set up the game and initialize the variables. """
@@ -77,14 +87,14 @@ class MyGame(arcade.Window):
         # Set up the player
         resource = ":resources:images/animated_characters/" \
                    "female_person/femalePerson_idle.png"
-        self.player = arcade.Sprite(resource, SPRITE_SCALING)
+        self.player = arcade.Sprite(resource, scale=SPRITE_SCALING)
         self.player.center_x = SPRITE_SIZE * 5
         self.player.center_y = SPRITE_SIZE * 1
         self.player_list.append(self.player)
 
         # Set enemies
         resource = ":resources:images/animated_characters/zombie/zombie_idle.png"
-        enemy = arcade.Sprite(resource, SPRITE_SCALING)
+        enemy = arcade.Sprite(resource, scale=SPRITE_SCALING)
         enemy.center_x = SPRITE_SIZE * 4
         enemy.center_y = SPRITE_SIZE * 7
         self.enemy_list.append(enemy)
@@ -93,7 +103,7 @@ class MyGame(arcade.Window):
         for column in range(10):
             for row in range(15):
                 sprite = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                       SPRITE_SCALING)
+                                       scale=SPRITE_SCALING)
 
                 x = (column + 1) * spacing
                 y = (row + 1) * sprite.height
@@ -140,6 +150,8 @@ class MyGame(arcade.Window):
                                                     playing_field_bottom_boundary,
                                                     playing_field_top_boundary)
 
+        self.camera = camera.Camera2D()
+
     def on_draw(self):
         """
         Render the screen.
@@ -147,13 +159,14 @@ class MyGame(arcade.Window):
         # This command has to happen before we start drawing
         self.clear()
 
-        # Draw all the sprites.
-        self.player_list.draw()
-        self.wall_list.draw()
-        self.enemy_list.draw()
+        with self.camera.activate():
+            # Draw all the sprites.
+            self.player_list.draw()
+            self.wall_list.draw()
+            self.enemy_list.draw()
 
-        if self.path:
-            arcade.draw_line_strip(self.path, arcade.color.BLUE, 2)
+            if self.path:
+                arcade.draw_line_strip(self.path, arcade.color.BLUE, 2)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -185,78 +198,51 @@ class MyGame(arcade.Window):
         # print(self.path,"->", self.player.position)
 
         # --- Manage Scrolling ---
-
-        # Keep track of if we changed the boundary. We don't want to call the
-        # set_viewport command if we didn't change the view port.
-        changed = False
-
-        # Scroll left
-        left_boundary = self.view_left + VIEWPORT_MARGIN
-        if self.player.left < left_boundary:
-            self.view_left -= left_boundary - self.player.left
-            changed = True
-
-        # Scroll right
-        right_boundary = self.view_left + SCREEN_WIDTH - VIEWPORT_MARGIN
-        if self.player.right > right_boundary:
-            self.view_left += self.player.right - right_boundary
-            changed = True
-
-        # Scroll up
-        top_boundary = self.view_bottom + SCREEN_HEIGHT - VIEWPORT_MARGIN
-        if self.player.top > top_boundary:
-            self.view_bottom += self.player.top - top_boundary
-            changed = True
-
-        # Scroll down
-        bottom_boundary = self.view_bottom + VIEWPORT_MARGIN
-        if self.player.bottom < bottom_boundary:
-            self.view_bottom -= bottom_boundary - self.player.bottom
-            changed = True
-
-        # Make sure our boundaries are integer values. While the view port does
-        # support floating point numbers, for this application we want every pixel
-        # in the view port to map directly onto a pixel on the screen. We don't want
-        # any rounding errors.
-        self.view_left = int(self.view_left)
-        self.view_bottom = int(self.view_bottom)
-
-        # If we changed the boundary values, update the view port to match
-        if changed:
-            arcade.set_viewport(self.view_left,
-                                SCREEN_WIDTH + self.view_left,
-                                self.view_bottom,
-                                SCREEN_HEIGHT + self.view_bottom)
+        self.camera.position = camera.grips.constrain_boundary_xy(
+            self.camera.view_data, CAMERA_BOUNDARY, self.player.position
+        )
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP:
+        if key in (arcade.key.UP, arcade.key.W):
             self.up_pressed = True
-        elif key == arcade.key.DOWN:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.down_pressed = True
-        elif key == arcade.key.LEFT:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.left_pressed = True
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = True
+        # Close the window / exit game
+        elif key == arcade.key.ESCAPE:
+            self.close()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP:
+        if key in (arcade.key.UP, arcade.key.W):
             self.up_pressed = False
-        elif key == arcade.key.DOWN:
+        elif key in (arcade.key.DOWN, arcade.key.S):
             self.down_pressed = False
-        elif key == arcade.key.LEFT:
+        elif key in (arcade.key.LEFT, arcade.key.A):
             self.left_pressed = False
-        elif key == arcade.key.RIGHT:
+        elif key in (arcade.key.RIGHT, arcade.key.D):
             self.right_pressed = False
 
 
 def main():
     """ Main function """
-    window = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    window.setup()
+    # Create a window class. This is what actually shows up on screen
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+
+    # Create and setup the GameView
+    game = GameView()
+    game.setup()
+
+    # Show GameView on screen
+    window.show_view(game)
+
+    # Start the arcade game loop
     arcade.run()
 
 
