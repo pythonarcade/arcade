@@ -53,18 +53,35 @@ for i in range(2):
 # from arcade.version import VERSION
 # or read the docs build will fail.
 from version import VERSION # pyright: ignore [reportMissingImports]
-log.info(f"Got version {VERSION!r}")
+log.info(f" Got version {VERSION!r}")
 
-REPO_URL_BASE="https://github.com/pythonarcade/arcade"
-if 'dev' in VERSION:
-    GIT_REF = 'development'
-    log.info(f"Got .dev release: using {GIT_REF!r}")
-else:
+
+# Check whether the version ends in an all-digit string
+VERSION_PARTS = []
+for part in VERSION.split('.'):
+    if part.isdigit():
+        VERSION_PARTS.append(int(part))
+    else:
+        VERSION_PARTS.append(part)
+
+print()
+if VERSION_PARTS[-1].isdigit():
     GIT_REF = VERSION
-    log.info(f"Got real release: using {GIT_REF!r}")
+    log.info(" !!!!! APPEARS TO BE A REAL RELEASE  !!!!!")
+else:
+    GIT_REF = 'development'
+    log.info(" - - -   Building as a dev release   - - -")
+
+print()
+print(f"   {GIT_REF=!r}")
+print(f"   {VERSION=!r}")
+print()
+
 
 # We'll pass this to our generation scripts to initialize their globals
+REPO_URL_BASE="https://github.com/pythonarcade/arcade"
 FMT_URL_REF_BASE=f"{REPO_URL_BASE}/blob/{GIT_REF}"
+
 RESOURCE_GLOBALS = dict(
     GIT_REF=GIT_REF,
     BASE_URL_REPO=REPO_URL_BASE,
