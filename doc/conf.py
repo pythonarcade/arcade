@@ -155,6 +155,7 @@ copy_what = {  # pending: post-3.0 cleanup to tie this into resource generation 
 }
 copy_media(src_res_dir, out_res_dir, copy_what)
 
+# We are no longer asking. We are copying.
 copy_media(
    REPO_LOCAL_ROOT / "doc/_static/icons",
    OUT_STATIC / "icons" ,
@@ -163,10 +164,10 @@ copy_media(
    }
 )
 copy_media(
-   REPO_LOCAL_ROOT / "doc/_static/icons",
-   OUT_STATIC / "icons" ,
+   REPO_LOCAL_ROOT / "doc/_static/",
+   OUT_STATIC ,
    {
-       'tabler': ("*.svg",)
+       'filetiles': ("*.png",)
    }
 )
 #copy_media(

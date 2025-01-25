@@ -65,7 +65,8 @@ except Exception as _:
 
 
 def src_kludge(strpath): # pending: post-3.0 cleanup: # evil evil evil evil
-   return f"{RTD_EVIL}{strpath}"
+    """We inject what RTD says the canonical domain is up top + the version"""
+    return f"{RTD_EVIL}{strpath}"
 
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent
