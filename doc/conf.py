@@ -157,6 +157,12 @@ extensions = [
     'doc.extensions.prettyspecialmethods',  # Forker plugin for prettifying special methods
 ]
 
+# pending: post-3.0 cleanup:
+# 1. Setting this breaks the CSS for both the plugin's buttons and our "custom" ones
+# 2. Since our custom ones are only on the gui page for now, it's okay
+# Note: tabler doesn't require attribution + it's the original theme for this icon set
+# copybutton_image_svg = (REPO_LOCAL_ROOT / "doc/_static/icons/tabler/copy.svg").read_text()
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
