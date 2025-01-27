@@ -1543,21 +1543,21 @@ class View:
         pass
 
     @property
-    def size(self) -> tuple[float, float]:
+    def size(self) -> tuple[int, int]:
         """
         An alias for `arcade.Window.size`
         """
         return self.window.size
 
     @property
-    def width(self) -> float:
+    def width(self) -> int:
         """
         An alias for `arcade.Window.width`
         """
         return self.window.width
 
     @property
-    def height(self) -> float:
+    def height(self) -> int:
         """
         An alias for `arcade.Window.height`
         """
