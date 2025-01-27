@@ -323,7 +323,9 @@ html_baseurl = 'https://api.arcade.academy/'
 # Configuration for intersphinx enabling linking other projects
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
-    'pyglet': ('https://pyglet.readthedocs.io/en/development/', None),
+    # As of January 25th, pyglet's 2.1.X branch is on this URL and their
+    # development build on readthedocs is for their in-progress 3.0.0 alpha.
+    'pyglet': ('https://pyglet.readthedocs.io/en/latest/', None),
     'PIL': ('https://pillow.readthedocs.io/en/stable', None),
     'pymunk': ('https://www.pymunk.org/en/latest/', None),
 }
