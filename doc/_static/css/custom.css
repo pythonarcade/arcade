@@ -346,6 +346,9 @@ table.resource-table td > .resource-thumb.file-icon {
 li .arcade-ezcopy.doc-ui-example-dummy {
     margin-left: 0.2em;
     margin-right: 0.2em;
+    /* Override 12 px bottom margin */
+    margin-top: inherit !important;
+    margin-bottom: inherit !important;
 }
 
 table.colorTable {

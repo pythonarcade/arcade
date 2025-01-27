@@ -169,6 +169,7 @@ RESOURCE_HANDLE_CONFIGS: dict[str,HandleLevelConfigDict] = {
     ":resources:/": {
         "heading": {
             "value": "Top-Level Resources",
+            "ref_target": "resources-top-level-resources",
             "level": 1
         },
         "include": "resources_Top-Level_Resources.rst"
@@ -814,9 +815,18 @@ def resources():
         f"<img src=\"{src_kludge('/_static/icons/tabler/copy.svg')}\"></div>)</li>\n"
         f"   </ol>\n\n"
         +
-        "Click the button above a preview to copy the **resource handle** string for loading the asset.\n"
-        "Any image or sound on this page should work after installing Arcade with zero additional dependencies.\n"
-        "Full example code and manual sections for any relevant functions are linked below."
+        "Click the button above a preview to copy the **resource handle** string for loading the asset. It should\n"
+        "look something like this::\n\n"
+        "  ':resources:/logo.png'\n"
+        "\n"
+        "Each resource preview on this page has a button which copies a corresponding string. These\n"
+        "resource handle strings allow using Arcade's built-in assets without worrying where a file is\n"
+        "on a computer.\n\n"
+        "To learn more, please see:\n\n"
+        "* The :ref:`resources-top-level-resources` section for a short tutorial on resource handles\n"
+        "* :ref:`example-code` for runnable example code\n"
+        "* :ref:`main-page-tutorials` for a step-by-step introduction to Arcade\n"
+        "* :ref:`resource_handles` for in-depth explanations of resource handles\n\n"
     )
 
     out.write("\n")
