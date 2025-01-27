@@ -143,7 +143,7 @@ class TableConfigDict(TypedDict):
 
 
 class HeadingConfigDict(TypedDict):
-    ref_target: NotRequired[str | bool]
+    ref_target: NotRequired[str]
     skip: NotRequired[bool]
     value: NotRequired[str]
     level: NotRequired[int]
@@ -209,10 +209,10 @@ RESOURCE_HANDLE_CONFIGS: dict[str,HandleLevelConfigDict] = {
     },
     ":resources:/video/": {
         # pending: post-3.0 cleanup # trains are hats
-        # "heading:": {
-        #     "value": "Video",
-        #     "ref_target": "resources_video"
-        # },
+        "heading:": {
+            "value": "Video",
+            "ref_target": "resources_video"
+        },
         "include": "resources_Video.rst"
     }
 }
@@ -274,6 +274,7 @@ def do_heading(
     if ref_target is True:
         ref_target = f"resources-{heading_text}.rst"
     if ref_target:
+        print(f"   writing ref target {repr(heading_text)}")
         out.write(f".. _{ref_target.lower()}:\n\n")
 
     if relative_heading_level >= num_headings:
@@ -428,19 +429,24 @@ def process_resource_directory(out, dir: Path):
                 local_config = RESOURCE_HANDLE_CONFIGS.get(handle_step_whole, {})
                 local_heading_config = local_config.get('heading', {})
 
-                # print("proceeding...",
-                #       "\n   config         ", local_config,
-                #       "\n   heading_config ", local_heading_config, sep = "")
+                print("proceeding...",
+                      "\n   config         ", local_config,
+                      "\n   heading_config ", local_heading_config, sep = "")
 
                 # Heading config fetch and write
                 use_level = local_heading_config.get('level', heading_level)
                 use_value = local_heading_config.get('value', None)
+                use_target = local_heading_config.get('ref_target', None)
                 if use_value is None:
                     use_value = format_title_part(handle_steps_parts[heading_level])
-                use_target = local_heading_config.get('ref_target', None)
-                if isinstance(use_target, bool) and use_target:
-                    use_target = f"resources_{use_value.lower()}"
+                if use_target is None:
+                    use_target = f"resources-{use_value.lower()}"
 
+                for k, v in locals().items():
+                    if k.startswith("use_"):
+                        print(repr(k), ":", repr(v))
+
+                print(f"  got target: {use_target!r}")
                 do_heading(out, use_level, use_value, ref_target=use_target)
                 out.write(f"\n.. comment `{handle_step_whole!r}``\n\n")
 
@@ -789,7 +795,7 @@ def resources():
               "convenience, or visit `Kenney.nl`_ for more permissively licensed game assets.\n"
               "\n" 
               "The one feature which may require additional software is Arcade's experimental video playback\n"
-              "support. The :ref:`resources_video` section below will explain further.\n")
+              "support. The :ref:`resources-video` section below will explain further.\n")
 
     do_heading(out, 1, "Do I have to credit anyone?")
     # Injecting the links.rst doesn't seem to be working?
