@@ -56,10 +56,10 @@ class Section:
 
     def __init__(
         self,
-        left: int,
-        bottom: int,
-        width: int,
-        height: int,
+        left: int | float,
+        bottom: int | float,
+        width: int | float,
+        height: int | float,
         *,
         name: str | None = None,
         accept_keyboard_keys: bool | Iterable = True,
