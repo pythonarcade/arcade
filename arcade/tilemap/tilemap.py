@@ -48,7 +48,7 @@ _FLIPPED_HORIZONTALLY_FLAG = 0x80000000
 _FLIPPED_VERTICALLY_FLAG = 0x40000000
 _FLIPPED_DIAGONALLY_FLAG = 0x20000000
 
-__all__ = ["TileMap", "load_tilemap", "read_tmx"]
+__all__ = ["TileMap", "load_tilemap"]
 
 prop_to_float = cast(Callable[[pytiled_parser.Property], float], float)
 
@@ -237,7 +237,7 @@ class TileMap:
     ) -> None:
         if not map_file and not tiled_map:
             raise AttributeError(
-                "Initialized TileMap with an empty map_file or no map_object argument"
+                "Initialized TileMap with an empty map_file or no tiled_map argument"
             )
 
         if tiled_map:
@@ -430,7 +430,7 @@ class TileMap:
                 if existing_ref:
                     tile_ref = existing_ref
                 else:
-                    tile_ref = pytiled_parser.Tile(id=(tile_id), image=tileset.image)
+                    tile_ref = pytiled_parser.Tile(id=tile_id, image=tileset.image)
             elif tileset.tiles is None and tileset.image is not None:
                 # Not in this tileset, move to the next
                 continue
@@ -1075,12 +1075,3 @@ def load_tilemap(
         texture_atlas=texture_atlas,
         lazy=lazy,
     )
-
-
-def read_tmx(map_file: str | Path) -> pytiled_parser.TiledMap:
-    """
-    Deprecated function to raise a warning that it has been removed.
-
-    Exists to provide info for outdated code bases.
-    """
-    raise DeprecationWarning("The read_tmx function has been replaced by the new TileMap class.")

@@ -196,7 +196,6 @@ from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
 from .tilemap import load_tilemap
-from .tilemap import read_tmx
 from .tilemap import TileMap
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
@@ -372,7 +371,6 @@ __all__ = [
     "open_window",
     "print_timings",
     "play_sound",
-    "read_tmx",
     "load_tilemap",
     "run",
     "schedule",
