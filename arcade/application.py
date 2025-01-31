@@ -60,7 +60,7 @@ def get_screens() -> list[Screen]:
         List of screens, one for each monitor.
     """
     display = pyglet.display.get_display()
-    return display.get_screens()  # type: ignore  # pending: https://github.com/pyglet/pyglet/pull/1176  # noqa
+    return display.get_screens()
 
 
 class NoOpenGLException(Exception):
@@ -228,9 +228,9 @@ class Window(pyglet.window.Window):
                 style=style,
             )
             # pending: weird import tricks resolved
-            self.register_event_type("on_update")  # type: ignore
-            self.register_event_type("on_action")  # type: ignore
-            self.register_event_type("on_fixed_update")  # type: ignore
+            self.register_event_type("on_update")
+            self.register_event_type("on_action")
+            self.register_event_type("on_fixed_update")
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException(
                 "Unable to create an OpenGL 3.3+ context. "

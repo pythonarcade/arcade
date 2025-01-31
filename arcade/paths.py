@@ -88,7 +88,7 @@ class _AStarGraph(object):
         self.bottom = bottom
 
         if diagonal_movement:
-            self.movement_directions = (  # type: ignore
+            self.movement_directions = (
                 (1, 0),
                 (-1, 0),
                 (0, 1),

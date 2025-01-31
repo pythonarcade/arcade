@@ -240,7 +240,7 @@ class HitBox:
 
         self._adjusted_points = [_adjust_point(point) for point in self.points]
         self._adjusted_cache_dirty = False
-        return self._adjusted_points  # type: ignore [return-value]
+        return self._adjusted_points
 
 
 class RotatableHitBox(HitBox):

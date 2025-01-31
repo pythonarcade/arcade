@@ -58,7 +58,7 @@ def are_polygons_intersecting(poly_a: Point2List, poly_b: Point2List) -> bool:
                     max_b = projected
 
             # Avoid typing.cast() because this is a very hot path
-            if max_a <= min_b or max_b <= min_a:  # type: ignore
+            if max_a <= min_b or max_b <= min_a:
                 return False
 
     return True
