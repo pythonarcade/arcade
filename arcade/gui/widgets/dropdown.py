@@ -28,7 +28,8 @@ class _UIDropdownOverlay(UIBoxLayout):
 
     def hide(self):
         """Hide the overlay."""
-        self.parent.remove(self)
+        if self.parent:
+            self.parent.remove(self)
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
         if isinstance(event, UIMousePressEvent):
@@ -164,8 +165,8 @@ class UIDropdown(UILayout):
 
     def _on_option_click(self, event: UIOnClickEvent):
         source: UIFlatButton = event.source
-        self.value = source.text
         self._overlay.hide()
+        self.value = source.text
 
     def do_layout(self):
         """Position the overlay, this is not a common thing to do in do_layout,
