@@ -213,7 +213,7 @@ class Game(arcade.Window):
                 player.input_manager.allow_keyboard = False
 
     def on_update(self, delta_time: float):
-        self.player_list.on_update(delta_time)
+        self.player_list.update(delta_time)
         for label, player in zip(self.player_device_labels, self.players):
             position_x, position_y = player.position
             position_y += FLOAT_HEIGHT

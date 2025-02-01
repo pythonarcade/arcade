@@ -37,6 +37,7 @@ class StrEnum(str, InputEnum):
     def __str__(self):
         return str(self.value)
 
+    @staticmethod
     def _generate_next_value_(name, *_):
         return name
 
