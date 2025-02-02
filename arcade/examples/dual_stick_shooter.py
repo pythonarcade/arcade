@@ -275,8 +275,6 @@ class GameView(arcade.View):
             self.player.shoot_left_pressed = True
         elif key == arcade.key.DOWN:
             self.player.shoot_down_pressed = True
-        elif key == arcade.key.ESCAPE:
-            self.player.start_pressed = True
         # close the window if the user hits the escape key
         elif key == arcade.key.ESCAPE:
             self.window.close()
