@@ -369,7 +369,7 @@ class GameView(arcade.View):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
-            arcade.close_window()
+            self.window.close()
 
 
 def firework_spark_mutator(particle: FadeParticle):

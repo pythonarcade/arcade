@@ -279,7 +279,7 @@ class GameView(arcade.View):
             self.player.start_pressed = True
         # close the window if the user hits the escape key
         elif key == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
         rad = math.atan2(self.player.change_y, self.player.change_x)
         self.player.angle = math.degrees(rad) + ROTATE_OFFSET

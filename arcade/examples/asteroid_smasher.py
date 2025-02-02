@@ -316,7 +316,7 @@ class GameView(arcade.View):
             self.start_new_game()
         # Quit if the player hits escape
         elif symbol == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_key_release(self, symbol, modifiers):
         """ Called whenever a key is released. """

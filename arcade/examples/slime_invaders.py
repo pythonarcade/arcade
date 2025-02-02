@@ -200,7 +200,7 @@ class GameView(arcade.View):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """
