@@ -6,6 +6,8 @@ import os
 import contextlib
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
+import platform
+
 import pytest
 import arcade
 
@@ -34,6 +36,9 @@ def find_tutorials():
 )
 def test_tutorials(window_proxy, file_path, allow_stdout):
     """Run all tutorials"""
+    if "compute_shader" in str(file_path) and platform.system() == "darwin":
+        raise pytest.skip(f"compute_shader tutorial not working on OS X")
+
     os.environ["ARCADE_TEST"] = "TRUE"
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
