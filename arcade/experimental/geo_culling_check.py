@@ -16,7 +16,6 @@ from arcade.sprite import Sprite
 
 
 class GeoCullingTest(arcade.Window):
-
     def __init__(self):
         super().__init__(1280, 720, "Cull test", resizable=True)
         self.proj = 0, self.width, 0, self.height

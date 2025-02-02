@@ -115,7 +115,6 @@ def _move_sprite(
     # --- Rotate
     rotating_hit_list = []
     if moving_sprite.change_angle:
-
         # Rotate
         moving_sprite.angle += moving_sprite.change_angle
 
@@ -123,7 +122,6 @@ def _move_sprite(
         rotating_hit_list = check_for_collision_with_lists(moving_sprite, can_collide)
 
         if len(rotating_hit_list) > 0:
-
             max_distance = (moving_sprite.width + moving_sprite.height) / 2
 
             # Resolve any collisions by this weird kludge
@@ -199,7 +197,6 @@ def _move_sprite(
 
         exit_loop = False
         while not exit_loop:
-
             loop_count += 1
             # print(f"{cur_x_change=}, {upper_bound=}, {lower_bound=}, {loop_count=}")
 
@@ -782,7 +779,6 @@ class PhysicsEnginePlatformer:
         for platform_list in self.platforms:
             for platform in platform_list:
                 if platform.change_x != 0 or platform.change_y != 0:
-
                     # Check x boundaries and move the platform in x direction
                     if platform.boundary_left and platform.left <= platform.boundary_left:
                         platform.left = platform.boundary_left

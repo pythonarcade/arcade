@@ -10,7 +10,6 @@ import arcade
 
 
 class AtlasRenderDemo(arcade.Window):
-
     def __init__(self):
         super().__init__(1280, 720, "Atlas Render Demo")
         self.atlas = arcade.DefaultTextureAtlas((600, 600))

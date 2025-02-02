@@ -388,8 +388,7 @@ def rescale_relative_to_point(source: Point2, target: Point2, factor: AsFloat | 
                 return target
         except ValueError:
             raise ValueError(
-                "factor must be a float, int, or tuple-like "
-                "which unpacks as two float-like values"
+                "factor must be a float, int, or tuple-like which unpacks as two float-like values"
             )
         except TypeError:
             raise TypeError(

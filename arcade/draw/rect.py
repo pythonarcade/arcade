@@ -187,10 +187,10 @@ def draw_lrbt_rectangle_outline(
         ValueError: Raised if left > right or top < bottom.
     """
     if left > right:
-        raise ValueError("Left coordinate must be less than or equal to " "the right coordinate")
+        raise ValueError("Left coordinate must be less than or equal to the right coordinate")
 
     if bottom > top:
-        raise ValueError("Bottom coordinate must be less than or equal to " "the top coordinate")
+        raise ValueError("Bottom coordinate must be less than or equal to the top coordinate")
 
     draw_rect_outline(LRBT(left, right, bottom, top), color, border_width)
 

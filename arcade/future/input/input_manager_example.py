@@ -25,7 +25,6 @@ DEFAULT_TEXTURES = (
 
 
 class Player(arcade.Sprite):
-
     def __init__(
         self,
         texture,
@@ -58,7 +57,6 @@ class Player(arcade.Sprite):
 
 
 class Game(arcade.Window):
-
     def __init__(
         self,
         player_textures: Sequence[str] = DEFAULT_TEXTURES,
@@ -76,7 +74,7 @@ class Game(arcade.Window):
 
         self._max_players = max_players
         self.key_to_player_index: dict[Keys, int] = {
-            getattr(Keys, f"KEY_{i + 1 }"): i for i in range(0, max_players)
+            getattr(Keys, f"KEY_{i + 1}"): i for i in range(0, max_players)
         }
 
         self.players: list[Player | None] = []
@@ -201,7 +199,6 @@ class Game(arcade.Window):
         self.device_labels_batch.draw()
 
     def on_key_press(self, key, modifiers):
-
         player_index = self.key_to_player_index.get(Keys(key), None)
         if player_index is None or player_index >= len(self.players):
             return

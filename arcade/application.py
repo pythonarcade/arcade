@@ -962,7 +962,7 @@ class Window(pyglet.window.Window):
         """
         if not isinstance(new_view, View):
             raise TypeError(
-                f"Window.show_view() takes an arcade.View," f"but it got a {type(new_view)}."
+                f"Window.show_view() takes an arcade.View, but it got a {type(new_view)}."
             )
 
         self._ctx.screen.use()

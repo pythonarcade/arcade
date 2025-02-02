@@ -55,7 +55,6 @@ def background_from_file(
     shader: gl.Program | None = None,
     geometry: gl.Geometry | None = None,
 ) -> Background:
-
     texture = BackgroundTexture.from_file(tex_src, offset, scale, angle, filters)
     if size is None:
         size = texture.texture.size

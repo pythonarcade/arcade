@@ -12,7 +12,6 @@ SCREEN_TITLE = "Basic Renderer"
 
 
 class MyGame(arcade.Window):
-
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
         # vsync must be off when measuring rendering calls

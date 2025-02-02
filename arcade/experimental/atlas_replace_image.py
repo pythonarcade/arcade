@@ -68,7 +68,6 @@ TEXTURE_PATHS = [
 
 
 class AtlasReplaceImage(arcade.Window):
-
     def __init__(self):
         super().__init__(800, 600, "Replacing images in atlas")
         self.sprite_1 = arcade.Sprite(TEXTURE_PATHS[-1], center_x=200, center_y=300)

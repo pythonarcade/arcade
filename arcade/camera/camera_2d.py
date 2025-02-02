@@ -124,15 +124,15 @@ class Camera2D:
         if projection is not None:
             if left == right:
                 raise ZeroProjectionDimension(
-                    (f"projection width is 0 due to equal {left=}" f"and {right=} values")
+                    f"projection width is 0 due to equal {left=} and {right=} values"
                 )
             if bottom == top:
                 raise ZeroProjectionDimension(
-                    (f"projection height is 0 due to equal {bottom=}" f"and {top=}")
+                    f"projection height is 0 due to equal {bottom=} and {top=}"
                 )
         if near == far:
             raise ZeroProjectionDimension(
-                f"projection depth is 0 due to equal {near=}" f"and {far=} values"
+                f"projection depth is 0 due to equal {near=} and {far=} values"
             )
 
         pos_x = position[0] if position is not None else half_width
@@ -223,17 +223,17 @@ class Camera2D:
             left, right = projection_data.left, projection_data.right
             if projection_data.left == projection_data.right:
                 raise ZeroProjectionDimension(
-                    (f"projection width is 0 due to equal {left=}" f"and {right=} values")
+                    (f"projection width is 0 due to equal {left=}and {right=} values")
                 )
             bottom, top = projection_data.bottom, projection_data.top
             if bottom == top:
                 raise ZeroProjectionDimension(
-                    (f"projection height is 0 due to equal {bottom=}" f"and {top=}")
+                    (f"projection height is 0 due to equal {bottom=}and {top=}")
                 )
             near, far = projection_data.near, projection_data.far
             if near == far:
                 raise ZeroProjectionDimension(
-                    f"projection depth is 0 due to equal {near=}" f"and {far=} values"
+                    f"projection depth is 0 due to equal {near=}and {far=} values"
                 )
 
         # build a new camera with defaults and then apply the provided camera objects.

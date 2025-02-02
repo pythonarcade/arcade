@@ -7,7 +7,6 @@ from arcade.future.input.raw_dicts import RawAction, RawActionMapping, RawAxis, 
 
 
 class Action:
-
     def __init__(self, name: str) -> None:
         self.name = name
         self._mappings: set[ActionMapping] = set()
@@ -20,7 +19,6 @@ class Action:
 
 
 class Axis:
-
     def __init__(self, name: str) -> None:
         self.name = name
         self._mappings: set[AxisMapping] = set()
@@ -51,7 +49,6 @@ class InputMapping:
 
 
 class ActionMapping(InputMapping):
-
     def __init__(
         self,
         input: inputs.InputEnum,
@@ -71,7 +68,6 @@ class ActionMapping(InputMapping):
 
 
 class AxisMapping(InputMapping):
-
     def __init__(self, input: inputs.InputEnum, scale: float):
         super().__init__(input)
         self._scale = scale

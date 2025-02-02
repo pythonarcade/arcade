@@ -124,7 +124,7 @@ class UVData:
             return slot
         except IndexError:
             raise Exception(
-                ("No more free slots in the UV texture. " f"Max number of slots: {self._num_slots}")
+                f"No more free slots in the UV texture. Max number of slots: {self._num_slots}"
             )
 
     def free_slot_by_name(self, name: str) -> None:

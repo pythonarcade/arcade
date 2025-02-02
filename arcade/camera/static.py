@@ -27,7 +27,6 @@ if TYPE_CHECKING:
 
 
 class _StaticCamera:
-
     def __init__(
         self,
         view_matrix: Mat4,
