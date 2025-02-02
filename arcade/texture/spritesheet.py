@@ -147,6 +147,9 @@ class SpriteSheet:
             hit_box_algorithm:
                 Hit box algorithm to use for the texture.
                 If not provided, the default hit box algorithm will be used.
+            y_up:
+                Sets the coordinate space of the image to assert (0, 0)
+                in the bottom left.
         """
         im = self.get_image(rect, y_up)
         texture = Texture(im, hit_box_algorithm=hit_box_algorithm)

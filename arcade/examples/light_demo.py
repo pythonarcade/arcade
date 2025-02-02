@@ -47,7 +47,7 @@ class GameView(arcade.View):
         self.physics_engine = None
 
         # Camera
-        self.cam: arcade.camera.Camera2D = None
+        self.camera: arcade.camera.Camera2D = None
 
         # --- Light related ---
         # List of all the lights

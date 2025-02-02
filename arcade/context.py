@@ -495,6 +495,9 @@ class ArcadeContext(Context):
             internal_format (optional):
                 The internal format of the texture. This can be used to override
                 the default internal format when using sRGBA or compressed textures.
+            immutable (optional):
+                Make the storage (not the contents) immutable. This can sometimes be
+                required when using textures with compute shaders.
             compressed (optional):
                 If the internal format is a compressed format meaning your
                 texture will be compressed by the GPU.

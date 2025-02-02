@@ -1062,6 +1062,9 @@ def load_tilemap(
             Can be used to offset the position of all sprites and objects
             within the map. This will be applied in addition to any offsets from Tiled. This value
             can be overridden with the layer_options dict.
+        texture_atlas:
+            A default texture atlas to use for the SpriteLists created by this map.
+            If not supplied the global default atlas will be used.
         lazy:
             SpriteLists will be created lazily.
     """
