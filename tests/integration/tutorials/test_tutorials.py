@@ -1,12 +1,12 @@
 """
-FInd and run all tutorials in the doc/tutorials directory
+Find and run all tutorials in the doc/tutorials directory
 """
 import io
 import os
 import contextlib
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
-import platform
+import sys
 
 import pytest
 import arcade
@@ -16,18 +16,10 @@ ALLOW_STDOUT = {}
 
 
 def find_tutorials():
-    # Loop the directory of tutorials dirs
-    for dir in TUTORIAL_DIR.iterdir():
-        if not dir.is_dir():
+    for path in TUTORIAL_DIR.rglob("*.py"):
+        if path.stem.startswith("_"):
             continue
-
-        print(dir)
-        # Find python files in each tutorial dir
-        for file in dir.glob("*.py"):
-            if file.stem.startswith("_"):
-                continue
-            # print("->", file)
-            yield file, file.stem in ALLOW_STDOUT
+        yield path, path.stem in ALLOW_STDOUT
 
 
 @pytest.mark.parametrize(
@@ -36,8 +28,8 @@ def find_tutorials():
 )
 def test_tutorials(window_proxy, file_path, allow_stdout):
     """Run all tutorials"""
-    if "compute_shader" in str(file_path) and platform.system() == "darwin":
-        raise pytest.skip(f"compute_shader tutorial not working on OS X")
+    if file_path.parent.name == "compute_shader" and sys.platform == "darwin":
+        raise pytest.skip("compute_shader tutorial not working on MacOS")
 
     os.environ["ARCADE_TEST"] = "TRUE"
     stdout = io.StringIO()
