@@ -16,6 +16,7 @@ SPRITE_SCALING = 0.5
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
+ASPECT_RATIO = WINDOW_WIDTH / WINDOW_HEIGHT
 WINDOW_TITLE = "Minimap Example"
 
 # How many pixels to keep as a minimum margin between the character
@@ -203,8 +204,8 @@ class GameView(arcade.View):
         Handle the user grabbing the edge and resizing the window.
         """
         super().on_resize(width, height)
-        self.camera_sprites.match_window()
-        self.camera_gui.match_window()
+        self.camera_sprites.match_window(aspect=ASPECT_RATIO, projection=False)
+        self.camera_gui.match_window(aspect=ASPECT_RATIO, projection=False)
 
 
 def main():
