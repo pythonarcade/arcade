@@ -20,6 +20,9 @@ from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK
 from arcade import Rect, LBWH
 from arcade import gl
 # from arcade.texture import default_texture_cache
+# NOTE: Load liberation fonts in unit tests
+arcade.resources.load_liberation_fonts()
+
 
 PROJECT_ROOT = (Path(__file__).parent.parent).resolve()
 FIXTURE_ROOT = PROJECT_ROOT / "tests" / "fixtures"
