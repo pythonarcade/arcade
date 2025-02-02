@@ -55,7 +55,6 @@ dev = [
     "pytest-mock",
     "coverage",
     "coveralls",          # Do we really need this?
-    "black",
     "ruff",
     "mypy",
     "pyright==1.1.387",
@@ -110,6 +109,13 @@ lint.select = [
     # Whitespace linting must be re-enabled manually for ruff
     # see https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml
     "W",
+]
+
+[tool.ruff.format]
+docstring-code-format = false
+exclude = [
+    "arcade/examples/*",
+    "benchmarks/*",
 ]
 
 # This ignores __init__.py files and examples for import sorting
@@ -169,19 +175,6 @@ omit = [
     "./doc/*",
     "./Win*/*",
 ]
-
-[tool.black]
-line-length = 100
-force-exclude = '''
-(
-  doc
-  | arcade/examples
-  | arcade/gui/examples
-  | tests
-  | util
-  | benchmarks
-)
-'''
 
 [[tool.mypy.overrides]]
 module = "pyglet.*"

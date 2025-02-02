@@ -11,6 +11,7 @@ For help, see the following:
 * CONTRIBUTING.md
 * The output of python make.py --help
 """
+
 from __future__ import annotations
 
 import os
@@ -51,9 +52,6 @@ MYPY = "mypy"
 MYPYOPTS = ["arcade"]
 PYRIGHT = "pyright"
 PYRIGHTOPTS = []
-BLACK = "black"
-BLACKOPTS = ["arcade"]
-ISORTOPTS = ["check", "--select", "I"]
 
 # Testing
 PYTEST = "pytest"
@@ -90,7 +88,6 @@ for library in libraries:
             return True
         except:
             pass
-
 
     not_found = [library for library in libraries if not find(library)]
     if not_found:
@@ -146,7 +143,7 @@ def run(args: str | list[str], cd: PathLike | None = None) -> None:
         args: the command to run.
         cd: a directory to switch into beforehand, if any.
     """
-    cmd = ' '.join(args)
+    cmd = " ".join(args)
     print(">> Running command:", cmd)
     if cd is not None:
         with cd_context(_resolve(cd, strict=True)):
@@ -430,38 +427,39 @@ def lint():
     """
     Run tasks: ruff, mypy, and pyright (Run this before making a pull request!)
     """
-    ruff()
+    ruff_check()
     mypy()
     pyright()
 
 
 @app.command(rich_help_panel="Code Quality")
-def ruff():
+def ruff_check():
     """Run ruff check for code quality"""
     run([RUFF, *RUFFOPTS, RUFFOPTS_PACKAGE])
 
 
 @app.command(rich_help_panel="Code Quality")
 def format(check: bool = False):
-    """Format code using black and sort imports with ruff"""
-    black(check)
-    isort(check)
+    """Format code and sort imports with ruff"""
+    ruff_format(check)
+    ruff_isort(check)
 
 
 @app.command(rich_help_panel="Code Quality")
-def isort(check: bool = False):
+def ruff_format(check: bool = False):
+    """Format code using ruff"""
+    ruff_fmt = [RUFF, "format"]
+    if check:
+        ruff_fmt.append("--check")
+    run(ruff_fmt)
+
+
+@app.command(rich_help_panel="Code Quality")
+def ruff_isort(check: bool = False):
     """Sort imports with ruff"""
     if not check:
         RUFFOPTS_ISORT.append("--fix")
     run([RUFF, *RUFFOPTS_ISORT, RUFFOPTS_PACKAGE])
-
-
-@app.command(rich_help_panel="Code Quality")
-def black(check: bool = False):
-    """Format code using black"""
-    if check:
-        BLACKOPTS.append("--check")
-    run([BLACK, *BLACKOPTS])
 
 
 @app.command(rich_help_panel="Code Quality")
