@@ -186,7 +186,7 @@ class UIWidget(EventDispatcher, ABC):
 
         if self.visible:
             # pass event to children
-            for child in self.children:
+            for child in reversed(self.children):
                 if child.dispatch_event("on_event", event):
                     return EVENT_HANDLED
 
