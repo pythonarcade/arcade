@@ -125,7 +125,7 @@ class UVData:
         except IndexError:
             raise Exception(
                 (
-                    f"No more free slots in the UV texture."
+                    "No more free slots in the UV texture."
                     f"Max number of textures: {self._num_slots}."
                     "Consider creating a texture atlas with a larger capacity."
                 )
