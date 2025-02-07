@@ -1,7 +1,7 @@
 import array
 
 from arcade import gl
-from arcade.types import Color, Point2List, RGBOrA255, Point2
+from arcade.types import Color, Point2, Point2List, RGBOrA255
 from arcade.window_commands import get_window
 
 from .helpers import _generic_draw_line_strip, get_points_for_thick_line

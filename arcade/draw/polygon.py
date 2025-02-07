@@ -1,6 +1,6 @@
 from arcade import gl
 from arcade.earclip import earclip
-from arcade.types import Point2List, RGBOrA255, Point2
+from arcade.types import Point2, Point2List, RGBOrA255
 
 from .helpers import _generic_draw_line_strip, get_points_for_thick_line
 
