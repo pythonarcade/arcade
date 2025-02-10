@@ -56,10 +56,10 @@ class Section:
 
     def __init__(
         self,
-        left: int,
-        bottom: int,
-        width: int,
-        height: int,
+        left: int | float,
+        bottom: int | float,
+        width: int | float,
+        height: int | float,
         *,
         name: str | None = None,
         accept_keyboard_keys: bool | Iterable = True,
@@ -116,19 +116,19 @@ class Section:
         # section position into the current viewport
         # if screen is resized it's upto the user to move or resize each section
         # (section will receive on_resize event)
-        self._left: int = left
-        self._bottom: int = bottom
-        self._width: int = width
-        self._height: int = height
-        self._right: int = left + width
-        self._top: int = bottom + height
+        self._left: int | float = left
+        self._bottom: int | float = bottom
+        self._width: int | float = width
+        self._height: int | float = height
+        self._right: int | float = left + width
+        self._top: int | float = bottom + height
 
         # section event capture dimensions
         # if section is modal, capture all events on the screen
-        self._ec_left: int = 0 if self._modal else self._left
-        self._ec_right: int = self.window.width if self._modal else self._right
-        self._ec_bottom: int = 0 if self._modal else self._bottom
-        self._ec_top: int = self.window.height if self._modal else self._top
+        self._ec_left: int | float = 0 if self._modal else self._left
+        self._ec_right: int | float = self.window.width if self._modal else self._right
+        self._ec_bottom: int | float = 0 if self._modal else self._bottom
+        self._ec_top: int | float = self.window.height if self._modal else self._top
 
         self.camera: Projector | None = None
         """optional section camera"""
@@ -180,7 +180,7 @@ class Section:
         return self._draw_order
 
     @property
-    def left(self) -> int:
+    def left(self) -> int | float:
         """Left edge of this section"""
         return self._left
 
@@ -192,7 +192,7 @@ class Section:
         self._ec_right = self.window.width if self._modal else self._right
 
     @property
-    def bottom(self) -> int:
+    def bottom(self) -> int | float:
         """The bottom edge of this section"""
         return self._bottom
 
@@ -204,7 +204,7 @@ class Section:
         self._ec_top = self.window.height if self._modal else self._top
 
     @property
-    def width(self) -> int:
+    def width(self) -> int | float:
         """The width of this section"""
         return self._width
 
@@ -215,7 +215,7 @@ class Section:
         self._ec_right = self.window.width if self._modal else self._right
 
     @property
-    def height(self) -> int:
+    def height(self) -> int | float:
         """The height of this section"""
         return self._height
 
@@ -226,7 +226,7 @@ class Section:
         self._ec_top = self.window.height if self._modal else self._top
 
     @property
-    def right(self) -> int:
+    def right(self) -> int | float:
         """Right edge of this section"""
         return self._right
 
@@ -238,7 +238,7 @@ class Section:
         self._ec_left = 0 if self._modal else self._left
 
     @property
-    def top(self) -> int:
+    def top(self) -> int | float:
         """Top edge of this section"""
         return self._top
 

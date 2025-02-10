@@ -1,7 +1,7 @@
 import array
 
 from arcade import gl
-from arcade.types import Color, Point2List, RGBOrA255
+from arcade.types import Color, Point2, Point2List, RGBOrA255
 from arcade.window_commands import get_window
 
 from .helpers import _generic_draw_line_strip, get_points_for_thick_line
@@ -23,8 +23,8 @@ def draw_line_strip(point_list: Point2List, color: RGBOrA255, line_width: float 
     if line_width == 1:
         _generic_draw_line_strip(point_list, color, gl.LINE_STRIP)
     else:
-        triangle_point_list: Point2List = []
-        # This needs a lot of improvement
+        triangle_point_list: list[Point2] = []
+        # FIXME: This needs a lot of improvement
         last_point = None
         for point in point_list:
             if last_point is not None:
