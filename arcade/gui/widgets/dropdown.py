@@ -60,9 +60,49 @@ class UIDropdown(UILayout):
         height: Height of each of the option.
         default: The default value shown.
         options: The options displayed when the layout is clicked.
+        primary_style: The style of the primary button.
+        dropdown_style: The style of the buttons in the dropdown.
+        active_style: The style of the dropdown button, which represents the active option.
     """
 
     DIVIDER = None
+
+    DEFAULT_BUTTON_STYLE = {
+        "normal": UIFlatButton.UIStyle(
+            font_color=uicolor.GREEN_NEPHRITIS,
+        ),
+        "hover": UIFlatButton.UIStyle(
+            font_color=uicolor.WHITE,
+            bg=uicolor.DARK_BLUE_WET_ASPHALT,
+            border=uicolor.GRAY_CONCRETE,
+        ),
+        "press": UIFlatButton.UIStyle(
+            font_color=uicolor.DARK_BLUE_MIDNIGHT_BLUE,
+            bg=uicolor.WHITE_CLOUDS,
+            border=uicolor.GRAY_CONCRETE,
+        ),
+        "disabled": UIFlatButton.UIStyle(
+            font_color=uicolor.WHITE_SILVER,
+            bg=uicolor.GRAY_ASBESTOS,
+        ),
+    }
+    DEFAULT_DROPDOWN_STYLE = {
+        "normal": UIFlatButton.UIStyle(),
+        "hover": UIFlatButton.UIStyle(
+            font_color=uicolor.WHITE,
+            bg=uicolor.DARK_BLUE_WET_ASPHALT,
+            border=uicolor.GRAY_CONCRETE,
+        ),
+        "press": UIFlatButton.UIStyle(
+            font_color=uicolor.DARK_BLUE_MIDNIGHT_BLUE,
+            bg=uicolor.WHITE_CLOUDS,
+            border=uicolor.GRAY_CONCRETE,
+        ),
+        "disabled": UIFlatButton.UIStyle(
+            font_color=uicolor.WHITE_SILVER,
+            bg=uicolor.GRAY_ASBESTOS,
+        ),
+    }
 
     def __init__(
         self,
@@ -73,8 +113,18 @@ class UIDropdown(UILayout):
         height: float = 30,
         default: Optional[str] = None,
         options: Optional[list[Union[str, None]]] = None,
+        primary_style=None,
+        dropdown_style=None,
+        active_style=None,
         **kwargs,
     ):
+        if primary_style is None:
+            primary_style = self.DEFAULT_BUTTON_STYLE
+        if dropdown_style is None:
+            dropdown_style = self.DEFAULT_DROPDOWN_STYLE
+        if active_style is None:
+            active_style = self.DEFAULT_BUTTON_STYLE
+
         # TODO handle if default value not in options or options empty
         if options is None:
             options = []
@@ -83,13 +133,14 @@ class UIDropdown(UILayout):
 
         super().__init__(x=x, y=y, width=width, height=height, **kwargs)
 
-        # Setup button showing value
-        style = deepcopy(UIFlatButton.DEFAULT_STYLE)
-        style["hover"].font_color = uicolor.GREEN_NEPHRITIS
-        self._default_button = UIFlatButton(
-            text=self._value or "", width=self.width, height=self.height, style=style
-        )
+        self._default_style = deepcopy(primary_style)
+        self._dropdown_style = deepcopy(dropdown_style)
+        self._active_style = deepcopy(active_style)
 
+        # Setup button showing value
+        self._default_button = UIFlatButton(
+            text=self._value or "", width=self.width, height=self.height, style=self._default_style
+        )
         self._default_button.on_click = self._on_button_click  # type: ignore
 
         self._overlay = _UIDropdownOverlay()
@@ -99,8 +150,6 @@ class UIDropdown(UILayout):
         self.add(self._default_button)
 
         self.register_event_type("on_change")
-
-        self.with_border(color=arcade.color.RED)
 
     @property
     def value(self) -> Optional[str]:
@@ -122,11 +171,6 @@ class UIDropdown(UILayout):
         # generate options
         self._overlay.clear()
 
-        # is there another way then deepcopy, does it matter?
-        # ("premature optimization is the root of all evil")
-        active_style = deepcopy(UIFlatButton.DEFAULT_STYLE)
-        active_style["normal"]["bg"] = uicolor.GREEN_NEPHRITIS
-
         for option in self._options:
             if option is None:  # None = UIDropdown.DIVIDER, required by pyright
                 self._overlay.add(
@@ -139,7 +183,7 @@ class UIDropdown(UILayout):
                         text=option,
                         width=self.width,
                         height=self.height,
-                        style=active_style if self.value == option else UIFlatButton.DEFAULT_STYLE,
+                        style=self._active_style if self.value == option else self._dropdown_style,
                     )
                 )
             button.on_click = self._on_option_click
