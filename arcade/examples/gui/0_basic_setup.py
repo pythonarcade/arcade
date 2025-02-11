@@ -33,7 +33,7 @@ class GreenView(arcade.View):
         # Create a UIManager
         self.ui = UIManager()
 
-        # Create a anchor layout, which can be used to position widgets on screen
+        # Create an anchor layout, which can be used to position widgets on screen
         anchor = self.ui.add(UIAnchorLayout())
 
         # Add a button switch to the other View.
@@ -43,7 +43,6 @@ class GreenView(arcade.View):
                 texture=TEX_RED_BUTTON_NORMAL,
                 texture_hovered=TEX_RED_BUTTON_HOVER,
                 texture_pressed=TEX_RED_BUTTON_PRESS,
-                on_click=lambda: self.window.show_view(self.window.views["other"]),
             )
         )
 
@@ -78,7 +77,7 @@ class BlueView(UIView):
         super().__init__()
         self.background_color = arcade.uicolor.BLUE_PETER_RIVER
 
-        # Create a anchor layout, which can be used to position widgets on screen
+        # Create an anchor layout, which can be used to position widgets on screen
         anchor = self.add_widget(UIAnchorLayout())
 
         # Add a button switch to the other View.
@@ -88,7 +87,6 @@ class BlueView(UIView):
                 texture=TEX_RED_BUTTON_NORMAL,
                 texture_hovered=TEX_RED_BUTTON_HOVER,
                 texture_pressed=TEX_RED_BUTTON_PRESS,
-                on_click=lambda: self.window.show_view(self.window.views["my"]),
             )
         )
 
