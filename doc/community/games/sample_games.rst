@@ -19,8 +19,8 @@ Brazier
 .. image:: /images/community/games/brazier.png
    :width: 400px
 
-- [Itch page](https://dragonmoffon.itch.io/brazier)
-- [GitHub page](https://github.com/DragonMoffon/MiniJam160-Light)
+- `Itch page <https://dragonmoffon.itch.io/brazier>`_
+- `GitHub page <https://github.com/DragonMoffon/MiniJam160-Light>`_
 
 PhotoShip
 ~~~~~~~~~
@@ -28,8 +28,8 @@ PhotoShip
 .. image:: /images/community/games/photoship.png
    :width: 400px
 
-- [Itch page](https://clodon.itch.io/photoship)
-- [GitHub page](https://github.com/clodon2/PhotoShip)
+- `Itch page <https://clodon.itch.io/photoship>`_
+- `GitHub page <https://github.com/clodon2/PhotoShip>`_
 
 
 Space Station Builder
@@ -40,7 +40,7 @@ Build your own space station!
 .. image:: /images/community/games/space_station_builder.gif
    :width: 500px
 
-Download at [Kosmolonia on itch.io](https://aliskda.itch.io/kosmolonia).
+`Kosmolonia on itch.io <https://aliskda.itch.io/kosmolonia>`_
 
 Notepad Doodles
 ~~~~~~~~~~~~~~~
@@ -50,7 +50,7 @@ Survive waves of monsters!
 .. image:: /images/community/games/notepad_doodles.png
    :width: 400px
 
-Download at [Notepad Doodles on itch.io](https://arkturdev.itch.io/notepad-doodles).
+`Notepad Doodles on itch.io <https://arkturdev.itch.io/notepad-doodles>`_
 
 BoxHead Survivor
 ~~~~~~~~~~~~~~~~
