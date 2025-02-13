@@ -19,8 +19,8 @@ Brazier
 .. image:: /images/community/games/brazier.png
    :width: 400px
 
-- `Itch page <https://dragonmoffon.itch.io/brazier>`_
-- `GitHub page <https://github.com/DragonMoffon/MiniJam160-Light>`_
+- `Brazier on itch.io <https://dragonmoffon.itch.io/brazier>`_
+- `GitHub repo for Brazier <https://github.com/DragonMoffon/MiniJam160-Light>`_
 
 PhotoShip
 ~~~~~~~~~
@@ -28,8 +28,8 @@ PhotoShip
 .. image:: /images/community/games/photoship.png
    :width: 400px
 
-- `Itch page <https://clodon.itch.io/photoship>`_
-- `GitHub page <https://github.com/clodon2/PhotoShip>`_
+- `PhotoShip on itch.io <https://clodon.itch.io/photoship>`_
+- `GitHub repo for PhotoShip <https://github.com/clodon2/PhotoShip>`_
 
 
 Space Station Builder
