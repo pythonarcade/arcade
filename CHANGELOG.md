@@ -3,6 +3,19 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+
+## Version 3.0.1 (unreleased)
+
+### Bug Fixes
+
+- Fixed blurriness in `UIWidget` text during interaction
+- Resolved issue with `UIDropdown.hide()` when no parent exists
+- Corrected event order bug in `UIWidget`
+
+### Enhancements
+
+- Added style support for `UIDropbox` buttons
+
 ## Version 3.0.0
 
 Version 3.0.0 is a major update to Arcade. It breaks compatibility with the 2.6 API.
