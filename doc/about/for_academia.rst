@@ -5,7 +5,7 @@ For Educators & Researchers
 
 .. _citation template: https://github.com/pythonarcade/arcade#citation
 
-Python Arcade was created by Paul V. Craven while teaching at Simpson College.
+Arcade was created by Paul V. Craven while teaching at Simpson College.
 
 In addition to the main Arcade 3.0 documentation you are currently reading, there
 are further resources to help academic users. These include:
