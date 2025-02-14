@@ -14,48 +14,107 @@ from arcade.gui import (
 )
 from arcade.gui.experimental.controller import (
     UIControllerBridge,
+    UIControllerButtonEvent,
     UIControllerButtonPressEvent,
     UIControllerDpadEvent,
-    UIFocusGroup,
+    UIControllerEvent,
+    UIControllerStickEvent,
+    UIControllerTriggerEvent,
 )
+from arcade.gui.experimental.focus import UIFocusGroup
+from arcade.types import Color
 
 
 class ControllerIndicator(UIAnchorLayout):
+    """
+    A widget that displays the last controller input.
+    """
+
     BLANK_TEX = Texture.create_empty("empty", (40, 40), arcade.color.TRANSPARENT_BLACK)
+    TEXTURE_CACHE = {}
 
     def __init__(self):
         super().__init__()
 
         self._indicator = self.add(UIImage(texture=self.BLANK_TEX), anchor_y="bottom", align_y=10)
+        self._indicator.with_background(color=Color(0, 0, 0, 0))
+        self._indicator._strong_background = True
+
+    @classmethod
+    def get_texture(cls, path: str) -> Texture:
+        if path not in cls.TEXTURE_CACHE:
+            cls.TEXTURE_CACHE[path] = arcade.load_texture(path)
+        return cls.TEXTURE_CACHE[path]
+
+    @classmethod
+    def input_prompts(cls, event: UIControllerEvent) -> Texture | None:
+        if isinstance(event, UIControllerButtonEvent):
+            match event.button:
+                case "a":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_button_a.png")
+                case "b":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_button_b.png")
+                case "x":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_button_x.png")
+                case "y":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_button_y.png")
+                case "rightshoulder":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_rb.png")
+                case "leftshoulder":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_lb.png")
+                case "start":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_button_start.png")
+                case "back":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_button_back.png")
+
+        if isinstance(event, UIControllerTriggerEvent):
+            match event.name:
+                case "lefttrigger":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_lt.png")
+                case "righttrigger":
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_rt.png")
+
+        if isinstance(event, UIControllerDpadEvent):
+            match event.vector:
+                case (1, 0):
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_dpad_right.png")
+                case (-1, 0):
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_dpad_left.png")
+                case (0, 1):
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_dpad_up.png")
+                case (0, -1):
+                    return cls.get_texture(":resources:input_prompt/xbox/xbox_dpad_down.png")
+
+        if isinstance(event, UIControllerStickEvent) and event.vector.length() > 0.2:
+            stick = "l" if event.name == "leftstick" else "r"
+
+            # map atan2(y, x) to direction string (up, down, left, right)
+            heading = event.vector.heading()
+            if 0.785 > heading > -0.785:
+                return cls.get_texture(f":resources:input_prompt/xbox/xbox_stick_{stick}_right.png")
+            elif 0.785 < heading < 2.356:
+                return cls.get_texture(f":resources:input_prompt/xbox/xbox_stick_{stick}_up.png")
+            elif heading > 2.356 or heading < -2.356:
+                return cls.get_texture(f":resources:input_prompt/xbox/xbox_stick_{stick}_left.png")
+            elif -2.356 < heading < -0.785:
+                return cls.get_texture(f":resources:input_prompt/xbox/xbox_stick_{stick}_down.png")
+
+        return None
 
     def on_event(self, event: UIEvent) -> Optional[bool]:
-        if isinstance(event, UIControllerButtonPressEvent):
-            self._indicator.texture = arcade.load_texture(
-                f":resources:onscreen_controls/flat_dark/{event.button}.png"
-            )
-            arcade.unschedule(self.reset)
-            arcade.schedule_once(self.reset, 0.5)
-        elif isinstance(event, UIControllerDpadEvent):
-            tex_map = {
-                (1, 0): "right",
-                (-1, 0): "left",
-                (0, 1): "up",
-                (0, -1): "down",
-            }
+        if isinstance(event, UIControllerEvent):
+            input_texture = self.input_prompts(event)
 
-            if event.vector in tex_map:
-                self._indicator.texture = arcade.load_texture(
-                    f":resources:onscreen_controls/flat_dark/{tex_map[event.vector]}.png"
-                )
+            if input_texture:
+                self._indicator.texture = input_texture
+
                 arcade.unschedule(self.reset)
                 arcade.schedule_once(self.reset, 0.5)
 
         return super().on_event(event)
 
     def reset(self, *_):
-        print("Reset")
         self._indicator.texture = self.BLANK_TEX
-        self.trigger_full_render()
 
 
 class ControllerModal(UIMouseFilterMixin, UIFocusGroup):
