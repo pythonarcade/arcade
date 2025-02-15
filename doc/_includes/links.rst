@@ -24,7 +24,8 @@
 .. Arcade-related community engagement stuff
 .. _PyWeek: https://pyweek.org/
 .. _The Python Discord: https://www.pythondiscord.com/
-.. _Kenney_nl: https://kenney.nl/
+.. Sphinx does not like the _ if we write Kenney_nl.
+.. _Kenney.nl: https://kenney.nl/
 
 .. Concepts
 .. _CC0: https://creativecommons.org/publicdomain/#publicdomain-cc0-10

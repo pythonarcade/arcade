@@ -91,7 +91,7 @@ If something requires special handling, we'll warn you about it.
 Where are all these assets from?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Mostly from `Kenney.nl <Kenney_nl>`_. Kenny is famous for creating a repository of free, high-quality
+Mostly from `Kenney.nl`_. Kenney is famous for creating a repository of free, high-quality
 `CC0`_ (public domain) game assets. His work is funded by donations and
 `Kenney's Patreon <https://www.patreon.com/kenney>`_.
 
@@ -102,7 +102,7 @@ It's the lawyer version saying the following:
 
    <blockquote><i>"I give permission to everyone to use this for whatever. Go make something cool!"</i></blockquote>
 
-Although Arcade includes a few bundled assets which aren't from `Kenny.nl <Kenney_nl>`_, we've made sure
+Although Arcade includes a few bundled assets which aren't by `Kenney.nl`_, we've made sure
 they're released under a similar license.
 
 
