@@ -802,8 +802,7 @@ def resources():
     out.write("That's a good question and one you should always ask when searching for assets online.\n"
               "To help users get started quickly, the Arcade team makes sure to only bundle assets which\n"
               # pending: post-3.0 cleanup # Why does it refuse to accept external links definitions? Who knows?
-              "are specifically released under `CC0  <https://creativecommons.org/publicdomain/#publicdomain-cc0-10>`_"
-              " or similar terms.\n")
+              "are specifically released under `CC0`_ or similar terms.\n")
     out.write("Most are from `Kenney.nl`_.\n") # pending: post-3.0 cleanup.
     logo = html.escape("'logo.png'")
     do_heading(out, 1, "How do I use these?")
