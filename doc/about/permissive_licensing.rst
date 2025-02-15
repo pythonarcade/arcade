@@ -102,7 +102,7 @@ It's the lawyer version saying the following:
 
    <blockquote><i>"I give permission to everyone to use this for whatever. Go make something cool!"</i></blockquote>
 
-Although Arcade includes a few bundled assets which aren't by `Kenney.nl`_, we've made sure
+Although Arcade includes a few bundled assets which aren't from `Kenney.nl`_, we've made sure
 they're released under a similar license.
 
 
