@@ -1,39 +1,45 @@
 """
-Loads the Arcade version into a Python-readable VERSION string.
+Loads the Arcade version into a Python-readable ``VERSION`` string.
 
-For everyday use in your projects, you may want to use the ``VERSION``
-string from the :py:mod:`arcade` module's top level instead:
+Everyday Arcade users may prefer accessing the ``VERSION`` string
+from Arcade's top-level alias:
 
 .. code-block:: python
 
+   import sys
    import arcade
 
    if arcade.version < "3.0.0":
-       print("This game requires Arcade 3.0.0+ to run1")
+       # Using file=sys.stderr prints to the error stream (usually prints red)
+       print("This game requires Arcade 3.0.0+ to run!", file=sys.stderr)
 
-This loads and converts the ``VERSION`` file's contents before storing
-them in the ``VERSION`` attribute. We have convert it because we use a
-GitHub Action to auto-bump our version after making a release.
 
-When a release build succeeds, our GitHub CI then does the following:
+Arcade contributors will benefit from understanding how and why
+this file loads and converts the contents of the ``VERSION`` file.
 
-#. Pushes the package files to PyPI
-#. Calls the ``remorses/bump-version@js`` action to bump Arcade's version
-   on the development branch
+After a release build succeeds, GitHub's CI is configured to do
+the following:
+
+#. Push the package files to PyPI
+#. Call the ``remorses/bump-version@js`` action to auto-increment
+   Arcade's version on the development branch
+
+This is where an edge case arises:
+
+#. Our CI expects ``3.1.0-dev.1`` for dev preview builds
+#. Python expects ``3.1.0.dev1`` for dev preview builds
+
+The ``VERSION`` file in this file's directory stores the version
+in the form the GH Action prefers. This allows it to auto-increment
+the version number on the ``development`` branch after we make an
+Arcade release to PyPI.
 
 The auto-bump action is configured by the following file:
 https://github.com/pythonarcade/arcade/blob/development/.github/workflows/bump_version.yml
 
-Python expects a different format than the GH action does for dev previews.
-
-Python expects the following format:
-
-.. code-block::
-
-   3.1.0.dev6
-
-However, the GH action bumps the following preview format after a
-release succeeds:
+As an example, the GH action would auto-increment a dev preview's
+version after releasing the 5th dev preview of ``3.1.0`` by updating
+the ``VERSION`` file from this:
 
 .. code-block::
 
@@ -45,8 +51,6 @@ release succeeds:
 
    3.1.0-dev.6
 
-The functions in this file convert and load the data to ``VERSION`` so
-we can import it in the top-level ``__init__.py`` file.
 """
 
 from __future__ import annotations
@@ -54,6 +58,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from typing import Final
 
 _HERE = Path(__file__).parent
 
@@ -78,6 +83,8 @@ _VERSION_REGEX = re.compile(
 def _parse_python_friendly_version(version_for_github_actions: str) -> str:
     """Convert a GitHub CI version string to a Python-friendly one.
 
+    For example, ``3.1.0-dev.1`` would become ``3.1.0.dev1``.
+
     Args:
         version_for_github_actions:
             A raw GitHub CI version string, as read from a file.
@@ -92,14 +99,14 @@ def _parse_python_friendly_version(version_for_github_actions: str) -> str:
             f"not {version_for_github_actions!r}"
         )
 
-    # Attemppt to extract our raw data
+    # Attempt to extract our raw data
     match = _VERSION_REGEX.fullmatch(version_for_github_actions.strip())
     if match is None:
         raise ValueError(
-            f"String does not appear to be a version number: " f"{version_for_github_actions!r}"
+            f"String does not appear to be a version number: {version_for_github_actions!r}"
         )
 
-    # Build final output, optionally adding a dev version
+    # Build final output, including a dev preview version if present
     group_dict = match.groupdict()
     major, minor, point, dev_preview = group_dict.values()
     parts = [major, minor, point]
@@ -135,11 +142,16 @@ def _parse_py_version_from_github_ci_file(
         data = _parse_python_friendly_version(raw)
     except Exception as e:
         print(
-            f"ERROR: Unable to load version number via '{str(version_path)}': " f"{e}",
+            f"ERROR: Unable to load version number via '{str(version_path)}': {e}",
             file=write_errors_to,
         )
 
     return data
 
 
-VERSION = _parse_py_version_from_github_ci_file()
+VERSION: Final[str] = _parse_py_version_from_github_ci_file()
+"""A Python-friendly version string.
+
+This value is converted from the GitHub-style ``VERSION`` file at the
+top-level of the arcade module.
+"""
