@@ -35,10 +35,39 @@ class TestParsingWellFormedData:
             ) == expected
 
 
+@pytest.mark.parametrize(
+    "bad_value", (
+        '',
+        "This string is not a version number at all!"
+        # Malformed version numbers
+        "3",
+        "3.",
+        "3.1",
+        "3.1.",
+        "3.1.2.",
+        "3.1.0.dev",
+        "3.1.0-dev."
+    )
+)
+def test_parse_python_friendly_version_raises_value_errors(bad_value):
+    with pytest.raises(ValueError):
+        _parse_python_friendly_version(bad_value)
+
+
+@pytest.mark.parametrize('bad_type', (
+    None,
+    0xBAD,
+    0.1234,
+    (3, 1, 0),
+    ('3', '1' '0')
+))
+def test_parse_python_friendly_version_raises_typeerror_on_bad_values(bad_type):
+    with pytest.raises(TypeError):
+        _parse_python_friendly_version(bad_type)  # type: ignore  # Type mistmatch is the point
+
+
 def test_parse_py_version_from_github_ci_file_returns_zeroes_on_errors():
     fake_stderr = mock.MagicMock(sys.stderr)
     assert _parse_py_version_from_github_ci_file(
         "FILEDOESNOTEXIST", write_errors_to=fake_stderr
     ) == "0.0.0"
-
-

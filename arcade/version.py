@@ -80,13 +80,26 @@ def _parse_python_friendly_version(version_for_github_actions: str) -> str:
         A Python-friendly version string.
     """
     # Extract our raw data
+    if not isinstance(version_for_github_actions, str):
+        raise TypeError(
+            f"Expected a string of the format MAJOR.MINOR.POINT or MAJOR.MINOR.POINT-dev.DEV_PREVIEW,"
+            f"not {version_for_github_actions!r}"
+        )
+
     match = _VERSION_REGEX.fullmatch(version_for_github_actions.strip())
-    major, minor, patch, dev = tuple(match.groupdict().values())
+    if match is None:
+        raise ValueError(f"String does not appear to be a version number: {version_for_github_actions!r}")
+
+    group_dict = match.groupdict()
+    for name in ('major', 'minor', 'point'):
+        if group_dict[name] is None:
+            raise ValueError(f"Couldn't parse {name} from {version_for_github_actions!r}")
 
     # Append an optional Python-friendly dev preview version
-    parts = [major, minor, patch]
-    if dev is not None:
-        parts.append(f"dev{dev}")
+    major, minor, point, dev_preview = group_dict.values()
+    parts = [major, minor, point]
+    if dev_preview is not None:
+        parts.append(f"dev{dev_preview}")
     joined = ".".join(parts)
 
     return joined
