@@ -79,23 +79,24 @@ def _parse_python_friendly_version(version_for_github_actions: str) -> str:
     Returns:
         A Python-friendly version string.
     """
-    # Extract our raw data
+    # Quick preflight check: we don't support tuple format here!
     if not isinstance(version_for_github_actions, str):
         raise TypeError(
             f"Expected a string of the format MAJOR.MINOR.POINT or MAJOR.MINOR.POINT-dev.DEV_PREVIEW,"
-            f"not {version_for_github_actions!r}"
-        )
+            f"not {version_for_github_actions!r}")
 
+    # Attemppt to extract our raw data
     match = _VERSION_REGEX.fullmatch(version_for_github_actions.strip())
     if match is None:
         raise ValueError(f"String does not appear to be a version number: {version_for_github_actions!r}")
 
+    # Make sure no mandatory fields are missing
     group_dict = match.groupdict()
     for name in ('major', 'minor', 'point'):
         if group_dict[name] is None:
             raise ValueError(f"Couldn't parse {name} from {version_for_github_actions!r}")
 
-    # Append an optional Python-friendly dev preview version
+    # Build final output, optionally adding a dev version
     major, minor, point, dev_preview = group_dict.values()
     parts = [major, minor, point]
     if dev_preview is not None:
@@ -129,8 +130,9 @@ def _parse_py_version_from_github_ci_file(
     try:
         raw = Path(version_path).resolve().read_text().strip()
         data = _parse_python_friendly_version(raw)
-    except Exception as _:
-        print(f"ERROR: Unable to load version number via '{str(version_path)}'.", file=write_errors_to)
+    except Exception as e:
+        print(f"ERROR: Unable to load version number via '{str(version_path)}': "
+              f"{e}", file=write_errors_to)
 
     return data
 
