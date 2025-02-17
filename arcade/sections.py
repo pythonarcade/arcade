@@ -420,13 +420,13 @@ class Section:
         """
         pass
 
-    def on_key_release(self, _symbol: int, _modifiers: int):
+    def on_key_release(self, symbol: int, modifiers: int):
         """
         Called when the user releases a key.
 
         Args:
-            _symbol: the key released
-            _modifiers: the modifiers pressed
+            symbol: the key released
+            modifiers: the modifiers pressed
         """
         pass
 

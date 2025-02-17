@@ -1478,7 +1478,7 @@ class View:
         """
         return False
 
-    def on_key_release(self, _symbol: int, _modifiers: int) -> bool | None:
+    def on_key_release(self, symbol: int, modifiers: int) -> bool | None:
         """
         Called once when a key gets released.
 
@@ -1493,9 +1493,9 @@ class View:
         * Showing which keys are currently pressed down
 
         Args:
-            _symbol:
+            symbol:
                 Key that was released
-            _modifiers:
+            modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock) active
                 during this event. See :ref:`keyboard_modifiers`.
         """
