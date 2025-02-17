@@ -92,12 +92,6 @@ def _parse_python_friendly_version(version_for_github_actions: str) -> str:
     if match is None:
         raise ValueError(f"String does not appear to be a version number: {version_for_github_actions!r}")
 
-    # Make sure no mandatory fields are missing
-    group_dict = match.groupdict()
-    for name in ('major', 'minor', 'point'):
-        if group_dict[name] is None:
-            raise ValueError(f"Couldn't parse {name} from {version_for_github_actions!r}")
-
     # Build final output, optionally adding a dev version
     major, minor, point, dev_preview = group_dict.values()
     parts = [major, minor, point]
