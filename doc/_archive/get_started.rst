@@ -105,10 +105,10 @@ Arcade Skill Tree
 
 * Physics Engines
 
-  * SimplePhysicsEngine - Platformer tutorial :ref:`platformer_part_three`,
+  * PhysicsEngineSimple - Platformer tutorial :ref:`platformer_part_three`,
     Learn Arcade Book `Simple Physics Engine <https://learn.arcade.academy/en/latest/chapters/25_sprites_and_walls/sprites_and_walls.html#physics-engine>`_,
     Example :ref:`sprite_move_walls`
-  * PlatformerPhysicsEngine - From the platformer tutorial: :ref:`platformer_part_four`,
+  * PhysicsEnginePlatformer - From the platformer tutorial: :ref:`platformer_part_four`,
 
     * :ref:`sprite_moving_platforms`
     * Ladders - Platformer tutorial :ref:`platformer_part_ten`

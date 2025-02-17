@@ -299,7 +299,7 @@ class PhysicsEngineSimple:
     * You don't need anything else
 
     For side-scrolling games focused on jumping puzzles, you may want
-    the :py:class:`PlatformerPhysicsEngine` instead. Experienced users
+    the :py:class:`PhysicsEnginePlatformer` instead. Experienced users
     may want to try the
     :py:class:`~arcade.pymunk_physics_engine.PymunkPhysicsEngine`.
 
