@@ -58,6 +58,8 @@ _HERE = Path(__file__).parent
 
 # Grab version numbers + optional dev point preview
 # Assumes $MAJOR.$MINOR.$POINT format with optional -dev$DEV_PREVIEW
+# Q: Why did you use regex?!
+# A: If the dev_preview field is invalid, the whole match fails instantly
 _VERSION_REGEX = re.compile(
     r"""
     (?P<major>[0-9]+)
@@ -65,7 +67,7 @@ _VERSION_REGEX = re.compile(
     \.(?P<point>[0-9]+)
     (?:
         -dev              # Dev prefix read as a literal
-        \.(?P<dev>[0-9]+) # Dev preview point number
+        \.(?P<dev_preview>[0-9]+) # Dev preview point number
     )?
     """, re.X)
 

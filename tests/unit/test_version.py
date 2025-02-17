@@ -47,6 +47,12 @@ class TestParsingWellFormedData:
         "3.1.2.",
         "3.1.0.dev",
         "3.1.0-dev."
+        # Hex is not valid in version numbers
+        "A",
+        "3.A.",
+        "3.1.A",
+        "3.1.0.A",
+        "3.1.0-dev.A"
     )
 )
 def test_parse_python_friendly_version_raises_value_errors(bad_value):
