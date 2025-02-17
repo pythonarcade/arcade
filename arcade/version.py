@@ -48,6 +48,7 @@ release succeeds:
 The functions in this file convert and load the data to ``VERSION`` so
 we can import it in the top-level ``__init__.py`` file.
 """
+
 from __future__ import annotations
 
 import re
@@ -69,7 +70,9 @@ _VERSION_REGEX = re.compile(
         -dev              # Dev prefix read as a literal
         \.(?P<dev_preview>[0-9]+) # Dev preview point number
     )?
-    """, re.X)
+    """,
+    re.X,
+)
 
 
 def _parse_python_friendly_version(version_for_github_actions: str) -> str:
@@ -86,14 +89,15 @@ def _parse_python_friendly_version(version_for_github_actions: str) -> str:
         raise TypeError(
             f"Expected a string of the format MAJOR.MINOR.POINT"
             f"or MAJOR.MINOR.POINT-dev.DEV_PREVIEW,"
-            f"not {version_for_github_actions!r}")
+            f"not {version_for_github_actions!r}"
+        )
 
     # Attemppt to extract our raw data
     match = _VERSION_REGEX.fullmatch(version_for_github_actions.strip())
     if match is None:
         raise ValueError(
-            f"String does not appear to be a version number: "
-            f"{version_for_github_actions!r}")
+            f"String does not appear to be a version number: " f"{version_for_github_actions!r}"
+        )
 
     # Build final output, optionally adding a dev version
     group_dict = match.groupdict()
@@ -107,8 +111,7 @@ def _parse_python_friendly_version(version_for_github_actions: str) -> str:
 
 
 def _parse_py_version_from_github_ci_file(
-        version_path: str | Path = _HERE / "VERSION",
-        write_errors_to = sys.stderr
+    version_path: str | Path = _HERE / "VERSION", write_errors_to=sys.stderr
 ) -> str:
     """Parse a Python-friendly version from a ``bump-version``-compatible file.
 
@@ -131,8 +134,10 @@ def _parse_py_version_from_github_ci_file(
         raw = Path(version_path).resolve().read_text().strip()
         data = _parse_python_friendly_version(raw)
     except Exception as e:
-        print(f"ERROR: Unable to load version number via '{str(version_path)}': "
-              f"{e}", file=write_errors_to)
+        print(
+            f"ERROR: Unable to load version number via '{str(version_path)}': " f"{e}",
+            file=write_errors_to,
+        )
 
     return data
 
