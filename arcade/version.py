@@ -68,7 +68,7 @@ _HERE = Path(__file__).parent
 # A: If the dev_preview field is invalid, the whole match fails instantly
 _VERSION_REGEX = re.compile(
     r"""
-    # First three version numbers
+    # First three version number fields
       (?P<major>[0-9]+)
     \.(?P<minor>[0-9]+)
     \.(?P<point>[0-9]+)
