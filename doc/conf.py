@@ -88,7 +88,23 @@ def nice_version(version_string: str) -> str:
     return '.'.join(out)
 
 
-NICE_VERSION = nice_version(VERSION)
+# pending: 3.0.1 or 3.1 release?
+# Maintain title bar continuity for live doc showing 3.0 as the version
+VERSION_SPECIAL_CASES = {'3.0.0': '3.0'}
+
+
+def _specialcase_version(nice: str) -> str:
+    if nice in VERSION_SPECIAL_CASES:
+       new = VERSION_SPECIAL_CASES[nice]
+       log.info(f" Special-casing version {nice!r} to {new!r}")
+    else:
+       new = nice
+    return new
+
+
+NICE_VERSION = _specialcase_version(nice_version(VERSION))
+# pending: end
+
 log.info(f" Got nice version {NICE_VERSION=!r}")
 
 
