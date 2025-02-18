@@ -328,7 +328,7 @@ def schedule_once(function_pointer: Callable, delay: float):
             print(delta_time)
 
         # Call the function once after 1 second
-        arcade.schedule_one(some_action, 1)
+        arcade.schedule_once(some_action, 1)
 
     Args:
         function_pointer:
