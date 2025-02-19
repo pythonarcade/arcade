@@ -5,21 +5,7 @@ on:
 
 jobs:
   # --- Bump version
-  bump-version:
-
-    runs-on: ubuntu-latest
-    environment: deploy-pypi-test
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Bump versions
-        uses: remorses/bump-version@js
-        with:
-            version_file: ./arcade/VERSION
-            prerelease_tag: dev
-        env:
-            GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+  # ( this is manual until we find a better-tested, maintained bump action )
 
   # --- Deploy to pypi
   deploy-to-pypi-test:
