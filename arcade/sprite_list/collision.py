@@ -187,8 +187,8 @@ def _get_nearby_sprites(
 
 
 def check_for_collision_with_list(
-    sprite: SpriteType,
-    sprite_list: SpriteList,
+    sprite: BasicSprite,
+    sprite_list: SpriteList[SpriteType],
     method: int = 0,
 ) -> List[SpriteType]:
     """
