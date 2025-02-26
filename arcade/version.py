@@ -61,8 +61,7 @@ _VERSION_REGEX: Final[re.Pattern] = re.compile(
 
 
 def _parse_python_friendly_version(
-        raw_version: str,
-        pattern: re.Pattern[str] = _VERSION_REGEX
+    raw_version: str, pattern: re.Pattern[str] = _VERSION_REGEX
 ) -> str:
     """Read a GitHub CI version string to a Python-friendly one.
 
@@ -84,12 +83,13 @@ def _parse_python_friendly_version(
         raise problem(
             f"{raw_version=!r} not a str of the format MAJOR.MINOR"
             f"POINT with at most one of dev{{DEV_PREVIEW}} or"
-            f"rc{{RC_NUMBER}},")
-  
+            f"rc{{RC_NUMBER}},"
+        )
+
     # Build final output, including a dev preview version if present
     group_dict: dict[str, str | None] = match.groupdict()  # type: ignore
-    parts: list[str] = [group_dict[k] for k in ('major', 'minor', 'point')] # type: ignore
-    dev_preview, rc_number = (group_dict[k] for k in ('dev_preview', 'rc_number'))
+    parts: list[str] = [group_dict[k] for k in ("major", "minor", "point")]  # type: ignore
+    dev_preview, rc_number = (group_dict[k] for k in ("dev_preview", "rc_number"))
 
     if dev_preview and rc_number:
         raise ValueError(f"Can't have both {dev_preview=!r} and {rc_number=!r}")
