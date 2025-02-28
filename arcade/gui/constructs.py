@@ -29,6 +29,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
       width: Width of the message box
       height: Height of the message box
       message_text: Text to show as message to the user
+      title: Title of the message box, displayed on the top
       buttons: List of strings, which are shown as buttons
 
     """
@@ -68,7 +69,7 @@ class UIMessageBox(UIMouseFilterMixin, UIAnchorLayout):
         if title:
             title_label = frame.add(
                 child=UILabel(
-                    text="Message",
+                    text=title,
                     font_size=16,
                     size_hint=(1, 0),
                     align="center",
