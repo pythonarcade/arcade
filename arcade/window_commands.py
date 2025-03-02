@@ -134,7 +134,7 @@ def run(view: View | None = None) -> None:
             if window.context:
                 active.on_draw()
 
-            # windwow could be closed in on_draw
+            # window could be closed in on_draw
             if window.context:
                 window.flip()
 

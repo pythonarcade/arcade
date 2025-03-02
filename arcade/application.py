@@ -256,7 +256,8 @@ class Window(pyglet.window.Window):
         # If more time resolution is needed in fixed updates, devs can do 'sub-stepping'.
         self._fixed_rate = fixed_rate
         self._fixed_frame_cap = fixed_frame_cap
-        self.set_update_rate(update_rate)
+        # self.set_update_rate(update_rate)
+        pyglet.clock.schedule_interval(self._next_frame, 1/60)
 
         self.set_vsync(vsync)
 
@@ -527,32 +528,32 @@ class Window(pyglet.window.Window):
             fixed_count += 1
         self.dispatch_event("on_update", GLOBAL_CLOCK.delta_time)
 
-    def set_update_rate(self, rate: float) -> None:
-        """
-        Set how often the on_update function should be dispatched.
-        For example::
+    # def set_update_rate(self, rate: float) -> None:
+    #     """
+    #     Set how often the on_update function should be dispatched.
+    #     For example::
 
-            # Set the update rate to 60 times per second.
-            self.set_update_rate(1 / 60)
+    #         # Set the update rate to 60 times per second.
+    #         self.set_update_rate(1 / 60)
 
-        Args:
-            rate: Update frequency in seconds
-        """
-        self._update_rate = rate
-        pyglet.clock.unschedule(self._dispatch_updates)
-        pyglet.clock.schedule_interval(self._dispatch_updates, rate)
+    #     Args:
+    #         rate: Update frequency in seconds
+    #     """
+    #     self._update_rate = rate
+    #     pyglet.clock.unschedule(self._dispatch_updates)
+    #     pyglet.clock.schedule_interval(self._dispatch_updates, rate)
 
-    def set_draw_rate(self, rate: float) -> None:
-        """
-        Set how often the on_draw function should be run.
-        For example::
+    # def set_draw_rate(self, rate: float) -> None:
+    #     """
+    #     Set how often the on_draw function should be run.
+    #     For example::
 
-            # Set the draw rate to 60 frames per second.
-            set.set_draw_rate(1 / 60)
-        """
-        self._draw_rate = rate
-        pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
-        pyglet.clock.schedule_interval(pyglet.app.event_loop._redraw_windows, self._draw_rate)
+    #         # Set the draw rate to 60 frames per second.
+    #         set.set_draw_rate(1 / 60)
+    #     """
+    #     self._draw_rate = rate
+    #     pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
+    #     pyglet.clock.schedule_interval(pyglet.app.event_loop._redraw_windows, self._draw_rate)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> EVENT_HANDLE_STATE:
         """
@@ -1018,6 +1019,19 @@ class Window(pyglet.window.Window):
         self._current_view.on_hide_view()
         self.remove_handlers(self._current_view)
         self._current_view = None
+
+    def _next_frame(self, delta_time: float) -> None:
+        """
+        Internal method called by Pyglet's clock to advance the next frame.
+
+        This method exists to ensure that exactly one update and one draw
+        is called per frame. Generic interval events are not stable enough
+        to ensure this.
+        """
+        print("next frame", delta_time)
+        self._dispatch_updates(delta_time)
+        self.dispatch_event("on_draw")
+        self.flip()
 
     def flip(self) -> None:
         """
