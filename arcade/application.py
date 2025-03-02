@@ -1028,7 +1028,7 @@ class Window(pyglet.window.Window):
         is called per frame. Generic interval events are not stable enough
         to ensure this.
         """
-        print("next frame", delta_time)
+        # print("next frame", delta_time)
         self._dispatch_updates(delta_time)
         self.dispatch_event("on_draw")
         self.flip()
