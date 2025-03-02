@@ -143,42 +143,43 @@ def run(view: View | None = None) -> None:
     else:
         import sys
 
-        if sys.platform != "win32":
-            # For non windows platforms, just do pyglet run
-            pyglet.app.run(window._draw_rate)
-        else:
-            # Ok, some Windows platforms have a timer resolution > 15 ms. That can
-            # drop our FPS to 32 FPS or so. This reduces resolution so we can keep
-            # FPS up.
-            import contextlib
-            import ctypes
-            from ctypes import wintypes
+        pyglet.app.run(None)
+        # if sys.platform != "win32":
+        #     # For non windows platforms, just do pyglet run
+        #     pyglet.app.run(window._draw_rate)
+        # else:
+        #     # Ok, some Windows platforms have a timer resolution > 15 ms. That can
+        #     # drop our FPS to 32 FPS or so. This reduces resolution so we can keep
+        #     # FPS up.
+        #     import contextlib
+        #     import ctypes
+        #     from ctypes import wintypes
 
-            winmm = ctypes.WinDLL("winmm")
+        #     winmm = ctypes.WinDLL("winmm")
 
-            class TIMECAPS(ctypes.Structure):
-                _fields_ = (("wPeriodMin", wintypes.UINT), ("wPeriodMax", wintypes.UINT))
+        #     class TIMECAPS(ctypes.Structure):
+        #         _fields_ = (("wPeriodMin", wintypes.UINT), ("wPeriodMax", wintypes.UINT))
 
-            def _check_time_err(err, func, args):
-                if err:
-                    raise WindowsError("%s error %d" % (func.__name__, err))
-                return args
+        #     def _check_time_err(err, func, args):
+        #         if err:
+        #             raise WindowsError("%s error %d" % (func.__name__, err))
+        #         return args
 
-            winmm.timeGetDevCaps.errcheck = _check_time_err
-            winmm.timeBeginPeriod.errcheck = _check_time_err
-            winmm.timeEndPeriod.errcheck = _check_time_err
+        #     winmm.timeGetDevCaps.errcheck = _check_time_err
+        #     winmm.timeBeginPeriod.errcheck = _check_time_err
+        #     winmm.timeEndPeriod.errcheck = _check_time_err
 
-            @contextlib.contextmanager
-            def timer_resolution(msecs=0):
-                caps = TIMECAPS()
-                winmm.timeGetDevCaps(ctypes.byref(caps), ctypes.sizeof(caps))
-                msecs = min(max(msecs, caps.wPeriodMin), caps.wPeriodMax)
-                winmm.timeBeginPeriod(msecs)
-                yield
-                winmm.timeEndPeriod(msecs)
+        #     @contextlib.contextmanager
+        #     def timer_resolution(msecs=0):
+        #         caps = TIMECAPS()
+        #         winmm.timeGetDevCaps(ctypes.byref(caps), ctypes.sizeof(caps))
+        #         msecs = min(max(msecs, caps.wPeriodMin), caps.wPeriodMax)
+        #         winmm.timeBeginPeriod(msecs)
+        #         yield
+        #         winmm.timeEndPeriod(msecs)
 
-            with timer_resolution(msecs=10):
-                pyglet.app.run(None)
+        #     with timer_resolution(msecs=10):
+        #         pyglet.app.run(None)
 
 
 def exit() -> None:
