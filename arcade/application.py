@@ -1030,9 +1030,8 @@ class Window(pyglet.window.Window):
         """
         # print("next frame", delta_time)
         self._dispatch_updates(delta_time)
-        # self.dispatch_event("on_update", delta_time)
-        # self.dispatch_event("on_draw")
-        # self.flip()
+        self.dispatch_event("on_draw")
+        self.flip()
 
     def flip(self) -> None:
         """

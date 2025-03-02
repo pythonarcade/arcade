@@ -178,7 +178,7 @@ def run(view: View | None = None) -> None:
                 winmm.timeEndPeriod(msecs)
 
             with timer_resolution(msecs=10):
-                pyglet.app.run(window._draw_rate)
+                pyglet.app.run(None)
 
 
 def exit() -> None:
