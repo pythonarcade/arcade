@@ -141,6 +141,9 @@ def run(view: View | None = None) -> None:
             now = time.perf_counter()
             delta_time, last_time = now - last_time, now
     else:
+        pyglet.app.run(None)
+
+        """
         import sys
 
         if sys.platform != "win32":
@@ -179,6 +182,7 @@ def run(view: View | None = None) -> None:
 
             with timer_resolution(msecs=10):
                 pyglet.app.run(window._draw_rate)
+        """
 
 
 def exit() -> None:
