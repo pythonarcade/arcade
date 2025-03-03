@@ -1143,9 +1143,10 @@ class SpriteList(Generic[SpriteType]):
             color: The color of the hit boxes
             line_thickness: The thickness of the lines
         """
-        # NOTE: Find a way to efficiently draw this
+        converted_color = Color.from_iterable(color)
+
         for sprite in self.sprite_list:
-            sprite.draw_hit_box(color, line_thickness)
+            sprite.draw_hit_box(converted_color, line_thickness)
 
     def _normalize_index_buffer(self) -> None:
         """
