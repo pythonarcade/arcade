@@ -10,9 +10,12 @@ Install
 
 Requirements
 ------------
-:mod:`pyglet`
+Arcade requires a desktop, laptop, or compatible Single-Board Computer (SBC) with:
 
-All systems require Python 3.9 or higher on a desktop or laptop device.
+#. Python 3.9 or higher
+#. Graphics drivers with support for either:
+    * OpenGL 3.3+
+    * GLES 3.1+ with extensions on SBCs
 
 :ref:`Web <faq_web>` and :ref:`mobile <faq_mobile>` are currently
 unsupported.
