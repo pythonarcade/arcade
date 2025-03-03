@@ -29,7 +29,7 @@ In general, even older convertible Windows tablets will work as long as they:
 
 .. note:: ARM-based Windows or Linux tablets may have issues.
 
-          These devices may or may not work.  the :ref:`requirements_raspi`
+          See the section on the :ref:`requirements_raspi` below.
 
 Windows
 """""""
