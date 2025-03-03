@@ -24,12 +24,7 @@ from typing import (
     cast,
 )
 
-from arcade import (
-    Sprite,
-    SpriteType,
-    get_window,
-    gl,
-)
+from arcade import Sprite, SpriteType, get_window, gl
 from arcade.gl import Program, Texture2D
 from arcade.gl.buffer import Buffer
 from arcade.gl.types import BlendFunction, OpenGlFilter, PyGLenum
