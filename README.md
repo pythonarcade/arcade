@@ -11,7 +11,7 @@ It is ideal for beginning programmers or programmers who want to create
 2D games without learning a complex framework.
 
 [pyglet]: https://github.com/pyglet/pyglet
-[Games Made with Arcade]: https://api.arcade.academy/en/latest/sample_games.html
+[Games Made with Arcade]: https://api.arcade.academy/en/latest/community/games/sample_games.html
 Arcade is built on top of [pyglet][] and OpenGL. See [Games Made with Arcade][]
 for example game jam entries and more.
 
