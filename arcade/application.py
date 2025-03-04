@@ -82,10 +82,8 @@ class Window(pyglet.window.Window):
         multiple windows, consider using multiple views or divide the window
         into sections.
 
-    .. _pyglet_pg_window_size_position:
-    ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
-    .. _pyglet_pg_window_style:
-    ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
+    .. _pyglet_pg_window_size_position: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
+    .. _pyglet_pg_window_style: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
 
     Args:
         width (optional):
