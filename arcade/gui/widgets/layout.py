@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Tuple, TypeVar
 
@@ -900,6 +901,13 @@ def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[fl
     Returns:
         List of tuples with the sizes of each element
     """
+
+    # if there is no space, return the min value of each constraint
+    # this will cause a overflow, so we give a warning
+    if container_size <= 0:
+        warnings.warn("Container size is 0, cannot calculate sizes for children.")
+        return [c.min for c in constraints]
+
     # adjust hint value based on min and max values
     for c in constraints:
         c.hint = max(c.min / container_size, c.hint)
