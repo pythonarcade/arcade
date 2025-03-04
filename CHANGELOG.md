@@ -6,6 +6,18 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Version 3.0.1 (unreleased)
 
+### Improvements
+
+- `UIWidget.with_background` now accepts a tuple for color
+
+### Bug Fixes
+
+- Fixed division error in box layout algorithm
+- Fix example added buttons to multiple layouts
+
+
+## Version 3.0.1
+
 ### Bug Fixes
 
 - Fixed blurriness in `UIWidget` text during interaction
