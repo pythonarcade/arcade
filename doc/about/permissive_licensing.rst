@@ -64,7 +64,7 @@ using Arcade is an agreement to the following:
 * You won't claim you wrote the whole library yourself
 * You understand Arcade's features may have bugs
 
-.. tip:: If you see a bug or a typo, we love :ref:`contributing-bug-reports`.
+.. tip:: If you see a bug or a typo, we love you to :ref:`report it<contributing-bug-reports>`.
 
 For more information on the MIT license, please see the following for a quick intro:
 
