@@ -100,7 +100,7 @@ Update Interpolation
 Because fixed updates work on the accumulation of time this may not sync with 
 the ``on_draw`` or ``on_update`` events. In extreme cases this can cause a visible stuttering to
 objects moved within ``on_fixed_update``. To prevent this, ``GLOBAL_FIXED_CLOCK`` provides
-the ``accumulated`` and ``fraction``properties. By storing the last frame's position information it is possible
+the ``accumulated`` and ``fraction`` properties. By storing the last frame's position information it is possible
 to use ``fraction`` to interpolate towards the next calculated positions. For a visual representation of 
 this effect look at ``arcade.examples.fixed_update_interpolation``.
 
