@@ -1,3 +1,4 @@
+import warnings
 from dataclasses import dataclass
 
 from pyglet.input import Controller
@@ -128,11 +129,19 @@ class UIControllerBridge(_ControllerListener):
 
     def on_connect(self, controller: Controller):
         controller.push_handlers(self)
-        controller.open()
+
+        try:
+            controller.open()
+        except Exception as e:
+            warnings.warn(f"Failed to open controller {controller}: {e}")
 
     def on_disconnect(self, controller: Controller):
         controller.remove_handlers(self)
-        controller.close()
+
+        try:
+            controller.close()
+        except Exception as e:
+            warnings.warn(f"Failed to close controller {controller}: {e}")
 
     # Controller event mapping
     def on_stick_motion(self, controller: Controller, name, value):
