@@ -10,6 +10,7 @@ from arcade.gui import (
     UIFlatButton,
     UIImage,
     UIMouseFilterMixin,
+    UIOnChangeEvent,
     UIOnClickEvent,
     UISlider,
     UIView,
@@ -169,7 +170,11 @@ class MyView(UIView):
 
         box.add(UIDropdown(default="Option 1", options=["Option 1", "Option 2", "Option 3"]))
 
-        box.add(UISlider(value=0.5, min_value=0, max_value=1, width=200))
+        slider = box.add(UISlider(value=0.5, min_value=0, max_value=1, width=200))
+
+        @slider.event
+        def on_change(event: UIOnChangeEvent):
+            print(f"Slider value changed: {event}")
 
         self.root.detect_focusable_widgets()
 
