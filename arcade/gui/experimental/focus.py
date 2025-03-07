@@ -1,3 +1,4 @@
+import warnings
 from typing import Optional
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
@@ -5,26 +6,23 @@ from pyglet.math import Vec2
 
 import arcade
 from arcade import MOUSE_BUTTON_LEFT
-from arcade.gui import (
-    ListProperty,
-    Property,
-    Surface,
-    UIAnchorLayout,
+from arcade.gui.events import (
     UIEvent,
-    UIInteractiveWidget,
     UIKeyPressEvent,
     UIKeyReleaseEvent,
-    UIManager,
     UIMousePressEvent,
     UIMouseReleaseEvent,
-    UIWidget,
-    bind,
 )
 from arcade.gui.experimental.controller import (
     UIControllerButtonPressEvent,
     UIControllerButtonReleaseEvent,
     UIControllerDpadEvent,
 )
+from arcade.gui.property import ListProperty, Property, bind
+from arcade.gui.surface import Surface
+from arcade.gui.ui_manager import UIManager
+from arcade.gui.widgets import UIInteractiveWidget, UIWidget
+from arcade.gui.widgets.layout import UIAnchorLayout
 
 
 class Focusable(UIWidget):
@@ -59,7 +57,7 @@ class Focusable(UIWidget):
         return None
 
 
-class UIFocusGroup(UIAnchorLayout):
+class UIFocusMixin(UIWidget):
     """A group of widgets that can be focused.
 
     UIFocusGroup maintains two lists of widgets:
@@ -79,11 +77,12 @@ class UIFocusGroup(UIAnchorLayout):
 
     _focusable_widgets = ListProperty[UIWidget]()
     _focused = Property(0)
+    _interacting: UIWidget | None = None
 
     _debug = Property(False)
 
-    def __init__(self, size_hint=(1, 1), **kwargs):
-        super().__init__(size_hint=size_hint, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         bind(self, "_debug", self.trigger_full_render)
         bind(self, "_focused", self.trigger_full_render)
@@ -112,21 +111,35 @@ class UIFocusGroup(UIAnchorLayout):
                 return EVENT_HANDLED
 
         if isinstance(event, UIControllerDpadEvent):
-            if event.vector.x == 1:
-                self.focus_right()
+            if self._interacting:
+                # pass dpad events to the interacting widget
+                if event.vector.x == 1 and isinstance(self._interacting, UIBaseSlider):
+                    self._interacting.norm_value += 0.1
+                    return EVENT_HANDLED
+
+                elif event.vector.x == -1 and isinstance(self._interacting, UIBaseSlider):
+                    self._interacting.norm_value -= 0.1
+                    return EVENT_HANDLED
+
                 return EVENT_HANDLED
 
-            elif event.vector.y == 1:
-                self.focus_up()
-                return EVENT_HANDLED
+            else:
+                # switch focus
+                if event.vector.x == 1:
+                    self.focus_right()
+                    return EVENT_HANDLED
 
-            elif event.vector.x == -1:
-                self.focus_left()
-                return EVENT_HANDLED
+                elif event.vector.y == 1:
+                    self.focus_up()
+                    return EVENT_HANDLED
 
-            elif event.vector.y == -1:
-                self.focus_down()
-                return EVENT_HANDLED
+                elif event.vector.x == -1:
+                    self.focus_left()
+                    return EVENT_HANDLED
+
+                elif event.vector.y == -1:
+                    self.focus_down()
+                    return EVENT_HANDLED
 
         elif isinstance(event, UIControllerButtonPressEvent):
             if event.button == "a":
@@ -225,6 +238,7 @@ class UIFocusGroup(UIAnchorLayout):
                     modifiers=0,
                 )
             )
+            self._interacting = widget
         else:
             print("Cannot interact widget")
 
@@ -232,11 +246,20 @@ class UIFocusGroup(UIAnchorLayout):
         widget = self._focusable_widgets[self._focused]
 
         if isinstance(widget, UIInteractiveWidget):
+            if isinstance(self._interacting, UIBaseSlider):
+                # if slider, release outside the slider
+                x = self._interacting.rect.left - 1
+                y = self._interacting.rect.bottom - 1
+            else:
+                x = widget.rect.center_x
+                y = widget.rect.center_y
+
+            self._interacting = None
             widget.dispatch_ui_event(
                 UIMouseReleaseEvent(
                     source=self,
-                    x=widget.rect.center_x,
-                    y=widget.rect.center_y,
+                    x=x,
+                    y=y,
                     button=MOUSE_BUTTON_LEFT,
                     modifiers=0,
                 )
@@ -253,6 +276,11 @@ class UIFocusGroup(UIAnchorLayout):
 
     def do_post_render(self, surface: Surface):
         surface.limit(None)
+
+        if self._focused < len(self._focusable_widgets):
+            warnings.warn("Focused widget is out of range")
+            return
+
         widget = self._focusable_widgets[self._focused]
         arcade.draw_rect_outline(
             rect=widget.rect,
@@ -295,3 +323,7 @@ class UIFocusGroup(UIAnchorLayout):
     @staticmethod
     def is_focusable(widget):
         return isinstance(widget, (Focusable, UIInteractiveWidget))
+
+
+class UIFocusGroup(UIFocusMixin, UIAnchorLayout):
+    pass

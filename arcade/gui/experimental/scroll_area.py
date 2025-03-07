@@ -6,20 +6,19 @@ from pyglet.event import EVENT_UNHANDLED
 
 import arcade
 from arcade import XYWH
-from arcade.gui import (
-    Property,
-    Surface,
+from arcade.gui.events import (
     UIEvent,
-    UILayout,
     UIMouseDragEvent,
     UIMouseEvent,
     UIMouseMovementEvent,
     UIMousePressEvent,
     UIMouseReleaseEvent,
     UIMouseScrollEvent,
-    UIWidget,
-    bind,
 )
+from arcade.gui.property import Property, bind
+from arcade.gui.surface import Surface
+from arcade.gui.widgets import UIWidget
+from arcade.gui.widgets.layout import UILayout
 from arcade.types import LBWH
 
 
