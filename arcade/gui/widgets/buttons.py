@@ -141,10 +141,10 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         bind(self, "_textures", self.trigger_render)
 
         # prepare label with default style
-        style = self.get_current_style()
-        if style is None:
+        _style = self.get_current_style()
+        if _style is None:
             raise ValueError(f"No style found for state {self.get_current_state()}")
-        self._apply_style(style)
+        self._apply_style(_style)
 
     def get_current_state(self) -> str:
         """Returns the current state of the button i.e.disabled, press, hover or normal."""
@@ -337,10 +337,10 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget[UIFlatButtonStyle], UITex
         )
 
         # prepare label with default style
-        style = self.get_current_style()
-        if style is None:
+        _style = self.get_current_style()
+        if _style is None:
             raise ValueError(f"No style found for state {self.get_current_state()}")
-        self._apply_style(style)
+        self._apply_style(_style)
 
     def get_current_state(self) -> str:
         """Returns the current state of the button i.e.disabled, press, hover or normal."""
