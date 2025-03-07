@@ -154,6 +154,16 @@ class UIFocusMixin(UIWidget):
 
         return EVENT_UNHANDLED
 
+    def _get_focused_widget(self) -> UIWidget | None:
+        if len(self._focusable_widgets) == 0:
+            return None
+
+        if len(self._focusable_widgets) < self._focused < 0:
+            warnings.warn("Focused widget is out of range")
+            self._focused = 0
+
+        return self._focusable_widgets[self._focused]
+
     def add_widget(self, widget):
         self._focusable_widgets.append(widget)
 
@@ -178,7 +188,7 @@ class UIFocusMixin(UIWidget):
         self._focusable_widgets = focusable_widgets
 
     def focus_up(self):
-        widget = self._focusable_widgets[self._focused]
+        widget = self._get_focused_widget()
         if isinstance(widget, Focusable):
             if widget.neighbor_up:
                 _index = self._focusable_widgets.index(widget.neighbor_up)
@@ -188,7 +198,7 @@ class UIFocusMixin(UIWidget):
         self.focus_previous()
 
     def focus_down(self):
-        widget = self._focusable_widgets[self._focused]
+        widget = self._get_focused_widget()
         if isinstance(widget, Focusable):
             if widget.neighbor_down:
                 _index = self._focusable_widgets.index(widget.neighbor_down)
@@ -198,7 +208,7 @@ class UIFocusMixin(UIWidget):
         self.focus_next()
 
     def focus_left(self):
-        widget = self._focusable_widgets[self._focused]
+        widget = self._get_focused_widget()
         if isinstance(widget, Focusable):
             if widget.neighbor_left:
                 _index = self._focusable_widgets.index(widget.neighbor_left)
@@ -208,7 +218,7 @@ class UIFocusMixin(UIWidget):
         self.focus_previous()
 
     def focus_right(self):
-        widget = self._focusable_widgets[self._focused]
+        widget = self._get_focused_widget()
         if isinstance(widget, Focusable):
             if widget.neighbor_right:
                 _index = self._focusable_widgets.index(widget.neighbor_right)
@@ -228,7 +238,7 @@ class UIFocusMixin(UIWidget):
             self._focused = len(self._focusable_widgets) - 1
 
     def start_interaction(self):
-        widget = self._focusable_widgets[self._focused]
+        widget = self._get_focused_widget()
 
         if isinstance(widget, UIInteractiveWidget):
             widget.dispatch_ui_event(
@@ -245,7 +255,7 @@ class UIFocusMixin(UIWidget):
             print("Cannot interact widget")
 
     def end_interaction(self):
-        widget = self._focusable_widgets[self._focused]
+        widget = self._get_focused_widget()
 
         if isinstance(widget, UIInteractiveWidget):
             if isinstance(self._interacting, UIBaseSlider):
@@ -279,12 +289,7 @@ class UIFocusMixin(UIWidget):
     def do_post_render(self, surface: Surface):
         surface.limit(None)
 
-        if len(self._focusable_widgets) < self._focused < 0:
-            warnings.warn("Focused widget is out of range")
-            self._focused = 0
-            return
-
-        widget = self._focusable_widgets[self._focused]
+        widget = self._get_focused_widget()
         arcade.draw_rect_outline(
             rect=widget.rect,
             color=arcade.color.WHITE,
