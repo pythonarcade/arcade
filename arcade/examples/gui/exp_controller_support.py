@@ -5,11 +5,13 @@ from arcade import Texture
 from arcade.gui import (
     UIAnchorLayout,
     UIBoxLayout,
+    UIDropdown,
     UIEvent,
     UIFlatButton,
     UIImage,
     UIMouseFilterMixin,
     UIOnClickEvent,
+    UISlider,
     UIView,
 )
 from arcade.gui.experimental.controller import (
@@ -156,13 +158,18 @@ class MyView(UIView):
 
         self.controller_bridge = UIControllerBridge(self.ui)
 
-        self.root = self.add_widget(ControllerIndicator())
-        self.root = self.root.add(UIFocusGroup())
+        base = self.add_widget(ControllerIndicator())
+        self.root = base.add(UIFocusGroup())
+        self.root.with_padding(left=10)
         box = self.root.add(UIBoxLayout(space_between=10), anchor_x="left")
 
         box.add(UIFlatButton(text="Button 1")).on_click = self.on_button_click
         box.add(UIFlatButton(text="Button 2")).on_click = self.on_button_click
         box.add(UIFlatButton(text="Button 3")).on_click = self.on_button_click
+
+        box.add(UIDropdown(default="Option 1", options=["Option 1", "Option 2", "Option 3"]))
+
+        box.add(UISlider(value=0.5, min_value=0, max_value=1, width=200))
 
         self.root.detect_focusable_widgets()
 

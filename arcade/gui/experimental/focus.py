@@ -23,6 +23,7 @@ from arcade.gui.surface import Surface
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets import UIInteractiveWidget, UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
+from arcade.gui.widgets.slider import UIBaseSlider
 
 
 class Focusable(UIWidget):
@@ -112,6 +113,7 @@ class UIFocusMixin(UIWidget):
 
         if isinstance(event, UIControllerDpadEvent):
             if self._interacting:
+                # TODO this should be handled in the slider!
                 # pass dpad events to the interacting widget
                 if event.vector.x == 1 and isinstance(self._interacting, UIBaseSlider):
                     self._interacting.norm_value += 0.1
@@ -277,7 +279,7 @@ class UIFocusMixin(UIWidget):
     def do_post_render(self, surface: Surface):
         surface.limit(None)
 
-        if self._focused < len(self._focusable_widgets):
+        if len(self._focusable_widgets) < self._focused < 0:
             warnings.warn("Focused widget is out of range")
             return
 
