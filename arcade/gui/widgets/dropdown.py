@@ -9,13 +9,15 @@ import arcade
 from arcade import uicolor
 from arcade.gui import UIEvent, UIMousePressEvent
 from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
+from arcade.gui.experimental.controller import UIControllerButtonPressEvent
+from arcade.gui.experimental.focus import UIFocusMixin
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets import UILayout, UIWidget
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout
 
 
-class _UIDropdownOverlay(UIBoxLayout):
+class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
     """Represents the dropdown options overlay.
 
     Currently only handles closing the overlay when clicked outside of the options.
@@ -37,6 +39,13 @@ class _UIDropdownOverlay(UIBoxLayout):
             if not self.rect.point_in_rect((event.x, event.y)):
                 self.hide()
                 return EVENT_HANDLED
+
+        if isinstance(event, UIControllerButtonPressEvent):
+            # TODO find a better and more generic way to handle controller events for this
+            if event.button == "b":
+                self.hide()
+                return EVENT_HANDLED
+
         return super().on_event(event)
 
 
@@ -187,6 +196,8 @@ class UIDropdown(UILayout):
                     )
                 )
             button.on_click = self._on_option_click
+
+        self._overlay.detect_focusable_widgets()
 
     def _find_ui_manager(self):
         # search tree for UIManager
