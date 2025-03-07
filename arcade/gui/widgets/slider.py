@@ -95,6 +95,21 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
 
         self.register_event_type("on_change")
 
+    def _change_value(self, value: float):
+        # TODO changing the value itself should trigger this event
+        # current problem is, that the property does not pass the old value to change listeners
+        if value < self.min_value:
+            value = self.min_value
+        elif value > self.max_value:
+            value = self.max_value
+
+        if self.value == value:
+            return
+
+        old_value = self.value
+        self.value = value
+        self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
+
     def _x_for_value(self, value: float):
         """Provides the x coordinate for the given value."""
 
@@ -110,7 +125,8 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
     @norm_value.setter
     def norm_value(self, value):
         """Normalized value between 0.0 and 1.0"""
-        self.value = min(value * (self.max_value - self.min_value) + self.min_value, self.max_value)
+        new_value = min(value * (self.max_value - self.min_value) + self.min_value, self.max_value)
+        self._change_value(new_value)
 
     @property
     def _thumb_x(self):
@@ -181,9 +197,8 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
 
         if isinstance(event, UIMouseDragEvent):
             if self.pressed:
-                old_value = self.value
                 self._thumb_x = event.x
-                self.dispatch_event("on_change", UIOnChangeEvent(self, old_value, self.value))
+
                 return EVENT_HANDLED
 
         return EVENT_UNHANDLED
