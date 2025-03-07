@@ -273,6 +273,9 @@ class UILabel(UIWidget):
         font_bold = bold if bold is not None else self._label.bold
         font_italic = italic if italic is not None else self._label.italic
 
+        # ensure type of font_color, label will allways be a color
+        font_color = Color.from_iterable(font_color)
+
         # Check if values actually changed, if then update and trigger render
         font_name_changed = self._label.font_name != font_name
         font_size_changed = self._label.font_size != font_size
