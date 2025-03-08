@@ -290,39 +290,40 @@ class UIFocusMixin(UIWidget):
         surface.limit(None)
 
         widget = self._get_focused_widget()
-        arcade.draw_rect_outline(
-            rect=widget.rect,
-            color=arcade.color.WHITE,
-            border_width=2,
-        )
+        if widget:
+            arcade.draw_rect_outline(
+                rect=widget.rect,
+                color=arcade.color.WHITE,
+                border_width=2,
+            )
 
-        if self._debug:
-            # debugging
-            if isinstance(widget, Focusable):
-                if widget.neighbor_up:
-                    self._draw_indicator(
-                        widget.rect.top_center,
-                        widget.neighbor_up.rect.bottom_center,
-                        color=arcade.color.RED,
-                    )
-                if widget.neighbor_down:
-                    self._draw_indicator(
-                        widget.rect.bottom_center,
-                        widget.neighbor_down.rect.top_center,
-                        color=arcade.color.GREEN,
-                    )
-                if widget.neighbor_left:
-                    self._draw_indicator(
-                        widget.rect.center_left,
-                        widget.neighbor_left.rect.center_right,
-                        color=arcade.color.BLUE,
-                    )
-                if widget.neighbor_right:
-                    self._draw_indicator(
-                        widget.rect.center_right,
-                        widget.neighbor_right.rect.center_left,
-                        color=arcade.color.ORANGE,
-                    )
+            if self._debug:
+                # debugging
+                if isinstance(widget, Focusable):
+                    if widget.neighbor_up:
+                        self._draw_indicator(
+                            widget.rect.top_center,
+                            widget.neighbor_up.rect.bottom_center,
+                            color=arcade.color.RED,
+                        )
+                    if widget.neighbor_down:
+                        self._draw_indicator(
+                            widget.rect.bottom_center,
+                            widget.neighbor_down.rect.top_center,
+                            color=arcade.color.GREEN,
+                        )
+                    if widget.neighbor_left:
+                        self._draw_indicator(
+                            widget.rect.center_left,
+                            widget.neighbor_left.rect.center_right,
+                            color=arcade.color.BLUE,
+                        )
+                    if widget.neighbor_right:
+                        self._draw_indicator(
+                            widget.rect.center_right,
+                            widget.neighbor_right.rect.center_left,
+                            color=arcade.color.ORANGE,
+                        )
 
     def _draw_indicator(self, start: Vec2, end: Vec2, color=arcade.color.WHITE):
         arcade.draw_line(start.x, start.y, end.x, end.y, color, 2)
