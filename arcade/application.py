@@ -253,9 +253,9 @@ class Window(pyglet.window.Window):
         # is forced to be slower than or equal to the update rate.
         # This works because pyglet ensures that a scheduled event takes as long or longer than the
         # call rate, but never less.
-        assert (
-            update_rate <= draw_rate
-        ), "An arcade window's draw rate cannot be faster than its update rate"
+        assert update_rate <= draw_rate, (
+            "An arcade window's draw rate cannot be faster than its update rate"
+        )
         self._draw_rate = max(update_rate, draw_rate)
         self._accumulated_draw_time: float = 0.0
 
@@ -610,9 +610,9 @@ class Window(pyglet.window.Window):
             # Set the draw rate to 60 frames per second.
             set.set_draw_rate(1 / 60)
         """
-        assert (
-            self._update_rate <= rate
-        ), "An arcade window's draw rate cannot be faster than its update rate"
+        assert self._update_rate <= rate, (
+            "An arcade window's draw rate cannot be faster than its update rate"
+        )
         self._draw_rate = max(self._update_rate, rate)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> EVENT_HANDLE_STATE:
