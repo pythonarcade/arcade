@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import gc
 import os
+import time
 from typing import TYPE_CHECKING, Callable
 
 import pyglet
@@ -104,6 +105,9 @@ def run(view: View | None = None) -> None:
     This is a blocking function starting pyglet's event loop meaning
     it will start to dispatch events such as ``on_draw`` and ``on_update``.
 
+    This function also handles special cases for running in headless mode
+    and running unit tests.
+
     Args:
         view: The view to display when starting the run. Defaults to None.
     """
@@ -112,13 +116,12 @@ def run(view: View | None = None) -> None:
     if view is not None:
         window.show_view(view)
 
-    # Used in some unit test
+    # Some unite tests needs to run a single draw/update cycle
     if os.environ.get("ARCADE_TEST"):
         window.on_update(1.0 / 60.0)
         window.on_draw()
     elif window.headless:
         # We are entering headless more an will emulate an event loop
-        import time
 
         # Ensure the initial delta time is not 0 to be
         # more in line with how a normal window works.
@@ -134,55 +137,18 @@ def run(view: View | None = None) -> None:
             if window.context:
                 active.on_draw()
 
-            # windwow could be closed in on_draw
+            # Window could be closed in on_draw
             if window.context:
                 window.flip()
 
             now = time.perf_counter()
             delta_time, last_time = now - last_time, now
     else:
+        # Start the standard event loop (blocking)
+        # Note that we pass None as the interval here because we register
+        # a single interval event to dispatch frames because separate interval
+        # events cause serious issues with framerate smoothness.
         pyglet.app.run(None)
-
-        """
-        import sys
-
-        if sys.platform != "win32":
-            # For non windows platforms, just do pyglet run
-            pyglet.app.run(window._draw_rate)
-        else:
-            # Ok, some Windows platforms have a timer resolution > 15 ms. That can
-            # drop our FPS to 32 FPS or so. This reduces resolution so we can keep
-            # FPS up.
-            import contextlib
-            import ctypes
-            from ctypes import wintypes
-
-            winmm = ctypes.WinDLL("winmm")
-
-            class TIMECAPS(ctypes.Structure):
-                _fields_ = (("wPeriodMin", wintypes.UINT), ("wPeriodMax", wintypes.UINT))
-
-            def _check_time_err(err, func, args):
-                if err:
-                    raise WindowsError("%s error %d" % (func.__name__, err))
-                return args
-
-            winmm.timeGetDevCaps.errcheck = _check_time_err
-            winmm.timeBeginPeriod.errcheck = _check_time_err
-            winmm.timeEndPeriod.errcheck = _check_time_err
-
-            @contextlib.contextmanager
-            def timer_resolution(msecs=0):
-                caps = TIMECAPS()
-                winmm.timeGetDevCaps(ctypes.byref(caps), ctypes.sizeof(caps))
-                msecs = min(max(msecs, caps.wPeriodMin), caps.wPeriodMax)
-                winmm.timeBeginPeriod(msecs)
-                yield
-                winmm.timeEndPeriod(msecs)
-
-            with timer_resolution(msecs=10):
-                pyglet.app.run(window._draw_rate)
-        """
 
 
 def exit() -> None:
