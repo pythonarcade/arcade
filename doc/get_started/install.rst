@@ -10,9 +10,12 @@ Install
 
 Requirements
 ------------
-:mod:`pyglet`
+Arcade requires a desktop, laptop, or compatible Single-Board Computer (SBC) with:
 
-All systems require Python 3.9 or higher on a desktop or laptop device.
+#. Python 3.9 or higher
+#. Graphics drivers with support for either:
+    * OpenGL 3.3+
+    * GLES 3.1+ with extensions on SBCs
 
 :ref:`Web <faq_web>` and :ref:`mobile <faq_mobile>` are currently
 unsupported.
@@ -29,7 +32,7 @@ In general, even older convertible Windows tablets will work as long as they:
 
 .. note:: ARM-based Windows or Linux tablets may have issues.
 
-          These devices may or may not work.  the :ref:`requirements_raspi`
+          See the section on the :ref:`requirements_raspi` below.
 
 Windows
 """""""

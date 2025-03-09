@@ -31,6 +31,21 @@ def test_shw_smaller_1(window):
     assert sizes == [10, 10, 50]
 
 
+def test_container_size_zero(window):
+    # GIVEN
+    entries = [
+        _C(hint=0.1, min=50, max=None),
+        _C(hint=0.1, min=50, max=None),
+        _C(hint=0.5, min=50, max=None),
+    ]
+
+    # WHEN
+    sizes = _box_axis_algorithm(entries, 0)
+
+    # THEN
+    assert sizes == [50, 50, 50]
+
+
 def test_complex_example_with_max_value():
     # GIVEN
     entries = [

@@ -144,12 +144,10 @@ class ColorView(UIView):
             )
         )
         for i, (name, color) in enumerate(self.colors.items()):
-            button = self.root.add(
-                ColorButton(
-                    color_name=name,
-                    color=color,
-                    size_hint=(1, 1),
-                )
+            button = ColorButton(
+                color_name=name,
+                color=color,
+                size_hint=(1, 1),
             )
             self.grid.add(button, row=i // 5, column=i % 5)
 

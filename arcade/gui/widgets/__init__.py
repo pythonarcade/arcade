@@ -461,6 +461,9 @@ class UIWidget(EventDispatcher, ABC):
             self
         """
         if color is not ...:
+            if color is not None:
+                color = Color.from_iterable(color)
+
             self._bg_color = color
 
         if texture is not ...:
