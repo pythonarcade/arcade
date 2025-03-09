@@ -249,13 +249,13 @@ class Window(pyglet.window.Window):
         # the Window and use it. Calls to set_draw_rate only need
         # to be done if changing it after the application has been started.
 
-        # To ensure that draws are never desynced from updates and wasted the draw rate
+        # To ensure that draws are never de-synced from updates and wasted the draw rate
         # is forced to be slower than or equal to the update rate.
         # This works because pyglet ensures that a scheduled event takes as long or longer than the
         # call rate, but never less.
-        assert update_rate <= draw_rate, (
-            "An arcade window's draw rate cannot be faster than its update rate"
-        )
+        assert (
+            update_rate <= draw_rate
+        ), "An arcade window's draw rate cannot be faster than its update rate"
         self._draw_rate = max(update_rate, draw_rate)
         self._accumulated_draw_time: float = 0.0
 
@@ -514,7 +514,7 @@ class Window(pyglet.window.Window):
 
     def _dispatch_frame(self, delta_time: float) -> None:
         """
-        To handle the desyncing of on_draw and on_update that can occur when the events aren't
+        To handle the de-syncing of on_draw and on_update that can occur when the events aren't
         linked. Dispatch frame keeps them in sync by always ensuring on_draw happens along-side
         an on_update. This requires that the draw frequencies is less than or equal to the update
         frequency.
@@ -575,11 +575,13 @@ class Window(pyglet.window.Window):
         front buffer. This is done to prevent flickering and tearing.
 
         This method also garbage collects OpenGL resources if there are
-        any dead resources to collect.
+        any dead resources to collect. If you override this method, make
+        sure to call the super method to ensure that the garbage collection
+        is done.
         """
         # Garbage collect OpenGL resources
-        num_collected = self.ctx.gc()
-        LOG.debug("Garbage collected %s OpenGL resource(s)", num_collected)
+        num_collected = self.ctx.gc()  # noqa: F841
+        # LOG.debug("Garbage collected %s OpenGL resource(s)", num_collected)
 
         super().flip()  # type: ignore # Window typed at runtime
 
@@ -601,14 +603,16 @@ class Window(pyglet.window.Window):
     def set_draw_rate(self, rate: float) -> None:
         """
         Set how often the on_draw function should be run.
+        The draw rate cannot currently be faster than the update rate.
+
         For example::
 
             # Set the draw rate to 60 frames per second.
             set.set_draw_rate(1 / 60)
         """
-        assert self._update_rate <= rate, (
-            "An arcade window's draw rate cannot be faster than its update rate"
-        )
+        assert (
+            self._update_rate <= rate
+        ), "An arcade window's draw rate cannot be faster than its update rate"
         self._draw_rate = max(self._update_rate, rate)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> EVENT_HANDLE_STATE:
