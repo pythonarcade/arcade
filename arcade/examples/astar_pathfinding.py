@@ -215,7 +215,7 @@ class GameView(arcade.View):
             self.right_pressed = True
         # Close the window / exit game
         elif key == arcade.key.ESCAPE:
-            self.close()
+            self.window.close()
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """

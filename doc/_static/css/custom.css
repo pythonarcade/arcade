@@ -57,12 +57,15 @@ title + list appear like other categories */
     width: 100%;
 }
 
-/* Wrappers and formatting for sprinter, START HERE, github star button
-to align them neatly */
+/* Align the GitHub stars button since Sphinx doesn't offer us great control over headings */
 .main-page-item-wrapper-header {
     align-items: center;
-    display: flex;
-    margin: 10px;
+    float: right;
+    display: relative;
+}
+/* IMPORTANT: unlike flex, you have to clear float! */
+.main-page-item-wrapper-header::after {
+    float: clear;
 }
 .main-page-box {
     width: 100%;
@@ -97,7 +100,8 @@ to align them neatly */
     width: 100%;
     display: flex;
 } */
-.main-page-box > .main-page-box-gh {
+
+.main-page-box-gh {
     display: flex;
     align-items: center;
     margin-right: 0px;
@@ -342,6 +346,9 @@ table.resource-table td > .resource-thumb.file-icon {
 li .arcade-ezcopy.doc-ui-example-dummy {
     margin-left: 0.2em;
     margin-right: 0.2em;
+    /* Override 12 px bottom margin */
+    margin-top: inherit !important;
+    margin-bottom: inherit !important;
 }
 
 table.colorTable {

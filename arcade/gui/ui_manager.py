@@ -254,6 +254,9 @@ class UIManager(EventDispatcher):
     def _do_render(self, force=False):
         layers = sorted(self.children.keys())
         force = force or self._requires_render
+        # already reset here, so it can be set again in case during rendering a
+        # widget requests a re-rendering like a UILabel updating its font
+        self._requires_render = False
         for layer in layers:
             surface = self._get_surface(layer)
 
@@ -266,8 +269,6 @@ class UIManager(EventDispatcher):
 
                 for child in self.children[layer]:
                     child._do_render(surface, force)
-
-        self._requires_render = False
 
     def enable(self) -> None:
         """Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`

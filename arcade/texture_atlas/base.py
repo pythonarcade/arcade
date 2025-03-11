@@ -207,7 +207,7 @@ class TextureAtlasBase(abc.ABC):
         Get the internal id for a Texture in the atlas
 
         Args:
-            atlas_name: The name of the texture in the atlas
+            texture: The texture to get
         """
         ...
 
@@ -364,7 +364,7 @@ class TextureAtlasBase(abc.ABC):
                 Number of components. (3 = RGB, 4 = RGBA)
             draw_borders:
                 Draw region borders into image
-            color:
+            border_color:
                 RGB color of the borders
         Returns:
             A pillow image containing the atlas texture
@@ -392,7 +392,7 @@ class TextureAtlasBase(abc.ABC):
                 Number of components. (3 = RGB, 4 = RGBA)
             draw_borders:
                 Draw region borders into image
-            color:
+            border_color:
                 RGB color of the borders
         """
         self.to_image(
@@ -425,7 +425,9 @@ class TextureAtlasBase(abc.ABC):
                 Flip the image horizontally
             components:
                 Number of components. (3 = RGB, 4 = RGBA)
-            color:
+            draw_borders:
+                Draw region borders into image
+            border_color:
                 RGB color of the borders
         """
 

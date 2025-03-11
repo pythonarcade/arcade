@@ -37,11 +37,16 @@ class VideoPlayer:
 
     def draw(self, left: int = 0, bottom: int = 0, size: tuple[int, int] | None = None) -> None:
         """
-        Call this in `on_draw`.
+        Draw the current video frame.
 
         Args:
-            size: Pass None as one of the elements if you want to use the
-            dimension(width, height) attribute.
+            left:
+                Window position from the left.
+            bottom:
+                Window position from the bottom.
+            size:
+                The size of the video rectangle.
+                If `None`, the video will be drawn in its original size.
         """
         if size and len(size) == 2:
             self._width = size[0] or self.width

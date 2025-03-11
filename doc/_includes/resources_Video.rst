@@ -1,8 +1,3 @@
-.. _resources_video:
-
-Video
------
-
 Arcade offers experimental support for video playback through :py:mod:`pyglet` and other libraries.
 
 .. warning:: These features are works-in-progress!

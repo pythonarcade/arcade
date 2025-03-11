@@ -317,7 +317,7 @@ def play_sound(
     try:
         return sound.play(volume, pan, loop, speed)
     except Exception as ex:
-        logger.warn("Error playing sound.", ex)
+        logger.warning("Error playing sound.", ex)
         return None
 
 

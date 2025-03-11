@@ -81,23 +81,19 @@ steps at the end of this document.
 
 ## Formatting
 
-Arcade uses [Black](https://black.readthedocs.io/en/stable) for autoformatting our code.
+Arcade uses [ruff format](https://docs.astral.sh/ruff/formatter/) for autoformatting our code
+as well as sorting imports.
 
 This can be run both with our `make.py` script, as well as setup for your editor to run it automatically.
-See [this link](https://black.readthedocs.io/en/stable/integrations/editors.html) for more information on
-Black integration for your specific editor.
+See [this link](https://docs.astral.sh/ruff/editors/) for more information on ruff editor integration.
 
-The following command will run black for you if you do not want to configure your editor to do it. It can be
-a good idea to run this command when you are finished working anyway, as our CI will use this to check that
-the formatting is correct.
+The following command will run ``ruff format`` for you if you do not want to configure your editor to do it.
+It can be  a good idea to run this command when you are finished working anyway,
+as our CI will use this to check that the formatting is correct.
 
 ```bash
 python make.py format
 ```
-
-In addition to Black, this will sort the imports using [Ruff](https://docs.astral.sh/ruff/). If you want to set up
-your editor to run this, please see [this link](https://docs.astral.sh/ruff/integrations/) for more information on
-Ruff integration for your specific editor.
 
 Docstring should be formatted using [Google Style](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
 

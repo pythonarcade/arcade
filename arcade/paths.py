@@ -88,7 +88,7 @@ class _AStarGraph(object):
         self.bottom = bottom
 
         if diagonal_movement:
-            self.movement_directions = (  # type: ignore
+            self.movement_directions = (
                 (1, 0),
                 (-1, 0),
                 (0, 1),
@@ -253,9 +253,6 @@ class AStarBarrierList:
             Bottom of playing field
         top (int):
             Top of playing field
-        barrier_list:
-            SpriteList of barriers to use in _AStarSearch,
-            ``None`` if not recalculated
 
     Attributes:
         grid_size:

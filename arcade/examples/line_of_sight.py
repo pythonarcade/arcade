@@ -120,31 +120,27 @@ class GameView(arcade.View):
         """
         Render the screen.
         """
-        try:
-            # This command has to happen before we start drawing
-            self.clear()
+        # This command has to happen before we start drawing
+        self.clear()
 
-            # Draw all the sprites.
-            self.player_list.draw()
-            self.wall_list.draw()
-            self.enemy_list.draw()
+        # Draw all the sprites.
+        self.player_list.draw()
+        self.wall_list.draw()
+        self.enemy_list.draw()
 
-            for enemy in self.enemy_list:
-                if arcade.has_line_of_sight(
-                    self.player.position, enemy.position, self.wall_list
-                ):
-                    color = arcade.color.RED
-                else:
-                    color = arcade.color.WHITE
-                arcade.draw_line(self.player.center_x,
-                                 self.player.center_y,
-                                 enemy.center_x,
-                                 enemy.center_y,
-                                 color,
-                                 2)
-
-        except Exception as e:
-            print(e)
+        for enemy in self.enemy_list:
+            if arcade.has_line_of_sight(
+                self.player.position, enemy.position, self.wall_list
+            ):
+                color = arcade.color.RED
+            else:
+                color = arcade.color.WHITE
+            arcade.draw_line(self.player.center_x,
+                             self.player.center_y,
+                             enemy.center_x,
+                             enemy.center_y,
+                             color,
+                             2)
 
     def on_update(self, delta_time):
         """ Movement and game logic """

@@ -5,7 +5,7 @@ For Educators & Researchers
 
 .. _citation template: https://github.com/pythonarcade/arcade#citation
 
-Python Arcade was created by Paul V. Craven while teaching at Simpson College.
+Arcade was created by Paul V. Craven while teaching at Simpson College.
 
 In addition to the main Arcade 3.0 documentation you are currently reading, there
 are further resources to help academic users. These include:
@@ -32,37 +32,39 @@ To learn more about using this template, please consult the following:
 
 Version Considerations
 ----------------------
-Most users will be better off using Arade 3.0.
+Most users will be best served by `Arcade's latest release from PyPI <PyPI>`_
 
-The main case for continuing to use ``2.6.X`` releases is reliance on teaching
-materials which have not yet been updated, including the :ref:`academia_arcade_book`.
+For new games, the features and improved efficiency of Arcade 3 make it the
+best choice. Upgrading existing games is also worthwhile.
+
+The main case for using ``2.6.X`` releases is when you must use teaching
+materials which lack an updated version for Arcade 3.0+. This includes the
+companion :ref:`academia_arcade_book` covered in depth below.
 
 
 .. _academia_arcade_book:
 
-Arcade Book
-^^^^^^^^^^^
+Arcade Textbook
+^^^^^^^^^^^^^^^
 
-The creator of Arcade wrote an `Arcade book`_ which covers Python basics in greater depth
-than the main Arcade documentation.
+The creator of Arcade wrote an `Arcade Textbook <Arcade book>`_ which covers Python basics
+n greater depth than the main Arcade documentation.
 
-
-It may be some time until the `Arcade book`_ is updated for Arcade 3.0. Doing so requires a
-separate effort after the 3.0 release due to the the scale and number of changes since
-Arcade 2.6.
+It may be a while before the `Arcade Textbook <Arcade book>`_ is updated for Arcade 3.0. This
+is a large undertaking due to the number and scale of changes since Arcade 2.6.
 
 
-Similarities to this Documentation
-""""""""""""""""""""""""""""""""""
+Similarities
+""""""""""""
 
-Both the book and the documentation you are currently reading provide:
+Both the textbook and the documentation you are currently reading provide:
 
 * all-ages learning resources
 * gentle introductions to Python and Arcade
 
 
-Differences from this Documentation
-"""""""""""""""""""""""""""""""""""
+Differences
+"""""""""""
 
 The book caters more heavily to beginners and educators by providing the following
 in a traditional chapter and curriculum structure:
@@ -139,7 +141,6 @@ SBCs based on RISC-V CPUs are likely to lack:
 
 * introductory tutorials
 * beginner-friendly documentation 
-
 
 
 Credit Card Rule

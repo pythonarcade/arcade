@@ -59,10 +59,8 @@ class HitBoxCache:
             points = cache.get("hash|(0, 1, 2, 3)|simple|")
 
         Args:
-            keys:
+            name_or_texture:
                 The texture or cache name to get the hit box for
-            hit_box_algorithm:
-                The hit box algorithm used
         """
         from arcade import Texture
 
@@ -85,7 +83,7 @@ class HitBoxCache:
             cache.put("my_custom_points", points)
 
         Args:
-            keys:
+            name_or_texture:
                 The texture or cache name to store the hit box for
             points:
                 The hit box points

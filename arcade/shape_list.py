@@ -247,7 +247,6 @@ def create_lines(
     Args:
         point_list: A list of points that make up the shape.
         color: A color such as a :py:class:`~arcade.types.Color`
-        line_width: Width of the line
     """
     return create_line_generic(point_list, color, gl.GL_LINES)
 
@@ -470,7 +469,6 @@ def create_rectangle(
     if filled:
         data[-2:] = reversed(data[-2:])
     else:
-
         i_lb = (
             center_x - width / 2 + border_width / 2,
             center_y - height / 2 + border_width / 2,

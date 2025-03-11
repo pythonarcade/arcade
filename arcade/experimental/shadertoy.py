@@ -278,6 +278,8 @@ class ShadertoyBase:
                 Override the size
             frame:
                 Override frame
+            frame_rate:
+                Override frame_rate
         """
         self._time = time if time is not None else self._time
         self._time_delta = time_delta if time_delta is not None else self._time_delta

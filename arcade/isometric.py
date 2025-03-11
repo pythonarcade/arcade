@@ -33,7 +33,6 @@ def screen_to_isometric_grid(
 def create_isometric_grid_lines(
     width: int, height: int, tile_width: int, tile_height: int, color: RGBA255, line_width: int
 ) -> ShapeElementList:
-
     # Grid lines 1
     shape_list: ShapeElementList = ShapeElementList()
 

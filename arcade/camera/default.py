@@ -24,7 +24,7 @@ class ViewportProjector:
 
     Args:
         viewport: The viewport to project to.
-        window: The window to bind the camera to. Defaults to the currently active window.
+        context: The window context to bind the camera to. Defaults to the currently active window.
     """
 
     def __init__(
@@ -108,7 +108,7 @@ class DefaultProjector(ViewportProjector):
     no instance where a developer would want to use this class.
 
     Args:
-        window: The window to bind the camera to. Defaults to the currently active window.
+        context: The window context to bind the camera to. Defaults to the currently active window.
     """
 
     def __init__(self, *, context: ArcadeContext | None = None):

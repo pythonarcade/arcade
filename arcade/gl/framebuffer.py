@@ -347,8 +347,6 @@ class Framebuffer:
                 A 3 or 4 component tuple containing the color in normalized form
             depth:
                 Value to clear the depth buffer (unused)
-            normalized:
-                If the color values are normalized or not
             viewport:
                 The viewport range to clear
         """

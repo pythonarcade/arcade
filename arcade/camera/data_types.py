@@ -84,7 +84,6 @@ class CameraData:
         forward: Point3 = (0.0, 0.0, -1.0),
         zoom: float = 1.0,
     ):
-
         self.position: tuple[float, float, float] = position
         """A 3D vector which describes where the camera is located."""
 
@@ -260,9 +259,7 @@ class OrthographicProjectionData:
         self.rect = LRBT(*new_lrbt)
 
     def __str__(self):
-        return (
-            f"OrthographicProjection<" f"LRBT={self.rect.lrbt}, " f"{self.near=}, " f"{self.far=}"
-        )
+        return f"OrthographicProjection<LRBT={self.rect.lrbt}, {self.near=}, {self.far=}>"
 
     def __repr__(self):
         return self.__str__()
@@ -450,8 +447,6 @@ class Projector(Protocol):
         Args:
             screen_coordinate: A 2D position in pixels should generally be inside
                 the range of the active viewport.
-            depth: The depth of the query. This can be though of how far along the forward vector
-                   the final coord will be.
         Returns:
             A 3D vector in world space.
         """

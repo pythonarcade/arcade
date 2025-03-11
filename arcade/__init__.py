@@ -68,14 +68,14 @@ else:
 # Env variable shortcut for headless mode
 headless: Final[bool] = bool(os.environ.get("ARCADE_HEADLESS"))
 if headless:
-    pyglet.options.headless = headless  # type: ignore # pending https://github.com/pyglet/pyglet/issues/1164
+    pyglet.options.headless = headless
 
 
 from arcade import utils
 
 # Disable shadow window on macs and in headless mode.
 if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_raspberry_pi():
-    pyglet.options.shadow_window = False  # type: ignore # pending https://github.com/pyglet/pyglet/issues/1164
+    pyglet.options.shadow_window = False
 
 # Imports from modules that don't do anything circular
 
@@ -147,7 +147,7 @@ from .screenshot import get_image
 from .screenshot import get_pixel
 
 # We don't have joysticks game controllers in headless mode
-if not headless:  # type: ignore
+if not headless:
     from .joysticks import get_game_controllers
     from .joysticks import get_joysticks
     from .controller import ControllerManager
@@ -196,7 +196,6 @@ from .physics_engines import PhysicsEnginePlatformer
 from .physics_engines import PhysicsEngineSimple
 
 from .tilemap import load_tilemap
-from .tilemap import read_tmx
 from .tilemap import TileMap
 
 from .pymunk_physics_engine import PymunkPhysicsEngine
@@ -372,7 +371,6 @@ __all__ = [
     "open_window",
     "print_timings",
     "play_sound",
-    "read_tmx",
     "load_tilemap",
     "run",
     "schedule",

@@ -60,7 +60,7 @@ def get_screens() -> list[Screen]:
         List of screens, one for each monitor.
     """
     display = pyglet.display.get_display()
-    return display.get_screens()  # type: ignore  # pending: https://github.com/pyglet/pyglet/pull/1176  # noqa
+    return display.get_screens()
 
 
 class NoOpenGLException(Exception):
@@ -82,10 +82,8 @@ class Window(pyglet.window.Window):
         multiple windows, consider using multiple views or divide the window
         into sections.
 
-    .. _pyglet_pg_window_size_position:
-    ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
-    .. _pyglet_pg_window_style:
-    ..  https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
+    .. _pyglet_pg_window_size_position: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#size-and-position
+    .. _pyglet_pg_window_style: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
 
     Args:
         width (optional):
@@ -228,9 +226,9 @@ class Window(pyglet.window.Window):
                 style=style,
             )
             # pending: weird import tricks resolved
-            self.register_event_type("on_update")  # type: ignore
-            self.register_event_type("on_action")  # type: ignore
-            self.register_event_type("on_fixed_update")  # type: ignore
+            self.register_event_type("on_update")
+            self.register_event_type("on_action")
+            self.register_event_type("on_fixed_update")
         except pyglet.window.NoSuchConfigException:
             raise NoOpenGLException(
                 "Unable to create an OpenGL 3.3+ context. "
@@ -250,7 +248,16 @@ class Window(pyglet.window.Window):
         # that is done by the run() function. run() will pull this draw rate from
         # the Window and use it. Calls to set_draw_rate only need
         # to be done if changing it after the application has been started.
-        self._draw_rate = draw_rate
+
+        # To ensure that draws are never de-synced from updates and wasted the draw rate
+        # is forced to be slower than or equal to the update rate.
+        # This works because pyglet ensures that a scheduled event takes as long or longer than the
+        # call rate, but never less.
+        assert update_rate <= draw_rate, (
+            "An arcade window's draw rate cannot be faster than its update rate"
+        )
+        self._draw_rate = max(update_rate, draw_rate)
+        self._accumulated_draw_time: float = 0.0
 
         # Fixed rate cannot be changed post initialization as this throws off physics sims.
         # If more time resolution is needed in fixed updates, devs can do 'sub-stepping'.
@@ -505,6 +512,32 @@ class Window(pyglet.window.Window):
         """
         pass
 
+    def _dispatch_frame(self, delta_time: float) -> None:
+        """
+        To handle the de-syncing of on_draw and on_update that can occur when the events aren't
+        linked. Dispatch frame keeps them in sync by always ensuring on_draw happens along-side
+        an on_update. This requires that the draw frequencies is less than or equal to the update
+        frequency.
+
+        This only works because pyglet will only dispatch events after the call rate, or longer.
+        This means if the update rate and draw rate are equal they will both always be called.
+        The modulus on the accumulated draw time means that when the update rate is greater
+        than the draw rate no time is lost.
+
+        Args:
+            delta_time: The amount of time since the last update.
+        """
+        self._dispatch_updates(delta_time)
+        self._accumulated_draw_time += delta_time
+
+        if self._draw_rate <= self._accumulated_draw_time:
+            # Because we only ever dispatch one draw event per loop
+            # we only need the modulus to keep time, if we didn't care
+            # it could be set to zero instead.
+            # ! This should maybe be fixed at 'self._draw_rate', discuss.
+            self.draw(self._accumulated_draw_time)
+            self._accumulated_draw_time %= self._draw_rate
+
     def _dispatch_updates(self, delta_time: float) -> None:
         """
         Internal function that is scheduled with Pyglet's clock, this function gets
@@ -527,6 +560,31 @@ class Window(pyglet.window.Window):
             fixed_count += 1
         self.dispatch_event("on_update", GLOBAL_CLOCK.delta_time)
 
+    def flip(self) -> None:
+        """
+        Present the rendered content to the screen.
+
+        This is not necessary to call when using the standard standard
+        event loop. The event loop will automatically call this method
+        after ``on_draw`` has been called.
+
+        Window framebuffers normally have a back and front buffer meaning
+        they are "double buffered". Content is always drawn into the back
+        buffer while the front buffer contains the previous frame.
+        Swapping the buffers makes the back buffer visible and hides the
+        front buffer. This is done to prevent flickering and tearing.
+
+        This method also garbage collects OpenGL resources if there are
+        any dead resources to collect. If you override this method, make
+        sure to call the super method to ensure that the garbage collection
+        is done.
+        """
+        # Garbage collect OpenGL resources
+        num_collected = self.ctx.gc()  # noqa: F841
+        # LOG.debug("Garbage collected %s OpenGL resource(s)", num_collected)
+
+        super().flip()  # type: ignore # Window typed at runtime
+
     def set_update_rate(self, rate: float) -> None:
         """
         Set how often the on_update function should be dispatched.
@@ -539,20 +597,23 @@ class Window(pyglet.window.Window):
             rate: Update frequency in seconds
         """
         self._update_rate = rate
-        pyglet.clock.unschedule(self._dispatch_updates)
-        pyglet.clock.schedule_interval(self._dispatch_updates, rate)
+        pyglet.clock.unschedule(self._dispatch_frame)
+        pyglet.clock.schedule_interval(self._dispatch_frame, rate)
 
     def set_draw_rate(self, rate: float) -> None:
         """
         Set how often the on_draw function should be run.
+        The draw rate cannot currently be faster than the update rate.
+
         For example::
 
             # Set the draw rate to 60 frames per second.
             set.set_draw_rate(1 / 60)
         """
-        self._draw_rate = rate
-        pyglet.clock.unschedule(pyglet.app.event_loop._redraw_windows)
-        pyglet.clock.schedule_interval(pyglet.app.event_loop._redraw_windows, self._draw_rate)
+        assert self._update_rate <= rate, (
+            "An arcade window's draw rate cannot be faster than its update rate"
+        )
+        self._draw_rate = max(self._update_rate, rate)
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> EVENT_HANDLE_STATE:
         """
@@ -962,7 +1023,7 @@ class Window(pyglet.window.Window):
         """
         if not isinstance(new_view, View):
             raise TypeError(
-                f"Window.show_view() takes an arcade.View," f"but it got a {type(new_view)}."
+                f"Window.show_view() takes an arcade.View, but it got a {type(new_view)}."
             )
 
         self._ctx.screen.use()
@@ -1018,29 +1079,6 @@ class Window(pyglet.window.Window):
         self._current_view.on_hide_view()
         self.remove_handlers(self._current_view)
         self._current_view = None
-
-    def flip(self) -> None:
-        """
-        Present the rendered content to the screen.
-
-        This is not necessary to call when using the standard standard
-        event loop. The event loop will automatically call this method
-        after ``on_draw`` has been called.
-
-        Window framebuffers normally have a back and front buffer meaning
-        they are "double buffered". Content is always drawn into the back
-        buffer while the front buffer contains the previous frame.
-        Swapping the buffers makes the back buffer visible and hides the
-        front buffer. This is done to prevent flickering and tearing.
-
-        This method also garbage collects OpenGL resources if there are
-        any dead resources to collect.
-        """
-        # Garbage collect OpenGL resources
-        num_collected = self.ctx.gc()
-        LOG.debug("Garbage collected %s OpenGL resource(s)", num_collected)
-
-        super().flip()  # type: ignore # Window typed at runtime
 
     def switch_to(self) -> None:
         """Switch the this window context.
@@ -1388,9 +1426,9 @@ class View:
                 Change in x since the last time this method was called
             dy:
                 Change in y since the last time this method was called
-            buttons:
+            _buttons:
                 Which button is pressed
-            modifiers:
+            _modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
                 active during this event. See :ref:`keyboard_modifiers`.
         """
@@ -1478,7 +1516,7 @@ class View:
         """
         return False
 
-    def on_key_release(self, _symbol: int, _modifiers: int) -> bool | None:
+    def on_key_release(self, symbol: int, modifiers: int) -> bool | None:
         """
         Called once when a key gets released.
 

@@ -182,13 +182,12 @@ class GameView(arcade.View):
         """
         super().on_resize(width, height)
         self.camera_sprites.match_window()
-        self.camera_gui.match_window()
 
 
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
 
     # Create and setup the GameView
     game = GameView()

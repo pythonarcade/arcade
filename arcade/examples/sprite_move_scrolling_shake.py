@@ -52,10 +52,8 @@ class GameView(arcade.View):
         # Physics engine so we don't run into walls.
         self.physics_engine = None
 
-        # Create the cameras. One for the GUI, one for the sprites.
-        # We scroll the 'sprite world' but not the GUI.
+        # Create camera that will follow the player sprite.
         self.camera_sprites = arcade.camera.Camera2D()
-        self.camera_gui = arcade.camera.Camera2D()
 
         self.camera_shake = arcade.camera.grips.ScreenShake2D(
             self.camera_sprites.view_data,
@@ -197,13 +195,12 @@ class GameView(arcade.View):
         """
         super().on_resize(width, height)
         self.camera_sprites.match_window()
-        self.camera_gui.match_window(position=True)
 
 
 def main():
     """ Main function """
     # Create a window class. This is what actually shows up on screen
-    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
+    window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, resizable=True)
 
     # Create and setup the GameView
     game = GameView()

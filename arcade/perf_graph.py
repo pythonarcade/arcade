@@ -320,7 +320,6 @@ class PerfGraph(arcade.Sprite):
         # Render to the internal texture
         # This ugly spacing is intentional to make type checking work.
         with atlas.render_into(self.minimap_texture, projection=self.proj) as fbo:  # type: ignore
-
             # Set the background color
             fbo.clear(color=self.background_color)
 

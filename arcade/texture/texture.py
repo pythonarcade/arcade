@@ -170,7 +170,7 @@ class Texture:
             self._image_data = image
         else:
             raise TypeError(
-                "image must be an instance of PIL.Image.Image or ImageData, " f"not {type(image)}"
+                f"image must be an instance of PIL.Image.Image or ImageData, not {type(image)}"
             )
 
         # Set the size of the texture since this is immutable

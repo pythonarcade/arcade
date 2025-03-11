@@ -186,7 +186,7 @@ class UIWidget(EventDispatcher, ABC):
 
         if self.visible:
             # pass event to children
-            for child in self.children:
+            for child in reversed(self.children):
                 if child.dispatch_event("on_event", event):
                     return EVENT_HANDLED
 
@@ -461,6 +461,9 @@ class UIWidget(EventDispatcher, ABC):
             self
         """
         if color is not ...:
+            if color is not None:
+                color = Color.from_iterable(color)
+
             self._bg_color = color
 
         if texture is not ...:

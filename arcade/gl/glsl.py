@@ -32,8 +32,6 @@ class ShaderSource:
             Common source code to inject
         source_type:
             The shader type
-        depth_attachment:
-            A depth attachment (optional)
     """
 
     def __init__(

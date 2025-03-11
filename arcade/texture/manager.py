@@ -133,7 +133,7 @@ class TextureCacheManager:
         hit_box_algorithm: hitbox.HitBoxAlgorithm | None = None,
     ) -> Texture:
         """
-        Slice out a a texture at x, y, width, height from a sprite sheet.
+        Slice out a texture slice from a sprite sheet.
 
         * If the spritesheet is not already loaded, it will be loaded and cached.
         * If the sliced texture is already cached, it will be returned instead.
@@ -141,14 +141,8 @@ class TextureCacheManager:
         Args:
             path:
                 Path to the sprite sheet image
-            x:
-                X position of the texture in the sprite sheet
-            y:
-                Y position of the texture in the sprite sheet
-            width:
-                Width of the texture
-            height:
-                Height of the texture
+            rect:
+                Slice of the texture in the sprite sheet.
             hit_box_algorithm (optional):
                 Hit box algorithm to use. If not specified, the global default will be used.
         """
@@ -188,9 +182,6 @@ class TextureCacheManager:
                 Path of the file to load.
             hash:
                 Optional override for image hash
-            cache:
-                If ``True``, the image will be cached. If ``False``, the
-                image will not be cached or returned from the cache.
             mode:
                 The mode to use for the image. Default is "RGBA".
         """
@@ -223,7 +214,7 @@ class TextureCacheManager:
         entire image is loaded.
 
         Args:
-            file_name:
+            file_path:
                 Path to the image file.
             x (optional):
                 X coordinate of the texture in the image.

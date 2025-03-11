@@ -52,8 +52,6 @@ class TextureAnimation:
     Args:
         keyframes:
             List of keyframes for the animation.
-        loop:
-            If the animation should loop.
     """
 
     __slots__ = ("_keyframes", "_duration_ms", "_timeline")
@@ -358,7 +356,7 @@ class AnimatedWalkingSprite(Sprite):
             self.texture = texture_list[self.cur_texture_index]
 
         if self._texture is None:
-            logger.warn("Error, no texture set")
+            logger.warning("Error, no texture set")
         else:
             self.width = self._texture.width * self.scale_x
             self.height = self._texture.height * self.scale_x

@@ -1,6 +1,6 @@
 from arcade import gl
 from arcade.earclip import earclip
-from arcade.types import Point2List, RGBOrA255
+from arcade.types import Point2, Point2List, RGBOrA255
 
 from .helpers import _generic_draw_line_strip, get_points_for_thick_line
 
@@ -40,7 +40,7 @@ def draw_polygon_outline(point_list: Point2List, color: RGBOrA255, line_width: f
     new_point_list.append(point_list[0])
 
     # Create a place to store the triangles we'll use to thicken the line
-    triangle_point_list = []
+    triangle_point_list: list[Point2] = []
 
     # This needs a lot of improvement
     last_point = None

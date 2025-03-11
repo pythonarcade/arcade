@@ -21,7 +21,7 @@ class UIView(View):
     The screen is cleared before on_draw_before_ui is called
     with the background color of the window.
 
-    If you override ``on_show_view`` or ``on_show_view``,
+    If you override ``on_show_view`` or ``on_hide_view``,
     don't forget to call super().on_show_view() or super().on_hide_view().
 
     """

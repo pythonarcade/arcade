@@ -181,11 +181,9 @@ class OrthographicProjector(Projector):
         Args:
             screen_coordinate: A 2D position in pixels from the bottom left of the screen.
                                This should ALWAYS be in the range of 0.0 - screen size.
-            depth: The depth of the query
         Returns:
             A 3D vector in world space.
         """
-
         _projection = generate_orthographic_matrix(self._projection, self._view.zoom)
         _view = generate_view_matrix(self._view)
         return unproject_orthographic(screen_coordinate, self.viewport.lbwh_int, _view, _projection)

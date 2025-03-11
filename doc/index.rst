@@ -1,32 +1,26 @@
 :hide-toc:
 
+.. container:: main-page-item-wrapper-header
+
+    .. raw:: html
+
+       <div class="main-page-box-gh">
+          <iframe id="github-stars" style="align-self: center; margin: 0 auto; display: block;"
+            src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large"
+            frameborder="0"
+            scrolling="0"
+            title="GitHub">
+          </iframe>
+       </div>
 
 .. _main_page:
 
 The Python Arcade Library
 =========================
 
-
-.. container:: main-page-item-wrapper-header
-
-    .. raw:: html
-
-        <div class="main-page-box">
-            <div class="main-page-link">
-            </div>
-            <div class="main-page-box-gh">
-               <iframe id="github-stars" style="align-self: center; margin: 0 auto; display: block;"
-                        src="https://ghbtns.com/github-btn.html?user=pythonarcade&repo=arcade&type=star&count=true&size=large"
-                        frameborder="0"
-                        scrolling="0"
-                        title="GitHub">
-               </iframe>
-            </div>
-        </div>
-
 Arcade is an easy-to-learn Python library for creating 2D games and more. The
-friendly API caters to both beginners and experts alike. Do you want to make
-something small, or explore the full power of shaders? It's up to you.
+friendly API caters to both beginners and experts alike. Do you want to craft
+craft your take on a 2D classic, or explore the full power of shaders? It's up to you.
 
 What will you make?
 

@@ -89,7 +89,7 @@ at this stage is ready for drawing and we don't need to do anything else to it(o
     ``layer_options`` is a special dictionary that can be provided to the ``load_tilemap`` function. This will
     send special options for each layer into the map loader. In this example our map has a layer called
     ``Platforms``, and we want to enable spatial hashing on it. Much like we did for our ``wall`` SpriteList
-    before. For more info on the layer options dictionary and the available keys, check out :class`arcade.TileMap`
+    before. For more info on the layer options dictionary and the available keys, check out :class:`arcade.TileMap`
 
 At this point we only have one piece of code left to change. In switching to our new map, you may have noticed by
 the ``layer_options`` dictionary that we now have a layer named ``Platforms``. Previously in our Scene we were calling

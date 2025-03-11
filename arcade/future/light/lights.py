@@ -87,7 +87,8 @@ class LightLayer(RenderTargetTexture):
     The size of a layer should ideally be of the same size and the screen.
 
     Args:
-        size: Width and height of light layer
+        width: Width of light layer
+        height: Height of light layer
     """
 
     def __init__(self, width: int, height: int):

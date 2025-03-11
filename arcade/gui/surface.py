@@ -229,7 +229,6 @@ class Surface:
         Args:
             area: Limit the area in the surface we're drawing
                 (l, b, w, h)
-            pixelated: If True, the texture will be rendered pixelated
         """
         # Set blend function
         blend_func = self.ctx.blend_func

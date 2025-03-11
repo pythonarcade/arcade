@@ -801,7 +801,7 @@ class BasicSprite:
         x, y = point
         return is_point_in_polygon(x, y, self.hit_box.get_adjusted_points())
 
-    def collides_with_sprite(self: SpriteType, other: SpriteType) -> bool:
+    def collides_with_sprite(self, other: BasicSprite) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
 
         Args:
@@ -813,7 +813,7 @@ class BasicSprite:
 
         return check_for_collision(self, other)
 
-    def collides_with_list(self: SpriteType, sprite_list: "SpriteList") -> list[SpriteType]:
+    def collides_with_list(self, sprite_list: SpriteList[SpriteType]) -> list[SpriteType]:
         """Check if current sprite is overlapping with any other sprite in a list
 
         Args:

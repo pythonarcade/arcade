@@ -3,6 +3,7 @@ Various utility functions.
 
 IMPORTANT: These should be standalone and not rely on any Arcade imports
 """
+
 from __future__ import annotations
 
 import platform
@@ -23,7 +24,7 @@ __all__ = [
     "is_str_or_noniterable",
     "grow_sequence",
     "is_raspberry_pi",
-    "get_raspberry_pi_info"
+    "get_raspberry_pi_info",
 ]
 
 # Since this module forbids importing from the rest of
@@ -45,6 +46,7 @@ class Chain(Generic[_T]):
     Arguments:
         components: The sequences of items to join.
     """
+
     def __init__(self, *components: Sequence[_T]):
         self.components: list[Sequence[_T]] = list(components)
 
@@ -151,9 +153,9 @@ def is_str_or_noniterable(item: Any) -> bool:
 
 
 def grow_sequence(
-        destination: MutableSequence[_T],
-        source: _T | Iterable[_T],
-        append_if: Callable[[_T | Iterable[_T]], bool] = is_str_or_noniterable
+    destination: MutableSequence[_T],
+    source: _T | Iterable[_T],
+    append_if: Callable[[_T | Iterable[_T]], bool] = is_str_or_noniterable,
 ) -> None:
     """Append when ``append_if(to_add)`` is ``True``, extend otherwise.
 
@@ -235,18 +237,21 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
        this_line_raises = copy.deepcopy(instance)
        this_line_also_raises = copy.copy(instance)
     """
+
     def __copy__(self):  # noqa
-       raise NotImplementedError(
-           f"{self.__class__.__name__} does not implement __copy__, but"
-           f"you may implement it on a custom subclass."
-       )
-    decorated_type.__copy__ =  __copy__
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not implement __copy__, but"
+            f"you may implement it on a custom subclass."
+        )
+
+    decorated_type.__copy__ = __copy__
 
     def __deepcopy__(self, memo):  # noqa
-       raise NotImplementedError(
-           f"{self.__class__.__name__} does not implement __deepcopy__,"
-           f" but you may implement it on a custom subclass."
-       )
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not implement __deepcopy__,"
+            f" but you may implement it on a custom subclass."
+        )
+
     decorated_type.__deepcopy__ = __deepcopy__
 
     return decorated_type
@@ -310,8 +315,7 @@ def unpack_asfloat_or_point(value: AsFloat | Point2) -> Point2:
             x, y = value
         except ValueError:
             raise ValueError(
-                "value must be a float, int, or tuple-like "
-                "which unpacks as two float-like values"
+                "value must be a float, int, or tuple-like which unpacks as two float-like values"
             )
         except TypeError:
             raise TypeError(

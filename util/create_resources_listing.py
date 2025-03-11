@@ -143,7 +143,7 @@ class TableConfigDict(TypedDict):
 
 
 class HeadingConfigDict(TypedDict):
-    ref_target: NotRequired[str | bool]
+    ref_target: NotRequired[str]
     skip: NotRequired[bool]
     value: NotRequired[str]
     level: NotRequired[int]
@@ -169,6 +169,7 @@ RESOURCE_HANDLE_CONFIGS: dict[str,HandleLevelConfigDict] = {
     ":resources:/": {
         "heading": {
             "value": "Top-Level Resources",
+            "ref_target": "resources-top-level-resources",
             "level": 1
         },
         "include": "resources_Top-Level_Resources.rst"
@@ -208,10 +209,10 @@ RESOURCE_HANDLE_CONFIGS: dict[str,HandleLevelConfigDict] = {
     },
     ":resources:/video/": {
         # pending: post-3.0 cleanup # trains are hats
-        # "heading:": {
-        #     "value": "Video",
-        #     "ref_target": "resources_video"
-        # },
+        "heading:": {
+            "value": "Video",
+            "ref_target": "resources_video"
+        },
         "include": "resources_Video.rst"
     }
 }
@@ -273,6 +274,7 @@ def do_heading(
     if ref_target is True:
         ref_target = f"resources-{heading_text}.rst"
     if ref_target:
+        print(f"   writing ref target {repr(heading_text)}")
         out.write(f".. _{ref_target.lower()}:\n\n")
 
     if relative_heading_level >= num_headings:
@@ -427,19 +429,24 @@ def process_resource_directory(out, dir: Path):
                 local_config = RESOURCE_HANDLE_CONFIGS.get(handle_step_whole, {})
                 local_heading_config = local_config.get('heading', {})
 
-                # print("proceeding...",
-                #       "\n   config         ", local_config,
-                #       "\n   heading_config ", local_heading_config, sep = "")
+                print("proceeding...",
+                      "\n   config         ", local_config,
+                      "\n   heading_config ", local_heading_config, sep = "")
 
                 # Heading config fetch and write
                 use_level = local_heading_config.get('level', heading_level)
                 use_value = local_heading_config.get('value', None)
+                use_target = local_heading_config.get('ref_target', None)
                 if use_value is None:
                     use_value = format_title_part(handle_steps_parts[heading_level])
-                use_target = local_heading_config.get('ref_target', None)
-                if isinstance(use_target, bool) and use_target:
-                    use_target = f"resources_{use_value.lower()}"
+                if use_target is None:
+                    use_target = f"resources-{use_value.lower()}"
 
+                for k, v in locals().items():
+                    if k.startswith("use_"):
+                        print(repr(k), ":", repr(v))
+
+                print(f"  got target: {use_target!r}")
                 do_heading(out, use_level, use_value, ref_target=use_target)
                 out.write(f"\n.. comment `{handle_step_whole!r}``\n\n")
 
@@ -788,16 +795,15 @@ def resources():
               "convenience, or visit `Kenney.nl`_ for more permissively licensed game assets.\n"
               "\n" 
               "The one feature which may require additional software is Arcade's experimental video playback\n"
-              "support. The :ref:`resources_video` section below will explain further.\n")
+              "support. The :ref:`resources-video` section below will explain further.\n")
 
     do_heading(out, 1, "Do I have to credit anyone?")
     # Injecting the links.rst doesn't seem to be working?
     out.write("That's a good question and one you should always ask when searching for assets online.\n"
               "To help users get started quickly, the Arcade team makes sure to only bundle assets which\n"
               # pending: post-3.0 cleanup # Why does it refuse to accept external links definitions? Who knows?
-              "are specifically released under `CC0  <https://creativecommons.org/publicdomain/#publicdomain-cc0-10>`_"
-              " or similar terms.\n")
-    out.write("Most are from `Kenney.nl <https://kenney.nl/>`_.\n") # pending: post-3.0 cleanup.
+              "are specifically released under `CC0`_ or similar terms.\n")
+    out.write("Most are from `Kenney.nl`_.\n") # pending: post-3.0 cleanup.
     logo = html.escape("'logo.png'")
     do_heading(out, 1, "How do I use these?")
     out.write(
@@ -814,9 +820,18 @@ def resources():
         f"<img src=\"{src_kludge('/_static/icons/tabler/copy.svg')}\"></div>)</li>\n"
         f"   </ol>\n\n"
         +
-        "Click the button above a preview to copy the **resource handle** string for loading the asset.\n"
-        "Any image or sound on this page should work after installing Arcade with zero additional dependencies.\n"
-        "Full example code and manual sections for any relevant functions are linked below."
+        "Click the button above a preview to copy the **resource handle** string for loading the asset. It should\n"
+        "look something like this::\n\n"
+        "  ':resources:/logo.png'\n"
+        "\n"
+        "Each resource preview on this page has a button which copies a corresponding string. These\n"
+        "resource handle strings allow using Arcade's built-in assets without worrying where a file is\n"
+        "on a computer.\n\n"
+        "To learn more, please see:\n\n"
+        "* The :ref:`resources-top-level-resources` section for a short tutorial on resource handles\n"
+        "* :ref:`example-code` for runnable example code\n"
+        "* :ref:`main-page-tutorials` for a step-by-step introduction to Arcade\n"
+        "* :ref:`resource_handles` for in-depth explanations of resource handles\n\n"
     )
 
     out.write("\n")
