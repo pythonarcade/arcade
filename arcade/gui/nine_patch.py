@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import arcade
 import arcade.gl as gl
+from arcade.texture_atlas.base import TextureAtlasBase
 
 
 class NinePatchTexture:
@@ -72,27 +71,11 @@ class NinePatchTexture:
         top: int,
         texture: arcade.Texture,
         *,
-        atlas: Optional[arcade.DefaultTextureAtlas] = None,
+        atlas: TextureAtlasBase | None = None,
     ):
-        self._ctx = arcade.get_window().ctx
-
-        # TODO: Cache in context?
-        self._program = self.ctx.load_program(
-            vertex_shader=":system:shaders/gui/nine_patch_vs.glsl",
-            geometry_shader=":system:shaders/gui/nine_patch_gs.glsl",
-            fragment_shader=":system:shaders/gui/nine_patch_fs.glsl",
-        )
-        # Configure texture channels
-        self.program.set_uniform_safe("uv_texture", 0)
-        self.program["sprite_texture"] = 1
-
-        # TODO: Cache in context
-        self._geometry = self.ctx.geometry()
-
-        # References for the texture
-        self._atlas = atlas or self.ctx.default_atlas
+        self._initialized = False
         self._texture = texture
-        self._add_to_atlas(texture)
+        self._custom_atlas = atlas
 
         # pixel texture co-ordinate start and end of central box.
         self._left = left
@@ -102,9 +85,52 @@ class NinePatchTexture:
 
         self._check_sizes()
 
+        # Created in _init_deferred
+        self._program: gl.program.Program
+        self._geometry: gl.Geometry
+        self._ctx: arcade.ArcadeContext
+        self._atlas: TextureAtlasBase
+        try:
+            self._init_deferred()
+        except Exception:
+            pass
+
+    def _init_deferred(self):
+        """Deferred initialization when lazy loaded"""
+        self._ctx = arcade.get_window().ctx
+        # TODO: Cache in context?
+        self._program = self._ctx.load_program(
+            vertex_shader=":system:shaders/gui/nine_patch_vs.glsl",
+            geometry_shader=":system:shaders/gui/nine_patch_gs.glsl",
+            fragment_shader=":system:shaders/gui/nine_patch_fs.glsl",
+        )
+        # Configure texture channels
+        self._program.set_uniform_safe("uv_texture", 0)
+        self._program["sprite_texture"] = 1
+
+        # TODO: Cache in context?
+        self._geometry = self._ctx.geometry()
+
+        # References for the texture
+        self._atlas = self._custom_atlas or self._ctx.default_atlas
+        self._add_to_atlas(self.texture)
+
+        print("NinePatchTexture initialized")
+        self._initialized = True
+
+    def initialize(self) -> None:
+        """
+        Manually initialize the NinePatchTexture if it was lazy loaded.
+        This has no effect if the NinePatchTexture was already initialized.
+        """
+        if self._initialized:
+            self._init_deferred()
+
     @property
     def ctx(self) -> arcade.ArcadeContext:
         """The OpenGL context."""
+        if not self._initialized:
+            raise RuntimeError("The NinePatchTexture has not been initialized")
         return self._ctx
 
     @property
@@ -123,10 +149,16 @@ class NinePatchTexture:
 
         Returns the default shader if no other shader is assigned.
         """
+        if not self._initialized:
+            raise RuntimeError("The NinePatchTexture has not been initialized")
+
         return self._program
 
     @program.setter
     def program(self, program: gl.program.Program):
+        if not self._initialized:
+            raise RuntimeError("The NinePatchTexture has not been initialized")
+
         self._program = program
 
     def _add_to_atlas(self, texture: arcade.Texture):
@@ -209,6 +241,9 @@ class NinePatchTexture:
             pixelated: Whether to draw with nearest neighbor
                 interpolation
         """
+        if not self._initialized:
+            self._init_deferred()
+
         if blend:
             self._ctx.enable_only(self._ctx.BLEND)
         else:
