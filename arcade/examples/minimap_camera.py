@@ -60,7 +60,7 @@ class GameView(arcade.View):
         minimap_projection = arcade.XYWH(
             0.0, 0.0, MAP_PROJECTION_WIDTH, MAP_PROJECTION_HEIGHT
         )
-        self.camera_minimap = arcade.camera.Camera2D(
+        self.camera_minimap = arcade.Camera2D(
             viewport=minimap_viewport, projection=minimap_projection
         )
 
@@ -70,8 +70,8 @@ class GameView(arcade.View):
         self.physics_engine = None
 
         # Camera for sprites, and one for our GUI
-        self.camera_sprites = arcade.camera.Camera2D()
-        self.camera_gui = arcade.camera.Camera2D()
+        self.camera_sprites = arcade.Camera2D()
+        self.camera_gui = arcade.Camera2D()
         self.selected_camera = self.camera_minimap
 
         # texts

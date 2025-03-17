@@ -120,10 +120,10 @@ class GameView(arcade.Window):
         )
 
         # Initialize our camera, setting a viewport the size of our window.
-        self.camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
 
         # Initialize our gui camera, initial settings are the same as our world camera.
-        self.gui_camera = arcade.camera.Camera2D()
+        self.gui_camera = arcade.Camera2D()
 
         # Reset the score if we should
         if self.reset_score:

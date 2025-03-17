@@ -30,24 +30,29 @@ class ImportNode:
             return f"{name}.{self.name}"
         return self.name
 
-    def resolve(self, full_path: str) -> str:
+    def resolve(self, full_path: str, level=0) -> str | None:
         """Return the lowest import of a member in the tree."""
         name = full_path.split(".")[-1]
 
         # Find an import in this module likely to be the one we want.
         for imp in self.imports:
             if imp.name == name and imp.from_module in full_path:
+                print(f"Found: {imp.name} in {imp.module}")
                 return f"{imp.module}.{imp.name}"
 
         # Move on to children
         for child in self.children:
-            result = child.resolve(full_path)
+            print(f"Checking child: {child.name}")
+            result = child.resolve(full_path, level + 1)
             if result:
                 return result
 
-        # Return the full path if we can't find any relevant imports.
-        # It means the member is in a sub-module and are not importer anywhere.
-        return full_path
+        # We're back from recursing and didn't find anything.
+        if level == 0:
+            return full_path
+
+        # Nothing was found in this subtree.
+        return None
 
     def print_tree(self, depth=0):
         """Print the tree."""
@@ -137,4 +142,6 @@ if __name__ == "__main__":
     path = root.resolve("arcade.sprite.Sprite")
     print(path)
     path = root.resolve("arcade.camera.Camera2D")
+    print(path)
+    path = root.resolve("arcade.camera.data_types.Projector")
     print(path)

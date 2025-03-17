@@ -62,8 +62,8 @@ class GameView(arcade.View):
         self.physics_engine = None
 
         # Camera for sprites, and one for our GUI
-        self.camera_sprites = arcade.camera.Camera2D()
-        self.camera_gui = arcade.camera.Camera2D()
+        self.camera_sprites = arcade.Camera2D()
+        self.camera_gui = arcade.Camera2D()
 
     def setup(self):
         """ Set up the game and initialize the variables. """

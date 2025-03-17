@@ -249,7 +249,7 @@ class GameView(arcade.View):
         self.background_color = arcade.color.AMAZON
 
         # setup camera
-        self.camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
 
     def on_draw(self):
         """ Render the screen. """

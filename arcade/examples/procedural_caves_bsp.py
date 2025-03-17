@@ -287,8 +287,8 @@ class GameView(arcade.View):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.camera.Camera2D()
-        self.camera_gui = arcade.camera.Camera2D()
+        self.camera_sprites = arcade.Camera2D()
+        self.camera_gui = arcade.Camera2D()
 
         self.background_color = arcade.color.BLACK
 

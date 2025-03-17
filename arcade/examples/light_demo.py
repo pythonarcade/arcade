@@ -47,7 +47,7 @@ class GameView(arcade.View):
         self.physics_engine = None
 
         # Camera
-        self.camera: arcade.camera.Camera2D = None
+        self.camera: arcade.Camera2D = None
 
         # --- Light related ---
         # List of all the lights
@@ -59,7 +59,7 @@ class GameView(arcade.View):
         """ Create everything """
 
         # Create camera
-        self.camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
 
         # Create sprite lists
         self.background_sprite_list = arcade.SpriteList()

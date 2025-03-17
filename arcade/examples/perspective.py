@@ -112,7 +112,7 @@ class GameView(arcade.View):
         # Create a 2D camera for rendering to the fbo
         # by setting the camera's render target it will automatically
         # size and position itself correctly
-        self.offscreen_cam = arcade.camera.Camera2D(
+        self.offscreen_cam = arcade.Camera2D(
             render_target=self.fbo
         )
 

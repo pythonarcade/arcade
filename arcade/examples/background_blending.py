@@ -24,7 +24,7 @@ CAMERA_SPEED = 0.1
 class GameView(arcade.View):
     def __init__(self):
         super().__init__()
-        self.camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
 
         # Load the first background from file. Sized to match the screen
         self.background_1 = background.Background.from_file(

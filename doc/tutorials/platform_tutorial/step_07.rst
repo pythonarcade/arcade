@@ -7,7 +7,7 @@ Now that our player can move and jump around, we need to give them a way to expl
 beyond the original window. If you've ever played a platformer game, you might be familiar with the
 concept of the screen scrolling to reveal more of the map as the player moves.
 
-To achieve this, we can use a Camera. Since we are making a 2D game, ``arcade.camera.Camera2D`` will
+To achieve this, we can use a Camera. Since we are making a 2D game, :py:class:`~arcade.Camera2D` will
 be easiest.
 
 To start with, let's go ahead and add a variable in our ``__init__`` function to hold it:
@@ -20,9 +20,9 @@ Next we can go to our setup function, and initialize it like so:
 
 .. code-block::
 
-    self.camera = arcade.camera.Camera2D()
+    self.camera = arcade.Camera2D()
 
-Since we're drawing to the entire screen, we can use ``Camera2D``'s default settings.
+Since we're drawing to the entire screen, we can use :py:class:`~arcade.Camera2D`'s default settings.
 In other circumstances, we can create or adjust the camera so it has a different viewport.
 
 In order to use our camera when drawing things to the screen, we only need to add one line to our ``on_draw``

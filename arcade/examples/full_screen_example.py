@@ -43,7 +43,7 @@ class GameView(arcade.View):
         self.example_image = arcade.load_texture(":resources:images/tiles/boxCrate_double.png")
 
         # The camera used to update the viewport and projection on screen resize.
-        self.camera = arcade.camera.Camera2D(
+        self.camera = arcade.Camera2D(
             position=(0, 0),
             projection=LRBT(left=0, right=WINDOW_WIDTH, bottom=0, top=WINDOW_HEIGHT),
             viewport=self.window.rect
