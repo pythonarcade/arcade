@@ -130,4 +130,11 @@ def _parse_import_node_recursive(
 
 
 if __name__ == "__main__":
-    tree = build_import_tree(Path("arcade"))
+    # Basic testing. cwd: util/
+    root = build_import_tree(Path(__file__).parent.parent.parent.resolve() / "arcade")
+
+    # Check paths
+    path = root.resolve("arcade.sprite.Sprite")
+    print(path)
+    path = root.resolve("arcade.camera.Camera2D")
+    print(path)
