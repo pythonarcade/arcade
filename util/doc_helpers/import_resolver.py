@@ -33,19 +33,22 @@ class ImportNode:
     def resolve(self, full_path: str, level=0) -> str | None:
         """Return the lowest import of a member in the tree."""
         name = full_path.split(".")[-1]
+        modules = full_path.split(".")
 
         # Find an import in this module likely to be the one we want.
         for imp in self.imports:
             if imp.name == name and imp.from_module in full_path:
-                print(f"Found: {imp.name} in {imp.module}")
+                # print(f"Found: {imp.name} in {imp.module}")
                 return f"{imp.module}.{imp.name}"
 
         # Move on to children
+        module = modules[level + 1]
         for child in self.children:
-            print(f"Checking child: {child.name}")
-            result = child.resolve(full_path, level + 1)
-            if result:
-                return result
+            if child.name == module:
+                # print(f"Checking child: {child.name}")
+                result = child.resolve(full_path, level + 1)
+                if result:
+                    return result
 
         # We're back from recursing and didn't find anything.
         if level == 0:
