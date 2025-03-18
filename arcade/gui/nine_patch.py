@@ -123,7 +123,7 @@ class NinePatchTexture:
         Manually initialize the NinePatchTexture if it was lazy loaded.
         This has no effect if the NinePatchTexture was already initialized.
         """
-        if self._initialized:
+        if not self._initialized:
             self._init_deferred()
 
     @property
