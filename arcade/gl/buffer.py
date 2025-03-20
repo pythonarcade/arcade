@@ -249,10 +249,10 @@ class Buffer:
         it will be deallocated by OpenGL when completed.
 
         Args:
-            size: (optional)
+            size:
                 New size of buffer. -1 will retain the current size.
                 Takes precedence over ``double`` parameter if specified.
-            double (optional):
+            double:
                 Is passed in with `True` the buffer size will be doubled
                 from its current size.
         """

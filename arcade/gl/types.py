@@ -166,9 +166,9 @@ class AttribFormat:
             The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
         bytes_per_component:
             Number of bytes for a single component
-        offset (optional):
+        offset:
             Offset for BufferDescription
-        location (optional):
+        location:
             Location for program attribute
     """
 

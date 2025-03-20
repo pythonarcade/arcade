@@ -56,7 +56,7 @@ class Texture2D:
         dtype:
             The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
         data:
-            The texture data (optional). Can be bytes or any object supporting
+            The texture data. Can be bytes or any object supporting
             the buffer protocol.
         filter:
             The minification/magnification filter of the texture
