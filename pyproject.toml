@@ -20,7 +20,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "pyglet~=2.1.0",
+    "pyglet~=2.1.3",
     "pillow~=11.0.0",
     "pymunk~=6.9.0",
     "pytiled-parser~=2.2.9",
@@ -113,10 +113,7 @@ lint.select = [
 
 [tool.ruff.format]
 docstring-code-format = false
-exclude = [
-    "arcade/examples/*",
-    "benchmarks/*",
-]
+exclude = ["arcade/examples/*", "benchmarks/*"]
 
 # This ignores __init__.py files and examples for import sorting
 [tool.ruff.lint.per-file-ignores]

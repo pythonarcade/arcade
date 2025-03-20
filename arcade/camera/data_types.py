@@ -417,15 +417,14 @@ class Projector(Protocol):
            :py:attr:`~arcade.Window.current_camera` to this object
         #. Calculate any required view and projection matrices
         #. Set any resulting values on the current
-           :py:class:`~arcade.context.ArcadeContext`, including the:
+           :py:class:`~arcade.ArcadeContext`, including the:
 
-           * :py:attr:`~arcade.context.ArcadeContext.viewport`
-           * :py:attr:`~arcade.context.ArcadeContext.view_matrix`
-           * :py:attr:`~arcade.context.ArcadeContext.projection_matrix`
+           * :py:attr:`~arcade.ArcadeContext.viewport`
+           * :py:attr:`~arcade.ArcadeContext.view_matrix`
+           * :py:attr:`~arcade.ArcadeContext.projection_matrix`
 
         This method should **never** handle cleanup. That is the
         responsibility of :py:attr:`.activate`.
-
         """
         ...
 

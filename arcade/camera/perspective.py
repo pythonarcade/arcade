@@ -108,7 +108,7 @@ class PerspectiveProjector(Projector):
         """Generates a projection matrix.
 
         This is an alias of
-        :py:class:`arcade.camera.get_perspective_matrix`.
+        :py:meth:`generate_perspective_matrix`.
         """
         return generate_perspective_matrix(self._projection, self._view.zoom)
 
@@ -116,7 +116,7 @@ class PerspectiveProjector(Projector):
         """Generates a view matrix.
 
         This is an alias of=
-        :py:class:`arcade.camera.get_view_matrix`.
+        :py:meth:`generate_view_matrix`.
         """
         return generate_view_matrix(self._view)
 
