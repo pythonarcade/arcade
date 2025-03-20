@@ -49,5 +49,6 @@ directory (git).
    sampler
    utils
    exceptions
+   types
 
 .. _ModernGL: https://github.com/moderngl/moderngl
