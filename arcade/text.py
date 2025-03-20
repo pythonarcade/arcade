@@ -204,25 +204,25 @@ class Text:
         text: Initial text to display. Can be an empty string
         x: x position to align the text's anchor point with
         y: y position to align the text's anchor point with
-        z (optional): z position to align the text's anchor point with
-        color (optional): Color of the text as an RGBA tuple or a
+        z: z position to align the text's anchor point with
+        color: Color of the text as an RGBA tuple or a
             :py:class:`~arcade.types.Color` instance.
-        font_size (optional): Size of the text in points
-        width (optional): A width limit in pixels
-        align (optional): Horizontal alignment; values other than "left" require width to be set.
+        font_size: Size of the text in points
+        width: A width limit in pixels
+        align: Horizontal alignment; values other than "left" require width to be set.
             Valid options: ``"left"``, ``"center"``, ``"right"``.
-        font_name (optional): A font name, path to a font file, or list of names
-        bold (optional): Whether to draw the text as bold, and if a string,
+        font_name: A font name, path to a font file, or list of names
+        bold: Whether to draw the text as bold, and if a string,
               how bold. See :py:attr:`.bold` to learn more.
-        italic (optional): Whether to draw the text as italic
-        anchor_x (optional): How to calculate the anchor point's x coordinate.
+        italic: Whether to draw the text as italic
+        anchor_x: How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
-        anchor_y (optional): How to calculate the anchor point's y coordinate.
+        anchor_y: How to calculate the anchor point's y coordinate.
                   Options: "top", "bottom", "center", or "baseline".
-        multiline (optional): Requires width to be set; enables word wrap rather than clipping
-        rotation (optional): rotation in degrees, clockwise from horizontal
-        batch (optional): The batch to add the text to (for batch rendering text)
-        group (optional): The specific group in a a batch to add the text to
+        multiline: Requires width to be set; enables word wrap rather than clipping
+        rotation: rotation in degrees, clockwise from horizontal
+        batch: The batch to add the text to (for batch rendering text)
+        group: The specific group in a a batch to add the text to
             (for batch rendering text)
 
     All constructor arguments other than ``text`` have a corresponding
@@ -738,19 +738,19 @@ def create_text_sprite(
 
     Args:
         text: Initial text to display. Can be an empty string
-        color (optional): Color of the text as an RGBA tuple or a
+        color: Color of the text as an RGBA tuple or a
             :py:class:`~arcade.types.Color` instance.
-        font_size (optional): Size of the text in points
-        width (optional): A width limit in pixels
-        align (optional): Horizontal alignment; values other than "left" require width to be set.
+        font_size: Size of the text in points
+        width: A width limit in pixels
+        align: Horizontal alignment; values other than "left" require width to be set.
             Valid options: ``"left"``, ``"center"``, ``"right"``.
-        font_name (optional): A font name, path to a font file, or list of names
-        bold (optional): Whether to draw the text as bold, and if a string,
+        font_name: A font name, path to a font file, or list of names
+        bold: Whether to draw the text as bold, and if a string,
               how bold. See :py:attr:`arcade.gui.widgets.text.bold` to learn more.
-        italic (optional): Whether to draw the text as italic
-        anchor_x (optional): How to calculate the anchor point's x coordinate.
+        italic: Whether to draw the text as italic
+        anchor_x: How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
-        multiline (optional): Requires width to be set; enables word wrap rather than clipping
+        multiline: Requires width to be set; enables word wrap rather than clipping
         background_color: The background color of the text. If None, the background
             will be transparent.
         texture_atlas: The texture atlas to use for the
@@ -843,23 +843,23 @@ def draw_text(
         text: Initial text to display. Can be an empty string
         x: x position to align the text's anchor point with
         y: y position to align the text's anchor point with
-        z (optional): z position to align the text's anchor point with
-        color (optional): Color of the text as an RGBA tuple or a
+        z: z position to align the text's anchor point with
+        color: Color of the text as an RGBA tuple or a
             :py:class:`~arcade.types.Color` instance.
-        font_size (optional): Size of the text in points
-        width (optional): A width limit in pixels
-        align (optional): Horizontal alignment; values other than "left" require width to be set.
+        font_size: Size of the text in points
+        width: A width limit in pixels
+        align: Horizontal alignment; values other than "left" require width to be set.
             Valid options: ``"left"``, ``"center"``, ``"right"``.
-        font_name (optional): A font name, path to a font file, or list of names
-        bold (optional): Whether to draw the text as bold, and if a string,
+        font_name: A font name, path to a font file, or list of names
+        bold: Whether to draw the text as bold, and if a string,
               how bold. See :py:attr:`arcade.gui.widgets.text.bold` to learn more.
-        italic (optional): Whether to draw the text as italic
-        anchor_x (optional): How to calculate the anchor point's x coordinate.
+        italic: Whether to draw the text as italic
+        anchor_x: How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
-        anchor_y (optional): How to calculate the anchor point's y coordinate.
+        anchor_y: How to calculate the anchor point's y coordinate.
                   Options: "top", "bottom", "center", or "baseline".
-        multiline (optional): Requires width to be set; enables word wrap rather than clipping
-        rotation (optional): rotation in degrees, clockwise from horizontal
+        multiline: Requires width to be set; enables word wrap rather than clipping
+        rotation: rotation in degrees, clockwise from horizontal
 
     By default, the text is placed so that:
 

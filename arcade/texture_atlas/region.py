@@ -48,7 +48,7 @@ class AtlasRegion:
             The width of the texture in pixels
         height:
             The height of the texture in pixels
-        texture_coordinates (optional):
+        texture_coordinates:
             The texture coordinates for this region.
             If not provided, they will be calculated.
     """

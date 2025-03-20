@@ -28,8 +28,8 @@ class SpriteSheet:
     (0, 0) in the upper left corner. This matches the coordinate system used by PIL.
 
     Args:
-        path (optional) Path to the image to load.
-        image (optional): PIL image to use.
+        path Path to the image to load.
+        image: PIL image to use.
     """
 
     def __init__(

@@ -143,7 +143,7 @@ class TextureCacheManager:
                 Path to the sprite sheet image
             rect:
                 Slice of the texture in the sprite sheet.
-            hit_box_algorithm (optional):
+            hit_box_algorithm:
                 Hit box algorithm to use. If not specified, the global default will be used.
         """
         real_path = self._get_real_path(path)
@@ -216,15 +216,15 @@ class TextureCacheManager:
         Args:
             file_path:
                 Path to the image file.
-            x (optional):
+            x:
                 X coordinate of the texture in the image.
-            y (optional):
+            y:
                 Y coordinate of the texture in the image.
-            width (optional):
+            width:
                 Width of the texture in the image.
-            height (optional):
+            height:
                 Height of the texture in the image.
-            hit_box_algorithm (optional):
+            hit_box_algorithm:
                 The hit box algorithm to use for this texture. If not specified,
                 the global default will be used.
         """

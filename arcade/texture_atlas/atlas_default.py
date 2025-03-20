@@ -87,11 +87,11 @@ class DefaultTextureAtlas(TextureAtlasBase):
             The number of edge pixels to repeat around images in the atlas.
             This kind of padding is important to avoid edge artifacts.
             Default is 1 pixel.
-        textures (optional):
+        textures:
             Optional sequence of textures to add to the atlas on creation
         auto_resize:
             Automatically resize the atlas when full. Default is ``True``.
-        ctx (optional):
+        ctx:
             The context for this atlas (will use window context if left empty)
         capacity:
             The number of textures the atlas keeps track of.

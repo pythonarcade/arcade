@@ -29,14 +29,16 @@ class Section:
         width: the width of this section
         height: the height of this section
         name: the name of this section
-        bool | Iterable accept_keyboard_keys: whether this section
-            captures keyboard keys through. keyboard events. If the param is an iterable
-            means the keyboard keys that are captured in press/release events:
-            for example: ``[arcade.key.UP, arcade.key.DOWN]`` will only capture this two keys
-        bool  Iterable accept_mouse_events: whether this section
-            captures mouse events. If the param is an iterable means the mouse events
-            that are captured. for example: ``['on_mouse_press', 'on_mouse_release']``
-            will only capture this two events.
+        accept_keyboard_keys:
+            bool | Iterable accept_keyboard_keys: whether this section
+                captures keyboard keys through. keyboard events. If the param is an iterable
+                means the keyboard keys that are captured in press/release events:
+                for example: ``[arcade.key.UP, arcade.key.DOWN]`` will only capture this two keys
+        accept_mouse_events:
+            bool  Iterable accept_mouse_events: whether this section
+                captures mouse events. If the param is an iterable means the mouse events
+                that are captured. for example: ``['on_mouse_press', 'on_mouse_release']``
+                will only capture this two events.
         prevent_dispatch: a list of event names that will not be dispatched to subsequent
             sections. You can pass None (default) or {True} to prevent the dispatch of all events.
         prevent_dispatch_view: a list of event names that will not be dispatched to the view.

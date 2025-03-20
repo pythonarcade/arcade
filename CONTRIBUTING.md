@@ -103,7 +103,7 @@ The minium for docstrings is covering all parameters in an `Args:` block.
 Args:
     width: The width of something
     height: The height of something
-    title (optional): The title of something
+    title: The title of something
 ```
 
 * `Args:` should be used for all parameters
@@ -115,7 +115,6 @@ Args:
 * `Attributes:` we should try to avoid it and instead document the attributes in the code
 * Types are visible in the api docs. It's not mandatory to include types in docstring,
   however, simple types like `int`, `str`, `float`, `bool` can be included.
-* Using `optional` is a good way to indicate that a parameter is optional.
 * Properties and attribute docs don't need a type when this is already clear from
   type or return annotation.
 

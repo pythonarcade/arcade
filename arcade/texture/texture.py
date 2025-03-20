@@ -436,9 +436,9 @@ class Texture:
                 and uniqueness in texture atlases.
             size:
                 The xy size of the internal image
-            color (optional):
+            color:
                 The color to fill the texture with
-            hit_box_points (optional):
+            hit_box_points:
                 A list of hitbox points for the texture
         """
         return Texture(

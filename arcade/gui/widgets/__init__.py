@@ -396,9 +396,9 @@ class UIWidget(EventDispatcher, ABC):
         """Resizes the widget.
 
         Args:
-            width (optional): new width
-            height (optional): new height
-            anchor (optional): anchor point for resizing, default is center
+            width: new width
+            height: new height
+            anchor: anchor point for resizing, default is center
         """
         self.rect = self.rect.resize(width=width, height=height, anchor=anchor)
 

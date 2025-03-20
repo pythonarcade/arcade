@@ -86,51 +86,51 @@ class Window(pyglet.window.Window):
     .. _pyglet_pg_window_style: https://pyglet.readthedocs.io/en/latest/programming_guide/windowing.html#window-style
 
     Args:
-        width (optional):
+        width:
             Window width. Defaults to 1280.
-        height (optional):
+        height:
             Window height. Defaults to 720.
-        title (optional):
+        title:
             The title/caption of the window
-        fullscreen (optional):
+        fullscreen:
             Should this be full screen?
-        resizable (optional):
+        resizable:
             Can the user resize the window?
-        update_rate (optional):
+        update_rate:
             How frequently to run the on_update event.
-        draw_rate (optional):
+        draw_rate:
             How frequently to run the on_draw event. (this is the FPS limit)
-        fixed_rate (optional):
+        fixed_rate:
             How frequently should the fixed_updates run,
             fixed updates will always run at this rate.
-        fixed_frame_cap (optional):
+        fixed_frame_cap:
             The maximum number of fixed updates that can occur in one update loop.
             defaults to infinite. If large lag spikes cause your game to freeze,
             try setting this to a smaller number. This may cause your physics to
             lag behind temporarily.
-        antialiasing (optional):
+        antialiasing:
             Use multisampling framebuffer (antialiasing)
         samples: Number of samples used in antialiasing (default 4).
             Usually this is 2, 4, 8 or 16.
-        gl_version (optional): What OpenGL version to request.
+        gl_version: What OpenGL version to request.
             This is ``(3, 3)`` by default and can be overridden when using more
             advanced OpenGL features.
-        screen (optional): Pass a pyglet :py:class:`~pyglet.display.Screen` to
+        screen: Pass a pyglet :py:class:`~pyglet.display.Screen` to
             request the window be placed on it. See `pyglet's window size &
             position guide <pyglet_pg_window_size_position_>`_ to learn more.
-        style (optional): Request a non-default window style, such as borderless.
+        style: Request a non-default window style, such as borderless.
             Some styles only work in certain situations. See `pyglet's guide
             to window style <pyglet_pg_window_style_>`_ to learn more.
-        visible (optional):
+        visible:
             Should the window be visible immediately
-        vsync (optional):
+        vsync:
             Wait for vertical screen refresh before swapping buffer
             This can make animations and movement look smoother.
-        gc_mode (optional): Decides how OpenGL objects should be garbage collected
+        gc_mode: Decides how OpenGL objects should be garbage collected
             ("context_gc" (default) or "auto")
-        center_window (optional):
+        center_window:
             If true, will center the window.
-        enable_polling (optional):
+        enable_polling:
             Enabled input polling capability.
             This makes the :py:attr:`keyboard` and :py:attr:`mouse` attributes available for use.
 
@@ -356,17 +356,17 @@ class Window(pyglet.window.Window):
         set through :py:attr:`~arcade.Window.background_color`.
 
         Args:
-            color (optional):
+            color:
                 Override the current background color with one of the following:
 
                 1. A :py:class:`~arcade.types.Color` instance
                 2. A 3 or 4-length RGB/RGBA :py:class:`tuple` of byte values (0 to 255)
 
-            color_normalized (optional):
+            color_normalized:
                 override the current background color using normalized values (0.0 to 1.0).
                 For example, (1.0, 0.0, 0.0, 1.0) making the window contents red.
 
-            viewport (optional):
+            viewport:
                 The area of the window to clear. By default, the entire window is cleared.
                 The viewport format is ``(x, y, width, height)``.
         """
@@ -455,19 +455,19 @@ class Window(pyglet.window.Window):
         to the size it was before entering fullscreen mode.
 
         Args:
-            fullscreen (optional):
+            fullscreen:
                 Should we enter or leave fullscreen mode?
-            screen (optional):
+            screen:
                 Which screen should we display on? See :func:`get_screens`
-            mode (optional):
+            mode:
                 The screen will be switched to the given mode.  The mode must
                 have been obtained by enumerating `Screen.get_modes`.  If
                 None, an appropriate mode will be selected from the given
                 `width` and `height`.
-            width (optional):
-                Override the width of the window. Will be rounded to :py:attr:`int`.
-            height (optional):
-                Override the height of the window. Will be rounded to :py:attr:`int`.
+            width:
+                Override the width of the window. Will be rounded to :py:class:`int`.
+            height:
+                Override the height of the window. Will be rounded to :py:class:`int`.
         """
         # fmt: off
         super().set_fullscreen(
@@ -1280,7 +1280,7 @@ class View:
     and a game over screen. Each of these could be a different view.
 
     Args:
-        window (optional):
+        window:
             The window this view is associated with. If None, the current
             window is used. (Normally you don't need to provide this).
     """
@@ -1304,15 +1304,15 @@ class View:
         set through :py:attr:`arcade.View.background_color`.
 
         Args:
-            color(optional):
+            color:
                 override the current background color with one of the following:
 
                 1. A :py:class:`~arcade.types.Color` instance
                 2. A 3 or 4-length RGB/RGBA :py:class:`tuple` of byte values (0 to 255)
-            color_normalized (optional):
+            color_normalized:
                 Override the current background color using normalized values (0.0 to 1.0).
                 For example, (1.0, 0.0, 0.0, 1.0) making the window contents red.
-            viewport (optional):
+            viewport:
                 The viewport range to clear
         """
         if color is None and color_normalized is None:

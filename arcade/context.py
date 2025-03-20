@@ -358,23 +358,23 @@ class ArcadeContext(Context):
         Args:
             vertex_shader:
                 Path to the vertex shader.
-            fragment_shader (optional):
-                Path to the fragment shader (optional).
-            geometry_shader (optional):
-                Path to the geometry shader (optional).
-            tess_control_shader (optional):
+            fragment_shader:
+                Path to the fragment shader.
+            geometry_shader:
+                Path to the geometry shader.
+            tess_control_shader:
                 Tessellation Control Shader.
-            tess_evaluation_shader (optional):
+            tess_evaluation_shader:
                 Tessellation Evaluation Shader.
-            common (optional):
+            common:
                 Common files to be included in all shaders.
-            defines (optional):
+            defines:
                 Substitute `#define` values in the source.
-            varyings (optional):
+            varyings:
                 The name of the out attributes in a transform shader.
                 This is normally not necessary since we auto detect them,
                 but some more complex out structures we can't detect.
-            varyings_capture_mode (optional):
+            varyings_capture_mode:
                 The capture mode for transforms.
 
                 Based on these settings, the `transform()` method will accept a single
@@ -435,7 +435,7 @@ class ArcadeContext(Context):
         Args:
             path:
                 Path to texture
-            common (optional):
+            common:
                 Common sources injected into compute shader
         """
         from arcade.resources import resolve
@@ -492,13 +492,13 @@ class ArcadeContext(Context):
                 The min and mag filter. Default is ``None``.
             build_mipmaps:
                 Build mipmaps for the texture. Default is ``False``.
-            internal_format (optional):
+            internal_format:
                 The internal format of the texture. This can be used to override
                 the default internal format when using sRGBA or compressed textures.
-            immutable (optional):
+            immutable:
                 Make the storage (not the contents) immutable. This can sometimes be
                 required when using textures with compute shaders.
-            compressed (optional):
+            compressed:
                 If the internal format is a compressed format meaning your
                 texture will be compressed by the GPU.
         """
