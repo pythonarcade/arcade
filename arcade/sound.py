@@ -71,6 +71,9 @@ class Sound:
         self.file_name = str(file_name)
 
         self.source: Source = media.load(self.file_name, streaming=streaming)
+        """
+        The :py:class:`pyglet.media.Source` object that holds the audio data.
+        """
 
         if self.source.duration is None:
             raise ValueError(
