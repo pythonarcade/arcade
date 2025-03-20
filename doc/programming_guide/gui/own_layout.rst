@@ -20,7 +20,7 @@ The main method you need to implement is:
 
 - :meth:`arcade.gui.UILayout.do_layout` - This method is called to layout the child widgets.
 
-Widgets added to the layout are accessible via the :attr:`arcade.gui.UILayout._children` attribute,
+Widgets added to the layout are accessible via the ``arcade.gui.UILayout._children`` attribute,
 which is a list of all added widgets with the parameter provided when added.
 
 Children should be placed within the bounds of the layout.
@@ -36,5 +36,3 @@ Example `CircleLayout`
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. literalinclude:: ../../../arcade/examples/gui/own_layout.py
-
-

@@ -29,6 +29,9 @@ class UIView(View):
     def __init__(self):
         super().__init__()
         self.ui = UIManager()
+        """
+        The UIManager of this view.
+        """
 
     def add_widget(self, widget: W) -> W:
         """Add a widget to the UIManager of this view."""

@@ -8,7 +8,7 @@ The GUI is structured like a tree; every widget can have other widgets as
 children.
 
 The root of the tree is the :py:class:`~arcade.gui.UIManager`. The
-:py:class:`UIManager` connects the user interactions with the GUI. Read more about
+:py:class:`~arcade.gui.UIManager` connects the user interactions with the GUI. Read more about
 :ref:`UIEvent`.
 
 Classes of Arcade's GUI code are prefixed with ``UI-`` to make them easy to
@@ -41,7 +41,6 @@ via the :py:attr:`~arcade.gui.UIView.ui` attribute.
 It automatically enables and disables the
 :py:class:`~arcade.gui.UIManager` when the view is shown or hidden.
 
-
 UIWidget
 ````````
 
@@ -52,14 +51,14 @@ such as buttons or labels.
 User interaction with widgets is processed within :py:meth:`~arcade.gui.UIWidget.on_event`.
 
 
-A :class:`UIWidget` has following properties.
+A :class:`~arcade.gui.UIWidget` has following properties.
 
 ``rect``
     A tuple with four slots. The first two are x and y coordinates (bottom
     left of the widget), and the last two are width and height.
 
 ``children``
-    Child widgets rendered within this widget. A :class:`UIWidget` will not
+    Child widgets rendered within this widget. A :class:`~arcade.gui.UIWidget` will not
     move or resize its children; use a :py:class:`~arcade.gui.UILayout`
     instead.
 
@@ -84,17 +83,17 @@ A :class:`UIWidget` has following properties.
 
 ``size_hint_min``
     A tuple of two integers defining the minimum width and height of the
-    widget. These values should be taken into account by :class:`UILayout` when
+    widget. These values should be taken into account by :class:`~arcade.gui.UILayout` when
     a ``size_hint`` is given for the axis.
 
 ``size_hint_max``
     A tuple of two integers defining the maximum width and height of the
-    widget. These values should be taken into account by :class:`UILayout` when
+    widget. These values should be taken into account by :class:`~arcade.gui.UILayout` when
     a ``size_hint`` is given for the axis.
 
 .. warning:: Size hints do nothing on their own!
 
-    They are hints to :class:`UILayout` instances, which may choose to use or
+    They are hints to :class:`~arcade.gui.UILayout` instances, which may choose to use or
     ignore them.
 
 UILayout
@@ -168,8 +167,8 @@ changes only once.
 
 **Example**: Executed steps within :py:class:`~arcade.gui.UIBoxLayout`:
 
-1. :py:meth:`~arcade.UIBoxLayout.prepare_layout` updates own size_hints
-2. :py:meth:`~arcade.UIBoxLayout.do_layout`
+1. :py:meth:`~arcade.gui.UIBoxLayout.prepare_layout` updates own size_hints
+2. :py:meth:`~arcade.gui.UIBoxLayout.do_layout`
     1. Collect current ``size``, ``size_hint``, ``size_hint_min`` of children
     2. Calculate the new position and sizes
     3. Set position and size of children
@@ -222,17 +221,17 @@ changes only once.
 Size hint support
 ^^^^^^^^^^^^^^^^^
 
-+--------------------------+------------+----------------+----------------+
-|                          | size_hint  | size_hint_min  | size_hint_max  |
-+==========================+============+================+================+
-| :class:`UIAnchorLayout`  | X          | X              | X              |
-+--------------------------+------------+----------------+----------------+
-| :class:`UIBoxLayout`     | X          | X              | X              |
-+--------------------------+------------+----------------+----------------+
-| :class:`UIGridLayout`    | X          | X              | X              |
-+--------------------------+------------+----------------+----------------+
-| :class:`UIManager`       | X          | X              | X              |
-+--------------------------+------------+----------------+----------------+
++--------------------------------------+------------+----------------+----------------+
+|                                      | size_hint  | size_hint_min  | size_hint_max  |
++======================================+============+================+================+
+| :class:`~arcade.gui.UIAnchorLayout`  | X          | X              | X              |
++--------------------------------------+------------+----------------+----------------+
+| :class:`~arcade.gui.UIBoxLayout`     | X          | X              | X              |
++--------------------------------------+------------+----------------+----------------+
+| :class:`~arcade.gui.UIGridLayout`    | X          | X              | X              |
++--------------------------------------+------------+----------------+----------------+
+| :class:`~arcade.gui.UIManager`       | X          | X              | X              |
++--------------------------------------+------------+----------------+----------------+
 
 UIMixin
 =======
@@ -242,9 +241,9 @@ behaviour. Currently the available Mixins are still under heavy development.
 
 Available:
 
-- :py:class:`UIDraggableMixin` - Makes a widget draggable with the mouse.
-- :py:class:`UIMouseFilterMixin` - Captures all mouse events.
-- :py:class:`UIWindowLikeMixin` - Makes a widget behave like a window, combining draggable and mouse filter behaviour.
+- :py:class:`~arcade.gui.UIDraggableMixin` - Makes a widget draggable with the mouse.
+- :py:class:`~arcade.gui.UIMouseFilterMixin` - Captures all mouse events.
+- :py:class:`~arcade.gui.UIWindowLikeMixin` - Makes a widget behave like a window, combining draggable and mouse filter behaviour.
 
 UIConstructs
 ============
@@ -253,8 +252,8 @@ Constructs are predefined structures of widgets and layouts like a message box.
 
 Available:
 
-- :py:class:`UIMessageBox` - A simple message box with a title, message and buttons.
-- :py:class:`UIButtonRow` - A row of buttons.
+- :py:class:`~arcade.gui.UIMessageBox` - A simple message box with a title, message and buttons.
+- :py:class:`arcade.gui.UIButtonRow` - A row of buttons.
 
 Available Elements
 ==================
@@ -273,7 +272,7 @@ can use the :py:attr:`~arcade.gui.UITextWidget.ui_label` attribute to get the
 Flat button
 ^^^^^^^^^^^
 
-**Name**: :py:class:`~arcade.gui.FlatButton`
+**Name**: :py:class:`~arcade.gui.UIFlatButton`
 
 A flat button for simple interactions (hover, press, release, click). This
 button is created with a simple rectangle. Flat buttons can quickly create a
@@ -373,14 +372,14 @@ parameters. ``bold`` and ``italic`` will set the text to bold or italic.
 ``align`` specifies the justification of the text. Additionally it takes
 ``font_name``, ``font_size``, and ``text_color`` options.
 
-Using the :py:attr:`~arcade.gui.UILabel.label` property accesses the internal
+Using the :py:attr:`~arcade.gui.UILabel`'s ``_label`` property accesses the internal
 :py:class:`~arcade.Text` class. 
 
 .. hint::
     A :py:attr:`~arcade.gui.UILabel.text` attribute can modify the displayed
     text. Beware-calling this again and again will give a lot of lag. Use
-    :py:meth:`~arcade.Text.begin_update` and py:meth:`~arcade.Text.end_update`
-    to speed things up.
+    :py:meth:`~arcade.Text.__enter__` through the ``with`` statement to speed
+    things up multiple changes to text instances.
 
 Text input field
 ^^^^^^^^^^^^^^^^
@@ -426,7 +425,7 @@ Arcade's GUI events are fully typed dataclasses, which provide information
 about an event affecting the UI.
 
 All pyglet window events are converted by the
-:py:class:`~arcade.gui.UIManager` into :class:`UIEvents` and passed via
+:py:class:`~arcade.gui.UIManager` into :class:`~arcade.gui.UIEvent` and passed via
 :py:meth:`~pyglet.event.EventDispatcher.dispatch_event` to the
 :py:meth:`~arcade.gui.UIWidget.on_event` callbacks.
 
@@ -513,7 +512,7 @@ Different event systems
 
 Arcade's GUI uses different event systems, dependent on the required flow. A
 game developer should mostly interact with user-interface events, which are
-dispatched from specific :py:class:`~arcade.gui.UIWidget`s like an ``on_click``
+dispatched from a specific :py:class:`~arcade.gui.UIWidget` like an ``on_click``
 of a button.
 
 In cases where a developer implement own widgets themselves or want to

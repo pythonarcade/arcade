@@ -152,14 +152,14 @@ The first way to play it is passing it to :py:func:`arcade.play_sound`:
 We store the return value because it is a special object which lets us
 control this specific playback of the :py:class:`Sound` data.
 
-.. important:: You **must** pass a :py:class:`Sound`, not a path!
+.. important:: You **must** pass a :py:class:`~arcade.Sound`, not a path!
 
                If you pass :py:func:`arcade.play_sound` anything other
                than a :py:class:`Sound` or ``None``, it will raise a
                :py:class:`TypeError`.
 
-To avoid making this mistake, you can call the :py:class:`Sound`
-data's :py:meth:`Sound.play` method instead:
+To avoid making this mistake, you can call the :py:class:`~arcade.Sound`
+data's :py:meth:`~arcade.Sound.play` method instead:
 
 .. code-block:: python
 
