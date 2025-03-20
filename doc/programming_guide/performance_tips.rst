@@ -35,7 +35,7 @@ The Simplest Solutions are Slow
 """""""""""""""""""""""""""""""
 
 The simplest approach is a for loop over every wall. Even if the hitboxes
-of both the player and the ground :py:class:`Sprite` objects are squares,
+of both the player and the ground :py:class:`~arcade.Sprite` objects are squares,
 it will still be a lot of work.
 
 Game developers often use **Big O** notation to describe:
@@ -79,7 +79,7 @@ Which should I use?
 
 .. [#]
    Arcade's non-PyMunk physics both engines assume it will be enabled
-   for any :py:class:`~arcade.sprite_list.SpriteList` provided via their
+   for any :py:class:`~arcade.SpriteList` provided via their
    ``walls`` argument.
 
 .. _collision_detection_performance_hashing:
@@ -88,7 +88,7 @@ Spatial Hashing
 ^^^^^^^^^^^^^^^
 
 **Spatial hashing** is meant for collision checking sprites
-against a :py:class:`~arcade.sprite_list.SpriteList` of
+against a :py:class:`~arcade.SpriteList` of
 **non-moving** sprites:
 
 * checking collisions against hashed sprites becomes much faster
@@ -99,14 +99,14 @@ uses a **hash map** (:py:class:`dict`) of grid square coordinates to lists
 of :py:class:`~arcade.Sprite` objects in each square.
 
 How does this help us? We may need as few as zero hitbox checks to collide
-a given sprite against a :py:class:`~arcade.sprite_list.SpriteList`. Yes,
+a given sprite against a :py:class:`~arcade.SpriteList`. Yes,
 **zero**:
 
 .. image:: images/spatial_hash_grid_mockup.png
    :alt: A blue bird is alone in its own grid square.
 
 #. The sand-colored ground consists of sprites in a
-   :py:class:`~arcade.sprite_list.SpriteList` with spatial hashing enabled
+   :py:class:`~arcade.SpriteList` with spatial hashing enabled
 #. The bright green lines show the grid square boundaries
 #. The moving sprites are the blue bird and the red angry faces
 
@@ -131,12 +131,12 @@ Enabling Spatial Hashing
 """"""""""""""""""""""""
 
 The best way to enable spatial hashing on a
-:py:class:`~arcade.sprite_list.SpriteList` is before anything else,
+:py:class:`~arcade.SpriteList` is before anything else,
 especially before gameplay.
 
 The simplest way is passing ``use_spatial_hash=True`` when creating
 and storing the list inside a :py:class:`~arcade.Window` or
-:py:class:`~arcade.view.View`:
+:py:class:`~arcade.View`:
 
 .. code-block:: python
 
@@ -260,7 +260,7 @@ The rest of this section will cover how to avoid that.
 Drawing Shapes
 ^^^^^^^^^^^^^^
 
-The :py:mod:`arcade.draw` module is slow despite being convenient.
+The ``arcade.draw_*`` functions are slow despite being convenient.
 
 This is because it does not perform batched drawing. Instead of sending batches
 of shapes to draw, it sends them individually.
