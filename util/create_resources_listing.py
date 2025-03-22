@@ -649,6 +649,71 @@ def do_filetile(out, suffix: str | None = None, state: str = None):
                      f"   <img class=\"resource-thumb\" src=\"{src_kludge('/_static/filetiles/' + name)}\"/>\n\n"))
 
 
+# pending: a fix for Pillow / Sphinx interactions?
+def read_image_size(path: Path | str) -> tuple[int, int]:
+    """Get the size of a raster image and close the file.
+
+    This function ensures Sphinx does not break ``with``
+    blocks using  :py:func:`PIL.Image.open`:
+
+    Pillow makes assumptions about streams which Sphinx
+    may interfere with:
+
+    #. Pillow assumes things about stream read / write
+    #. Sphinx sometimes changes stream read / write global
+    #. This makes :py:func:`PIL.Image.open` fail to close files
+    #. Python 3.11+ reports unclosed files with warning
+
+    This is where the problem begins:
+
+    * When nitpicky mode is off, the logs are filled with noise
+    * When it is on, build can break
+
+    The fix below is good-enough to get build running. To dive
+    deper, start with these:
+
+    #. Pillow dislikes things which alter stream read/write
+       (See https://github.com/python-pillow/Pillow/issues/2760)
+    #. Sphinx overrides logging stream handling
+       (See https://www.sphinx-doc.org/en/master/extdev/logging.html#sphinx.util.logging.getLogger)
+
+    Args:
+        path: A path to an image file to read the size of.
+
+    Returns:
+        A ``(width, height)`` tuple of the image size.
+    """
+    # Isolating this in a function prevents Sphinx and other
+    # "magic" stream things from breaking the context manager.
+    # If you care to investigate, see the docstring's links.
+    with PIL.Image.open(path) as im:
+        return im.size
+
+
+def read_size_info(path: Path) -> str:
+    """Cleanliness wrapper for reading image sizes.
+
+    #. SVGs say they are SVGs
+    #. Raster graphics report pixel size
+    #. All else says it couldn't get size info.
+
+    Args:
+        path: A path to an image file.
+
+    Returns:
+        The formatted size info as either dimensions or
+        another status string.
+    """
+    if path.suffix == ".svg":
+        return "Scalable Vector Graphic"
+
+    elif (pair := read_image_size(path)):
+        width, height = pair
+        return f"{width} px x {height} px"
+
+    return "Could not read size info"
+
+
 def process_resource_files(
         out,
         file_list: List[Path],
@@ -707,18 +772,12 @@ def process_resource_files(
             #out.write(indent("        ", tile_rst_code))
 
             size_info = None
-            if suffix == ".svg":
-                size_info = "Scalable Vector Graphic"
-            else:
-                try:
-                    im = PIL.Image.open(path)
-                    im_width, im_height = im.size
-                    size_info = f"{im_width}px x {im_height}px"
-                except Exception as e:
-                    log.warning(f"FAILED to read size info for {path}:\n {e}")
+            try:
+                size_info = read_size_info(path)
+            except Exception as e:
+                log.warning(f"FAILED to read size info for {path}:\n {e}")
 
-            if size_info is None:
-                size_info = "Could not read size info"
+
             parts.append(f"*({size_info})*\n")
             out.write(indent("        ", '\n'.join(parts)))
             out.write("\n\n")
