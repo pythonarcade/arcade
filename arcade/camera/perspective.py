@@ -171,7 +171,7 @@ class PerspectiveProjector(Projector):
         """Convert world coordinates to pixel screen coordinates.
 
         If a 2D :py:class:`~pyglet.math.Vec2` is provided instead of a 3D
-        :py:class:`Vec3`, then one will be calculated to the best of the
+        :py:class:`~pyglet.math.Vec3`, then one will be calculated to the best of the
         method's ability.
 
         Args:
