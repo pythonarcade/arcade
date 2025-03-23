@@ -118,7 +118,7 @@ def is_nonstr_iterable(item: Any) -> bool:
     you can also pass it as an argument to other functions. These include:
 
     * The :py:func:`.grow_sequence` utility function
-    * Python's built-in :py:func:`filter`
+    * Python's built-in filter function
 
     .. note:: This is the opposite of :py:func:`is_str_or_noniterable`.
 

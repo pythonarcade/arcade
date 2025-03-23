@@ -197,10 +197,10 @@ class Camera2D:
 
         Args:
             camera_data:
-                A :py:class:`~arcade.camera.data.CameraData`
+                A :py:class:`~arcade.camera.CameraData`
                 describing the position, up, forward and zoom.
             projection_data:
-                A :py:class:`~arcade.camera.data.OrthographicProjectionData`
+                A :py:class:`~arcade.camera.OrthographicProjectionData`
                 which describes the left, right, top, bottom, far, near
                 planes and the viewport for an orthographic projection.
             render_target:
@@ -377,10 +377,10 @@ class Camera2D:
         Sets the viewport to the size of the Camera2D's render target.
 
         Args:
-            viewport: Flag whether to equalise the viewport to the area of the render target
-            projection: Flag whether to equalise the size of the projection to
-                match the render target
-            The projection center stays fixed, and the new projection matches only in size.
+            viewport: Flag whether to equalize the viewport to the area of the render target
+            projection: Flag whether to equalize the size of the projection to
+                match the render target.
+                The projection center stays fixed, and the new projection matches only in size.
             scissor: Flag whether to update the scissor value.
             position: Flag whether to also center the camera to the value.
                 Off by default
@@ -415,14 +415,14 @@ class Camera2D:
         aspect: float | None = None,
     ):
         """
-        Convienence method for updating the viewport, projection, position
+        Convenience method for updating the viewport, projection, position
         and a few others with the same value.
 
         Args:
             value: The rect that the values will be derived from.
-            viewport: Flag whether to equalise the viewport to the value.
-            projection: Flag whether to equalise the size of the projection to match the value.
-            The projection center stays fixed, and the new projection matches only in size.
+            viewport: Flag whether to equalize the viewport to the value.
+            projection: Flag whether to equalize the size of the projection to match the value.
+                The projection center stays fixed, and the new projection matches only in size.
             scissor: Flag whether to update the scissor value.
             position: Flag whether to also center the camera to the value.
                 Off by default
@@ -456,6 +456,7 @@ class Camera2D:
     def aabb(self) -> Rect:
         """
         Retrieve the axis-aligned bounds box of the camera's view area.
+
         If the camera isn't rotated , this will be precisely the view area,
         but it will cover a larger area when it is rotated. Useful for CPU culling
         """

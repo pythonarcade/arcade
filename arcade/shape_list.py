@@ -825,6 +825,9 @@ def create_ellipse_filled_with_colors(
 
 
 TShape = TypeVar("TShape", bound=Shape)
+"""
+Type variable for Shape or subclasses.
+"""
 
 
 @copy_dunders_unimplemented
