@@ -551,6 +551,14 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
             for name in filter(member_not_excluded, kind_list):
                 yield name, IMPORT_TREE.resolve(f"{module_name}.{name}")
 
+        # # Attributes
+        # for name, full_name in iter_declarations('type'):
+        #     quick_index_file.write(f"   * - :py:attr:`{full_name}`\n")
+        #     quick_index_file.write(f"     - {title}\n")
+
+        #     api_file.write(f".. autodata:: {full_name}\n")
+        #     api_file.write("\n")
+
         # Classes
         for name, full_name in iter_declarations('class'):
             quick_index_file.write(f"   * - :py:class:`{full_name}`\n")

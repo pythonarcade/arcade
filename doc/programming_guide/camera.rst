@@ -15,7 +15,7 @@ equal to one pixel of the sprite's source texture. This does not necessarily equ
 Screen Space
 ^^^^^^^^^^^^
 The final positions of anything drawn to screen is in screen space. The mouse positions returned by window
-events like :py:func:`on_mouse_press` are also in screen space. Moving 1 unit in screen space is equivalent to moving
+events like ``on_mouse_press`` are also in screen space. Moving 1 unit in screen space is equivalent to moving
 one pixel. Often positions in screen space are integer values, but this is not a strict rule.
 
 View Matrices
