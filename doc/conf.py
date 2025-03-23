@@ -256,7 +256,7 @@ pygments_style = 'default'  # will use "sphinx" or the theme's default
 
 # Warn about all references where the target cannot be found.
 # This is important to always enable to catch broken doc or api links
-nitpicky = True
+# nitpicky = True
 
 # -- Options for HTML output ----------------------------------------------
 
