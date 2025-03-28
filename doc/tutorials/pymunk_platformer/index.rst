@@ -69,7 +69,7 @@ When you run this program, the screen should be larger.
     :caption: Adding some constants
     :linenos:
     :lines: 1-29
-    :emphasize-lines: 4-26
+    :emphasize-lines: 6-24
 
 * :ref:`pymunk_demo_platformer_02`
 * :ref:`pymunk_demo_platformer_02_diff`
@@ -223,8 +223,8 @@ We'll apply a different force later, if the player happens to be airborne.
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Add Player Movement - Constants and Attributes
     :linenos:
-    :lines: 48-71
-    :emphasize-lines: 1-2, 22-24
+    :lines: 48-75
+    :emphasize-lines: 1-2, 23-25
 
 We need to track if the left/right keys are held down. To do this we define
 instance variables ``left_pressed`` and ``right_pressed``. These are set to
@@ -234,7 +234,7 @@ appropriate values in the key press and release handlers.
     :caption: Handle Key Up and Down Events
     :linenos:
     :lines: 159-173
-    :emphasize-lines: 4-7, 12-15
+    :emphasize-lines: 2-5, 10-13
 
 Finally, we need to apply the correct force in ``on_update``. Force is specified
 in a tuple with horizontal force first, and vertical force second.
@@ -245,7 +245,7 @@ We also set the friction when we are moving to zero, and when we are not moving 
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Apply Force to Move Player
     :linenos:
-    :lines: 175-196
+    :lines: 181-199
     :emphasize-lines: 4-19
 
 * :ref:`pymunk_demo_platformer_06`

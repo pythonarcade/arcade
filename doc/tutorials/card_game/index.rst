@@ -549,7 +549,7 @@ so we can go through it again.
     :caption: Flipping of Bottom Deck
     :linenos:
     :pyobject: MyGame.on_mouse_press
-    :emphasize-lines: 15-33, 56-71
+    :emphasize-lines: 16-34, 59-74
 
 Test
 ~~~~
