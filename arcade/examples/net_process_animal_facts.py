@@ -30,6 +30,7 @@ python -m arcade.examples.net_process_animal_facts
 """
 import PIL.Image
 import random
+import traceback
 import time
 import json
 import urllib.request
@@ -206,8 +207,7 @@ class AnimaFactsService:
                 try:
                     out_queue.put(selected_type.get_fact())
                     out_queue.put(selected_type.get_image())
-                except Exception as e:
-                    import traceback
+                except Exception:
                     traceback.print_exc()
 
     def start(self) -> int:
