@@ -35,8 +35,8 @@ MOVEMENT_SPEED = 5
 VIEWPORT_MARGIN = 300
 
 # How big the window is
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Procedural Caves Cellular Automata Example"
 
 # How fast the camera pans to the player. 1.0 is instant.
