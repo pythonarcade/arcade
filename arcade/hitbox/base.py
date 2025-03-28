@@ -230,15 +230,18 @@ class HitBox:
         if not self._adjusted_cache_dirty:
             return self._adjusted_points  # type: ignore
 
+        position_x, position_y = self._position
+        scale_x, scale_y = self._scale
+
         def _adjust_point(point) -> Point2:
             x, y = point
 
-            x *= self.scale[0]
-            y *= self.scale[1]
+            x *= scale_x
+            y *= scale_y
 
-            return (x + self.position[0], y + self.position[1])
+            return (x + position_x, y + position_y)
 
-        self._adjusted_points = [_adjust_point(point) for point in self.points]
+        self._adjusted_points = [_adjust_point(point) for point in self._points]
         self._adjusted_cache_dirty = False
         return self._adjusted_points
 
@@ -295,14 +298,16 @@ class RotatableHitBox(HitBox):
             return self._adjusted_points
 
         rad = radians(-self._angle)
+        scale_x, scale_y = self._scale
+        position_x, position_y = self._position
         rad_cos = cos(rad)
         rad_sin = sin(rad)
 
         def _adjust_point(point) -> Point2:
             x, y = point
 
-            x *= self.scale[0]
-            y *= self.scale[1]
+            x *= scale_x
+            y *= scale_y
 
             if rad:
                 rot_x = x * rad_cos - y * rad_sin
@@ -311,10 +316,10 @@ class RotatableHitBox(HitBox):
                 y = rot_y
 
             return (
-                x + self.position[0],
-                y + self.position[1],
+                x + position_x,
+                y + position_y,
             )
 
-        self._adjusted_points = [_adjust_point(point) for point in self.points]
+        self._adjusted_points = [_adjust_point(point) for point in self._points]
         self._adjusted_cache_dirty = False
         return self._adjusted_points
