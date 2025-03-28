@@ -9,9 +9,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_scroll_area
 """
 
-from __future__ import annotations
-
-
 import arcade
 from arcade.gui import UIAnchorLayout, UIBoxLayout, UIFlatButton, UIView
 from arcade.gui.experimental import UIScrollArea

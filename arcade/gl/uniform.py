@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import struct
 from ctypes import POINTER, c_double, c_float, c_int, c_uint, cast
 

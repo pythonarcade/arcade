@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import arcade
 from arcade.experimental.shadertoy import Shadertoy
 

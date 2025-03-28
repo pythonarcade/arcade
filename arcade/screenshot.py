@@ -4,8 +4,6 @@ Original screenshot utilities from Arcade 2.
 These functions are flawed because they only read from the screen.
 """
 
-from __future__ import annotations
-
 import PIL.Image
 import PIL.ImageOps
 

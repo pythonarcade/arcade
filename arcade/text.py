@@ -2,8 +2,6 @@
 Drawing text with pyglet label
 """
 
-from __future__ import annotations
-
 from ctypes import c_int, c_ubyte
 from pathlib import Path
 from typing import Any, Union

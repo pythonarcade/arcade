@@ -2,8 +2,6 @@
 Physics engines for top-down or platformers.
 """
 
-from __future__ import annotations
-
 import math
 from typing import Iterable
 

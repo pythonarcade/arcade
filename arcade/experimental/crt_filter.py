@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pyglet.math import Vec2
 
 from arcade.experimental import Shadertoy

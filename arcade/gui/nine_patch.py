@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import arcade
 import arcade.gl as gl
 from arcade.texture_atlas.base import TextureAtlasBase

@@ -10,8 +10,6 @@ It allows you to do the following:
 * Control sprite list draw order within the group
 """
 
-from __future__ import annotations
-
 from typing import Iterable
 from warnings import warn
 

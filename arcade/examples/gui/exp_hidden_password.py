@@ -12,8 +12,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_hidden_password
 """
 
-from __future__ import annotations
-
 import arcade
 from arcade.gui import UIInputText, UIOnClickEvent, UIView
 from arcade.gui.experimental.password_input import UIPasswordInput

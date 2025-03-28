@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pyglet import gl
 
 # Texture min/mag filters

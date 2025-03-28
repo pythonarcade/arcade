@@ -2,8 +2,6 @@
 This is for testing geometry shader shapes. Please keep.
 """
 
-from __future__ import annotations
-
 import math
 import random
 import time

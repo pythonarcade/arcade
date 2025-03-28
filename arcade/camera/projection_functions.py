@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from math import pi, tan
 
 from pyglet.math import Mat4, Vec2, Vec3, Vec4

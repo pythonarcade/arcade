@@ -12,8 +12,6 @@ For help, see the following:
 * The output of python make.py --help
 """
 
-from __future__ import annotations
-
 import os
 import subprocess
 from contextlib import contextmanager

@@ -2,8 +2,6 @@
 Helpers for dealing with the real-world file system.
 
 """
-from __future__ import annotations
-
 import shutil
 from pathlib import Path
 from typing import Generator, TypeVar, Hashable, Iterable, Mapping, Sequence, Callable

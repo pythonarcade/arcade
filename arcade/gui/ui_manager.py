@@ -8,8 +8,6 @@
 - TextArea with scroll support
 """
 
-from __future__ import annotations
-
 from collections import defaultdict
 from typing import Iterable, Optional, TypeVar, Union
 

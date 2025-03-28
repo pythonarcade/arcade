@@ -3,8 +3,6 @@ ScreenShakeController2D:
     Provides an easy way to cause a camera to shake.
 """
 
-from __future__ import annotations
-
 from math import exp, floor, log, pi, sin
 from random import randint, uniform
 

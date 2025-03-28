@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import builtins
 from typing import TypeVar, Type, Generic, Any, Callable
 

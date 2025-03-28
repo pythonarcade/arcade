@@ -7,8 +7,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.shapes_buffered
 """
 
-from __future__ import annotations
-
 import random
 
 from pyglet import gl

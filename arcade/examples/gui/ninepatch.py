@@ -9,8 +9,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.ninepatch
 """
 
-from __future__ import annotations
-
 import arcade
 from arcade import load_texture
 from arcade.gui import UIManager, UIAnchorLayout, UIWidget, NinePatchTexture

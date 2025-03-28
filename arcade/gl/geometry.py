@@ -2,8 +2,6 @@
 A module providing commonly used geometry
 """
 
-from __future__ import annotations
-
 import math
 from array import array
 

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Callable, Generic, Optional, Type, TypeVar, cast
 
 import arcade

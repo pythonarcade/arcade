@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import ast
 import dataclasses
 from pathlib import Path

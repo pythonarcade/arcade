@@ -2,8 +2,6 @@
 Classic A-star algorithm for path finding.
 """
 
-from __future__ import annotations
-
 import math
 
 from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point

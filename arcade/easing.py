@@ -2,8 +2,6 @@
 Functions used to support easing
 """
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from math import cos, pi, sin
 from typing import Callable

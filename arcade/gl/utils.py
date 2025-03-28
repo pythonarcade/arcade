@@ -2,8 +2,6 @@
 Various utility functions for the gl module.
 """
 
-from __future__ import annotations
-
 from array import array
 from ctypes import c_byte
 from typing import Any

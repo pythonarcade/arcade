@@ -26,8 +26,6 @@ by keeping things simple:
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.threaded_loading
 """
-from __future__ import annotations
-
 import sys
 from time import sleep
 

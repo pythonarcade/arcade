@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from PIL import Image
 from pyglet.math import Mat3
 

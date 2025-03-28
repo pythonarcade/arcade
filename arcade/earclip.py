@@ -3,8 +3,6 @@
 from: https://github.com/linuxlewis/tripy/blob/master/tripy.py
 """
 
-from __future__ import annotations
-
 from arcade.types import Point2, Point2List
 
 

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from math import trunc
 from typing import Generic
 

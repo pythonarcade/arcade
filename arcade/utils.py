@@ -4,8 +4,6 @@ Various utility functions.
 IMPORTANT: These should be standalone and not rely on any Arcade imports
 """
 
-from __future__ import annotations
-
 import platform
 import sys
 from collections.abc import MutableSequence

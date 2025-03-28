@@ -8,8 +8,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.3_buttons
 """
 
-from __future__ import annotations
-
 import arcade
 from arcade.gui import (
     UIAnchorLayout,

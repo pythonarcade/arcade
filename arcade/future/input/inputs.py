@@ -5,8 +5,6 @@ For example, keyboard keys are mapped to their Pyglet int values, as are mouse b
 However Controller buttons and axes are mapped to their Pyglet string values.
 """
 
-from __future__ import annotations
-
 from enum import Enum, auto
 from sys import platform
 from typing import Type

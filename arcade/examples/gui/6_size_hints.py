@@ -17,8 +17,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.6_size_hints
 """
 
-from __future__ import annotations
-
 import textwrap
 
 import arcade

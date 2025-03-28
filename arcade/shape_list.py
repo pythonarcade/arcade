@@ -6,8 +6,6 @@ but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
 
-from __future__ import annotations
-
 import itertools
 import math
 from array import array

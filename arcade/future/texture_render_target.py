@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from arcade import get_window
 from arcade.color import TRANSPARENT_BLACK
 from arcade.gl import geometry

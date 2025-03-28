@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageOps

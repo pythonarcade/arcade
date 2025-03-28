@@ -2,7 +2,6 @@
 Constants used to signify what keys on the keyboard were pressed.
 """
 
-from __future__ import annotations
 from sys import platform
 
 # Key modifiers

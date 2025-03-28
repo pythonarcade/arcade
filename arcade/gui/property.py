@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import sys
 import traceback
 from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, cast

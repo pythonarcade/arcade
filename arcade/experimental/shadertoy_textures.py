@@ -3,8 +3,6 @@ Use texture layers with shadertoy.
 We simply mix the two texture layers.
 """
 
-from __future__ import annotations
-
 import arcade
 from arcade.experimental.shadertoy import Shadertoy
 

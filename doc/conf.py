@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
-from __future__ import annotations
-
 import os
 from functools import cache
 import logging

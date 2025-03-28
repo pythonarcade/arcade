@@ -4,8 +4,6 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 
-from __future__ import annotations
-
 from contextlib import contextmanager
 from typing import Final, Generator, Protocol
 

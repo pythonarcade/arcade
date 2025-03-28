@@ -6,8 +6,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.2_widgets
 """
 
-from __future__ import annotations
-
 import textwrap
 from copy import deepcopy
 

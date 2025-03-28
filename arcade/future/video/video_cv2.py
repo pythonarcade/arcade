@@ -9,8 +9,6 @@ Dependencies:
     pip install opencv-python
 """
 
-from __future__ import annotations
-
 from math import floor
 from pathlib import Path
 

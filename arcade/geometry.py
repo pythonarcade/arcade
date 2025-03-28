@@ -6,8 +6,6 @@ These are the pure python versions of the functions.
 Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
 """
 
-from __future__ import annotations
-
 from sys import maxsize as sys_int_maxsize
 
 from arcade.types import Point2, Point2List

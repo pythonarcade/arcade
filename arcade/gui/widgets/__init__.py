@@ -1,4 +1,3 @@
-from __future__ import annotations
 
 from abc import ABC
 from typing import Dict, Iterable, List, NamedTuple, Optional, TYPE_CHECKING, Tuple, TypeVar, Union

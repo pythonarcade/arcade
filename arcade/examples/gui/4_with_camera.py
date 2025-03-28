@@ -10,8 +10,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.4_with_camera
 """
 
-from __future__ import annotations
-
 import math
 import random
 from typing import Optional

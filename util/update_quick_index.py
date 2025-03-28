@@ -11,8 +11,6 @@ Each of these sections has heading with the same name, but prefixed with
 a # --- so you can skip between them in diffs or your favorite editor
 via hotkeys.
 """
-from __future__ import annotations
-
 import re
 import sys
 from collections.abc import Mapping

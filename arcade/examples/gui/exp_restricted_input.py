@@ -4,8 +4,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_restricted_input
 """
 
-from __future__ import annotations
-
 import arcade
 from arcade.gui import UIAnchorLayout, UIBoxLayout, UIView
 from arcade.gui.experimental.restricted_input import UIIntInput

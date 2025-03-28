@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .atlas_default import (
     DefaultTextureAtlas,
     AtlasRegion,

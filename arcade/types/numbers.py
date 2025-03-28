@@ -5,8 +5,6 @@ If an :py:mod:`arcade.types` submodule attempts to run
 circular imports or partially initialized modules.
 """
 
-from __future__ import annotations
-
 from typing import Union
 
 #: 1. Makes pyright happier while also telling readers

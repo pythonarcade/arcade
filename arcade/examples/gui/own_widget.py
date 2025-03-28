@@ -22,8 +22,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.own_widgets
 """
 
-from __future__ import annotations
-
 import arcade
 from arcade.gui import Property, UIAnchorLayout, UIBoxLayout, UISpace, UIView, UIWidget, bind
 from arcade.types import Color

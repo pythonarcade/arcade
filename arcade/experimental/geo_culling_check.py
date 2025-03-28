@@ -6,8 +6,6 @@ leave the screen.
 Simply run the program and move draw the sprites around using the mouse.
 """
 
-from __future__ import annotations
-
 import PIL
 from pyglet.math import Mat4
 

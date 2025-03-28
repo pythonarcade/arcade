@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from array import array
 from typing import Iterator, Sequence
 
