@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Generator, Optional
+from typing import Generator
 
 from PIL import Image
 from typing_extensions import Self
@@ -217,7 +217,7 @@ class Surface:
 
     def draw(
         self,
-        area: Optional[Rect] = None,
+        area: Rect | None = None,
     ) -> None:
         """Draws the contents of the surface.
 

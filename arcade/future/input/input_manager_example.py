@@ -1,6 +1,6 @@
 #  type: ignore
 import random
-from typing import Optional, Sequence
+from typing import Sequence
 
 import pyglet
 from pyglet.input import Controller
@@ -28,7 +28,7 @@ class Player(arcade.Sprite):
         texture,
         walls: arcade.SpriteList,
         input_manager_template: InputManager,
-        controller: Optional[pyglet.input.Controller] = None,
+        controller: pyglet.input.Controller | None = None,
         center_x: float = 0.0,
         center_y: float = 0.0,
         x_max_speed: float = 300.0,

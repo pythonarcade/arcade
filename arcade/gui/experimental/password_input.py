@@ -1,5 +1,3 @@
-from typing import Optional
-
 from arcade.gui import Surface, UIEvent, UIInputText, UITextInputEvent
 
 
@@ -11,7 +9,7 @@ class UIPasswordInput(UIInputText):
 
     """
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Remove new lines from the input, which are not allowed in passwords."""
         if isinstance(event, UITextInputEvent):
             event.text = event.text.replace("\n", "").replace("\r", "")

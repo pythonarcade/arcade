@@ -3,7 +3,7 @@ from __future__ import annotations
 import warnings
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
-from typing import Mapping, Optional, Union
+from typing import Mapping, Union
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from typing_extensions import override
@@ -165,7 +165,7 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         pass
 
     @override
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """
         Args:
             event: Event to handle.

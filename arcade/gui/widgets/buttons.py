@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass
 from typing import Optional, Union
 
@@ -79,15 +78,15 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         *,
         x: float = 0,
         y: float = 0,
-        width: Optional[float] = None,
-        height: Optional[float] = None,
+        width: float | None = None,
+        height: float | None = None,
         texture: Union[None, Texture, NinePatchTexture] = None,
         texture_hovered: Union[None, Texture, NinePatchTexture] = None,
         texture_pressed: Union[None, Texture, NinePatchTexture] = None,
         texture_disabled: Union[None, Texture, NinePatchTexture] = None,
         text: str = "",
         multiline: bool = False,
-        scale: Optional[float] = None,
+        scale: float | None = None,
         style: Optional[dict[str, UIStyleBase]] = None,
         size_hint=None,
         size_hint_min=None,
@@ -225,7 +224,7 @@ class UIFlatButtonStyle(UIStyleBase):
     font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
     font_color: RGBA255 = color.WHITE
     bg: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
-    border: Optional[RGBA255] = None
+    border: RGBA255 | None = None
     border_width: int = 0
 
 

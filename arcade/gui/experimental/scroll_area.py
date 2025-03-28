@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from typing import Iterable
 
 from pyglet.event import EVENT_UNHANDLED
 
@@ -52,7 +52,7 @@ class UIScrollBar(UIWidget):
         bind(scroll_area, "content_height", self.trigger_full_render)
         bind(scroll_area, "content_width", self.trigger_full_render)
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         # check if we are scrollable
         if not self._scrollable():
             return EVENT_UNHANDLED
@@ -341,7 +341,7 @@ class UIScrollArea(UILayout):
 
         return self.scroll_x, -normal_pos_y - self.scroll_y
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Handle scrolling of the widget."""
         if isinstance(event, UIMouseDragEvent) and not self.rect.point_in_rect(event.pos):
             return EVENT_UNHANDLED

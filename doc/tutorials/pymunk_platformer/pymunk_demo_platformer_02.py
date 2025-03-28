@@ -1,8 +1,6 @@
 """
 Example of Pymunk Physics Engine Platformer
 """
-import math
-from typing import Optional
 import arcade
 
 SCREEN_TITLE = "PyMunk Platformer"

@@ -1,4 +1,3 @@
-
 from copy import deepcopy
 from typing import Optional, Union
 
@@ -110,7 +109,7 @@ class UIDropdown(UILayout):
         y: float = 0,
         width: float = 150,
         height: float = 30,
-        default: Optional[str] = None,
+        default: str | None = None,
         options: Optional[list[Union[str, None]]] = None,
         primary_style=None,
         dropdown_style=None,
@@ -151,12 +150,12 @@ class UIDropdown(UILayout):
         self.register_event_type("on_change")
 
     @property
-    def value(self) -> Optional[str]:
+    def value(self) -> str | None:
         """Current selected option."""
         return self._value
 
     @value.setter
-    def value(self, value: Optional[str]):
+    def value(self, value: str | None):
         """Change the current selected option to a new option."""
         old_value = self._value
         self._value = value

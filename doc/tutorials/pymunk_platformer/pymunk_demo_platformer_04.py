@@ -1,6 +1,7 @@
 """
 Example of Pymunk Physics Engine Platformer
 """
+
 import math
 from typing import Optional
 import arcade
@@ -27,22 +28,22 @@ SCREEN_HEIGHT = SPRITE_SIZE * SCREEN_GRID_HEIGHT
 
 
 class GameWindow(arcade.Window):
-    """ Main Window """
+    """Main Window"""
 
     def __init__(self, width, height, title):
-        """ Create the variables """
+        """Create the variables"""
 
         # Init the parent class
         super().__init__(width, height, title)
 
         # Player sprite
-        self.player_sprite: Optional[arcade.Sprite] = None
+        self.player_sprite: arcade.Sprite | None = None
 
         # Sprite lists we need
-        self.player_list: Optional[arcade.SpriteList] = None
-        self.wall_list: Optional[arcade.SpriteList] = None
-        self.bullet_list: Optional[arcade.SpriteList] = None
-        self.item_list: Optional[arcade.SpriteList] = None
+        self.player_list: arcade.SpriteList | None = None
+        self.wall_list: arcade.SpriteList | None = None
+        self.bullet_list: arcade.SpriteList | None = None
+        self.item_list: arcade.SpriteList | None = None
 
         # Track the current state of what key is pressed
         self.left_pressed: bool = False
@@ -52,7 +53,7 @@ class GameWindow(arcade.Window):
         self.background_color = arcade.color.AMAZON
 
     def setup(self):
-        """ Set up everything with the game """
+        """Set up everything with the game"""
 
         # Create the sprite lists
         self.player_list = arcade.SpriteList()
@@ -69,8 +70,10 @@ class GameWindow(arcade.Window):
         self.item_list = tile_map.sprite_lists["Dynamic Items"]
 
         # Create player sprite
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+            SPRITE_SCALING_PLAYER,
+        )
         # Set player location
         grid_x = 1
         grid_y = 1
@@ -80,19 +83,19 @@ class GameWindow(arcade.Window):
         self.player_list.append(self.player_sprite)
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
         pass
 
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key. """
+        """Called when the user releases a key."""
         pass
 
     def on_update(self, delta_time):
-        """ Movement and game logic """
+        """Movement and game logic"""
         pass
 
     def on_draw(self):
-        """ Draw everything """
+        """Draw everything"""
         self.clear()
         self.wall_list.draw()
         self.bullet_list.draw()
@@ -101,7 +104,7 @@ class GameWindow(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.setup()
     arcade.run()

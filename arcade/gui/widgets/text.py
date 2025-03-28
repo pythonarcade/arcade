@@ -1,6 +1,3 @@
-
-from typing import Optional
-
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
@@ -81,8 +78,8 @@ class UILabel(UIWidget):
         *,
         x: float = 0,
         y: float = 0,
-        width: Optional[float] = None,
-        height: Optional[float] = None,
+        width: float | None = None,
+        height: float | None = None,
         font_name=("calibri", "arial"),
         font_size: float = 12,
         text_color: RGBOrA255 = arcade.color.WHITE,
@@ -247,11 +244,11 @@ class UILabel(UIWidget):
 
     def update_font(
         self,
-        font_name: Optional[FontNameOrNames] = None,
-        font_size: Optional[float] = None,
-        font_color: Optional[Color] = None,
-        bold: Optional[bool | str] = None,
-        italic: Optional[bool] = None,
+        font_name: FontNameOrNames | None = None,
+        font_size: float | None = None,
+        font_color: Color | None = None,
+        bold: bool | str | None = None,
+        italic: bool | None = None,
     ):
         """Update font of the label.
 
@@ -346,9 +343,9 @@ class UITextWidget(UIAnchorLayout):
 
     def place_text(
         self,
-        anchor_x: Optional[str] = None,
+        anchor_x: str | None = None,
         align_x: float = 0,
-        anchor_y: Optional[str] = None,
+        anchor_y: str | None = None,
         align_y: float = 0,
         **kwargs,
     ) -> UILabel:
@@ -523,7 +520,7 @@ class UIInputText(UIWidget):
             self.trigger_full_render()
 
     @override
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Handle events for the text input field.
 
         Text input is only active when the user clicks on the input field."""
@@ -689,7 +686,7 @@ class UITextArea(UIWidget):
         italic=False,
         text_color: RGBA255 = arcade.color.WHITE,
         multiline: bool = True,
-        scroll_speed: Optional[float] = None,
+        scroll_speed: float | None = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -780,7 +777,7 @@ class UITextArea(UIWidget):
         self.layout.draw()
 
     @override
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Handle scrolling of the widget."""
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.point_in_rect(event.pos):

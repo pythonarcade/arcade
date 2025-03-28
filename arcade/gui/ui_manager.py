@@ -9,7 +9,7 @@
 """
 
 from collections import defaultdict
-from typing import Iterable, Optional, TypeVar, Union
+from typing import Iterable, TypeVar, Union
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from typing_extensions import TypeGuard
@@ -93,7 +93,7 @@ class UIManager(EventDispatcher):
     DEFAULT_LAYER = 0
     OVERLAY_LAYER = 10
 
-    def __init__(self, window: Optional[arcade.Window] = None):
+    def __init__(self, window: arcade.Window | None = None):
         super().__init__()
 
         self.window = window or arcade.get_window()
@@ -145,7 +145,7 @@ class UIManager(EventDispatcher):
                 self.trigger_render()
 
     def walk_widgets(
-        self, *, root: Optional[UIWidget] = None, layer=DEFAULT_LAYER
+        self, *, root: UIWidget | None = None, layer=DEFAULT_LAYER
     ) -> Iterable[UIWidget]:
         """Walks through widget tree, in reverse draw order (most top drawn widget first)
 

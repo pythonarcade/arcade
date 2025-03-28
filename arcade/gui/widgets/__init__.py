@@ -1,4 +1,3 @@
-
 from abc import ABC
 from typing import Dict, Iterable, List, NamedTuple, Optional, TYPE_CHECKING, Tuple, TypeVar, Union
 
@@ -94,7 +93,7 @@ class UIWidget(EventDispatcher, ABC):
     ):
         self._requires_render = True
         self.rect = LBWH(x, y, width, height)
-        self.parent: Optional[Union[UIManager, UIWidget]] = None
+        self.parent: UIManager | UIWidget | None = None
 
         # Size hints are properties that can be used by layouts
         self.size_hint = size_hint
@@ -177,7 +176,7 @@ class UIWidget(EventDispatcher, ABC):
         """Custom logic which will be triggered."""
         pass
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Passes :class:`UIEvent` s through the widget tree."""
         # UpdateEvents are past to the first invisible widget
         if isinstance(event, UIOnUpdateEvent):
@@ -418,11 +417,11 @@ class UIWidget(EventDispatcher, ABC):
     def with_padding(
         self,
         *,
-        top: Optional[int] = None,
-        right: Optional[int] = None,
-        bottom: Optional[int] = None,
-        left: Optional[int] = None,
-        all: Optional[int] = None,
+        top: int | None = None,
+        right: int | None = None,
+        bottom: int | None = None,
+        left: int | None = None,
+        all: int | None = None,
     ) -> Self:
         """Changes the padding to the given values if set. Returns itself
 
@@ -590,7 +589,7 @@ class UIInteractiveWidget(UIWidget):
         bind(self, "hovered", self.trigger_render)
         bind(self, "disabled", self.trigger_render)
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Handles mouse events and triggers on_click event if the widget is clicked.
 
         This also sets the hovered and pressed state of the widget.
@@ -720,7 +719,7 @@ class UISpriteWidget(UIWidget):
         y=0,
         width=100,
         height=100,
-        sprite: Optional[Sprite] = None,
+        sprite: Sprite | None = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,

@@ -3,8 +3,6 @@ This is an experimental implementation of a restricted input field.
 If the implementation is successful, the feature will be merged into the existing UIInputText class.
 """
 
-from typing import Optional
-
 from arcade.gui import UIEvent, UIInputText
 
 
@@ -32,7 +30,7 @@ class UIRestrictedInput(UIInputText):
         # we can not call super().text = text here: https://bugs.python.org/issue14965
         UIInputText.text.__set__(self, text)  # type: ignore
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         # check if text changed during event handling,
         # if so we need to validate the new text
         old_text = self.text

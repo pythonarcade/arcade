@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import warnings
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional, Tuple, TypeVar
+from typing import Dict, Iterable, List, Tuple, TypeVar
 
 from typing_extensions import Literal, override
 
@@ -103,9 +103,9 @@ class UIAnchorLayout(UILayout):
         self,
         child: W,
         *,
-        anchor_x: Optional[str] = None,
+        anchor_x: str | None = None,
         align_x: float = 0,
-        anchor_y: Optional[str] = None,
+        anchor_y: str | None = None,
         align_y: float = 0,
         **kwargs,
     ) -> W:
@@ -140,9 +140,9 @@ class UIAnchorLayout(UILayout):
     def _place_child(
         self,
         child: UIWidget,
-        anchor_x: Optional[str] = None,
+        anchor_x: str | None = None,
         align_x: float = 0,
-        anchor_y: Optional[str] = None,
+        anchor_y: str | None = None,
         align_y: float = 0,
     ):
         anchor_x = anchor_x or self.default_anchor_x
