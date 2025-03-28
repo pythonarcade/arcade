@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import ast
 import dataclasses
 from pathlib import Path
@@ -9,9 +11,11 @@ from pathlib import Path
 # Build a tree using the ast module looking at the __init__ files
 # and recurse the tree to find the lowest import of a member.
 
+
 @dataclasses.dataclass
 class ImportNode:
     """A node in the import tree."""
+
     name: str
     parent: ImportNode | None = None
     children: list[ImportNode] = dataclasses.field(default_factory=list)
@@ -67,6 +71,7 @@ class ImportNode:
 @dataclasses.dataclass
 class Import:
     """Unified representation of an import statement."""
+
     name: str  # name of the member
     module: str  # The module this import is from
     from_module: str  # The module the member was imported from
@@ -116,7 +121,7 @@ def _parse_import_node_recursive(
                 imp = Import(
                     name=alias.name.split(".")[-1],
                     module=full_module_path,
-                    from_module=".".join(alias.name.split(".")[:-1])
+                    from_module=".".join(alias.name.split(".")[:-1]),
                 )
                 node.imports.append(imp)
         elif isinstance(ast_node, ast.ImportFrom):
