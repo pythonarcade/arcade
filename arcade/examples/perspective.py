@@ -123,7 +123,7 @@ class GameView(arcade.View):
             (1.0, 0.0, 0.0), (0, 0, 3), 180 * self.window.time
         )
         view_data.forward, view_data.up = arcade.camera.grips.look_at(view_data, (0.0, 0.0, 0.0))
-        print(view_data)
+        # print(view_data)
 
 
     def on_draw(self):
