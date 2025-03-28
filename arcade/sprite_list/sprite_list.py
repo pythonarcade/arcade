@@ -603,15 +603,15 @@ class SpriteList(Generic[SpriteType]):
         """
         Attempt to pop a sprite from the list.
 
-        This is the most efficient way to remove a sprite from the list.
-        The complexity of this method is ``O(1)``.
-
         This works like :external:ref:`popping from <tut-morelists>` a
         standard Python :py:class:`list`:
 
         #. If the list is empty, raise an :py:class:`IndexError`
         #. If no ``index`` is passed, try to pop the last
            :py:class:`Sprite` in the list
+
+        This is the most efficient way to remove a sprite from the list.
+        The complexity of this method is ``O(1)``.
 
         Args:
             index:
@@ -700,6 +700,10 @@ class SpriteList(Generic[SpriteType]):
     def remove(self, sprite: SpriteType) -> None:
         """
         Remove a specific sprite from the list.
+
+        Note that this method is ``O(N)`` in complexity and will have
+        and increased cost the more sprites you have in the list.
+        A faster option is to use :py:meth:`pop` or :py:meth:`swap`.
 
         Args:
             sprite: Item to remove from the list
