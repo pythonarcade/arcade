@@ -2,6 +2,7 @@
 Emitter - Invisible object that determines when Particles are emitted,
 actually emits them, and manages them over their lifetime
 """
+
 from __future__ import annotations
 
 from typing import Callable, cast
