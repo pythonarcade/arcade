@@ -709,14 +709,14 @@ class SpriteList(Generic[SpriteType]):
         except KeyError:
             raise ValueError("Sprite is not in the SpriteList")
 
-        self.sprite_list.remove(sprite)
+        index = self.sprite_list.index(sprite)
+        self.sprite_list.pop(index)
         sprite.sprite_lists.remove(self)
         del self.sprite_slot[sprite]
 
         self._sprite_buffer_free_slots.append(slot)
 
-        # Brutal resize for now. Optimize later
-        self._sprite_index_data.remove(slot)
+        self._sprite_index_data.pop(index)
         self._sprite_index_data.append(0)
         self._sprite_index_slots -= 1
         self._sprite_index_changed = True
