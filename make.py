@@ -372,14 +372,14 @@ def linkcheck():
 #     print(f"Build finished. The message catalogs are in {FULL_BUILD_DIR}/locale.")
 
 
-@app.command(rich_help_panel="Docs Extra Formats")
-def changes():
-    """
-    to make an overview of all changed/added/deprecated items
-    """
-    run_doc([SPHINX_BUILD, "-b", "changes", *ALLSPHINXOPTS, f"{BUILD_DIR}/changes"])
-    print()
-    print(f"The overview file is in {FULL_BUILD_DIR}/changes.")
+# @app.command(rich_help_panel="Docs Extra Formats")
+# def changes():
+#     """
+#     to make an overview of all changed/added/deprecated items
+#     """
+#     run_doc([SPHINX_BUILD, "-b", "changes", *ALLSPHINXOPTS, f"{BUILD_DIR}/changes"])
+#     print()
+#     print(f"The overview file is in {FULL_BUILD_DIR}/changes.")
 
 
 # @app.command(rich_help_panel="Docs Extra Formats")
@@ -394,16 +394,16 @@ def changes():
 #     )
 
 
-@app.command(rich_help_panel="Docs Extra Formats")
-def coverage():
-    """
-    to run coverage check of the documentation (if enabled)
-    """
-    run_doc([SPHINX_BUILD, "-b", "coverage", *ALLSPHINXOPTS, f"{BUILD_DIR}/coverage"])
-    print(
-        "Testing of coverage in the sources finished, look at the "
-        + f"results in {FULL_BUILD_DIR}/coverage/python.txt."
-    )
+# @app.command(rich_help_panel="Docs Extra Formats")
+# def coverage():
+#     """
+#     to run coverage check of the documentation (if enabled)
+#     """
+#     run_doc([SPHINX_BUILD, "-b", "coverage", *ALLSPHINXOPTS, f"{BUILD_DIR}/coverage"])
+#     print(
+#         "Testing of coverage in the sources finished, look at the "
+#         + f"results in {FULL_BUILD_DIR}/coverage/python.txt."
+#     )
 
 
 # @app.command(rich_help_panel="Docs Extra Formats")
