@@ -16,7 +16,7 @@ from warnings import warn
 from arcade import Sprite, SpriteList
 from arcade.gl.types import BlendFunction, OpenGlFilter
 from arcade.tilemap import TileMap
-from arcade.types import RGBA255, Color
+from arcade.types import RGBOrA255, Color
 
 __all__ = ["Scene", "SceneKeyError"]
 
@@ -499,7 +499,7 @@ class Scene:
 
     def draw_hit_boxes(
         self,
-        color: RGBA255 = Color(0, 0, 0, 255),
+        color: RGBOrA255 = Color(0, 0, 0, 255),
         line_thickness: float = 1.0,
         names: Iterable[str] | None = None,
     ) -> None:

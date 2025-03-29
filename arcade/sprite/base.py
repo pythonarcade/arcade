@@ -7,7 +7,7 @@ from arcade.color import BLACK, WHITE
 from arcade.exceptions import ReplacementWarning, warning
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.types import LRBT, RGBA255, AsFloat, Color, Point, Point2, Point2List, Rect, RGBOrA255
+from arcade.types import LRBT, AsFloat, Color, Point, Point2, Point2List, Rect, RGBOrA255
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
@@ -764,7 +764,7 @@ class BasicSprite:
 
     # ----- Drawing Methods -----
 
-    def draw_hit_box(self, color: RGBA255 = BLACK, line_thickness: float = 2.0) -> None:
+    def draw_hit_box(self, color: RGBOrA255 = BLACK, line_thickness: float = 2.0) -> None:
         """
         Draw a sprite's hit-box. This is useful for debugging.
 
@@ -774,10 +774,11 @@ class BasicSprite:
             line_thickness:
                 How thick the box should be
         """
+        converted_color = Color.from_iterable(color)
         points: Point2List = self.hit_box.get_adjusted_points()
         # NOTE: This is a COPY operation. We don't want to modify the points.
         points = tuple(points) + tuple(points[:-1])
-        arcade.draw_line_strip(points, color=color, line_width=line_thickness)
+        arcade.draw_line_strip(points, color=converted_color, line_width=line_thickness)
 
     # ---- Shortcut Methods ----
 
