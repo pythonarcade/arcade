@@ -430,7 +430,7 @@ def lint():
     pyright()
 
 
-# @app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality")
 def ruff_check():
     """Run ruff check for code quality"""
     run([RUFF, *RUFFOPTS, RUFFOPTS_PACKAGE])
@@ -443,7 +443,7 @@ def format(check: bool = False):
     ruff_isort(check)
 
 
-# @app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality")
 def ruff_format(check: bool = False):
     """Format code using ruff"""
     ruff_fmt = [RUFF, "format"]
@@ -452,7 +452,7 @@ def ruff_format(check: bool = False):
     run(ruff_fmt)
 
 
-# @app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality")
 def ruff_isort(check: bool = False):
     """Sort imports with ruff"""
     if not check:
