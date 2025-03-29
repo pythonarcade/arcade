@@ -16,7 +16,7 @@ from warnings import warn
 from arcade import Sprite, SpriteList
 from arcade.gl.types import BlendFunction, OpenGlFilter
 from arcade.tilemap import TileMap
-from arcade.types import RGBOrA255, Color
+from arcade.types import Color, RGBOrA255
 
 __all__ = ["Scene", "SceneKeyError"]
 
