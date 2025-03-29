@@ -18,7 +18,8 @@ ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
 UTIL_DIR = REPO_LOCAL_ROOT / "util"
 
 log = logging.getLogger('conf.py')
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
+# logging.basicConfig(level=logging.INFO)
 
 sys.path.insert(0, str(REPO_LOCAL_ROOT))
 sys.path.insert(0, str(ARCADE_MODULE))
@@ -513,12 +514,12 @@ class ResourceRole(SphinxRole):  # pending: 3.1
 
 
 def setup(app):
-    print("Diagnostic info since readthedocs doesn't use our make.py:")
+    log.info("Diagnostic info since readthedocs doesn't use our make.py:")
     for attr, comment in APP_CONFIG_DIRS:
         val = getattr(app, attr, None)
-        print(f"  {attr}: {val!r}")
+        log.info(f"{attr}: {val!r}")
         if comment:
-            print(f"    {comment}")
+            log.info(f"    {comment}")
 
     # Separate stylesheets loosely by category.
     # pending:  sphinx >= 8.1.4 to remove the sphinx_static_file_temp_fix.py
