@@ -28,7 +28,7 @@ from arcade.gl import Program, Texture2D
 from arcade.gl.buffer import Buffer
 from arcade.gl.types import BlendFunction, OpenGlFilter, PyGLenum
 from arcade.gl.vertex_array import Geometry
-from arcade.types import RGBA255, Color, RGBANormalized, RGBOrA255, RGBOrANormalized
+from arcade.types import RGBA255, Color, Point2, RGBANormalized, RGBOrA255, RGBOrANormalized
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
@@ -1114,10 +1114,22 @@ class SpriteList(Generic[SpriteType]):
             color: The color of the hit boxes
             line_thickness: The thickness of the lines
         """
-        converted_color = Color.from_iterable(color)
+        import arcade
 
+        converted_color = Color.from_iterable(color)
+        points: list[Point2] = []
+
+        # TODO: Make this faster in the future
+        # NOTE: This will be easier when/if we change to triangles
         for sprite in self.sprite_list:
-            sprite.draw_hit_box(converted_color, line_thickness)
+            adjusted_points = sprite.hit_box.get_adjusted_points()
+            for i in range(len(adjusted_points) - 1):
+                points.append(adjusted_points[i])
+                points.append(adjusted_points[i + 1])
+            points.append(adjusted_points[-1])
+            points.append(adjusted_points[0])
+
+        arcade.draw_lines(points, color=converted_color, line_width=line_thickness)
 
     def _normalize_index_buffer(self) -> None:
         """
