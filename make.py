@@ -163,7 +163,7 @@ def run_doc(args: str | list[str]) -> None:
 @app.command(rich_help_panel="Docs")
 def clean():
     """
-    Delete built website files.
+    Clean / Delete the documentation build directory
     """
     if os.path.exists(FULL_BUILD_DIR):
         for item in Path(FULL_BUILD_DIR).glob("*"):
@@ -173,7 +173,7 @@ def clean():
 @app.command(rich_help_panel="Docs")
 def html():
     """
-    to make standalone HTML files
+    Build the documentation (HTML)
     """
     run_doc([SPHINX_BUILD, "-b", "html", *ALLSPHINXOPTS, f"{BUILD_DIR}/html"])
     print()
@@ -183,7 +183,7 @@ def html():
 @app.command(rich_help_panel="Docs")
 def serve():
     """
-    Build and serve standalone HTML files, with automatic rebuilds and live reload.
+    Build and serve the docs with automatic rebuilds and live reload.
     """
     run_doc(
         [SPHINX_AUTOBUILD, *SPHINXAUTOBUILDOPTS, "-b", "html", *ALLSPHINXOPTS, f"{BUILD_DIR}/html"]
@@ -193,7 +193,7 @@ def serve():
 @app.command(rich_help_panel="Docs")
 def linkcheck():
     """
-    to check all external links for integrity
+    Check for broken links in the documentation
     """
     run_doc([SPHINX_BUILD, "-b", "linkcheck", *ALLSPHINXOPTS, f"{BUILD_DIR}/linkcheck"])
     print()
@@ -423,14 +423,14 @@ def linkcheck():
 @app.command(rich_help_panel="Code Quality")
 def lint():
     """
-    Run tasks: ruff, mypy, and pyright (Run this before making a pull request!)
+    Run tasks: ruff, mypy, and pyright (Run before making a pull request)
     """
     ruff_check()
     mypy()
     pyright()
 
 
-@app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality - Advanced")
 def ruff_check():
     """Run ruff check for code quality"""
     run([RUFF, *RUFFOPTS, RUFFOPTS_PACKAGE])
@@ -438,12 +438,12 @@ def ruff_check():
 
 @app.command(rich_help_panel="Code Quality")
 def format(check: bool = False):
-    """Format code and sort imports with ruff"""
+    """Format code (Run before making a pull request)"""
     ruff_format(check)
     ruff_isort(check)
 
 
-@app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality - Advanced")
 def ruff_format(check: bool = False):
     """Format code using ruff"""
     ruff_fmt = [RUFF, "format"]
@@ -452,7 +452,7 @@ def ruff_format(check: bool = False):
     run(ruff_fmt)
 
 
-@app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality - Advanced")
 def ruff_isort(check: bool = False):
     """Sort imports with ruff"""
     if not check:
@@ -460,28 +460,28 @@ def ruff_isort(check: bool = False):
     run([RUFF, *RUFFOPTS_ISORT, RUFFOPTS_PACKAGE])
 
 
-@app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality - Advanced")
 def mypy():
     """Typecheck using mypy"""
     run([MYPY, *MYPYOPTS])
 
 
-@app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality - Advanced")
 def pyright():
     """Typecheck using pyright"""
     run([PYRIGHT, *PYRIGHTOPTS])
 
 
-@app.command(rich_help_panel="Code Quality")
-def test_full():
-    """Run all tests"""
-    run([PYTEST, TESTDIR])
-
-
-@app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Tests")
 def test():
-    """Run unit tests (Run this before making a pull request!)"""
+    """Run unit tests"""
     run([PYTEST, UNITTESTS])
+
+
+@app.command(rich_help_panel="Tests")
+def test_full():
+    """Run unit and integration tests"""
+    run([PYTEST, TESTDIR])
 
 
 # @app.command(rich_help_panel="Shell Completion")
