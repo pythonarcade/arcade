@@ -460,7 +460,7 @@ def ruff_isort(check: bool = False):
     run([RUFF, *RUFFOPTS_ISORT, RUFFOPTS_PACKAGE])
 
 
-# @app.command(rich_help_panel="Code Quality")
+@app.command(rich_help_panel="Code Quality")
 def mypy():
     """Typecheck using mypy"""
     run([MYPY, *MYPYOPTS])
