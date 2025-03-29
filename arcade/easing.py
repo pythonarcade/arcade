@@ -23,6 +23,9 @@ class EasingData:
     ease_function: Callable
 
     def reset(self) -> None:
+        """
+        Reset the easing data to its initial state.
+        """
         self.cur_period = self.start_period
 
 

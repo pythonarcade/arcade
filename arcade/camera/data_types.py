@@ -427,7 +427,16 @@ class Projector(Protocol):
         ...
 
     @contextmanager
-    def activate(self) -> Generator[Self, None, None]: ...
+    def activate(self) -> Generator[Self, None, None]:
+        """
+        Activate this projector for rendering.
+
+        This is a context manager and should be used with a ``with`` statement::
+
+            with projector.activate():
+                # Render with this projector
+        """
+        ...
 
     def project(self, world_coordinate: Point) -> Vec2:
         """

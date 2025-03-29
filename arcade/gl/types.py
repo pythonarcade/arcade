@@ -192,11 +192,17 @@ class AttribFormat:
         location=0,
     ):
         self.name = name
+        """The name of the attribute in the program"""
         self.gl_type = gl_type
+        """The OpenGL type of the attribute"""
         self.components = components
+        """Number of components for this attribute (1, 2, 3 or 4)"""
         self.bytes_per_component = bytes_per_component
+        """How many bytes for a single component"""
         self.offset = offset
+        """Offset of the attribute in the buffer"""
         self.location = location
+        """Location of the attribute in the program"""
 
     @property
     def bytes_total(self) -> int:
@@ -408,13 +414,19 @@ class TypeInfo:
         self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int
     ):
         self.name = name
+        """The string representation of this type"""
         self.enum = enum
+        """The OpenEL enum of this type"""
         self.gl_type = gl_type
+        """The base OpenGL data type"""
         self.gl_size = gl_size
+        """The size of the base OpenGL data type"""
         self.components = components
+        """The number of components (1, 2, 3 or 4)"""
 
     @property
     def size(self) -> int:
+        """The total size of this type in bytes"""
         return self.gl_size * self.components
 
     def __repr__(self) -> str:

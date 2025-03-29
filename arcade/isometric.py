@@ -5,6 +5,17 @@ from arcade.types import RGBA255
 def isometric_grid_to_screen(
     tile_x: int, tile_y: int, width: int, height: int, tile_width: int, tile_height: int
 ) -> tuple[int, int]:
+    """
+    Convert isometric grid coordinates to screen coordinates.
+
+    Args:
+        tile_x: The x coordinate of the tile in the isometric grid.
+        tile_y: The y coordinate of the tile in the isometric grid.
+        width: The width of the screen.
+        height: The height of the screen.
+        tile_width: The width of a tile in pixels.
+        tile_height: The height of a tile in pixels.
+    """
     screen_x = tile_width * tile_x // 2 + height * tile_width // 2 - tile_y * tile_width // 2
     screen_y = (
         (height - tile_y - 1) * tile_height // 2
@@ -17,6 +28,17 @@ def isometric_grid_to_screen(
 def screen_to_isometric_grid(
     screen_x: int, screen_y: int, width: int, height: int, tile_width: int, tile_height: int
 ) -> tuple[int, int]:
+    """
+    Convert screen coordinates to isometric grid coordinates.
+
+    Args:
+        screen_x: The x coordinate on the screen.
+        screen_y: The y coordinate on the screen.
+        width: The width of the screen.
+        height: The height of the screen.
+        tile_width: The width of a tile in pixels.
+        tile_height: The height of a tile in pixels.
+    """
     x2 = (1 / tile_width * screen_x / 2 - 1 / tile_height * screen_y / 2 + width / 2) * 2 - (
         width / 2 + 0.5
     )
@@ -31,6 +53,17 @@ def screen_to_isometric_grid(
 def create_isometric_grid_lines(
     width: int, height: int, tile_width: int, tile_height: int, color: RGBA255, line_width: int
 ) -> ShapeElementList:
+    """
+    Create a ShapeElementList of isometric grid lines.
+
+    Args:
+        width: The width of the grid in tiles.
+        height: The height of the grid in tiles.
+        tile_width: The width of a tile in pixels.
+        tile_height: The height of a tile in pixels.
+        color: The color of the lines.
+        line_width: The width of the lines.
+    """
     # Grid lines 1
     shape_list: ShapeElementList = ShapeElementList()
 
