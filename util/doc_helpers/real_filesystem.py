@@ -109,10 +109,10 @@ def copy_media(
         done = set()
     logging.info("")
     for dir_name, sub_items in items.items():
-        print(f"    Copying... {' '.join(map(repr, sub_items))}...")
+        log.info(f"    Copying... {' '.join(map(repr, sub_items))}...")
 
         src_sub = (src_root / dir_name).resolve()
         dest_sub = dest_root / dir_name
-        print("       from :", src_sub)
-        print("       to   :", dest_sub)
+        log.info("       from :", src_sub)
+        log.info("       to   :", dest_sub)
         sync_dir(src_sub, dest_sub, *items, done=done)

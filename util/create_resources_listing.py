@@ -266,13 +266,13 @@ def do_heading(
         ref_target: ``True`` to auto-generate it or a str to use a specific one.
     """
     out.write("\n")
-    print(f"doing heading: {heading_text!r} {relative_heading_level}")
+    log.info(f"doing heading: {heading_text!r} {relative_heading_level}")
     num_headings = len(headings_lookup)
 
     if ref_target is True:
         ref_target = f"resources-{heading_text}.rst"
     if ref_target:
-        print(f"   writing ref target {repr(heading_text)}")
+        log.info(f"   writing ref target {repr(heading_text)}")
         out.write(f".. _{ref_target.lower()}:\n\n")
 
     if relative_heading_level >= num_headings:
@@ -389,9 +389,9 @@ def process_resource_directory(out, dir: Path):
         file_list = filter_dir(path, keep=is_unskipped_file)
         num_files = len(file_list)
         if num_files <= 0:
-            print(f" SKIP: No files... {num_files}")
+            log.info(f" SKIP: No files... {num_files}")
         else:
-            print("  HAS FILES!")
+            log.info("  HAS FILES!")
             handle_raw = path_as_resource_handle(path, suffix="/")
             config: HandleLevelConfigDict = RESOURCE_HANDLE_CONFIGS.get(handle_raw, {})
             resource_handle = handle_raw.removesuffix('./')
@@ -408,28 +408,31 @@ def process_resource_directory(out, dir: Path):
                 handle_steps_wholes.append(
                     f"{handle_steps_wholes[-1]}{handle_step_whole}/")
 
-            print("  Subdir Config:")
+            log.info("  Subdir Config:")
             _l = locals()
             for k in filter(lambda _k: 'handle' in _k and('steps' in _k or _k.count('_') <2), _l.keys()):
-                print(f"    {k} : {_l.get(k, None)!r}" if k else '')
+                log.info(f"    {k} : {_l.get(k, None)!r}" if k else '')
 
             # Process headings and render any new ones we haven't seen
             for heading_level, handle_step_whole in enumerate(handle_steps_wholes, start=0):
-                print("  heading check", (heading_level, handle_step_whole))
+                log.info("  heading check", (heading_level, handle_step_whole))
                 if handle_step_whole in SKIP_HANDLES:
-                    print("    skipping excluded")
+                    log.info("    skipping excluded")
                     continue
                 if handle_step_whole in visited_headings:
-                    print("    skipping visited")
+                    log.info("    skipping visited")
                     continue
                 visited_headings.add(handle_step_whole)
 
                 local_config = RESOURCE_HANDLE_CONFIGS.get(handle_step_whole, {})
                 local_heading_config = local_config.get('heading', {})
 
-                print("proceeding...",
-                      "\n   config         ", local_config,
-                      "\n   heading_config ", local_heading_config, sep = "")
+                log.info(
+                    ("proceeding... "
+                      f"\n   config         {local_config}", 
+                      f"\n   heading_config {local_heading_config}"
+                    )
+                )
 
                 # Heading config fetch and write
                 use_level = local_heading_config.get('level', heading_level)
@@ -442,9 +445,9 @@ def process_resource_directory(out, dir: Path):
 
                 for k, v in locals().items():
                     if k.startswith("use_"):
-                        print(repr(k), ":", repr(v))
+                        log.info("%s : %s", repr(k), repr(v))
 
-                print(f"  got target: {use_target!r}")
+                log.info(f"  got target: {use_target!r}")
                 do_heading(out, use_level, use_value, ref_target=use_target)
                 out.write(f"\n.. comment `{handle_step_whole!r}``\n\n")
 
@@ -548,7 +551,7 @@ class BrittleFontData(NamedTuple):
         face_name_pieces = (face_name_parts.get("face_name") or '').split('_')
 
         raw_name = ' '.join(face_name_pieces)
-        print(face_name_parts)
+        log.info(face_name_parts)
 
         styles = tuple(BRITTLE_CAP_WORD_REGEX.findall(
             face_name_parts.get('styles', None) or ''))
@@ -635,11 +638,11 @@ def do_filetile(out, suffix: str | None = None, state: str = None):
         p = FILETILE_DIR / f"type-{suffix.strip('.')}.png"
         log.info(f" FILETILE: {p}")
         if p.exists():
-            print(f"    KNOWN! {p.name!r}")
+            log.info(f"    KNOWN! {p.name!r}")
             name = p.name
         else:
             name = f"type-unknown.png"
-            print("    ... unknown :(")
+            log.info("    ... unknown :(")
     else:
         name = "state-error.png"
     out.write(indent(f"        ",
@@ -895,7 +898,7 @@ def resources():
     process_resource_directory(out, RESOURCE_DIR)
 
     out.close()
-    print("Done creating resources.rst")
+    log.info("Done creating resources.rst")
 
 
 vfs = Vfs()
