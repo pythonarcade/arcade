@@ -46,14 +46,14 @@ Modify the MainView
 ~~~~~~~~~~~~~~~~~~~~
 
 We are going to add a button to change the view. For drawing a button we would
-need a ``UIManager``.
+need an :py:class:`~arcade.gui.UIManager`.
 
 .. literalinclude:: menu_02.py
     :caption: Initialising the Manager
     :lines: 19-22
     :emphasize-lines: 3
 
-After initialising the manager we need to enable it when the view is shown and
+After initializing the manager we need to enable it when the view is shown and
 disable it when the view is hidden.
 
 .. literalinclude:: menu_02.py
@@ -74,12 +74,12 @@ We also need to draw the children of the menu in ``on_draw``.
     :emphasize-lines: 7
 
 Now we have successfully setup the manager, we can now add a button to the view.
-We are using ``UIAnchorLayout`` to position the button. We also setup a function
+We are using :py:class:`~arcade.gui.UIAnchorLayout` to position the button. We also setup a function
 which is called when the button is clicked.
 
   .. literalinclude:: menu_02.py
     :pyobject: MainView.__init__
-    :caption: Initialising the Button
+    :caption: Initializing the Button
     :emphasize-lines: 8-12
 
 Initialise the Menu View
@@ -123,7 +123,7 @@ First we setup buttons for resume, starting a new game, volume, options and exit
 Displaying the Buttons in a Grid
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After setting up the buttons we add them to ``UIGridLayout``, so that they can
+After setting up the buttons we add them to :py:class:`~arcade.gui.UIGridLayout`, so that they can
 displayed in a grid like manner.
 
 .. literalinclude:: menu_03.py
@@ -167,7 +167,7 @@ Adding ``on_click`` Callback for Volume and Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now we need to implement an actual menu for volume and options, for that we have
-to make a class that acts like a window. Using ``UIMouseFilterMixin`` we catch
+to make a class that acts like a window. Using :py:class:`~arcade.gui.UIMouseFilterMixin` we catch
 all the events happening for the parent and respond nothing to them. Thus
 making it act like a window/view.
 
@@ -221,7 +221,7 @@ Now you might be getting a little idea why we have edited the parameters but
 Adding a Title label
 --------------------
 
-We will be adding a ``UILabel`` that explains the menu. ``UISpace`` is a widget
+We will be adding a :py:class:`~arcade.gui.UILabel` that explains the menu. :py:class:`~arcade.gui.UISpace` is a widget
 that can be used to add space around some widget, you can set its color to the
 background color so it appears invisible.
 
@@ -236,10 +236,10 @@ Adding it to the widget layout.
     :lines: 238-239
 
 
-Adding a Input Field
+Adding an Input Field
 ~~~~~~~~~~~~~~~~~~~~~
 
-We will use ``UIInputText`` to add an input field. The ``with_border()``
+We will use :py:class:`~arcade.gui.UIInputText` to add an input field. The :py:meth:`~arcade.gui.UIWidget.with_border`
 function creates a border around the widget with color(default argument is
 black) black and thickness(default argument is 2px) 2px. Add this just below
 the title label.
@@ -263,7 +263,7 @@ in the last also for those of you who are skipping through this section :P.
 Adding a Toggle Button
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Don't go on the section title much, in Arcade the ``UITextureToggle`` is not
+Don't go on the section title much, in Arcade the :py:class:`~arcade.gui.UITextureToggle` is not
 really a button it switches between two textures when clicked. Yes, it
 functions like a button but by "is not really a button" we meant that it
 doesn't inherits the button class. We also pair it up horizontally with the
@@ -283,7 +283,7 @@ field.
 Adding a Dropdown
 ~~~~~~~~~~~~~~~~~
 
-We add a dropdown by using ``UIDropdown``.
+We add a dropdown by using :py:class:`~arcade.gui.UIDropdown`.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown
@@ -298,9 +298,9 @@ Adding it to the widget layout.
 Adding a Slider
 ~~~~~~~~~~~~~~~
 
-The final widget. In Arcade you can use ``UISlider`` to implement a slider. 
+The final widget. In Arcade you can use :py:class:`~arcade.gui.UISlider` to implement a slider. 
 Theres a functionality to style the slider, this is also present for 
-``UIFlatButton`` and ``UITextureButton``.
+:py:class:`~arcade.gui.UIFlatButton` and :py:class:`~arcade.gui.UITextureButton`.
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider
