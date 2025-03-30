@@ -228,7 +228,7 @@ Properties of a :class:`~arcade.Section`:
 Other handy :class:`~arcade.Section` properties:
 
 - block_updates: if True this section will not have the ``on_update`` method called.
-- camera: this is meant to hold a ``arcade.Camera`` but it is None by default. The SectionManager will trigger the use of the camera when is needed automatically.
+- camera: this is meant to hold a :py:class:`~arcade.Camera2D` but it is None by default. The SectionManager will trigger the use of the camera when is needed automatically.
 
 Handy :class:`~arcade.Section`: methods:
 
