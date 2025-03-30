@@ -46,7 +46,7 @@ functions, based on the key that was pressed or released, we will move our chara
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = 0
 
-In these boxes, we are modifying the ``change_x`` and ``change_y`` attributes on our
+In these boxes, we are modifying the :py:attr:`~arcade.Sprite.change_x` and :py:attr:`~arcade.Sprite.change_y` attributes on our
 player Sprite. Changing these values will not actually perform the move on the Sprite.
 In order to apply this change, we need to create a physics engine with our Sprite,
 and update the physics engine every frame. The physics engine will then be responsible
