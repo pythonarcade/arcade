@@ -36,7 +36,7 @@ def resolve_resource_path(path: str | Path) -> Path:
     If the path is a string it tries to resolve it as a resource handle
     or convert it to a Path object.
 
-    If the path is a Path object it will ``Path.resolve()`` it
+    If the path is a Path object it will :py:meth:`~pathlib.Path.resolve` it
     unless it's not absolute and return it.
 
     Example::
@@ -57,7 +57,7 @@ def resolve(path: str | Path) -> Path:
     If the path is a string it tries to resolve it as a resource handle
     or convert it to a Path object.
 
-    If the path is a Path object it will ``Path.resolve()`` it
+    If the path is a Path object it will :py:meth:`~pathlib.Path.resolve` it
     unless it's not absolute and return it.
 
     Example::
