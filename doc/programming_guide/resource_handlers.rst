@@ -221,7 +221,7 @@ Import the Path Class Before Arcade
 """""""""""""""""""""""""""""""""""
 
 To use :py:mod:`pathlib`, you usually only need to import
-py:class:`~pathlib.Path` from it.
+:py:class:`~pathlib.Path` from it.
 
 Since Python developers usually import built-ins before add-on
 libraries like Arcade, we'll do the same here:
