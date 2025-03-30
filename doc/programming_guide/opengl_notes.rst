@@ -91,7 +91,7 @@ SpriteList & Threads
 SpriteLists can be created in threads if they are
 created with the ``lazy=True`` parameters.
 This ensures OpenGL resources are not created until the
-first ``draw()`` call or ``initialize()`` is called.
+first :py:meth:`~arcade.SpriteList.draw()` call or :py:meth:`~arcade.SpriteList.initialize` is called.
 
 .. _prog-guide-gl-buffer-protocol-typing:
 
