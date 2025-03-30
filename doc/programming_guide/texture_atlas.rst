@@ -55,7 +55,7 @@ Most users will not be aware that Arcade is using a texture
 atlas under the hood. More advanced users can take advantage
 of these if they run into limitations.
 
-Arcade has a global default texture atlas stored in ``window.ctx.default_atlas``.
+Arcade has a global default texture atlas stored in :py:attr:`arcade.Window.ctx.default_atlas`.
 This is an instance of :py:class:`arcade.ArcadeContext` where the low
 level rendering API is accessed (OpenGL).
 
