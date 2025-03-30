@@ -12,7 +12,7 @@ Each sprite describes where a game object is & how to draw it. This includes:
 * Where to find the image data
 * How big the image should be
 
-The rest of this page will explain using the ``SpriteList`` class to draw
+The rest of this page will explain using the :py:class:`~arcade.SpriteList` class to draw
 sprites to the screen.
 
 
