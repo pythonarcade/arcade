@@ -113,7 +113,6 @@ class NinePatchTexture:
         self._atlas = self._custom_atlas or self._ctx.default_atlas
         self._add_to_atlas(self.texture)
 
-        print("NinePatchTexture initialized")
         self._initialized = True
 
     def initialize(self) -> None:
