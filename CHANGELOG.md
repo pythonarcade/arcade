@@ -4,7 +4,7 @@ You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 
-## Version 3.1 (unreleased)
+## Version 3.1
 
 - Drop Python 3.9 support
 - Disable shadow window on all platforms to provide a consistent experience
