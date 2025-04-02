@@ -21,6 +21,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - `arcade.gui.NinePatchTexture` is now lazy and can be created before a window exists allowing creation during imports.
   - Improve `arcade.gui.experimental.scroll_area.ScrollBar` behavior to match HTML scrollbars
 - Support drawing hitboxes using RBG or RGBA 
+- Fixed a bug causing some events to not trigger on the window's keyboard and mouse state handlers
 
 ## Version 3.0.2
 
