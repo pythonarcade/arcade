@@ -314,7 +314,8 @@ class Window(pyglet.window.Window):
 
             else:
                 self.mouse = pyglet.window.mouse.MouseStateHandler()
-                self.push_handlers(self.keyboard, self.mouse)
+                self.push_handlers(self.keyboard)
+                self.push_handlers(self.mouse)
         else:
             self.keyboard = None
             self.mouse = None
