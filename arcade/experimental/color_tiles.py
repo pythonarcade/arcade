@@ -4,8 +4,9 @@ Colored tile system using textures
 
 import random
 import struct
-from arcade.gl import geometry
+
 import arcade
+from arcade.gl import geometry
 
 
 class ColorChunk:
@@ -84,7 +85,7 @@ class ColorChunk:
 
     def read_tile(self, position: tuple[int, int]) -> tuple[int, int, int, int]:
         """Read a pixel."""
-        data = self._fbo.read(components=4, dtype="u1", viewport=(position[0], position[1], 1, 1))
+        data = self._fbo.read(components=1, dtype="u1", viewport=(position[0], position[1], 1, 1))
         return struct.unpack("B", data)
 
     def write_tile(self, position: tuple[int, int], tile_id: int):
@@ -95,7 +96,7 @@ class ColorChunk:
 
     def read(self) -> bytes:
         """Read the entire chunk"""
-        return self._fbo.read(components=4, dtype="u1")
+        return self._fbo.read(components=1, dtype="u1")
 
     def write(self, data: bytes):
         """Write the entire chunk"""
