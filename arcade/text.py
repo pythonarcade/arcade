@@ -665,7 +665,7 @@ class Text:
         """
         if not self._initialized:
             self._init_deferred()
-            
+
         left = self.left
         right = self.right
         top = self.top
