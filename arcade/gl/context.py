@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
+
 import logging
 import weakref
 from collections import deque
@@ -39,7 +41,7 @@ from .vertex_array import Geometry
 LOG = logging.getLogger(__name__)
 
 
-class Context:
+class Context(ABC):
     """
     Represents an OpenGL context. This context belongs to a pyglet window.
     normally accessed through ``window.ctx``.
@@ -898,6 +900,7 @@ class Context:
 
     # --- Resource methods ---
 
+    @abstractmethod
     def buffer(
         self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static"
     ) -> Buffer:
@@ -947,7 +950,7 @@ class Context:
             usage:
                 Buffer usage. 'static', 'dynamic' or 'stream'
         """
-        return Buffer(self, data, reserve=reserve, usage=usage)
+        pass
 
     def framebuffer(
         self,

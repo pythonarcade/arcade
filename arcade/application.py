@@ -24,6 +24,7 @@ from arcade.context import ArcadeContext
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
 from arcade.utils import is_raspberry_pi
 from arcade.window_commands import get_display_size, set_window
+from arcade.gl.provider import get_arcade_context
 
 if TYPE_CHECKING:
     from arcade.camera import Projector
@@ -274,7 +275,8 @@ class Window(pyglet.window.Window):
 
         self.push_handlers(on_resize=self._on_resize)
 
-        self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
+        self._ctx: ArcadeContext = get_arcade_context(self, gc_mode=gc_mode, gl_api=gl_api)
+        #self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         self._background_color: Color = BLACK
 
         self._current_view: View | None = None
