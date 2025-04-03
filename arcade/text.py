@@ -317,7 +317,8 @@ class Text:
         """
         The underlying pyglet.Label instance.
         """
-        self._init_deferred()
+        if not self._initialized:
+            self._init_deferred()
         return self._label
 
     def initialize(self) -> None:
