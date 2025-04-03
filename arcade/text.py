@@ -276,8 +276,9 @@ class Text:
         z: float = 0,
         **kwargs,
     ):
-        # Raises a RuntimeError if no window for better user feedback
-        arcade.get_window()
+        self._initialized = False
+        self.arguments = [text, x, y, color, font_size, width, align, font_name, bold, italic, anchor_x, anchor_y, multiline, rotation, batch, group, z]
+        self.kwargs = kwargs
 
         if align not in ("left", "center", "right"):
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
@@ -288,42 +289,64 @@ class Text:
                 f"but got {width!r}."
             )
 
-        adjusted_font = _attempt_font_name_resolution(font_name)
+        try:
+            self._init_deferred()
+        except Exception:
+            self._initialized = False
 
+    def initialize(self) -> None:
+        """
+        Manually initialize the Text if it was lazy loaded.
+        This has no effect if the Text was already initialized.
+        """
+        if self._initialized:
+            return
+        self._init_deferred()
+
+    def _init_deferred(self):
+        """
+        Deferred initialization when lazy loaded
+        """
+
+        self.arguments[7] = _attempt_font_name_resolution(self.arguments[7])
         self._label = pyglet.text.Label(
-            text=text,
-            # pyglet is lying about what it takes here and float is entirely valid
-            x=x,  # type: ignore
-            y=y,  # type: ignore
-            z=z,  # type: ignore
-            font_name=adjusted_font,
-            # TODO: Fix this upstream (Mac & Linux seem to allow float)
-            font_size=font_size,  # type: ignore
-            # use type: ignore since cast is slow & pyglet used Literal
-            anchor_x=anchor_x,  # type: ignore
-            anchor_y=anchor_y,  # type: ignore
-            color=Color.from_iterable(color),
-            width=width,
-            align=align,  # type: ignore
-            weight=pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL,
-            italic=italic,
-            multiline=multiline,
-            rotation=rotation,
-            # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
-            batch=batch,
-            group=group,
-            **kwargs,
+            text=self.arguments[0],
+            x=self.arguments[1],
+            y=self.arguments[2],
+            color=Color.from_iterable(self.arguments[3]),
+            font_size=self.arguments[4],
+            width=self.arguments[5],
+            align=self.arguments[6],
+            font_name=self.arguments[7],
+            weight=pyglet.text.Weight.BOLD if self.arguments[8] else pyglet.text.Weight.NORMAL,
+            italic=self.arguments[9],
+            anchor_x=self.arguments[10],
+            anchor_y=self.arguments[11],
+            multiline=self.arguments[12],
+            rotation=self.arguments[13],
+            batch=self.arguments[14],
+            group=self.arguments[15],
+            z=self.arguments[16],
+            **self.kwargs,
         )
+
+        self._initialized = True
 
     def __enter__(self):
         """
         Update multiple attributes of this text,
         using efficient update mechanism of the underlying ``pyglet.Label``
         """
-        self._label.begin_update()
+        if self._initialized:
+            self._label.begin_update()
+        else:
+            raise RuntimeError("Text must be initialized before entering the context.")
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._label.end_update()
+        if self._initialized:
+            self._label.end_update()
+        else:
+            raise RuntimeError("Text must be initialized before exiting the context.")
 
     @property
     def batch(self) -> pyglet.graphics.Batch | None:
@@ -331,11 +354,17 @@ class Text:
 
         Can be unset by setting to ``None``.
         """
-        return self._label.batch
+        if self._initialized:
+            return self._label.batch
+        else:
+            raise RuntimeError("Text must be initialized before accessing the batch.")
 
     @batch.setter
     def batch(self, batch: pyglet.graphics.Batch):
-        self._label.batch = batch
+        if self._initialized:
+            self._label.batch = batch
+        else:
+            raise RuntimeError("Text must be initialized before setting the batch.")
 
     @property
     def group(self) -> pyglet.graphics.Group | None:
@@ -346,11 +375,17 @@ class Text:
         batching very large sets of text needing to separate into
         groups or even mix with other pyglet batch content.
         """
-        return self._label.group
+        if self._initialized:
+            return self._label.group
+        else:
+            raise RuntimeError("Text must be initialized before accessing the group.")
 
     @group.setter
     def group(self, group: pyglet.graphics.Group):
-        self._label.group = group
+        if self._initialized:
+            self._label.group = group
+        else:
+            raise RuntimeError("Text must be initialized before setting the group.")
 
     @property
     def value(self) -> str:
@@ -359,14 +394,20 @@ class Text:
 
         The value assigned will be converted to a string.
         """
-        return self._label.text
+        if self._initialized:
+            return self._label.text
+        else:
+            raise RuntimeError("Text must be initialized before accessing the text.")
 
     @value.setter
     def value(self, value: Any):
         value = str(value)
-        if self._label.text == value:
-            return
-        self._label.text = value
+        if self._initialized:
+            if self._label.text == value:
+                return
+            self._label.text = value
+        else:
+            raise RuntimeError("Text must be initialized before setting the text.")
 
     @property
     def text(self) -> str:
@@ -377,71 +418,117 @@ class Text:
 
         This is an alias for :py:attr:`~arcade.Text.value`
         """
-        return self._label.text
+        if self._initialized:
+            return self._label.text
+        else:
+            raise RuntimeError("Text must be initialized before accessing the text.")
 
     @text.setter
     def text(self, value: Any):
         value = str(value)
-        if self._label.text == value:
-            return
-        self._label.text = value
+        if self._initialized:
+            if self._label.text == value:
+                return
+            self._label.text = value
+        else:
+            raise RuntimeError("Text must be initialized before setting the text.")
 
     @property
     def x(self) -> float:
         """Get or set the x position of the label."""
-        return self._label.x
+        if self._initialized:
+            return self._label.x
+        else:
+            raise RuntimeError("Text must be initialized before accessing the x position.")
 
     @x.setter
     def x(self, x: float) -> None:
-        if self._label.x == x:
-            return
-        self._label.x = x
+        if self._initialized:
+            if self._label.x == x:
+                return
+            self._label.x = x
+        else:
+            raise RuntimeError("Text must be initialized before setting the x position.")
 
     @property
     def y(self) -> float:
         """Get or set the y position of the label."""
-        return self._label.y
+        if self._initialized:
+            return self._label.y
+        else:
+            raise RuntimeError("Text must be initialized before accessing the y position.")
 
     @y.setter
     def y(self, y: float):
-        if self._label.y == y:
-            return
-        self._label.y = y
+        if self._initialized:
+            if self._label.y == y:
+                return
+            self._label.y = y
+        else:
+            raise RuntimeError("Text must be initialized before setting the y position.")
 
     @property
     def z(self) -> float:
         """Get or set the z position of the label."""
-        return self._label.z
+        if self._initialized:
+            return self._label.z
+        else:
+            raise RuntimeError("Text must be initialized before accessing the z position.")
 
     @z.setter
     def z(self, z: float):
-        if self._label.z == z:
-            return
-        self._label.z = z
+        if self._initialized:
+            if self._label.z == z:
+                return
+            self._label.z = z
+        else:
+            raise RuntimeError("Text must be initialized before setting the z position.")
 
     @property
     def font_name(self) -> FontNameOrNames:
         """Get or set the font name(s) for the label."""
-        if not isinstance(self._label.font_name, str):
-            return tuple(self._label.font_name)
+        if self._initialized:
+            if not isinstance(self._label.font_name, str):
+                return tuple(self._label.font_name)
+            else:
+                return self._label.font_name
         else:
-            return self._label.font_name
+            raise RuntimeError("Text must be initialized before accessing the font name.")
 
     @font_name.setter
     def font_name(self, font_name: FontNameOrNames) -> None:
-        if isinstance(font_name, str):
-            self._label.font_name = font_name
+        if self._initialized:
+            if isinstance(font_name, str):
+                self._label.font_name = font_name
+            else:
+                self._label.font_name = list(font_name)
         else:
-            self._label.font_name = list(font_name)
+            raise RuntimeError("Text must be initialized before setting the font name.")
+
+    @font_name.setter
+    def font_name(self, font_name: FontNameOrNames) -> None:
+        if self._initialized:
+            if isinstance(font_name, str):
+                self._label.font_name = font_name
+            else:
+                self._label.font_name = list(font_name)
+        else:
+            raise RuntimeError("Text must be initialized before setting the font name.")
 
     @property
     def font_size(self) -> float:
         """Get or set the font size of the label."""
-        return self._label.font_size
+        if self._initialized:
+            return self._label.font_size
+        else:
+            raise RuntimeError("Text must be initialized before accessing the font size.")
 
     @font_size.setter
-    def font_size(self, font_size: float):
-        self._label.font_size = font_size
+    def font_size(self, font_size: float) -> None:
+        if self._initialized:
+            self._label.font_size = font_size
+        else:
+            raise RuntimeError("Text must be initialized before setting the font size.")
 
     @property
     def anchor_x(self) -> str:
@@ -450,11 +537,17 @@ class Text:
 
         Options: ``"left"``, ``"center"``, or ``"right"``
         """
-        return self._label.anchor_x
+        if self._initialized:
+            return self._label.anchor_x
+        else:
+            raise RuntimeError("Text must be initialized before accessing the anchor x.")
 
     @anchor_x.setter
-    def anchor_x(self, anchor_x: str):
-        self._label.anchor_x = anchor_x  # type: ignore
+    def anchor_x(self, anchor_x: str) -> None:
+        if self._initialized:
+            self._label.anchor_x = anchor_x  # type: ignore
+        else:
+            raise RuntimeError("Text must be initialized before setting the anchor x.")
 
     @property
     def anchor_y(self) -> str:
@@ -463,29 +556,47 @@ class Text:
 
         Options : ``"top"``, ``"bottom"``, ``"center"``, or ``"baseline"``
         """
-        return self._label.anchor_y
+        if self._initialized:
+            return self._label.anchor_y
+        else:
+            raise RuntimeError("Text must be initialized before accessing the anchor y.")
 
     @anchor_y.setter
-    def anchor_y(self, anchor_y: str):
-        self._label.anchor_y = anchor_y  # type: ignore
+    def anchor_y(self, anchor_y: str) -> None:
+        if self._initialized:
+            self._label.anchor_y = anchor_y  # type: ignore
+        else:
+            raise RuntimeError("Text must be initialized before setting the anchor y.")
 
     @property
     def rotation(self) -> float:
         """Get or set the clockwise rotation"""
-        return self._label.rotation
+        if self._initialized:
+            return self._label.rotation
+        else:
+            raise RuntimeError("Text must be initialized before accessing the rotation.")
 
     @rotation.setter
-    def rotation(self, rotation: float):
-        self._label.rotation = rotation
+    def rotation(self, rotation: float) -> None:
+        if self._initialized:
+            self._label.rotation = rotation
+        else:
+            raise RuntimeError("Text must be initialized before setting the rotation.")
 
     @property
     def color(self) -> Color:
         """Get or set the text color for the label."""
-        return Color.from_iterable(self._label.color)
+        if self._initialized:
+            return Color.from_iterable(self._label.color)
+        else:
+            raise RuntimeError("Text must be initialized before accessing the color.")
 
     @color.setter
-    def color(self, color: RGBOrA255):
-        self._label.color = Color.from_iterable(color)
+    def color(self, color: RGBOrA255) -> None:
+        if self._initialized:
+            self._label.color = Color.from_iterable(color)
+        else:
+            raise RuntimeError("Text must be initialized before setting the color.")
 
     @property
     def width(self) -> int | None:
@@ -496,11 +607,17 @@ class Text:
         If you are looking for the physical size if the text, see
         :py:attr:`~arcade.Text.content_width`
         """
-        return self._label.width
+        if self._initialized:
+            return self._label.width
+        else:
+            raise RuntimeError("Text must be initialized before accessing the width.")
 
     @width.setter
-    def width(self, width: int):
-        self._label.width = width
+    def width(self, width: int) -> None:
+        if self._initialized:
+            self._label.width = width
+        else:
+            raise RuntimeError("Text must be initialized before setting the width.")
 
     @property
     def height(self) -> int | None:
@@ -511,51 +628,81 @@ class Text:
         If you are looking for the physical size if the text, see
         :py:attr:`~arcade.Text.content_height`
         """
-        return self._label.height
+        if self._initialized:
+            return self._label.height
+        else:
+            raise RuntimeError("Text must be initialized before accessing the height.")
 
     @height.setter
-    def height(self, value: int):
-        self._label.height = value
+    def height(self, value: int) -> None:
+        if self._initialized:
+            self._label.height = value
+        else:
+            raise RuntimeError("Text must be initialized before setting the height.")
 
     @property
-    def size(self):
+    def size(self) -> tuple[int, int]:
         """Get the size of the label."""
-        return self._label.width, self._label.height
+        if self._initialized:
+            return self._label.width, self._label.height
+        else:
+            raise RuntimeError("Text must be initialized before accessing the size.")
 
     @property
     def content_width(self) -> int:
         """Get the pixel width of the text contents."""
-        return self._label.content_width
+        if self._initialized:
+            return self._label.content_width
+        else:
+            raise RuntimeError("Text must be initialized before accessing the content width.")
 
     @property
     def content_height(self) -> int:
         """Get the pixel height of the text content."""
-        return self._label.content_height
+        if self._initialized:
+            return self._label.content_height
+        else:
+            raise RuntimeError("Text must be initialized before accessing the content height.")
 
     @property
     def left(self) -> float:
         """Pixel location of the left content border."""
-        return self._label.left
+        if self._initialized:
+            return self._label.left
+        else:
+            raise RuntimeError("Text must be initialized before accessing the left content border.")
 
     @property
     def right(self) -> float:
         """Pixel location of the right content border."""
-        return self._label.right
+        if self._initialized:
+            return self._label.right
+        else:
+            raise RuntimeError("Text must be initialized before accessing the right content border.")
 
     @property
     def top(self) -> float:
         """Pixel location of the top content border."""
-        return self._label.top
+        if self._initialized:
+            return self._label.top
+        else:
+            raise RuntimeError("Text must be initialized before accessing the top content border.")
 
     @property
     def bottom(self) -> float:
         """Pixel location of the bottom content border."""
-        return self._label.bottom
+        if self._initialized:
+            return self._label.bottom
+        else:
+            raise RuntimeError("Text must be initialized before accessing the bottom content border.")
 
     @property
     def content_size(self) -> tuple[int, int]:
         """Get the pixel width and height of the text contents."""
-        return self._label.content_width, self._label.content_height
+        if self._initialized:
+            return self._label.content_width, self._label.content_height
+        else:
+            raise RuntimeError("Text must be initialized before accessing the content size.")
 
     @property
     def align(self) -> str:
@@ -563,11 +710,17 @@ class Text:
 
         Valid options: ``"left"``, ``"center"``, ``"right"``.
         """
-        return self._label.get_style("align")  # type: ignore
+        if self._initialized:
+            return self._label.get_style("align")  # type: ignore
+        else:
+            raise RuntimeError("Text must be initialized before accessing the align property.")
 
     @align.setter
     def align(self, align: str):
-        self._label.set_style("align", align)
+        if self._initialized:
+            self._label.set_style("align", align)
+        else:
+            raise RuntimeError("Text must be initialized before setting the align property.")
 
     @property
     def bold(self) -> bool | str:
@@ -583,29 +736,47 @@ class Text:
         * ``"light"``
 
         """
-        return self._label.weight == pyglet.text.Weight.BOLD
+        if self._initialized:
+            return self._label.weight == pyglet.text.Weight.BOLD
+        else:
+            raise RuntimeError("Text must be initialized before accessing the bold property.")
 
     @bold.setter
     def bold(self, bold: bool | str):
-        self._label.weight = pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL
+        if self._initialized:
+            self._label.weight = pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL
+        else:
+            raise RuntimeError("Text must be initialized before setting the bold property.")
 
     @property
     def italic(self) -> bool | str:
         """Get or set the italic state of the label."""
-        return self._label.italic
+        if self._initialized:
+            return self._label.italic
+        else:
+            raise RuntimeError("Text must be initialized before accessing the italic property.")
 
     @italic.setter
     def italic(self, italic: bool | str):
-        self._label.italic = italic
+        if self._initialized:
+            self._label.italic = italic
+        else:
+            raise RuntimeError("Text must be initialized before setting the italic property.")
 
     @property
     def multiline(self) -> bool:
         """Get or set the multiline flag of the label."""
-        return self._label.multiline
+        if self._initialized:
+            return self._label.multiline
+        else:
+            raise RuntimeError("Text must be initialized before accessing the multiline property.")
 
     @multiline.setter
     def multiline(self, multiline: bool):
-        self._label.multiline = multiline
+        if self._initialized:
+            self._label.multiline = multiline
+        else:
+            raise RuntimeError("Text must be initialized before setting the multiline property.")
 
     def draw(self) -> None:
         """
@@ -618,6 +789,8 @@ class Text:
             instance. For information on how to do this, see
             :ref:`sprite_move_scrolling`.
         """
+        if not self._initialized:
+            self._init_deferred()
         _draw_pyglet_label(self._label)
 
     def draw_debug(
@@ -635,6 +808,8 @@ class Text:
             background_color: Color the content background
             outline_color: Color of the content outline
         """
+        if not self._initialized:
+            self._init_deferred()
         left = self.left
         right = self.right
         top = self.top
@@ -659,17 +834,23 @@ class Text:
         This is faster than setting x and y position separately
         because the underlying geometry only needs to change position once.
         """
-        return self._label.x, self._label.y
+        if self._initialized:
+            return self._label.x, self._label.y
+        else:
+            raise RuntimeError("Text must be initialized before accessing the position.")
 
     @position.setter
     def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
-        x, y, *z = point
+        if self._initialized:
+            x, y, *z = point
 
-        if z:
-            self._label.position = x, y, z[0]
+            if z:
+                self._label.position = x, y, z[0]
+            else:
+                self._label.position = x, y, self._label.z
         else:
-            self._label.position = x, y, self._label.z
+            raise RuntimeError("Text must be initialized before setting the position.")
 
     @property
     def tracking(self) -> float | None:
@@ -683,26 +864,38 @@ class Text:
         Returns:
             a pixel amount, or None if the tracking is inconsistent.
         """
-        kerning = self._label.get_style("kerning")
-        return kerning if kerning != pyglet.text.document.STYLE_INDETERMINATE else None
+        if self._initialized:
+            kerning = self._label.get_style("kerning")
+            return kerning if kerning != pyglet.text.document.STYLE_INDETERMINATE else None
+        else:
+            raise RuntimeError("Text must be initialized before accessing the tracking.")
 
     @tracking.setter
     def tracking(self, value: float):
-        self._label.set_style("kerning", value)
+        if self._initialized:
+            self._label.set_style("kerning", value)
+        else:
+            raise RuntimeError("Text must be initialized before setting the tracking.")
 
     def em_to_px(self, em: float) -> float:
         """Convert from an em value to a pixel amount.
 
         1em is defined as ``font_size`` pt.
         """
-        return (em * self.font_size) * (4 / 3)
+        if not self._initialized:
+            return (em * self.font_size) * (4 / 3)
+        else:
+            raise RuntimeError("Text must be initialized before converting from em to px.")
 
     def px_to_em(self, px: float) -> float:
         """Convert from a pixel amount to a value in ems.
 
         1em is defined as ``font_size`` pt.
         """
-        return px / (4 / 3) / self.font_size
+        if not self._initialized:
+            return px / (4 / 3) / self.font_size
+        else:
+            raise RuntimeError("Text must be initialized before converting from px to em.")
 
 
 def create_text_sprite(
