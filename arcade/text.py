@@ -156,6 +156,7 @@ def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     assert isinstance(label, pyglet.text.Label)
     label.draw()
 
+
 class Text:
     """
     An object-oriented way to draw text to the screen.
@@ -276,8 +277,25 @@ class Text:
         **kwargs,
     ):
         self._initialized = False
-        self._arguments = [text, x, y, color, font_size, width, align, font_name, bold,
-                            italic, anchor_x, anchor_y, multiline, rotation, batch, group, z]
+        self._arguments = [
+            text,
+            x,
+            y,
+            color,
+            font_size,
+            width,
+            align,
+            font_name,
+            bold,
+            italic,
+            anchor_x,
+            anchor_y,
+            multiline,
+            rotation,
+            batch,
+            group,
+            z,
+        ]
         self._kwargs = kwargs
 
         if align not in ("left", "center", "right"):
@@ -731,6 +749,7 @@ class Text:
         1em is defined as ``font_size`` pt.
         """
         return px / (4 / 3) / self.font_size
+
 
 def create_text_sprite(
     text: str,
