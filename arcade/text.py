@@ -337,7 +337,7 @@ class Text:
 
         arcade.get_window()
 
-        self._arguments["font_name"] = _attempt_font_name_resolution(self._arguments["font_name"])
+        self._arguments["font_name"] = _attempt_font_name_resolution(self._arguments["font_name"])  # type: ignore
         self._label = pyglet.text.Label(**self._arguments)
 
         self._initialized = True
