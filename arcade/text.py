@@ -156,7 +156,6 @@ def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     assert isinstance(label, pyglet.text.Label)
     label.draw()
 
-
 class Text:
     """
     An object-oriented way to draw text to the screen.
@@ -194,7 +193,7 @@ class Text:
        The text instances an also be modified while in the batch
        such as changing the text value, position, or color.
 
-    The constructor _arguments work identically to those of
+    The constructor arguments work identically to those of
     :py:func:`~arcade.draw_text`. See its documentation for in-depth
     explanation for how to use each of them. For example code, see :ref:`drawing_text_objects`.
 
@@ -223,7 +222,7 @@ class Text:
         group: The specific group in a a batch to add the text to
             (for batch rendering text)
 
-    All constructor _arguments other than ``text`` have a corresponding
+    All constructor arguments other than ``text`` have a corresponding
     property. To access the current text, use the ``value`` property
     instead.
 
