@@ -295,6 +295,14 @@ class Text:
         except Exception:
             self._initialized = False
 
+    @property
+    def label(self) -> pyglet.text.Label:
+        """
+        The underlying pyglet.Label instance.
+        """
+        self._init_deferred()
+        return self._label
+
     def initialize(self) -> None:
         """
         Manually initialize the Text if it was lazy loaded.
@@ -309,8 +317,10 @@ class Text:
         Deferred initialization when lazy loaded
         """
 
+        arcade.get_window()
+
         self._arguments[7] = _attempt_font_name_resolution(self._arguments[7])
-        self.label = pyglet.text.Label(
+        self._label = pyglet.text.Label(
             text=self._arguments[0],
             x=self._arguments[1],
             y=self._arguments[2],
@@ -332,16 +342,6 @@ class Text:
         )
 
         self._initialized = True
-
-    @property
-    def label(self) -> pyglet.text.Label | None:
-        """
-        The underlying pyglet.Label instance.
-        """
-        if self._initialized:
-            return self._label
-        else:
-            raise RuntimeError("Text has not been initialized.")
 
     def __enter__(self):
         """
@@ -646,6 +646,7 @@ class Text:
             instance. For information on how to do this, see
             :ref:`sprite_move_scrolling`.
         """
+        self._init_deferred()
         _draw_pyglet_label(self.label)
 
     def draw_debug(
