@@ -641,7 +641,7 @@ class Text:
             raise RuntimeError("Text must be initialized before setting the height.")
 
     @property
-    def size(self) -> tuple[int, int] | None:
+    def size(self) -> tuple[int | None, int | None]:
         """Get the size of the label."""
         if self._initialized:
             return self._label.width, self._label.height
