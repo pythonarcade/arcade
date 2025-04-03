@@ -276,7 +276,6 @@ class Text:
         z: float = 0,
         **kwargs,
     ):
-        self._initialized = False
         self._arguments = dict(
             text=text,
             x=x,
@@ -645,7 +644,8 @@ class Text:
             instance. For information on how to do this, see
             :ref:`sprite_move_scrolling`.
         """
-        self._init_deferred()
+        if not self._initialized:
+            self._init_deferred()
         _draw_pyglet_label(self.label)
 
     def draw_debug(
@@ -663,6 +663,9 @@ class Text:
             background_color: Color the content background
             outline_color: Color of the content outline
         """
+        if not self._initialized:
+            self._init_deferred()
+            
         left = self.left
         right = self.right
         top = self.top
