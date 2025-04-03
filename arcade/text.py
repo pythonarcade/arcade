@@ -277,7 +277,7 @@ class Text:
         **kwargs,
     ):
         self._initialized = False
-        self.arguments = [text, x, y, color, font_size, width, align, font_name, bold, 
+        self.arguments = [text, x, y, color, font_size, width, align, font_name, bold,
                           italic, anchor_x, anchor_y, multiline, rotation, batch, group, z]
         self.kwargs = kwargs
 
@@ -642,7 +642,7 @@ class Text:
             raise RuntimeError("Text must be initialized")
 
     @property
-    def size(self) -> tuple[int, int] | None:
+    def size(self) -> tuple[int | None, int | None]:
         """Get the size of the label."""
         if self._initialized:
             return self._label.width, self._label.height
