@@ -277,26 +277,26 @@ class Text:
         **kwargs,
     ):
         self._initialized = False
-        self._arguments = [
-            text,
-            x,
-            y,
-            color,
-            font_size,
-            width,
-            align,
-            font_name,
-            bold,
-            italic,
-            anchor_x,
-            anchor_y,
-            multiline,
-            rotation,
-            batch,
-            group,
-            z,
-        ]
-        self._kwargs = kwargs
+        self._arguments = dict(
+            text=text,
+            x=x,
+            y=y,
+            color=Color.from_iterable(color),
+            font_size=font_size,
+            width=width,
+            align=align,
+            font_name=font_name,
+            weight=pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL,
+            italic=italic,
+            anchor_x=anchor_x,
+            anchor_y=anchor_y,
+            multiline=multiline,
+            rotation=rotation,
+            batch=batch,
+            group=group,
+            z=z,
+            **kwargs,
+        )
 
         if align not in ("left", "center", "right"):
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
@@ -337,27 +337,8 @@ class Text:
 
         arcade.get_window()
 
-        self._arguments[7] = _attempt_font_name_resolution(self._arguments[7])
-        self._label = pyglet.text.Label(
-            text=self._arguments[0],
-            x=self._arguments[1],
-            y=self._arguments[2],
-            color=Color.from_iterable(self._arguments[3]),
-            font_size=self._arguments[4],
-            width=self._arguments[5],
-            align=self._arguments[6],
-            font_name=self._arguments[7],
-            weight=pyglet.text.Weight.BOLD if self._arguments[8] else pyglet.text.Weight.NORMAL,
-            italic=self._arguments[9],
-            anchor_x=self._arguments[10],
-            anchor_y=self._arguments[11],
-            multiline=self._arguments[12],
-            rotation=self._arguments[13],
-            batch=self._arguments[14],
-            group=self._arguments[15],
-            z=self._arguments[16],
-            **self._kwargs,
-        )
+        self._arguments["font_name"] = _attempt_font_name_resolution(self._arguments["font_name"])
+        self._label = pyglet.text.Label(**self._arguments)
 
         self._initialized = True
 
