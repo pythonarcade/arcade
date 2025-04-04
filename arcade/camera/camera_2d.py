@@ -453,7 +453,7 @@ class Camera2D:
             self.scissor = value
 
         if position:
-            self.position = -self._projection_data.left, -self._projection_data.bottom
+            self.position = Vec2(-self._projection_data.left, -self._projection_data.bottom)
 
     def aabb(self) -> Rect:
         """
