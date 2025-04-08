@@ -29,7 +29,6 @@ from ..types import BufferProtocol
 from .buffer import Buffer
 from .compute_shader import ComputeShader
 from .framebuffer import DefaultFrameBuffer, Framebuffer
-from .glsl import ShaderSource
 from .program import Program
 from .query import Query
 from .sampler import Sampler
@@ -970,6 +969,7 @@ class Context(ABC):
             self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
         )
 
+    @abstractmethod
     def texture(
         self,
         size: Tuple[int, int],
@@ -1055,23 +1055,7 @@ class Context(ABC):
                 Set to True if you are passing in raw compressed pixel data.
                 This implies ``compressed=True``.
         """
-        compressed = compressed or compressed_data
-
-        return Texture2D(
-            self,
-            size,
-            components=components,
-            data=data,
-            dtype=dtype,
-            wrap_x=wrap_x,
-            wrap_y=wrap_y,
-            filter=filter,
-            samples=samples,
-            immutable=immutable,
-            internal_format=internal_format,
-            compressed=compressed,
-            compressed_data=compressed_data,
-        )
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     def texture_array(
         self,
@@ -1107,6 +1091,7 @@ class Context(ABC):
             filter=filter,
         )
 
+    @abstractmethod
     def depth_texture(
         self, size: Tuple[int, int], *, data: BufferProtocol | None = None
     ) -> Texture2D:
@@ -1121,7 +1106,7 @@ class Context(ABC):
                 The texture data. Can be``bytes`` or any object
                 supporting the buffer protocol.
         """
-        return Texture2D(self, size, data=data, depth=True)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     def sampler(self, texture: Texture2D) -> Sampler:
         """
@@ -1219,6 +1204,7 @@ class Context(ABC):
         """
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def program(
         self,
         *,
@@ -1277,6 +1263,7 @@ class Context(ABC):
         """
         return Query(self, samples=samples, time=time, primitives=primitives)
 
+    @abstractmethod
     def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> ComputeShader:
         """
         Create a compute shader.
@@ -1287,8 +1274,7 @@ class Context(ABC):
             common:
                 Common / library source injected into compute shader
         """
-        src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)
-        return ComputeShader(self, src.get_source())
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
 
 class ContextStats:

@@ -1,4 +1,4 @@
-from typing import List, Dict, Sequence
+from typing import List, Dict, Iterable, Sequence, Tuple
 
 from arcade.gl.context import Context
 from arcade.context import ArcadeContext
@@ -7,10 +7,14 @@ import pyglet
 
 from arcade.types import BufferProtocol
 
+from .types import PyGLenum
+
 from .buffer import GLBuffer
+from .compute_shader import GLComputeShader
 from .glsl import ShaderSource
 from .types import BufferDescription
 from .program import GLProgram
+from .texture import GLTexture2D
 from .vertex_array import GLGeometry
 
 class GLContext(Context):
@@ -90,6 +94,48 @@ class GLContext(Context):
             index_element_size=index_element_size,
         )
 
+    def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> GLComputeShader:
+        src = ShaderSource(self, source, common, pyglet.gl.GL_COMPUTE_SHADER)
+        return GLComputeShader(self, src.get_source())
+
+    def texture(
+        self,
+        size: Tuple[int, int],
+        *,
+        components: int = 4,
+        dtype: str = "f1",
+        data: BufferProtocol | None = None,
+        wrap_x: PyGLenum | None = None,
+        wrap_y: PyGLenum | None = None,
+        filter: Tuple[PyGLenum, PyGLenum] | None = None,
+        samples: int = 0,
+        immutable: bool = False,
+        internal_format: PyGLenum | None = None,
+        compressed: bool = False,
+        compressed_data: bool = False,
+    ) -> GLTexture2D:
+        compressed = compressed or compressed_data
+
+        return GLTexture2D(
+            self,
+            size,
+            components=components,
+            data=data,
+            dtype=dtype,
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            filter=filter,
+            samples=samples,
+            immutable=immutable,
+            internal_format=internal_format,
+            compressed=compressed,
+            compressed_data=compressed_data,
+        )
+
+    def depth_texture(
+            self, size: Tuple[int, int], *, data: BufferProtocol | None = None
+    ) -> GLTexture2D:
+        return GLTexture2D(self, size, data=data, depth=True)
 
 class GLArcadeContext(ArcadeContext, GLContext):
     def __init__(self, *args, **kwargs):
