@@ -16,8 +16,9 @@ def set_provider(provider_name: str):
     try:
         module = importlib.import_module(f"arcade.gl.backends.{provider_name}.provider")
         _current_provider = module.Provider()
-    except ImportError:
-        raise ImportError(f"GL Backend Provider '{provider_name}' not found")
+    except ImportError as e:
+        print(e)
+        raise ImportError(f"arcade.gl Backend Provider '{provider_name}' not found")
 
 
 def get_context(*args, **kwargs) -> Context:

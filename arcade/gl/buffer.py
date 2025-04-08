@@ -43,9 +43,6 @@ class Buffer(ABC):
     def __init__(
         self,
         ctx: Context,
-        data: BufferProtocol | None = None,
-        reserve: int = 0,
-        usage: str = "static",
     ):
         self._ctx = ctx
         self._size = -1

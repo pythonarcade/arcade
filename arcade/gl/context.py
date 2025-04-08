@@ -950,7 +950,7 @@ class Context(ABC):
             usage:
                 Buffer usage. 'static', 'dynamic' or 'stream'
         """
-        pass
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     def framebuffer(
         self,
@@ -1133,13 +1133,14 @@ class Context(ABC):
         """
         return Sampler(self, texture)
 
+    @abstractmethod
     def geometry(
         self,
         content: Sequence[BufferDescription] | None = None,
         index_buffer: Buffer | None = None,
         mode: int | None = None,
         index_element_size: int = 4,
-    ):
+    ) -> Geometry:
         """
         Create a Geometry instance. This is Arcade's version of a vertex array adding
         a lot of convenience for the user. Geometry objects are fairly light. They are
@@ -1216,13 +1217,7 @@ class Context(ABC):
                 In other words, the index buffer can be 1, 2 or 4 byte integers.
                 Can be 1, 2 or 4 (8, 16 or 32 bit unsigned integer)
         """
-        return Geometry(
-            self,
-            content,
-            index_buffer=index_buffer,
-            mode=mode,
-            index_element_size=index_element_size,
-        )
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     def program(
         self,
@@ -1269,47 +1264,7 @@ class Context(ABC):
                 Based on these settings the ``transform()`` method will accept a single
                 buffer or a list of buffer.
         """
-        source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
-        source_fs = (
-            ShaderSource(self, fragment_shader, common, gl.GL_FRAGMENT_SHADER)
-            if fragment_shader
-            else None
-        )
-        source_geo = (
-            ShaderSource(self, geometry_shader, common, gl.GL_GEOMETRY_SHADER)
-            if geometry_shader
-            else None
-        )
-        source_tc = (
-            ShaderSource(self, tess_control_shader, common, gl.GL_TESS_CONTROL_SHADER)
-            if tess_control_shader
-            else None
-        )
-        source_te = (
-            ShaderSource(self, tess_evaluation_shader, common, gl.GL_TESS_EVALUATION_SHADER)
-            if tess_evaluation_shader
-            else None
-        )
-
-        # If we don't have a fragment shader we are doing transform feedback.
-        # When a geometry shader is present the out attributes will be located there
-        out_attributes = list(varyings) if varyings is not None else []  # type: List[str]
-        if not source_fs and not out_attributes:
-            if source_geo:
-                out_attributes = source_geo.out_attributes
-            else:
-                out_attributes = source_vs.out_attributes
-
-        return Program(
-            self,
-            vertex_shader=source_vs.get_source(defines=defines),
-            fragment_shader=source_fs.get_source(defines=defines) if source_fs else None,
-            geometry_shader=source_geo.get_source(defines=defines) if source_geo else None,
-            tess_control_shader=source_tc.get_source(defines=defines) if source_tc else None,
-            tess_evaluation_shader=source_te.get_source(defines=defines) if source_te else None,
-            varyings=out_attributes,
-            varyings_capture_mode=varyings_capture_mode,
-        )
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     def query(self, *, samples=True, time=True, primitives=True) -> Query:
         """

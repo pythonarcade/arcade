@@ -60,7 +60,7 @@ class GLBuffer(Buffer):
         reserve: int = 0,
         usage: str = "static",
     ):
-        super().__init__(ctx, data, reserve, usage)
+        super().__init__(ctx)
         self._usage = _usages[usage]
         self._glo = glo = gl.GLuint()
         gl.glGenBuffers(1, byref(self._glo))
