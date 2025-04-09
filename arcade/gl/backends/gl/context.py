@@ -4,6 +4,7 @@ from arcade.gl.context import Context
 from arcade.context import ArcadeContext
 
 import pyglet
+from pyglet import gl
 
 from arcade.types import BufferProtocol
 
@@ -11,15 +12,20 @@ from .types import PyGLenum
 
 from .buffer import GLBuffer
 from .compute_shader import GLComputeShader
+from .framebuffer import GLFramebuffer, GLDefaultFrameBuffer
 from .glsl import ShaderSource
 from .types import BufferDescription
 from .program import GLProgram
 from .texture import GLTexture2D
 from .vertex_array import GLGeometry
 
+
 class GLContext(Context):
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
         super().__init__(window, gc_mode, gl_api)
+
+    def _create_default_framebuffer(self) -> GLDefaultFrameBuffer:
+        return GLDefaultFrameBuffer(self)
 
     def buffer(self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static") -> GLBuffer:
         return GLBuffer(self, data, reserve=reserve, usage=usage)
@@ -37,24 +43,24 @@ class GLContext(Context):
             varyings: Sequence[str] | None = None,
             varyings_capture_mode: str = "interleaved",
     ) -> GLProgram:
-        source_vs = ShaderSource(self, vertex_shader, common, pyglet.gl.GL_VERTEX_SHADER)
+        source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
-            ShaderSource(self, fragment_shader, common, pyglet.gl.GL_FRAGMENT_SHADER)
+            ShaderSource(self, fragment_shader, common, gl.GL_FRAGMENT_SHADER)
             if fragment_shader
             else None
         )
         source_geo = (
-            ShaderSource(self, geometry_shader, common, pyglet.gl.GL_GEOMETRY_SHADER)
+            ShaderSource(self, geometry_shader, common, gl.GL_GEOMETRY_SHADER)
             if geometry_shader
             else None
         )
         source_tc = (
-            ShaderSource(self, tess_control_shader, common, pyglet.gl.GL_TESS_CONTROL_SHADER)
+            ShaderSource(self, tess_control_shader, common, gl.GL_TESS_CONTROL_SHADER)
             if tess_control_shader
             else None
         )
         source_te = (
-            ShaderSource(self, tess_evaluation_shader, common, pyglet.gl.GL_TESS_EVALUATION_SHADER)
+            ShaderSource(self, tess_evaluation_shader, common, gl.GL_TESS_EVALUATION_SHADER)
             if tess_evaluation_shader
             else None
         )
@@ -136,6 +142,51 @@ class GLContext(Context):
             self, size: Tuple[int, int], *, data: BufferProtocol | None = None
     ) -> GLTexture2D:
         return GLTexture2D(self, size, data=data, depth=True)
+
+    def framebuffer(
+        self,
+        *,
+        color_attachments: GLTexture2D | List[GLTexture2D] | None = None,
+        depth_attachment: GLTexture2D | None = None,
+    ) -> GLFramebuffer:
+        return GLFramebuffer(
+            self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
+        )
+
+    def copy_framebuffer(
+        self,
+        src: GLFramebuffer,
+        dst: GLFramebuffer,
+        src_attachment_index: int = 0,
+        depth: bool = True,
+    ):
+        # Set source and dest framebuffer
+        gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src.glo)
+        gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, dst.glo)
+
+        # TODO: We can support blitting multiple layers here
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + src_attachment_index)
+        if dst.is_default:
+            gl.glDrawBuffer(gl.GL_BACK)
+        else:
+            gl.glDrawBuffer(gl.GL_COLOR_ATTACHMENT0)
+
+        # gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, src._glo)
+        gl.glBlitFramebuffer(
+            0,
+            0,
+            src.width,
+            src.height,  # Make source and dest size the same
+            0,
+            0,
+            src.width,
+            src.height,
+            gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT,
+            gl.GL_NEAREST,
+        )
+
+        # Reset states. We can also apply previous states here
+        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)
 
 class GLArcadeContext(ArcadeContext, GLContext):
     def __init__(self, *args, **kwargs):

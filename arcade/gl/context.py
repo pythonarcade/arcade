@@ -242,7 +242,7 @@ class Context(ABC):
         self.default_texture_unit: int = self._info.MAX_TEXTURE_IMAGE_UNITS - 1
 
         # Detect the default framebuffer
-        self._screen = DefaultFrameBuffer(self)
+        self._screen = self._create_default_framebuffer()
         # Tracking active program
         self.active_program: Program | ComputeShader | None = None
         # Tracking active framebuffer. On context creation the window is the default render target
@@ -296,6 +296,10 @@ class Context(ABC):
         #: Collected objects to gc when gc_mode is "context_gc".
         #: This can be used during debugging.
         self.objects: Deque[Any] = deque()
+
+    @abstractmethod
+    def _create_default_framebuffer(self) -> DefaultFrameBuffer:
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def info(self) -> GLInfo:
@@ -839,6 +843,7 @@ class Context(ABC):
 
     # Various utility methods
 
+    @abstractmethod
     def copy_framebuffer(
         self,
         src: Framebuffer,
@@ -869,33 +874,7 @@ class Context(ABC):
             depth:
                 Also copy depth attachment if present
         """
-        # Set source and dest framebuffer
-        gl.glBindFramebuffer(gl.GL_READ_FRAMEBUFFER, src._glo)
-        gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, dst._glo)
-
-        # TODO: We can support blitting multiple layers here
-        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0 + src_attachment_index)
-        if dst.is_default:
-            gl.glDrawBuffer(gl.GL_BACK)
-        else:
-            gl.glDrawBuffer(gl.GL_COLOR_ATTACHMENT0)
-
-        # gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, src._glo)
-        gl.glBlitFramebuffer(
-            0,
-            0,
-            src.width,
-            src.height,  # Make source and dest size the same
-            0,
-            0,
-            src.width,
-            src.height,
-            gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT,
-            gl.GL_NEAREST,
-        )
-
-        # Reset states. We can also apply previous states here
-        gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     # --- Resource methods ---
 
@@ -951,6 +930,7 @@ class Context(ABC):
         """
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def framebuffer(
         self,
         *,
@@ -965,9 +945,7 @@ class Context(ABC):
             depth_attachment:
                 Depth texture
         """
-        return Framebuffer(
-            self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
-        )
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @abstractmethod
     def texture(
