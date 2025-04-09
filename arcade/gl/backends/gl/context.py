@@ -18,6 +18,7 @@ from .types import BufferDescription
 from .program import GLProgram
 from .sampler import GLSampler
 from .texture import GLTexture2D
+from .texture_array import GLTextureArray
 from .vertex_array import GLGeometry
 
 
@@ -198,6 +199,28 @@ class GLContext(Context):
                 The texture to create a sampler for
         """
         return GLSampler(self, texture)
+
+    def texture_array(
+        self,
+        size: Tuple[int, int, int],
+        *,
+        components: int = 4,
+        dtype: str = "f1",
+        data: BufferProtocol | None = None,
+        wrap_x: PyGLenum | None = None,
+        wrap_y: PyGLenum | None = None,
+        filter: Tuple[PyGLenum, PyGLenum] | None = None,
+    ) -> GLTextureArray:
+        return GLTextureArray(
+            self,
+            size,
+            components=components,
+            dtype=dtype,
+            data=data,
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            filter=filter,
+        )
 
 class GLArcadeContext(ArcadeContext, GLContext):
     def __init__(self, *args, **kwargs):

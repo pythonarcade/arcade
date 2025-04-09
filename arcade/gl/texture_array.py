@@ -1,28 +1,19 @@
 from __future__ import annotations
 
-import weakref
-from ctypes import byref, string_at
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from pyglet import gl
-
 from ..types import BufferProtocol
-from .buffer import Buffer
 from .types import (
     BufferOrBufferProtocol,
-    PyGLuint,
-    compare_funcs,
     pixel_formats,
-    swizzle_enum_to_str,
-    swizzle_str_to_enum,
 )
-from .utils import data_to_ctypes
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
 
 
-class TextureArray:
+class TextureArray(ABC):
     """
     An OpenGL 2D texture array.
 
@@ -86,12 +77,10 @@ class TextureArray:
 
     __slots__ = (
         "_ctx",
-        "_glo",
         "_width",
         "_height",
         "_layers",
         "_dtype",
-        "_target",
         "_components",
         "_alignment",
         "_depth",
@@ -119,25 +108,22 @@ class TextureArray:
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
-        filter: tuple[PyGLuint, PyGLuint] | None = None,
-        wrap_x: PyGLuint | None = None,
-        wrap_y: PyGLuint | None = None,
-        target=gl.GL_TEXTURE_2D_ARRAY,
+        filter = None,
+        wrap_x = None,
+        wrap_y = None,
         depth=False,
         samples: int = 0,
         immutable: bool = False,
-        internal_format: PyGLuint | None = None,
+        internal_format = None,
         compressed: bool = False,
         compressed_data: bool = False,
     ):
-        self._glo = glo = gl.GLuint()
         self._ctx = ctx
         self._width, self._height, self._layers = size
         self._dtype = dtype
         self._components = components
         self._component_size = 0
         self._alignment = 1
-        self._target = target
         self._samples = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
         self._depth = depth
         self._immutable = immutable
@@ -146,15 +132,6 @@ class TextureArray:
         self._internal_format = internal_format
         self._compressed = compressed
         self._compressed_data = compressed_data
-        # Default filters for float and integer textures
-        # Integer textures should have NEAREST interpolation
-        # by default 3.3 core doesn't really support it consistently.
-        if "f" in self._dtype:
-            self._filter = gl.GL_LINEAR, gl.GL_LINEAR
-        else:
-            self._filter = gl.GL_NEAREST, gl.GL_NEAREST
-        self._wrap_x = gl.GL_REPEAT
-        self._wrap_y = gl.GL_REPEAT
 
         if self._components not in [1, 2, 3, 4]:
             raise ValueError("Components must be 1, 2, 3 or 4")
@@ -164,31 +141,9 @@ class TextureArray:
                 "Multisampled textures are not writable (cannot be initialized with data)"
             )
 
-        self._target = (
-            gl.GL_TEXTURE_2D_ARRAY if self._samples == 0 else gl.GL_TEXTURE_2D_MULTISAMPLE_ARRAY
-        )
-
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glGenTextures(1, byref(self._glo))
-
-        if self._glo.value == 0:
-            raise RuntimeError("Cannot create Texture. OpenGL failed to generate a texture id")
-
-        gl.glBindTexture(self._target, self._glo)
-
-        self._texture_2d_array(data)
-
-        # Only set texture parameters on non-multisample textures
-        if self._samples == 0:
-            self.filter = filter or self._filter
-            self.wrap_x = wrap_x or self._wrap_x
-            self.wrap_y = wrap_y or self._wrap_y
-
-        if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, TextureArray.delete_glo, self._ctx, glo)
-
         self.ctx.stats.incr("texture")
 
+    @abstractmethod
     def resize(self, size: tuple[int, int]):
         """
         Resize the texture. This will re-allocate the internal
@@ -199,136 +154,12 @@ class TextureArray:
         Args:
             size: The new size of the texture
         """
-        if self._immutable:
-            raise ValueError("Immutable textures cannot be resized")
-
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-
-        self._width, self._height = size
-
-        self._texture_2d_array(None)
-
-    def __del__(self):
-        # Intercept garbage collection if we are using Context.gc()
-        if self._ctx.gc_mode == "context_gc" and self._glo.value > 0:
-            self._ctx.objects.append(self)
-
-    def _texture_2d_array(self, data):
-        """Create a 2D texture"""
-        # Start by resolving the texture format
-        try:
-            format_info = pixel_formats[self._dtype]
-        except KeyError:
-            raise ValueError(
-                f"dype '{self._dtype}' not support. Supported types are : "
-                f"{tuple(pixel_formats.keys())}"
-            )
-        _format, _internal_format, self._type, self._component_size = format_info
-        if data is not None:
-            byte_length, data = data_to_ctypes(data)
-            self._validate_data_size(data, byte_length, self._width, self._height, self._layers)
-
-        # If we are dealing with a multisampled texture we have less options
-        if self._target == gl.GL_TEXTURE_2D_MULTISAMPLE_ARRAY:
-            gl.glTexImage3DMultisample(
-                self._target,
-                self._samples,
-                _internal_format[self._components],
-                self._width,
-                self._height,
-                self._layers,
-                True,  # Fixed sample locations
-            )
-            return
-
-        # Make sure we unpack the pixel data with correct alignment
-        # or we'll end up with corrupted textures
-        gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, self._alignment)
-        gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, self._alignment)
-
-        # Create depth 2d texture
-        if self._depth:
-            gl.glTexImage3D(
-                self._target,
-                0,  # level
-                gl.GL_DEPTH_COMPONENT24,
-                self._width,
-                self._height,
-                self._layers,
-                0,
-                gl.GL_DEPTH_COMPONENT,
-                gl.GL_UNSIGNED_INT,  # gl.GL_FLOAT,
-                data,
-            )
-            self.compare_func = "<="
-        # Create normal 2d texture
-        else:
-            try:
-                self._format = _format[self._components]
-                if self._internal_format is None:
-                    self._internal_format = _internal_format[self._components]
-
-                if self._immutable:
-                    # Specify immutable storage for this texture.
-                    # glTexStorage2D can only be called once
-                    gl.glTexStorage3D(
-                        self._target,
-                        1,  # Levels
-                        self._internal_format,
-                        self._width,
-                        self._height,
-                        self._layers,
-                    )
-                    if data:
-                        self.write(data)
-                else:
-                    # glTexImage2D can be called multiple times to re-allocate storage
-                    # Specify mutable storage for this texture.
-                    if self._compressed_data is True:
-                        gl.glCompressedTexImage3D(
-                            self._target,  # target
-                            0,  # level
-                            self._internal_format,  # internal_format
-                            self._width,  # width
-                            self._height,  # height
-                            self._layers,  # layers
-                            0,  # border
-                            len(data),  # size
-                            data,  # data
-                        )
-                    else:
-                        gl.glTexImage3D(
-                            self._target,  # target
-                            0,  # level
-                            self._internal_format,  # internal_format
-                            self._width,  # width
-                            self._height,  # height
-                            self._layers,  # layers
-                            0,  # border
-                            self._format,  # format
-                            self._type,  # type
-                            data,  # data
-                        )
-            except gl.GLException as ex:
-                raise gl.GLException(
-                    (
-                        f"Unable to create texture: {ex} : dtype={self._dtype} "
-                        f"size={self.size} components={self._components} "
-                        f"MAX_TEXTURE_SIZE = {self.ctx.info.MAX_TEXTURE_SIZE}"
-                        f": {ex}"
-                    )
-                )
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def ctx(self) -> Context:
         """The context this texture belongs to."""
         return self._ctx
-
-    @property
-    def glo(self) -> gl.GLuint:
-        """The OpenGL texture id"""
-        return self._glo
 
     @property
     def compressed(self) -> bool:
@@ -391,6 +222,7 @@ class TextureArray:
         return self._immutable
 
     @property
+    @abstractmethod
     def swizzle(self) -> str:
         """
         The swizzle mask of the texture (Default ``'RGBA'``).
@@ -417,49 +249,12 @@ class TextureArray:
             # Reverse the components
             texture.swizzle = 'ABGR'
         """
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-
-        # Read the current swizzle values from the texture
-        swizzle_r = gl.GLint()
-        swizzle_g = gl.GLint()
-        swizzle_b = gl.GLint()
-        swizzle_a = gl.GLint()
-
-        gl.glGetTexParameteriv(self._target, gl.GL_TEXTURE_SWIZZLE_R, swizzle_r)
-        gl.glGetTexParameteriv(self._target, gl.GL_TEXTURE_SWIZZLE_G, swizzle_g)
-        gl.glGetTexParameteriv(self._target, gl.GL_TEXTURE_SWIZZLE_B, swizzle_b)
-        gl.glGetTexParameteriv(self._target, gl.GL_TEXTURE_SWIZZLE_A, swizzle_a)
-
-        swizzle_str = ""
-        for v in [swizzle_r, swizzle_g, swizzle_b, swizzle_a]:
-            swizzle_str += swizzle_enum_to_str[v.value]
-
-        return swizzle_str
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @swizzle.setter
+    @abstractmethod
     def swizzle(self, value: str):
-        if not isinstance(value, str):
-            raise ValueError(f"Swizzle must be a string, not '{type(str)}'")
-
-        if len(value) != 4:
-            raise ValueError("Swizzle must be a string of length 4")
-
-        swizzle_enums = []
-        for c in value:
-            try:
-                c = c.upper()
-                swizzle_enums.append(swizzle_str_to_enum[c])
-            except KeyError:
-                raise ValueError(f"Swizzle value '{c}' invalid. Must be one of RGBA01")
-
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_R, swizzle_enums[0])
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_G, swizzle_enums[1])
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_B, swizzle_enums[2])
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_SWIZZLE_A, swizzle_enums[3])
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def filter(self) -> tuple[int, int]:
@@ -493,15 +288,9 @@ class TextureArray:
         return self._filter
 
     @filter.setter
+    @abstractmethod
     def filter(self, value: tuple[int, int]):
-        if not isinstance(value, tuple) or not len(value) == 2:
-            raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
-
-        self._filter = value
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_MIN_FILTER, self._filter[0])
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_MAG_FILTER, self._filter[1])
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def wrap_x(self) -> int:
@@ -526,11 +315,9 @@ class TextureArray:
         return self._wrap_x
 
     @wrap_x.setter
+    @abstractmethod
     def wrap_x(self, value: int):
-        self._wrap_x = value
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_S, value)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def wrap_y(self) -> int:
@@ -555,11 +342,9 @@ class TextureArray:
         return self._wrap_y
 
     @wrap_y.setter
+    @abstractmethod
     def wrap_y(self, value: int):
-        self._wrap_y = value
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_WRAP_T, value)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def anisotropy(self) -> float:
@@ -567,11 +352,9 @@ class TextureArray:
         return self._anisotropy
 
     @anisotropy.setter
+    @abstractmethod
     def anisotropy(self, value):
-        self._anisotropy = max(1.0, min(value, self._ctx.info.MAX_TEXTURE_MAX_ANISOTROPY))
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-        gl.glTexParameterf(self._target, gl.GL_TEXTURE_MAX_ANISOTROPY, self._anisotropy)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def compare_func(self) -> str | None:
@@ -591,28 +374,11 @@ class TextureArray:
         return self._compare_func
 
     @compare_func.setter
+    @abstractmethod
     def compare_func(self, value: str | None):
-        if not self._depth:
-            raise ValueError("Depth comparison function can only be set on depth textures")
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-        if not isinstance(value, str) and value is not None:
-            raise ValueError(f"value must be as string: {self._compare_funcs.keys()}")
-
-        func = compare_funcs.get(value, None)
-        if func is None:
-            raise ValueError(f"value must be as string: {compare_funcs.keys()}")
-
-        self._compare_func = value
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-        if value is None:
-            gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_NONE)
-        else:
-            gl.glTexParameteri(
-                self._target, gl.GL_TEXTURE_COMPARE_MODE, gl.GL_COMPARE_REF_TO_TEXTURE
-            )
-            gl.glTexParameteri(self._target, gl.GL_TEXTURE_COMPARE_FUNC, func)
-
+    @abstractmethod
     def read(self, level: int = 0, alignment: int = 1) -> bytes:
         """
         Read the contents of the texture.
@@ -624,26 +390,9 @@ class TextureArray:
                 Alignment of the start of each row in memory in number of bytes.
                 Possible values: 1,2,4
         """
-        if self._samples > 0:
-            raise ValueError("Multisampled textures cannot be read directly")
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-        if self._ctx.gl_api == "gl":
-            gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-            gl.glBindTexture(self._target, self._glo)
-            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
-
-            buffer = (
-                gl.GLubyte
-                * (self.width * self.height * self.layers * self._component_size * self._components)
-            )()
-            gl.glGetTexImage(self._target, level, self._format, self._type, buffer)
-            return string_at(buffer, len(buffer))
-        elif self._ctx.gl_api == "gles":
-            # FIXME: Check if we can attach a layer to the framebuffer. See Texture2D.read()
-            raise ValueError("Reading texture array data not supported in GLES yet")
-        else:
-            raise ValueError("Unknown gl_api: '{self._ctx.gl_api}'")
-
+    @abstractmethod
     def write(self, data: BufferOrBufferProtocol, level: int = 0, viewport=None) -> None:
         """Write byte data into layers of the texture.
 
@@ -667,55 +416,7 @@ class TextureArray:
                 `(x, y, layer, width, height)` writes to an area of a single layer.
                 If not provided the entire texture is written to.
         """
-        # TODO: Support writing to layers using viewport + alignment
-        if self._samples > 0:
-            raise ValueError("Writing to multisampled textures not supported")
-
-        x, y, l, w, h = (
-            0,
-            0,
-            0,
-            self._width,
-            self._height,
-        )
-        if viewport:
-            # TODO: Add more options here. For now we support writing to a single layer
-            #       (width, hight, num_layers) is a suggestion from moderngl
-            # if len(viewport) == 3:
-            #     w, h, l = viewport
-            if len(viewport) == 5:
-                x, y, l, w, h = viewport
-            else:
-                raise ValueError("Viewport must be of length 5")
-
-        if isinstance(data, Buffer):
-            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, data.glo)
-            gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-            gl.glBindTexture(self._target, self._glo)
-            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
-            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-            gl.glTexSubImage3D(self._target, level, x, y, w, h, l, self._format, self._type, 0)
-            gl.glBindBuffer(gl.GL_PIXEL_UNPACK_BUFFER, 0)
-        else:
-            byte_size, data = data_to_ctypes(data)
-            self._validate_data_size(data, byte_size, w, h, 1)  # Single layer
-            gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-            gl.glBindTexture(self._target, self._glo)
-            gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, 1)
-            gl.glPixelStorei(gl.GL_UNPACK_ALIGNMENT, 1)
-            gl.glTexSubImage3D(
-                self._target,  # target
-                level,  # level
-                x,  # x offset
-                y,  # y offset
-                l,  # layer
-                w,  # width
-                h,  # height
-                1,  # depth (one layer)
-                self._format,  # format
-                self._type,  # type
-                data,  # pixel data
-            )
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     def _validate_data_size(
         self, byte_data, byte_size: int, width: int, height: int, layers: int
@@ -737,6 +438,7 @@ class TextureArray:
                 f"Data size {len(byte_data)} does not match reported size {expected_size}"
             )
 
+    @abstractmethod
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
         """Generate mipmaps for this texture.
 
@@ -765,53 +467,27 @@ class TextureArray:
 
         Also see: https://www.khronos.org/opengl/wiki/Texture#Mip_maps
         """
-        if self._samples > 0:
-            raise ValueError("Multisampled textures don't support mimpmaps")
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-        gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
-        gl.glBindTexture(self._target, self._glo)
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_BASE_LEVEL, base)
-        gl.glTexParameteri(self._target, gl.GL_TEXTURE_MAX_LEVEL, max_level)
-        gl.glGenerateMipmap(self._target)
-
+    @abstractmethod
     def delete(self):
         """
         Destroy the underlying OpenGL resource.
 
         Don't use this unless you know exactly what you are doing.
         """
-        self.delete_glo(self._ctx, self._glo)
-        self._glo.value = 0
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-    @staticmethod
-    def delete_glo(ctx: "Context", glo: gl.GLuint):
-        """
-        Destroy the texture.
-
-        This is called automatically when the object is garbage collected.
-
-        Args:
-            ctx: OpenGL Context
-            glo: The OpenGL texture id
-        """
-        # If we have no context, then we are shutting down, so skip this
-        if gl.current_context is None:
-            return
-
-        if glo.value != 0:
-            gl.glDeleteTextures(1, byref(glo))
-
-        ctx.stats.decr("texture")
-
+    @abstractmethod
     def use(self, unit: int = 0) -> None:
         """Bind the texture to a channel,
 
         Args:
             unit: The texture unit to bind the texture.
         """
-        gl.glActiveTexture(gl.GL_TEXTURE0 + unit)
-        gl.glBindTexture(self._target, self._glo)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def bind_to_image(self, unit: int, read: bool = True, write: bool = True, level: int = 0):
         """
         Bind textures to image units.
@@ -825,21 +501,9 @@ class TextureArray:
             write: The compute shader intends to write to this image
             level: The mipmap level to bind
         """
-        if self._ctx.gl_api == "gles" and not self._immutable:
-            raise ValueError("Textures bound to image units must be created with immutable=True")
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-        access = gl.GL_READ_WRITE
-        if read and write:
-            access = gl.GL_READ_WRITE
-        elif read and not write:
-            access = gl.GL_READ_ONLY
-        elif not read and write:
-            access = gl.GL_WRITE_ONLY
-        else:
-            raise ValueError("Illegal access mode. The texture must at least be read or write only")
-
-        gl.glBindImageTexture(unit, self._glo, level, 0, 0, access, self._internal_format)
-
+    @abstractmethod
     def get_handle(self, resident: bool = True) -> int:
         """
         Get a handle for bindless texture access.
@@ -870,20 +534,4 @@ class TextureArray:
         Args:
             resident: Make the texture resident.
         """
-        handle = gl.glGetTextureHandleARB(self._glo)
-        is_resident = gl.glIsTextureHandleResidentARB(handle)
-
-        # Ensure we don't try to make a resident texture resident again
-        if resident:
-            if not is_resident:
-                gl.glMakeTextureHandleResidentARB(handle)
-        else:
-            if is_resident:
-                gl.glMakeTextureHandleNonResidentARB(handle)
-
-        return handle
-
-    def __repr__(self) -> str:
-        return "<TextureArray glo={} size={}x{}x{} components={}>".format(
-            self._glo.value, self._width, self._layers, self._height, self._components
-        )
+        raise NotImplementedError("The enabled graphics backend does not support this method.")

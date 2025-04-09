@@ -1035,6 +1035,7 @@ class Context(ABC):
         """
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def texture_array(
         self,
         size: Tuple[int, int, int],
@@ -1058,16 +1059,7 @@ class Context(ABC):
 
         See :py:meth:`~arcade.gl.Context.texture` for arguments.
         """
-        return TextureArray(
-            self,
-            size,
-            components=components,
-            dtype=dtype,
-            data=data,
-            wrap_x=wrap_x,
-            wrap_y=wrap_y,
-            filter=filter,
-        )
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @abstractmethod
     def depth_texture(
