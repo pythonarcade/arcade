@@ -16,6 +16,7 @@ from .framebuffer import GLFramebuffer, GLDefaultFrameBuffer
 from .glsl import ShaderSource
 from .types import BufferDescription
 from .program import GLProgram
+from .sampler import GLSampler
 from .texture import GLTexture2D
 from .vertex_array import GLGeometry
 
@@ -187,6 +188,16 @@ class GLContext(Context):
 
         # Reset states. We can also apply previous states here
         gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)
+
+    def sampler(self, texture: GLTexture2D) -> GLSampler:
+        """
+        Create a sampler object for a texture.
+
+        Args:
+            texture:
+                The texture to create a sampler for
+        """
+        return GLSampler(self, texture)
 
 class GLArcadeContext(ArcadeContext, GLContext):
     def __init__(self, *args, **kwargs):

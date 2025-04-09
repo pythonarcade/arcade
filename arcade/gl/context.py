@@ -1086,6 +1086,7 @@ class Context(ABC):
         """
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def sampler(self, texture: Texture2D) -> Sampler:
         """
         Create a sampler object for a texture.
@@ -1094,7 +1095,7 @@ class Context(ABC):
             texture:
                 The texture to create a sampler for
         """
-        return Sampler(self, texture)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @abstractmethod
     def geometry(
