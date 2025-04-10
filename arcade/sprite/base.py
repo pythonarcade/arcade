@@ -760,8 +760,6 @@ class BasicSprite:
         while len(self.sprite_lists) > 0:
             self.sprite_lists[0].remove(self)
 
-        self.sprite_lists.clear()
-
     # ----- Drawing Methods -----
 
     def draw_hit_box(self, color: RGBOrA255 = BLACK, line_thickness: float = 2.0) -> None:
