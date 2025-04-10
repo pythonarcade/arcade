@@ -8,6 +8,7 @@ individual sprites.
 from __future__ import annotations
 
 import random
+from abc import abstractmethod
 from array import array
 from collections import deque
 from typing import (
@@ -15,15 +16,15 @@ from typing import (
     Any,
     Callable,
     ClassVar,
+    Collection,
     Deque,
-    Generic,
     Iterable,
     Iterator,
     Sized,
     cast,
 )
 
-from arcade import Sprite, SpriteType, get_window, gl
+from arcade import Sprite, SpriteType, SpriteType_co, get_window, gl
 from arcade.gl import Program, Texture2D
 from arcade.gl.buffer import Buffer
 from arcade.gl.types import BlendFunction, OpenGlFilter, PyGLenum
@@ -39,8 +40,108 @@ if TYPE_CHECKING:
 _DEFAULT_CAPACITY = 100
 
 
+class SpriteSequence(Collection[SpriteType_co]):
+    """A read-only view of a :py:class:`.SpriteList`.
+
+    Like other read-only generics such as :py:class:`collections.abc.Sequence`,
+    a `SpriteSequence` requires sprites be of a covariant type relative to their
+    annotated type.
+
+    See :py:class:`.SpriteList` for more details.
+    """
+
+    from ..sprite_list import spatial_hash as sh
+
+    @property
+    @abstractmethod
+    def spatial_hash(self) -> sh.ReadOnlySpatialHash[SpriteType_co] | None: ...
+
+    @abstractmethod
+    def __getitem__(self, index: int) -> SpriteType_co:
+        """Return the sprite at the given index."""
+        ...
+
+    @abstractmethod
+    def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
+        """
+        Call the update() method on each sprite in the list.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
+        """
+        ...
+
+    @abstractmethod
+    def update_animation(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
+        """
+        Call the update_animation in every sprite in the sprite list.
+
+        Args:
+            delta_time: Time since last update in seconds
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
+        """
+        ...
+
+    @abstractmethod
+    def draw(
+        self,
+        *,
+        filter: PyGLenum | OpenGlFilter | None = None,
+        pixelated: bool | None = None,
+        blend_function: BlendFunction | None = None,
+    ) -> None:
+        """
+        Draw this list of sprites.
+
+        Uninitialized sprite lists will first create OpenGL resources
+        before drawing. This may cause a performance stutter when the
+        following are true:
+
+        1. You created the sprite list with ``lazy=True``
+        2. You did not call :py:meth:`~SpriteList.initialize` before drawing
+        3. You are initializing many sprites and/or lists at once
+
+        See :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
+
+        Args:
+            filter:
+                Optional parameter to set OpenGL filter, such as
+                `gl.GL_NEAREST` to avoid smoothing.
+            pixelated:
+                ``True`` for pixelated and ``False`` for smooth interpolation.
+                Shortcut for setting filter to GL_NEAREST for a pixelated look.
+                The filter parameter have precedence over this.
+            blend_function:
+                Optional parameter to set the OpenGL blend function used for drawing
+                the sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or
+                'arcade.Window.ctx.BLEND_DEFAULT'
+        """
+        ...
+
+    @abstractmethod
+    def draw_hit_boxes(
+        self, color: RGBOrA255 = (0, 0, 0, 255), line_thickness: float = 1.0
+    ) -> None:
+        """
+        Draw all the hit boxes in this list.
+
+        .. warning:: This method is slow and should only be used for debugging.
+
+        Args:
+            color: The color of the hit boxes
+            line_thickness: The thickness of the lines
+        """
+        ...
+
+    @abstractmethod
+    def _write_sprite_buffers_to_gpu(self) -> None: ...
+
+
 @copy_dunders_unimplemented  # Temp fixes https://github.com/pythonarcade/arcade/issues/2074
-class SpriteList(Generic[SpriteType]):
+class SpriteList(SpriteSequence[SpriteType]):
     """
     The purpose of the spriteList is to batch draw a list of sprites.
     Drawing single sprites will not get you anywhere performance wise
@@ -99,6 +200,20 @@ class SpriteList(Generic[SpriteType]):
     #:     # Set global default to linear filtering (smooth). This is the default.
     #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
     DEFAULT_TEXTURE_FILTER: ClassVar[tuple[int, int]] = gl.LINEAR, gl.LINEAR
+
+    # Declare `special_hash` as an attribute that implements the abstract
+    # property from `SpriteSequence`. It needs an explicit type here because
+    # it is better than the inherited type.
+    # More subtle: it requires to be initialized as a *class* attribute with
+    # `= None` to "delete" the abstract property definition from the class.
+    # Without that trick, attempt to instantiate a SpriteList results in a
+    #   TypeError: Can't instantiate abstract class SpriteList
+    #   without an implementation for abstract method 'spatial_hash'
+    # The abstract property is actually implemented as an attribute (for
+    # efficiency), so it is OK to silence the issue like that.
+    from ..sprite_list import spatial_hash as sh
+
+    spatial_hash: sh.SpatialHash[SpriteType] | None = None
 
     def __init__(
         self,
@@ -167,7 +282,7 @@ class SpriteList(Generic[SpriteType]):
         from .spatial_hash import SpatialHash
 
         self._spatial_hash_cell_size = spatial_hash_cell_size
-        self.spatial_hash: SpatialHash[SpriteType] | None = None
+        self.spatial_hash = None
         if use_spatial_hash:
             self.spatial_hash = SpatialHash(cell_size=self._spatial_hash_cell_size)
 
@@ -247,7 +362,7 @@ class SpriteList(Generic[SpriteType]):
         """Return the length of the sprite list."""
         return len(self.sprite_list)
 
-    def __contains__(self, sprite: Sprite) -> bool:
+    def __contains__(self, sprite: object) -> bool:
         """Return if the sprite list contains the given sprite"""
         return sprite in self.sprite_slot
 
@@ -728,7 +843,7 @@ class SpriteList(Generic[SpriteType]):
         if self.spatial_hash is not None:
             self.spatial_hash.remove(sprite)
 
-    def extend(self, sprites: Iterable[SpriteType] | SpriteList[SpriteType]) -> None:
+    def extend(self, sprites: Iterable[SpriteType]) -> None:
         """
         Extends the current list with the given iterable
 
@@ -874,26 +989,10 @@ class SpriteList(Generic[SpriteType]):
             self.spatial_hash.add(sprite)
 
     def update(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
-        """
-        Call the update() method on each sprite in the list.
-
-        Args:
-            delta_time: Time since last update in seconds
-            *args: Additional positional arguments
-            **kwargs: Additional keyword arguments
-        """
         for sprite in self.sprite_list:
             sprite.update(delta_time, *args, **kwargs)
 
     def update_animation(self, delta_time: float = 1 / 60, *args, **kwargs) -> None:
-        """
-        Call the update_animation in every sprite in the sprite list.
-
-        Args:
-            delta_time: Time since last update in seconds
-            *args: Additional positional arguments
-            **kwargs: Additional keyword arguments
-        """
         for sprite in self.sprite_list:
             sprite.update_animation(delta_time, *args, **kwargs)
 
@@ -1009,32 +1108,6 @@ class SpriteList(Generic[SpriteType]):
         pixelated: bool | None = None,
         blend_function: BlendFunction | None = None,
     ) -> None:
-        """
-        Draw this list of sprites.
-
-        Uninitialized sprite lists will first create OpenGL resources
-        before drawing. This may cause a performance stutter when the
-        following are true:
-
-        1. You created the sprite list with ``lazy=True``
-        2. You did not call :py:meth:`~SpriteList.initialize` before drawing
-        3. You are initializing many sprites and/or lists at once
-
-        See :ref:`pg_spritelist_advanced_lazy_spritelists` to learn more.
-
-        Args:
-            filter:
-                Optional parameter to set OpenGL filter, such as
-                `gl.GL_NEAREST` to avoid smoothing.
-            pixelated:
-                ``True`` for pixelated and ``False`` for smooth interpolation.
-                Shortcut for setting filter to GL_NEAREST for a pixelated look.
-                The filter parameter have precedence over this.
-            blend_function:
-                Optional parameter to set the OpenGL blend function used for drawing
-                the sprite list, such as 'arcade.Window.ctx.BLEND_ADDITIVE' or
-                'arcade.Window.ctx.BLEND_DEFAULT'
-        """
         if len(self.sprite_list) == 0 or not self._visible or self.alpha_normalized == 0.0:
             return
 
@@ -1105,15 +1178,6 @@ class SpriteList(Generic[SpriteType]):
     def draw_hit_boxes(
         self, color: RGBOrA255 = (0, 0, 0, 255), line_thickness: float = 1.0
     ) -> None:
-        """
-        Draw all the hit boxes in this list.
-
-        .. warning:: This method is slow and should only be used for debugging.
-
-        Args:
-            color: The color of the hit boxes
-            line_thickness: The thickness of the lines
-        """
         import arcade
 
         converted_color = Color.from_iterable(color)

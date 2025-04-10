@@ -4,14 +4,22 @@ Classic A-star algorithm for path finding.
 
 import math
 
-from arcade import Sprite, SpriteList, check_for_collision_with_list, get_sprites_at_point
+from arcade import (
+    BasicSprite,
+    Sprite,
+    SpriteSequence,
+    check_for_collision_with_list,
+    get_sprites_at_point,
+)
 from arcade.math import get_distance, lerp_2d
 from arcade.types import Point2
 
 __all__ = ["AStarBarrierList", "astar_calculate_path", "has_line_of_sight"]
 
 
-def _spot_is_blocked(position: Point2, moving_sprite: Sprite, blocking_sprites: SpriteList) -> bool:
+def _spot_is_blocked(
+    position: Point2, moving_sprite: Sprite, blocking_sprites: SpriteSequence[BasicSprite]
+) -> bool:
     """
     Return if position is blocked
 
@@ -275,7 +283,7 @@ class AStarBarrierList:
     def __init__(
         self,
         moving_sprite: Sprite,
-        blocking_sprites: SpriteList,
+        blocking_sprites: SpriteSequence[BasicSprite],
         grid_size: int,
         left: int,
         right: int,
@@ -372,7 +380,7 @@ def astar_calculate_path(
 def has_line_of_sight(
     observer: Point2,
     target: Point2,
-    walls: SpriteList,
+    walls: SpriteSequence[BasicSprite],
     max_distance: float = float("inf"),
     check_resolution: int = 2,
 ) -> bool:

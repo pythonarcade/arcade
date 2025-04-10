@@ -16,6 +16,9 @@ if TYPE_CHECKING:
 # Type from sprite that can be any BasicSprite or any subclass of BasicSprite
 SpriteType = TypeVar("SpriteType", bound="BasicSprite")
 
+# Same as SpriteType, for covariant type parameters
+SpriteType_co = TypeVar("SpriteType_co", bound="BasicSprite", covariant=True)
+
 
 @copy_dunders_unimplemented  # See https://github.com/pythonarcade/arcade/issues/2074
 class BasicSprite:

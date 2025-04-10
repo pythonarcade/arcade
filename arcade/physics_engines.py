@@ -8,7 +8,7 @@ from typing import Iterable
 from arcade import (
     BasicSprite,
     Sprite,
-    SpriteList,
+    SpriteSequence,
     SpriteType,
     check_for_collision,
     check_for_collision_with_lists,
@@ -20,7 +20,7 @@ __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 from arcade.utils import Chain, copy_dunders_unimplemented
 
 
-def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
+def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteSequence[BasicSprite]]) -> None:
     """Kludge to 'guess' a colliding sprite out of a collision.
 
     It works by iterating over increasing wiggle sizes of 8 points
@@ -80,7 +80,7 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteList]) -> None:
 
 
 def _move_sprite(
-    moving_sprite: Sprite, can_collide: Iterable[SpriteList[SpriteType]], ramp_up: bool
+    moving_sprite: Sprite, can_collide: Iterable[SpriteSequence[SpriteType]], ramp_up: bool
 ) -> list[SpriteType]:
     """Update a sprite's angle and position, returning a list of collisions.
 
@@ -273,11 +273,14 @@ def _move_sprite(
     return complete_hit_list
 
 
-def _add_to_list(dest: list[SpriteList], source: SpriteList | Iterable[SpriteList] | None) -> None:
-    """Helper function to add a SpriteList or list of SpriteLists to a list."""
+def _add_to_list(
+    dest: list[SpriteSequence[SpriteType]],
+    source: SpriteSequence[SpriteType] | Iterable[SpriteSequence[SpriteType]] | None,
+) -> None:
+    """Helper function to add a SpriteSequence or list of SpriteSequences to a list."""
     if not source:
         return
-    elif isinstance(source, SpriteList):
+    elif isinstance(source, SpriteSequence):
         dest.append(source)
     else:
         dest.extend(source)
@@ -310,17 +313,17 @@ class PhysicsEngineSimple:
     def __init__(
         self,
         player_sprite: Sprite,
-        walls: SpriteList | Iterable[SpriteList] | None = None,
+        walls: SpriteSequence[BasicSprite] | Iterable[SpriteSequence[BasicSprite]] | None = None,
     ) -> None:
         self.player_sprite: Sprite = player_sprite
         """The player-controlled :py:class:`.Sprite`."""
-        self._walls: list[SpriteList] = []
+        self._walls: list[SpriteSequence[BasicSprite]] = []
 
         if walls:
             _add_to_list(self._walls, walls)
 
     @property
-    def walls(self) -> list[SpriteList]:
+    def walls(self) -> list[SpriteSequence[BasicSprite]]:
         """Which :py:class:`.SpriteList` instances block player movement.
 
         .. important:: Avoid moving sprites in these lists!
@@ -334,7 +337,10 @@ class PhysicsEngineSimple:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: SpriteList | Iterable[SpriteList] | None = None) -> None:
+    def walls(
+        self,
+        walls: SpriteSequence[BasicSprite] | Iterable[SpriteSequence[BasicSprite]] | None = None,
+    ) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:
@@ -429,17 +435,17 @@ class PhysicsEnginePlatformer:
     def __init__(
         self,
         player_sprite: Sprite,
-        platforms: SpriteList | Iterable[SpriteList] | None = None,
+        platforms: SpriteSequence[Sprite] | Iterable[SpriteSequence[Sprite]] | None = None,
         gravity_constant: float = 0.5,
-        ladders: SpriteList | Iterable[SpriteList] | None = None,
-        walls: SpriteList | Iterable[SpriteList] | None = None,
+        ladders: SpriteSequence[BasicSprite] | Iterable[SpriteSequence[BasicSprite]] | None = None,
+        walls: SpriteSequence[BasicSprite] | Iterable[SpriteSequence[BasicSprite]] | None = None,
     ) -> None:
         if not isinstance(player_sprite, Sprite):
             raise TypeError("player_sprite must be a Sprite, not a basic_sprite!")
 
-        self._ladders: list[SpriteList] = []
-        self._platforms: list[SpriteList] = []
-        self._walls: list[SpriteList] = []
+        self._ladders: list[SpriteSequence[BasicSprite]] = []
+        self._platforms: list[SpriteSequence[Sprite]] = []
+        self._walls: list[SpriteSequence[BasicSprite]] = []
         self._all_obstacles = Chain(self._walls, self._platforms)
 
         _add_to_list(self._ladders, ladders)
@@ -517,7 +523,7 @@ class PhysicsEnginePlatformer:
     # TODO: figure out what do do with 15_ladders_moving_platforms.py
     # It's no longer used by any example or tutorial file
     @property
-    def ladders(self) -> list[SpriteList]:
+    def ladders(self) -> list[SpriteSequence[BasicSprite]]:
         """Ladders turn off gravity while touched by the player.
 
         This means that whenever the :py:attr:`player_sprite` collides
@@ -533,7 +539,10 @@ class PhysicsEnginePlatformer:
         return self._ladders
 
     @ladders.setter
-    def ladders(self, ladders: SpriteList | Iterable[SpriteList] | None = None) -> None:
+    def ladders(
+        self,
+        ladders: SpriteSequence[BasicSprite] | Iterable[SpriteSequence[BasicSprite]] | None = None,
+    ) -> None:
         if ladders:
             _add_to_list(self._ladders, ladders)
         else:
@@ -544,7 +553,7 @@ class PhysicsEnginePlatformer:
         self._ladders.clear()
 
     @property
-    def platforms(self) -> list[SpriteList]:
+    def platforms(self) -> list[SpriteSequence[Sprite]]:
         """:py:class:`~arcade.sprite_list.sprite_list.SpriteList` instances containing platforms.
 
         .. important:: For best performance, put non-moving terrain in
@@ -575,7 +584,9 @@ class PhysicsEnginePlatformer:
         return self._platforms
 
     @platforms.setter
-    def platforms(self, platforms: SpriteList | Iterable[SpriteList] | None = None) -> None:
+    def platforms(
+        self, platforms: SpriteSequence[Sprite] | Iterable[SpriteSequence[Sprite]] | None = None
+    ) -> None:
         if platforms:
             _add_to_list(self._platforms, platforms)
         else:
@@ -586,7 +597,7 @@ class PhysicsEnginePlatformer:
         self._platforms.clear()
 
     @property
-    def walls(self) -> list[SpriteList]:
+    def walls(self) -> list[SpriteSequence[BasicSprite]]:
         """Exposes the :py:class:`SpriteList` instances use as terrain.
 
         .. important:: For best performance, only add non-moving sprites!
@@ -611,7 +622,10 @@ class PhysicsEnginePlatformer:
         return self._walls
 
     @walls.setter
-    def walls(self, walls: SpriteList | Iterable[SpriteList] | None = None) -> None:
+    def walls(
+        self,
+        walls: SpriteSequence[BasicSprite] | Iterable[SpriteSequence[BasicSprite]] | None = None,
+    ) -> None:
         if walls:
             _add_to_list(self._walls, walls)
         else:

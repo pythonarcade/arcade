@@ -26,7 +26,7 @@ class Player(arcade.Sprite):
     def __init__(
         self,
         texture,
-        walls: arcade.SpriteList[arcade.Sprite],
+        walls: arcade.SpriteSequence[arcade.BasicSprite],
         input_manager_template: InputManager,
         controller: pyglet.input.Controller | None = None,
         center_x: float = 0.0,
