@@ -1,6 +1,6 @@
 import math
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import arcade
 from arcade import Texture
@@ -10,10 +10,6 @@ from arcade.types import PathOrTexture, Point2
 
 from .base import BasicSprite
 from .mixins import PymunkMixin
-
-if TYPE_CHECKING:  # handle import cycle caused by type hinting
-    from arcade.sprite_list import SpriteList
-
 
 __all__ = ["Sprite"]
 
@@ -141,7 +137,6 @@ class Sprite(BasicSprite, PymunkMixin):
         self.physics_engines: list[Any] = []
         """List of physics engines that have registered this sprite."""
 
-        self._sprite_list: SpriteList | None = None
         # Debug properties
         self.guid: str | None = None
         """A unique id for debugging purposes."""
