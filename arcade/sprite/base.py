@@ -70,7 +70,15 @@ class BasicSprite:
         self._height = height * self._scale[1]
         self._visible = bool(visible)
         self._color: Color = WHITE
-        self.sprite_lists: list["SpriteList"] = []
+
+        # In a more powerful type system, this would be typed as
+        # list[SpriteList[? super Self]]
+        # i.e., a list of SpriteList's with varying type arguments, but where
+        # each of those type arguments is known to be a supertype of Self.
+        # All changes to this list should go through the pair of methods
+        # register_sprite_list, _unregister_sprite_list.
+        # They ensure that the above typing invariant is preserved.
+        self.sprite_lists: list["SpriteList[Any]"] = []
         """The sprite lists this sprite is a member of"""
 
         # Core properties we don't use, but spritelist expects it
@@ -747,13 +755,17 @@ class BasicSprite:
             if sprite_list.spatial_hash is not None:
                 sprite_list.spatial_hash.move(self)
 
-    def register_sprite_list(self, new_list: SpriteList) -> None:
+    def register_sprite_list(self: SpriteType, new_list: SpriteList[SpriteType]) -> None:
         """
         Register this sprite as belonging to a list.
 
         We will automatically remove ourselves from the list when kill() is called.
         """
         self.sprite_lists.append(new_list)
+
+    def _unregister_sprite_list(self: SpriteType, new_list: SpriteList[SpriteType]) -> None:
+        """Unregister this sprite as belonging to a list."""
+        self.sprite_lists.remove(new_list)
 
     def remove_from_sprite_lists(self) -> None:
         """Remove the sprite from all sprite lists."""

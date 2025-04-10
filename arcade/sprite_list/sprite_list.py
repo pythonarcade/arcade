@@ -269,7 +269,7 @@ class SpriteList(Generic[SpriteType]):
             pass
 
         sprite_to_be_removed = self.sprite_list[index]
-        sprite_to_be_removed.sprite_lists.remove(self)
+        sprite_to_be_removed._unregister_sprite_list(self)
         self.sprite_list[index] = sprite  # Replace sprite
         sprite.register_sprite_list(self)
 
@@ -567,7 +567,7 @@ class SpriteList(Generic[SpriteType]):
         # Manually remove the spritelist from all sprites
         if deep:
             for sprite in self.sprite_list:
-                sprite.sprite_lists.remove(self)
+                sprite._unregister_sprite_list(self)
 
         self.sprite_list = []
         self.sprite_slot = dict()
@@ -626,7 +626,7 @@ class SpriteList(Generic[SpriteType]):
         except KeyError:
             raise ValueError("Sprite is not in the SpriteList")
 
-        sprite.sprite_lists.remove(self)
+        sprite._unregister_sprite_list(self)
         del self.sprite_slot[sprite]
         self._sprite_buffer_free_slots.append(slot)
 
@@ -715,7 +715,7 @@ class SpriteList(Generic[SpriteType]):
 
         index = self.sprite_list.index(sprite)
         self.sprite_list.pop(index)
-        sprite.sprite_lists.remove(self)
+        sprite._unregister_sprite_list(self)
         del self.sprite_slot[sprite]
 
         self._sprite_buffer_free_slots.append(slot)
