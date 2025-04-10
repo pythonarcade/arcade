@@ -32,7 +32,7 @@ def get_distance_between_sprites(sprite1: SpriteType, sprite2: SpriteType) -> fl
 
 
 def get_closest_sprite(
-    sprite: SpriteType, sprite_list: SpriteList
+    sprite: BasicSprite, sprite_list: SpriteList[SpriteType]
 ) -> Tuple[SpriteType, float] | None:
     """
     Given a Sprite and SpriteList, returns the closest sprite, and its distance.
