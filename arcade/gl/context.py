@@ -1223,6 +1223,7 @@ class Context(ABC):
         """
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def query(self, *, samples=True, time=True, primitives=True) -> Query:
         """
         Create a query object for measuring rendering calls in opengl.
@@ -1232,7 +1233,7 @@ class Context(ABC):
             time: Measure rendering duration
             primitives: Collect the number of primitives emitted
         """
-        return Query(self, samples=samples, time=time, primitives=primitives)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @abstractmethod
     def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> ComputeShader:

@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-import weakref
 from typing import TYPE_CHECKING
-
-from pyglet import gl
+from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
     from arcade.gl import Context
 
 
-class Query:
+class Query(ABC):
     """
     A query object to perform low level measurements of OpenGL rendering calls.
 
@@ -38,9 +36,6 @@ class Query:
 
     __slots__ = (
         "_ctx",
-        "_glo_samples_passed",
-        "_glo_time_elapsed",
-        "_glo_primitives_generated",
         "__weakref__",
         "_samples_enabled",
         "_time_enabled",
@@ -65,27 +60,7 @@ class Query:
         self._time = 0
         self._primitives = 0
 
-        glos = []
-
-        self._glo_samples_passed = glo_samples_passed = gl.GLuint()
-        if self._samples_enabled:
-            gl.glGenQueries(1, self._glo_samples_passed)
-            glos.append(glo_samples_passed)
-
-        self._glo_time_elapsed = glo_time_elapsed = gl.GLuint()
-        if self._time_enabled:
-            gl.glGenQueries(1, self._glo_time_elapsed)
-            glos.append(glo_time_elapsed)
-
-        self._glo_primitives_generated = glo_primitives_generated = gl.GLuint()
-        if self._primitives_enabled:
-            gl.glGenQueries(1, self._glo_primitives_generated)
-            glos.append(glo_primitives_generated)
-
         self.ctx.stats.incr("query")
-
-        if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, Query.delete_glo, self._ctx, glos)
 
     def __del__(self):
         if self._ctx.gc_mode == "context_gc":
@@ -120,61 +95,19 @@ class Query:
         """
         return self._primitives
 
+    @abstractmethod
     def __enter__(self):
-        if self._ctx.gl_api == "gl":
-            if self._samples_enabled:
-                gl.glBeginQuery(gl.GL_SAMPLES_PASSED, self._glo_samples_passed)
-            if self._time_enabled:
-                gl.glBeginQuery(gl.GL_TIME_ELAPSED, self._glo_time_elapsed)
-        if self._primitives_enabled:
-            gl.glBeginQuery(gl.GL_PRIMITIVES_GENERATED, self._glo_primitives_generated)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self._ctx.gl_api == "gl":
-            if self._samples_enabled:
-                gl.glEndQuery(gl.GL_SAMPLES_PASSED)
-                value = gl.GLint()
-                gl.glGetQueryObjectiv(self._glo_samples_passed, gl.GL_QUERY_RESULT, value)
-                self._samples = value.value
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-            if self._time_enabled:
-                gl.glEndQuery(gl.GL_TIME_ELAPSED)
-                value = gl.GLint()
-                gl.glGetQueryObjectiv(self._glo_time_elapsed, gl.GL_QUERY_RESULT, value)
-                self._time = value.value
-
-        if self._primitives_enabled:
-            gl.glEndQuery(gl.GL_PRIMITIVES_GENERATED)
-            value = gl.GLint()
-            gl.glGetQueryObjectiv(self._glo_primitives_generated, gl.GL_QUERY_RESULT, value)
-            self._primitives = value.value
-
+    @abstractmethod
     def delete(self):
         """
         Destroy the underlying OpenGL resource.
 
         Don't use this unless you know exactly what you are doing.
         """
-        Query.delete_glo(
-            self._ctx,
-            [
-                self._glo_samples_passed,
-                self._glo_time_elapsed,
-                self._glo_primitives_generated,
-            ],
-        )
-
-    @staticmethod
-    def delete_glo(ctx, glos) -> None:
-        """
-        Delete this query object.
-
-        This is automatically called when the object is garbage collected.
-        """
-        if gl.current_context is None:
-            return
-
-        for glo in glos:
-            gl.glDeleteQueries(1, glo)
-
-        ctx.stats.decr("query")
+        raise NotImplementedError("The enabled graphics backend does not support this method.")

@@ -16,6 +16,7 @@ from .framebuffer import GLFramebuffer, GLDefaultFrameBuffer
 from .glsl import ShaderSource
 from .types import BufferDescription
 from .program import GLProgram
+from .query import GLQuery
 from .sampler import GLSampler
 from .texture import GLTexture2D
 from .texture_array import GLTextureArray
@@ -221,6 +222,9 @@ class GLContext(Context):
             wrap_y=wrap_y,
             filter=filter,
         )
+
+    def query(self, *, samples=True, time=True, primitives=True) -> GLQuery:
+        return GLQuery(self, samples=samples, time=time, primitives=primitives)
 
 class GLArcadeContext(ArcadeContext, GLContext):
     def __init__(self, *args, **kwargs):
