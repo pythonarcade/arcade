@@ -4,8 +4,7 @@ from abc import ABC, abstractmethod
 
 from typing import TYPE_CHECKING
 
-from pyglet import gl
-
+from . import enums
 from ..types import BufferProtocol
 from .types import (
     BufferOrBufferProtocol,
@@ -134,8 +133,8 @@ class Texture2D(ABC):
         self._compressed = compressed
         self._compressed_data = compressed_data
 
-        self._wrap_x = gl.GL_REPEAT
-        self._wrap_y = gl.GL_REPEAT
+        self._wrap_x = enums.REPEAT
+        self._wrap_y = enums.REPEAT
 
         if self._components not in [1, 2, 3, 4]:
             raise ValueError("Components must be 1, 2, 3 or 4")
