@@ -1,12 +1,14 @@
+from ctypes import c_int, c_float, c_char_p, cast
 from typing import List, Dict, Iterable, Sequence, Tuple
 
-from arcade.gl.context import Context
+from arcade.gl.context import Context, Info
 from arcade.context import ArcadeContext
 
 import pyglet
 from pyglet import gl
 
 from arcade.types import BufferProtocol
+from arcade.gl import enums
 
 from .types import PyGLenum
 
@@ -24,8 +26,185 @@ from .vertex_array import GLGeometry
 
 
 class GLContext(Context):
+
+    #: The OpenGL api. Usually "gl" or "gles".
+    gl_api: str = "gl"
+
+    _valid_apis = ("gl", "gles")
+
     def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
-        super().__init__(window, gc_mode, gl_api)
+        super().__init__(window, gc_mode)
+
+        if gl_api not in self._valid_apis:
+            raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
+        self.gl_api = gl_api
+
+        self._gl_version = (self._info.MAJOR_VERSION, self._info.MINOR_VERSION)
+
+        # Hardcoded states
+        # This should always be enabled
+        # gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
+        # Set primitive restart index to -1 by default
+        if self.gl_api == "gles":
+            gl.glEnable(gl.GL_PRIMITIVE_RESTART_FIXED_INDEX)
+        else:
+            gl.glEnable(gl.GL_PRIMITIVE_RESTART)
+
+        # Detect support for glProgramUniform.
+        # Assumed to be supported in gles
+        self._ext_separate_shader_objects_enabled = True
+        if self.gl_api == "gl":
+            have_ext = gl.gl_info.have_extension("GL_ARB_separate_shader_objects")
+            self._ext_separate_shader_objects_enabled = self.gl_version >= (4, 1) or have_ext
+
+        # We enable scissor testing by default.
+        # This is always set to the same value as the viewport
+        # to avoid background color affecting areas outside the viewport
+        gl.glEnable(gl.GL_SCISSOR_TEST)
+
+    @property
+    def gl_version(self) -> Tuple[int, int]:
+        """
+        The OpenGL major and minor version as a tuple.
+
+        This is the reported OpenGL version from
+        drivers and might be a higher version than
+        you requested.
+        """
+        return self._gl_version
+
+    @Context.extensions.getter
+    def extensions(self) -> set[str]:
+        return gl.gl_info.get_extensions()
+
+    @property
+    def error(self) -> str | None:
+        """Check OpenGL error
+
+        Returns a string representation of the occurring error
+        or ``None`` of no errors has occurred.
+
+        Example::
+
+            err = ctx.error
+            if err:
+                raise RuntimeError("OpenGL error: {err}")
+        """
+        err = gl.glGetError()
+        if err == enums.NO_ERROR:
+            return None
+
+        return self._errors.get(err, "UNKNOWN_ERROR")
+
+    def enable(self, *flags: int):
+        self._flags.update(flags)
+
+        for flag in flags:
+            gl.glEnable(flag)
+
+    def enable_only(self, *args: int):
+        self._flags = set(args)
+
+        if self.BLEND in self._flags:
+            gl.glEnable(self.BLEND)
+        else:
+            gl.glDisable(self.BLEND)
+
+        if self.DEPTH_TEST in self._flags:
+            gl.glEnable(self.DEPTH_TEST)
+        else:
+            gl.glDisable(self.DEPTH_TEST)
+
+        if self.CULL_FACE in self._flags:
+            gl.glEnable(self.CULL_FACE)
+        else:
+            gl.glDisable(self.CULL_FACE)
+
+        if self.gl_api == "gl":
+            if gl.GL_PROGRAM_POINT_SIZE in self._flags:
+                gl.glEnable(gl.GL_PROGRAM_POINT_SIZE)
+            else:
+                gl.glDisable(gl.GL_PROGRAM_POINT_SIZE)
+
+    def disable(self, *args):
+        self._flags -= set(args)
+
+        for flag in args:
+            gl.glDisable(flag)
+
+    @Context.blend_func.setter
+    def blend_func(self, value: Tuple[int, int] | Tuple[int, int, int, int]):
+        self._blend_func = value
+        if len(value) == 2:
+            gl.glBlendFunc(*value)
+        elif len(value) == 4:
+            gl.glBlendFuncSeparate(*value)
+        else:
+            ValueError("blend_func takes a tuple of 2 or 4 values")
+
+    @property
+    def front_face(self) -> str:
+        value = c_int()
+        gl.glGetIntegerv(gl.GL_FRONT_FACE, value)
+        return "cw" if value.value == gl.GL_CW else "ccw"
+
+    @front_face.setter
+    def front_face(self, value: str):
+        if value not in ["cw", "ccw"]:
+            raise ValueError("front_face must be 'cw' or 'ccw'")
+        gl.glFrontFace(gl.GL_CW if value == "cw" else gl.GL_CCW)
+
+    @property
+    def cull_face(self) -> str:
+        value = c_int()
+        gl.glGetIntegerv(gl.GL_CULL_FACE_MODE, value)
+        return self._cull_face_options_reverse[value.value]
+
+    @cull_face.setter
+    def cull_face(self, value):
+        if value not in self._cull_face_options:
+            raise ValueError("cull_face must be", list(self._cull_face_options.keys()))
+
+        gl.glCullFace(self._cull_face_options[value])
+
+    @Context.wireframe.setter
+    def wireframe(self, value: bool):
+        self._wireframe = value
+        if value:
+            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
+        else:
+            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+
+    @property
+    def patch_vertices(self) -> int:
+        value = c_int()
+        gl.glGetIntegerv(gl.GL_PATCH_VERTICES, value)
+        return value.value
+
+    @patch_vertices.setter
+    def patch_vertices(self, value: int):
+        if not isinstance(value, int):
+            raise TypeError("patch_vertices must be an integer")
+
+        gl.glPatchParameteri(gl.GL_PATCH_VERTICES, value)
+
+    @Context.point_size.setter
+    def point_size(self, value: float):
+        if self.gl_api == "gl":
+            gl.glPointSize(self._point_size)
+        self._point_size = value
+
+    @Context.primitive_restart_index.setter
+    def primitive_restart_index(self, value: int):
+        self._primitive_restart_index = value
+        if self.gl_api == "gl":
+            gl.glPrimitiveRestartIndex(value)
+
+    def finish(self) -> None:
+        gl.glFinish()
+
+    def flush(self) -> None:
+        gl.glFlush()
 
     def _create_default_framebuffer(self) -> GLDefaultFrameBuffer:
         return GLDefaultFrameBuffer(self)
@@ -230,3 +409,122 @@ class GLArcadeContext(ArcadeContext, GLContext):
     def __init__(self, *args, **kwargs):
         GLContext.__init__(self, *args, **kwargs)
         ArcadeContext.__init__(self, *args, **kwargs)
+
+class GLInfo(Info):
+    """OpenGL info and capabilities"""
+
+    def __init__(self, ctx):
+        super().__init__(ctx)
+
+        self.MINOR_VERSION = self.get(gl.GL_MINOR_VERSION)
+        """Minor version number of the OpenGL API supported by the current context"""
+
+        self.MAJOR_VERSION = self.get(gl.GL_MAJOR_VERSION)
+        """Major version number of the OpenGL API supported by the current context."""
+
+        self.MAX_COLOR_TEXTURE_SAMPLES = self.get(gl.GL_MAX_COLOR_TEXTURE_SAMPLES)
+        """Maximum number of samples in a color multisample texture"""
+
+        self.MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS = self.get(
+            gl.GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS
+        )
+        """Number of words for geometry shader uniform variables in all uniform blocks"""
+
+        self.MAX_DEPTH_TEXTURE_SAMPLES = self.get(gl.GL_MAX_DEPTH_TEXTURE_SAMPLES)
+        """Maximum number of samples in a multisample depth or depth-stencil texture"""
+
+        self.MAX_GEOMETRY_INPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_INPUT_COMPONENTS)
+        """Maximum number of components of inputs read by a geometry shader"""
+
+        self.MAX_GEOMETRY_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_OUTPUT_COMPONENTS)
+        """Maximum number of components of outputs written by a geometry shader"""
+
+        self.MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS)
+        """
+        Maximum supported texture image units that can be used to access texture
+        maps from the geometry shader
+        """
+
+        self.MAX_GEOMETRY_UNIFORM_BLOCKS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_BLOCKS)
+        """Maximum number of uniform blocks per geometry shader"""
+
+        self.MAX_GEOMETRY_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_COMPONENTS)
+        """
+        Maximum number of individual floating-point, integer, or boolean values that can
+        be held in uniform variable storage for a geometry shader
+        """
+
+        self.MAX_INTEGER_SAMPLES = self.get(gl.GL_MAX_INTEGER_SAMPLES)
+        """Maximum number of samples supported in integer format multisample buffers"""
+
+        self.MAX_SAMPLE_MASK_WORDS = self.get(gl.GL_MAX_SAMPLE_MASK_WORDS)
+        """Maximum number of sample mask words"""
+
+        self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
+        """The minimum and maximum point size"""
+
+        # This error checking doesn't actually need any implementation specific details
+        # However we need to do it here instead of the common class to catch all possible
+        # errors because of implementation specific gets.
+        err = self._ctx.error
+        if err:
+            from warnings import warn
+
+            warn(f"Error happened while querying of limits. {err}")
+
+    def get_int_tuple(self, enum, length: int):
+        """
+        Get an enum as an int tuple
+
+        Args:
+            enum: The enum to query
+            length: The length of the tuple
+        """
+        try:
+            values = (c_int * length)()
+            gl.glGetIntegerv(enum, values)
+            return tuple(values)
+        except pyglet.gl.lib.GLException:
+            return tuple([0] * length)
+
+    def get(self, enum, default=0) -> int:
+        """
+        Get an integer limit.
+
+        Args:
+            enum: The enum to query
+            default: The default value if the query fails
+        """
+        try:
+            value = c_int()
+            gl.glGetIntegerv(enum, value)
+            return value.value
+        except pyglet.gl.lib.GLException:
+            return default
+
+    def get_float(self, enum, default=0.0) -> float:
+        """
+        Get a float limit
+
+        Args:
+            enum: The enum to query
+            default: The default value if the query fails
+        """
+        try:
+            value = c_float()
+            gl.glGetFloatv(enum, value)
+            return value.value
+        except pyglet.gl.lib.GLException:
+            return default
+
+    def get_str(self, enum) -> str:
+        """
+        Get a string limit.
+
+        Args:
+            enum: The enum to query
+        """
+        try:
+            return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
+        except pyglet.gl.lib.GLException:
+            return "Unknown"

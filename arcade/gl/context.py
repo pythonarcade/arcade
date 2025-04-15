@@ -6,7 +6,6 @@ import logging
 import weakref
 from collections import deque
 from contextlib import contextmanager
-from ctypes import c_char_p, c_float, c_int, cast
 from typing import (
     Any,
     Deque,
@@ -21,20 +20,19 @@ from typing import (
 )
 
 import pyglet
-import pyglet.gl.lib
-from pyglet import gl
 from pyglet.window import Window
 
+from . import enums
 from ..types import BufferProtocol
 from .buffer import Buffer
 from .compute_shader import ComputeShader
 from .framebuffer import DefaultFrameBuffer, Framebuffer
 from .program import Program
+from .provider import get_provider
 from .query import Query
 from .sampler import Sampler
 from .texture import Texture2D
 from .texture_array import TextureArray
-from .types import BufferDescription, GLenumLike, PyGLenum
 from .vertex_array import Geometry
 
 LOG = logging.getLogger(__name__)
@@ -58,184 +56,160 @@ class Context(ABC):
     active: Context | None = None
     """The active context"""
 
-    #: The OpenGL api. Usually "gl" or "gles".
-    gl_api: str = "gl"
-
     # --- Store the most commonly used OpenGL constants
     # Texture
 
-    NEAREST = 0x2600
+    NEAREST = enums.NEAREST
     """Texture interpolation - Nearest pixel"""
 
-    LINEAR = 0x2601
+    LINEAR = enums.LINEAR
     """Texture interpolation - Linear interpolate"""
 
-    NEAREST_MIPMAP_NEAREST = 0x2700
+    NEAREST_MIPMAP_NEAREST = enums.NEAREST_MIPMAP_NEAREST
     """Texture interpolation - Minification filter for mipmaps"""
 
-    LINEAR_MIPMAP_NEAREST = 0x2701
+    LINEAR_MIPMAP_NEAREST = enums.LINEAR_MIPMAP_NEAREST
     """Texture interpolation - Minification filter for mipmaps"""
 
-    NEAREST_MIPMAP_LINEAR = 0x2702
+    NEAREST_MIPMAP_LINEAR = enums.NEAREST_MIPMAP_LINEAR
     """Texture interpolation - Minification filter for mipmaps"""
 
-    LINEAR_MIPMAP_LINEAR = 0x2703
+    LINEAR_MIPMAP_LINEAR = enums.LINEAR_MIPMAP_LINEAR
     """Texture interpolation - Minification filter for mipmaps"""
 
-    REPEAT = gl.GL_REPEAT
+    REPEAT = enums.REPEAT
     """Texture wrap mode - Repeat"""
 
-    CLAMP_TO_EDGE = gl.GL_CLAMP_TO_EDGE
+    CLAMP_TO_EDGE = enums.CLAMP_TO_EDGE
     """Texture wrap mode - Clamp to border pixel"""
 
-    CLAMP_TO_BORDER = gl.GL_CLAMP_TO_BORDER
-    """Texture wrap mode - Clamp to border color"""
-
-    MIRRORED_REPEAT = gl.GL_MIRRORED_REPEAT
+    MIRRORED_REPEAT = enums.MIRRORED_REPEAT
     """Texture wrap mode - Repeat mirrored"""
 
     # Flags
 
-    BLEND = gl.GL_BLEND
+    BLEND = enums.BLEND
     """Context flag - Blending"""
 
-    DEPTH_TEST = gl.GL_DEPTH_TEST
+    DEPTH_TEST = enums.DEPTH_TEST
     """Context flag - Depth testing"""
 
-    CULL_FACE = gl.GL_CULL_FACE
+    CULL_FACE = enums.CULL_FACE
     """Context flag - Face culling"""
 
-    PROGRAM_POINT_SIZE = gl.GL_PROGRAM_POINT_SIZE
-    """
-    Context flag - Enables ``gl_PointSize`` in vertex or geometry shaders.
-
-    When enabled we can write to ``gl_PointSize`` in the vertex shader to specify the point size
-    for each individual point.
-
-    If this value is not set in the shader the behavior is undefined. This means the points may
-    or may not appear depending if the drivers enforce some default value for ``gl_PointSize``.
-
-    When disabled :py:attr:`point_size` is used.
-    """
-
     # Blend functions
-    ZERO = 0x0000
+    ZERO = enums.ZERO
     """Blend function"""
 
-    ONE = 0x0001
+    ONE = enums.ONE
     """Blend function"""
 
-    SRC_COLOR = 0x0300
+    SRC_COLOR = enums.SRC_COLOR
     """Blend function"""
 
-    ONE_MINUS_SRC_COLOR = 0x0301
+    ONE_MINUS_SRC_COLOR = enums.ONE_MINUS_SRC_COLOR
     """Blend function"""
 
-    SRC_ALPHA = 0x0302
+    SRC_ALPHA = enums.SRC_ALPHA
     """Blend function"""
 
-    ONE_MINUS_SRC_ALPHA = 0x0303
+    ONE_MINUS_SRC_ALPHA = enums.ONE_MINUS_SRC_ALPHA
     """Blend function"""
 
-    DST_ALPHA = 0x0304
+    DST_ALPHA = enums.DST_ALPHA
     """Blend function"""
 
-    ONE_MINUS_DST_ALPHA = 0x0305
+    ONE_MINUS_DST_ALPHA = enums.ONE_MINUS_DST_ALPHA
     """Blend function"""
 
-    DST_COLOR = 0x0306
+    DST_COLOR = enums.DST_COLOR
     """Blend function"""
 
-    ONE_MINUS_DST_COLOR = 0x0307
+    ONE_MINUS_DST_COLOR = enums.ONE_MINUS_DST_COLOR
     """Blend function"""
 
     # Blend equations
-    FUNC_ADD = 0x8006
+    FUNC_ADD = enums.FUNC_ADD
     """Blend equation - source + destination"""
 
-    FUNC_SUBTRACT = 0x800A
+    FUNC_SUBTRACT = enums.FUNC_SUBTRACT
     """Blend equation - source - destination"""
 
-    FUNC_REVERSE_SUBTRACT = 0x800B
+    FUNC_REVERSE_SUBTRACT = enums.FUNC_REVERSE_SUBTRACT
     """Blend equation - destination - source"""
 
-    MIN = 0x8007
+    MIN = enums.MIN
     """Blend equation - Minimum of source and destination"""
 
-    MAX = 0x8008
+    MAX = enums.MAX
     """Blend equation - Maximum of source and destination"""
 
     # Blend mode shortcuts
-    BLEND_DEFAULT = 0x0302, 0x0303
+    BLEND_DEFAULT = enums.BLEND_DEFAULT
     """Blend mode shortcut for default blend mode - ``SRC_ALPHA, ONE_MINUS_SRC_ALPHA``"""
 
-    BLEND_ADDITIVE = 0x0001, 0x0001
+    BLEND_ADDITIVE = enums.BLEND_ADDITIVE
     """Blend mode shortcut for additive blending - ``ONE, ONE``"""
 
-    BLEND_PREMULTIPLIED_ALPHA = 0x0302, 0x0001
+    BLEND_PREMULTIPLIED_ALPHA = enums.BLEND_PREMULTIPLIED_ALPHA
     """Blend mode shortcut for pre-multiplied alpha - ``SRC_ALPHA, ONE``"""
 
     # VertexArray: Primitives
-    POINTS = gl.GL_POINTS  # 0
+    POINTS = enums.POINTS  # 0
     """Primitive mode - points"""
 
-    LINES = gl.GL_LINES  # 1
+    LINES = enums.LINES  # 1
     """Primitive mode - lines"""
 
-    LINE_LOOP = gl.GL_LINE_LOOP  # 2
+    LINE_LOOP = enums.LINE_LOOP  # 2
     """Primitive mode - line loop"""
 
-    LINE_STRIP = gl.GL_LINE_STRIP  # 3
+    LINE_STRIP = enums.LINE_STRIP  # 3
     """Primitive mode - line strip"""
 
-    TRIANGLES = gl.GL_TRIANGLES  # 4
+    TRIANGLES = enums.TRIANGLES  # 4
     """Primitive mode - triangles"""
 
-    TRIANGLE_STRIP = gl.GL_TRIANGLE_STRIP  # 5
+    TRIANGLE_STRIP = enums.TRIANGLE_STRIP  # 5
     """Primitive mode - triangle strip"""
 
-    TRIANGLE_FAN = gl.GL_TRIANGLE_FAN  # 6
+    TRIANGLE_FAN = enums.TRIANGLE_FAN  # 6
     """Primitive mode - triangle fan"""
 
-    LINES_ADJACENCY = gl.GL_LINES_ADJACENCY  # 10
+    ##### ADJACENCY VALUES ARE NOT SUPPORTED BY WEBGL
+    ##### WE ARE LEAVING THESE VALUES IN THE COMMON IMPLEMENTATION
+    ##### TO MAKE IMPLEMENTATION EASIER, BECAUSE WEBGL WILL FAIL
+    ##### BEFORE USAGE OF THESE MATTERS
+
+    LINES_ADJACENCY = enums.LINES_ADJACENCY  # 10
     """Primitive mode - lines with adjacency"""
 
-    LINE_STRIP_ADJACENCY = gl.GL_LINE_STRIP_ADJACENCY  # 11
+    LINE_STRIP_ADJACENCY = enums.LINE_STRIP_ADJACENCY  # 11
     """Primitive mode - line strip with adjacency"""
 
-    TRIANGLES_ADJACENCY = gl.GL_TRIANGLES_ADJACENCY  # 12
+    TRIANGLES_ADJACENCY = enums.TRIANGLES_ADJACENCY  # 12
     """Primitive mode - triangles with adjacency"""
 
-    TRIANGLE_STRIP_ADJACENCY = gl.GL_TRIANGLE_STRIP_ADJACENCY  # 13
+    TRIANGLE_STRIP_ADJACENCY = enums.TRIANGLE_STRIP_ADJACENCY  # 13
     """Primitive mode - triangle strip with adjacency"""
-
-    PATCHES = gl.GL_PATCHES
-    """Primitive mode - Patch (tessellation)"""
 
     # The most common error enums
     _errors = {
-        gl.GL_INVALID_ENUM: "GL_INVALID_ENUM",
-        gl.GL_INVALID_VALUE: "GL_INVALID_VALUE",
-        gl.GL_INVALID_OPERATION: "GL_INVALID_OPERATION",
-        gl.GL_INVALID_FRAMEBUFFER_OPERATION: "GL_INVALID_FRAMEBUFFER_OPERATION",
-        gl.GL_OUT_OF_MEMORY: "GL_OUT_OF_MEMORY",
-        gl.GL_STACK_UNDERFLOW: "GL_STACK_UNDERFLOW",
-        gl.GL_STACK_OVERFLOW: "GL_STACK_OVERFLOW",
+        enums.INVALID_ENUM: "INVALID_ENUM",
+        enums.INVALID_VALUE: "INVALID_VALUE",
+        enums.INVALID_OPERATION: "INVALID_OPERATION",
+        enums.INVALID_FRAMEBUFFER_OPERATION: "INVALID_FRAMEBUFFER_OPERATION",
+        enums.OUT_OF_MEMORY: "OUT_OF_MEMORY",
     }
-    _valid_apis = ("gl", "gles")
 
     def __init__(
         self,
         window: pyglet.window.Window,  # type: ignore
         gc_mode: str = "context_gc",
-        gl_api: str = "gl",
     ):
         self._window_ref = weakref.ref(window)
-        if gl_api not in self._valid_apis:
-            raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
-        self.gl_api = gl_api
-        self._info = GLInfo(self)
-        self._gl_version = (self._info.MAJOR_VERSION, self._info.MINOR_VERSION)
+        self._info = get_provider().create_info(self)
+
         Context.activate(self)
         # Texture unit we use when doing operations on textures to avoid
         # affecting currently bound textures in the first units
@@ -249,29 +223,8 @@ class Context(ABC):
         self.active_framebuffer: Framebuffer = self._screen
         self._stats: ContextStats = ContextStats(warn_threshold=1000)
 
-        # Hardcoded states
-        # This should always be enabled
-        # gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
-        # Set primitive restart index to -1 by default
-        if self.gl_api == "gles":
-            gl.glEnable(gl.GL_PRIMITIVE_RESTART_FIXED_INDEX)
-        else:
-            gl.glEnable(gl.GL_PRIMITIVE_RESTART)
-
         self._primitive_restart_index = -1
         self.primitive_restart_index = self._primitive_restart_index
-
-        # Detect support for glProgramUniform.
-        # Assumed to be supported in gles
-        self._ext_separate_shader_objects_enabled = True
-        if self.gl_api == "gl":
-            have_ext = gl.gl_info.have_extension("GL_ARB_separate_shader_objects")
-            self._ext_separate_shader_objects_enabled = self.gl_version >= (4, 1) or have_ext
-
-        # We enable scissor testing by default.
-        # This is always set to the same value as the viewport
-        # to avoid background color affecting areas outside the viewport
-        gl.glEnable(gl.GL_SCISSOR_TEST)
 
         # States
         self._blend_func: Tuple[int, int] | Tuple[int, int, int, int] = self.BLEND_DEFAULT
@@ -280,14 +233,14 @@ class Context(ABC):
         self._wireframe = False
         # Options for cull_face
         self._cull_face_options = {
-            "front": gl.GL_FRONT,
-            "back": gl.GL_BACK,
-            "front_and_back": gl.GL_FRONT_AND_BACK,
+            "front": enums.FRONT,
+            "back": enums.BACK,
+            "front_and_back": enums.FRONT_AND_BACK,
         }
         self._cull_face_options_reverse = {
-            gl.GL_FRONT: "front",
-            gl.GL_BACK: "back",
-            gl.GL_FRONT_AND_BACK: "front_and_back",
+            enums.FRONT: "front",
+            enums.BACK: "back",
+            enums.FRONT_AND_BACK: "front_and_back",
         }
 
         # Context GC as default. We need to call Context.gc() to free opengl resources
@@ -302,7 +255,7 @@ class Context(ABC):
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
-    def info(self) -> GLInfo:
+    def info(self) -> Info:
         """
         Get the info object for this context containing information
         about hardware/driver limits and other information.
@@ -319,6 +272,7 @@ class Context(ABC):
         return self._info
 
     @property
+    @abstractmethod
     def extensions(self) -> set[str]:
         """
         Get a set of supported OpenGL extensions strings for this context.
@@ -331,7 +285,7 @@ class Context(ABC):
             expected_extensions = {"GL_ARB_bindless_texture", "GL_ARB_get_program_binary"}
             ctx.extensions & expected_extensions == expected_extensions
         """
-        return gl.gl_info.get_extensions()
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def stats(self) -> ContextStats:
@@ -374,17 +328,6 @@ class Context(ABC):
         Get the currently active framebuffer (read only).
         """
         return self.active_framebuffer
-
-    @property
-    def gl_version(self) -> Tuple[int, int]:
-        """
-        The OpenGL major and minor version as a tuple.
-
-        This is the reported OpenGL version from
-        drivers and might be a higher version than
-        you requested.
-        """
-        return self._gl_version
 
     def gc(self) -> int:
         """
@@ -432,6 +375,7 @@ class Context(ABC):
         self._gc_mode = value
 
     @property
+    @abstractmethod
     def error(self) -> str | None:
         """Check OpenGL error
 
@@ -444,11 +388,7 @@ class Context(ABC):
             if err:
                 raise RuntimeError("OpenGL error: {err}")
         """
-        err = gl.glGetError()
-        if err == gl.GL_NO_ERROR:
-            return None
-
-        return self._errors.get(err, "GL_UNKNOWN_ERROR")
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @classmethod
     def activate(cls, ctx: Context):
@@ -462,6 +402,7 @@ class Context(ABC):
         """
         cls.active = ctx
 
+    @abstractmethod
     def enable(self, *flags: int):
         """
         Enables one or more context flags::
@@ -474,11 +415,9 @@ class Context(ABC):
         Args:
             *flags: The flags to enable
         """
-        self._flags.update(flags)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-        for flag in flags:
-            gl.glEnable(flag)
-
+    @abstractmethod
     def enable_only(self, *args: int):
         """
         Enable only some flags. This will disable all other flags.
@@ -495,28 +434,7 @@ class Context(ABC):
         Args:
             *args: The flags to enable
         """
-        self._flags = set(args)
-
-        if self.BLEND in self._flags:
-            gl.glEnable(self.BLEND)
-        else:
-            gl.glDisable(self.BLEND)
-
-        if self.DEPTH_TEST in self._flags:
-            gl.glEnable(self.DEPTH_TEST)
-        else:
-            gl.glDisable(self.DEPTH_TEST)
-
-        if self.CULL_FACE in self._flags:
-            gl.glEnable(self.CULL_FACE)
-        else:
-            gl.glDisable(self.CULL_FACE)
-
-        if self.gl_api == "gl":
-            if self.PROGRAM_POINT_SIZE in self._flags:
-                gl.glEnable(self.PROGRAM_POINT_SIZE)
-            else:
-                gl.glDisable(self.PROGRAM_POINT_SIZE)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @contextmanager
     def enabled(self, *flags):
@@ -561,6 +479,7 @@ class Context(ABC):
         finally:
             self.enable_only(*old_flags)
 
+    @abstractmethod
     def disable(self, *args):
         """
         Disable one or more context flags::
@@ -570,10 +489,7 @@ class Context(ABC):
             # Multiple flags
             ctx.disable(ctx.DEPTH_TEST, ctx.CULL_FACE)
         """
-        self._flags -= set(args)
-
-        for flag in args:
-            gl.glDisable(flag)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     def is_enabled(self, flag) -> bool:
         """
@@ -683,19 +599,15 @@ class Context(ABC):
         return self._blend_func
 
     @blend_func.setter
+    @abstractmethod
     def blend_func(self, value: Tuple[int, int] | Tuple[int, int, int, int]):
-        self._blend_func = value
-        if len(value) == 2:
-            gl.glBlendFunc(*value)
-        elif len(value) == 4:
-            gl.glBlendFuncSeparate(*value)
-        else:
-            ValueError("blend_func takes a tuple of 2 or 4 values")
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     # def blend_equation(self)
     # Default is FUNC_ADD
 
     @property
+    @abstractmethod
     def front_face(self) -> str:
         """
         Configure front face winding order of triangles.
@@ -706,17 +618,15 @@ class Context(ABC):
             ctx.front_face = "cw"
             ctx.front_face = "ccw"
         """
-        value = c_int()
-        gl.glGetIntegerv(gl.GL_FRONT_FACE, value)
-        return "cw" if value.value == gl.GL_CW else "ccw"
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @front_face.setter
+    @abstractmethod
     def front_face(self, value: str):
-        if value not in ["cw", "ccw"]:
-            raise ValueError("front_face must be 'cw' or 'ccw'")
-        gl.glFrontFace(gl.GL_CW if value == "cw" else gl.GL_CCW)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
+    @abstractmethod
     def cull_face(self) -> str:
         """
         The face side to cull when face culling is enabled.
@@ -728,16 +638,11 @@ class Context(ABC):
             ctx.cull_face = "back"
             ctx.cull_face = "front_and_back"
         """
-        value = c_int()
-        gl.glGetIntegerv(gl.GL_CULL_FACE_MODE, value)
-        return self._cull_face_options_reverse[value.value]
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @cull_face.setter
     def cull_face(self, value):
-        if value not in self._cull_face_options:
-            raise ValueError("cull_face must be", list(self._cull_face_options.keys()))
-
-        gl.glCullFace(self._cull_face_options[value])
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def wireframe(self) -> bool:
@@ -750,14 +655,12 @@ class Context(ABC):
         return self._wireframe
 
     @wireframe.setter
+    @abstractmethod
     def wireframe(self, value: bool):
-        self._wireframe = value
-        if value:
-            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_LINE)
-        else:
-            gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
+    @abstractmethod
     def patch_vertices(self) -> int:
         """
         Get or set number of vertices that will be used to make up a single patch primitive.
@@ -765,16 +668,12 @@ class Context(ABC):
         Patch primitives are consumed by the tessellation control shader (if present)
         and subsequently used for tessellation.
         """
-        value = c_int()
-        gl.glGetIntegerv(gl.GL_PATCH_VERTICES, value)
-        return value.value
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @patch_vertices.setter
+    @abstractmethod
     def patch_vertices(self, value: int):
-        if not isinstance(value, int):
-            raise TypeError("patch_vertices must be an integer")
-
-        gl.glPatchParameteri(gl.GL_PATCH_VERTICES, value)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def point_size(self) -> float:
@@ -798,10 +697,9 @@ class Context(ABC):
         return self._point_size
 
     @point_size.setter
+    @abstractmethod
     def point_size(self, value: float):
-        if self.gl_api == "gl":
-            gl.glPointSize(self._point_size)
-        self._point_size = value
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
     def primitive_restart_index(self) -> int:
@@ -816,11 +714,11 @@ class Context(ABC):
         return self._primitive_restart_index
 
     @primitive_restart_index.setter
+    @abstractmethod
     def primitive_restart_index(self, value: int):
-        self._primitive_restart_index = value
-        if self.gl_api == "gl":
-            gl.glPrimitiveRestartIndex(value)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def finish(self) -> None:
         """
         Wait until all OpenGL rendering commands are completed.
@@ -828,8 +726,9 @@ class Context(ABC):
         This function will actually stall until all work is done
         and may have severe performance implications.
         """
-        gl.glFinish()
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+    @abstractmethod
     def flush(self) -> None:
         """
         Flush the OpenGL command buffer.
@@ -839,7 +738,7 @@ class Context(ABC):
         ensure that all commands are sent to the GPU before doing
         something else.
         """
-        gl.glFlush()
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     # Various utility methods
 
@@ -955,12 +854,12 @@ class Context(ABC):
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
-        wrap_x: PyGLenum | None = None,
-        wrap_y: PyGLenum | None = None,
-        filter: Tuple[PyGLenum, PyGLenum] | None = None,
+        wrap_x = None,
+        wrap_y = None,
+        filter = None,
         samples: int = 0,
         immutable: bool = False,
-        internal_format: PyGLenum | None = None,
+        internal_format,
         compressed: bool = False,
         compressed_data: bool = False,
     ) -> Texture2D:
@@ -1043,9 +942,9 @@ class Context(ABC):
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
-        wrap_x: PyGLenum | None = None,
-        wrap_y: PyGLenum | None = None,
-        filter: Tuple[PyGLenum, PyGLenum] | None = None,
+        wrap_x = None,
+        wrap_y = None,
+        filter = None,
     ) -> TextureArray:
         """
         Create a 2D Texture Array.
@@ -1092,7 +991,7 @@ class Context(ABC):
     @abstractmethod
     def geometry(
         self,
-        content: Sequence[BufferDescription] | None = None,
+        content = None,
         index_buffer: Buffer | None = None,
         mode: int | None = None,
         index_element_size: int = 4,
@@ -1311,187 +1210,137 @@ class ContextStats:
         setattr(self, key, (created, freed + 1))
 
 
-class GLInfo:
+class Info(ABC):
     """OpenGL info and capabilities"""
 
     def __init__(self, ctx):
         self._ctx = ctx
 
-        self.MINOR_VERSION = self.get(gl.GL_MINOR_VERSION)
-        """Minor version number of the OpenGL API supported by the current context"""
-
-        self.MAJOR_VERSION = self.get(gl.GL_MAJOR_VERSION)
-        """Major version number of the OpenGL API supported by the current context."""
-
-        self.VENDOR = self.get_str(gl.GL_VENDOR)
+        self.VENDOR = self.get_str(enums.VENDOR)
         """The vendor string. For example 'NVIDIA Corporation'"""
 
-        self.RENDERER = self.get_str(gl.GL_RENDERER)
+        self.RENDERER = self.get_str(enums.RENDERER)
         """The renderer things. For example "NVIDIA GeForce RTX 2080 SUPER/PCIe/SSE2"""
 
-        self.SAMPLE_BUFFERS = self.get(gl.GL_SAMPLE_BUFFERS)
+        self.SAMPLE_BUFFERS = self.get(enums.SAMPLE_BUFFERS)
         """Value indicating the number of sample buffers associated with the framebuffer"""
 
-        self.SUBPIXEL_BITS = self.get(gl.GL_SUBPIXEL_BITS)
+        self.SUBPIXEL_BITS = self.get(enums.SUBPIXEL_BITS)
         """
         An estimate of the number of bits of subpixel resolution
         that are used to position rasterized geometry in window coordinates
         """
 
-        self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(gl.GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT)
+        self.UNIFORM_BUFFER_OFFSET_ALIGNMENT = self.get(enums.UNIFORM_BUFFER_OFFSET_ALIGNMENT)
         """Minimum required alignment for uniform buffer sizes and offset"""
 
-        self.MAX_ARRAY_TEXTURE_LAYERS = self.get(gl.GL_MAX_ARRAY_TEXTURE_LAYERS)
+        self.MAX_ARRAY_TEXTURE_LAYERS = self.get(enums.MAX_ARRAY_TEXTURE_LAYERS)
         """
         Value indicates the maximum number of layers allowed in an array texture,
         and must be at least 256
         """
 
-        self.MAX_3D_TEXTURE_SIZE = self.get(gl.GL_MAX_3D_TEXTURE_SIZE)
+        self.MAX_3D_TEXTURE_SIZE = self.get(enums.MAX_3D_TEXTURE_SIZE)
         """
         A rough estimate of the largest 3D texture that the GL can handle.
         The value must be at least 64
         """
 
-        self.MAX_COLOR_ATTACHMENTS = self.get(gl.GL_MAX_COLOR_ATTACHMENTS)
+        self.MAX_COLOR_ATTACHMENTS = self.get(enums.MAX_COLOR_ATTACHMENTS)
         """Maximum number of color attachments in a framebuffer"""
 
-        self.MAX_COLOR_TEXTURE_SAMPLES = self.get(gl.GL_MAX_COLOR_TEXTURE_SAMPLES)
-        """Maximum number of samples in a color multisample texture"""
+        self.MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS = self.get(
+            enums.MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS
+        )
+        """Number of words for vertex shader uniform variables in all uniform blocks"""
 
         self.MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS = self.get(
-            gl.GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS
+            enums.MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS
         )
         """the number of words for fragment shader uniform variables in all uniform blocks"""
 
-        self.MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS = self.get(
-            gl.GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS
-        )
-        """Number of words for geometry shader uniform variables in all uniform blocks"""
-
-        self.MAX_COMBINED_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS)
+        self.MAX_COMBINED_TEXTURE_IMAGE_UNITS = self.get(enums.MAX_COMBINED_TEXTURE_IMAGE_UNITS)
         """
         Maximum supported texture image units that can be used to access texture
         maps from the vertex shader
         """
 
-        self.MAX_COMBINED_UNIFORM_BLOCKS = self.get(gl.GL_MAX_COMBINED_UNIFORM_BLOCKS)
+        self.MAX_COMBINED_UNIFORM_BLOCKS = self.get(enums.MAX_COMBINED_UNIFORM_BLOCKS)
         """Maximum number of uniform blocks per program"""
 
-        self.MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS = self.get(
-            gl.GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS
-        )
-        """Number of words for vertex shader uniform variables in all uniform blocks"""
-
-        self.MAX_CUBE_MAP_TEXTURE_SIZE = self.get(gl.GL_MAX_CUBE_MAP_TEXTURE_SIZE)
+        self.MAX_CUBE_MAP_TEXTURE_SIZE = self.get(enums.MAX_CUBE_MAP_TEXTURE_SIZE)
         """A rough estimate of the largest cube-map texture that the GL can handle"""
 
-        self.MAX_DEPTH_TEXTURE_SAMPLES = self.get(gl.GL_MAX_DEPTH_TEXTURE_SAMPLES)
-        """Maximum number of samples in a multisample depth or depth-stencil texture"""
-
-        self.MAX_DRAW_BUFFERS = self.get(gl.GL_MAX_DRAW_BUFFERS)
+        self.MAX_DRAW_BUFFERS = self.get(enums.MAX_DRAW_BUFFERS)
         """Maximum number of simultaneous outputs that may be written in a fragment shader"""
 
-        self.MAX_ELEMENTS_INDICES = self.get(gl.GL_MAX_ELEMENTS_INDICES)
-        """Recommended maximum number of vertex array indices"""
-
-        self.MAX_ELEMENTS_VERTICES = self.get(gl.GL_MAX_ELEMENTS_VERTICES)
+        self.MAX_ELEMENTS_VERTICES = self.get(enums.MAX_ELEMENTS_VERTICES)
         """Recommended maximum number of vertex array vertices"""
 
-        self.MAX_FRAGMENT_INPUT_COMPONENTS = self.get(gl.GL_MAX_FRAGMENT_INPUT_COMPONENTS)
+        self.MAX_ELEMENTS_INDICES = self.get(enums.MAX_ELEMENTS_INDICES)
+        """Recommended maximum number of vertex array indices"""
+
+        self.MAX_FRAGMENT_INPUT_COMPONENTS = self.get(enums.MAX_FRAGMENT_INPUT_COMPONENTS)
         """Maximum number of components of the inputs read by the fragment shader"""
 
-        self.MAX_FRAGMENT_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)
+        self.MAX_FRAGMENT_UNIFORM_COMPONENTS = self.get(enums.MAX_FRAGMENT_UNIFORM_COMPONENTS)
         """
         Maximum number of individual floating-point, integer, or boolean values that can be
         held in uniform variable storage for a fragment shader
         """
 
-        self.MAX_FRAGMENT_UNIFORM_VECTORS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_VECTORS)
+        self.MAX_FRAGMENT_UNIFORM_VECTORS = self.get(enums.MAX_FRAGMENT_UNIFORM_VECTORS)
         """
         Maximum number of individual 4-vectors of floating-point, integer,
         or boolean values that can be held in uniform variable storage for a fragment shader
         """
 
-        self.MAX_FRAGMENT_UNIFORM_BLOCKS = self.get(gl.GL_MAX_FRAGMENT_UNIFORM_BLOCKS)
+        self.MAX_FRAGMENT_UNIFORM_BLOCKS = self.get(enums.MAX_FRAGMENT_UNIFORM_BLOCKS)
         """Maximum number of uniform blocks per fragment shader."""
 
-        self.MAX_GEOMETRY_INPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_INPUT_COMPONENTS)
-        """Maximum number of components of inputs read by a geometry shader"""
-
-        self.MAX_GEOMETRY_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_OUTPUT_COMPONENTS)
-        """Maximum number of components of outputs written by a geometry shader"""
-
-        self.MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS)
-        """
-        Maximum supported texture image units that can be used to access texture
-        maps from the geometry shader
-        """
-
-        self.MAX_GEOMETRY_UNIFORM_BLOCKS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_BLOCKS)
-        """Maximum number of uniform blocks per geometry shader"""
-
-        self.MAX_GEOMETRY_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_GEOMETRY_UNIFORM_COMPONENTS)
-        """
-        Maximum number of individual floating-point, integer, or boolean values that can
-        be held in uniform variable storage for a geometry shader
-        """
-
-        self.MAX_INTEGER_SAMPLES = self.get(gl.GL_MAX_INTEGER_SAMPLES)
-        """Maximum number of samples supported in integer format multisample buffers"""
-
-        self.MAX_SAMPLES = self.get(gl.GL_MAX_SAMPLES)
+        self.MAX_SAMPLES = self.get(enums.MAX_SAMPLES)
         """Maximum samples for a framebuffer"""
 
-        self.MAX_RENDERBUFFER_SIZE = self.get(gl.GL_MAX_RENDERBUFFER_SIZE)
+        self.MAX_RENDERBUFFER_SIZE = self.get(enums.MAX_RENDERBUFFER_SIZE)
         """Maximum supported size for renderbuffers"""
 
-        self.MAX_SAMPLE_MASK_WORDS = self.get(gl.GL_MAX_SAMPLE_MASK_WORDS)
-        """Maximum number of sample mask words"""
-
-        self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
+        self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(enums.MAX_UNIFORM_BUFFER_BINDINGS)
         """Maximum number of uniform buffer binding points on the context"""
 
-        self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
-        """Maximum number of uniform buffer binding points on the context"""
-
-        self.MAX_TEXTURE_SIZE = self.get(gl.GL_MAX_TEXTURE_SIZE)
+        self.MAX_TEXTURE_SIZE = self.get(enums.MAX_TEXTURE_SIZE)
         """The value gives a rough estimate of the largest texture that the GL can handle"""
 
-        self.MAX_UNIFORM_BUFFER_BINDINGS = self.get(gl.GL_MAX_UNIFORM_BUFFER_BINDINGS)
-        """Maximum number of uniform buffer binding points on the context"""
-
-        self.MAX_UNIFORM_BLOCK_SIZE = self.get(gl.GL_MAX_UNIFORM_BLOCK_SIZE)
+        self.MAX_UNIFORM_BLOCK_SIZE = self.get(enums.MAX_UNIFORM_BLOCK_SIZE)
         """Maximum size in basic machine units of a uniform block"""
 
-        self.MAX_VARYING_VECTORS = self.get(gl.GL_MAX_VARYING_VECTORS)
+        self.MAX_VARYING_VECTORS = self.get(enums.MAX_VARYING_VECTORS)
         """The number 4-vectors for varying variables"""
 
-        self.MAX_VERTEX_ATTRIBS = self.get(gl.GL_MAX_VERTEX_ATTRIBS)
+        self.MAX_VERTEX_ATTRIBS = self.get(enums.MAX_VERTEX_ATTRIBS)
         """Maximum number of 4-component generic vertex attributes accessible to a vertex shader."""
 
-        self.MAX_VERTEX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS)
+        self.MAX_VERTEX_TEXTURE_IMAGE_UNITS = self.get(enums.MAX_VERTEX_TEXTURE_IMAGE_UNITS)
         """
         Maximum supported texture image units that can be used to access texture
         maps from the vertex shader.
         """
 
-        self.MAX_VERTEX_UNIFORM_COMPONENTS = self.get(gl.GL_MAX_VERTEX_UNIFORM_COMPONENTS)
+        self.MAX_VERTEX_UNIFORM_COMPONENTS = self.get(enums.MAX_VERTEX_UNIFORM_COMPONENTS)
         """
         Maximum number of individual floating-point, integer, or boolean values that
         can be held in uniform variable storage for a vertex shader
         """
 
-        self.MAX_VERTEX_UNIFORM_VECTORS = self.get(gl.GL_MAX_VERTEX_UNIFORM_VECTORS)
+        self.MAX_VERTEX_UNIFORM_VECTORS = self.get(enums.MAX_VERTEX_UNIFORM_VECTORS)
         """
         Maximum number of 4-vectors that may be held in uniform variable storage
         for the vertex shader
         """
 
-        self.MAX_VERTEX_OUTPUT_COMPONENTS = self.get(gl.GL_MAX_VERTEX_OUTPUT_COMPONENTS)
+        self.MAX_VERTEX_OUTPUT_COMPONENTS = self.get(enums.MAX_VERTEX_OUTPUT_COMPONENTS)
         """Maximum number of components of output written by a vertex shader"""
 
-        self.MAX_VERTEX_UNIFORM_BLOCKS = self.get(gl.GL_MAX_VERTEX_UNIFORM_BLOCKS)
+        self.MAX_VERTEX_UNIFORM_BLOCKS = self.get(enums.MAX_VERTEX_UNIFORM_BLOCKS)
         """Maximum number of uniform blocks per vertex shader."""
 
         # self.MAX_VERTEX_ATTRIB_RELATIVE_OFFSET = self.get(
@@ -1499,42 +1348,34 @@ class GLInfo:
         # )
         # self.MAX_VERTEX_ATTRIB_BINDINGS = self.get(gl.GL_MAX_VERTEX_ATTRIB_BINDINGS)
 
-        self.MAX_TEXTURE_IMAGE_UNITS = self.get(gl.GL_MAX_TEXTURE_IMAGE_UNITS)
+        self.MAX_TEXTURE_IMAGE_UNITS = self.get(enums.MAX_TEXTURE_IMAGE_UNITS)
         """Number of texture units"""
 
-        self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY, 1.0)
+        self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(enums.MAX_TEXTURE_MAX_ANISOTROPY, 1.0)
         """The highest supported anisotropy value. Usually 8.0 or 16.0."""
 
-        self.MAX_VIEWPORT_DIMS: Tuple[int, int] = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
+        self.MAX_VIEWPORT_DIMS: Tuple[int, int] = self.get_int_tuple(enums.MAX_VIEWPORT_DIMS, 2)
         """
         The maximum support window or framebuffer viewport.
         This is usually the same as the maximum texture size
         """
 
         self.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = self.get(
-            gl.GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS
+            enums.MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS
         )
         """
         How many buffers we can have as output when doing a transform(feedback).
         This is usually 4.
         """
 
-        self.POINT_SIZE_RANGE = self.get_int_tuple(gl.GL_POINT_SIZE_RANGE, 2)
-        """The minimum and maximum point size"""
-
-        err = self._ctx.error
-        if err:
-            from warnings import warn
-
-            warn("Error happened while querying of limits. Moving on ..")
+    @overload
+    def get_int_tuple(self, enum, length: Literal[2]) -> Tuple[int, int]: ...
 
     @overload
-    def get_int_tuple(self, enum: GLenumLike, length: Literal[2]) -> Tuple[int, int]: ...
+    def get_int_tuple(self, enum, length: int) -> Tuple[int, ...]: ...
 
-    @overload
-    def get_int_tuple(self, enum: GLenumLike, length: int) -> Tuple[int, ...]: ...
-
-    def get_int_tuple(self, enum: GLenumLike, length: int):
+    @abstractmethod
+    def get_int_tuple(self, enum, length: int):
         """
         Get an enum as an int tuple
 
@@ -1542,14 +1383,10 @@ class GLInfo:
             enum: The enum to query
             length: The length of the tuple
         """
-        try:
-            values = (c_int * length)()
-            gl.glGetIntegerv(enum, values)
-            return tuple(values)
-        except pyglet.gl.lib.GLException:
-            return tuple([0] * length)
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-    def get(self, enum: GLenumLike, default=0) -> int:
+    @abstractmethod
+    def get(self, enum, default=0) -> int:
         """
         Get an integer limit.
 
@@ -1557,14 +1394,10 @@ class GLInfo:
             enum: The enum to query
             default: The default value if the query fails
         """
-        try:
-            value = c_int()
-            gl.glGetIntegerv(enum, value)
-            return value.value
-        except pyglet.gl.lib.GLException:
-            return default
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-    def get_float(self, enum: GLenumLike, default=0.0) -> float:
+    @abstractmethod
+    def get_float(self, enum, default=0.0) -> float:
         """
         Get a float limit
 
@@ -1572,21 +1405,14 @@ class GLInfo:
             enum: The enum to query
             default: The default value if the query fails
         """
-        try:
-            value = c_float()
-            gl.glGetFloatv(enum, value)
-            return value.value
-        except pyglet.gl.lib.GLException:
-            return default
+        raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-    def get_str(self, enum: GLenumLike) -> str:
+    @abstractmethod
+    def get_str(self, enum) -> str:
         """
         Get a string limit.
 
         Args:
             enum: The enum to query
         """
-        try:
-            return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
-        except pyglet.gl.lib.GLException:
-            return "Unknown"
+        raise NotImplementedError("The enabled graphics backend does not support this method.")

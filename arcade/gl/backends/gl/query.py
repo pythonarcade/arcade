@@ -42,7 +42,6 @@ class GLQuery(Query):
         "_glo_samples_passed",
         "_glo_time_elapsed",
         "_glo_primitives_generated",
-        "__weakref__",
     )
 
     def __init__(self, ctx: Context, samples=True, time=True, primitives=True):

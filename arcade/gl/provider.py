@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 import importlib
 
-from arcade.context import ArcadeContext
-
-from .context import Context
+if TYPE_CHECKING:
+    from arcade.context import ArcadeContext
+    from .context import Context
 
 _current_provider: BaseProvider = None
 
@@ -20,6 +21,8 @@ def set_provider(provider_name: str):
         print(e)
         raise ImportError(f"arcade.gl Backend Provider '{provider_name}' not found")
 
+def get_provider():
+    return _current_provider
 
 def get_context(*args, **kwargs) -> Context:
     if _current_provider is None:
@@ -37,6 +40,10 @@ class BaseProvider(ABC):
 
     @abstractmethod
     def create_context(self, *args, **kwargs) -> Context:
+        pass
+
+    @abstractmethod
+    def create_info(self, ctx: Context):
         pass
 
     @abstractmethod
