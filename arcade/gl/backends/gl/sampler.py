@@ -7,8 +7,7 @@ from typing import TYPE_CHECKING
 from pyglet import gl
 
 from arcade.gl.sampler import Sampler
-
-from .types import PyGLuint, compare_funcs
+from arcade.gl.types import PyGLuint, compare_funcs
 
 if TYPE_CHECKING:
     from arcade.gl import Context, Texture2D

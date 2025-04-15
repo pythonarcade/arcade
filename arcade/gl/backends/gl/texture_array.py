@@ -8,21 +8,38 @@ from pyglet import gl
 
 from arcade.types import BufferProtocol
 from arcade.gl.texture_array import TextureArray
-
-from .buffer import Buffer
-from .types import (
+from arcade.gl.types import (
     BufferOrBufferProtocol,
     PyGLuint,
     compare_funcs,
     pixel_formats,
-    swizzle_enum_to_str,
-    swizzle_str_to_enum,
 )
+
+from .buffer import Buffer
 from .utils import data_to_ctypes
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
 
+#: Swizzle conversion lookup
+swizzle_enum_to_str: dict[int, str] = {
+    gl.GL_RED: "R",
+    gl.GL_GREEN: "G",
+    gl.GL_BLUE: "B",
+    gl.GL_ALPHA: "A",
+    gl.GL_ZERO: "0",
+    gl.GL_ONE: "1",
+}
+
+#: Swizzle conversion lookup
+swizzle_str_to_enum: dict[str, int] = {
+    "R": gl.GL_RED,
+    "G": gl.GL_GREEN,
+    "B": gl.GL_BLUE,
+    "A": gl.GL_ALPHA,
+    "0": gl.GL_ZERO,
+    "1": gl.GL_ONE,
+}
 
 class GLTextureArray(TextureArray):
     """

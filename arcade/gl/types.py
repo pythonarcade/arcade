@@ -1,18 +1,16 @@
 import re
-from typing import Iterable, Sequence, Union
-
-from pyglet import gl
-from typing_extensions import TypeAlias
+from typing import Iterable, Sequence, TypeAlias, Union
 
 from arcade.types import BufferProtocol
 
 from .buffer import Buffer
+from . import enums
 
 BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 
-GLenumLike = Union[gl.GLenum, int]
+GLenumLike = int
 PyGLenum = int
-GLuintLike = Union[gl.GLuint, int]
+GLuintLike = int
 PyGLuint = int
 
 
@@ -23,102 +21,82 @@ BlendFunction: TypeAlias = Union[
 
 #: Depth compare functions
 compare_funcs: dict[str | None, int] = {
-    None: gl.GL_NONE,
-    "<=": gl.GL_LEQUAL,
-    "<": gl.GL_LESS,
-    ">=": gl.GL_GEQUAL,
-    ">": gl.GL_GREATER,
-    "==": gl.GL_EQUAL,
-    "!=": gl.GL_NOTEQUAL,
-    "0": gl.GL_NEVER,
-    "1": gl.GL_ALWAYS,
+    None: enums.NONE,
+    "<=": enums.LEQUAL,
+    "<": enums.LESS,
+    ">=": enums.GEQUAL,
+    ">": enums.GREATER,
+    "==": enums.EQUAL,
+    "!=": enums.NOTEQUAL,
+    "0": enums.NEVER,
+    "1": enums.ALWAYS,
 }
 
-#: Swizzle conversion lookup
-swizzle_enum_to_str: dict[int, str] = {
-    gl.GL_RED: "R",
-    gl.GL_GREEN: "G",
-    gl.GL_BLUE: "B",
-    gl.GL_ALPHA: "A",
-    gl.GL_ZERO: "0",
-    gl.GL_ONE: "1",
-}
-
-#: Swizzle conversion lookup
-swizzle_str_to_enum: dict[str, int] = {
-    "R": gl.GL_RED,
-    "G": gl.GL_GREEN,
-    "B": gl.GL_BLUE,
-    "A": gl.GL_ALPHA,
-    "0": gl.GL_ZERO,
-    "1": gl.GL_ONE,
-}
-
-_float_base_format = (0, gl.GL_RED, gl.GL_RG, gl.GL_RGB, gl.GL_RGBA)
+_float_base_format = (0, enums.RED, enums.RG, enums.RGB, enums.RGBA)
 _int_base_format = (
     0,
-    gl.GL_RED_INTEGER,
-    gl.GL_RG_INTEGER,
-    gl.GL_RGB_INTEGER,
-    gl.GL_RGBA_INTEGER,
+    enums.RED_INTEGER,
+    enums.RG_INTEGER,
+    enums.RGB_INTEGER,
+    enums.RGBA_INTEGER,
 )
 #: Pixel format lookup (base_format, internal_format, type, size)
 pixel_formats = {
     # float formats
     "f1": (
         _float_base_format,
-        (0, gl.GL_R8, gl.GL_RG8, gl.GL_RGB8, gl.GL_RGBA8),
-        gl.GL_UNSIGNED_BYTE,
+        (0, enums.R8, enums.RG8, enums.RGB8, enums.RGBA8),
+        enums.UNSIGNED_BYTE,
         1,
     ),
     "f2": (
         _float_base_format,
-        (0, gl.GL_R16F, gl.GL_RG16F, gl.GL_RGB16F, gl.GL_RGBA16F),
-        gl.GL_HALF_FLOAT,
+        (0, enums.R16F, enums.RG16F, enums.RGB16F, enums.RGBA16F),
+        enums.HALF_FLOAT,
         2,
     ),
     "f4": (
         _float_base_format,
-        (0, gl.GL_R32F, gl.GL_RG32F, gl.GL_RGB32F, gl.GL_RGBA32F),
-        gl.GL_FLOAT,
+        (0, enums.R32F, enums.RG32F, enums.RGB32F, enums.RGBA32F),
+        enums.FLOAT,
         4,
     ),
     # int formats
     "i1": (
         _int_base_format,
-        (0, gl.GL_R8I, gl.GL_RG8I, gl.GL_RGB8I, gl.GL_RGBA8I),
-        gl.GL_BYTE,
+        (0, enums.R8I, enums.RG8I, enums.RGB8I, enums.RGBA8I),
+        enums.BYTE,
         1,
     ),
     "i2": (
         _int_base_format,
-        (0, gl.GL_R16I, gl.GL_RG16I, gl.GL_RGB16I, gl.GL_RGBA16I),
-        gl.GL_SHORT,
+        (0, enums.R16I, enums.RG16I, enums.RGB16I, enums.RGBA16I),
+        enums.SHORT,
         2,
     ),
     "i4": (
         _int_base_format,
-        (0, gl.GL_R32I, gl.GL_RG32I, gl.GL_RGB32I, gl.GL_RGBA32I),
-        gl.GL_INT,
+        (0, enums.R32I, enums.RG32I, enums.RGB32I, enums.RGBA32I),
+        enums.INT,
         4,
     ),
     # uint formats
     "u1": (
         _int_base_format,
-        (0, gl.GL_R8UI, gl.GL_RG8UI, gl.GL_RGB8UI, gl.GL_RGBA8UI),
-        gl.GL_UNSIGNED_BYTE,
+        (0, enums.R8UI, enums.RG8UI, enums.RGB8UI, enums.RGBA8UI),
+        enums.UNSIGNED_BYTE,
         1,
     ),
     "u2": (
         _int_base_format,
-        (0, gl.GL_R16UI, gl.GL_RG16UI, gl.GL_RGB16UI, gl.GL_RGBA16UI),
-        gl.GL_UNSIGNED_SHORT,
+        (0, enums.R16UI, enums.RG16UI, enums.RGB16UI, enums.RGBA16UI),
+        enums.UNSIGNED_SHORT,
         2,
     ),
     "u4": (
         _int_base_format,
-        (0, gl.GL_R32UI, gl.GL_RG32UI, gl.GL_RGB32UI, gl.GL_RGBA32UI),
-        gl.GL_UNSIGNED_INT,
+        (0, enums.R32UI, enums.RG32UI, enums.RGB32UI, enums.RGBA32UI),
+        enums.UNSIGNED_INT,
         4,
     ),
 }
@@ -126,28 +104,28 @@ pixel_formats = {
 
 #: String representation of a shader types
 SHADER_TYPE_NAMES = {
-    gl.GL_VERTEX_SHADER: "vertex shader",
-    gl.GL_FRAGMENT_SHADER: "fragment shader",
-    gl.GL_GEOMETRY_SHADER: "geometry shader",
-    gl.GL_TESS_CONTROL_SHADER: "tessellation control shader",
-    gl.GL_TESS_EVALUATION_SHADER: "tessellation evaluation shader",
+    enums.VERTEX_SHADER: "vertex shader",
+    enums.FRAGMENT_SHADER: "fragment shader",
+    enums.GEOMETRY_SHADER: "geometry shader", # Not supported in WebGL
+    enums.TESS_CONTROL_SHADER: "tessellation control shader", # Not supported in WebGL
+    enums.TESS_EVALUATION_SHADER: "tessellation evaluation shader", # Not supported in WebGL
 }
 
 #: Lookup table for OpenGL type names
 GL_NAMES = {
-    gl.GL_HALF_FLOAT: "GL_HALF_FLOAT",
-    gl.GL_FLOAT: "GL_FLOAT",
-    gl.GL_DOUBLE: "GL_DOUBLE",
-    gl.GL_INT: "GL_INT",
-    gl.GL_UNSIGNED_INT: "GL_UNSIGNED_INT",
-    gl.GL_SHORT: "GL_SHORT",
-    gl.GL_UNSIGNED_SHORT: "GL_UNSIGNED_SHORT",
-    gl.GL_BYTE: "GL_BYTE",
-    gl.GL_UNSIGNED_BYTE: "GL_UNSIGNED_BYTE",
+    enums.HALF_FLOAT: "GL_HALF_FLOAT",
+    enums.FLOAT: "GL_FLOAT",
+    enums.DOUBLE: "GL_DOUBLE", # Double not supported in WebGL
+    enums.INT: "GL_INT",
+    enums.UNSIGNED_INT: "GL_UNSIGNED_INT",
+    enums.SHORT: "GL_SHORT",
+    enums.UNSIGNED_SHORT: "GL_UNSIGNED_SHORT",
+    enums.BYTE: "GL_BYTE",
+    enums.UNSIGNED_BYTE: "GL_UNSIGNED_BYTE",
 }
 
 
-def gl_name(gl_type: PyGLenum | None) -> str | PyGLenum | None:
+def gl_name(gl_type):
     """Return the name of a gl type"""
     if gl_type is None:
         return None
@@ -185,7 +163,7 @@ class AttribFormat:
     def __init__(
         self,
         name: str | None,
-        gl_type: PyGLenum | None,
+        gl_type,
         components: int,
         bytes_per_component: int,
         offset=0,
@@ -256,24 +234,24 @@ class BufferDescription:
 
     # Describe all variants of a format string to simplify parsing (single component)
     # format: gl_type, byte_size
-    _formats: dict[str, tuple[PyGLenum | None, int]] = {
+    _formats: dict[str, tuple] = {
         # (gl enum, byte size)
         # Floats
-        "f": (gl.GL_FLOAT, 4),
-        "f1": (gl.GL_UNSIGNED_BYTE, 1),
-        "f2": (gl.GL_HALF_FLOAT, 2),
-        "f4": (gl.GL_FLOAT, 4),
-        "f8": (gl.GL_DOUBLE, 8),
+        "f": (enums.FLOAT, 4),
+        "f1": (enums.UNSIGNED_BYTE, 1),
+        "f2": (enums.HALF_FLOAT, 2),
+        "f4": (enums.FLOAT, 4),
+        "f8": (enums.DOUBLE, 8), # Double unsupported by WebGL
         # Unsigned integers
-        "u": (gl.GL_UNSIGNED_INT, 4),
-        "u1": (gl.GL_UNSIGNED_BYTE, 1),
-        "u2": (gl.GL_UNSIGNED_SHORT, 2),
-        "u4": (gl.GL_UNSIGNED_INT, 4),
+        "u": (enums.UNSIGNED_INT, 4),
+        "u1": (enums.UNSIGNED_BYTE, 1),
+        "u2": (enums.UNSIGNED_SHORT, 2),
+        "u4": (enums.UNSIGNED_INT, 4),
         # Signed integers
-        "i": (gl.GL_INT, 4),
-        "i1": (gl.GL_BYTE, 1),
-        "i2": (gl.GL_SHORT, 2),
-        "i4": (gl.GL_INT, 4),
+        "i": (enums.INT, 4),
+        "i1": (enums.BYTE, 1),
+        "i2": (enums.SHORT, 2),
+        "i4": (enums.INT, 4),
         # Padding (1, 2, 4, 8 bytes)
         "x": (None, 1),
         "x1": (None, 1),
@@ -411,7 +389,7 @@ class TypeInfo:
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
     def __init__(
-        self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int
+        self, name: str, enum, gl_type, gl_size: int, components: int
     ):
         self.name = name
         """The string representation of this type"""
@@ -463,67 +441,67 @@ class GLTypes:
 
     types = {
         # Floats
-        gl.GL_FLOAT: TypeInfo("GL_FLOAT", gl.GL_FLOAT, gl.GL_FLOAT, 4, 1),
-        gl.GL_FLOAT_VEC2: TypeInfo("GL_FLOAT_VEC2", gl.GL_FLOAT_VEC2, gl.GL_FLOAT, 4, 2),
-        gl.GL_FLOAT_VEC3: TypeInfo("GL_FLOAT_VEC3", gl.GL_FLOAT_VEC3, gl.GL_FLOAT, 4, 3),
-        gl.GL_FLOAT_VEC4: TypeInfo("GL_FLOAT_VEC4", gl.GL_FLOAT_VEC4, gl.GL_FLOAT, 4, 4),
-        # Doubles
-        gl.GL_DOUBLE: TypeInfo("GL_DOUBLE", gl.GL_DOUBLE, gl.GL_DOUBLE, 8, 1),
-        gl.GL_DOUBLE_VEC2: TypeInfo("GL_DOUBLE_VEC2", gl.GL_DOUBLE_VEC2, gl.GL_DOUBLE, 8, 2),
-        gl.GL_DOUBLE_VEC3: TypeInfo("GL_DOUBLE_VEC3", gl.GL_DOUBLE_VEC3, gl.GL_DOUBLE, 8, 3),
-        gl.GL_DOUBLE_VEC4: TypeInfo("GL_DOUBLE_VEC4", gl.GL_DOUBLE_VEC4, gl.GL_DOUBLE, 8, 4),
+        enums.FLOAT: TypeInfo("GL_FLOAT", enums.FLOAT, enums.FLOAT, 4, 1),
+        enums.FLOAT_VEC2: TypeInfo("GL_FLOAT_VEC2", enums.FLOAT_VEC2, enums.FLOAT, 4, 2),
+        enums.FLOAT_VEC3: TypeInfo("GL_FLOAT_VEC3", enums.FLOAT_VEC3, enums.FLOAT, 4, 3),
+        enums.FLOAT_VEC4: TypeInfo("GL_FLOAT_VEC4", enums.FLOAT_VEC4, enums.FLOAT, 4, 4),
+        # Doubles -- Unsupported by WebGL
+        enums.DOUBLE: TypeInfo("GL_DOUBLE", enums.DOUBLE, enums.DOUBLE, 8, 1),
+        enums.DOUBLE_VEC2: TypeInfo("GL_DOUBLE_VEC2", enums.DOUBLE_VEC2, enums.DOUBLE, 8, 2),
+        enums.DOUBLE_VEC3: TypeInfo("GL_DOUBLE_VEC3", enums.DOUBLE_VEC3, enums.DOUBLE, 8, 3),
+        enums.DOUBLE_VEC4: TypeInfo("GL_DOUBLE_VEC4", enums.DOUBLE_VEC4, enums.DOUBLE, 8, 4),
         # Booleans (ubyte)
-        gl.GL_BOOL: TypeInfo("GL_BOOL", gl.GL_BOOL, gl.GL_BOOL, 1, 1),
-        gl.GL_BOOL_VEC2: TypeInfo("GL_BOOL_VEC2", gl.GL_BOOL_VEC2, gl.GL_BOOL, 1, 2),
-        gl.GL_BOOL_VEC3: TypeInfo("GL_BOOL_VEC3", gl.GL_BOOL_VEC3, gl.GL_BOOL, 1, 3),
-        gl.GL_BOOL_VEC4: TypeInfo("GL_BOOL_VEC4", gl.GL_BOOL_VEC4, gl.GL_BOOL, 1, 4),
+        enums.BOOL: TypeInfo("GL_BOOL", enums.BOOL, enums.BOOL, 1, 1),
+        enums.BOOL_VEC2: TypeInfo("GL_BOOL_VEC2", enums.BOOL_VEC2, enums.BOOL, 1, 2),
+        enums.BOOL_VEC3: TypeInfo("GL_BOOL_VEC3", enums.BOOL_VEC3, enums.BOOL, 1, 3),
+        enums.BOOL_VEC4: TypeInfo("GL_BOOL_VEC4", enums.BOOL_VEC4, enums.BOOL, 1, 4),
         # Integers
-        gl.GL_INT: TypeInfo("GL_INT", gl.GL_INT, gl.GL_INT, 4, 1),
-        gl.GL_INT_VEC2: TypeInfo("GL_INT_VEC2", gl.GL_INT_VEC2, gl.GL_INT, 4, 2),
-        gl.GL_INT_VEC3: TypeInfo("GL_INT_VEC3", gl.GL_INT_VEC3, gl.GL_INT, 4, 3),
-        gl.GL_INT_VEC4: TypeInfo("GL_INT_VEC4", gl.GL_INT_VEC4, gl.GL_INT, 4, 4),
+        enums.INT: TypeInfo("GL_INT", enums.INT, enums.INT, 4, 1),
+        enums.INT_VEC2: TypeInfo("GL_INT_VEC2", enums.INT_VEC2, enums.INT, 4, 2),
+        enums.INT_VEC3: TypeInfo("GL_INT_VEC3", enums.INT_VEC3, enums.INT, 4, 3),
+        enums.INT_VEC4: TypeInfo("GL_INT_VEC4", enums.INT_VEC4, enums.INT, 4, 4),
         # Unsigned Integers
-        gl.GL_UNSIGNED_INT: TypeInfo(
-            "GL_UNSIGNED_INT", gl.GL_UNSIGNED_INT, gl.GL_UNSIGNED_INT, 4, 1
+        enums.UNSIGNED_INT: TypeInfo(
+            "GL_UNSIGNED_INT", enums.UNSIGNED_INT, enums.UNSIGNED_INT, 4, 1
         ),
-        gl.GL_UNSIGNED_INT_VEC2: TypeInfo(
-            "GL_UNSIGNED_INT_VEC2", gl.GL_UNSIGNED_INT_VEC2, gl.GL_UNSIGNED_INT, 4, 2
+        enums.UNSIGNED_INT_VEC2: TypeInfo(
+            "GL_UNSIGNED_INT_VEC2", enums.UNSIGNED_INT_VEC2, enums.UNSIGNED_INT, 4, 2
         ),
-        gl.GL_UNSIGNED_INT_VEC3: TypeInfo(
-            "GL_UNSIGNED_INT_VEC3", gl.GL_UNSIGNED_INT_VEC3, gl.GL_UNSIGNED_INT, 4, 3
+        enums.UNSIGNED_INT_VEC3: TypeInfo(
+            "GL_UNSIGNED_INT_VEC3", enums.UNSIGNED_INT_VEC3, enums.UNSIGNED_INT, 4, 3
         ),
-        gl.GL_UNSIGNED_INT_VEC4: TypeInfo(
-            "GL_UNSIGNED_INT_VEC4", gl.GL_UNSIGNED_INT_VEC4, gl.GL_UNSIGNED_INT, 4, 4
+        enums.UNSIGNED_INT_VEC4: TypeInfo(
+            "GL_UNSIGNED_INT_VEC4", enums.UNSIGNED_INT_VEC4, enums.UNSIGNED_INT, 4, 4
         ),
         # Unsigned Short (mostly used for short index buffers)
-        gl.GL_UNSIGNED_SHORT: TypeInfo(
-            "GL.GL_UNSIGNED_SHORT", gl.GL_UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT, 2, 2
+        enums.UNSIGNED_SHORT: TypeInfo(
+            "GL.GL_UNSIGNED_SHORT", enums.UNSIGNED_SHORT, enums.UNSIGNED_SHORT, 2, 2
         ),
         # Byte
-        gl.GL_BYTE: TypeInfo("GL_BYTE", gl.GL_BYTE, gl.GL_BYTE, 1, 1),
-        gl.GL_UNSIGNED_BYTE: TypeInfo(
-            "GL_UNSIGNED_BYTE", gl.GL_UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE, 1, 1
+        enums.BYTE: TypeInfo("GL_BYTE", enums.BYTE, enums.BYTE, 1, 1),
+        enums.UNSIGNED_BYTE: TypeInfo(
+            "GL_UNSIGNED_BYTE", enums.UNSIGNED_BYTE, enums.UNSIGNED_BYTE, 1, 1
         ),
         # Matrices
-        gl.GL_FLOAT_MAT2: TypeInfo("GL_FLOAT_MAT2", gl.GL_FLOAT_MAT2, gl.GL_FLOAT, 4, 4),
-        gl.GL_FLOAT_MAT3: TypeInfo("GL_FLOAT_MAT3", gl.GL_FLOAT_MAT3, gl.GL_FLOAT, 4, 9),
-        gl.GL_FLOAT_MAT4: TypeInfo("GL_FLOAT_MAT4", gl.GL_FLOAT_MAT4, gl.GL_FLOAT, 4, 16),
-        gl.GL_FLOAT_MAT2x3: TypeInfo("GL_FLOAT_MAT2x3", gl.GL_FLOAT_MAT2x3, gl.GL_FLOAT, 4, 6),
-        gl.GL_FLOAT_MAT2x4: TypeInfo("GL_FLOAT_MAT2x4", gl.GL_FLOAT_MAT2x4, gl.GL_FLOAT, 4, 8),
-        gl.GL_FLOAT_MAT3x2: TypeInfo("GL_FLOAT_MAT3x2", gl.GL_FLOAT_MAT3x2, gl.GL_FLOAT, 4, 6),
-        gl.GL_FLOAT_MAT3x4: TypeInfo("GL_FLOAT_MAT3x4", gl.GL_FLOAT_MAT3x4, gl.GL_FLOAT, 4, 12),
-        gl.GL_FLOAT_MAT4x2: TypeInfo("GL_FLOAT_MAT4x2", gl.GL_FLOAT_MAT4x2, gl.GL_FLOAT, 4, 8),
-        gl.GL_FLOAT_MAT4x3: TypeInfo("GL_FLOAT_MAT4x3", gl.GL_FLOAT_MAT4x3, gl.GL_FLOAT, 4, 12),
-        # Double matrices
-        gl.GL_DOUBLE_MAT2: TypeInfo("GL_DOUBLE_MAT2", gl.GL_DOUBLE_MAT2, gl.GL_DOUBLE, 8, 4),
-        gl.GL_DOUBLE_MAT3: TypeInfo("GL_DOUBLE_MAT3", gl.GL_DOUBLE_MAT3, gl.GL_DOUBLE, 8, 9),
-        gl.GL_DOUBLE_MAT4: TypeInfo("GL_DOUBLE_MAT4", gl.GL_DOUBLE_MAT4, gl.GL_DOUBLE, 8, 16),
-        gl.GL_DOUBLE_MAT2x3: TypeInfo("GL_DOUBLE_MAT2x3", gl.GL_DOUBLE_MAT2x3, gl.GL_DOUBLE, 8, 6),
-        gl.GL_DOUBLE_MAT2x4: TypeInfo("GL_DOUBLE_MAT2x4", gl.GL_DOUBLE_MAT2x4, gl.GL_DOUBLE, 8, 8),
-        gl.GL_DOUBLE_MAT3x2: TypeInfo("GL_DOUBLE_MAT3x2", gl.GL_DOUBLE_MAT3x2, gl.GL_DOUBLE, 8, 6),
-        gl.GL_DOUBLE_MAT3x4: TypeInfo("GL_DOUBLE_MAT3x4", gl.GL_DOUBLE_MAT3x4, gl.GL_DOUBLE, 8, 12),
-        gl.GL_DOUBLE_MAT4x2: TypeInfo("GL_DOUBLE_MAT4x2", gl.GL_DOUBLE_MAT4x2, gl.GL_DOUBLE, 8, 8),
-        gl.GL_DOUBLE_MAT4x3: TypeInfo("GL_DOUBLE_MAT4x3", gl.GL_DOUBLE_MAT4x3, gl.GL_DOUBLE, 8, 12),
+        enums.FLOAT_MAT2: TypeInfo("GL_FLOAT_MAT2", enums.FLOAT_MAT2, enums.FLOAT, 4, 4),
+        enums.FLOAT_MAT3: TypeInfo("GL_FLOAT_MAT3", enums.FLOAT_MAT3, enums.FLOAT, 4, 9),
+        enums.FLOAT_MAT4: TypeInfo("GL_FLOAT_MAT4", enums.FLOAT_MAT4, enums.FLOAT, 4, 16),
+        enums.FLOAT_MAT2x3: TypeInfo("GL_FLOAT_MAT2x3", enums.FLOAT_MAT2x3, enums.FLOAT, 4, 6),
+        enums.FLOAT_MAT2x4: TypeInfo("GL_FLOAT_MAT2x4", enums.FLOAT_MAT2x4, enums.FLOAT, 4, 8),
+        enums.FLOAT_MAT3x2: TypeInfo("GL_FLOAT_MAT3x2", enums.FLOAT_MAT3x2, enums.FLOAT, 4, 6),
+        enums.FLOAT_MAT3x4: TypeInfo("GL_FLOAT_MAT3x4", enums.FLOAT_MAT3x4, enums.FLOAT, 4, 12),
+        enums.FLOAT_MAT4x2: TypeInfo("GL_FLOAT_MAT4x2", enums.FLOAT_MAT4x2, enums.FLOAT, 4, 8),
+        enums.FLOAT_MAT4x3: TypeInfo("GL_FLOAT_MAT4x3", enums.FLOAT_MAT4x3, enums.FLOAT, 4, 12),
+        # Double matrices -- unsupported by WebGL
+        enums.DOUBLE_MAT2: TypeInfo("GL_DOUBLE_MAT2", enums.DOUBLE_MAT2, enums.DOUBLE, 8, 4),
+        enums.DOUBLE_MAT3: TypeInfo("GL_DOUBLE_MAT3", enums.DOUBLE_MAT3, enums.DOUBLE, 8, 9),
+        enums.DOUBLE_MAT4: TypeInfo("GL_DOUBLE_MAT4", enums.DOUBLE_MAT4, enums.DOUBLE, 8, 16),
+        enums.DOUBLE_MAT2x3: TypeInfo("GL_DOUBLE_MAT2x3", enums.DOUBLE_MAT2x3, enums.DOUBLE, 8, 6),
+        enums.DOUBLE_MAT2x4: TypeInfo("GL_DOUBLE_MAT2x4", enums.DOUBLE_MAT2x4, enums.DOUBLE, 8, 8),
+        enums.DOUBLE_MAT3x2: TypeInfo("GL_DOUBLE_MAT3x2", enums.DOUBLE_MAT3x2, enums.DOUBLE, 8, 6),
+        enums.DOUBLE_MAT3x4: TypeInfo("GL_DOUBLE_MAT3x4", enums.DOUBLE_MAT3x4, enums.DOUBLE, 8, 12),
+        enums.DOUBLE_MAT4x2: TypeInfo("GL_DOUBLE_MAT4x2", enums.DOUBLE_MAT4x2, enums.DOUBLE, 8, 8),
+        enums.DOUBLE_MAT4x3: TypeInfo("GL_DOUBLE_MAT4x3", enums.DOUBLE_MAT4x3, enums.DOUBLE, 8, 12),
         # TODO: Add sampler types if needed. Only needed for better uniform introspection.
     }
 

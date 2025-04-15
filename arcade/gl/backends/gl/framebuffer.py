@@ -7,10 +7,10 @@ from typing import TYPE_CHECKING
 from pyglet import gl
 
 from arcade.types import RGBOrA255, RGBOrANormalized
+from arcade.gl.types import pixel_formats
 from arcade.gl.framebuffer import DefaultFrameBuffer, Framebuffer
 
 from .texture import GLTexture2D
-from .types import pixel_formats
 
 if TYPE_CHECKING:
     from arcade.gl import Context

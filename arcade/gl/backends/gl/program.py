@@ -19,8 +19,8 @@ from pyglet import gl
 
 from arcade.gl.exceptions import ShaderException
 from arcade.gl.program import Program
+from arcade.gl.types import SHADER_TYPE_NAMES, AttribFormat, GLTypes, PyGLenum
 
-from .types import SHADER_TYPE_NAMES, AttribFormat, GLTypes, PyGLenum
 from .uniform import Uniform, UniformBlock
 
 if TYPE_CHECKING:

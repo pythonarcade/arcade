@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING, Sequence
 
 from pyglet import gl
 
+from arcade.gl.types import BufferDescription, GLenumLike, GLuintLike, gl_name
 from arcade.gl.vertex_array import VertexArray, Geometry
 
 from .buffer import Buffer
 from .program import Program
-from .types import BufferDescription, GLenumLike, GLuintLike, gl_name
 
 if TYPE_CHECKING:
     from arcade.gl import Context

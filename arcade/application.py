@@ -22,9 +22,9 @@ from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_
 from arcade.color import BLACK
 from arcade.context import ArcadeContext
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
-from arcade.utils import is_raspberry_pi
+from arcade.utils import is_raspberry_pi, is_pyodide
 from arcade.window_commands import get_display_size, set_window
-from arcade.gl.provider import get_arcade_context
+from arcade.gl.provider import get_arcade_context, set_provider
 
 if TYPE_CHECKING:
     from arcade.camera import Projector
@@ -167,6 +167,11 @@ class Window(pyglet.window.Window):
         if os.environ.get("REPL_ID"):
             antialiasing = False
 
+        desired_gl_provider = "gl"
+        if is_pyodide():
+            gl_api = "webgl"
+            desired_gl_provider = "webgl"
+
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
         if is_raspberry_pi():
             gl_version = 3, 1
@@ -275,6 +280,7 @@ class Window(pyglet.window.Window):
 
         self.push_handlers(on_resize=self._on_resize)
 
+        set_provider(desired_gl_provider)
         self._ctx: ArcadeContext = get_arcade_context(self, gc_mode=gc_mode, gl_api=gl_api)
         #self._ctx: ArcadeContext = ArcadeContext(self, gc_mode=gc_mode, gl_api=gl_api)
         self._background_color: Color = BLACK

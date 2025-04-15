@@ -206,6 +206,7 @@ class Context(ABC):
         self,
         window: pyglet.window.Window,  # type: ignore
         gc_mode: str = "context_gc",
+        gl_api: str = "gl" # This is ignored here, but used in implementation classes
     ):
         self._window_ref = weakref.ref(window)
         self._info = get_provider().create_info(self)

@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from .context import Context as ArcadeGlContext
 
 from arcade.gl.exceptions import ShaderException
-from .types import SHADER_TYPE_NAMES, PyGLenum
+from arcade.gl.types import SHADER_TYPE_NAMES, PyGLenum
 
 
 class ShaderSource:

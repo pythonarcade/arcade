@@ -20,7 +20,6 @@ from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.framebuffer import Framebuffer
 from arcade.gl.program import Program
 from arcade.gl.texture import Texture2D
-from arcade.gl.types import PyGLenum
 from arcade.gl.vertex_array import Geometry
 from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
 
@@ -450,9 +449,9 @@ class ArcadeContext(Context):
         path: str | Path,
         *,
         flip: bool = True,
-        wrap_x: PyGLenum | None = None,
-        wrap_y: PyGLenum | None = None,
-        filter: tuple[PyGLenum, PyGLenum] | None = None,
+        wrap_x = None,
+        wrap_y = None,
+        filter = None,
         build_mipmaps: bool = False,
         internal_format: int | None = None,
         immutable: bool = False,
