@@ -792,12 +792,18 @@ class PhysicsEnginePlatformer:
             for platform in platform_list:
                 if platform.change_x != 0 or platform.change_y != 0:
                     # Check x boundaries and move the platform in x direction
-                    if platform.boundary_left and platform.left <= platform.boundary_left:
+                    if (
+                        platform.boundary_left is not None
+                        and platform.left <= platform.boundary_left
+                    ):
                         platform.left = platform.boundary_left
                         if platform.change_x < 0:
                             platform.change_x *= -1
 
-                    if platform.boundary_right and platform.right >= platform.boundary_right:
+                    if (
+                        platform.boundary_right is not None
+                        and platform.right >= platform.boundary_right
+                    ):
                         platform.right = platform.boundary_right
                         if platform.change_x > 0:
                             platform.change_x *= -1
