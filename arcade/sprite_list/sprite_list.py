@@ -521,10 +521,10 @@ class SpriteList(SpriteSequence[SpriteType]):
             in float in_texture;
             in vec4 in_color;
         """
-        if not self._geometry:
-            raise ValueError("SpriteList is not initialized.")
+        if not self._initialized:
+            self.initialize()
 
-        return self._geometry
+        return self._geometry  # type: ignore
 
     @property
     def buffer_positions(self) -> Buffer:

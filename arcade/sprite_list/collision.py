@@ -154,7 +154,7 @@ def _get_nearby_sprites(
     # Run the transform shader emitting sprites close to the configured position and size.
     # This runs in a query so we can measure the number of sprites emitted.
     with ctx.collision_query:
-        sprite_list._geometry.transform(  # type: ignore
+        sprite_list.geometry.transform(  # type: ignore
             ctx.collision_detection_program,
             buffer,
             vertices=sprite_count,
