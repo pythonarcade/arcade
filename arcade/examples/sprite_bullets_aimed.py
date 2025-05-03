@@ -109,6 +109,9 @@ class GameView(arcade.View):
     def on_mouse_press(self, x, y, button, modifiers):
         """ Called whenever the mouse button is clicked. """
 
+        # Play the gun sound
+        self.gun_sound.play()
+
         # Create a bullet
         bullet = arcade.Sprite(
             ":resources:images/space_shooter/laserBlue01.png",
@@ -159,9 +162,11 @@ class GameView(arcade.View):
             # Check this bullet to see if it hit a coin
             hit_list = arcade.check_for_collision_with_list(bullet, self.coin_list)
 
-            # If it did, get rid of the bullet
+            # If it did, get rid of the bullet and play the hit sound
             if len(hit_list) > 0:
                 bullet.remove_from_sprite_lists()
+
+                self.hit_sound.play()
 
             # For every coin we hit, add to the score and remove the coin
             for coin in hit_list:
