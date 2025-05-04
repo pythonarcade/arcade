@@ -1,15 +1,15 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING, Sequence
-
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Sequence
 
 from .buffer import Buffer
 from .program import Program
 
 if TYPE_CHECKING:
     from arcade.gl import Context
+
 
 class VertexArray(ABC):
     """
@@ -47,7 +47,7 @@ class VertexArray(ABC):
         self,
         ctx: Context,
         program: Program,
-        content: Sequence, # TODO: typing, this should be Sequence[BufferDescription] need generic BufferDescription though
+        content: Sequence,  # TODO: typing, this should be Sequence[BufferDescription] need generic BufferDescription though
         index_buffer: Buffer | None = None,
         index_element_size: int = 4,
     ) -> None:
@@ -92,7 +92,11 @@ class VertexArray(ABC):
 
     @abstractmethod
     def render(
-        self, mode: int, first: int = 0, vertices: int = 0, instances: int = 1 # TODO: typing, technically mode can also be a ctypes uint in GL backend
+        self,
+        mode: int,
+        first: int = 0,
+        vertices: int = 0,
+        instances: int = 1,  # TODO: typing, technically mode can also be a ctypes uint in GL backend
     ) -> None:
         """
         Render the VertexArray to the currently active framebuffer.
@@ -110,7 +114,9 @@ class VertexArray(ABC):
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @abstractmethod
-    def render_indirect(self, buffer: Buffer, mode: int, count, first, stride) -> None: # TODO: typing, technically mode can also be a ctypes uint in GL backend
+    def render_indirect(
+        self, buffer: Buffer, mode: int, count, first, stride
+    ) -> None:  # TODO: typing, technically mode can also be a ctypes uint in GL backend
         """
         Render the VertexArray to the framebuffer using indirect rendering.
 
@@ -135,8 +141,8 @@ class VertexArray(ABC):
     def transform_interleaved(
         self,
         buffer: Buffer,
-        mode, # TODO, typing. This should be GLenumLike type but idk how to handle that generically yet
-        output_mode, # TODO, typing. This should be GLenumLike type but idk how to handle that generically yet
+        mode,  # TODO, typing. This should be GLenumLike type but idk how to handle that generically yet
+        output_mode,  # TODO, typing. This should be GLenumLike type but idk how to handle that generically yet
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,
@@ -194,6 +200,7 @@ class VertexArray(ABC):
         """
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
+
 class Geometry(ABC):
     """A higher level abstraction of the VertexArray.
 
@@ -234,7 +241,7 @@ class Geometry(ABC):
     def __init__(
         self,
         ctx: Context,
-        content: Sequence | None, # TODO: typing, this should be Sequence[BufferDescription]
+        content: Sequence | None,  # TODO: typing, this should be Sequence[BufferDescription]
         index_buffer: Buffer | None = None,
         mode: int | None = None,
         index_element_size: int = 4,
@@ -290,7 +297,7 @@ class Geometry(ABC):
     def num_vertices(self, value: int):
         self._num_vertices = value
 
-    def append_buffer_description(self, descr): # TODO: typing, descr should be BufferDescription
+    def append_buffer_description(self, descr):  # TODO: typing, descr should be BufferDescription
         """
         Append a new BufferDescription to the existing Geometry.
 
@@ -318,7 +325,7 @@ class Geometry(ABC):
         self,
         program: Program,
         *,
-        mode = None, # TODO: typing, mode should be GLenumLike | None
+        mode=None,  # TODO: typing, mode should be GLenumLike | None
         first: int = 0,
         vertices: int | None = None,
         instances: int = 1,
@@ -396,7 +403,7 @@ class Geometry(ABC):
         program: Program,
         buffer: Buffer,
         *,
-        mode = None, # TODO: typing, mode should be GLuintLike | None
+        mode=None,  # TODO: typing, mode should be GLuintLike | None
         count: int = -1,
         first: int = 0,
         stride: int = 0,

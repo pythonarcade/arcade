@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-
 from typing import TYPE_CHECKING
 
-from . import enums
 from ..types import BufferProtocol
+from . import enums
 from .types import (
     BufferOrBufferProtocol,
     pixel_formats,
@@ -108,13 +107,13 @@ class Texture2D(ABC):
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
-        filter = None, # TODO: typing, should be tuple[PyGLuint, PyGLuint]
-        wrap_x = None, # TODO: typing, should be PyGLuint | None
-        wrap_y = None, # TODO: typing, should be PyGLuint | None
+        filter=None,  # TODO: typing, should be tuple[PyGLuint, PyGLuint]
+        wrap_x=None,  # TODO: typing, should be PyGLuint | None
+        wrap_y=None,  # TODO: typing, should be PyGLuint | None
         depth=False,
         samples: int = 0,
         immutable: bool = False,
-        internal_format = None, # TODO: typing, shouldb e PyGLuint | None
+        internal_format=None,  # TODO: typing, shouldb e PyGLuint | None
         compressed: bool = False,
         compressed_data: bool = False,
     ):

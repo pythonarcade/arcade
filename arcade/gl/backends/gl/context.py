@@ -1,19 +1,18 @@
-from ctypes import c_int, c_float, c_char_p, cast
-from typing import List, Dict, Iterable, Sequence, Tuple
-
-from arcade.gl.context import Context, Info
-from arcade.context import ArcadeContext
+from ctypes import c_char_p, c_float, c_int, cast
+from typing import Dict, Iterable, List, Sequence, Tuple
 
 import pyglet
 from pyglet import gl
 
-from arcade.types import BufferProtocol
+from arcade.context import ArcadeContext
 from arcade.gl import enums
+from arcade.gl.context import Context, Info
 from arcade.gl.types import BufferDescription, PyGLenum
+from arcade.types import BufferProtocol
 
 from .buffer import GLBuffer
 from .compute_shader import GLComputeShader
-from .framebuffer import GLFramebuffer, GLDefaultFrameBuffer
+from .framebuffer import GLDefaultFrameBuffer, GLFramebuffer
 from .glsl import ShaderSource
 from .program import GLProgram
 from .query import GLQuery
@@ -24,18 +23,21 @@ from .vertex_array import GLGeometry
 
 
 class GLContext(Context):
-
     #: The OpenGL api. Usually "gl" or "gles".
     gl_api: str = "gl"
 
     _valid_apis = ("gl", "gles")
 
-    def __init__(self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"):
+    def __init__(
+        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
+    ):
         super().__init__(window, gc_mode)
 
         if gl_api not in self._valid_apis:
             if gl_api == "webgl":
-                raise ValueError(f"Tried to create a GLContext with webgl api selected. Valid options for this backend are: {self._valid_apis}")
+                raise ValueError(
+                    f"Tried to create a GLContext with webgl api selected. Valid options for this backend are: {self._valid_apis}"
+                )
             raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
         self.gl_api = gl_api
 
@@ -209,21 +211,23 @@ class GLContext(Context):
     def _create_default_framebuffer(self) -> GLDefaultFrameBuffer:
         return GLDefaultFrameBuffer(self)
 
-    def buffer(self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static") -> GLBuffer:
+    def buffer(
+        self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static"
+    ) -> GLBuffer:
         return GLBuffer(self, data, reserve=reserve, usage=usage)
 
     def program(
-            self,
-            *,
-            vertex_shader: str,
-            fragment_shader: str | None = None,
-            geometry_shader: str | None = None,
-            tess_control_shader: str | None = None,
-            tess_evaluation_shader: str | None = None,
-            common: List[str] | None = None,
-            defines: Dict[str, str] | None = None,
-            varyings: Sequence[str] | None = None,
-            varyings_capture_mode: str = "interleaved",
+        self,
+        *,
+        vertex_shader: str,
+        fragment_shader: str | None = None,
+        geometry_shader: str | None = None,
+        tess_control_shader: str | None = None,
+        tess_evaluation_shader: str | None = None,
+        common: List[str] | None = None,
+        defines: Dict[str, str] | None = None,
+        varyings: Sequence[str] | None = None,
+        varyings_capture_mode: str = "interleaved",
     ) -> GLProgram:
         source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
@@ -321,7 +325,7 @@ class GLContext(Context):
         )
 
     def depth_texture(
-            self, size: Tuple[int, int], *, data: BufferProtocol | None = None
+        self, size: Tuple[int, int], *, data: BufferProtocol | None = None
     ) -> GLTexture2D:
         return GLTexture2D(self, size, data=data, depth=True)
 
@@ -405,10 +409,12 @@ class GLContext(Context):
     def query(self, *, samples=True, time=True, primitives=True) -> GLQuery:
         return GLQuery(self, samples=samples, time=time, primitives=primitives)
 
+
 class GLArcadeContext(ArcadeContext, GLContext):
     def __init__(self, *args, **kwargs):
         GLContext.__init__(self, *args, **kwargs)
         ArcadeContext.__init__(self, *args, **kwargs)
+
 
 class GLInfo(Info):
     """OpenGL info and capabilities"""

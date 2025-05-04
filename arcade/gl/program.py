@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterable
-
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any, Iterable
 
 if TYPE_CHECKING:
     from arcade.gl import Context
@@ -73,7 +72,9 @@ class Program(ABC):
 
     @property
     @abstractmethod
-    def attributes(self) -> Iterable: # TODO: Typing on this Iterable, need generic type for AttribFormat?
+    def attributes(
+        self,
+    ) -> Iterable:  # TODO: Typing on this Iterable, need generic type for AttribFormat?
         """List of attribute information."""
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
@@ -144,7 +145,9 @@ class Program(ABC):
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @abstractmethod
-    def __getitem__(self, item): # TODO: typing, this should return Uniform | UniformBlock, but need generic options for those:
+    def __getitem__(
+        self, item
+    ):  # TODO: typing, this should return Uniform | UniformBlock, but need generic options for those:
         """Get a uniform or uniform block"""
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 

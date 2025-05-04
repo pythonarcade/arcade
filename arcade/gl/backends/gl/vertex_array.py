@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Sequence
 from pyglet import gl
 
 from arcade.gl.types import BufferDescription, GLenumLike, GLuintLike, gl_name
-from arcade.gl.vertex_array import VertexArray, Geometry
+from arcade.gl.vertex_array import Geometry, VertexArray
 
 from .buffer import Buffer
 from .program import Program
@@ -461,6 +461,7 @@ class GLGeometry(Geometry):
             Byte size of the index buffer datatype.
             Can be 1, 2 or 4 (8, 16 or 32bit integer)
     """
+
     def __init__(
         self,
         ctx: "Context",
@@ -470,7 +471,6 @@ class GLGeometry(Geometry):
         index_element_size: int = 4,
     ) -> None:
         super().__init__(ctx, content, index_buffer, mode, index_element_size)
-
 
     def _generate_vao(self, program: Program) -> VertexArray:
         """

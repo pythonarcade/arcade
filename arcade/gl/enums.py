@@ -52,7 +52,7 @@ MAX_VERTEX_UNIFORM_VECTORS = 0x8DFB
 MAX_VERTEX_UNIFORM_BLOCKS = 0x8A2B
 MAX_VERTEX_OUTPUT_COMPONENTS = 0x9122
 MAX_TEXTURE_IMAGE_UNITS = 0x8872
-MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF # Technically comes from EXT_texture_filter_anisotropic in WebGL, but it's widely available
+MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF  # Technically comes from EXT_texture_filter_anisotropic in WebGL, but it's widely available
 MAX_VIEWPORT_DIMS = 0x0D3A
 MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = 0x8C8B
 
@@ -187,7 +187,7 @@ INT = 0x1404
 UNSIGNED_INT = 0x1405
 FLOAT = 0x1406
 HALF_FLOAT = 0x140B
-DOUBLE = 0x140A # Not supported in WebGL, but left in common to make implementation easier
+DOUBLE = 0x140A  # Not supported in WebGL, but left in common to make implementation easier
 
 FLOAT_VEC2 = 0x8B50
 FLOAT_VEC3 = 0x8B51
@@ -230,6 +230,6 @@ DOUBLE_MAT4x3 = 0x8F4E
 
 VERTEX_SHADER = 0x8B31
 FRAGMENT_SHADER = 0x8B30
-GEOMETRY_SHADER = 0x8DD9 # Not supported in WebGL
+GEOMETRY_SHADER = 0x8DD9  # Not supported in WebGL
 TESS_CONTROL_SHADER = 0x8E88  # Not supported in WebGL
 TESS_EVALUATION_SHADER = 0x8E87  # Not supported in WebGL

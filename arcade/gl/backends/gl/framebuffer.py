@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING
 
 from pyglet import gl
 
-from arcade.types import RGBOrA255, RGBOrANormalized
-from arcade.gl.types import pixel_formats
 from arcade.gl.framebuffer import DefaultFrameBuffer, Framebuffer
+from arcade.gl.types import pixel_formats
+from arcade.types import RGBOrA255, RGBOrANormalized
 
 from .texture import GLTexture2D
 
@@ -46,9 +46,8 @@ class GLFramebuffer(Framebuffer):
         depth_attachment:
             A depth attachment
     """
-    __slots__ = (
-        "_glo"
-    )
+
+    __slots__ = "_glo"
 
     def __init__(
         self,
@@ -57,7 +56,9 @@ class GLFramebuffer(Framebuffer):
         color_attachments: GLTexture2D | list[GLTexture2D],
         depth_attachment: GLTexture2D | None = None,
     ):
-        super().__init__(ctx, color_attachments=color_attachments, depth_attachment=depth_attachment)
+        super().__init__(
+            ctx, color_attachments=color_attachments, depth_attachment=depth_attachment
+        )
         self._glo = fbo_id = gl.GLuint()  # The OpenGL alias/name
 
         # Create the framebuffer object

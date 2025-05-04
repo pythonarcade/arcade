@@ -255,12 +255,15 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
 
     return decorated_type
 
+
 def is_pyodide() -> bool:
     return False
+
 
 def is_raspberry_pi() -> bool:
     """Determine if the host is a raspberry pi."""
     return get_raspberry_pi_info()[0]
+
 
 def get_raspberry_pi_info() -> tuple[bool, str, str]:
     """

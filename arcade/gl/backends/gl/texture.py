@@ -6,8 +6,6 @@ from typing import TYPE_CHECKING
 
 from pyglet import gl
 
-from arcade.types import BufferProtocol
-
 from arcade.gl.texture import Texture2D
 from arcade.gl.types import (
     BufferOrBufferProtocol,
@@ -15,6 +13,7 @@ from arcade.gl.types import (
     compare_funcs,
     pixel_formats,
 )
+from arcade.types import BufferProtocol
 
 from .buffer import Buffer
 from .utils import data_to_ctypes
@@ -41,6 +40,7 @@ swizzle_str_to_enum: dict[str, int] = {
     "0": gl.GL_ZERO,
     "1": gl.GL_ONE,
 }
+
 
 class GLTexture2D(Texture2D):
     """
@@ -102,6 +102,7 @@ class GLTexture2D(Texture2D):
         compressed_data:
             The raw compressed data
     """
+
     __slots__ = (
         "_glo",
         "_target",
@@ -125,7 +126,22 @@ class GLTexture2D(Texture2D):
         compressed: bool = False,
         compressed_data: bool = False,
     ):
-        super().__init__(ctx, size, components=components, dtype=dtype, data=data, filter=filter, wrap_x=wrap_x, wrap_y=wrap_y, depth=depth, samples=samples, immutable=immutable, internal_format = internal_format, compressed=compressed, compressed_data=compressed_data)
+        super().__init__(
+            ctx,
+            size,
+            components=components,
+            dtype=dtype,
+            data=data,
+            filter=filter,
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            depth=depth,
+            samples=samples,
+            immutable=immutable,
+            internal_format=internal_format,
+            compressed=compressed,
+            compressed_data=compressed_data,
+        )
         self._glo = glo = gl.GLuint()
 
         # Default filters for float and integer textures

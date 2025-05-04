@@ -3,8 +3,8 @@ from typing import Iterable, Sequence, TypeAlias, Union
 
 from arcade.types import BufferProtocol
 
-from .buffer import Buffer
 from . import enums
+from .buffer import Buffer
 
 BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
 
@@ -106,16 +106,16 @@ pixel_formats = {
 SHADER_TYPE_NAMES = {
     enums.VERTEX_SHADER: "vertex shader",
     enums.FRAGMENT_SHADER: "fragment shader",
-    enums.GEOMETRY_SHADER: "geometry shader", # Not supported in WebGL
-    enums.TESS_CONTROL_SHADER: "tessellation control shader", # Not supported in WebGL
-    enums.TESS_EVALUATION_SHADER: "tessellation evaluation shader", # Not supported in WebGL
+    enums.GEOMETRY_SHADER: "geometry shader",  # Not supported in WebGL
+    enums.TESS_CONTROL_SHADER: "tessellation control shader",  # Not supported in WebGL
+    enums.TESS_EVALUATION_SHADER: "tessellation evaluation shader",  # Not supported in WebGL
 }
 
 #: Lookup table for OpenGL type names
 GL_NAMES = {
     enums.HALF_FLOAT: "GL_HALF_FLOAT",
     enums.FLOAT: "GL_FLOAT",
-    enums.DOUBLE: "GL_DOUBLE", # Double not supported in WebGL
+    enums.DOUBLE: "GL_DOUBLE",  # Double not supported in WebGL
     enums.INT: "GL_INT",
     enums.UNSIGNED_INT: "GL_UNSIGNED_INT",
     enums.SHORT: "GL_SHORT",
@@ -241,7 +241,7 @@ class BufferDescription:
         "f1": (enums.UNSIGNED_BYTE, 1),
         "f2": (enums.HALF_FLOAT, 2),
         "f4": (enums.FLOAT, 4),
-        "f8": (enums.DOUBLE, 8), # Double unsupported by WebGL
+        "f8": (enums.DOUBLE, 8),  # Double unsupported by WebGL
         # Unsigned integers
         "u": (enums.UNSIGNED_INT, 4),
         "u1": (enums.UNSIGNED_BYTE, 1),
@@ -388,9 +388,7 @@ class TypeInfo:
 
     __slots__ = "name", "enum", "gl_type", "gl_size", "components"
 
-    def __init__(
-        self, name: str, enum, gl_type, gl_size: int, components: int
-    ):
+    def __init__(self, name: str, enum, gl_type, gl_size: int, components: int):
         self.name = name
         """The string representation of this type"""
         self.enum = enum

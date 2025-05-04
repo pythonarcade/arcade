@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-
 import logging
 import weakref
+from abc import ABC, abstractmethod
 from collections import deque
 from contextlib import contextmanager
 from typing import (
@@ -22,8 +21,8 @@ from typing import (
 import pyglet
 from pyglet.window import Window
 
-from . import enums
 from ..types import BufferProtocol
+from . import enums
 from .buffer import Buffer
 from .compute_shader import ComputeShader
 from .framebuffer import DefaultFrameBuffer, Framebuffer
@@ -206,7 +205,7 @@ class Context(ABC):
         self,
         window: pyglet.window.Window,  # type: ignore
         gc_mode: str = "context_gc",
-        gl_api: str = "gl" # This is ignored here, but used in implementation classes
+        gl_api: str = "gl",  # This is ignored here, but used in implementation classes
     ):
         self._window_ref = weakref.ref(window)
         self._info = get_provider().create_info(self)
@@ -855,9 +854,9 @@ class Context(ABC):
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
-        wrap_x = None,
-        wrap_y = None,
-        filter = None,
+        wrap_x=None,
+        wrap_y=None,
+        filter=None,
         samples: int = 0,
         immutable: bool = False,
         internal_format,
@@ -943,9 +942,9 @@ class Context(ABC):
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
-        wrap_x = None,
-        wrap_y = None,
-        filter = None,
+        wrap_x=None,
+        wrap_y=None,
+        filter=None,
     ) -> TextureArray:
         """
         Create a 2D Texture Array.
@@ -992,7 +991,7 @@ class Context(ABC):
     @abstractmethod
     def geometry(
         self,
-        content = None,
+        content=None,
         index_buffer: Buffer | None = None,
         mode: int | None = None,
         index_element_size: int = 4,

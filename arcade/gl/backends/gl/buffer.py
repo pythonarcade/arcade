@@ -6,11 +6,10 @@ from typing import TYPE_CHECKING
 
 from pyglet import gl
 
+from arcade.gl.buffer import Buffer
 from arcade.types import BufferProtocol
 
 from .utils import data_to_ctypes
-
-from arcade.gl.buffer import Buffer
 
 if TYPE_CHECKING:
     from arcade.gl import Context
@@ -51,7 +50,6 @@ class GLBuffer(Buffer):
     """
 
     __slots__ = "_glo", "_usage"
-
 
     def __init__(
         self,

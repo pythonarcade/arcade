@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-
 from contextlib import contextmanager
 from typing import TYPE_CHECKING, Generator
 
@@ -324,6 +323,7 @@ class Framebuffer(ABC):
             if layer and layer.size != expected_size:
                 raise ValueError("All framebuffer attachments should have the same size")
         return expected_size
+
 
 class DefaultFrameBuffer(Framebuffer, ABC):
     """

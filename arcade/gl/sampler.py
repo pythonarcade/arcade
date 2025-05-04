@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -21,9 +20,9 @@ class Sampler(ABC):
         ctx: "Context",
         texture: Texture2D,
         *,
-        filter = None, # TODO: Typing, should be tuple[PyGLuint, PyGLuint] | None
-        wrap_x = None, # TODO: Typing, should be PyGLuint | None
-        wrap_y = None, # TODO: Typing, should be PyGLuint | None
+        filter=None,  # TODO: Typing, should be tuple[PyGLuint, PyGLuint] | None
+        wrap_x=None,  # TODO: Typing, should be PyGLuint | None
+        wrap_y=None,  # TODO: Typing, should be PyGLuint | None
     ):
         self._ctx = ctx
 

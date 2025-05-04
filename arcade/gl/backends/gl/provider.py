@@ -1,6 +1,7 @@
 from arcade.gl.provider import BaseProvider
 
-from .context import GLContext, GLArcadeContext, GLInfo
+from .context import GLArcadeContext, GLContext, GLInfo
+
 
 class Provider(BaseProvider):
     def create_context(self, *args, **kwargs):
