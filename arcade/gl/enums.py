@@ -52,7 +52,10 @@ MAX_VERTEX_UNIFORM_VECTORS = 0x8DFB
 MAX_VERTEX_UNIFORM_BLOCKS = 0x8A2B
 MAX_VERTEX_OUTPUT_COMPONENTS = 0x9122
 MAX_TEXTURE_IMAGE_UNITS = 0x8872
-MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF  # Technically comes from EXT_texture_filter_anisotropic in WebGL, but it's widely available
+
+# Technically comes from EXT_texture_filter_anisotropic in WebGL, but it's widely available
+MAX_TEXTURE_MAX_ANISOTROPY = 0x84FF
+
 MAX_VIEWPORT_DIMS = 0x0D3A
 MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = 0x8C8B
 

@@ -147,7 +147,7 @@ class Program(ABC):
     @abstractmethod
     def __getitem__(
         self, item
-    ):  # TODO: typing, this should return Uniform | UniformBlock, but need generic options for those:
+    ):  # TODO: typing, this should return Uniform | UniformBlock
         """Get a uniform or uniform block"""
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 

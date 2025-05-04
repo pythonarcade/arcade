@@ -47,7 +47,7 @@ class VertexArray(ABC):
         self,
         ctx: Context,
         program: Program,
-        content: Sequence,  # TODO: typing, this should be Sequence[BufferDescription] need generic BufferDescription though
+        content: Sequence,  # TODO: typing, this should be Sequence[BufferDescription]
         index_buffer: Buffer | None = None,
         index_element_size: int = 4,
     ) -> None:
@@ -96,7 +96,7 @@ class VertexArray(ABC):
         mode: int,
         first: int = 0,
         vertices: int = 0,
-        instances: int = 1,  # TODO: typing, technically mode can also be a ctypes uint in GL backend
+        instances: int = 1,  # TODO: typing, mode can also be a ctypes uint in GL backend
     ) -> None:
         """
         Render the VertexArray to the currently active framebuffer.
@@ -116,7 +116,7 @@ class VertexArray(ABC):
     @abstractmethod
     def render_indirect(
         self, buffer: Buffer, mode: int, count, first, stride
-    ) -> None:  # TODO: typing, technically mode can also be a ctypes uint in GL backend
+    ) -> None:  # TODO: typing, mode can also be a ctypes uint in GL backend
         """
         Render the VertexArray to the framebuffer using indirect rendering.
 
@@ -141,8 +141,8 @@ class VertexArray(ABC):
     def transform_interleaved(
         self,
         buffer: Buffer,
-        mode,  # TODO, typing. This should be GLenumLike type but idk how to handle that generically yet
-        output_mode,  # TODO, typing. This should be GLenumLike type but idk how to handle that generically yet
+        mode,  # TODO, typing. This should be GLenumLike type
+        output_mode,  # TODO, typing. This should be GLenumLike type
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,
@@ -172,8 +172,8 @@ class VertexArray(ABC):
     def transform_separate(
         self,
         buffers: list[Buffer],
-        mode,  # TODO, typing. This should be GLenumLike type but idk how to handle that generically yet
-        output_mode,  # TODO, typing. This should be GLenumLike type but idk how to handle that generically yet
+        mode,  # TODO, typing. This should be GLenumLike type
+        output_mode,  # TODO, typing. This should be GLenumLike type
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,

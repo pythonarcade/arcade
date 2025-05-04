@@ -26,9 +26,10 @@ class Sampler(ABC):
     ):
         self._ctx = ctx
 
-        # These three ultimately need to be set by the implementing backend, but we're creating them here first
-        # to trick some of the methods on the base class to being able to see them.
-        # So that we don't have to implement a getter on every backend
+        # These three ultimately need to be set by the implementing backend.
+        # We're creating them here first to trick some of the methods on the
+        # base class to being able to see them. So that we don't have to
+        # implement a getter on every backend
         self._filter = None
         self._wrap_x = None
         self._wrap_y = None

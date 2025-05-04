@@ -36,7 +36,8 @@ class GLContext(Context):
         if gl_api not in self._valid_apis:
             if gl_api == "webgl":
                 raise ValueError(
-                    f"Tried to create a GLContext with webgl api selected. Valid options for this backend are: {self._valid_apis}"
+                    "Tried to create a GLContext with webgl api selected. " +
+                    f"Valid options for this backend are: {self._valid_apis}"
                 )
             raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
         self.gl_api = gl_api
