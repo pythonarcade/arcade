@@ -39,7 +39,7 @@ class Surface:
         self._pos = position
         self._pixel_ratio = pixel_ratio
         self._pixelated = False
-        self._area = None  # Cached area for the last draw call
+        self._area: Rect | None = None  # Cached area for the last draw call
 
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
