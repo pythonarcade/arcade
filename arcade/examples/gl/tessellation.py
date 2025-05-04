@@ -10,6 +10,7 @@ from array import array
 
 import arcade
 from arcade.gl import BufferDescription
+import pyglet.gl
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -106,7 +107,7 @@ class GameView(arcade.Window):
     def on_draw(self):
         self.clear()
         self.program["time"] = self.time
-        self.geometry.render(self.program, mode=self.ctx.PATCHES)
+        self.geometry.render(self.program, mode=pyglet.gl.GL_PATCHES)
 
 
 if __name__ == "__main__":
