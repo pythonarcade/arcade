@@ -95,8 +95,6 @@ class GLComputeShader(ComputeShader):
         if self._ctx.gc_mode == "auto":
             weakref.finalize(self, GLComputeShader.delete_glo, self._ctx, glo)
 
-        ctx.stats.incr("compute_shader")
-
     @property
     def glo(self) -> int:
         """The name/id of the OpenGL resource"""
