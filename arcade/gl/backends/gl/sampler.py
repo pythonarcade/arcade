@@ -98,23 +98,6 @@ class GLSampler(Sampler):
         self._anisotropy = max(1.0, min(value, self._ctx.info.MAX_TEXTURE_MAX_ANISOTROPY))
         gl.glSamplerParameterf(self._glo, gl.GL_TEXTURE_MAX_ANISOTROPY, self._anisotropy)
 
-    @property
-    def compare_func(self) -> str | None:
-        """
-        Get or set the compare function for a depth texture::
-
-            texture.compare_func = None  # Disable depth comparison completely
-            texture.compare_func = '<='  # GL_LEQUAL
-            texture.compare_func = '<'   # GL_LESS
-            texture.compare_func = '>='  # GL_GEQUAL
-            texture.compare_func = '>'   # GL_GREATER
-            texture.compare_func = '=='  # GL_EQUAL
-            texture.compare_func = '!='  # GL_NOTEQUAL
-            texture.compare_func = '0'   # GL_NEVER
-            texture.compare_func = '1'   # GL_ALWAYS
-        """
-        return self._compare_func
-
     @Sampler.compare_func.setter
     def compare_func(self, value: str | None):
         if not self.texture._depth:

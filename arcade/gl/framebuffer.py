@@ -382,7 +382,7 @@ class DefaultFrameBuffer(Framebuffer, ABC):
         """Get the framebuffer size of the window"""
         return self._ctx.window.get_framebuffer_size()
 
-    @Framebuffer.viewport.getter
+    @property
     def viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the framebuffer's viewport.
@@ -406,12 +406,12 @@ class DefaultFrameBuffer(Framebuffer, ABC):
             int(self._viewport[3] / ratio),
         )
 
-    @Framebuffer.viewport.setter
+    @viewport.setter
     @abstractmethod
     def viewport(self, value: tuple[int, int, int, int]):
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
-    @Framebuffer.scissor.getter
+    @property
     def scissor(self) -> tuple[int, int, int, int] | None:
         """
         Get or set the scissor box for this framebuffer.
@@ -438,7 +438,7 @@ class DefaultFrameBuffer(Framebuffer, ABC):
             int(self._scissor[3] / ratio),
         )
 
-    @Framebuffer.scissor.setter
+    @scissor.setter
     @abstractmethod
     def scissor(self, value):
         raise NotImplementedError("The enabled graphics backend does not support this method.")
