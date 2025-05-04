@@ -39,6 +39,7 @@ class Surface:
         self._pos = position
         self._pixel_ratio = pixel_ratio
         self._pixelated = False
+        self._area = None  # Cached area for the last draw call
 
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
@@ -278,19 +279,24 @@ class Surface:
         """
         Update the internal geometry of the surface mesh.
 
-        The geometry is a triangle strip with 4 verties.
+        The geometry is a triangle strip with 4 vertices.
         """
         if area is None:
             area = LBWH(0, 0, *self.size)
 
+        if self._area == area:
+            return
+        self._area = area
+
         # Clamp the area inside the surface
         # This is the local area inside the surface
         _size = Vec2(*self.size)
-        _pos = Vec2(area.left, area.bottom)
+        _pos = Vec2(*self.position)
+        _area_pos = Vec2(area.left, area.bottom)
         _area_size = Vec2(area.width, area.height)
 
-        b1 = _pos.clamp(Vec2(0.0), _size)
-        end_point = _pos + _area_size
+        b1 = _area_pos.clamp(Vec2(0.0), _size)
+        end_point = _area_pos + _area_size
         b2 = end_point.clamp(Vec2(0.0), _size)
         b = b2 - b1
         l_area = Vec4(b1.x, b1.y, b.x, b.y)
