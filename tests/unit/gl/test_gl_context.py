@@ -77,7 +77,7 @@ def test_enable_disable(ctx):
     assert ctx.is_enabled(ctx.BLEND) is False
     assert len(ctx._flags) == 2
 
-    ctx.enable_only(ctx.BLEND, ctx.CULL_FACE, ctx.DEPTH_TEST, ctx.PROGRAM_POINT_SIZE)
+    ctx.enable_only(ctx.BLEND, ctx.CULL_FACE, ctx.DEPTH_TEST)
 
 
 def test_enabled(ctx):

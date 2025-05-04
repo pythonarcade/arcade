@@ -136,6 +136,10 @@ norecursedirs = [
     "dist",
     "tempt",
 ]
+markers = [
+    "backendgl: Run OpenGL (or OpenGL ES) backend specific tests",
+    "backendwebgl: Run WebGL backend specific tests"
+]
 
 [tool.pyright]
 include = ["arcade"]

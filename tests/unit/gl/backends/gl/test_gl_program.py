@@ -4,9 +4,10 @@ import arcade
 from pyglet import gl
 from pyglet.math import Mat4, Mat3
 from arcade.gl import ShaderException
-from arcade.gl.uniform import UniformBlock
-from arcade.gl.glsl import ShaderSource
+from arcade.gl.backends.gl.uniform import UniformBlock
+from arcade.gl.backends.gl.glsl import ShaderSource
 
+pytestmark = pytest.mark.backendgl
 
 def test_shader_source(ctx):
     """Test shader source parsing"""

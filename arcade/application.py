@@ -170,6 +170,8 @@ class Window(pyglet.window.Window):
         desired_gl_provider = "gl"
         if is_pyodide():
             gl_api = "webgl"
+
+        if gl_api == "webgl":
             desired_gl_provider = "webgl"
 
         # Detect Raspberry Pi and switch to OpenGL ES 3.1

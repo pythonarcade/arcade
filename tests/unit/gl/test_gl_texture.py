@@ -26,9 +26,9 @@ def test_properties(ctx):
     with pytest.raises(ValueError):
         texture.filter = None
 
-    texture.wrap_x = ctx.CLAMP_TO_BORDER
+    texture.wrap_x = ctx.CLAMP_TO_EDGE
     texture.wrap_y = ctx.CLAMP_TO_EDGE
-    assert texture.wrap_x == ctx.CLAMP_TO_BORDER
+    assert texture.wrap_x == ctx.CLAMP_TO_EDGE
     assert texture.wrap_y == ctx.CLAMP_TO_EDGE
 
 

@@ -100,8 +100,6 @@ class GLFramebuffer(Framebuffer):
         if self._ctx.gc_mode == "auto" and not self.is_default:
             weakref.finalize(self, GLFramebuffer.delete_glo, ctx, fbo_id)
 
-        self.ctx.stats.incr("framebuffer")
-
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and not self.is_default and self._glo.value > 0:
