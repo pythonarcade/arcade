@@ -1,5 +1,4 @@
 from copy import deepcopy
-from typing import Optional, Union
 
 from pyglet.event import EVENT_HANDLED
 
@@ -31,7 +30,7 @@ class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
         if self.parent:
             self.parent.remove(self)
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         if isinstance(event, UIMousePressEvent):
             # Click outside of dropdown options
             if not self.rect.point_in_rect((event.x, event.y)):
@@ -119,7 +118,7 @@ class UIDropdown(UILayout):
         width: float = 150,
         height: float = 30,
         default: str | None = None,
-        options: Optional[list[Union[str, None]]] = None,
+        options: list[str | None] | None = None,
         primary_style=None,
         dropdown_style=None,
         active_style=None,

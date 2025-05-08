@@ -311,7 +311,7 @@ def play_sound(
     elif not isinstance(sound, Sound):
         raise TypeError(
             f"Error, got {sound!r} instead of an arcade.Sound."
-            if not isinstance(sound, (str, Path, bytes))
+            if not isinstance(sound, str | Path | bytes)
             else " Make sure to use load_sound first, then play the result with play_sound."
         )
 

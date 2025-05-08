@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Optional, Union
 
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 
 import arcade
 from arcade import Texture, color, uicolor
@@ -56,7 +55,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         size_hint_max: max width and height in pixel
     """
 
-    _textures = DictProperty[str, Union[Texture, NinePatchTexture]]()
+    _textures = DictProperty[str, Texture | NinePatchTexture]()
 
     UIStyle = UITextureButtonStyle
 
@@ -80,14 +79,14 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         y: float = 0,
         width: float | None = None,
         height: float | None = None,
-        texture: Union[None, Texture, NinePatchTexture] = None,
-        texture_hovered: Union[None, Texture, NinePatchTexture] = None,
-        texture_pressed: Union[None, Texture, NinePatchTexture] = None,
-        texture_disabled: Union[None, Texture, NinePatchTexture] = None,
+        texture: None | Texture | NinePatchTexture = None,
+        texture_hovered: None | Texture | NinePatchTexture = None,
+        texture_pressed: None | Texture | NinePatchTexture = None,
+        texture_disabled: None | Texture | NinePatchTexture = None,
         text: str = "",
         multiline: bool = False,
         scale: float | None = None,
-        style: Optional[dict[str, UIStyleBase]] = None,
+        style: dict[str, UIStyleBase] | None = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,

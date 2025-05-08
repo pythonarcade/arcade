@@ -3,7 +3,7 @@ Physics engines for top-down or platformers.
 """
 
 import math
-from typing import Iterable
+from collections.abc import Iterable
 
 from arcade import (
     BasicSprite,

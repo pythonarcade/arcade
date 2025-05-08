@@ -3,7 +3,8 @@ from __future__ import annotations
 import weakref
 from contextlib import contextmanager
 from ctypes import Array, c_int, c_uint, string_at
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
+from collections.abc import Generator
 
 from pyglet import gl
 
@@ -67,7 +68,7 @@ class Framebuffer:
 
     def __init__(
         self,
-        ctx: "Context",
+        ctx: Context,
         *,
         color_attachments: Texture2D | list[Texture2D],
         depth_attachment: Texture2D | None = None,
@@ -212,7 +213,7 @@ class Framebuffer:
     scissor = property(_get_scissor, _set_scissor)
 
     @property
-    def ctx(self) -> "Context":
+    def ctx(self) -> Context:
         """The context this object belongs to."""
         return self._ctx
 
@@ -518,7 +519,7 @@ class Framebuffer:
             )
 
     def __repr__(self):
-        return "<Framebuffer glo={}>".format(self._glo.value)
+        return f"<Framebuffer glo={self._glo.value}>"
 
 
 class DefaultFrameBuffer(Framebuffer):
@@ -541,7 +542,7 @@ class DefaultFrameBuffer(Framebuffer):
 
     __slots__ = ()
 
-    def __init__(self, ctx: "Context"):
+    def __init__(self, ctx: Context):
         self._ctx = ctx
         # TODO: Can we query this?
         self._samples = 0

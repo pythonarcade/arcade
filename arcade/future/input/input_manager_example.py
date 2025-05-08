@@ -1,6 +1,6 @@
 #  type: ignore
 import random
-from typing import Sequence
+from collections.abc import Sequence
 
 import pyglet
 from pyglet.input import Controller

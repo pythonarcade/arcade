@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Callable, Generator
+from typing import TYPE_CHECKING
+from collections.abc import Callable, Generator
 
 from pyglet.math import Mat4, Vec2, Vec3
 

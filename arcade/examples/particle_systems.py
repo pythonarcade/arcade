@@ -808,7 +808,7 @@ class GameView(arcade.View):
 
     def next_emitter(self, _time_delta):
         self.emitter_factory_id = (self.emitter_factory_id + 1) % len(self.factories)
-        print("Changing emitter to {}".format(self.emitter_factory_id))
+        print(f"Changing emitter to {self.emitter_factory_id}")
         self.emitter_timeout = 0
         self.label, self.emitter = self.factories[self.emitter_factory_id]()
 
@@ -827,7 +827,7 @@ class GameView(arcade.View):
         self.clear()
         arcade.draw_sprite(self.obj)
         if self.label:
-            arcade.draw_text("#{} {}".format(self.emitter_factory_id, self.label),
+            arcade.draw_text(f"#{self.emitter_factory_id} {self.label}",
                              WINDOW_WIDTH / 2, WINDOW_HEIGHT - 25,
                              arcade.color.PALE_GOLD, 20, width=WINDOW_WIDTH,
                              anchor_x="center")

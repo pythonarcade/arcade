@@ -7,7 +7,6 @@ However Controller buttons and axes are mapped to their Pyglet string values.
 
 from enum import Enum, auto
 from sys import platform
-from typing import Type
 
 from arcade.future.input.raw_dicts import RawBindBase
 
@@ -28,7 +27,7 @@ class InputEnum(Enum):
 
 class StrEnum(str, InputEnum):
     def __new__(cls, value, *args, **kwargs):
-        if not isinstance(value, (str, auto)):
+        if not isinstance(value, str | auto):
             raise TypeError(f"Values of StrEnums must be strings: {value!r} is a {type(value)}")
         return super().__new__(cls, value, *args, **kwargs)
 
@@ -362,7 +361,7 @@ class MouseButtons(InputEnum):
 # 2. Types are hashable
 # It may be worth encapsulating this approach since we have other if
 # ladders without case-specific logic remaining in the controller code.
-CLASS_TO_INPUT_TYPE: dict[Type[InputEnum], InputType] = {
+CLASS_TO_INPUT_TYPE: dict[type[InputEnum], InputType] = {
     Keys: InputType.KEYBOARD,
     MouseButtons: InputType.MOUSE_BUTTON,
     MouseAxes: InputType.MOUSE_AXIS,
@@ -370,7 +369,7 @@ CLASS_TO_INPUT_TYPE: dict[Type[InputEnum], InputType] = {
     ControllerAxes: InputType.CONTROLLER_AXIS,
 }
 
-INPUT_TYPE_TO_CLASS: dict[InputType, Type[InputEnum]] = {
+INPUT_TYPE_TO_CLASS: dict[InputType, type[InputEnum]] = {
     InputType.KEYBOARD: Keys,
     InputType.MOUSE_BUTTON: MouseButtons,
     InputType.MOUSE_AXIS: MouseAxes,

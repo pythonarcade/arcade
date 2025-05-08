@@ -9,7 +9,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_controller_support_grid
 """
 
-from typing import Dict, Tuple
 
 import arcade
 from arcade.examples.gui.exp_controller_support import ControllerIndicator
@@ -27,7 +26,7 @@ class FocusableButton(UIFocusable, UIFlatButton):
     pass
 
 
-def setup_grid_focus_transition(grid: Dict[Tuple[int, int], UIWidget]):
+def setup_grid_focus_transition(grid: dict[tuple[int, int], UIWidget]):
     """Setup focus transition in grid.
 
     Connect focus transition between `Focusable` in grid.

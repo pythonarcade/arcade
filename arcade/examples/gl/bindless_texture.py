@@ -26,7 +26,6 @@ python -m arcade.examples.gl.bindless_texture
 """
 
 from array import array
-from typing import List
 from itertools import cycle
 
 import arcade
@@ -144,7 +143,7 @@ class BindlessTexture(arcade.Window):
         )
 
         self.handles = []
-        self.textures: List[Texture2D] = []
+        self.textures: list[Texture2D] = []
         # Make a cycle iterator from Arcade's resources (images)
         resources = arcade.resources.list_built_in_assets(name="female", extensions=(".png",))
         resource_cycle = cycle(resources)

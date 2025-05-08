@@ -14,15 +14,10 @@ from collections import deque
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
-    Collection,
-    Deque,
-    Iterable,
-    Iterator,
-    Sized,
     cast,
 )
+from collections.abc import Callable, Collection, Iterable, Iterator, Sized
 
 from arcade import Sprite, SpriteType, SpriteType_co, get_window, gl
 from arcade.gl import Program, Texture2D
@@ -241,7 +236,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         # Number of slots used in the index buffer
         self._sprite_index_slots = 0
         # List of free slots in the sprite buffers. These are filled when sprites are removed.
-        self._sprite_buffer_free_slots: Deque[int] = deque()
+        self._sprite_buffer_free_slots: deque[int] = deque()
 
         # List of sprites in the sprite list
         self.sprite_list: list[SpriteType] = []
@@ -998,8 +993,8 @@ class SpriteList(SpriteSequence[SpriteType]):
 
     def _get_center(self) -> tuple[float, float]:
         """Get the mean center coordinates of all sprites in the list."""
-        x = sum((sprite.center_x for sprite in self.sprite_list)) / len(self.sprite_list)
-        y = sum((sprite.center_y for sprite in self.sprite_list)) / len(self.sprite_list)
+        x = sum(sprite.center_x for sprite in self.sprite_list) / len(self.sprite_list)
+        y = sum(sprite.center_y for sprite in self.sprite_list) / len(self.sprite_list)
         return x, y
 
     center = property(_get_center)
@@ -1023,7 +1018,7 @@ class SpriteList(SpriteSequence[SpriteType]):
             sprite.center_x += change_x
             sprite.center_y += change_y
 
-    def preload_textures(self, texture_list: Iterable["Texture"]) -> None:
+    def preload_textures(self, texture_list: Iterable[Texture]) -> None:
         """
         Preload a set of textures that will be used for sprites in this
         sprite list.

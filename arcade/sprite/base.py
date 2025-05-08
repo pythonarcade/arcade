@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterable, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
+from collections.abc import Iterable
 
 import arcade
 from arcade.color import BLACK, WHITE
@@ -68,7 +69,7 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
         width, height = texture.size
-        self._scale = (scale, scale) if isinstance(scale, (float, int)) else (scale[0], scale[1])
+        self._scale = (scale, scale) if isinstance(scale, float | int) else (scale[0], scale[1])  # noqa: UP038
         self._width = width * self._scale[0]
         self._height = height * self._scale[1]
         self._visible = bool(visible)
@@ -81,7 +82,7 @@ class BasicSprite:
         # All changes to this list should go through the pair of methods
         # register_sprite_list, _unregister_sprite_list.
         # They ensure that the above typing invariant is preserved.
-        self.sprite_lists: list["SpriteList[Any]"] = []
+        self.sprite_lists: list[SpriteList[Any]] = []
         """The sprite lists this sprite is a member of"""
 
         # Core properties we don't use, but spritelist expects it
@@ -292,7 +293,7 @@ class BasicSprite:
 
     @scale.setter
     def scale(self, new_scale: Point2 | AsFloat):
-        if isinstance(new_scale, (float, int)):
+        if isinstance(new_scale, float | int):
             scale_x = new_scale
             scale_y = new_scale
 
@@ -456,10 +457,8 @@ class BasicSprite:
 
         except ValueError:  # It's always a length issue
             raise ValueError(
-                (
-                    f"{self.__class__.__name__},rgb takes 3 or 4 channel"
-                    f" colors, but got {len(color)} channels"
-                )
+                f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                f" colors, but got {len(color)} channels"
             )
 
         # Unpack to avoid index / . overhead & prep for repack
@@ -661,7 +660,7 @@ class BasicSprite:
 
         """
         # abort if the multiplier wouldn't do anything
-        if isinstance(scale_by, (float, int)):
+        if isinstance(scale_by, float | int):
             if scale_by == 1.0:
                 return
             factor_x = scale_by

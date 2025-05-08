@@ -8,7 +8,8 @@ from __future__ import annotations
 import logging
 import os
 import time
-from typing import TYPE_CHECKING, Sequence
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import pyglet
 import pyglet.gl as gl
@@ -36,7 +37,7 @@ MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_MIDDLE = 2
 MOUSE_BUTTON_RIGHT = 4
 
-_window: "Window"
+_window: Window
 
 __all__ = [
     "get_screens",

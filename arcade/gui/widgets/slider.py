@@ -3,7 +3,7 @@ from __future__ import annotations
 import warnings
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
-from typing import Mapping, Union
+from collections.abc import Mapping
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from typing_extensions import override
@@ -67,8 +67,8 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[Mapping[str, UISliderStyle], None] = None,
-        step: Union[float, None] = None,
+        style: Mapping[str, UISliderStyle] | None = None,
+        step: float | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -378,8 +378,8 @@ class UISlider(UIStyledWidget[UISliderStyle], UIBaseSlider):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[dict[str, UISliderStyle], None] = None,
-        step: Union[float, None] = None,
+        style: dict[str, UISliderStyle] | None = None,
+        step: float | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -530,8 +530,8 @@ class UITextureSlider(UISlider):
 
     def __init__(
         self,
-        track_texture: Union[Texture, NinePatchTexture],
-        thumb_texture: Union[Texture, NinePatchTexture],
+        track_texture: Texture | NinePatchTexture,
+        thumb_texture: Texture | NinePatchTexture,
         style=None,
         **kwargs,
     ):

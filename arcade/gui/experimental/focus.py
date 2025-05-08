@@ -1,6 +1,5 @@
 import warnings
 from types import EllipsisType
-from typing import Optional
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Vec2
@@ -76,7 +75,7 @@ class UIFocusMixin(UIWidget):
         bind(self, "_focused_widget", self.trigger_full_render)
         bind(self, "_focusable_widgets", self.trigger_full_render)
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         # pass events to children first, including controller events
         # so they can handle them
         if super().on_event(event):

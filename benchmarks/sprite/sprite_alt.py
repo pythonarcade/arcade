@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Iterable, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
+from collections.abc import Iterable
 
 import arcade
 from arcade.color import BLACK, WHITE
@@ -63,12 +64,12 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
         width, height = texture.size
-        self._scale = (scale, scale) if isinstance(scale, (float, int)) else scale
+        self._scale = (scale, scale) if isinstance(scale, float | int) else scale
         self._width = width * self._scale[0]
         self._height = height * self._scale[1]
         self._visible = bool(visible)
         self._color: Color = WHITE
-        self.sprite_lists: list["SpriteList"] = []
+        self.sprite_lists: list[SpriteList] = []
         """The sprite lists this sprite is a member of"""
 
         # Core properties we don't use, but spritelist expects it
@@ -417,7 +418,6 @@ class BasicSprite:
 
     @rgb.setter
     def rgb(self, color: RGBOrA255):
-
         # Fast validation of size by unpacking channel values
         try:
             r, g, b, *_a = color
@@ -426,10 +426,8 @@ class BasicSprite:
 
         except ValueError:  # It's always a length issue
             raise ValueError(
-                (
-                    f"{self.__class__.__name__},rgb takes 3 or 4 channel"
-                    f" colors, but got {len(color)} channels"
-                )
+                f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                f" colors, but got {len(color)} channels"
             )
 
         # Unpack to avoid index / . overhead & prep for repack

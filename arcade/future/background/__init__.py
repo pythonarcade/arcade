@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from PIL import Image
 
 import arcade.gl as gl
@@ -22,7 +20,7 @@ __all__ = [
 
 def texture_from_file(
     tex_src: str,
-    offset: Tuple[float, float] = (0.0, 0.0),
+    offset: tuple[float, float] = (0.0, 0.0),
     scale: float = 1.0,
     angle: float = 0.0,
     filters=(gl.NEAREST, gl.NEAREST),
@@ -41,15 +39,15 @@ def texture_from_file(
 
 def background_from_file(
     tex_src: str,
-    pos: Tuple[float, float] = (0.0, 0.0),
-    size: Tuple[int, int] | None = None,
-    offset: Tuple[float, float] = (0.0, 0.0),
+    pos: tuple[float, float] = (0.0, 0.0),
+    size: tuple[int, int] | None = None,
+    offset: tuple[float, float] = (0.0, 0.0),
     scale: float = 1.0,
     angle: float = 0.0,
     *,
     filters=(gl.NEAREST, gl.NEAREST),
-    color: Tuple[int, int, int] | None = None,
-    color_norm: Tuple[float, float, float] | None = None,
+    color: tuple[int, int, int] | None = None,
+    color_norm: tuple[float, float, float] | None = None,
     shader: gl.Program | None = None,
     geometry: gl.Geometry | None = None,
 ) -> Background:

@@ -4,7 +4,7 @@ Drawing text with pyglet label
 
 from ctypes import c_int, c_ubyte
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 import pyglet
 
@@ -98,7 +98,7 @@ def load_font(path: str | Path) -> None:
     pyglet.font.add_file(str(file_path))
 
 
-FontNameOrNames = Union[str, tuple[str, ...]]
+FontNameOrNames = str| tuple[str, ...]
 
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:

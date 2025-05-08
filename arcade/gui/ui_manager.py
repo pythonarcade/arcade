@@ -9,12 +9,13 @@
 """
 
 from collections import defaultdict
-from typing import Iterable, TypeVar, Union
+from typing import TypeVar
+from collections.abc import Iterable
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from pyglet.input import Controller
 from pyglet.math import Vec2
-from typing_extensions import TypeGuard
+from typing import TypeGuard
 
 import arcade
 from arcade.experimental.controller_window import ControllerWindow
@@ -400,7 +401,7 @@ class UIManager(EventDispatcher):
         x_, y_, *c = self.camera.unproject((x, y))  # convert screen to ui coordinates
         return x_, y_
 
-    def on_event(self, event) -> Union[bool, None]:
+    def on_event(self, event) -> bool | None:
         """Forwards an event to all widgets in the UIManager."""
         layers = sorted(self.children.keys(), reverse=True)
         for layer in layers:

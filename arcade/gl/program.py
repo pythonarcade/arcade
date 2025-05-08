@@ -11,7 +11,8 @@ from ctypes import (
     create_string_buffer,
     pointer,
 )
-from typing import TYPE_CHECKING, Any, Iterable
+from typing import TYPE_CHECKING, Any
+from collections.abc import Iterable
 
 from pyglet import gl
 
@@ -545,7 +546,7 @@ class Program:
             gl.glGetProgramiv(glo, gl.GL_INFO_LOG_LENGTH, length)
             log = c_buffer(length.value)
             gl.glGetProgramInfoLog(glo, len(log), None, log)
-            raise ShaderException("Program link error: {}".format(log.value.decode()))
+            raise ShaderException(f"Program link error: {log.value.decode()}")
 
     def __repr__(self):
-        return "<Program id={}>".format(self._glo)
+        return f"<Program id={self._glo}>"

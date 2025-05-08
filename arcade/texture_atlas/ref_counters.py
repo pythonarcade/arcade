@@ -8,7 +8,7 @@ Reference counters for tracking textures and images in an atlas
   simply a texture using the same image and the same vertex order.
 """
 
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from arcade.texture import ImageData, Texture
@@ -23,7 +23,7 @@ class ImageDataRefCounter:
     """
 
     def __init__(self) -> None:
-        self._data: Dict[str, int] = {}
+        self._data: dict[str, int] = {}
         self._num_decref = 0
 
     def inc_ref(self, image_data: "ImageData") -> None:
@@ -123,7 +123,7 @@ class UniqueTextureRefCounter:
     """
 
     def __init__(self) -> None:
-        self._data: Dict[str, int] = {}
+        self._data: dict[str, int] = {}
         self._num_decref = 0
 
     def inc_ref(self, image_data: "Texture") -> None:

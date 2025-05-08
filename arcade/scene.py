@@ -10,7 +10,7 @@ It allows you to do the following:
 * Control sprite list draw order within the group
 """
 
-from typing import Iterable
+from collections.abc import Iterable
 from warnings import warn
 
 from arcade import Sprite, SpriteList
@@ -404,7 +404,7 @@ class Scene:
             **kwargs: Additional keyword arguments propagated down to sprites
         """
         # Due to api changes in 3.0 we sanity check delta_time
-        if not isinstance(delta_time, (int, float)):
+        if not isinstance(delta_time, int | float):
             raise TypeError(
                 f"Expected a number for delta_time, but got {type(delta_time)} instead."
             )

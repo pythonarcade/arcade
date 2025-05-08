@@ -58,7 +58,7 @@ def _heuristic(start: Point2, goal: Point2) -> float:
     return d * (dx + dy) + (d2 - 2 * d) * min(dx, dy)
 
 
-class _AStarGraph(object):
+class _AStarGraph:
     """
     A grid which tracks 2 barriers and a moving sprite.
 

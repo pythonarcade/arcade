@@ -97,11 +97,11 @@ class GameView(arcade.Window):
         self.frame = 0
 
         self.fbo1 = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture((self.get_size()))],
+            color_attachments=[self.ctx.texture(self.get_size())],
             depth_attachment=self.ctx.depth_texture(self.get_size()),
         )
         self.fbo2 = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture((self.get_size()))],
+            color_attachments=[self.ctx.texture(self.get_size())],
             depth_attachment=self.ctx.depth_texture(self.get_size()),
         )
 

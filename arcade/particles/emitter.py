@@ -5,7 +5,7 @@ actually emits them, and manages them over their lifetime
 
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 import arcade
 from arcade import Vec2
@@ -135,7 +135,7 @@ class Emitter:
         self,
         center_xy: Point,
         emit_controller: EmitController,
-        particle_factory: Callable[["Emitter"], Particle],
+        particle_factory: Callable[[Emitter], Particle],
         change_xy: Velocity = (0.0, 0.0),
         emit_done_cb: Callable[[Emitter], None] | None = None,
         reap_cb: Callable[[], None] | None = None,

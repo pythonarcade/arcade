@@ -9,7 +9,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_controller_support
 """
 
-from typing import Optional
 
 import arcade
 from arcade import Texture
@@ -115,7 +114,7 @@ class ControllerIndicator(UIAnchorLayout):
 
         return None
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         if isinstance(event, UIControllerEvent):
             input_texture = self.input_prompts(event)
 

@@ -15,7 +15,6 @@ python -m arcade.examples.gui.exp_controller_inventory
 """
 
 # TODO: Drag and Drop
-from typing import List, Optional
 
 import pyglet.font
 from pyglet.event import EVENT_HANDLED
@@ -75,7 +74,7 @@ class Inventory:
     """
 
     def __init__(self, capacity: int):
-        self._items: List[Item | None] = [None for _ in range(capacity)]
+        self._items: list[Item | None] = [None for _ in range(capacity)]
         self.capacity = capacity
 
     def add(self, item: Item):
@@ -352,7 +351,7 @@ class InventoryModal(ActiveSlotTrackerMixin, UIFocusGroup, UIAnchorLayout):
         # init controller support
         self.detect_focusable_widgets()
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         if isinstance(event, UIControllerButtonPressEvent):
             if event.button == "b":
                 self.set_focus(self.close_button)

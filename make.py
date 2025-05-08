@@ -17,7 +17,8 @@ import subprocess
 from contextlib import contextmanager
 from pathlib import Path
 from shutil import rmtree, which
-from typing import Generator, Union
+from typing import Union
+from collections.abc import Generator
 
 PathLike = Union[Path, str, bytes]
 

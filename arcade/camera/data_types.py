@@ -5,7 +5,8 @@ wide usage throughout Arcade's camera code.
 """
 
 from contextlib import contextmanager
-from typing import Final, Generator, Protocol
+from typing import Final, Protocol
+from collections.abc import Generator
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self

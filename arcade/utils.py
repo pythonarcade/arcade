@@ -9,7 +9,8 @@ import sys
 from collections.abc import MutableSequence
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Generator, Generic, Iterable, Sequence, Type, TypeVar
+from typing import Any, Generic, TypeVar
+from collections.abc import Callable, Generator, Iterable, Sequence
 
 from arcade.types import AsFloat, Point2
 
@@ -28,7 +29,7 @@ __all__ = [
 # Since this module forbids importing from the rest of
 # Arcade, we make our own local type variables.
 _T = TypeVar("_T")
-_TType = TypeVar("_TType", bound=Type)
+_TType = TypeVar("_TType", bound=type)
 
 
 class Chain(Generic[_T]):
@@ -49,8 +50,7 @@ class Chain(Generic[_T]):
         self.components: list[Sequence[_T]] = list(components)
 
     def __iter__(self) -> Generator[_T, None, None]:
-        for item in chain.from_iterable(self.components):
-            yield item
+        yield from chain.from_iterable(self.components)
 
 
 def as_type(item: Any) -> type:
@@ -242,7 +242,7 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
             f"you may implement it on a custom subclass."
         )
 
-    decorated_type.__copy__ = __copy__
+    decorated_type.__copy__ = __copy__  # type: ignore
 
     def __deepcopy__(self, memo):  # noqa
         raise NotImplementedError(
@@ -250,7 +250,7 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
             f" but you may implement it on a custom subclass."
         )
 
-    decorated_type.__deepcopy__ = __deepcopy__
+    decorated_type.__deepcopy__ = __deepcopy__  # type: ignore
 
     return decorated_type
 
@@ -306,7 +306,7 @@ def unpack_asfloat_or_point(value: AsFloat | Point2) -> Point2:
         A Point2 that is either equal to value, or is equal to (value, value)
     """
 
-    if isinstance(value, (float, int)):
+    if isinstance(value, float | int):
         x = y = value
     else:
         try:

@@ -21,9 +21,11 @@ named color values, please see the following:
 from __future__ import annotations
 
 import random
-from typing import Iterable, TypeVar, Union
+from typing import TypeVar
+from collections.abc import Iterable
 
-from typing_extensions import Final, Self
+from typing_extensions import Self
+from typing import Final
 
 from arcade.exceptions import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
 
@@ -63,12 +65,12 @@ MASK_RGB_B: Final[int] = 0x0000FF
 
 
 # Color type aliases.
-ChannelType = TypeVar("ChannelType")
+ChannelType = TypeVar("ChannelType", int, float)
 
 # Generic color aliases
 RGB = tuple[ChannelType, ChannelType, ChannelType]
 RGBA = tuple[ChannelType, ChannelType, ChannelType, ChannelType]
-RGBOrA = Union[RGB[ChannelType], RGBA[ChannelType]]
+RGBOrA = RGB[ChannelType] | RGBA[ChannelType]
 
 # Specific color aliases
 RGB255 = RGB[int]

@@ -22,7 +22,7 @@ class Sampler:
 
     def __init__(
         self,
-        ctx: "Context",
+        ctx: Context,
         texture: Texture2D,
         *,
         filter: tuple[PyGLuint, PyGLuint] | None = None,

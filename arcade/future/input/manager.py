@@ -2,7 +2,8 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
+from collections.abc import Callable
 
 import pyglet
 from pyglet.input.base import Controller

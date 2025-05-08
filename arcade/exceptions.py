@@ -4,7 +4,7 @@ Custom Arcade errors, exceptions, and warnings.
 
 import functools
 import warnings
-from typing import Type, TypeVar
+from typing import TypeVar
 
 __all__ = [
     "OutsideRangeError",
@@ -19,7 +19,7 @@ __all__ = [
 
 # Since this module forbids importing from the rest of
 # Arcade, we make our own local type variables.
-_TType = TypeVar("_TType", bound=Type)
+_TType = TypeVar("_TType", bound=type)
 _CT = TypeVar("_CT")  # Comparable type, ie supports the <= operator
 
 

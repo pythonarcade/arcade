@@ -9,7 +9,8 @@ from __future__ import annotations
 import gc
 import os
 import time
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
+from collections.abc import Callable
 
 import pyglet
 
@@ -53,7 +54,7 @@ def get_display_size(screen_id: int = 0) -> tuple[int, int]:
     return screen.width, screen.height
 
 
-def get_window() -> "Window":
+def get_window() -> Window:
     """
     Return a handle to the current window.
 
@@ -180,12 +181,10 @@ def start_render(pixelated=False, blend=True) -> None:
     window = get_window()
     if window._start_finish_render_data is not None:
         raise RuntimeError(
-            (
-                "start_render() can only be called once during the application's lifetime "
-                "and should only be used when calling draw functions at module level in "
-                "a simple script to produce a static image. If you are seeing this error "
-                "you likely intended to call clear() instead."
-            )
+            "start_render() can only be called once during the application's lifetime "
+            "and should only be used when calling draw functions at module level in "
+            "a simple script to produce a static image. If you are seeing this error "
+            "you likely intended to call clear() instead."
         )
 
     window._start_finish_render_data = StartFinishRenderData(pixelated=pixelated, blend=blend)
