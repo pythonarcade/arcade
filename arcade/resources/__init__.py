@@ -93,11 +93,9 @@ def resolve(path: str | Path) -> Path:
             else:
                 searched_paths = "\n".join(f"-> {p}" for p in reversed(paths))
                 raise FileNotFoundError(
-
-                        f"Cannot locate resource '{resource}' using handle "
-                        f"'{handle}' in any of the following paths:\n"
-                        f"{searched_paths}"
-
+                    f"Cannot locate resource '{resource}' using handle "
+                    f"'{handle}' in any of the following paths:\n"
+                    f"{searched_paths}"
                 )
 
             # Always convert into a Path object

@@ -6,11 +6,10 @@ IMPORTANT: These should be standalone and not rely on any Arcade imports
 
 import platform
 import sys
-from collections.abc import MutableSequence
+from collections.abc import Callable, Generator, Iterable, MutableSequence, Sequence
 from itertools import chain
 from pathlib import Path
 from typing import Any, Generic, TypeVar
-from collections.abc import Callable, Generator, Iterable, Sequence
 
 from arcade.types import AsFloat, Point2
 

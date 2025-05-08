@@ -3,7 +3,6 @@
 Placing them here prevents circular import issues.
 """
 
-
 from typing_extensions import TypedDict
 
 

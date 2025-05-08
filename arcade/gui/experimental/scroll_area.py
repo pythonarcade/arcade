@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import TypeVar
 from collections.abc import Iterable
+from typing import TypeVar
 
 from pyglet.event import EVENT_UNHANDLED
 

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 from arcade.clock import GLOBAL_CLOCK, Clock
 
 

@@ -144,7 +144,7 @@ __all__ = [
 _T = TypeVar("_T")
 
 
-OneOrIterableOf = Union[_T, Iterable[_T]]   # noqa: UP007
+OneOrIterableOf = Union[_T, Iterable[_T]]  # noqa: UP007
 """Either an instance of something or an iterable of them.
 
 When writing loading code which is not performance critical,

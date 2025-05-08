@@ -5,7 +5,6 @@ If an :py:mod:`arcade.types` submodule attempts to run
 circular imports or partially initialized modules.
 """
 
-
 #: 1. Makes pyright happier while also telling readers
 #: 2. Tells readers we're converting any ints to floats
 AsFloat = float | int

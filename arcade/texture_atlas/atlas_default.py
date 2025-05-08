@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import copy
+from collections.abc import Sequence
 
 # import logging
 # import time
@@ -9,7 +10,6 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
 )
-from collections.abc import Sequence
 from weakref import WeakSet, WeakValueDictionary, finalize
 
 import PIL.Image

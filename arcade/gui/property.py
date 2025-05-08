@@ -1,7 +1,7 @@
 import sys
 import traceback
-from typing import Any, Generic, TypeVar, cast
 from collections.abc import Callable
+from typing import Any, Generic, TypeVar, cast
 from weakref import WeakKeyDictionary, ref
 
 from typing_extensions import Self, overload, override

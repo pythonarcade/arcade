@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import warnings
-from dataclasses import dataclass
-from typing import TypeVar
 from collections.abc import Iterable
+from dataclasses import dataclass
+from typing import Literal, TypeVar
 
 from typing_extensions import override
-from typing import Literal
 
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UILayout, UIWidget, _ChildEntry

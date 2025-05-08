@@ -1,8 +1,8 @@
 import re
 from collections.abc import Iterable, Sequence
+from typing import TypeAlias
 
 from pyglet import gl
-from typing import TypeAlias
 
 from arcade.types import BufferProtocol
 

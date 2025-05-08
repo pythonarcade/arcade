@@ -9,13 +9,12 @@
 """
 
 from collections import defaultdict
-from typing import TypeVar
 from collections.abc import Iterable
+from typing import TypeGuard, TypeVar
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from pyglet.input import Controller
 from pyglet.math import Vec2
-from typing import TypeGuard
 
 import arcade
 from arcade.experimental.controller_window import ControllerWindow

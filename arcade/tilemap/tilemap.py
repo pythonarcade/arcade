@@ -13,10 +13,9 @@ import copy
 import math
 import os
 from collections import OrderedDict
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
-from collections.abc import Callable
 
 import pytiled_parser
 import pytiled_parser.tiled_object
@@ -787,11 +786,9 @@ class TileMap:
                 tile = self._get_tile_by_gid(item)
                 if tile is None:
                     raise ValueError(
-
-                            f"Couldn't find tile for item {item} in layer "
-                            f"'{layer.name}' in file '{self.tiled_map.map_file}'"
-                            f"at ({column_index}, {row_index})."
-
+                        f"Couldn't find tile for item {item} in layer "
+                        f"'{layer.name}' in file '{self.tiled_map.map_file}'"
+                        f"at ({column_index}, {row_index})."
                     )
 
                 my_sprite = self._create_sprite_from_tile(

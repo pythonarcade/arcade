@@ -2,6 +2,7 @@
 Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
+
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any

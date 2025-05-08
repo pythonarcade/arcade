@@ -21,11 +21,10 @@ named color values, please see the following:
 from __future__ import annotations
 
 import random
-from typing import TypeVar
 from collections.abc import Iterable
+from typing import Final, TypeVar
 
 from typing_extensions import Self
-from typing import Final
 
 from arcade.exceptions import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
 

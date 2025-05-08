@@ -10,12 +10,12 @@ import itertools
 import math
 from array import array
 from collections import OrderedDict
+from collections.abc import Iterable, Sequence
 from typing import (
     Generic,
     TypeVar,
     cast,
 )
-from collections.abc import Iterable, Sequence
 
 import pyglet.gl as gl
 

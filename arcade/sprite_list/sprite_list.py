@@ -11,13 +11,13 @@ import random
 from abc import abstractmethod
 from array import array
 from collections import deque
+from collections.abc import Callable, Collection, Iterable, Iterator, Sized
 from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
     cast,
 )
-from collections.abc import Callable, Collection, Iterable, Iterator, Sized
 
 from arcade import Sprite, SpriteType, SpriteType_co, get_window, gl
 from arcade.gl import Program, Texture2D

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
 from collections.abc import Generator, Iterable
+from typing import TYPE_CHECKING
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 

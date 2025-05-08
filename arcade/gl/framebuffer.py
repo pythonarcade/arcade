@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import weakref
+from collections.abc import Generator
 from contextlib import contextmanager
 from ctypes import Array, c_int, c_uint, string_at
 from typing import TYPE_CHECKING
-from collections.abc import Generator
 
 from pyglet import gl
 

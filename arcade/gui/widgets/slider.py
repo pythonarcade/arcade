@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import warnings
 from abc import ABCMeta, abstractmethod
-from dataclasses import dataclass
 from collections.abc import Mapping
+from dataclasses import dataclass
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from typing_extensions import override

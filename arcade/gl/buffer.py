@@ -163,11 +163,9 @@ class Buffer:
         # Manually detect this so it doesn't raise a confusing INVALID_VALUE error
         if size + offset > self._size:
             raise ValueError(
-
-                    "Attempting to read outside the buffer. "
-                    f"Buffer size: {self._size} "
-                    f"Reading from {offset} to {size + offset}"
-
+                "Attempting to read outside the buffer. "
+                f"Buffer size: {self._size} "
+                f"Reading from {offset} to {size + offset}"
             )
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)

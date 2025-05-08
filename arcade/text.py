@@ -98,7 +98,7 @@ def load_font(path: str | Path) -> None:
     pyglet.font.add_file(str(file_path))
 
 
-FontNameOrNames = str| tuple[str, ...]
+FontNameOrNames = str | tuple[str, ...]
 
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:

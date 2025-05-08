@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import weakref
 from collections import deque
+from collections.abc import Iterable, Sequence
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
 from typing import (
@@ -10,7 +11,6 @@ from typing import (
     Literal,
     overload,
 )
-from collections.abc import Iterable, Sequence
 
 import pyglet
 import pyglet.gl.lib

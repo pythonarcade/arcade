@@ -27,7 +27,7 @@ class UIImage(UIWidget):
         **kwargs: passed to UIWidget
     """
 
-    texture = Property[Texture| NinePatchTexture]()
+    texture = Property[Texture | NinePatchTexture]()
     """Texture to show"""
     alpha = Property(255)
     """Alpha value of the texture, value between 0 and 255.
