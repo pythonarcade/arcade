@@ -41,9 +41,9 @@ class Framebuffer:
     Args:
         ctx:
             The context this framebuffer belongs to
-        color_attachments (optional):
+        color_attachments:
             A color attachment or a list of color attachments
-        depth_attachment (optional):
+        depth_attachment:
             A depth attachment
     """
 

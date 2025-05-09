@@ -8,17 +8,25 @@
 - TextArea with scroll support
 """
 
-from __future__ import annotations
-
 from collections import defaultdict
-from typing import Iterable, Optional, TypeVar, Union
+from collections.abc import Iterable
+from typing import TypeGuard, TypeVar
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
-from typing_extensions import TypeGuard
+from pyglet.input import Controller
+from pyglet.math import Vec2
 
 import arcade
+from arcade.experimental.controller_window import ControllerWindow
 from arcade.gui import UIEvent
 from arcade.gui.events import (
+    UIControllerButtonPressEvent,
+    UIControllerButtonReleaseEvent,
+    UIControllerConnectEvent,
+    UIControllerDisconnectEvent,
+    UIControllerDpadEvent,
+    UIControllerStickEvent,
+    UIControllerTriggerEvent,
     UIKeyPressEvent,
     UIKeyReleaseEvent,
     UIMouseDragEvent,
@@ -95,7 +103,7 @@ class UIManager(EventDispatcher):
     DEFAULT_LAYER = 0
     OVERLAY_LAYER = 10
 
-    def __init__(self, window: Optional[arcade.Window] = None):
+    def __init__(self, window: arcade.Window | None = None):
         super().__init__()
 
         self.window = window or arcade.get_window()
@@ -147,7 +155,7 @@ class UIManager(EventDispatcher):
                 self.trigger_render()
 
     def walk_widgets(
-        self, *, root: Optional[UIWidget] = None, layer=DEFAULT_LAYER
+        self, *, root: UIWidget | None = None, layer=DEFAULT_LAYER
     ) -> Iterable[UIWidget]:
         """Walks through widget tree, in reverse draw order (most top drawn widget first)
 
@@ -280,6 +288,20 @@ class UIManager(EventDispatcher):
         """
         if not self._enabled:
             self._enabled = True
+
+            if isinstance(self.window, ControllerWindow):
+                controller_handlers = {
+                    self.on_connect,
+                    self.on_disconnect,
+                    self.on_stick_motion,
+                    self.on_trigger_motion,
+                    self.on_button_press,
+                    self.on_button_release,
+                    self.on_dpad_motion,
+                }
+            else:
+                controller_handlers = set()
+
             self.window.push_handlers(
                 self.on_resize,
                 self.on_update,
@@ -293,6 +315,7 @@ class UIManager(EventDispatcher):
                 self.on_text,
                 self.on_text_motion,
                 self.on_text_motion_select,
+                *controller_handlers,
             )
 
     def disable(self) -> None:
@@ -303,6 +326,20 @@ class UIManager(EventDispatcher):
         """
         if self._enabled:
             self._enabled = False
+
+            if isinstance(self.window, ControllerWindow):
+                controller_handlers = {
+                    self.on_connect,
+                    self.on_disconnect,
+                    self.on_stick_motion,
+                    self.on_trigger_motion,
+                    self.on_button_press,
+                    self.on_button_release,
+                    self.on_dpad_motion,
+                }
+            else:
+                controller_handlers = set()
+
             self.window.remove_handlers(
                 self.on_resize,
                 self.on_update,
@@ -316,13 +353,14 @@ class UIManager(EventDispatcher):
                 self.on_text,
                 self.on_text_motion,
                 self.on_text_motion_select,
+                *controller_handlers,
             )
 
     def on_update(self, time_delta):
         """Dispatches an update event to all widgets in the UIManager."""
         return self.dispatch_ui_event(UIOnUpdateEvent(self, time_delta))
 
-    def draw(self, pixelated=False) -> None:
+    def draw(self, **kwargs) -> None:
         """Will draw all widgets to the window.
 
         UIManager caches all rendered widgets into a framebuffer (something like a
@@ -362,7 +400,7 @@ class UIManager(EventDispatcher):
         x_, y_, *c = self.camera.unproject((x, y))  # convert screen to ui coordinates
         return x_, y_
 
-    def on_event(self, event) -> Union[bool, None]:
+    def on_event(self, event) -> bool | None:
         """Forwards an event to all widgets in the UIManager."""
         layers = sorted(self.children.keys(), reverse=True)
         for layer in layers:
@@ -451,6 +489,29 @@ class UIManager(EventDispatcher):
             surface.resize(size=(width, height), pixel_ratio=scale)
 
         self.trigger_render()
+
+    def on_connect(self, controller: Controller):
+        """Called when a controller is connected."""
+        self.dispatch_ui_event(UIControllerConnectEvent(controller))
+
+    def on_disconnect(self, controller: Controller):
+        """Called when a controller is disconnected."""
+        self.dispatch_ui_event(UIControllerDisconnectEvent(controller))
+
+    def on_stick_motion(self, controller: Controller, name: str, value: Vec2):
+        return self.dispatch_ui_event(UIControllerStickEvent(controller, name, value))
+
+    def on_trigger_motion(self, controller: Controller, name: str, value: float):
+        return self.dispatch_ui_event(UIControllerTriggerEvent(controller, name, value))
+
+    def on_button_press(self, controller: Controller, button: str):
+        return self.dispatch_ui_event(UIControllerButtonPressEvent(controller, button))
+
+    def on_button_release(self, controller: Controller, button: str):
+        return self.dispatch_ui_event(UIControllerButtonReleaseEvent(controller, button))
+
+    def on_dpad_motion(self, controller: Controller, value: Vec2):
+        return self.dispatch_ui_event(UIControllerDpadEvent(controller, value))
 
     @property
     def rect(self) -> Rect:

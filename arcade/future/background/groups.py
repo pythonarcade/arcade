@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import arcade.gl as gl
 from arcade.future.background import Background
 
@@ -137,7 +135,7 @@ class ParallaxGroup:
         return self._backgrounds[item], self._depths[item]
 
     def __setitem__(self, key: int, value: Background | float):
-        if isinstance(value, (float, int)):
+        if isinstance(value, float | int):
             self._depths[key] = value
         else:
             self._backgrounds[key] = value

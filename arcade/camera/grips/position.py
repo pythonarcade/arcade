@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pyglet.math import Vec3
 
 from arcade.camera import CameraData

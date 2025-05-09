@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import math
 import random
 from typing import TypeVar
@@ -377,7 +375,7 @@ def rescale_relative_to_point(source: Point2, target: Point2, factor: AsFloat | 
         The rescaled point.
     """
 
-    if isinstance(factor, (float, int)):
+    if isinstance(factor, float | int):
         if factor == 1.0:
             return target
         scale_x = scale_y = factor

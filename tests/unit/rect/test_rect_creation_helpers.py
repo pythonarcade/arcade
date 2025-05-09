@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import pytest
 
 from arcade.types.rect import LBWH, LRBT, XYWH, XYRR, Rect

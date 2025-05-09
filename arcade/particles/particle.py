@@ -3,8 +3,6 @@ Particle - Object produced by an Emitter.
 Often used in large quantity to produce visual effects effects
 """
 
-from __future__ import annotations
-
 from typing import Literal
 
 from arcade.math import clamp, lerp

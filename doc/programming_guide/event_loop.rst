@@ -54,33 +54,33 @@ to the window's own events. For simple time keeping Arcade provides global
 clock objects. Both clocks can be imported from ``arcade.clock`` as 
 ``GLOBAL_CLOCK`` and ``GLOBAL_FIXED_CLOCK``
 
-:py:class:`arcade.Clock`
-^^^^^^^^^^^^^^^^^^^^^^^^
+:py:class:`~arcade.clock.Clock`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The base Arcade clock tracks the elapsed time in seconds, the total number
 of clock ticks, and the amount of time that elapsed since the last tick.
 The currently active window automatically ticks the ``GLOBAL_CLOCK`` every ``on_update``.
 This means there is no reason to manually tick it. If you need more
-clocks, possibly ticking at a different rate, an :py:class:`arcade.Clock`
+clocks, possibly ticking at a different rate, an :py:class:`arcade.clock.Clock`
 can be created on the fly.
 
-:py:class:`arcade.FixedClock`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+:py:class:`~arcade.clock.FixedClock`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The fixed clock tracks the same values as the normal clock, but has two special features.
 Firstly it enforces that the ``delta_time`` passed into its ``tick`` method is always the same.
 This is because advanced physics engines require consistent time. Secondly the fixed clock
 requires a sibling regular clock. It uses this clock to track how offset from the true time it is.
-Like the regular clock you may make a new :py:class:`arcade.FixedClock` at any time,
+Like the regular clock you may make a new :py:class:`~arcade.clock.FixedClock` at any time,
 but ensure they have a sibling.
 
 Up Coming
 ^^^^^^^^^
 
-In future version of arcade :py:class:`Clock` will be updated to allow for sub clocks. 
+In future version of arcade :py:class:`~arcade.clock.Clock` will be updated to allow for sub clocks. 
 Sub clocks will be ticked by their parent clock rather than be manually updated. Sub clocks
 will make it easier to control the flow of time for specific groups of objects. Such as only
-slowing enemies or excluding UI elements. To gain access to a draft :py:class:`arcade.Clock`
+slowing enemies or excluding UI elements. To gain access to a draft :py:class:`~arcade.clock.Clock`
 you can find it in ``arcade.future.sub_clock``. This version of the sub clock is not final.
 If you find any bugs do not hesitate to raise an issue on the github.
 
@@ -88,22 +88,22 @@ More on Fixed update
 --------------------
 
 The ``on_fixed_update`` event can be an extremely powerful tool, but it has many complications
-that should be taken into account. If used imporperly the event can grind a game to a halt.
+that should be taken into account. If used improperly the event can grind a game to a halt.
 
 Death Spiral
 ^^^^^^^^^^^^
 
 A fixed update represents a very specific amount of time. If all of the computations take
-longer than the fixed update represents than the ammount of time accumulated between update
+longer than the fixed update represents than the amount of time accumulated between update
 events will grow. If this happens for multiple frames the game will begin to spiral. The 
 first few frames of the spiral will lead to one update cycle requiring two fixed update
 calls. This will increase the extra time accumulated until three fixed updates must occur at once.
 This will continue to happen until either: the fixed updates start taking less time, or the game 
 crashes.
 
-There are a few solutions to this issue. The simplist method, which works best when there may be spikes in
+There are a few solutions to this issue. The simplest method, which works best when there may be spikes in
 computation time that quickly settle, is to clamp the max number of fixed updates that can occur in a single
-frame. In Arcade this is done by setting the ``fixed_frame_cap`` argument when initialising your
+frame. In Arcade this is done by setting the ``fixed_frame_cap`` argument when initializing your
 :py:class:`arcade.Window`. The second method is to slow-down time temporarily. By changing the
 ``_tick_speed`` of Arcade's ``GLOBAL_CLOCK`` is is possible to slow down the accumulation of time.
 For example setting ``GLOBAL_CLOCK._tick_speed = 0.5`` would allow the fixed update twice as many frames

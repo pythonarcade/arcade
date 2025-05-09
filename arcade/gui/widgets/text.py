@@ -1,14 +1,16 @@
-from __future__ import annotations
-
-from typing import Optional
+import warnings
+from copy import deepcopy
+from dataclasses import dataclass
+from typing import Literal
 
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
-from typing_extensions import Literal, override
+from typing_extensions import override
 
 import arcade
+from arcade import uicolor
 from arcade.gui.events import (
     UIEvent,
     UIMouseDragEvent,
@@ -16,13 +18,15 @@ from arcade.gui.events import (
     UIMousePressEvent,
     UIMouseScrollEvent,
     UIOnChangeEvent,
+    UIOnClickEvent,
     UITextInputEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,
 )
-from arcade.gui.property import bind
+from arcade.gui.property import Property, bind
+from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import UIWidget
+from arcade.gui.widgets import UIInteractiveWidget, UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
 from arcade.text import FontNameOrNames
 from arcade.types import LBWH, RGBA255, Color, RGBOrA255
@@ -82,8 +86,8 @@ class UILabel(UIWidget):
         *,
         x: float = 0,
         y: float = 0,
-        width: Optional[float] = None,
-        height: Optional[float] = None,
+        width: float | None = None,
+        height: float | None = None,
         font_name=("calibri", "arial"),
         font_size: float = 12,
         text_color: RGBOrA255 = arcade.color.WHITE,
@@ -248,11 +252,11 @@ class UILabel(UIWidget):
 
     def update_font(
         self,
-        font_name: Optional[FontNameOrNames] = None,
-        font_size: Optional[float] = None,
-        font_color: Optional[Color] = None,
-        bold: Optional[bool | str] = None,
-        italic: Optional[bool] = None,
+        font_name: FontNameOrNames | None = None,
+        font_size: float | None = None,
+        font_color: Color | None = None,
+        bold: bool | str | None = None,
+        italic: bool | None = None,
     ):
         """Update font of the label.
 
@@ -347,9 +351,9 @@ class UITextWidget(UIAnchorLayout):
 
     def place_text(
         self,
-        anchor_x: Optional[str] = None,
+        anchor_x: str | None = None,
         align_x: float = 0,
-        anchor_y: Optional[str] = None,
+        anchor_y: str | None = None,
         align_y: float = 0,
         **kwargs,
     ) -> UILabel:
@@ -403,7 +407,27 @@ class UITextWidget(UIAnchorLayout):
         return self._label
 
 
-class UIInputText(UIWidget):
+@dataclass
+class UIInputTextStyle(UIStyleBase):
+    """Used to style the UITextWidget for different states. Below is its use case.
+
+    .. code:: py
+
+        button = UIInputText(style={"normal": UIInputText.UIStyle(...),})
+
+    Args:
+        bg: Background color.
+        border: Border color.
+        border_width: Width of the border.
+
+    """
+
+    bg: RGBA255 | None = None
+    border: RGBA255 | None = uicolor.WHITE
+    border_width: int = 2
+
+
+class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
     """An input field the user can type text into.
 
     This is useful in returning
@@ -436,9 +460,6 @@ class UIInputText(UIWidget):
             is the same thing as a :py:class:`~arcade.gui.UITextArea`.
         caret_color: An RGBA or RGB color for the caret with each
             channel between 0 and 255, inclusive.
-        border_color: An RGBA or RGB color for the border with each
-            channel between 0 and 255, inclusive, can be None to remove border.
-        border_width: Width of the border in pixels.
         size_hint: A tuple of floats between 0 and 1 defining the amount
             of space of the parent should be requested.
         size_hint_min: Minimum size hint width and height in pixel.
@@ -451,13 +472,36 @@ class UIInputText(UIWidget):
     # position 0.
     LAYOUT_OFFSET = 1
 
+    # Style
+    UIStyle = UIInputTextStyle
+
+    DEFAULT_STYLE = {
+        "normal": UIStyle(),
+        "hover": UIStyle(
+            border=uicolor.WHITE_CLOUDS,
+        ),
+        "press": UIStyle(
+            border=uicolor.WHITE_SILVER,
+        ),
+        "disabled": UIStyle(
+            bg=uicolor.WHITE_SILVER,
+        ),
+        "invalid": UIStyle(
+            bg=uicolor.RED_ALIZARIN.replace(a=42),
+            border=uicolor.RED_ALIZARIN,
+        ),
+    }
+
+    # Properties
+    invalid = Property(False)
+
     def __init__(
         self,
         *,
         x: float = 0,
         y: float = 0,
         width: float = 100,
-        height: float = 23,  # required height for font size 12 + border width 1
+        height: float = 25,  # required height for font size 12 + border width 1
         text: str = "",
         font_name=("Arial",),
         font_size: float = 12,
@@ -469,8 +513,24 @@ class UIInputText(UIWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
+        style: dict[str, UIInputTextStyle] | None = None,
         **kwargs,
     ):
+        if border_color != arcade.color.WHITE or border_width != 2:
+            warnings.warn(
+                "UIInputText is now a UIStyledWidget. "
+                "Use the style dict to set the border color and width.",
+                DeprecationWarning,
+                stacklevel=1,
+            )
+
+            # adjusting style to set border color and width
+            style = style or UIInputText.DEFAULT_STYLE
+            style = deepcopy(style)
+
+            style["normal"].border = border_color
+            style["normal"].border_width = border_width
+
         super().__init__(
             x=x,
             y=y,
@@ -479,10 +539,9 @@ class UIInputText(UIWidget):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
+            style=style or UIInputText.DEFAULT_STYLE,
             **kwargs,
         )
-
-        self.with_border(color=border_color, width=border_width)
 
         self._active = False
         self._text_color = Color.from_iterable(text_color)
@@ -510,6 +569,44 @@ class UIInputText(UIWidget):
 
         self.register_event_type("on_change")
 
+        bind(self, "hovered", self._apply_style)
+        bind(self, "pressed", self._apply_style)
+        bind(self, "invalid", self._apply_style)
+        bind(self, "disabled", self._apply_style)
+
+        # initial style application
+        self._apply_style()
+
+    def _apply_style(self):
+        style = self.get_current_style()
+
+        self.with_background(
+            color=Color.from_iterable(style.bg) if style.bg else None,
+        )
+        self.with_border(
+            color=Color.from_iterable(style.border) if style.border else None,
+            width=style.border_width,
+        )
+        self.trigger_full_render()
+
+    @override
+    def get_current_state(self) -> str:
+        """Get the current state of the slider.
+
+        Returns:
+            ""normal"", ""hover"", ""press"" or ""disabled"".
+        """
+        if self.disabled:
+            return "disabled"
+        elif self.pressed:
+            return "press"
+        elif self.hovered:
+            return "hover"
+        elif self.invalid:
+            return "invalid"
+        else:
+            return "normal"
+
     def _get_caret_blink_state(self):
         """Check whether or not the caret is currently blinking or not."""
         return self.caret.visible and self._active and self.caret._blink_visible
@@ -523,18 +620,14 @@ class UIInputText(UIWidget):
             self._blink_state = current_state
             self.trigger_full_render()
 
+    def on_click(self, event: UIOnClickEvent):
+        self.activate()
+
     @override
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Handle events for the text input field.
 
         Text input is only active when the user clicks on the input field."""
-        # If not active, check to activate, return
-        if not self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.point_in_rect(event.pos):
-                self.activate()
-                # return unhandled to allow other widgets to deactivate
-                return EVENT_UNHANDLED
-
         # If active check to deactivate
         if self._active and isinstance(event, UIMousePressEvent):
             if self.rect.point_in_rect(event.pos):
@@ -575,10 +668,7 @@ class UIInputText(UIWidget):
             if old_text != self.text:
                 self.dispatch_event("on_change", UIOnChangeEvent(self, old_text, self.text))
 
-        if super().on_event(event):
-            return EVENT_HANDLED
-
-        return EVENT_UNHANDLED
+        return super().on_event(event)
 
     @property
     def active(self) -> bool:
@@ -589,6 +679,9 @@ class UIInputText(UIWidget):
 
     def activate(self):
         """Programmatically activate the text input field."""
+        if self._active:
+            return
+
         self._active = True
         self.trigger_full_render()
         self.caret.on_activate()
@@ -596,6 +689,10 @@ class UIInputText(UIWidget):
 
     def deactivate(self):
         """Programmatically deactivate the text input field."""
+
+        if not self._active:
+            return
+
         self._active = False
         self.trigger_full_render()
         self.caret.on_deactivate()
@@ -690,7 +787,7 @@ class UITextArea(UIWidget):
         italic=False,
         text_color: RGBA255 = arcade.color.WHITE,
         multiline: bool = True,
-        scroll_speed: Optional[float] = None,
+        scroll_speed: float | None = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -781,7 +878,7 @@ class UITextArea(UIWidget):
         self.layout.draw()
 
     @override
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Handle scrolling of the widget."""
         if isinstance(event, UIMouseScrollEvent):
             if self.rect.point_in_rect(event.pos):

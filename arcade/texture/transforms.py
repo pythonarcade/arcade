@@ -6,8 +6,6 @@ We don't actually transform pixel data, we simply
 transform the texture coordinates and hit box points.
 """
 
-from __future__ import annotations
-
 from enum import Enum
 
 from arcade.math import rotate_point

@@ -8,8 +8,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.own_layout
 """
 
-from __future__ import annotations
-
 from math import cos, sin
 from typing import TypeVar
 

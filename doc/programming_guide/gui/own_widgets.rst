@@ -27,12 +27,12 @@ You can also make use of other base classes, which provide a more specialized in
 Further baseclasses are:
 
 - :class:`arcade.gui.UIInteractiveWidget`
-    `UIInteractiveWidget` is a baseclass for widgets that can be interacted with.
-    It handles mouse events and provides properties like `hovered` or `pressed` and an :meth:`on_click` method.
+    A base class for widgets that can be interacted with.
+    It handles mouse events and provides properties like `hovered` or `pressed` and an :meth:`~arcade.gui.UIInteractiveWidget.on_click` method.
 
 - :class:`arcade.gui.UIAnchorLayout`
-    `UIAnchorLayout` is basically a frame, which can be used to place widgets
-    to a position within itself. This makes it a great baseclass for a widget containing
+    Basically a frame, which can be used to place widgets
+    to a position within itself. This makes it a great base class for a widget containing
     multiple other widgets. (Examples: `MessageBox`, `Card`, etc.)
 
 If your widget should act more as a general layout, position various widgets and handle their size,

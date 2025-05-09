@@ -2,11 +2,9 @@
 Drawing text with pyglet label
 """
 
-from __future__ import annotations
-
 from ctypes import c_int, c_ubyte
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 import pyglet
 
@@ -100,7 +98,7 @@ def load_font(path: str | Path) -> None:
     pyglet.font.add_file(str(file_path))
 
 
-FontNameOrNames = Union[str, tuple[str, ...]]
+FontNameOrNames = str | tuple[str, ...]
 
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
@@ -189,7 +187,7 @@ class Text:
             text_2 = Text("Hello, World 2", 0, 100, batch=batch)
             text_3 = Text("Hello, World 2", 0, 150, batch=batch)
             # Draw the batch
-            bach.draw()
+            batch.draw()
             # Remove a text instance from the batch
             text_2.batch = None
 
@@ -204,25 +202,25 @@ class Text:
         text: Initial text to display. Can be an empty string
         x: x position to align the text's anchor point with
         y: y position to align the text's anchor point with
-        z (optional): z position to align the text's anchor point with
-        color (optional): Color of the text as an RGBA tuple or a
+        z: z position to align the text's anchor point with
+        color: Color of the text as an RGBA tuple or a
             :py:class:`~arcade.types.Color` instance.
-        font_size (optional): Size of the text in points
-        width (optional): A width limit in pixels
-        align (optional): Horizontal alignment; values other than "left" require width to be set.
+        font_size: Size of the text in points
+        width: A width limit in pixels
+        align: Horizontal alignment; values other than "left" require width to be set.
             Valid options: ``"left"``, ``"center"``, ``"right"``.
-        font_name (optional): A font name, path to a font file, or list of names
-        bold (optional): Whether to draw the text as bold, and if a string,
+        font_name: A font name, path to a font file, or list of names
+        bold: Whether to draw the text as bold, and if a string,
               how bold. See :py:attr:`.bold` to learn more.
-        italic (optional): Whether to draw the text as italic
-        anchor_x (optional): How to calculate the anchor point's x coordinate.
+        italic: Whether to draw the text as italic
+        anchor_x: How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
-        anchor_y (optional): How to calculate the anchor point's y coordinate.
+        anchor_y: How to calculate the anchor point's y coordinate.
                   Options: "top", "bottom", "center", or "baseline".
-        multiline (optional): Requires width to be set; enables word wrap rather than clipping
-        rotation (optional): rotation in degrees, clockwise from horizontal
-        batch (optional): The batch to add the text to (for batch rendering text)
-        group (optional): The specific group in a a batch to add the text to
+        multiline: Requires width to be set; enables word wrap rather than clipping
+        rotation: rotation in degrees, clockwise from horizontal
+        batch: The batch to add the text to (for batch rendering text)
+        group: The specific group in a a batch to add the text to
             (for batch rendering text)
 
     All constructor arguments other than ``text`` have a corresponding
@@ -278,8 +276,26 @@ class Text:
         z: float = 0,
         **kwargs,
     ):
-        # Raises a RuntimeError if no window for better user feedback
-        arcade.get_window()
+        self._arguments = dict(
+            text=text,
+            x=x,
+            y=y,
+            color=Color.from_iterable(color),
+            font_size=font_size,
+            width=width,
+            align=align,
+            font_name=font_name,
+            weight=pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL,
+            italic=italic,
+            anchor_x=anchor_x,
+            anchor_y=anchor_y,
+            multiline=multiline,
+            rotation=rotation,
+            batch=batch,
+            group=group,
+            z=z,
+            **kwargs,
+        )
 
         if align not in ("left", "center", "right"):
             raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
@@ -290,42 +306,50 @@ class Text:
                 f"but got {width!r}."
             )
 
-        adjusted_font = _attempt_font_name_resolution(font_name)
+        self._initialized = False
+        try:
+            self._init_deferred()
+        except Exception:
+            pass
 
-        self._label = pyglet.text.Label(
-            text=text,
-            # pyglet is lying about what it takes here and float is entirely valid
-            x=x,  # type: ignore
-            y=y,  # type: ignore
-            z=z,  # type: ignore
-            font_name=adjusted_font,
-            # TODO: Fix this upstream (Mac & Linux seem to allow float)
-            font_size=font_size,  # type: ignore
-            # use type: ignore since cast is slow & pyglet used Literal
-            anchor_x=anchor_x,  # type: ignore
-            anchor_y=anchor_y,  # type: ignore
-            color=Color.from_iterable(color),
-            width=width,
-            align=align,  # type: ignore
-            weight=pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL,
-            italic=italic,
-            multiline=multiline,
-            rotation=rotation,
-            # type: ignore  # pending https://github.com/pyglet/pyglet/issues/843
-            batch=batch,
-            group=group,
-            **kwargs,
-        )
+    @property
+    def label(self) -> pyglet.text.Label:
+        """
+        The underlying pyglet.Label instance.
+        """
+        if not self._initialized:
+            self._init_deferred()
+        return self._label
+
+    def initialize(self) -> None:
+        """
+        Manually initialize the Text if it was lazy loaded.
+        This has no effect if the Text was already initialized.
+        """
+        if self._initialized:
+            return
+        self._init_deferred()
+
+    def _init_deferred(self):
+        """
+        Deferred initialization when lazy loaded
+        """
+        # NOTE: Give the user a clear error message stating that the window is not created yet
+        arcade.get_window()
+
+        self._arguments["font_name"] = _attempt_font_name_resolution(self._arguments["font_name"])  # type: ignore
+        self._label = pyglet.text.Label(**self._arguments)  # type: ignore
+        self._initialized = True
 
     def __enter__(self):
         """
         Update multiple attributes of this text,
         using efficient update mechanism of the underlying ``pyglet.Label``
         """
-        self._label.begin_update()
+        self.label.begin_update()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self._label.end_update()
+        self.label.end_update()
 
     @property
     def batch(self) -> pyglet.graphics.Batch | None:
@@ -333,11 +357,11 @@ class Text:
 
         Can be unset by setting to ``None``.
         """
-        return self._label.batch
+        return self.label.batch
 
     @batch.setter
     def batch(self, batch: pyglet.graphics.Batch):
-        self._label.batch = batch
+        self.label.batch = batch
 
     @property
     def group(self) -> pyglet.graphics.Group | None:
@@ -348,11 +372,11 @@ class Text:
         batching very large sets of text needing to separate into
         groups or even mix with other pyglet batch content.
         """
-        return self._label.group
+        return self.label.group
 
     @group.setter
     def group(self, group: pyglet.graphics.Group):
-        self._label.group = group
+        self.label.group = group
 
     @property
     def value(self) -> str:
@@ -361,14 +385,14 @@ class Text:
 
         The value assigned will be converted to a string.
         """
-        return self._label.text
+        return self.label.text
 
     @value.setter
     def value(self, value: Any):
         value = str(value)
-        if self._label.text == value:
+        if self.label.text == value:
             return
-        self._label.text = value
+        self.label.text = value
 
     @property
     def text(self) -> str:
@@ -379,71 +403,71 @@ class Text:
 
         This is an alias for :py:attr:`~arcade.Text.value`
         """
-        return self._label.text
+        return self.label.text
 
     @text.setter
     def text(self, value: Any):
         value = str(value)
-        if self._label.text == value:
+        if self.label.text == value:
             return
-        self._label.text = value
+        self.label.text = value
 
     @property
     def x(self) -> float:
         """Get or set the x position of the label."""
-        return self._label.x
+        return self.label.x
 
     @x.setter
     def x(self, x: float) -> None:
-        if self._label.x == x:
+        if self.label.x == x:
             return
-        self._label.x = x
+        self.label.x = x
 
     @property
     def y(self) -> float:
         """Get or set the y position of the label."""
-        return self._label.y
+        return self.label.y
 
     @y.setter
     def y(self, y: float):
-        if self._label.y == y:
+        if self.label.y == y:
             return
-        self._label.y = y
+        self.label.y = y
 
     @property
     def z(self) -> float:
         """Get or set the z position of the label."""
-        return self._label.z
+        return self.label.z
 
     @z.setter
     def z(self, z: float):
-        if self._label.z == z:
+        if self.label.z == z:
             return
-        self._label.z = z
+        self.label.z = z
 
     @property
     def font_name(self) -> FontNameOrNames:
         """Get or set the font name(s) for the label."""
-        if not isinstance(self._label.font_name, str):
-            return tuple(self._label.font_name)
+        if not isinstance(self.label.font_name, str):
+            return tuple(self.label.font_name)
         else:
-            return self._label.font_name
+            return self.label.font_name
 
     @font_name.setter
     def font_name(self, font_name: FontNameOrNames) -> None:
         if isinstance(font_name, str):
-            self._label.font_name = font_name
+            self.label.font_name = font_name
         else:
-            self._label.font_name = list(font_name)
+            self.label.font_name = list(font_name)
 
     @property
     def font_size(self) -> float:
         """Get or set the font size of the label."""
-        return self._label.font_size
+        return self.label.font_size
 
     @font_size.setter
     def font_size(self, font_size: float):
-        self._label.font_size = font_size
+        self.label.font_size = font_size
 
     @property
     def anchor_x(self) -> str:
@@ -452,11 +476,11 @@ class Text:
 
         Options: ``"left"``, ``"center"``, or ``"right"``
         """
-        return self._label.anchor_x
+        return self.label.anchor_x
 
     @anchor_x.setter
     def anchor_x(self, anchor_x: str):
-        self._label.anchor_x = anchor_x  # type: ignore
+        self.label.anchor_x = anchor_x  # type: ignore
 
     @property
     def anchor_y(self) -> str:
@@ -465,29 +489,29 @@ class Text:
 
         Options : ``"top"``, ``"bottom"``, ``"center"``, or ``"baseline"``
         """
-        return self._label.anchor_y
+        return self.label.anchor_y
 
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
-        self._label.anchor_y = anchor_y  # type: ignore
+        self.label.anchor_y = anchor_y  # type: ignore
 
     @property
     def rotation(self) -> float:
         """Get or set the clockwise rotation"""
-        return self._label.rotation
+        return self.label.rotation
 
     @rotation.setter
     def rotation(self, rotation: float):
-        self._label.rotation = rotation
+        self.label.rotation = rotation
 
     @property
     def color(self) -> Color:
         """Get or set the text color for the label."""
-        return Color.from_iterable(self._label.color)
+        return Color.from_iterable(self.label.color)
 
     @color.setter
     def color(self, color: RGBOrA255):
-        self._label.color = Color.from_iterable(color)
+        self.label.color = Color.from_iterable(color)
 
     @property
     def width(self) -> int | None:
@@ -498,11 +522,11 @@ class Text:
         If you are looking for the physical size if the text, see
         :py:attr:`~arcade.Text.content_width`
         """
-        return self._label.width
+        return self.label.width
 
     @width.setter
     def width(self, width: int):
-        self._label.width = width
+        self.label.width = width
 
     @property
     def height(self) -> int | None:
@@ -513,51 +537,51 @@ class Text:
         If you are looking for the physical size if the text, see
         :py:attr:`~arcade.Text.content_height`
         """
-        return self._label.height
+        return self.label.height
 
     @height.setter
     def height(self, value: int):
-        self._label.height = value
+        self.label.height = value
 
     @property
     def size(self):
         """Get the size of the label."""
-        return self._label.width, self._label.height
+        return self.label.width, self.label.height
 
     @property
     def content_width(self) -> int:
         """Get the pixel width of the text contents."""
-        return self._label.content_width
+        return self.label.content_width
 
     @property
     def content_height(self) -> int:
         """Get the pixel height of the text content."""
-        return self._label.content_height
+        return self.label.content_height
 
     @property
     def left(self) -> float:
         """Pixel location of the left content border."""
-        return self._label.left
+        return self.label.left
 
     @property
     def right(self) -> float:
         """Pixel location of the right content border."""
-        return self._label.right
+        return self.label.right
 
     @property
     def top(self) -> float:
         """Pixel location of the top content border."""
-        return self._label.top
+        return self.label.top
 
     @property
     def bottom(self) -> float:
         """Pixel location of the bottom content border."""
-        return self._label.bottom
+        return self.label.bottom
 
     @property
     def content_size(self) -> tuple[int, int]:
         """Get the pixel width and height of the text contents."""
-        return self._label.content_width, self._label.content_height
+        return self.label.content_width, self.label.content_height
 
     @property
     def align(self) -> str:
@@ -565,11 +589,11 @@ class Text:
 
         Valid options: ``"left"``, ``"center"``, ``"right"``.
         """
-        return self._label.get_style("align")  # type: ignore
+        return self.label.get_style("align")  # type: ignore
 
     @align.setter
     def align(self, align: str):
-        self._label.set_style("align", align)
+        self.label.set_style("align", align)
 
     @property
     def bold(self) -> bool | str:
@@ -585,29 +609,29 @@ class Text:
         * ``"light"``
 
         """
-        return self._label.weight == pyglet.text.Weight.BOLD
+        return self.label.weight == pyglet.text.Weight.BOLD
 
     @bold.setter
     def bold(self, bold: bool | str):
-        self._label.weight = pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL
+        self.label.weight = pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL
 
     @property
     def italic(self) -> bool | str:
         """Get or set the italic state of the label."""
-        return self._label.italic
+        return self.label.italic
 
     @italic.setter
     def italic(self, italic: bool | str):
-        self._label.italic = italic
+        self.label.italic = italic
 
     @property
     def multiline(self) -> bool:
         """Get or set the multiline flag of the label."""
-        return self._label.multiline
+        return self.label.multiline
 
     @multiline.setter
     def multiline(self, multiline: bool):
-        self._label.multiline = multiline
+        self.label.multiline = multiline
 
     def draw(self) -> None:
         """
@@ -620,7 +644,7 @@ class Text:
             instance. For information on how to do this, see
             :ref:`sprite_move_scrolling`.
         """
-        _draw_pyglet_label(self._label)
+        _draw_pyglet_label(self.label)
 
     def draw_debug(
         self,
@@ -651,7 +675,7 @@ class Text:
         # Draw anchor
         arcade.draw_point(self.x, self.y, color=anchor_color, size=6)
 
-        _draw_pyglet_label(self._label)
+        _draw_pyglet_label(self.label)
 
     @property
     def position(self) -> Point:
@@ -661,7 +685,7 @@ class Text:
         This is faster than setting x and y position separately
         because the underlying geometry only needs to change position once.
         """
-        return self._label.x, self._label.y
+        return self.label.x, self.label.y
 
     @position.setter
     def position(self, point: Point):
@@ -669,9 +693,9 @@ class Text:
         x, y, *z = point
 
         if z:
-            self._label.position = x, y, z[0]
+            self.label.position = x, y, z[0]
         else:
-            self._label.position = x, y, self._label.z
+            self.label.position = x, y, self.label.z
 
     @property
     def tracking(self) -> float | None:
@@ -685,12 +709,12 @@ class Text:
         Returns:
             a pixel amount, or None if the tracking is inconsistent.
         """
-        kerning = self._label.get_style("kerning")
+        kerning = self.label.get_style("kerning")
         return kerning if kerning != pyglet.text.document.STYLE_INDETERMINATE else None
 
     @tracking.setter
     def tracking(self, value: float):
-        self._label.set_style("kerning", value)
+        self.label.set_style("kerning", value)
 
     def em_to_px(self, em: float) -> float:
         """Convert from an em value to a pixel amount.
@@ -738,19 +762,19 @@ def create_text_sprite(
 
     Args:
         text: Initial text to display. Can be an empty string
-        color (optional): Color of the text as an RGBA tuple or a
+        color: Color of the text as an RGBA tuple or a
             :py:class:`~arcade.types.Color` instance.
-        font_size (optional): Size of the text in points
-        width (optional): A width limit in pixels
-        align (optional): Horizontal alignment; values other than "left" require width to be set.
+        font_size: Size of the text in points
+        width: A width limit in pixels
+        align: Horizontal alignment; values other than "left" require width to be set.
             Valid options: ``"left"``, ``"center"``, ``"right"``.
-        font_name (optional): A font name, path to a font file, or list of names
-        bold (optional): Whether to draw the text as bold, and if a string,
+        font_name: A font name, path to a font file, or list of names
+        bold: Whether to draw the text as bold, and if a string,
               how bold. See :py:attr:`arcade.gui.widgets.text.bold` to learn more.
-        italic (optional): Whether to draw the text as italic
-        anchor_x (optional): How to calculate the anchor point's x coordinate.
+        italic: Whether to draw the text as italic
+        anchor_x: How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
-        multiline (optional): Requires width to be set; enables word wrap rather than clipping
+        multiline: Requires width to be set; enables word wrap rather than clipping
         background_color: The background color of the text. If None, the background
             will be transparent.
         texture_atlas: The texture atlas to use for the
@@ -843,23 +867,23 @@ def draw_text(
         text: Initial text to display. Can be an empty string
         x: x position to align the text's anchor point with
         y: y position to align the text's anchor point with
-        z (optional): z position to align the text's anchor point with
-        color (optional): Color of the text as an RGBA tuple or a
+        z: z position to align the text's anchor point with
+        color: Color of the text as an RGBA tuple or a
             :py:class:`~arcade.types.Color` instance.
-        font_size (optional): Size of the text in points
-        width (optional): A width limit in pixels
-        align (optional): Horizontal alignment; values other than "left" require width to be set.
+        font_size: Size of the text in points
+        width: A width limit in pixels
+        align: Horizontal alignment; values other than "left" require width to be set.
             Valid options: ``"left"``, ``"center"``, ``"right"``.
-        font_name (optional): A font name, path to a font file, or list of names
-        bold (optional): Whether to draw the text as bold, and if a string,
+        font_name: A font name, path to a font file, or list of names
+        bold: Whether to draw the text as bold, and if a string,
               how bold. See :py:attr:`arcade.gui.widgets.text.bold` to learn more.
-        italic (optional): Whether to draw the text as italic
-        anchor_x (optional): How to calculate the anchor point's x coordinate.
+        italic: Whether to draw the text as italic
+        anchor_x: How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
-        anchor_y (optional): How to calculate the anchor point's y coordinate.
+        anchor_y: How to calculate the anchor point's y coordinate.
                   Options: "top", "bottom", "center", or "baseline".
-        multiline (optional): Requires width to be set; enables word wrap rather than clipping
-        rotation (optional): rotation in degrees, clockwise from horizontal
+        multiline: Requires width to be set; enables word wrap rather than clipping
+        rotation: rotation in degrees, clockwise from horizontal
 
     By default, the text is placed so that:
 

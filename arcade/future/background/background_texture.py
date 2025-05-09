@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from PIL import Image
 from pyglet.math import Mat3
 
@@ -17,6 +15,12 @@ class BackgroundTexture:
 
     The Mat3s define the scaling, rotation, and translation of the pixel data in the texture.
     see background_fs.glsl in resources/shaders for an implementation of this.
+
+    Args:
+        texture: The texture to use as the background.
+        offset: The offset of the texture in pixels.
+        scale: The scale of the texture.
+        angle: The angle of the texture in radians.
     """
 
     def __init__(
@@ -43,6 +47,10 @@ class BackgroundTexture:
 
     @property
     def scale(self) -> float:
+        """
+        Get or set the scale of the texture. This is a multiplier on the size of the texture.
+        Default value is ``1.0``.
+        """
         return self._scale
 
     @scale.setter
@@ -52,6 +60,10 @@ class BackgroundTexture:
 
     @property
     def angle(self) -> float:
+        """
+        Get or set the angle of the texture. This is a rotation in radians.
+        Default value is ``0.0``.
+        """
         return self._angle
 
     @angle.setter
@@ -61,6 +73,10 @@ class BackgroundTexture:
 
     @property
     def offset(self) -> tuple[float, float]:
+        """
+        Get or set the offset of the texture. This is a translation in pixels.
+        Default value is ``(0.0, 0.0)``.
+        """
         return self._offset
 
     @offset.setter
@@ -136,6 +152,17 @@ class BackgroundTexture:
         color_attachments: list[gl.Texture2D] | None = None,
         depth_attachment: gl.Texture2D | None = None,
     ) -> gl.Framebuffer:
+        """
+        Create a framebuffer for the texture.
+
+        This framebuffer is used to render to the texture. The framebuffer is created with the
+        texture as the color attachment.
+
+        Args:
+            context: The context to use for the framebuffer.
+            color_attachments: The color attachments to use for the framebuffer."
+            depth_attachment: The depth attachment to use for the framebuffer."
+        """
         if color_attachments is None:
             color_attachments = []
         return context.framebuffer(
@@ -151,6 +178,19 @@ class BackgroundTexture:
         angle: float = 0.0,
         filters=(gl.NEAREST, gl.NEAREST),
     ):
+        """ "
+        Create a BackgroundTexture from a file.
+        This is a convenience function to create a BackgroundTexture from a file.
+
+        The file is loaded using PIL and converted to a texture.
+
+        Args:
+            tex_src: The file to load.
+            offset: The offset of the texture in pixels.
+            scale: The scale of the texture.
+            angle: The angle of the texture in radians.
+            filters: The filters to use for the texture.
+        """
         _context = get_window().ctx
 
         with Image.open(resolve(tex_src)).convert("RGBA") as img:

@@ -70,7 +70,7 @@ class GameView(arcade.View):
         """ Set up the game and initialize the variables. """
 
         # Camera
-        self.camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
 
         # Sprite lists
         self.player_list = arcade.SpriteList()

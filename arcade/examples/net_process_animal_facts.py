@@ -30,6 +30,7 @@ python -m arcade.examples.net_process_animal_facts
 """
 import PIL.Image
 import random
+import traceback
 import time
 import json
 import urllib.request
@@ -206,8 +207,8 @@ class AnimaFactsService:
                 try:
                     out_queue.put(selected_type.get_fact())
                     out_queue.put(selected_type.get_image())
-                except Exception as e:
-                    print("Error:", e)
+                except Exception:
+                    traceback.print_exc()
 
     def start(self) -> int:
         """Start the process and wait for it to be ready"""
@@ -229,11 +230,12 @@ class Facts:
 
 
 class CatFacts(Facts):
-    """Get random cat facts and iamges"""
+    """Get random cat facts and images"""
 
     def get_fact(self) -> str:
         with urllib.request.urlopen("https://meowfacts.herokuapp.com") as fd:
             data = json.loads(fd.read().decode("utf-8"))
+            print(data)
             return data["data"][0]
 
     def get_image(self) -> arcade.Texture:
@@ -254,9 +256,10 @@ class DogFacts(Facts):
         self.images = [i for i in self.images if not i.endswith(".mp4")]
 
     def get_fact(self) -> str:
-        with urllib.request.urlopen("http://dog-api.kinduff.com/api/facts") as fd:
+        with urllib.request.urlopen("https://dogapi.dog/api/v2/facts") as fd:
             data = json.loads(fd.read().decode("utf-8"))
-            return data["facts"][0]
+            print(data)
+            return data["data"][0]["attributes"]["body"]
 
     def get_image(self) -> arcade.Texture:
         """Get a random dog image from https://random.dog"""

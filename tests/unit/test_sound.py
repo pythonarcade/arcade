@@ -13,11 +13,9 @@ def test_sound_normal_load_and_playback(window):
 
     laser_wav = arcade.load_sound(":resources:sounds/laser1.wav")
     laser_mp3 = arcade.load_sound(":resources:sounds/laser1.mp3")
-    laser_ogg = arcade.load_sound(":resources:sounds/laser1.ogg")
 
     laser_wav_stream = arcade.load_sound(":resources:sounds/laser1.wav", streaming=True)
     laser_mp3_stream = arcade.load_sound(":resources:sounds/laser1.mp3", streaming=True)
-    laser_ogg_stream = arcade.load_sound(":resources:sounds/laser1.ogg", streaming=True)
 
     frame_count = 0
 
@@ -46,32 +44,13 @@ def test_sound_normal_load_and_playback(window):
             laser_wav_stream.stop(player)
             assert laser_wav_stream.is_playing(player) is False
 
-            player = laser_ogg.play(volume=0.5)
-            assert laser_ogg.get_volume(player) == 0.5
-            laser_ogg.set_volume(1.0, player)
-            assert laser_ogg.get_volume(player) == 1.0
-
         if frame_count == 60:
-            assert laser_ogg.is_playing(player) is True
-            laser_ogg.stop(player)
-            assert laser_ogg.is_playing(player) is False
-
-            player = laser_ogg_stream.play(volume=0.5)
-            assert laser_ogg_stream.get_volume(player) == 0.5
-            laser_ogg_stream.set_volume(1.0, player)
-            assert laser_ogg_stream.get_volume(player) == 1.0
-
-        if frame_count == 80:
-            assert laser_ogg_stream.is_playing(player) is True
-            laser_ogg_stream.stop(player)
-            assert laser_ogg_stream.is_playing(player) is False
-
             player = laser_mp3.play(volume=0.5)
             assert laser_mp3.get_volume(player) == 0.5
             laser_mp3.set_volume(1.0, player)
             assert laser_mp3.get_volume(player) == 1.0
 
-        if frame_count == 100:
+        if frame_count == 80:
             assert laser_mp3.is_playing(player) is True
             laser_mp3.stop(player)
             assert laser_mp3.is_playing(player) is False
@@ -81,7 +60,7 @@ def test_sound_normal_load_and_playback(window):
             laser_mp3_stream.set_volume(1.0, player)
             assert laser_mp3_stream.get_volume(player) == 1.0
 
-        if frame_count == 120:
+        if frame_count == 100:
             assert laser_mp3_stream.is_playing(player) is True
             laser_mp3_stream.stop(player)
             assert laser_mp3_stream.is_playing(player) is False

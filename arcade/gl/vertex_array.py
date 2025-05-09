@@ -37,11 +37,11 @@ class VertexArray:
             The context this object belongs to
         program:
             The program to use
-        content (optional):
+        content:
             List of BufferDescriptions
-        index_buffer (optional):
+        index_buffer:
             Index/element buffer
-        index_element_size (optional):
+        index_element_size:
             Byte size of the index buffer datatype.
     """
 

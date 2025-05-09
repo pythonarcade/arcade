@@ -4,14 +4,13 @@ description = "Arcade Game Development Library"
 readme = "README.md"
 authors = [{ name = "Paul Vincent Craven", email = "paul@cravenfamily.com" }]
 license = { file = "license.rst" }
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -20,7 +19,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "pyglet~=2.1.0",
+    "pyglet~=2.1.5",
     "pillow~=11.0.0",
     "pymunk~=6.9.0",
     "pytiled-parser~=2.2.9",
@@ -109,14 +108,12 @@ lint.select = [
     # Whitespace linting must be re-enabled manually for ruff
     # see https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml
     "W",
+    # "UP", wait for arcade.gl abstraction merge
 ]
 
 [tool.ruff.format]
 docstring-code-format = false
-exclude = [
-    "arcade/examples/*",
-    "benchmarks/*",
-]
+exclude = ["arcade/examples/*", "benchmarks/*"]
 
 # This ignores __init__.py files and examples for import sorting
 [tool.ruff.lint.per-file-ignores]

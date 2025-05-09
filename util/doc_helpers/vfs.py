@@ -27,8 +27,6 @@ We can prevent this loop by limiting writes. This module achieves this
 by reading each file before write and aborting if its contents would be
 unchanged.
 """
-from __future__ import annotations
-import os
 from contextlib import suppress, contextmanager
 from io import StringIO
 from pathlib import Path

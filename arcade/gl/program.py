@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing
 import weakref
 from ctypes import (
@@ -45,19 +43,19 @@ class Program:
     Args:
         ctx:
             The context this program belongs to
-        vertex_shader (optional):
+        vertex_shader:
             Vertex shader source
-        fragment_shader (optional):
+        fragment_shader:
             Fragment shader source
-        geometry_shader (optional)v:
+        geometry_shader:
             Geometry shader source
-        tess_control_shader (optional):
+        tess_control_shader:
             Tessellation control shader source
-        tess_evaluation_shader (optional):
+        tess_evaluation_shader:
             Tessellation evaluation shader source
-        varyings (optional):
+        varyings:
             List of out attributes used in transform feedback.
-        varyings_capture_mode (optional):
+        varyings_capture_mode:
             The capture mode for transforms.
             ``"interleaved"`` means all out attribute will be written to a single buffer.
             ``"separate"`` means each out attribute will be written separate buffers.

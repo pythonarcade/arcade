@@ -186,7 +186,7 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # setup camera
-        self.camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
 
     def on_draw(self):
         """ Draw everything. """

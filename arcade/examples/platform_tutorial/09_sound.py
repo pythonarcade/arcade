@@ -112,7 +112,7 @@ class GameView(arcade.Window):
         )
 
         # Initialize our camera, setting a viewport the size of our window.
-        self.camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
 
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 

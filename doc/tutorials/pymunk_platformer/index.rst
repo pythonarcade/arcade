@@ -69,7 +69,7 @@ When you run this program, the screen should be larger.
     :caption: Adding some constants
     :linenos:
     :lines: 1-29
-    :emphasize-lines: 4-26
+    :emphasize-lines: 6-24
 
 * :ref:`pymunk_demo_platformer_02`
 * :ref:`pymunk_demo_platformer_02_diff`
@@ -88,7 +88,7 @@ lines of code like this:
     self.player_list: Optional[arcade.SpriteList] = None
 
 This means the ``player_list`` attribute is going to be an instance of
-``SpriteList`` or ``None``. If you don't want to mess with typing, then
+:py:class:`~arcade.SpriteList` or ``None``. If you don't want to mess with typing, then
 this code also works just as well:
 
 .. code-block::
@@ -121,7 +121,7 @@ If you aren't sure how to use the Tiled Map Editor, see :ref:`platformer_part_ei
 
 Now, in the ``setup`` function, we are going add code to:
 
-* Create instances of ``SpriteList`` for each group of sprites we are doing
+* Create instances of :py:class:`~arcade.SpriteList` for each group of sprites we are doing
   to work with.
 * Create the player sprite.
 * Read in the tiled map.
@@ -223,8 +223,8 @@ We'll apply a different force later, if the player happens to be airborne.
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Add Player Movement - Constants and Attributes
     :linenos:
-    :lines: 48-71
-    :emphasize-lines: 1-2, 22-24
+    :lines: 48-75
+    :emphasize-lines: 1-2, 23-25
 
 We need to track if the left/right keys are held down. To do this we define
 instance variables ``left_pressed`` and ``right_pressed``. These are set to
@@ -234,7 +234,7 @@ appropriate values in the key press and release handlers.
     :caption: Handle Key Up and Down Events
     :linenos:
     :lines: 159-173
-    :emphasize-lines: 4-7, 12-15
+    :emphasize-lines: 2-5, 10-13
 
 Finally, we need to apply the correct force in ``on_update``. Force is specified
 in a tuple with horizontal force first, and vertical force second.
@@ -245,7 +245,7 @@ We also set the friction when we are moving to zero, and when we are not moving 
 .. literalinclude:: pymunk_demo_platformer_06.py
     :caption: Apply Force to Move Player
     :linenos:
-    :lines: 175-196
+    :lines: 181-199
     :emphasize-lines: 4-19
 
 * :ref:`pymunk_demo_platformer_06`
@@ -298,7 +298,7 @@ Then we will adjust the left/right force depending on if we are grounded or not:
 Add Player Animation
 --------------------
 
-To create a player animation, we make a custom child class of ``Sprite``.
+To create a player animation, we make a custom child class of :py:class:`~arcade.Sprite`.
 We load each frame of animation that we need, including a mirror image of it.
 
 We will flip the player to face left or right. If the player is in the air, we'll
@@ -318,7 +318,7 @@ animation, so that the feet appear in-sync with the ground.
     :linenos:
     :lines: 58-66
 
-Next, we create a ``Player`` class that is a child to ``arcade.Sprite``. This
+Next, we create a ``Player`` class that is a child to :py:class:`~arcade.Sprite`. This
 class will update the player animation.
 
 The ``__init__`` method loads all of the textures. Here we use Kenney.nl's
@@ -327,8 +327,8 @@ It has six different characters you can choose from with the same layout, so
 it makes changing as simple as changing which line is enabled. There are
 eight textures for walking, and textures for idle, jumping, and falling.
 
-As the character can face left or right, we use ``arcade.load_texture_pair``
-which will load both a regular image, and one that's mirrored.
+As the character can face left or right, we prepare a standard and mirrored
+version of each texture by using :py:meth:`~arcade.Texture.flip_left_right`.
 
 For the multi-frame walking animation, we use an "odometer." We need to move
 a certain number of pixels before changing the animation. If this value is too
@@ -344,7 +344,7 @@ called. This can be used to update the animation.
     :linenos:
     :pyobject: PlayerSprite
 
-Important! At this point, we are still creating an instance of ``arcade.Sprite``
+Important! At this point, we are still creating an instance of :py:class:`~arcade.Sprite`
 and **not** ``PlayerSprite``. We need to go back to the ``setup`` method and
 replace the line that creates the ``player`` instance with:
 
@@ -434,7 +434,7 @@ If our y value is too low, we'll remove the bullet.
     :pyobject: BulletSprite
 
 And, of course, once we create the bullet we have to update our code to use
-it instead of the plain ``arcade.Sprite`` class.
+it instead of the plain :py:class:`~arcade.Sprite` class.
 
 .. literalinclude:: pymunk_demo_platformer_10.py
     :caption: Destroy Bullets - Bullet Sprite

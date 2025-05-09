@@ -37,8 +37,8 @@ MOVEMENT_SPEED = 5
 VIEWPORT_MARGIN = 300
 
 # How big the window is
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Procedural Caves BSP Example"
 
 MERGE_SPRITES = False
@@ -287,8 +287,8 @@ class GameView(arcade.View):
 
         # Create the cameras. One for the GUI, one for the sprites.
         # We scroll the 'sprite world' but not the GUI.
-        self.camera_sprites = arcade.camera.Camera2D()
-        self.camera_gui = arcade.camera.Camera2D()
+        self.camera_sprites = arcade.Camera2D()
+        self.camera_gui = arcade.Camera2D()
 
         self.background_color = arcade.color.BLACK
 

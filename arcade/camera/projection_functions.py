@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from math import pi, tan
 
 from pyglet.math import Mat4, Vec2, Vec3, Vec4
@@ -125,6 +123,15 @@ def project_orthographic(
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec2:
+    """
+    Project a world coordinate to a screen coordinate using an orthographic projection.
+
+    Args:
+        world_coordinate: The world coordinate to project.
+        viewport: The viewport of the camera.
+        view_matrix: The view matrix of the camera.
+        projection_matrix: The projection matrix of the camera.
+    """
     x, y, *_z = world_coordinate
     z = 0.0 if not _z else _z[0]
 
@@ -144,6 +151,15 @@ def unproject_orthographic(
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec3:
+    """
+    Unproject a screen coordinate to a world coordinate using an orthographic projection.
+
+    Args:
+        screen_coordinate: The screen coordinate to unproject.
+        viewport: The viewport of the camera.
+        view_matrix: The view matrix of the camera.
+        projection_matrix: The projection matrix of the camera.
+    """
     x, y, *_z = screen_coordinate
     z = 0.0 if not _z else _z[0]
 
@@ -165,6 +181,15 @@ def project_perspective(
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec2:
+    """
+    Project a world coordinate to a screen coordinate using a perspective projection.
+
+    Args:
+        world_coordinate: The world coordinate to project.
+        viewport: The viewport of the camera.
+        view_matrix: The view matrix of the camera.
+        projection_matrix: The projection matrix of the camera.
+    """
     x, y, *_z = world_coordinate
     z = 1.0 if not _z else _z[0]
 
@@ -188,6 +213,15 @@ def unproject_perspective(
     view_matrix: Mat4,
     projection_matrix: Mat4,
 ) -> Vec3:
+    """
+    Unproject a screen coordinate to a world coordinate using a perspective projection.
+
+    Args:
+        screen_coordinate: The screen coordinate to unproject.
+        viewport: The viewport of the camera.
+        view_matrix: The view matrix of the camera.
+        projection_matrix: The projection matrix of
+    """
     x, y, *_z = screen_coordinate
     z = 1.0 if not _z else _z[0]
 

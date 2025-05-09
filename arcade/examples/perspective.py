@@ -112,7 +112,7 @@ class GameView(arcade.View):
         # Create a 2D camera for rendering to the fbo
         # by setting the camera's render target it will automatically
         # size and position itself correctly
-        self.offscreen_cam = arcade.camera.Camera2D(
+        self.offscreen_cam = arcade.Camera2D(
             render_target=self.fbo
         )
 
@@ -123,7 +123,7 @@ class GameView(arcade.View):
             (1.0, 0.0, 0.0), (0, 0, 3), 180 * self.window.time
         )
         view_data.forward, view_data.up = arcade.camera.grips.look_at(view_data, (0.0, 0.0, 0.0))
-        print(view_data)
+        # print(view_data)
 
 
     def on_draw(self):

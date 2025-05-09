@@ -57,7 +57,7 @@ class TextureArray:
         dtype:
             The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
         data:
-            The texture data (optional). Can be bytes or any object supporting
+            The texture data. Can be bytes or any object supporting
             the buffer protocol.
         filter:
             The minification/magnification filter of the texture
@@ -662,7 +662,7 @@ class TextureArray:
                 :class:`~arcade.gl.Buffer` or buffer protocol object with data to write.
             level:
                 The texture level to write (LoD level, now layer)
-            viewport (optional):
+            viewport:
                 The area of the texture to write. Should be a 3 or 5-component tuple
                 `(x, y, layer, width, height)` writes to an area of a single layer.
                 If not provided the entire texture is written to.

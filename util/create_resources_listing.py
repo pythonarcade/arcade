@@ -5,8 +5,6 @@ Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
 # fmt: off
 # ruff: noqa
-from __future__ import annotations
-
 import copy
 import html
 import re
@@ -268,13 +266,13 @@ def do_heading(
         ref_target: ``True`` to auto-generate it or a str to use a specific one.
     """
     out.write("\n")
-    print(f"doing heading: {heading_text!r} {relative_heading_level}")
+    log.info(f"doing heading: {heading_text!r} {relative_heading_level}")
     num_headings = len(headings_lookup)
 
     if ref_target is True:
         ref_target = f"resources-{heading_text}.rst"
     if ref_target:
-        print(f"   writing ref target {repr(heading_text)}")
+        log.info(f"   writing ref target {repr(heading_text)}")
         out.write(f".. _{ref_target.lower()}:\n\n")
 
     if relative_heading_level >= num_headings:
@@ -391,9 +389,9 @@ def process_resource_directory(out, dir: Path):
         file_list = filter_dir(path, keep=is_unskipped_file)
         num_files = len(file_list)
         if num_files <= 0:
-            print(f" SKIP: No files... {num_files}")
+            log.info(f" SKIP: No files... {num_files}")
         else:
-            print("  HAS FILES!")
+            log.info("  HAS FILES!")
             handle_raw = path_as_resource_handle(path, suffix="/")
             config: HandleLevelConfigDict = RESOURCE_HANDLE_CONFIGS.get(handle_raw, {})
             resource_handle = handle_raw.removesuffix('./')
@@ -410,28 +408,31 @@ def process_resource_directory(out, dir: Path):
                 handle_steps_wholes.append(
                     f"{handle_steps_wholes[-1]}{handle_step_whole}/")
 
-            print("  Subdir Config:")
+            log.info("  Subdir Config:")
             _l = locals()
             for k in filter(lambda _k: 'handle' in _k and('steps' in _k or _k.count('_') <2), _l.keys()):
-                print(f"    {k} : {_l.get(k, None)!r}" if k else '')
+                log.info(f"    {k} : {_l.get(k, None)!r}" if k else '')
 
             # Process headings and render any new ones we haven't seen
             for heading_level, handle_step_whole in enumerate(handle_steps_wholes, start=0):
-                print("  heading check", (heading_level, handle_step_whole))
+                log.info("  heading check", (heading_level, handle_step_whole))
                 if handle_step_whole in SKIP_HANDLES:
-                    print("    skipping excluded")
+                    log.info("    skipping excluded")
                     continue
                 if handle_step_whole in visited_headings:
-                    print("    skipping visited")
+                    log.info("    skipping visited")
                     continue
                 visited_headings.add(handle_step_whole)
 
                 local_config = RESOURCE_HANDLE_CONFIGS.get(handle_step_whole, {})
                 local_heading_config = local_config.get('heading', {})
 
-                print("proceeding...",
-                      "\n   config         ", local_config,
-                      "\n   heading_config ", local_heading_config, sep = "")
+                log.info(
+                    ("proceeding... "
+                      f"\n   config         {local_config}", 
+                      f"\n   heading_config {local_heading_config}"
+                    )
+                )
 
                 # Heading config fetch and write
                 use_level = local_heading_config.get('level', heading_level)
@@ -444,9 +445,9 @@ def process_resource_directory(out, dir: Path):
 
                 for k, v in locals().items():
                     if k.startswith("use_"):
-                        print(repr(k), ":", repr(v))
+                        log.info("%s : %s", repr(k), repr(v))
 
-                print(f"  got target: {use_target!r}")
+                log.info(f"  got target: {use_target!r}")
                 do_heading(out, use_level, use_value, ref_target=use_target)
                 out.write(f"\n.. comment `{handle_step_whole!r}``\n\n")
 
@@ -550,7 +551,7 @@ class BrittleFontData(NamedTuple):
         face_name_pieces = (face_name_parts.get("face_name") or '').split('_')
 
         raw_name = ' '.join(face_name_pieces)
-        print(face_name_parts)
+        log.info(face_name_parts)
 
         styles = tuple(BRITTLE_CAP_WORD_REGEX.findall(
             face_name_parts.get('styles', None) or ''))
@@ -637,16 +638,81 @@ def do_filetile(out, suffix: str | None = None, state: str = None):
         p = FILETILE_DIR / f"type-{suffix.strip('.')}.png"
         log.info(f" FILETILE: {p}")
         if p.exists():
-            print(f"    KNOWN! {p.name!r}")
+            log.info(f"    KNOWN! {p.name!r}")
             name = p.name
         else:
             name = f"type-unknown.png"
-            print("    ... unknown :(")
+            log.info("    ... unknown :(")
     else:
         name = "state-error.png"
     out.write(indent(f"        ",
                      f".. raw:: html\n\n"
                      f"   <img class=\"resource-thumb\" src=\"{src_kludge('/_static/filetiles/' + name)}\"/>\n\n"))
+
+
+# pending: a fix for Pillow / Sphinx interactions?
+def read_image_size(path: Path | str) -> tuple[int, int]:
+    """Get the size of a raster image and close the file.
+
+    This function ensures Sphinx does not break ``with``
+    blocks using  :py:func:`PIL.Image.open`:
+
+    Pillow makes assumptions about streams which Sphinx
+    may interfere with:
+
+    #. Pillow assumes things about stream read / write
+    #. Sphinx sometimes changes stream read / write global
+    #. This makes :py:func:`PIL.Image.open` fail to close files
+    #. Python 3.11+ reports unclosed files with warning
+
+    This is where the problem begins:
+
+    * When nitpicky mode is off, the logs are filled with noise
+    * When it is on, build can break
+
+    The fix below is good-enough to get build running. To dive
+    deper, start with these:
+
+    #. Pillow dislikes things which alter stream read/write
+       (See https://github.com/python-pillow/Pillow/issues/2760)
+    #. Sphinx overrides logging stream handling
+       (See https://www.sphinx-doc.org/en/master/extdev/logging.html#sphinx.util.logging.getLogger)
+
+    Args:
+        path: A path to an image file to read the size of.
+
+    Returns:
+        A ``(width, height)`` tuple of the image size.
+    """
+    # Isolating this in a function prevents Sphinx and other
+    # "magic" stream things from breaking the context manager.
+    # If you care to investigate, see the docstring's links.
+    with PIL.Image.open(path) as im:
+        return im.size
+
+
+def read_size_info(path: Path) -> str:
+    """Cleanliness wrapper for reading image sizes.
+
+    #. SVGs say they are SVGs
+    #. Raster graphics report pixel size
+    #. All else says it couldn't get size info.
+
+    Args:
+        path: A path to an image file.
+
+    Returns:
+        The formatted size info as either dimensions or
+        another status string.
+    """
+    if path.suffix == ".svg":
+        return "Scalable Vector Graphic"
+
+    elif (pair := read_image_size(path)):
+        width, height = pair
+        return f"{width} px x {height} px"
+
+    return "Could not read size info"
 
 
 def process_resource_files(
@@ -707,18 +773,12 @@ def process_resource_files(
             #out.write(indent("        ", tile_rst_code))
 
             size_info = None
-            if suffix == ".svg":
-                size_info = "Scalable Vector Graphic"
-            else:
-                try:
-                    im = PIL.Image.open(path)
-                    im_width, im_height = im.size
-                    size_info = f"{im_width}px x {im_height}px"
-                except Exception as e:
-                    log.warning(f"FAILED to read size info for {path}:\n {e}")
+            try:
+                size_info = read_size_info(path)
+            except Exception as e:
+                log.warning(f"FAILED to read size info for {path}:\n {e}")
 
-            if size_info is None:
-                size_info = "Could not read size info"
+
             parts.append(f"*({size_info})*\n")
             out.write(indent("        ", '\n'.join(parts)))
             out.write("\n\n")
@@ -838,7 +898,7 @@ def resources():
     process_resource_directory(out, RESOURCE_DIR)
 
     out.close()
-    print("Done creating resources.rst")
+    log.info("Done creating resources.rst")
 
 
 vfs = Vfs()

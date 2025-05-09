@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterable, TypeVar
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Any, TypeVar
 
 import arcade
 from arcade.color import BLACK, WHITE
 from arcade.exceptions import ReplacementWarning, warning
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.types import LRBT, RGBA255, AsFloat, Color, Point, Point2, Point2List, Rect, RGBOrA255
+from arcade.types import LRBT, AsFloat, Color, Point, Point2, Point2List, Rect, RGBOrA255
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
@@ -15,6 +16,9 @@ if TYPE_CHECKING:
 
 # Type from sprite that can be any BasicSprite or any subclass of BasicSprite
 SpriteType = TypeVar("SpriteType", bound="BasicSprite")
+
+# Same as SpriteType, for covariant type parameters
+SpriteType_co = TypeVar("SpriteType_co", bound="BasicSprite", covariant=True)
 
 
 @copy_dunders_unimplemented  # See https://github.com/pythonarcade/arcade/issues/2074
@@ -65,12 +69,20 @@ class BasicSprite:
         self._depth = 0.0
         self._texture = texture
         width, height = texture.size
-        self._scale = (scale, scale) if isinstance(scale, (float, int)) else (scale[0], scale[1])
+        self._scale = (scale, scale) if isinstance(scale, float | int) else (scale[0], scale[1])  # noqa: UP038
         self._width = width * self._scale[0]
         self._height = height * self._scale[1]
         self._visible = bool(visible)
         self._color: Color = WHITE
-        self.sprite_lists: list["SpriteList"] = []
+
+        # In a more powerful type system, this would be typed as
+        # list[SpriteList[? super Self]]
+        # i.e., a list of SpriteList's with varying type arguments, but where
+        # each of those type arguments is known to be a supertype of Self.
+        # All changes to this list should go through the pair of methods
+        # register_sprite_list, _unregister_sprite_list.
+        # They ensure that the above typing invariant is preserved.
+        self.sprite_lists: list[SpriteList[Any]] = []
         """The sprite lists this sprite is a member of"""
 
         # Core properties we don't use, but spritelist expects it
@@ -281,7 +293,7 @@ class BasicSprite:
 
     @scale.setter
     def scale(self, new_scale: Point2 | AsFloat):
-        if isinstance(new_scale, (float, int)):
+        if isinstance(new_scale, float | int):
             scale_x = new_scale
             scale_y = new_scale
 
@@ -445,10 +457,8 @@ class BasicSprite:
 
         except ValueError:  # It's always a length issue
             raise ValueError(
-                (
-                    f"{self.__class__.__name__},rgb takes 3 or 4 channel"
-                    f" colors, but got {len(color)} channels"
-                )
+                f"{self.__class__.__name__},rgb takes 3 or 4 channel"
+                f" colors, but got {len(color)} channels"
             )
 
         # Unpack to avoid index / . overhead & prep for repack
@@ -650,7 +660,7 @@ class BasicSprite:
 
         """
         # abort if the multiplier wouldn't do anything
-        if isinstance(scale_by, (float, int)):
+        if isinstance(scale_by, float | int):
             if scale_by == 1.0:
                 return
             factor_x = scale_by
@@ -747,7 +757,7 @@ class BasicSprite:
             if sprite_list.spatial_hash is not None:
                 sprite_list.spatial_hash.move(self)
 
-    def register_sprite_list(self, new_list: SpriteList) -> None:
+    def register_sprite_list(self: SpriteType, new_list: SpriteList[SpriteType]) -> None:
         """
         Register this sprite as belonging to a list.
 
@@ -755,16 +765,18 @@ class BasicSprite:
         """
         self.sprite_lists.append(new_list)
 
+    def _unregister_sprite_list(self: SpriteType, new_list: SpriteList[SpriteType]) -> None:
+        """Unregister this sprite as belonging to a list."""
+        self.sprite_lists.remove(new_list)
+
     def remove_from_sprite_lists(self) -> None:
         """Remove the sprite from all sprite lists."""
         while len(self.sprite_lists) > 0:
             self.sprite_lists[0].remove(self)
 
-        self.sprite_lists.clear()
-
     # ----- Drawing Methods -----
 
-    def draw_hit_box(self, color: RGBA255 = BLACK, line_thickness: float = 2.0) -> None:
+    def draw_hit_box(self, color: RGBOrA255 = BLACK, line_thickness: float = 2.0) -> None:
         """
         Draw a sprite's hit-box. This is useful for debugging.
 
@@ -774,10 +786,11 @@ class BasicSprite:
             line_thickness:
                 How thick the box should be
         """
+        converted_color = Color.from_iterable(color)
         points: Point2List = self.hit_box.get_adjusted_points()
         # NOTE: This is a COPY operation. We don't want to modify the points.
         points = tuple(points) + tuple(points[:-1])
-        arcade.draw_line_strip(points, color=color, line_width=line_thickness)
+        arcade.draw_line_strip(points, color=converted_color, line_width=line_thickness)
 
     # ---- Shortcut Methods ----
 

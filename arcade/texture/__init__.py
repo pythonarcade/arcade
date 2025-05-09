@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from .texture import Texture, ImageData
 from .spritesheet import SpriteSheet
 from .loading import (

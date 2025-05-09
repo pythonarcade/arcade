@@ -1,12 +1,10 @@
-from __future__ import annotations
-
 from pathlib import Path
 
 import PIL.Image
 
 from arcade.texture import Texture
 from arcade.resources import resolve
-from .base import BasicSprite, SpriteType
+from .base import BasicSprite, SpriteType, SpriteType_co
 from .sprite import Sprite
 from .mixins import PymunkMixin, PyMunk
 from .animated import (
@@ -71,6 +69,7 @@ def load_animated_gif(resource_name: str | Path) -> TextureAnimationSprite:
 
 __all__ = [
     "SpriteType",
+    "SpriteType_co",
     "BasicSprite",
     "Sprite",
     "PyMunk",

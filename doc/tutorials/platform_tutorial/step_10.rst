@@ -34,7 +34,7 @@ our score. This will just be an integer initially set to 0. We will set this in 
     self.score = 0
 
     # Within setup
-    self.gui_camera = arcade.SimpleCamera(viewport=(0, 0, width, height))
+    self.gui_camera = arcade.Camera2D()
     self.score = 0
 
 Now we can go into our ``on_update`` function, and when the player collects a coin, we can increment our score variable.

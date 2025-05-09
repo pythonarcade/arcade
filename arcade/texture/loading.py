@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pathlib import Path
 
 from PIL import Image
@@ -41,7 +39,7 @@ def load_texture(
     Args:
         file_path:
             Path to the image file
-        hit_box_algorithm (optional):
+        hit_box_algorithm:
             The hit box algorithm to use for this texture. If not specified
             the global default will be used.
         hash:

@@ -152,14 +152,14 @@ The first way to play it is passing it to :py:func:`arcade.play_sound`:
 We store the return value because it is a special object which lets us
 control this specific playback of the :py:class:`Sound` data.
 
-.. important:: You **must** pass a :py:class:`Sound`, not a path!
+.. important:: You **must** pass a :py:class:`~arcade.Sound`, not a path!
 
                If you pass :py:func:`arcade.play_sound` anything other
                than a :py:class:`Sound` or ``None``, it will raise a
                :py:class:`TypeError`.
 
-To avoid making this mistake, you can call the :py:class:`Sound`
-data's :py:meth:`Sound.play` method instead:
+To avoid making this mistake, you can call the :py:class:`~arcade.Sound`
+data's :py:meth:`~arcade.Sound.play` method instead:
 
 .. code-block:: python
 
@@ -179,7 +179,7 @@ Stopping Sounds
 Sound data vs Playbacks
 """""""""""""""""""""""
 
-Arcade uses the :py:mod:`pyglet` multimedia library to handle sound.
+Arcade uses the pyglet multimedia library to handle sound.
 
 Each playback of a :py:class:`Sound` has its own |pyglet Player| object
 to control it:
@@ -212,7 +212,7 @@ The first is to choose which function we'll pass its
      arcade.stop_sound(self.coin_playback_1)
 
 
-* The :py:class:`Sound` data's :py:meth:`Sound.stop`
+* The :py:class:`~arcade.Sound` data's :py:meth:`~arcade.Sound.stop`
   method:
 
   .. code-block:: python
@@ -366,7 +366,7 @@ There are more ways to alter playback than stopping. Some are more
 qualitative. Many of them can be applied to both new and ongoing sound
 data playbacks, but in different ways.
 
-Both :py:func:`play_sound` and :py:meth:`Sound.play` support the
+Both :py:func:`arcade.play_sound` and :py:meth:`arcade.Sound.play` support the
 following advanced arguments:
 
 .. list-table::
@@ -376,22 +376,22 @@ following advanced arguments:
      - Values
      - Meaning
 
-   * - :py:attr:`~pyglet.media.player.Player.volume`
+   * - volume
      - :py:class:`float` between ``0.0`` (silent) and
        ``1.0`` (full volume)
      - A scaling factor for the original audio file.
 
-   * - :py:attr:`~pyglet.media.player.Player.pan`
+   * - pan
      - A :py:class:`float` between ``-1.0`` (left)
        and ``1.0`` (right)
      - The left / right channel balance
 
-   * - ``loop``
+   * - loop
      - :py:class:`bool` (``True`` / ``False``)
      - Whether to restart playback automatically after finishing.
        [#streamingnoloop]_
 
-   * - ``speed``
+   * - speed
      - :py:class:`float` greater than ``0.0``
      - The scaling factor for playback speed (and pitch)
 
@@ -479,7 +479,7 @@ these keywords are similar or identical to those of properties on
 more:
 
 * :py:func:`arcade.play_sound`
-* :py:meth:`Sound.play`
+* :py:meth:`arcade.Sound.play`
 * :ref:`sound_speed_demo`
 
 .. _sound-compat:
@@ -695,7 +695,7 @@ The most obvious external library for audio handling is pyglet:
 * It offers far better control over media than Arcade
 * You may have already used parts of it directly for :ref:`sound-intermediate-playback`
 
-Note that :py:class:`Sound`'s :py:attr:`~Sound.source` attribute holds a
+Note that the :py:class:`arcade.Sound.source` attribute holds a
 :py:class:`pyglet.media.Source`. This means you can start off by cleanly
 using Arcade's resource and sound loading with pyglet features as needed.
 

@@ -10,12 +10,12 @@ import arcade
 
 def test_all():
     resources = arcade.resources.list_built_in_assets()
-    assert len(resources) == pytest.approx(770, abs=10)
+    assert len(resources) == pytest.approx(863, abs=10)
 
 
 def test_png():
     resources = arcade.resources.list_built_in_assets(extensions=(".png",))
-    assert len(resources) == pytest.approx(630, abs=10)
+    assert len(resources) == pytest.approx(723, abs=10)
 
 
 def test_audio():

@@ -3,10 +3,6 @@
 Placing them here prevents circular import issues.
 """
 
-from __future__ import annotations
-
-from typing import Union
-
 from typing_extensions import TypedDict
 
 
@@ -25,7 +21,7 @@ class RawBindBase(TypedDict):
     """
 
     input_type: int
-    input: Union[str, int]
+    input: str | int
 
 
 class RawActionMapping(RawBindBase):

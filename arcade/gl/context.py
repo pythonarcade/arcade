@@ -1029,7 +1029,7 @@ class Context:
             dtype:
                 The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
             data:
-                The texture data (optional). Can be ``bytes``
+                The texture data. Can be ``bytes``
                 or any object supporting the buffer protocol.
             wrap_x:
                 How the texture wraps in x direction
@@ -1114,7 +1114,7 @@ class Context:
         Args:
             size:
                 The size of the texture
-            data (optional):
+            data:
                 The texture data. Can be``bytes`` or any object
                 supporting the buffer protocol.
         """
@@ -1200,13 +1200,13 @@ class Context:
             )
 
         Args:
-            content (optional):
+            content:
                 List of :py:class:`~arcade.gl.BufferDescription`
-            index_buffer (optional):
+            index_buffer:
                 Index/element buffer
-            mode (optional):
+            mode:
                 The default draw mode
-            mode (optional):
+            mode:
                 The default draw mode
             index_element_size:
                 Byte size of a single index/element in the index buffer.
@@ -1241,23 +1241,23 @@ class Context:
         Args:
             vertex_shader:
                 vertex shader source
-            fragment_shader (optional):
+            fragment_shader:
                 fragment shader source
-            geometry_shader (optional):
+            geometry_shader:
                 geometry shader source
-            tess_control_shader (optional):
+            tess_control_shader:
                 tessellation control shader source
-            tess_evaluation_shader (optional):
+            tess_evaluation_shader:
                 tessellation evaluation shader source
-            common (optional):
+            common:
                 Common shader sources injected into all shaders
-            defines (optional):
+            defines:
                 Substitute #defines values in the source
-            varyings (optional):
+            varyings:
                 The name of the out attributes in a transform shader.
                 This is normally not necessary since we auto detect them,
                 but some more complex out structures we can't detect.
-            varyings_capture_mode (optional):
+            varyings_capture_mode:
                 The capture mode for transforms.
 
                 - ``"interleaved"`` means all out attribute will be written to a single buffer.
@@ -1326,7 +1326,7 @@ class Context:
         Args:
             source:
                 The glsl source
-            common (optional):
+            common:
                 Common / library source injected into compute shader
         """
         src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)

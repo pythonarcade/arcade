@@ -23,9 +23,9 @@ class ImageDataCache:
     """
 
     def __init__(self):
-        self._entries: dict[str, "ImageData"] = {}
+        self._entries: dict[str, ImageData] = {}
 
-    def put(self, name: str, image: "ImageData"):
+    def put(self, name: str, image: ImageData):
         """
         Add an image to the cache.
 

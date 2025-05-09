@@ -1,7 +1,6 @@
-from __future__ import annotations
-
 import struct
 from ctypes import POINTER, c_double, c_float, c_int, c_uint, cast
+from typing import Callable
 
 from pyglet import gl
 
@@ -175,8 +174,10 @@ class Uniform:
         self._array_length = array_length
         # Number of components (including per array entry)
         self._components = 0
-        #: The getter function configured for this uniform
-        #: The setter function configured for this uniform
+        self.getter: Callable
+        """The getter function configured for this uniform"""
+        self.setter: Callable
+        """The setter function configured for this uniform"""
         self._setup_getters_and_setters()
 
     @property

@@ -1,8 +1,6 @@
 #  type: ignore
-from __future__ import annotations
-
 import random
-from typing import Optional, Sequence
+from collections.abc import Sequence
 
 import pyglet
 from pyglet.input import Controller
@@ -28,9 +26,9 @@ class Player(arcade.Sprite):
     def __init__(
         self,
         texture,
-        walls: arcade.SpriteList,
+        walls: arcade.SpriteSequence[arcade.BasicSprite],
         input_manager_template: InputManager,
-        controller: Optional[pyglet.input.Controller] = None,
+        controller: pyglet.input.Controller | None = None,
         center_x: float = 0.0,
         center_y: float = 0.0,
         x_max_speed: float = 300.0,
@@ -78,11 +76,11 @@ class Game(arcade.Window):
         }
 
         self.players: list[Player | None] = []
-        self.player_list = arcade.SpriteList()
+        self.player_list: arcade.SpriteList[Player] = arcade.SpriteList()
         self.device_labels_batch = pyglet.graphics.Batch()
         self.player_device_labels: list[arcade.Text | None] = []
 
-        self.wall_list = arcade.SpriteList(use_spatial_hash=True)
+        self.wall_list: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList(use_spatial_hash=True)
 
         for x in range(0, self.width + 64, 64):
             wall = arcade.Sprite(":resources:images/tiles/grassMid.png", scale=0.5)

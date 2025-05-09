@@ -15,8 +15,6 @@ uniform vec4      iDate;                 // (year, month, day, time in seconds)
 uniform float     iSampleRate;           // sound sample rate (i.e., 44100)
 """
 
-from __future__ import annotations
-
 import string
 from datetime import datetime
 from pathlib import Path
@@ -432,7 +430,7 @@ class ShadertoyBuffer(ShadertoyBase):
             return
         self._size = size
         # Resize the internal texture and fbo + clear
-        self._texture.resize((self._size))
+        self._texture.resize(self._size)
         self._fbo.resize()
         self._fbo.clear()
 

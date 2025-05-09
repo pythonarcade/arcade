@@ -2,8 +2,6 @@
 Render into a sub-section of a texture atlas
 """
 
-from __future__ import annotations
-
 import math
 
 import arcade

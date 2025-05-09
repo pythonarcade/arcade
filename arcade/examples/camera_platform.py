@@ -68,7 +68,7 @@ class GameView(arcade.View):
         self.fps_message = None
 
         # Cameras
-        self.camera: arcade.camera.Camera2D = None
+        self.camera: arcade.Camera2D = None
         self.gui_camera = None
 
         self.camera_shake = None
@@ -131,7 +131,7 @@ class GameView(arcade.View):
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
 
-        self.camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
 
         self.camera_shake = arcade.camera.grips.ScreenShake2D(self.camera.view_data,
                                                               max_amplitude=12.5,

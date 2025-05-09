@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-from typing import Optional
-
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from typing_extensions import override
 
@@ -39,7 +35,7 @@ class UIDraggableMixin(UILayout):
         self.rect = self.rect.align_top(rect.top).align_left(rect.left)
 
     @override
-    def on_event(self, event) -> Optional[bool]:
+    def on_event(self, event) -> bool | None:
         """Handle dragging of the widget."""
         if isinstance(event, UIMousePressEvent):
             if event.button == arcade.MOUSE_BUTTON_LEFT and self.rect.point_in_rect(event.pos):
@@ -69,7 +65,7 @@ class UIMouseFilterMixin(UIWidget):
     """
 
     @override
-    def on_event(self, event) -> Optional[bool]:
+    def on_event(self, event) -> bool | None:
         """Catch all mouse events, that are inside this widget."""
         if super().on_event(event):
             return EVENT_HANDLED

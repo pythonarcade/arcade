@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import PIL.Image
 import PIL.ImageDraw
 import PIL.ImageOps
@@ -27,10 +25,10 @@ def make_circle_texture(
             Diameter of the circle and dimensions of the square :class:`Texture` returned.
         color:
             Color of the circle as a :py:class:`~arcade.types.Color` instance a 3 or 4 tuple.
-        name (optional):
+        name:
             A unique name for the texture. If not provided, a name will be generated.
             This is used for caching and unique identifier for texture atlases.
-        hit_box_algorithm (optional):
+        hit_box_algorithm:
             The hit box algorithm to use for this texture. If not provided, the default
             hit box algorithm will be used.
     """
@@ -65,10 +63,10 @@ def make_soft_circle_texture(
             Alpha value of the circle at its center.
         outer_alpha:
             Alpha value of the circle at its edges.
-        name (optional):
+        name:
             A unique name for the texture. If not provided, a name will be generated.
             This is used for caching and unique identifier for texture atlases.
-        hit_box_algorithm (optional):
+        hit_box_algorithm:
             The hit box algorithm to use for this texture. If not provided, the default
             hit box algorithm will be used.
     """
@@ -125,7 +123,7 @@ def make_soft_square_texture(
             Alpha value of the square at its center.
         outer_alpha:
             Alpha value of the square at its edges.
-        name (optional):
+        name:
             A unique name for the texture. If not provided, a name will be generated.
             This is used for caching and unique identifier for texture atlases.
     """

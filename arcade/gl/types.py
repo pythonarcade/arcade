@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import re
 from typing import Iterable, Sequence, Union
 
@@ -23,8 +21,8 @@ BlendFunction: TypeAlias = Union[
     tuple[PyGLenum, PyGLenum], tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
 ]
 
-# Depth compare functions
-compare_funcs = {
+#: Depth compare functions
+compare_funcs: dict[str | None, int] = {
     None: gl.GL_NONE,
     "<=": gl.GL_LEQUAL,
     "<": gl.GL_LESS,
@@ -36,8 +34,8 @@ compare_funcs = {
     "1": gl.GL_ALWAYS,
 }
 
-# Swizzle conversion lookup
-swizzle_enum_to_str = {
+#: Swizzle conversion lookup
+swizzle_enum_to_str: dict[int, str] = {
     gl.GL_RED: "R",
     gl.GL_GREEN: "G",
     gl.GL_BLUE: "B",
@@ -45,7 +43,9 @@ swizzle_enum_to_str = {
     gl.GL_ZERO: "0",
     gl.GL_ONE: "1",
 }
-swizzle_str_to_enum = {
+
+#: Swizzle conversion lookup
+swizzle_str_to_enum: dict[str, int] = {
     "R": gl.GL_RED,
     "G": gl.GL_GREEN,
     "B": gl.GL_BLUE,
@@ -62,7 +62,7 @@ _int_base_format = (
     gl.GL_RGB_INTEGER,
     gl.GL_RGBA_INTEGER,
 )
-# format: (base_format, internal_format, type, size)
+#: Pixel format lookup (base_format, internal_format, type, size)
 pixel_formats = {
     # float formats
     "f1": (
@@ -124,7 +124,7 @@ pixel_formats = {
 }
 
 
-# String representation of a shader type
+#: String representation of a shader types
 SHADER_TYPE_NAMES = {
     gl.GL_VERTEX_SHADER: "vertex shader",
     gl.GL_FRAGMENT_SHADER: "fragment shader",
@@ -133,6 +133,7 @@ SHADER_TYPE_NAMES = {
     gl.GL_TESS_EVALUATION_SHADER: "tessellation evaluation shader",
 }
 
+#: Lookup table for OpenGL type names
 GL_NAMES = {
     gl.GL_HALF_FLOAT: "GL_HALF_FLOAT",
     gl.GL_FLOAT: "GL_FLOAT",
@@ -154,7 +155,7 @@ def gl_name(gl_type: PyGLenum | None) -> str | PyGLenum | None:
 
 
 class AttribFormat:
-    """ "
+    """
     Represents a vertex attribute in a BufferDescription / Program.
     This is attribute metadata used when attempting to map vertex
     shader inputs.
@@ -166,9 +167,9 @@ class AttribFormat:
             The OpenGL type such as GL_FLOAT, GL_HALF_FLOAT etc.
         bytes_per_component:
             Number of bytes for a single component
-        offset (optional):
+        offset:
             Offset for BufferDescription
-        location (optional):
+        location:
             Location for program attribute
     """
 
@@ -191,11 +192,17 @@ class AttribFormat:
         location=0,
     ):
         self.name = name
+        """The name of the attribute in the program"""
         self.gl_type = gl_type
+        """The OpenGL type of the attribute"""
         self.components = components
+        """Number of components for this attribute (1, 2, 3 or 4)"""
         self.bytes_per_component = bytes_per_component
+        """How many bytes for a single component"""
         self.offset = offset
+        """Offset of the attribute in the buffer"""
         self.location = location
+        """Location of the attribute in the program"""
 
     @property
     def bytes_total(self) -> int:
@@ -227,7 +234,7 @@ class BufferDescription:
     be used once for the whole geometry. The geometry will be repeated a number of
     times equal to the number of items in the Buffer.
 
-    Example::
+    .. code-block:: python
 
         # Describe my_buffer
         # It contains two floating point numbers being a 2d position
@@ -386,7 +393,7 @@ class BufferDescription:
 
 class TypeInfo:
     """
-    Describes an opengl type
+    Describes an opengl type.
 
     Args:
         name:
@@ -407,13 +414,19 @@ class TypeInfo:
         self, name: str, enum: GLenumLike, gl_type: PyGLenum, gl_size: int, components: int
     ):
         self.name = name
+        """The string representation of this type"""
         self.enum = enum
+        """The OpenEL enum of this type"""
         self.gl_type = gl_type
+        """The base OpenGL data type"""
         self.gl_size = gl_size
+        """The size of the base OpenGL data type"""
         self.components = components
+        """The number of components (1, 2, 3 or 4)"""
 
     @property
     def size(self) -> int:
+        """The total size of this type in bytes"""
         return self.gl_size * self.components
 
     def __repr__(self) -> str:
@@ -515,7 +528,8 @@ class GLTypes:
     }
 
     @classmethod
-    def get(cls, enum: int):
+    def get(cls, enum: int) -> TypeInfo:
+        """Get the TypeInfo for a given"""
         try:
             return cls.types[enum]
         except KeyError:

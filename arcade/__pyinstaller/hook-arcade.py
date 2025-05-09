@@ -10,8 +10,6 @@ For a walk through of building an Arcade application with pyinstaller see:
 https://api.arcade.academy/en/latest/tutorials/bundling_with_pyinstaller/index.html
 """
 
-from __future__ import annotations
-
 from importlib.util import find_spec
 from pathlib import Path
 

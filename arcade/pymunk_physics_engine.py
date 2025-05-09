@@ -2,11 +2,9 @@
 Pymunk Physics Engine
 """
 
-from __future__ import annotations
-
 import logging
 import math
-from typing import Callable
+from collections.abc import Callable
 
 import pymunk
 from pyglet.math import Vec2
@@ -501,6 +499,15 @@ class PymunkPhysicsEngine:
         physics_object.body.position = position
 
     def set_rotation(self, sprite: Sprite, rotation: float) -> None:
+        """
+        Set the rotation of the sprite
+
+        Args:
+            sprite:
+                A sprite known to the physics engine.
+            rotation:
+                The angle in degrees (clockwise).
+        """
         physics_object = self.get_physics_object(sprite)
         if physics_object.body is None:
             raise PymunkException(

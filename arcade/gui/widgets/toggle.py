@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-from typing import Optional
-
 from PIL import ImageEnhance
 from typing_extensions import override
 
@@ -42,8 +38,8 @@ class UITextureToggle(UIInteractiveWidget):
         y: float = 0,
         width: float = 100,
         height: float = 50,
-        on_texture: Optional[Texture] = None,
-        off_texture: Optional[Texture] = None,
+        on_texture: Texture | None = None,
+        off_texture: Texture | None = None,
         value=False,
         size_hint=None,
         size_hint_min=None,

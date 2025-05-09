@@ -1,8 +1,6 @@
 """Constructs, are prepared widget combinations, you can use for common use-cases"""
 
-from __future__ import annotations
-
-from typing import Any, Optional
+from typing import Any
 
 import arcade
 from arcade import uicolor
@@ -140,8 +138,8 @@ class UIButtonRow(UIBoxLayout):
         vertical: bool = False,
         align: str = "center",
         size_hint: Any = (0, 0),
-        size_hint_min: Optional[Any] = None,
-        size_hint_max: Optional[Any] = None,
+        size_hint_min: Any | None = None,
+        size_hint_max: Any | None = None,
         space_between: int = 10,
         button_factory: type = UIFlatButton,
         **kwargs,

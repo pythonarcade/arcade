@@ -1,6 +1,7 @@
 """
 Quick and dirty system measuring differences between two sprite classes.
 """
+
 import gc
 import math
 import timeit
@@ -17,9 +18,19 @@ N = 100
 MEASUREMENT_CONFIG = [
     {"name": "populate", "number": N, "measure_method": "populate", "post_methods": ["flush"]},
     {"name": "scale_set", "number": N, "measure_method": "scale_set", "post_methods": []},
-    {"name": "scale_set_uniform", "number": N, "measure_method": "scale_set_uniform", "post_methods": []},
+    {
+        "name": "scale_set_uniform",
+        "number": N,
+        "measure_method": "scale_set_uniform",
+        "post_methods": [],
+    },
     {"name": "scale_mult", "number": N, "measure_method": "scale_mult", "post_methods": []},
-    {"name": "scale_mult_uniform", "number": N, "measure_method": "scale_mult_uniform", "post_methods": []},
+    {
+        "name": "scale_mult_uniform",
+        "number": N,
+        "measure_method": "scale_mult_uniform",
+        "post_methods": [],
+    },
 ]
 
 
@@ -94,6 +105,7 @@ class SpriteCollection:
 class SpriteCollectionA(SpriteCollection):
     sprite_type = SpriteA
 
+
 class SpriteCollectionB(SpriteCollection):
     sprite_type = SpriteB
 
@@ -138,11 +150,11 @@ def main():
     a = SpriteCollectionA()
     b = SpriteCollectionB()
 
-    m1 = measure_sprite_collection(a)
+    _ = measure_sprite_collection(a)
     gc_until_nothing()
-    m2 = measure_sprite_collection(b)
+    _ = measure_sprite_collection(b)
     # FIXME: Compare measurements
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

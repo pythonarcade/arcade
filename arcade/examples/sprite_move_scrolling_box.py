@@ -61,8 +61,8 @@ class GameView(arcade.View):
         self.up_pressed = False
         self.down_pressed = False
 
-        self.camera_sprites = arcade.camera.Camera2D()
-        self.camera_gui = arcade.camera.Camera2D()
+        self.camera_sprites = arcade.Camera2D()
+        self.camera_gui = arcade.Camera2D()
 
     def setup(self):
         """ Set up the game and initialize the variables. """

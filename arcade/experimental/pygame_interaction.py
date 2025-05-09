@@ -13,8 +13,6 @@ but should work with any recent version of Pygame.
 
 """
 
-from __future__ import annotations
-
 import math
 
 import pygame  # type: ignore

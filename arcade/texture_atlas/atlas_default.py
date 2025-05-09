@@ -2,15 +2,15 @@ from __future__ import annotations
 
 import contextlib
 import copy
+from collections.abc import Sequence
 
 # import logging
 # import time
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    Sequence,
 )
-from weakref import WeakSet, WeakValueDictionary, finalize
+from weakref import WeakSet, WeakValueDictionary, finalize, ref
 
 import PIL.Image
 from PIL import Image, ImageDraw
@@ -87,11 +87,11 @@ class DefaultTextureAtlas(TextureAtlasBase):
             The number of edge pixels to repeat around images in the atlas.
             This kind of padding is important to avoid edge artifacts.
             Default is 1 pixel.
-        textures (optional):
+        textures:
             Optional sequence of textures to add to the atlas on creation
         auto_resize:
             Automatically resize the atlas when full. Default is ``True``.
-        ctx (optional):
+        ctx:
             The context for this atlas (will use window context if left empty)
         capacity:
             The number of textures the atlas keeps track of.
@@ -356,14 +356,25 @@ class DefaultTextureAtlas(TextureAtlasBase):
         self._image_ref_count.inc_ref(texture.image_data)
 
         if create_finalizer:
-            ref = finalize(
+            atlas_ref = ref(self)
+
+            # NOTE: The finalizer needs to be completely decoupled from the atlas
+            #       or it will self-reference and not die unless all the textures in it
+            #       are removed. This lead to leaking orphaned atlases when you have
+            #       pre-loaded shared textures in multiple atlases.
+            def finalizer_callback(atlas_name, hash):
+                atlas = atlas_ref()
+                if atlas is not None:
+                    atlas._remove_texture_by_identifiers(atlas_name, hash)
+
+            finalizer_ref = finalize(
                 texture,
-                self._remove_texture_by_identifiers,
+                finalizer_callback,
                 texture.atlas_name,
                 texture.image_data.hash,
             )
             # Don't bother removing texture on program exit
-            ref.atexit = False
+            finalizer_ref.atexit = False
             self._finalizers_created += 1
 
         self._textures_added += 1
@@ -412,7 +423,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         return slot, texture_region
 
-    def _allocate_image(self, image_data: "ImageData") -> tuple[int, int, int, AtlasRegion]:
+    def _allocate_image(self, image_data: ImageData) -> tuple[int, int, int, AtlasRegion]:
         """
         Attempts to allocate space for an image in the atlas or
         update the existing space for the image.
@@ -557,7 +568,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         self._textures_removed += 1
 
-    def update_texture_image(self, texture: "Texture"):
+    def update_texture_image(self, texture: Texture):
         """
         Updates the internal image of a texture in the atlas texture.
         The new image needs to be the exact same size as the original
@@ -600,7 +611,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         return self._texture_regions[atlas_name]
 
-    def get_texture_id(self, texture: "Texture") -> int:
+    def get_texture_id(self, texture: Texture) -> int:
         """
         Get the internal id for a Texture in the atlas
 
@@ -609,7 +620,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         return self._texture_uvs.get_slot_or_raise(texture.atlas_name)
 
-    def has_texture(self, texture: "Texture") -> bool:
+    def has_texture(self, texture: Texture) -> bool:
         """
         Check if a texture is already in the atlas.
 
@@ -618,7 +629,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         return texture in self._textures
 
-    def has_unique_texture(self, texture: "Texture") -> bool:
+    def has_unique_texture(self, texture: Texture) -> bool:
         """
         Check if the atlas already have a texture with the
         same image data and vertex order
@@ -778,7 +789,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
     @contextlib.contextmanager
     def render_into(
         self,
-        texture: "Texture",
+        texture: Texture,
         projection: tuple[float, float, float, float] | None = None,
     ):
         """
@@ -831,7 +842,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
                 fbo.viewport = 0, 0, *self._fbo.size
         prev_camera.use()
 
-    def read_texture_image_from_atlas(self, texture: "Texture") -> Image.Image:
+    def read_texture_image_from_atlas(self, texture: Texture) -> Image.Image:
         """
         Read the pixel data for a texture directly from the atlas texture on the GPU.
         The contents of this image can be altered by rendering into the atlas and
@@ -852,7 +863,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         data = self.fbo.read(viewport=viewport, components=4)
         return Image.frombytes("RGBA", (region.width, region.height), data)
 
-    def update_texture_image_from_atlas(self, texture: "Texture") -> None:
+    def update_texture_image_from_atlas(self, texture: Texture) -> None:
         """
         Update the Arcade Texture's internal image with the pixel data content
         from the atlas texture on the GPU. This can be useful if you render

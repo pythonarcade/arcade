@@ -4,8 +4,6 @@ Adapted from:
 https://observablehq.com/@jobleonard/gaussian-kernel-calculater
 """
 
-from __future__ import annotations
-
 import math
 
 SQRT2 = math.sqrt(2)

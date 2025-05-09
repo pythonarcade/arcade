@@ -5,7 +5,7 @@
 ShapeElementList Explanation
 ============================
 
-If you are drawing a lot of items on your screen, the :class:`arcade.ShapeElementList` can
+If you are drawing a lot of items on your screen, the :class:`arcade.shape_list.ShapeElementList` can
 speed your drawing. How does it work?
 
 Say we have a screen with about 9,600 rectangles:

@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from .sprite_list import SpriteList
+from .sprite_list import SpriteList, SpriteSequence
 from .spatial_hash import SpatialHash
 from .collision import (
     get_distance_between_sprites,
@@ -16,6 +14,7 @@ from .collision import (
 
 __all__ = [
     "SpriteList",
+    "SpriteSequence",
     "SpatialHash",
     "get_distance_between_sprites",
     "get_closest_sprite",

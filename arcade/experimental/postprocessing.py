@@ -2,8 +2,6 @@
 Post-processing shaders.
 """
 
-from __future__ import annotations
-
 from arcade import get_window
 from arcade.context import ArcadeContext
 from arcade.experimental.gaussian_kernel import gaussian_kernel

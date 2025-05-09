@@ -1,7 +1,5 @@
-from __future__ import annotations
-
 from array import array
-from typing import Iterator, Sequence
+from collections.abc import Iterator, Sequence
 
 from arcade import gl
 from arcade.color import WHITE
@@ -124,19 +122,23 @@ class LightLayer(RenderTargetTexture):
 
     @property
     def diffuse_texture(self):
+        """The diffuse texture"""
         return self.texture
 
     @property
     def light_texture(self):
+        """The light texture"""
         return self._light_buffer.color_attachments[0]
 
     def resize(self, width, height):
+        """Resize the light layer"""
         super().resize(width, height)
         self._light_buffer = self.ctx.framebuffer(
             color_attachments=self.ctx.texture((width, height), components=3)
         )
 
     def clear(self):
+        """Clear the light layer"""
         super().clear()
         self._light_buffer.clear()
 
@@ -147,6 +149,7 @@ class LightLayer(RenderTargetTexture):
         self._rebuild = True
 
     def extend(self, lights: Sequence[Light]):
+        """Add a list of lights to the layer"""
         for light in lights:
             self.add(light)
 

@@ -1,5 +1,4 @@
 #  type: ignore
-
 from __future__ import annotations
 
 from arcade.future.input import inputs
@@ -43,7 +42,7 @@ class InputMapping:
         except KeyError:
             raise TypeError(
                 f"Got {input} input specified for ActionMapping must be of of: "
-                f"{', '.join((t.__name__ for t in inputs.CLASS_TO_INPUT_TYPE.keys()))}"
+                f"{', '.join(t.__name__ for t in inputs.CLASS_TO_INPUT_TYPE.keys())}"
             )
         self._input = input
 

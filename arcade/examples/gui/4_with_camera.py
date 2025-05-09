@@ -10,11 +10,8 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.4_with_camera
 """
 
-from __future__ import annotations
-
 import math
 import random
-from typing import Optional
 
 import arcade
 from arcade.gui import UIAnchorLayout, UIBoxLayout, UIFlatButton, UILabel, UIOnClickEvent, UIView
@@ -164,7 +161,7 @@ class MyCoinGame(UIView):
         self.sprites.draw()
         self.coins.draw()
 
-    def on_update(self, delta_time: float) -> Optional[bool]:
+    def on_update(self, delta_time: float) -> bool | None:
         if self._total_time > self._game_duration:
             # ad new UI label to show the end of the game
             game_over_text = self.ui.add(
@@ -244,7 +241,7 @@ class MyCoinGame(UIView):
 
         return False
 
-    def on_key_press(self, symbol: int, modifiers: int) -> Optional[bool]:
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
         self.keys.add(symbol)
 
         if symbol == arcade.key.ESCAPE:
@@ -254,7 +251,7 @@ class MyCoinGame(UIView):
 
         return False
 
-    def on_key_release(self, symbol: int, modifiers: int) -> Optional[bool]:
+    def on_key_release(self, symbol: int, modifiers: int) -> bool | None:
         if symbol in self.keys:
             self.keys.remove(symbol)
         return False

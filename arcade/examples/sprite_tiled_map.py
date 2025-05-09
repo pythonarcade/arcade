@@ -121,8 +121,8 @@ class GameView(arcade.View):
             self.player_sprite, walls, gravity_constant=GRAVITY
         )
 
-        self.camera = arcade.camera.Camera2D()
-        self.gui_camera = arcade.camera.Camera2D()
+        self.camera = arcade.Camera2D()
+        self.gui_camera = arcade.Camera2D()
 
         # Use the tilemap to limit the camera's position
         # we don't offset the max_y position to give a better experience.

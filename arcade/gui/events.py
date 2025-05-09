@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Any
 
@@ -238,3 +236,96 @@ class UIOnActionEvent(UIEvent):
     """
 
     action: Any
+
+
+@dataclass
+class UIControllerEvent(UIEvent):
+    """Base class for all UI controller events.
+
+    Args:
+        source: The controller that triggered the event.
+    """
+
+
+@dataclass
+class UIControllerConnectEvent(UIControllerEvent):
+    """Triggered when a controller is connected.
+
+    Args:
+        source: The controller that triggered the event.
+    """
+
+
+@dataclass
+class UIControllerDisconnectEvent(UIControllerEvent):
+    """Triggered when a controller is disconnected.
+
+    Args:
+        source: The controller that triggered the event.
+    """
+
+
+@dataclass
+class UIControllerStickEvent(UIControllerEvent):
+    """Triggered when a controller stick is moved.
+
+    Args:
+        name: The name of the stick.
+        vector: The value of the stick.
+    """
+
+    name: str
+    vector: Vec2
+
+
+@dataclass
+class UIControllerTriggerEvent(UIControllerEvent):
+    """Triggered when a controller trigger is moved.
+
+    Args:
+        name: The name of the trigger.
+        value: The value of the trigger.
+    """
+
+    name: str
+    value: float
+
+
+@dataclass
+class UIControllerButtonEvent(UIControllerEvent):
+    """Triggered when a controller button used.
+
+    Args:
+        button: The name of the button.
+    """
+
+    button: str
+
+
+@dataclass
+class UIControllerButtonPressEvent(UIControllerButtonEvent):
+    """Triggered when a controller button is pressed.
+
+    Args:
+        button: The name of the button.
+    """
+
+
+@dataclass
+class UIControllerButtonReleaseEvent(UIControllerButtonEvent):
+    """Triggered when a controller button is released.
+
+    Args:
+        button: The name of the button.
+    """
+
+
+@dataclass
+class UIControllerDpadEvent(UIControllerEvent):
+    """Triggered when a controller dpad is moved.
+
+    Args:
+        vector: The value of the dpad.
+    """
+
+    vector: Vec2

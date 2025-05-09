@@ -17,8 +17,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.6_size_hints
 """
 
-from __future__ import annotations
-
 import textwrap
 
 import arcade
@@ -100,7 +98,9 @@ class MyView(UIView):
         width_slider_box = center_box.add(UIBoxLayout(vertical=False, size_hint=(1, 0)))
         width_slider_box.add(UILabel("Modify size_hint:", bold=True))
         width_slider = width_slider_box.add(
-            arcade.gui.UISlider(min_value=0, max_value=10, value=0, size_hint=None, height=30)
+            arcade.gui.UISlider(
+                min_value=0, max_value=1, value=0, size_hint=None, height=30, step=0.1
+            )
         )
         width_value = width_slider_box.add(UILabel(bold=True))
 
@@ -118,17 +118,17 @@ class MyView(UIView):
 
         def update_size_hint_value(value: float):
             width_value.text = f"({value:.2f})"
-            dummy1.size_hint = (value / 10, 1)
-            dummy1.text = f"size_hint = ({value / 10:.2f}, 1)"
+            dummy1.size_hint = (value, 1)
+            dummy1.text = f"size_hint = ({value:.2f}, 1)"
 
-            dummy2.size_hint = (1 - value / 10, 1)
-            dummy2.text = f"size_hint = ({1 - value / 10:.2f}, 1)"
+            dummy2.size_hint = (1 - value, 1)
+            dummy2.text = f"size_hint = ({1 - value:.2f}, 1)"
 
         @width_slider.event("on_change")
         def on_change(event: UIOnChangeEvent):
             update_size_hint_value(event.new_value)
 
-        initial_value = 10
+        initial_value = 1
         width_slider.value = initial_value
         update_size_hint_value(initial_value)
 

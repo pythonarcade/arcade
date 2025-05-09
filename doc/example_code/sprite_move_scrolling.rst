@@ -5,7 +5,7 @@
 Move with a Scrolling Screen - Centered
 =======================================
 
-Using a :class:`arcade.Camera`, a program can easily scroll around a larger
+Using a :class:`arcade.Camera2D`, a program can easily scroll around a larger
 "world" while only showing part of it on the screen.
 
 If you are displaying a GUI or some other items that should NOT scroll, you'll

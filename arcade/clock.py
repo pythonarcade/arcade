@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 __all__ = (
     "Clock",
     "FixedClock",
@@ -97,6 +95,9 @@ class Clock:
 
     @property
     def max_deltatime(self) -> float | None:
+        """
+        The maximum deltatime that the clock will allow. If a large dt is passed into
+        """
         return self._max_deltatime
 
     @property

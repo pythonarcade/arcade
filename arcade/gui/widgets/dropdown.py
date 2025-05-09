@@ -1,21 +1,19 @@
-from __future__ import annotations
-
 from copy import deepcopy
-from typing import Optional, Union
 
 from pyglet.event import EVENT_HANDLED
 
 import arcade
 from arcade import uicolor
 from arcade.gui import UIEvent, UIMousePressEvent
-from arcade.gui.events import UIOnChangeEvent, UIOnClickEvent
+from arcade.gui.events import UIControllerButtonPressEvent, UIOnChangeEvent, UIOnClickEvent
+from arcade.gui.experimental.focus import UIFocusMixin
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets import UILayout, UIWidget
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout
 
 
-class _UIDropdownOverlay(UIBoxLayout):
+class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
     """Represents the dropdown options overlay.
 
     Currently only handles closing the overlay when clicked outside of the options.
@@ -28,15 +26,23 @@ class _UIDropdownOverlay(UIBoxLayout):
 
     def hide(self):
         """Hide the overlay."""
+        self.set_focus(None)
         if self.parent:
             self.parent.remove(self)
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         if isinstance(event, UIMousePressEvent):
             # Click outside of dropdown options
             if not self.rect.point_in_rect((event.x, event.y)):
                 self.hide()
                 return EVENT_HANDLED
+
+        if isinstance(event, UIControllerButtonPressEvent):
+            # TODO find a better and more generic way to handle controller events for this
+            if event.button == "b":
+                self.hide()
+                return EVENT_HANDLED
+
         return super().on_event(event)
 
 
@@ -111,8 +117,8 @@ class UIDropdown(UILayout):
         y: float = 0,
         width: float = 150,
         height: float = 30,
-        default: Optional[str] = None,
-        options: Optional[list[Union[str, None]]] = None,
+        default: str | None = None,
+        options: list[str | None] | None = None,
         primary_style=None,
         dropdown_style=None,
         active_style=None,
@@ -152,12 +158,12 @@ class UIDropdown(UILayout):
         self.register_event_type("on_change")
 
     @property
-    def value(self) -> Optional[str]:
+    def value(self) -> str | None:
         """Current selected option."""
         return self._value
 
     @value.setter
-    def value(self, value: Optional[str]):
+    def value(self, value: str | None):
         """Change the current selected option to a new option."""
         old_value = self._value
         self._value = value
@@ -188,17 +194,10 @@ class UIDropdown(UILayout):
                 )
             button.on_click = self._on_option_click
 
-    def _find_ui_manager(self):
-        # search tree for UIManager
-        parent = self.parent
-        while isinstance(parent, UIWidget):
-            #
-            parent = parent.parent
-
-        return parent if isinstance(parent, UIManager) else None
+        self._overlay.detect_focusable_widgets()
 
     def _show_overlay(self):
-        manager = self._find_ui_manager()
+        manager = self.get_ui_manager()
         if manager is None:
             raise Exception("UIDropdown could not find UIManager in its parents.")
 

@@ -1,15 +1,68 @@
-from __future__ import annotations
-
+from abc import abstractmethod
+from collections.abc import Set
 from math import trunc
-from typing import Generic
+from typing import Protocol
 
-from arcade.sprite import SpriteType
+from arcade.sprite import SpriteType, SpriteType_co
 from arcade.sprite.base import BasicSprite
 from arcade.types import IPoint, Point
 from arcade.types.rect import Rect
 
 
-class SpatialHash(Generic[SpriteType]):
+class ReadOnlySpatialHash(Protocol[SpriteType_co]):
+    """A read-only view of a :py:class:`.SpatialHash` which helps preserve safety.
+
+    This works like the read-only views of Python's built-in :py:class:`dict`
+    and other types. As an every-day user, it means that the underlying
+    `SpatialHash` may contain subclasses of the annotated type, but not
+    superclasses.
+
+    This ensures predicable behavior via type safety in cases where:
+
+    #. A spatial hash is annotated with a specific type
+    #. It is then manipulated outside the original context with a broader type
+
+    Advanced users who want more information on the specifics should see the
+    comments of :py:class:`~arcade.sprite_list.SpriteList`.
+    """
+
+    @abstractmethod
+    def get_sprites_near_sprite(self, sprite: BasicSprite) -> Set[SpriteType_co]:
+        """
+        Get all the sprites that are in the same buckets as the given sprite.
+
+        Args:
+            sprite: The sprite to check
+        """
+        ...
+
+    @abstractmethod
+    def get_sprites_near_point(self, point: Point) -> Set[SpriteType_co]:
+        """
+        Return sprites in the same bucket as the given point.
+
+        Args:
+            point: The point to check
+        """
+        ...
+
+    @abstractmethod
+    def get_sprites_near_rect(self, rect: Rect) -> Set[SpriteType_co]:
+        """
+        Return sprites in the same buckets as the given rectangle.
+
+        .. tip:: Use :py:mod:`arcade.types.rect`'s helper functions to create
+          rectangle objects!
+
+        Args:
+            rect:
+                The rectangle to check as a :py:class:`~arcade.types.rect.Rect`
+                object.
+        """
+        ...
+
+
+class SpatialHash(ReadOnlySpatialHash[SpriteType]):
     """A data structure best for collision checks with non-moving sprites.
 
     It subdivides space into a grid of squares, each with sides of length
@@ -106,12 +159,6 @@ class SpatialHash(Generic[SpriteType]):
         del self.buckets_for_sprite[sprite]
 
     def get_sprites_near_sprite(self, sprite: BasicSprite) -> set[SpriteType]:
-        """
-        Get all the sprites that are in the same buckets as the given sprite.
-
-        Args:
-            sprite: The sprite to check
-        """
         min_point = trunc(sprite.left), trunc(sprite.bottom)
         max_point = trunc(sprite.right), trunc(sprite.top)
 
@@ -128,23 +175,11 @@ class SpatialHash(Generic[SpriteType]):
         return close_by_sprites
 
     def get_sprites_near_point(self, point: Point) -> set[SpriteType]:
-        """
-        Return sprites in the same bucket as the given point.
-
-        Args:
-            point: The point to check
-        """
         hash_point = self.hash((trunc(point[0]), trunc(point[1])))
         # Return a copy of the set.
         return set(self.contents.setdefault(hash_point, set()))
 
     def get_sprites_near_rect(self, rect: Rect) -> set[SpriteType]:
-        """
-        Return sprites in the same buckets as the given rectangle.
-
-        Args:
-            rect: The rectangle to check (left, right, bottom, top)
-        """
         left, right, bottom, top = rect.lrbt
         min_point = trunc(left), trunc(bottom)
         max_point = trunc(right), trunc(top)

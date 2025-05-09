@@ -37,14 +37,14 @@ class GameView(arcade.View):
         super().__init__()
 
         # A Camera that can be used for scrolling the screen
-        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_sprites = arcade.Camera2D()
 
         # A rectangle that is used to constrain the camera's position.
         # we update it when we load the tilemap
         self.camera_bounds = self.window.rect
 
         # A non-scrolling camera that can be used to draw GUI elements
-        self.camera_gui = arcade.camera.Camera2D()
+        self.camera_gui = arcade.Camera2D()
 
         # The scene which helps draw multiple spritelists in order.
         self.scene = self.create_scene()

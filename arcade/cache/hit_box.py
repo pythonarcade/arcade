@@ -118,7 +118,7 @@ class HitBoxCache:
             with gzip.open(path, mode="rb") as fd:
                 data = json.loads(fd.read())
         else:
-            with open(path, mode="r") as fd:
+            with open(path) as fd:
                 data = json.loads(fd.read())
 
         for key, value in data.items():

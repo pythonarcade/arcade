@@ -70,8 +70,8 @@ class GameView(arcade.View):
             scale=PLAYER_SCALING,
         )
 
-        self.game_camera = arcade.camera.Camera2D()
-        self.gui_camera = arcade.camera.Camera2D()
+        self.game_camera = arcade.Camera2D()
+        self.gui_camera = arcade.Camera2D()
 
         self.fps_text = arcade.Text('FPS:', 10, 10, arcade.color.BLACK, 14)
         self.game_over_text = arcade.Text(

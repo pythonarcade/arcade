@@ -238,12 +238,12 @@ class RenderIndirect(arcade.Window):
         # to prove that partial rendering also works.
         # NOTE: These values can be skewed if vsync is enabled
         print(
-            (
+
                 f"[{method}] "
                 f"Pixels written = {self.query.samples_passed // 4}, "
                 f"Primitives Generated = {self.query.primitives_generated}, "
                 f"time = {self.query.time_elapsed / 1_000_000_000}s"
-            )
+
         )
 
     def on_update(self, delta_time: float):

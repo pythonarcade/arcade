@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import bisect
 import logging
 import math
@@ -27,7 +25,7 @@ class TextureKeyframe:
             Texture to display for this keyframe.
         duration:
             Duration in milliseconds to display this keyframe.
-        tile_id (optional):
+        tile_id:
             Tile ID for this keyframe (only used for tiled maps).
             This can be ignored when not using tiled maps.
     """

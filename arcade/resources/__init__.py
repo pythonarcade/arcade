@@ -1,7 +1,5 @@
-from __future__ import annotations
-
 from pathlib import Path
-from typing import Sequence
+from collections.abc import Sequence
 from arcade.exceptions import warning, ReplacementWarning
 
 #: The absolute path to this directory
@@ -38,7 +36,7 @@ def resolve_resource_path(path: str | Path) -> Path:
     If the path is a string it tries to resolve it as a resource handle
     or convert it to a Path object.
 
-    If the path is a Path object it will ``Path.resolve()`` it
+    If the path is a Path object it will :py:meth:`~pathlib.Path.resolve` it
     unless it's not absolute and return it.
 
     Example::
@@ -59,7 +57,7 @@ def resolve(path: str | Path) -> Path:
     If the path is a string it tries to resolve it as a resource handle
     or convert it to a Path object.
 
-    If the path is a Path object it will ``Path.resolve()`` it
+    If the path is a Path object it will :py:meth:`~pathlib.Path.resolve` it
     unless it's not absolute and return it.
 
     Example::
@@ -95,11 +93,9 @@ def resolve(path: str | Path) -> Path:
             else:
                 searched_paths = "\n".join(f"-> {p}" for p in reversed(paths))
                 raise FileNotFoundError(
-                    (
-                        f"Cannot locate resource '{resource}' using handle "
-                        f"'{handle}' in any of the following paths:\n"
-                        f"{searched_paths}"
-                    )
+                    f"Cannot locate resource '{resource}' using handle "
+                    f"'{handle}' in any of the following paths:\n"
+                    f"{searched_paths}"
                 )
 
             # Always convert into a Path object

@@ -1,26 +1,28 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional
+from collections.abc import Iterable
+from typing import TypeVar
 
 from pyglet.event import EVENT_UNHANDLED
 
 import arcade
 from arcade import XYWH
-from arcade.gui import (
-    Property,
-    Surface,
+from arcade.gui.events import (
     UIEvent,
-    UILayout,
     UIMouseDragEvent,
     UIMouseEvent,
     UIMouseMovementEvent,
     UIMousePressEvent,
     UIMouseReleaseEvent,
     UIMouseScrollEvent,
-    UIWidget,
-    bind,
 )
+from arcade.gui.property import Property, bind
+from arcade.gui.surface import Surface
+from arcade.gui.widgets import UIWidget
+from arcade.gui.widgets.layout import UILayout
 from arcade.types import LBWH
+
+W = TypeVar("W", bound="UIWidget")
 
 
 class UIScrollBar(UIWidget):
@@ -42,8 +44,6 @@ class UIScrollBar(UIWidget):
         self.with_border(color=arcade.uicolor.GRAY_CONCRETE)
         self.vertical = vertical
 
-        self._scroll_bar_size = 20
-
         bind(self, "_thumb_hover", self.trigger_render)
         bind(self, "_dragging", self.trigger_render)
         bind(scroll_area, "scroll_x", self.trigger_full_render)
@@ -51,7 +51,11 @@ class UIScrollBar(UIWidget):
         bind(scroll_area, "content_height", self.trigger_full_render)
         bind(scroll_area, "content_width", self.trigger_full_render)
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
+        # check if we are scrollable
+        if not self._scrollable():
+            return EVENT_UNHANDLED
+
         # detect if event is mouse down and inside the scroll thumb
         # if so, start dragging the thumb
         thumb_rect_relative = self._thumb_rect()
@@ -68,20 +72,20 @@ class UIScrollBar(UIWidget):
         # if so, update the scroll position
         if isinstance(event, UIMouseDragEvent) and self._dragging:
             sx, sy = event.pos - self.rect.bottom_left
-            sx -= self._scroll_bar_size / 2
-            sy -= self._scroll_bar_size / 2
+            sx -= self._scroll_bar_size() / 2
+            sy -= self._scroll_bar_size() / 2
 
             scroll_area = self.scroll_area
 
             if self.vertical:
-                available_track_size = self.content_height - self._scroll_bar_size
+                available_track_size = self.content_height - self._scroll_bar_size()
                 target_progress = 1 - sy / available_track_size
                 target_progress = max(0, min(1, target_progress))
 
                 scroll_range = scroll_area.surface.height - scroll_area.content_height
                 scroll_area.scroll_y = -target_progress * scroll_range
             else:
-                available_track_size = self.content_width - self._scroll_bar_size
+                available_track_size = self.content_width - self._scroll_bar_size()
                 target_progress = sx / available_track_size
                 target_progress = max(0, min(1, target_progress))
                 scroll_range = scroll_area.surface.width - scroll_area.content_width
@@ -97,6 +101,28 @@ class UIScrollBar(UIWidget):
 
         return EVENT_UNHANDLED
 
+    def _scroll_bar_size(self):
+        # based on: https://stackoverflow.com/a/16367035
+
+        content_size = (
+            self.scroll_area.surface.height if self.vertical else self.scroll_area.surface.width
+        )
+        view_size = (
+            self.scroll_area.content_height if self.vertical else self.scroll_area.content_width
+        )
+        ratio = view_size / content_size
+
+        scoll_range = self.content_height if self.vertical else self.content_width
+
+        return scoll_range * ratio
+
+    def _scrollable(self):
+        return (
+            self.scroll_area.surface.height - self.scroll_area.content_height
+            if self.vertical
+            else self.scroll_area.surface.width - self.scroll_area.content_width
+        ) > 0
+
     def _thumb_rect(self):
         """Calculate the rect of the thumb."""
         scroll_area = self.scroll_area
@@ -108,24 +134,26 @@ class UIScrollBar(UIWidget):
             else scroll_area.surface.width - scroll_area.content_width
         )
 
-        if scroll_range <= 0:
-            # content is smaller than the scroll area, no need for a thumb
-            return XYWH(0, 0, 0, 0)
+        if not self._scrollable():
+            # content is smaller than the scroll area, full size thumb
+            return LBWH(0, 0, self.content_width, self.content_height)
 
         scroll_progress = -scroll_value / scroll_range
 
         content_size = self.content_height if self.vertical else self.content_width
-        available_track_size = content_size - self._scroll_bar_size
+        available_track_size = content_size - self._scroll_bar_size()
 
         if self.vertical:
-            scroll_bar_y = self._scroll_bar_size / 2 + available_track_size * (1 - scroll_progress)
+            scroll_bar_y = self._scroll_bar_size() / 2 + available_track_size * (
+                1 - scroll_progress
+            )
             scroll_bar_x = self.content_width / 2
-            return XYWH(scroll_bar_x, scroll_bar_y, self.content_width, self._scroll_bar_size)
+            return XYWH(scroll_bar_x, scroll_bar_y, self.content_width, self._scroll_bar_size())
 
         else:
-            scroll_bar_x = self._scroll_bar_size / 2 + available_track_size * scroll_progress
+            scroll_bar_x = self._scroll_bar_size() / 2 + available_track_size * scroll_progress
             scroll_bar_y = self.content_height / 2
-            return XYWH(scroll_bar_x, scroll_bar_y, self._scroll_bar_size, self.content_height)
+            return XYWH(scroll_bar_x, scroll_bar_y, self._scroll_bar_size(), self.content_height)
 
     def do_render(self, surface: Surface):
         """Render the scroll bar."""
@@ -178,7 +206,7 @@ class UIScrollArea(UILayout):
         y: float = 0,
         width: float = 300,
         height: float = 300,
-        children: Iterable["UIWidget"] = tuple(),
+        children: Iterable[UIWidget] = tuple(),
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -210,7 +238,7 @@ class UIScrollArea(UILayout):
         bind(self, "scroll_x", self.trigger_full_render)
         bind(self, "scroll_y", self.trigger_full_render)
 
-    def add(self, child: "UIWidget", **kwargs):
+    def add(self, child: W, **kwargs) -> W:
         """Add a child to the widget."""
         if self._children:
             raise ValueError("UIScrollArea can only have one child")
@@ -218,7 +246,9 @@ class UIScrollArea(UILayout):
         super().add(child, **kwargs)
         self.trigger_full_render()
 
-    def remove(self, child: "UIWidget"):
+        return child
+
+    def remove(self, child: UIWidget):
         """Remove a child from the widget."""
         super().remove(child)
         self.trigger_full_render()
@@ -290,6 +320,7 @@ class UIScrollArea(UILayout):
             self.do_render_base(surface)
             self.do_render(surface)
             self._rendered = True
+            self._requires_render = False
 
         return rendered
 
@@ -309,7 +340,7 @@ class UIScrollArea(UILayout):
 
         return self.scroll_x, -normal_pos_y - self.scroll_y
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         """Handle scrolling of the widget."""
         if isinstance(event, UIMouseDragEvent) and not self.rect.point_in_rect(event.pos):
             return EVENT_UNHANDLED

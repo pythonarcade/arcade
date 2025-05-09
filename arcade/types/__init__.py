@@ -20,13 +20,12 @@ However, since the color types, aliases, and constants are all related,
 they go in the :py:mod:`arcade.types.color` submodule.
 """
 
-from __future__ import annotations
-
 # Don't lint import order since we have conditional compatibility shims
 # flake8: noqa: E402
 import sys
 from pathlib import Path
-from typing import Any, NamedTuple, Union, TYPE_CHECKING, TypeVar, Iterable, Protocol
+from typing import Any, NamedTuple, TYPE_CHECKING, TypeVar, Protocol, Union
+from collections.abc import Iterable
 
 from pytiled_parser import Properties
 
@@ -45,7 +44,7 @@ else:
     # use an ABC which registers virtual subclasses. This will not work
     # with ctypes.Array since virtual subclasses must be concrete.
     # See: https://peps.python.org/pep-0688/
-    BufferProtocol = Union[ByteString, memoryview, array, ctypes.Array]
+    BufferProtocol = ByteString | memoryview | array | ctypes.Array
 
 
 # Since it's used everywhere, we'll prevent partial submodule
@@ -145,7 +144,7 @@ __all__ = [
 _T = TypeVar("_T")
 
 
-OneOrIterableOf = Union[_T, Iterable[_T]]
+OneOrIterableOf = Union[_T, Iterable[_T]]  # noqa: UP007
 """Either an instance of something or an iterable of them.
 
 When writing loading code which is not performance critical,
@@ -227,9 +226,9 @@ class HasAddSubMul(Protocol[_T_contra, _T_co]):
 
 
 # Path handling
-PathLike = Union[str, Path, bytes]
+PathLike = str | Path | bytes
 _POr = TypeVar("_POr")  # Allows PathOr[TypeNameHere] syntax
-PathOr = Union[PathLike, _POr]
+PathOr = Union[PathLike, _POr]  # noqa: UP007
 
 
 # Specific utility resource aliases with type imports
@@ -243,7 +242,7 @@ PathOrTexture = PathOr["Texture"]
 class TiledObject(NamedTuple):
     """Object in a tilemaps"""
 
-    shape: Union[Point, PointList, tuple[int, int, int, int]]
+    shape: Point | PointList | tuple[int, int, int, int]
     """Shape of the object"""
     properties: Properties | None = None
     """Properties of the object"""
@@ -262,4 +261,4 @@ class SupportsDunderGT(Protocol[_T_contra]):
     def __gt__(self, other: _T_contra, /) -> bool: ...
 
 
-SupportsRichComparison = Union[SupportsDunderLT[Any], SupportsDunderGT[Any]]
+SupportsRichComparison = SupportsDunderLT[Any] | SupportsDunderGT[Any]

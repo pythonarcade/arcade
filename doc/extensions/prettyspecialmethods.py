@@ -214,6 +214,9 @@ SPECIAL_METHODS = {
     '__sizeof__': function_transformer('sys.getsizeof'),
     '__dir__': function_transformer('dir'),
     '__reversed__': function_transformer('reversed'),
+
+    '__enter__': function_transformer('enter'),
+    '__exit__': function_transformer('exit'),
 }
 
 

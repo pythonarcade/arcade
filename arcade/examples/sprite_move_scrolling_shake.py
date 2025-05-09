@@ -53,7 +53,7 @@ class GameView(arcade.View):
         self.physics_engine = None
 
         # Create camera that will follow the player sprite.
-        self.camera_sprites = arcade.camera.Camera2D()
+        self.camera_sprites = arcade.Camera2D()
 
         self.camera_shake = arcade.camera.grips.ScreenShake2D(
             self.camera_sprites.view_data,

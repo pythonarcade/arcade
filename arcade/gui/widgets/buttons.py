@@ -1,9 +1,5 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
-from typing import Optional, Union
-
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 
 import arcade
 from arcade import Texture, color, uicolor
@@ -58,7 +54,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         size_hint_max: max width and height in pixel
     """
 
-    _textures = DictProperty[str, Union[Texture, NinePatchTexture]]()
+    _textures = DictProperty[str, Texture | NinePatchTexture]()
 
     UIStyle = UITextureButtonStyle
 
@@ -80,16 +76,16 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         *,
         x: float = 0,
         y: float = 0,
-        width: Optional[float] = None,
-        height: Optional[float] = None,
-        texture: Union[None, Texture, NinePatchTexture] = None,
-        texture_hovered: Union[None, Texture, NinePatchTexture] = None,
-        texture_pressed: Union[None, Texture, NinePatchTexture] = None,
-        texture_disabled: Union[None, Texture, NinePatchTexture] = None,
+        width: float | None = None,
+        height: float | None = None,
+        texture: None | Texture | NinePatchTexture = None,
+        texture_hovered: None | Texture | NinePatchTexture = None,
+        texture_pressed: None | Texture | NinePatchTexture = None,
+        texture_disabled: None | Texture | NinePatchTexture = None,
         text: str = "",
         multiline: bool = False,
-        scale: Optional[float] = None,
-        style: Optional[dict[str, UIStyleBase]] = None,
+        scale: float | None = None,
+        style: dict[str, UIStyleBase] | None = None,
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -152,7 +148,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
             return "disabled"
         elif self.pressed:
             return "press"
-        elif self.hovered:
+        elif self.hovered or self.focused:
             return "hover"
         else:
             return "normal"
@@ -226,7 +222,7 @@ class UIFlatButtonStyle(UIStyleBase):
     font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
     font_color: RGBA255 = color.WHITE
     bg: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
-    border: Optional[RGBA255] = None
+    border: RGBA255 | None = None
     border_width: int = 0
 
 
@@ -348,7 +344,7 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget[UIFlatButtonStyle], UITex
             return "disabled"
         elif self.pressed:
             return "press"
-        elif self.hovered:
+        elif self.hovered or self.focused:
             return "hover"
         else:
             return "normal"

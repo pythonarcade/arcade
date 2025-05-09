@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import math
 
 import arcade
@@ -20,7 +18,7 @@ class MyGame(arcade.Window):
         super().__init__(width, height, title)
         self.background = arcade.load_texture(":resources:images/backgrounds/abstract_1.jpg")
 
-        self.torch_list = arcade.SpriteList()
+        self.torch_list: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
         self.torch_list.extend(
             [
                 arcade.Sprite(

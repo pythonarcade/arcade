@@ -1,8 +1,7 @@
-from __future__ import annotations
-
 import sys
 import traceback
-from typing import Any, Callable, Dict, Generic, List, Optional, TypeVar, cast
+from collections.abc import Callable
+from typing import Any, Generic, TypeVar, cast
 from weakref import WeakKeyDictionary, ref
 
 from typing_extensions import Self, overload, override
@@ -61,8 +60,8 @@ class Property(Generic[P]):
 
     def __init__(
         self,
-        default: Optional[P] = None,
-        default_factory: Optional[Callable[[Any, Any], P]] = None,
+        default: P | None = None,
+        default_factory: Callable[[Any, Any], P] | None = None,
     ):
         if default_factory is None:
             default_factory = lambda prop, instance: cast(P, default)
@@ -278,7 +277,7 @@ K = TypeVar("K")
 V = TypeVar("V")
 
 
-class DictProperty(Property[Dict[K, V]], Generic[K, V]):
+class DictProperty(Property[dict[K, V]], Generic[K, V]):
     """Property that represents a dict.
 
     Only dict are allowed. Any other classes are forbidden.
@@ -386,7 +385,7 @@ class _ObservableList(list):
         self.dispatch()
 
 
-class ListProperty(Property[List[P]], Generic[P]):
+class ListProperty(Property[list[P]], Generic[P]):
     """Property that represents a list.
 
     Only list are allowed. Any other classes are forbidden.

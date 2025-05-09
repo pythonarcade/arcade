@@ -22,8 +22,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sections_demo_3
 """
 
-from __future__ import annotations
-
 from math import sqrt
 
 import arcade

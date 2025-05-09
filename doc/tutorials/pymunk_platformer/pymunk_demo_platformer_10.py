@@ -177,20 +177,20 @@ class GameWindow(arcade.Window):
         super().__init__(width, height, title)
 
         # Player sprite
-        self.player_sprite: Optional[PlayerSprite] = None
+        self.player_sprite: PlayerSprite|None = None
 
         # Sprite lists we need
-        self.player_list: Optional[arcade.SpriteList] = None
-        self.wall_list: Optional[arcade.SpriteList] = None
-        self.bullet_list: Optional[arcade.SpriteList] = None
-        self.item_list: Optional[arcade.SpriteList] = None
+        self.player_list: arcade.SpriteList|None = None
+        self.wall_list: arcade.SpriteList|None = None
+        self.bullet_list: arcade.SpriteList|None = None
+        self.item_list: arcade.SpriteList|None = None
 
         # Track the current state of what key is pressed
         self.left_pressed: bool = False
         self.right_pressed: bool = False
 
         # Physics engine
-        self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
+        self.physics_engine: arcade.PymunkPhysicsEngine | None = None
 
         # Set background color
         self.background_color = arcade.color.AMAZON

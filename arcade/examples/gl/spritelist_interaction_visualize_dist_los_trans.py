@@ -202,11 +202,11 @@ class SpriteListInteraction(arcade.Window):
                 )
                 print("Indices found:", sprite_indices)
                 print(
-                    (
+
                         f"max(sprite_indices) = {max(sprite_indices)} | "
                         f"len(self.coins) = {len(self.coins)} | "
                         f"sprite_indices = {len(sprite_indices)}"
-                    )
+
                 )
                 # Resolve the list of selected sprites and remove them
                 sprites = [self.coins[int(i)] for i in sprite_indices]

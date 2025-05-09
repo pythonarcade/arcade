@@ -21,8 +21,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.depth_of_field
 """
 
-from __future__ import annotations
-
 from contextlib import contextmanager
 from math import cos, pi
 from random import randint, uniform

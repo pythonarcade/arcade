@@ -1,6 +1,5 @@
-from __future__ import annotations
-
-from typing import Callable, Generic, Optional, Type, TypeVar, cast
+from collections.abc import Callable
+from typing import Generic, TypeVar, cast
 
 import arcade
 from arcade.color import BLACK, RED, WHITE
@@ -82,7 +81,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
 
     def __init__(
         self,
-        parsed_type: Type[T],
+        parsed_type: type[T],
         *,
         to_str: Callable[[T], str] = repr,
         from_str: Callable[[str], T] | None = None,
@@ -123,7 +122,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
         self.emit_parse_exceptions = emit_parse_exceptions
         self._error_color = error_color
         self._valid_color = text_color
-        self._parsed_type: Type[T] = parsed_type
+        self._parsed_type: type[T] = parsed_type
         self._to_str = to_str
         self._from_str: Callable[[str], T] = cast(Callable[[str], T], from_str or parsed_type)
         self._parsed_value: T = self._from_str(self.text)
@@ -148,7 +147,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
             if self.emit_parse_exceptions:
                 raise e
 
-    def on_event(self, event: UIEvent) -> Optional[bool]:
+    def on_event(self, event: UIEvent) -> bool | None:
         # print(f"In {type_name(event)}")
         if isinstance(event, UITextInputEvent) and self._active:
             text = event.text.replace("\r", "").replace("\r", "")
@@ -159,7 +158,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
         return handled
 
     @property
-    def parsed_type(self) -> Type[T]:
+    def parsed_type(self) -> type[T]:
         """Get the type this input field expects to parse.
 
         .. note:: This is not meant to be changed after creation.

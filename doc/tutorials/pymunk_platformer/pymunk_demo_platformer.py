@@ -3,12 +3,12 @@ Example of Pymunk Physics Engine
 
 Platformer
 """
+import logging
 import math
+
 import arcade
-from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
-import logging
 LOG = logging.getLogger(__name__)
 
 SCREEN_TITLE = "PyMunk Top-Down"
@@ -167,13 +167,13 @@ class GameWindow(arcade.Window):
         super().__init__(width, height, title)
 
         # Player sprite
-        self.player_sprite: Optional[arcade.Sprite] = None
+        self.player_sprite: arcade.Sprite|None= None
 
         # Sprite lists we need
-        self.player_list: Optional[arcade.SpriteList] = None
-        self.wall_list: Optional[arcade.SpriteList] = None
-        self.bullet_list: Optional[arcade.SpriteList] = None
-        self.item_list: Optional[arcade.SpriteList] = None
+        self.player_list: arcade.SpriteList|None= None
+        self.wall_list: arcade.SpriteList|None= None
+        self.bullet_list: arcade.SpriteList|None= None
+        self.item_list: arcade.SpriteList|None= None
 
         # Track the current state of what key is pressed
         self.left_pressed: bool = False
@@ -182,7 +182,7 @@ class GameWindow(arcade.Window):
         self.down_pressed: bool = False
 
         # The PyMunk physics engine!
-        self.physics_engine: Optional[PymunkPhysicsEngine] = None
+        self.physics_engine: PymunkPhysicsEngine|None= None
 
         # Set background color
         self.background_color = arcade.color.AMAZON

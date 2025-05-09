@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import arcade.gl as gl
 from arcade.future.background import BackgroundTexture
 from arcade.window_commands import get_window

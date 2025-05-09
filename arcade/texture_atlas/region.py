@@ -48,7 +48,7 @@ class AtlasRegion:
             The width of the texture in pixels
         height:
             The height of the texture in pixels
-        texture_coordinates (optional):
+        texture_coordinates:
             The texture coordinates for this region.
             If not provided, they will be calculated.
     """
@@ -120,12 +120,10 @@ class AtlasRegion:
         """
         if image_data.size != (self.width, self.height):
             raise RuntimeError(
-                (
-                    f"ImageData '{image_data.hash}' change their internal image "
-                    f"size from {self.width}x{self.height} to "
-                    f"{image_data.width}x{image_data.height}. "
-                    "It's not possible to fit this into the old allocated area in the atlas. "
-                )
+                f"ImageData '{image_data.hash}' change their internal image "
+                f"size from {self.width}x{self.height} to "
+                f"{image_data.width}x{image_data.height}. "
+                "It's not possible to fit this into the old allocated area in the atlas. "
             )
 
     def __repr__(self) -> str:

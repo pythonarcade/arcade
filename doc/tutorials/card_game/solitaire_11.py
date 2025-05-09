@@ -1,9 +1,9 @@
 """
 Solitaire clone.
 """
-from typing import Optional
 
 import random
+
 import arcade
 
 # Screen title and size
@@ -71,10 +71,10 @@ TOP_PILE_4 = 12
 
 
 class Card(arcade.Sprite):
-    """ Card sprite """
+    """Card sprite"""
 
     def __init__(self, suit, value, scale=1):
-        """ Card constructor """
+        """Card constructor"""
 
         # Attributes for suit and value
         self.suit = suit
@@ -86,29 +86,29 @@ class Card(arcade.Sprite):
         super().__init__(FACE_DOWN_IMAGE, scale, hit_box_algorithm="None")
 
     def face_down(self):
-        """ Turn card face-down """
+        """Turn card face-down"""
         self.texture = arcade.load_texture(FACE_DOWN_IMAGE)
         self.is_face_up = False
 
     def face_up(self):
-        """ Turn card face-up """
+        """Turn card face-up"""
         self.texture = arcade.load_texture(self.image_file_name)
         self.is_face_up = True
 
     @property
     def is_face_down(self):
-        """ Is this card face down? """
+        """Is this card face down?"""
         return not self.is_face_up
 
 
 class MyGame(arcade.Window):
-    """ Main application class. """
+    """Main application class."""
 
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
         # Sprite list with all the cards, no matter what pile they are in.
-        self.card_list: Optional[arcade.SpriteList] = None
+        self.card_list: arcade.SpriteList | None = None
 
         self.background_color = arcade.color.AMAZON
 
@@ -126,7 +126,7 @@ class MyGame(arcade.Window):
         self.piles = None
 
     def setup(self):
-        """ Set up the game here. Call this function to restart the game. """
+        """Set up the game here. Call this function to restart the game."""
 
         # List of cards we are dragging with the mouse
         self.held_cards = []
@@ -204,7 +204,7 @@ class MyGame(arcade.Window):
             self.piles[i][-1].face_up()
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear the screen
         self.clear()
 
@@ -215,27 +215,26 @@ class MyGame(arcade.Window):
         self.card_list.draw()
 
     def pull_to_top(self, card: arcade.Sprite):
-        """ Pull card to top of rendering order (last to render, looks on-top) """
+        """Pull card to top of rendering order (last to render, looks on-top)"""
 
         # Remove, and append to the end
         self.card_list.remove(card)
         self.card_list.append(card)
 
     def on_key_press(self, symbol: int, modifiers: int):
-        """ User presses key """
+        """User presses key"""
         if symbol == arcade.key.R:
             # Restart
             self.setup()
 
     def on_mouse_press(self, x, y, button, key_modifiers):
-        """ Called when the user presses a mouse button. """
+        """Called when the user presses a mouse button."""
 
         # Get list of cards we've clicked on
         cards = arcade.get_sprites_at_point((x, y), self.card_list)
 
         # Have we clicked on a card?
         if len(cards) > 0:
-
             # Might be a stack of cards, get the top one
             primary_card = cards[-1]
             assert isinstance(primary_card, Card)
@@ -283,7 +282,6 @@ class MyGame(arcade.Window):
                     self.pull_to_top(card)
 
         else:
-
             # Click on a mat instead of a card?
             mats = arcade.get_sprites_at_point((x, y), self.pile_mat_list)
 
@@ -292,7 +290,10 @@ class MyGame(arcade.Window):
                 mat_index = self.pile_mat_list.index(mat)
 
                 # Is it our turned over flip mat? and no cards on it?
-                if mat_index == BOTTOM_FACE_DOWN_PILE and len(self.piles[BOTTOM_FACE_DOWN_PILE]) == 0:
+                if (
+                    mat_index == BOTTOM_FACE_DOWN_PILE
+                    and len(self.piles[BOTTOM_FACE_DOWN_PILE]) == 0
+                ):
                     # Flip the deck back over so we can restart
                     temp_list = self.piles[BOTTOM_FACE_UP_PILE].copy()
                     for card in reversed(temp_list):
@@ -302,26 +303,25 @@ class MyGame(arcade.Window):
                         card.position = self.pile_mat_list[BOTTOM_FACE_DOWN_PILE].position
 
     def remove_card_from_pile(self, card):
-        """ Remove card from whatever pile it was in. """
+        """Remove card from whatever pile it was in."""
         for pile in self.piles:
             if card in pile:
                 pile.remove(card)
                 break
 
     def get_pile_for_card(self, card):
-        """ What pile is this card in? """
+        """What pile is this card in?"""
         for index, pile in enumerate(self.piles):
             if card in pile:
                 return index
 
     def move_card_to_new_pile(self, card, pile_index):
-        """ Move the card to a new pile """
+        """Move the card to a new pile"""
         self.remove_card_from_pile(card)
         self.piles[pile_index].append(card)
 
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
-        """ Called when the user presses a mouse button. """
+    def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
+        """Called when the user presses a mouse button."""
 
         # If we don't have any cards, who cares
         if len(self.held_cards) == 0:
@@ -333,7 +333,6 @@ class MyGame(arcade.Window):
 
         # See if we are in contact with the closest pile
         if arcade.check_for_collision(self.held_cards[0], pile):
-
             # What pile is it?
             pile_index = self.pile_mat_list.index(pile)
 
@@ -349,14 +348,18 @@ class MyGame(arcade.Window):
                     # Move cards to proper position
                     top_card = self.piles[pile_index][-1]
                     for i, dropped_card in enumerate(self.held_cards):
-                        dropped_card.position = top_card.center_x, \
-                                                top_card.center_y - CARD_VERTICAL_OFFSET * (i + 1)
+                        dropped_card.position = (
+                            top_card.center_x,
+                            top_card.center_y - CARD_VERTICAL_OFFSET * (i + 1),
+                        )
                 else:
                     # Are there no cards in the middle play pile?
                     for i, dropped_card in enumerate(self.held_cards):
                         # Move cards to proper position
-                        dropped_card.position = pile.center_x, \
-                                                pile.center_y - CARD_VERTICAL_OFFSET * i
+                        dropped_card.position = (
+                            pile.center_x,
+                            pile.center_y - CARD_VERTICAL_OFFSET * i,
+                        )
 
                 for card in self.held_cards:
                     # Cards are in the right position, but we need to move them to the right list
@@ -385,7 +388,7 @@ class MyGame(arcade.Window):
         self.held_cards = []
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
-        """ User moves mouse """
+        """User moves mouse"""
 
         # If we are holding cards, move them with the mouse
         for card in self.held_cards:
@@ -394,7 +397,7 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     window = MyGame()
     window.setup()
     arcade.run()

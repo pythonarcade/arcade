@@ -15,8 +15,6 @@ should be done through methods in a context.
              and is only recommended for more advanced users
 """
 
-from __future__ import annotations
-
 from .context import Context
 from .types import BufferDescription
 from .compute_shader import ComputeShader

@@ -6,16 +6,13 @@ but uses Vertex Buffer Objects. This keeps the vertices loaded on
 the graphics card for much faster render times.
 """
 
-from __future__ import annotations
-
 import itertools
 import math
 from array import array
 from collections import OrderedDict
+from collections.abc import Iterable, Sequence
 from typing import (
     Generic,
-    Iterable,
-    Sequence,
     TypeVar,
     cast,
 )
@@ -825,6 +822,9 @@ def create_ellipse_filled_with_colors(
 
 
 TShape = TypeVar("TShape", bound=Shape)
+"""
+Type variable for Shape or subclasses.
+"""
 
 
 @copy_dunders_unimplemented

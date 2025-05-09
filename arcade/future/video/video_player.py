@@ -5,8 +5,6 @@ This requires that you have ffmpeg installed
 and you might need to tell pyglet where it's located.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 
 # import sys

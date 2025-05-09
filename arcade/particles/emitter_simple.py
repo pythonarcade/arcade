@@ -5,10 +5,8 @@ These trade away some flexibility in favor of simplicity to allow beginners
 to start using particle systems.
 """
 
-from __future__ import annotations
-
 import random
-from typing import Sequence
+from collections.abc import Sequence
 
 from arcade.math import rand_in_circle, rand_on_circle
 from arcade.types import PathOrTexture, Point

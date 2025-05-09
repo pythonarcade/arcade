@@ -5,8 +5,6 @@ one, but in instances were images are created manually by code and changing
 over time at (not too frequently) we can update the underlying atlas directly.
 """
 
-from __future__ import annotations
-
 from itertools import cycle
 
 import arcade

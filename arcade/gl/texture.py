@@ -56,7 +56,7 @@ class Texture2D:
         dtype:
             The data type of each component: f1, f2, f4 / i1, i2, i4 / u1, u2, u4
         data:
-            The texture data (optional). Can be bytes or any object supporting
+            The texture data. Can be bytes or any object supporting
             the buffer protocol.
         filter:
             The minification/magnification filter of the texture
@@ -136,8 +136,8 @@ class Texture2D:
         self._component_size = 0
         self._alignment = 1
         self._target = target
-        self._samples = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
-        self._depth = depth
+        self._samples: int = min(max(0, samples), self._ctx.info.MAX_SAMPLES)
+        self._depth: bool = depth
         self._immutable = immutable
         self._compare_func: str | None = None
         self._anisotropy = 1.0

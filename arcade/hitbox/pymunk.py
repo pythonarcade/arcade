@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import pymunk
 from PIL.Image import Image
 from pymunk import Vec2d

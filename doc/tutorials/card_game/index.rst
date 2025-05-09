@@ -51,7 +51,7 @@ Card Class
 ~~~~~~~~~~
 
 Next up, we'll create a card class. The card class is a subclass of
-``arcade.Sprite``. It will have attributes for the suit and value of the
+:py:class:`~arcade.Sprite`. It will have attributes for the suit and value of the
 card, and auto-load the image for the card based on that.
 
 We'll use the entire image as the hit box, so we don't need to go through the
@@ -549,7 +549,7 @@ so we can go through it again.
     :caption: Flipping of Bottom Deck
     :linenos:
     :pyobject: MyGame.on_mouse_press
-    :emphasize-lines: 15-33, 56-71
+    :emphasize-lines: 16-34, 59-74
 
 Test
 ~~~~

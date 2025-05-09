@@ -4,10 +4,9 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 
-from __future__ import annotations
-
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Final, Generator, Protocol
+from typing import Final, Protocol
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self
@@ -417,20 +416,28 @@ class Projector(Protocol):
            :py:attr:`~arcade.Window.current_camera` to this object
         #. Calculate any required view and projection matrices
         #. Set any resulting values on the current
-           :py:class:`~arcade.context.ArcadeContext`, including the:
+           :py:class:`~arcade.ArcadeContext`, including the:
 
-           * :py:attr:`~arcade.context.ArcadeContext.viewport`
-           * :py:attr:`~arcade.context.ArcadeContext.view_matrix`
-           * :py:attr:`~arcade.context.ArcadeContext.projection_matrix`
+           * :py:attr:`~arcade.ArcadeContext.viewport`
+           * :py:attr:`~arcade.ArcadeContext.view_matrix`
+           * :py:attr:`~arcade.ArcadeContext.projection_matrix`
 
         This method should **never** handle cleanup. That is the
         responsibility of :py:attr:`.activate`.
-
         """
         ...
 
     @contextmanager
-    def activate(self) -> Generator[Self, None, None]: ...
+    def activate(self) -> Generator[Self, None, None]:
+        """
+        Activate this projector for rendering.
+
+        This is a context manager and should be used with a ``with`` statement::
+
+            with projector.activate():
+                # Render with this projector
+        """
+        ...
 
     def project(self, world_coordinate: Point) -> Vec2:
         """
