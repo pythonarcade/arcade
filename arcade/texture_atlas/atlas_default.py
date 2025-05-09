@@ -10,7 +10,7 @@ from typing import (
     TYPE_CHECKING,
     Sequence,
 )
-from weakref import WeakSet, WeakValueDictionary, finalize
+from weakref import WeakSet, WeakValueDictionary, finalize, ref
 
 import PIL.Image
 from PIL import Image, ImageDraw
@@ -356,14 +356,25 @@ class DefaultTextureAtlas(TextureAtlasBase):
         self._image_ref_count.inc_ref(texture.image_data)
 
         if create_finalizer:
-            ref = finalize(
+            atlas_ref = ref(self)
+
+            # NOTE: The finalizer needs to be completely decoupled from the atlas
+            #       or it will self-reference and not die unless all the textures in it
+            #       are removed. This lead to leaking orphaned atlases when you have
+            #       pre-loaded shared textures in multiple atlases.
+            def finalizer_callback(atlas_name, hash):
+                atlas = atlas_ref()
+                if atlas is not None:
+                    atlas._remove_texture_by_identifiers(atlas_name, hash)
+
+            finalizer_ref = finalize(
                 texture,
-                self._remove_texture_by_identifiers,
+                finalizer_callback,
                 texture.atlas_name,
                 texture.image_data.hash,
             )
             # Don't bother removing texture on program exit
-            ref.atexit = False
+            finalizer_ref.atexit = False
             self._finalizers_created += 1
 
         self._textures_added += 1
