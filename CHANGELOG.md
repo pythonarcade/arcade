@@ -3,7 +3,7 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
-## Version 3.2 (unreleased)
+## Version 3.2
 
 - GUI
   - Fix `UIScrollArea.add` always returning None
