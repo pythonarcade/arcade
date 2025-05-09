@@ -3,12 +3,18 @@ from __future__ import annotations
 import logging
 import weakref
 from collections import deque
-from collections.abc import Iterable, Sequence
 from contextlib import contextmanager
 from ctypes import c_char_p, c_float, c_int, cast
 from typing import (
     Any,
+    Deque,
+    Dict,
+    Iterable,
+    List,
     Literal,
+    Sequence,
+    Set,
+    Tuple,
     overload,
 )
 
@@ -267,9 +273,9 @@ class Context:
         gl.glEnable(gl.GL_SCISSOR_TEST)
 
         # States
-        self._blend_func: tuple[int, int] | tuple[int, int, int, int] = self.BLEND_DEFAULT
+        self._blend_func: Tuple[int, int] | Tuple[int, int, int, int] = self.BLEND_DEFAULT
         self._point_size = 1.0
-        self._flags: set[int] = set()
+        self._flags: Set[int] = set()
         self._wireframe = False
         # Options for cull_face
         self._cull_face_options = {
@@ -288,7 +294,7 @@ class Context:
         self.gc_mode = gc_mode
         #: Collected objects to gc when gc_mode is "context_gc".
         #: This can be used during debugging.
-        self.objects: deque[Any] = deque()
+        self.objects: Deque[Any] = deque()
 
     @property
     def info(self) -> GLInfo:
@@ -365,7 +371,7 @@ class Context:
         return self.active_framebuffer
 
     @property
-    def gl_version(self) -> tuple[int, int]:
+    def gl_version(self) -> Tuple[int, int]:
         """
         The OpenGL major and minor version as a tuple.
 
@@ -578,7 +584,7 @@ class Context:
         return flag in self._flags
 
     @property
-    def viewport(self) -> tuple[int, int, int, int]:
+    def viewport(self) -> Tuple[int, int, int, int]:
         """
         Get or set the viewport for the currently active framebuffer.
         The viewport simply describes what pixels of the screen
@@ -595,11 +601,11 @@ class Context:
         return self.active_framebuffer.viewport
 
     @viewport.setter
-    def viewport(self, value: tuple[int, int, int, int]):
+    def viewport(self, value: Tuple[int, int, int, int]):
         self.active_framebuffer.viewport = value
 
     @property
-    def scissor(self) -> tuple[int, int, int, int] | None:
+    def scissor(self) -> Tuple[int, int, int, int] | None:
         """
         Get or set the scissor box for the active framebuffer.
         This is a shortcut for :py:meth:`~arcade.gl.Framebuffer.scissor`.
@@ -624,7 +630,7 @@ class Context:
         self.fbo.scissor = value
 
     @property
-    def blend_func(self) -> tuple[int, int] | tuple[int, int, int, int]:
+    def blend_func(self) -> Tuple[int, int] | Tuple[int, int, int, int]:
         """
         Get or set the blend function.
         This is tuple specifying how the color and
@@ -672,7 +678,7 @@ class Context:
         return self._blend_func
 
     @blend_func.setter
-    def blend_func(self, value: tuple[int, int] | tuple[int, int, int, int]):
+    def blend_func(self, value: Tuple[int, int] | Tuple[int, int, int, int]):
         self._blend_func = value
         if len(value) == 2:
             gl.glBlendFunc(*value)
@@ -946,7 +952,7 @@ class Context:
     def framebuffer(
         self,
         *,
-        color_attachments: Texture2D | list[Texture2D] | None = None,
+        color_attachments: Texture2D | List[Texture2D] | None = None,
         depth_attachment: Texture2D | None = None,
     ) -> Framebuffer:
         """Create a Framebuffer.
@@ -963,14 +969,14 @@ class Context:
 
     def texture(
         self,
-        size: tuple[int, int],
+        size: Tuple[int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
         wrap_x: PyGLenum | None = None,
         wrap_y: PyGLenum | None = None,
-        filter: tuple[PyGLenum, PyGLenum] | None = None,
+        filter: Tuple[PyGLenum, PyGLenum] | None = None,
         samples: int = 0,
         immutable: bool = False,
         internal_format: PyGLenum | None = None,
@@ -1066,14 +1072,14 @@ class Context:
 
     def texture_array(
         self,
-        size: tuple[int, int, int],
+        size: Tuple[int, int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
         wrap_x: PyGLenum | None = None,
         wrap_y: PyGLenum | None = None,
-        filter: tuple[PyGLenum, PyGLenum] | None = None,
+        filter: Tuple[PyGLenum, PyGLenum] | None = None,
     ) -> TextureArray:
         """
         Create a 2D Texture Array.
@@ -1099,7 +1105,7 @@ class Context:
         )
 
     def depth_texture(
-        self, size: tuple[int, int], *, data: BufferProtocol | None = None
+        self, size: Tuple[int, int], *, data: BufferProtocol | None = None
     ) -> Texture2D:
         """
         Create a 2D depth texture. Can be used as a depth attachment
@@ -1223,8 +1229,8 @@ class Context:
         geometry_shader: str | None = None,
         tess_control_shader: str | None = None,
         tess_evaluation_shader: str | None = None,
-        common: list[str] | None = None,
-        defines: dict[str, str] | None = None,
+        common: List[str] | None = None,
+        defines: Dict[str, str] | None = None,
         varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ) -> Program:
@@ -1284,7 +1290,7 @@ class Context:
 
         # If we don't have a fragment shader we are doing transform feedback.
         # When a geometry shader is present the out attributes will be located there
-        out_attributes = list(varyings) if varyings is not None else []
+        out_attributes = list(varyings) if varyings is not None else []  # type: List[str]
         if not source_fs and not out_attributes:
             if source_geo:
                 out_attributes = source_geo.out_attributes
@@ -1583,7 +1589,7 @@ class GLInfo:
         self.MAX_TEXTURE_MAX_ANISOTROPY = self.get_float(gl.GL_MAX_TEXTURE_MAX_ANISOTROPY, 1.0)
         """The highest supported anisotropy value. Usually 8.0 or 16.0."""
 
-        self.MAX_VIEWPORT_DIMS: tuple[int, int] = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
+        self.MAX_VIEWPORT_DIMS: Tuple[int, int] = self.get_int_tuple(gl.GL_MAX_VIEWPORT_DIMS, 2)
         """
         The maximum support window or framebuffer viewport.
         This is usually the same as the maximum texture size
@@ -1607,10 +1613,10 @@ class GLInfo:
             warn("Error happened while querying of limits. Moving on ..")
 
     @overload
-    def get_int_tuple(self, enum: GLenumLike, length: Literal[2]) -> tuple[int, int]: ...
+    def get_int_tuple(self, enum: GLenumLike, length: Literal[2]) -> Tuple[int, int]: ...
 
     @overload
-    def get_int_tuple(self, enum: GLenumLike, length: int) -> tuple[int, ...]: ...
+    def get_int_tuple(self, enum: GLenumLike, length: int) -> Tuple[int, ...]: ...
 
     def get_int_tuple(self, enum: GLenumLike, length: int):
         """

@@ -1,6 +1,5 @@
 import re
-from collections.abc import Iterable
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
 
 from pyglet import gl
 
@@ -125,10 +124,12 @@ class ShaderSource:
         source = "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines))
 
         raise ShaderException(
-            "Cannot find #version in shader source. "
-            "Please provide at least a #version 330 statement in the beginning of the shader.\n"
-            f"---- [{SHADER_TYPE_NAMES[self._type]}] ---\n"
-            f"{source}"
+            (
+                "Cannot find #version in shader source. "
+                "Please provide at least a #version 330 statement in the beginning of the shader.\n"
+                f"---- [{SHADER_TYPE_NAMES[self._type]}] ---\n"
+                f"{source}"
+            )
         )
 
     @staticmethod
@@ -150,7 +151,7 @@ class ShaderSource:
                     if value is None:
                         continue
 
-                    lines[nr] = f"#define {name} {str(value)}"
+                    lines[nr] = "#define {} {}".format(name, str(value))
                 except IndexError:
                     pass
 
