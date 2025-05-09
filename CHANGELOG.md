@@ -15,6 +15,10 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Introduce `arcade.SpriteSequence[T]` as a covariant supertype of `arcade.SpriteList[T]`
   (this is similar to Python's `Sequence[T]`, which is a supertype of `list[T]`)
   and various improvements to the typing of the API that leverage it
+- Fixed a nasty memory leak in texture atlases. This only affects projects managing their own atlases
+- Fixed a bug causing some events to not trigger on the window's keyboard and mouse state handlers
+- New minimum pyglet version is now 2.1.5
+- Some shaders programs were rewritten to not use geometry shaders in preparation for webgl support
 
 ## Version 3.1.0
 
