@@ -537,7 +537,10 @@ class Window(pyglet.window.Window):
             # we only need the modulus to keep time, if we didn't care
             # it could be set to zero instead.
             # ! This should maybe be fixed at 'self._draw_rate', discuss.
-            self.draw(self._accumulated_draw_time)
+
+            # In case the window close in on_update, on_fixed_update or input callbacks
+            if self._context:
+                self.draw(self._accumulated_draw_time)
             self._accumulated_draw_time %= self._draw_rate
 
     def _dispatch_updates(self, delta_time: float) -> None:
