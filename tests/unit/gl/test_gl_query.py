@@ -33,7 +33,7 @@ def test_create(window: arcade.Window):
             quad.render(program)
 
         # gles query doesn't support time and written samples
-        if ctx.gl_api == "gl":
+        if ctx.gl_api == "opengl":
             assert query.time_elapsed > 0
             assert query.samples_passed >= SCREEN_WIDTH * SCREEN_HEIGHT
 

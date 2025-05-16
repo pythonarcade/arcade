@@ -1,14 +1,14 @@
 from arcade.gl.provider import BaseProvider
 
-from .context import GLArcadeContext, GLContext, GLInfo
+from .context import OpenGLArcadeContext, OpenGLContext, OpenGLInfo
 
 
 class Provider(BaseProvider):
     def create_context(self, *args, **kwargs):
-        return GLContext(*args, **kwargs)
+        return OpenGLContext(*args, **kwargs)
 
     def create_info(self, ctx):
-        return GLInfo(ctx)
+        return OpenGLInfo(ctx)
 
     def create_arcade_context(self, *args, **kwargs):
-        return GLArcadeContext(*args, **kwargs)
+        return OpenGLArcadeContext(*args, **kwargs)

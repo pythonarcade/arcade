@@ -145,9 +145,7 @@ class Program(ABC):
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @abstractmethod
-    def __getitem__(
-        self, item
-    ):  # TODO: typing, this should return Uniform | UniformBlock
+    def __getitem__(self, item):  # TODO: typing, this should return Uniform | UniformBlock
         """Get a uniform or uniform block"""
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 

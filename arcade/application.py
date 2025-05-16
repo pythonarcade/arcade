@@ -157,7 +157,7 @@ class Window(pyglet.window.Window):
         center_window: bool = False,
         samples: int = 4,
         enable_polling: bool = True,
-        gl_api: str = "gl",
+        gl_api: str = "opengl",
         draw_rate: float = 1 / 60,
         fixed_rate: float = 1.0 / 60.0,
         fixed_frame_cap: int | None = None,
@@ -167,7 +167,7 @@ class Window(pyglet.window.Window):
         if os.environ.get("REPL_ID"):
             antialiasing = False
 
-        desired_gl_provider = "gl"
+        desired_gl_provider = "opengl"
         if is_pyodide():
             gl_api = "webgl"
 
@@ -177,7 +177,7 @@ class Window(pyglet.window.Window):
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
         if is_raspberry_pi():
             gl_version = 3, 1
-            gl_api = "gles"
+            gl_api = "opengles"
 
         self.headless: bool = arcade.headless
         """If True, the window is running in headless mode."""
@@ -189,7 +189,7 @@ class Window(pyglet.window.Window):
                 config = gl.Config(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
-                    opengl_api=gl_api,  # type: ignore  # pending: upstream fix
+                    opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
                     double_buffer=True,
                     sample_buffers=1,
                     samples=samples,
@@ -213,7 +213,7 @@ class Window(pyglet.window.Window):
             config = gl.Config(
                 major_version=gl_version[0],
                 minor_version=gl_version[1],
-                opengl_api=gl_api,  # type: ignore  # pending: upstream fix
+                opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
                 double_buffer=True,
                 depth_size=24,
                 stencil_size=8,

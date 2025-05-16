@@ -26,12 +26,12 @@ PROJECT_ROOT = (Path(__file__).parent.parent).resolve()
 FIXTURE_ROOT = PROJECT_ROOT / "tests" / "fixtures"
 arcade.resources.add_resource_handle("fixtures", FIXTURE_ROOT)
 REAL_WINDOW_CLASS = arcade.Window
-GL_BACKEND = "gl"
+GL_BACKEND = "opengl"
 WINDOW = None
 OFFSCREEN = None
 
 POSSIBLE_BACKENDS = [
-    "backendgl",
+    "backendopengl",
     "backendwebgl"
 ]
 
@@ -39,7 +39,7 @@ arcade.resources.load_kenney_fonts()
 
 
 def pytest_addoption(parser):
-    parser.addoption("--gl-backend", default="gl")
+    parser.addoption("--gl-backend", default="opengl")
 
 def pytest_configure(config):
     global GL_BACKEND

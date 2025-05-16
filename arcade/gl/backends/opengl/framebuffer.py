@@ -10,13 +10,13 @@ from arcade.gl.framebuffer import DefaultFrameBuffer, Framebuffer
 from arcade.gl.types import pixel_formats
 from arcade.types import RGBOrA255, RGBOrANormalized
 
-from .texture import GLTexture2D
+from .texture import OpenGLTexture2D
 
 if TYPE_CHECKING:
     from arcade.gl import Context
 
 
-class GLFramebuffer(Framebuffer):
+class OpenGLFramebuffer(Framebuffer):
     """
     An offscreen render target also called a Framebuffer Object in OpenGL.
     This implementation is using texture attachments. When creating a
@@ -53,8 +53,8 @@ class GLFramebuffer(Framebuffer):
         self,
         ctx: "Context",
         *,
-        color_attachments: GLTexture2D | list[GLTexture2D],
-        depth_attachment: GLTexture2D | None = None,
+        color_attachments: OpenGLTexture2D | list[OpenGLTexture2D],
+        depth_attachment: OpenGLTexture2D | None = None,
     ):
         super().__init__(
             ctx, color_attachments=color_attachments, depth_attachment=depth_attachment
@@ -99,7 +99,7 @@ class GLFramebuffer(Framebuffer):
         self.ctx.active_framebuffer.use(force=True)
 
         if self._ctx.gc_mode == "auto" and not self.is_default:
-            weakref.finalize(self, GLFramebuffer.delete_glo, ctx, fbo_id)
+            weakref.finalize(self, OpenGLFramebuffer.delete_glo, ctx, fbo_id)
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
@@ -222,7 +222,7 @@ class GLFramebuffer(Framebuffer):
             gl.glClearColor(*clear_color)
 
             if self.depth_attachment:
-                if self._ctx.gl_api == "gl":
+                if self._ctx.gl_api == "opengl":
                     gl.glClearDepth(depth)
                 else:  # gles only supports glClearDepthf
                     gl.glClearDepthf(depth)
@@ -290,7 +290,7 @@ class GLFramebuffer(Framebuffer):
 
         .. warning:: Don't use this unless you know exactly what you are doing.
         """
-        GLFramebuffer.delete_glo(self._ctx, self._glo)
+        OpenGLFramebuffer.delete_glo(self._ctx, self._glo)
         self._glo.value = 0
 
     @staticmethod
@@ -339,7 +339,7 @@ class GLFramebuffer(Framebuffer):
         return "<Framebuffer glo={}>".format(self._glo.value)
 
 
-class GLDefaultFrameBuffer(DefaultFrameBuffer, GLFramebuffer):
+class OpenGLDefaultFrameBuffer(DefaultFrameBuffer, OpenGLFramebuffer):
     """
     Represents the default framebuffer.
 

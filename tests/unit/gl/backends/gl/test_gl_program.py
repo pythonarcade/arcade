@@ -4,8 +4,8 @@ import arcade
 from pyglet import gl
 from pyglet.math import Mat4, Mat3
 from arcade.gl import ShaderException
-from arcade.gl.backends.gl.uniform import UniformBlock
-from arcade.gl.backends.gl.glsl import ShaderSource
+from arcade.gl.backends.opengl.uniform import UniformBlock
+from arcade.gl.backends.opengl.glsl import ShaderSource
 
 pytestmark = pytest.mark.backendgl
 
@@ -29,9 +29,9 @@ def test_shader_source(ctx):
         None,
         gl.GL_VERTEX_SHADER,
     )
-    if ctx.gl_api == "gl":
+    if ctx.gl_api == "opengl":
         assert source_wrapper.version == 330
-    elif ctx.gl_api == "gles":
+    elif ctx.gl_api == "opengles":
         assert source_wrapper.version == 310
 
     assert source_wrapper.out_attributes == ['out_pos', 'out_velocity']

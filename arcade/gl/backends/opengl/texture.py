@@ -42,7 +42,7 @@ swizzle_str_to_enum: dict[str, int] = {
 }
 
 
-class GLTexture2D(Texture2D):
+class OpenGLTexture2D(Texture2D):
     """
     An OpenGL 2D texture.
     We can create an empty black texture or a texture from byte data.
@@ -171,7 +171,7 @@ class GLTexture2D(Texture2D):
             self.wrap_y = wrap_y or self._wrap_y
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, GLTexture2D.delete_glo, self._ctx, glo)
+            weakref.finalize(self, OpenGLTexture2D.delete_glo, self._ctx, glo)
 
     def resize(self, size: tuple[int, int]):
         """
@@ -504,7 +504,7 @@ class GLTexture2D(Texture2D):
         if self._samples > 0:
             raise ValueError("Multisampled textures cannot be read directly")
 
-        if self._ctx.gl_api == "gl":
+        if self._ctx.gl_api == "opengl":
             gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
@@ -514,7 +514,7 @@ class GLTexture2D(Texture2D):
             )()
             gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
             return string_at(buffer, len(buffer))
-        elif self._ctx.gl_api == "gles":
+        elif self._ctx.gl_api == "opengles":
             fbo = self._ctx.framebuffer(color_attachments=[self])
             return fbo.read(components=self._components, dtype=self._dtype)
         else:
@@ -643,7 +643,7 @@ class GLTexture2D(Texture2D):
 
         Don't use this unless you know exactly what you are doing.
         """
-        GLTexture2D.delete_glo(self._ctx, self._glo)
+        OpenGLTexture2D.delete_glo(self._ctx, self._glo)
         self._glo.value = 0
 
     @staticmethod
@@ -688,7 +688,7 @@ class GLTexture2D(Texture2D):
             write: The compute shader intends to write to this image
             level: The mipmap level to bind
         """
-        if self._ctx.gl_api == "gles" and not self._immutable:
+        if self._ctx.gl_api == "opengles" and not self._immutable:
             raise ValueError("Textures bound to image units must be created with immutable=True")
 
         access = gl.GL_READ_WRITE

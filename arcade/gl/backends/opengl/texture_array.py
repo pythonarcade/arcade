@@ -42,7 +42,7 @@ swizzle_str_to_enum: dict[str, int] = {
 }
 
 
-class GLTextureArray(TextureArray):
+class OpenGLTextureArray(TextureArray):
     """
     An OpenGL 2D texture array.
 
@@ -176,7 +176,7 @@ class GLTextureArray(TextureArray):
             self.wrap_y = wrap_y or self._wrap_y
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, GLTextureArray.delete_glo, self._ctx, glo)
+            weakref.finalize(self, OpenGLTextureArray.delete_glo, self._ctx, glo)
 
     def resize(self, size: tuple[int, int]):
         """
@@ -454,7 +454,7 @@ class GLTextureArray(TextureArray):
         if self._samples > 0:
             raise ValueError("Multisampled textures cannot be read directly")
 
-        if self._ctx.gl_api == "gl":
+        if self._ctx.gl_api == "opengl":
             gl.glActiveTexture(gl.GL_TEXTURE0 + self._ctx.default_texture_unit)
             gl.glBindTexture(self._target, self._glo)
             gl.glPixelStorei(gl.GL_PACK_ALIGNMENT, alignment)
@@ -465,7 +465,7 @@ class GLTextureArray(TextureArray):
             )()
             gl.glGetTexImage(self._target, level, self._format, self._type, buffer)
             return string_at(buffer, len(buffer))
-        elif self._ctx.gl_api == "gles":
+        elif self._ctx.gl_api == "opengles":
             # FIXME: Check if we can attach a layer to the framebuffer. See Texture2D.read()
             raise ValueError("Reading texture array data not supported in GLES yet")
         else:
@@ -632,7 +632,7 @@ class GLTextureArray(TextureArray):
             write: The compute shader intends to write to this image
             level: The mipmap level to bind
         """
-        if self._ctx.gl_api == "gles" and not self._immutable:
+        if self._ctx.gl_api == "opengles" and not self._immutable:
             raise ValueError("Textures bound to image units must be created with immutable=True")
 
         access = gl.GL_READ_WRITE

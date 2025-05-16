@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from arcade.gl import Context
 
 
-class GLProgram(Program):
+class OpenGLProgram(Program):
     """
     Compiled and linked shader program.
 
@@ -115,7 +115,7 @@ class GLProgram(Program):
             shaders.append((tess_evaluation_shader, gl.GL_TESS_EVALUATION_SHADER))
 
         # Inject a dummy fragment shader on gles when doing transforms
-        if self._ctx.gl_api == "gles" and not fragment_shader:
+        if self._ctx.gl_api == "opengles" and not fragment_shader:
             dummy_frag_src = """
                 #version 310 es
                 precision mediump float;
@@ -126,7 +126,7 @@ class GLProgram(Program):
 
         shaders_id = []
         for shader_code, shader_type in shaders:
-            shader = GLProgram.compile_shader(shader_code, shader_type)
+            shader = OpenGLProgram.compile_shader(shader_code, shader_type)
             gl.glAttachShader(self._glo, shader)
             shaders_id.append(shader)
 
@@ -134,7 +134,7 @@ class GLProgram(Program):
         if not fragment_shader:
             self._configure_varyings()
 
-        GLProgram.link(self._glo)
+        OpenGLProgram.link(self._glo)
 
         if geometry_shader:
             geometry_in = gl.GLint()
@@ -160,7 +160,7 @@ class GLProgram(Program):
         self._introspect_uniform_blocks()
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, GLProgram.delete_glo, self._ctx, glo)
+            weakref.finalize(self, OpenGLProgram.delete_glo, self._ctx, glo)
 
     def __del__(self):
         # Intercept garbage collection if we are using Context.gc()
@@ -239,7 +239,7 @@ class GLProgram(Program):
 
         Don't use this unless you know exactly what you are doing.
         """
-        GLProgram.delete_glo(self._ctx, self._glo)
+        OpenGLProgram.delete_glo(self._ctx, self._glo)
         self._glo = 0
 
     @staticmethod

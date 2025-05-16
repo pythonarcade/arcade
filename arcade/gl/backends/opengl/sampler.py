@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from arcade.gl import Context, Texture2D
 
 
-class GLSampler(Sampler):
+class OpenGLSampler(Sampler):
     """
     OpenGL sampler object.
 
@@ -55,7 +55,7 @@ class GLSampler(Sampler):
             self.wrap_y = wrap_y or self._wrap_y
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, GLSampler.delete_glo, self._glo)
+            weakref.finalize(self, OpenGLSampler.delete_glo, self._glo)
 
     @property
     def glo(self) -> PyGLuint:

@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import importlib
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext
 
     from .context import Context
 
-_current_provider: BaseProvider = None
+_current_provider: Optional[BaseProvider] = None
 
 
 def set_provider(provider_name: str):
@@ -29,14 +29,14 @@ def get_provider():
 
 def get_context(*args, **kwargs) -> Context:
     if _current_provider is None:
-        set_provider("gl")
+        set_provider("opengl")
 
     return _current_provider.create_context(*args, **kwargs)
 
 
 def get_arcade_context(*args, **kwargs) -> ArcadeContext:
     if _current_provider is None:
-        set_provider("gl")
+        set_provider("opengl")
 
     return _current_provider.create_arcade_context(*args, **kwargs)
 

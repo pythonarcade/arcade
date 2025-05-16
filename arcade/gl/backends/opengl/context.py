@@ -10,34 +10,34 @@ from arcade.gl.context import Context, Info
 from arcade.gl.types import BufferDescription, PyGLenum
 from arcade.types import BufferProtocol
 
-from .buffer import GLBuffer
-from .compute_shader import GLComputeShader
-from .framebuffer import GLDefaultFrameBuffer, GLFramebuffer
+from .buffer import OpenGLBuffer
+from .compute_shader import OpenGLComputeShader
+from .framebuffer import OpenGLDefaultFrameBuffer, OpenGLFramebuffer
 from .glsl import ShaderSource
-from .program import GLProgram
-from .query import GLQuery
-from .sampler import GLSampler
-from .texture import GLTexture2D
-from .texture_array import GLTextureArray
-from .vertex_array import GLGeometry
+from .program import OpenGLProgram
+from .query import OpenGLQuery
+from .sampler import OpenGLSampler
+from .texture import OpenGLTexture2D
+from .texture_array import OpenGLTextureArray
+from .vertex_array import OpenGLGeometry
 
 
-class GLContext(Context):
-    #: The OpenGL api. Usually "gl" or "gles".
-    gl_api: str = "gl"
+class OpenGLContext(Context):
+    #: The OpenGL api. Usually "opengl" or "opengles".
+    gl_api: str = "opengl"
 
-    _valid_apis = ("gl", "gles")
+    _valid_apis = ("opengl", "opengles")
 
     def __init__(
-        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "gl"
+        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "opengl"
     ):
         super().__init__(window, gc_mode)
 
         if gl_api not in self._valid_apis:
             if gl_api == "webgl":
                 raise ValueError(
-                    "Tried to create a GLContext with webgl api selected. " +
-                    f"Valid options for this backend are: {self._valid_apis}"
+                    "Tried to create a OpenGLContext with WebGL api selected. "
+                    + f"Valid options for this backend are: {self._valid_apis}"
                 )
             raise ValueError(f"Invalid gl_api. Options are: {self._valid_apis}")
         self.gl_api = gl_api
@@ -48,7 +48,7 @@ class GLContext(Context):
         # This should always be enabled
         # gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
         # Set primitive restart index to -1 by default
-        if self.gl_api == "gles":
+        if self.gl_api == "opengles":
             gl.glEnable(gl.GL_PRIMITIVE_RESTART_FIXED_INDEX)
         else:
             gl.glEnable(gl.GL_PRIMITIVE_RESTART)
@@ -56,7 +56,7 @@ class GLContext(Context):
         # Detect support for glProgramUniform.
         # Assumed to be supported in gles
         self._ext_separate_shader_objects_enabled = True
-        if self.gl_api == "gl":
+        if self.gl_api == "opengl":
             have_ext = gl.gl_info.have_extension("GL_ARB_separate_shader_objects")
             self._ext_separate_shader_objects_enabled = self.gl_version >= (4, 1) or have_ext
 
@@ -123,7 +123,7 @@ class GLContext(Context):
         else:
             gl.glDisable(self.CULL_FACE)
 
-        if self.gl_api == "gl":
+        if self.gl_api == "opengl":
             if gl.GL_PROGRAM_POINT_SIZE in self._flags:
                 gl.glEnable(gl.GL_PROGRAM_POINT_SIZE)
             else:
@@ -193,14 +193,14 @@ class GLContext(Context):
 
     @Context.point_size.setter
     def point_size(self, value: float):
-        if self.gl_api == "gl":
+        if self.gl_api == "opengl":
             gl.glPointSize(self._point_size)
         self._point_size = value
 
     @Context.primitive_restart_index.setter
     def primitive_restart_index(self, value: int):
         self._primitive_restart_index = value
-        if self.gl_api == "gl":
+        if self.gl_api == "opengl":
             gl.glPrimitiveRestartIndex(value)
 
     def finish(self) -> None:
@@ -209,13 +209,13 @@ class GLContext(Context):
     def flush(self) -> None:
         gl.glFlush()
 
-    def _create_default_framebuffer(self) -> GLDefaultFrameBuffer:
-        return GLDefaultFrameBuffer(self)
+    def _create_default_framebuffer(self) -> OpenGLDefaultFrameBuffer:
+        return OpenGLDefaultFrameBuffer(self)
 
     def buffer(
         self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static"
-    ) -> GLBuffer:
-        return GLBuffer(self, data, reserve=reserve, usage=usage)
+    ) -> OpenGLBuffer:
+        return OpenGLBuffer(self, data, reserve=reserve, usage=usage)
 
     def program(
         self,
@@ -229,7 +229,7 @@ class GLContext(Context):
         defines: Dict[str, str] | None = None,
         varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
-    ) -> GLProgram:
+    ) -> OpenGLProgram:
         source_vs = ShaderSource(self, vertex_shader, common, gl.GL_VERTEX_SHADER)
         source_fs = (
             ShaderSource(self, fragment_shader, common, gl.GL_FRAGMENT_SHADER)
@@ -261,7 +261,7 @@ class GLContext(Context):
             else:
                 out_attributes = source_vs.out_attributes
 
-        return GLProgram(
+        return OpenGLProgram(
             self,
             vertex_shader=source_vs.get_source(defines=defines),
             fragment_shader=source_fs.get_source(defines=defines) if source_fs else None,
@@ -275,11 +275,11 @@ class GLContext(Context):
     def geometry(
         self,
         content: Sequence[BufferDescription] | None = None,
-        index_buffer: GLBuffer | None = None,
+        index_buffer: OpenGLBuffer | None = None,
         mode: int | None = None,
         index_element_size: int = 4,
     ):
-        return GLGeometry(
+        return OpenGLGeometry(
             self,
             content,
             index_buffer=index_buffer,
@@ -287,9 +287,9 @@ class GLContext(Context):
             index_element_size=index_element_size,
         )
 
-    def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> GLComputeShader:
+    def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> OpenGLComputeShader:
         src = ShaderSource(self, source, common, pyglet.gl.GL_COMPUTE_SHADER)
-        return GLComputeShader(self, src.get_source())
+        return OpenGLComputeShader(self, src.get_source())
 
     def texture(
         self,
@@ -306,10 +306,10 @@ class GLContext(Context):
         internal_format: PyGLenum | None = None,
         compressed: bool = False,
         compressed_data: bool = False,
-    ) -> GLTexture2D:
+    ) -> OpenGLTexture2D:
         compressed = compressed or compressed_data
 
-        return GLTexture2D(
+        return OpenGLTexture2D(
             self,
             size,
             components=components,
@@ -327,23 +327,23 @@ class GLContext(Context):
 
     def depth_texture(
         self, size: Tuple[int, int], *, data: BufferProtocol | None = None
-    ) -> GLTexture2D:
-        return GLTexture2D(self, size, data=data, depth=True)
+    ) -> OpenGLTexture2D:
+        return OpenGLTexture2D(self, size, data=data, depth=True)
 
     def framebuffer(
         self,
         *,
-        color_attachments: GLTexture2D | List[GLTexture2D] | None = None,
-        depth_attachment: GLTexture2D | None = None,
-    ) -> GLFramebuffer:
-        return GLFramebuffer(
+        color_attachments: OpenGLTexture2D | List[OpenGLTexture2D] | None = None,
+        depth_attachment: OpenGLTexture2D | None = None,
+    ) -> OpenGLFramebuffer:
+        return OpenGLFramebuffer(
             self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
         )
 
     def copy_framebuffer(
         self,
-        src: GLFramebuffer,
-        dst: GLFramebuffer,
+        src: OpenGLFramebuffer,
+        dst: OpenGLFramebuffer,
         src_attachment_index: int = 0,
         depth: bool = True,
     ):
@@ -375,7 +375,7 @@ class GLContext(Context):
         # Reset states. We can also apply previous states here
         gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)
 
-    def sampler(self, texture: GLTexture2D) -> GLSampler:
+    def sampler(self, texture: OpenGLTexture2D) -> OpenGLSampler:
         """
         Create a sampler object for a texture.
 
@@ -383,7 +383,7 @@ class GLContext(Context):
             texture:
                 The texture to create a sampler for
         """
-        return GLSampler(self, texture)
+        return OpenGLSampler(self, texture)
 
     def texture_array(
         self,
@@ -395,8 +395,8 @@ class GLContext(Context):
         wrap_x: PyGLenum | None = None,
         wrap_y: PyGLenum | None = None,
         filter: Tuple[PyGLenum, PyGLenum] | None = None,
-    ) -> GLTextureArray:
-        return GLTextureArray(
+    ) -> OpenGLTextureArray:
+        return OpenGLTextureArray(
             self,
             size,
             components=components,
@@ -407,17 +407,17 @@ class GLContext(Context):
             filter=filter,
         )
 
-    def query(self, *, samples=True, time=True, primitives=True) -> GLQuery:
-        return GLQuery(self, samples=samples, time=time, primitives=primitives)
+    def query(self, *, samples=True, time=True, primitives=True) -> OpenGLQuery:
+        return OpenGLQuery(self, samples=samples, time=time, primitives=primitives)
 
 
-class GLArcadeContext(ArcadeContext, GLContext):
+class OpenGLArcadeContext(ArcadeContext, OpenGLContext):
     def __init__(self, *args, **kwargs):
-        GLContext.__init__(self, *args, **kwargs)
+        OpenGLContext.__init__(self, *args, **kwargs)
         ArcadeContext.__init__(self, *args, **kwargs)
 
 
-class GLInfo(Info):
+class OpenGLInfo(Info):
     """OpenGL info and capabilities"""
 
     def __init__(self, ctx):

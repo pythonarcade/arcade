@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from arcade.gl import Context
 
 
-class GLQuery(Query):
+class OpenGLQuery(Query):
     """
     A query object to perform low level measurements of OpenGL rendering calls.
 
@@ -65,10 +65,10 @@ class GLQuery(Query):
             glos.append(glo_primitives_generated)
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, GLQuery.delete_glo, self._ctx, glos)
+            weakref.finalize(self, OpenGLQuery.delete_glo, self._ctx, glos)
 
     def __enter__(self):
-        if self._ctx.gl_api == "gl":
+        if self._ctx.gl_api == "opengl":
             if self._samples_enabled:
                 gl.glBeginQuery(gl.GL_SAMPLES_PASSED, self._glo_samples_passed)
             if self._time_enabled:
@@ -77,7 +77,7 @@ class GLQuery(Query):
             gl.glBeginQuery(gl.GL_PRIMITIVES_GENERATED, self._glo_primitives_generated)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self._ctx.gl_api == "gl":
+        if self._ctx.gl_api == "opengl":
             if self._samples_enabled:
                 gl.glEndQuery(gl.GL_SAMPLES_PASSED)
                 value = gl.GLint()
@@ -102,7 +102,7 @@ class GLQuery(Query):
 
         Don't use this unless you know exactly what you are doing.
         """
-        GLQuery.delete_glo(
+        OpenGLQuery.delete_glo(
             self._ctx,
             [
                 self._glo_samples_passed,

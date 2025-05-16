@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from arcade.gl import Context
 
 
-class GLComputeShader(ComputeShader):
+class OpenGLComputeShader(ComputeShader):
     """
     A higher level wrapper for an OpenGL compute shader.
 
@@ -93,7 +93,7 @@ class GLComputeShader(ComputeShader):
         self._introspect_uniform_blocks()
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, GLComputeShader.delete_glo, self._ctx, glo)
+            weakref.finalize(self, OpenGLComputeShader.delete_glo, self._ctx, glo)
 
     @property
     def glo(self) -> int:
@@ -174,7 +174,7 @@ class GLComputeShader(ComputeShader):
         This is normally not necessary, but depends on the
         garbage collection configured in the context.
         """
-        GLComputeShader.delete_glo(self._ctx, self._glo)
+        OpenGLComputeShader.delete_glo(self._ctx, self._glo)
         self._glo = 0
 
     @staticmethod

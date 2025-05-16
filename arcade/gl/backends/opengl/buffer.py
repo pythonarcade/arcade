@@ -21,7 +21,7 @@ _usages = {
 }
 
 
-class GLBuffer(Buffer):
+class OpenGLBuffer(Buffer):
     """OpenGL buffer object. Buffers store byte data and upload it
     to graphics memory so shader programs can process the data.
     They are used for storage of vertex data,
@@ -82,7 +82,7 @@ class GLBuffer(Buffer):
             raise ValueError("Buffer takes byte data or number of reserved bytes")
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, GLBuffer.delete_glo, self.ctx, glo)
+            weakref.finalize(self, OpenGLBuffer.delete_glo, self.ctx, glo)
 
     def __repr__(self):
         return f"<Buffer {self._glo.value}>"
@@ -103,7 +103,7 @@ class GLBuffer(Buffer):
 
         .. warning:: Don't use this unless you know exactly what you are doing.
         """
-        GLBuffer.delete_glo(self._ctx, self._glo)
+        OpenGLBuffer.delete_glo(self._ctx, self._glo)
         self._glo.value = 0
 
     @staticmethod

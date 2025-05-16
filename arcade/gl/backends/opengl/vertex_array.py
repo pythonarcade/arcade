@@ -25,7 +25,7 @@ index_types = [
 ]
 
 
-class GLVertexArray(VertexArray):
+class OpenGLVertexArray(VertexArray):
     """
     Wrapper for Vertex Array Objects (VAOs).
 
@@ -70,7 +70,7 @@ class GLVertexArray(VertexArray):
         self._build(program, content, index_buffer)
 
         if self._ctx.gc_mode == "auto":
-            weakref.finalize(self, GLVertexArray.delete_glo, self.ctx, glo)
+            weakref.finalize(self, OpenGLVertexArray.delete_glo, self.ctx, glo)
 
     def __repr__(self) -> str:
         return f"<VertexArray {self.glo.value}>"
@@ -86,7 +86,7 @@ class GLVertexArray(VertexArray):
 
         Don't use this unless you know exactly what you are doing.
         """
-        GLVertexArray.delete_glo(self._ctx, self.glo)
+        OpenGLVertexArray.delete_glo(self._ctx, self.glo)
         self.glo.value = 0
 
     @staticmethod
@@ -436,7 +436,7 @@ class GLVertexArray(VertexArray):
         gl.glDisable(gl.GL_RASTERIZER_DISCARD)
 
 
-class GLGeometry(Geometry):
+class OpenGLGeometry(Geometry):
     """A higher level abstraction of the VertexArray.
 
     It generates VertexArray instances on the fly internally matching the incoming
@@ -481,7 +481,7 @@ class GLGeometry(Geometry):
         """
         # print(f"Generating vao for key {program.attribute_key}")
 
-        vao = GLVertexArray(
+        vao = OpenGLVertexArray(
             self._ctx,
             program,
             self._content,

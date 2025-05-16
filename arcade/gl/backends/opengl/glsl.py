@@ -50,7 +50,7 @@ class ShaderSource:
         self._version = self._find_glsl_version()
 
         # GLES specific modifications
-        if ctx.gl_api == "gles":
+        if ctx.gl_api == "opengles":
             # TODO: Use the version from the context
             self._lines[0] = "#version 310 es"
             self._lines.insert(1, "precision mediump float;")
