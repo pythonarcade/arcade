@@ -1,8 +1,8 @@
 
 .. py:currentmodule:: arcade.gl.types
 
-Types
-=====
+Types (Base)
+============
 
 .. autodata:: BufferProtocol
 .. autodata:: BufferOrBufferProtocol
@@ -13,8 +13,8 @@ Types
 .. autodata:: BlendFunction
 
 .. autodata:: compare_funcs
-.. autodata:: swizzle_enum_to_str
-.. autodata:: swizzle_str_to_enum
+.. .. autodata:: swizzle_enum_to_str
+.. .. autodata:: swizzle_str_to_enum
 .. autodata:: pixel_formats
 
 .. autodata:: SHADER_TYPE_NAMES

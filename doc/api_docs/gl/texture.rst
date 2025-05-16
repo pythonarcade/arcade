@@ -1,8 +1,8 @@
 
 .. py:currentmodule:: arcade
 
-Texture
-=======
+Texture(Base)
+=============
 
 .. autoclass:: arcade.gl.Texture2D
    :members:

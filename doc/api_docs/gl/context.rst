@@ -4,26 +4,26 @@
 Context
 =======
 
-Context
--------
+Context (Base)
+--------------
 
-.. autoclass:: arcade.gl.Context
+.. autoclass:: arcade.gl.context.Context
    :members:
    :undoc-members:
    :show-inheritance:
    :member-order: bysource
 
-ContextStats
-------------
+ContextStats (Base)
+-------------------
 
 .. autoclass:: arcade.gl.context.ContextStats
    :members:
    :member-order: bysource
 
-GLInfo
-------
+Info (Base)
+-------------
 
-.. autoclass:: arcade.gl.context.GLInfo
+.. autoclass:: arcade.gl.context.Info
    :members:
    :undoc-members:
    :member-order: bysource

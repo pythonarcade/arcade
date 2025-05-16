@@ -1,10 +1,10 @@
 
 .. py:currentmodule:: arcade
 
-Buffer
-======
+Buffer (base)
+=============
 
-.. autoclass:: arcade.gl.Buffer
+.. autoclass:: arcade.gl.buffer.Buffer
    :members:
    :undoc-members:
    :show-inheritance:

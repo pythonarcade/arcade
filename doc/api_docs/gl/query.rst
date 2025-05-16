@@ -1,8 +1,8 @@
 
 .. py:currentmodule:: arcade
 
-Query
-=====
+Query (Base)
+============
 
 .. autoclass:: arcade.gl.Query
    :members:

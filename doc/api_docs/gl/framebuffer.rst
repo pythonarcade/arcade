@@ -1,8 +1,8 @@
 
 .. py:currentmodule:: arcade
 
-Framebuffer
-===========
+Framebuffer (Base)
+==================
 
 .. autoclass:: arcade.gl.Framebuffer
    :members:

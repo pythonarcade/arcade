@@ -1,8 +1,8 @@
 
 .. py:currentmodule:: arcade
 
-Geometry
-========
+Geometry (Base)
+===============
 
 .. autoclass:: arcade.gl.Geometry
    :members:

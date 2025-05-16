@@ -1,10 +1,3 @@
-.. py:currentmodule:: arcade
+:orphan:
 
-utils
-=====
-
-.. automodule:: arcade.gl.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :member-order: bysource
+.. temp freefloating since this isn't a "required" part of the spec?

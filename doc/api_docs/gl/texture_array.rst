@@ -1,8 +1,8 @@
 
 .. py:currentmodule:: arcade
 
-TextureArray
-============
+TextureArray (Base)
+===================
 
 .. autoclass:: arcade.gl.TextureArray
    :members:

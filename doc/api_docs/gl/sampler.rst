@@ -1,8 +1,8 @@
 
 .. py:currentmodule:: arcade
 
-Sampler
-=======
+Sampler (Base)
+==============
 
 .. autoclass:: arcade.gl.Sampler
    :members:
