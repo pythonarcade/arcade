@@ -31,9 +31,15 @@ class UIView(View):
         The UIManager of this view.
         """
 
-    def add_widget(self, widget: W) -> W:
-        """Add a widget to the UIManager of this view."""
-        return self.ui.add(widget)
+    def add_widget(self, widget: W, *, index=None, layer=UIManager.DEFAULT_LAYER) -> W:
+        """Add a widget to the UIManager of this view.
+
+        Args:
+            widget: widget to add
+            index: position a widget is added, None has the highest priority
+            layer: layer which the widget should be added to, higher layer are above
+        """
+        return self.ui.add(widget, index=index, layer=layer)
 
     def on_show_view(self):
         """If subclassing UIView, don't forget to call super().on_show_view()."""

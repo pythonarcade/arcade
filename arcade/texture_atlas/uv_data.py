@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from array import array
 from collections import deque
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 from .base import (
     UV_TEXTURE_WIDTH,
@@ -60,7 +60,7 @@ class UVData:
         # Python resources: data + tracker for slots
         # 8 floats per texture (4 x vec2 coordinates)
         self._data = array("f", [0] * self._num_slots * 8)
-        self._slots: Dict[str, int] = dict()
+        self._slots: dict[str, int] = dict()
         self._slots_free = deque(i for i in range(0, self._num_slots))
 
     def clone_with_slots(self) -> UVData:
@@ -89,7 +89,7 @@ class UVData:
         return len(self._slots_free)
 
     @property
-    def texture(self) -> "Texture2D":
+    def texture(self) -> Texture2D:
         """The opengl texture containing the texture coordinates"""
         return self._texture
 
@@ -124,11 +124,9 @@ class UVData:
             return slot
         except IndexError:
             raise Exception(
-                (
-                    "No more free slots in the UV texture."
-                    f"Max number of textures: {self._num_slots}."
-                    "Consider creating a texture atlas with a larger capacity."
-                )
+                "No more free slots in the UV texture."
+                f"Max number of textures: {self._num_slots}."
+                "Consider creating a texture atlas with a larger capacity."
             )
 
     def free_slot_by_name(self, name: str) -> None:

@@ -5,7 +5,7 @@ actually emits them, and manages them over their lifetime
 
 from __future__ import annotations
 
-from typing import Callable, cast
+from collections.abc import Callable
 
 import arcade
 from arcade import Vec2
@@ -135,7 +135,7 @@ class Emitter:
         self,
         center_xy: Point,
         emit_controller: EmitController,
-        particle_factory: Callable[["Emitter"], Particle],
+        particle_factory: Callable[[Emitter], Particle],
         change_xy: Velocity = (0.0, 0.0),
         emit_done_cb: Callable[[Emitter], None] | None = None,
         reap_cb: Callable[[], None] | None = None,
@@ -151,7 +151,7 @@ class Emitter:
         self.particle_factory = particle_factory
         self._emit_done_cb = emit_done_cb
         self._reap_cb = reap_cb
-        self._particles: arcade.SpriteList = arcade.SpriteList(use_spatial_hash=False)
+        self._particles: arcade.SpriteList[Particle] = arcade.SpriteList(use_spatial_hash=False)
 
     def _emit(self):
         """
@@ -189,7 +189,7 @@ class Emitter:
         for _ in range(emit_count):
             self._emit()
         self._particles.update(delta_time)
-        particles_to_reap = [p for p in self._particles if cast(Particle, p).can_reap()]
+        particles_to_reap = [p for p in self._particles if p.can_reap()]
         for dead_particle in particles_to_reap:
             dead_particle.kill()
 

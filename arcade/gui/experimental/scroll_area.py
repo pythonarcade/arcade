@@ -1,27 +1,28 @@
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
+from typing import TypeVar
 
 from pyglet.event import EVENT_UNHANDLED
 
 import arcade
 from arcade import XYWH
-from arcade.gui import (
-    Property,
-    Surface,
+from arcade.gui.events import (
     UIEvent,
-    UIKeyPressEvent,
-    UILayout,
     UIMouseDragEvent,
     UIMouseEvent,
     UIMouseMovementEvent,
     UIMousePressEvent,
     UIMouseReleaseEvent,
     UIMouseScrollEvent,
-    UIWidget,
-    bind,
 )
+from arcade.gui.property import Property, bind
+from arcade.gui.surface import Surface
+from arcade.gui.widgets import UIWidget
+from arcade.gui.widgets.layout import UILayout
 from arcade.types import LBWH
+
+W = TypeVar("W", bound="UIWidget")
 
 
 class UIScrollBar(UIWidget):
@@ -42,8 +43,6 @@ class UIScrollBar(UIWidget):
         self.with_background(color=arcade.color.LIGHT_GRAY)
         self.with_border(color=arcade.uicolor.GRAY_CONCRETE)
         self.vertical = vertical
-
-        # self._scroll_bar_size = 20
 
         bind(self, "_thumb_hover", self.trigger_render)
         bind(self, "_dragging", self.trigger_render)
@@ -99,9 +98,6 @@ class UIScrollBar(UIWidget):
         if isinstance(event, UIMouseReleaseEvent) and self._dragging:
             self._dragging = False
             return True
-
-        if isinstance(event, UIKeyPressEvent):
-            print(self._scroll_bar_size())
 
         return EVENT_UNHANDLED
 
@@ -210,7 +206,7 @@ class UIScrollArea(UILayout):
         y: float = 0,
         width: float = 300,
         height: float = 300,
-        children: Iterable["UIWidget"] = tuple(),
+        children: Iterable[UIWidget] = tuple(),
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
@@ -242,7 +238,7 @@ class UIScrollArea(UILayout):
         bind(self, "scroll_x", self.trigger_full_render)
         bind(self, "scroll_y", self.trigger_full_render)
 
-    def add(self, child: "UIWidget", **kwargs):
+    def add(self, child: W, **kwargs) -> W:
         """Add a child to the widget."""
         if self._children:
             raise ValueError("UIScrollArea can only have one child")
@@ -250,7 +246,9 @@ class UIScrollArea(UILayout):
         super().add(child, **kwargs)
         self.trigger_full_render()
 
-    def remove(self, child: "UIWidget"):
+        return child
+
+    def remove(self, child: UIWidget):
         """Remove a child from the widget."""
         super().remove(child)
         self.trigger_full_render()
@@ -322,6 +320,7 @@ class UIScrollArea(UILayout):
             self.do_render_base(surface)
             self.do_render(surface)
             self._rendered = True
+            self._requires_render = False
 
         return rendered
 

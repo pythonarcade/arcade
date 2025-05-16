@@ -4,7 +4,7 @@ Drawing text with pyglet label
 
 from ctypes import c_int, c_ubyte
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 import pyglet
 
@@ -98,7 +98,7 @@ def load_font(path: str | Path) -> None:
     pyglet.font.add_file(str(file_path))
 
 
-FontNameOrNames = Union[str, tuple[str, ...]]
+FontNameOrNames = str | tuple[str, ...]
 
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
@@ -187,7 +187,7 @@ class Text:
             text_2 = Text("Hello, World 2", 0, 100, batch=batch)
             text_3 = Text("Hello, World 2", 0, 150, batch=batch)
             # Draw the batch
-            bach.draw()
+            batch.draw()
             # Remove a text instance from the batch
             text_2.batch = None
 
@@ -276,7 +276,6 @@ class Text:
         z: float = 0,
         **kwargs,
     ):
-        self._initialized = False
         self._arguments = dict(
             text=text,
             x=x,
@@ -307,10 +306,11 @@ class Text:
                 f"but got {width!r}."
             )
 
+        self._initialized = False
         try:
             self._init_deferred()
         except Exception:
-            self._initialized = False
+            pass
 
     @property
     def label(self) -> pyglet.text.Label:
@@ -334,12 +334,11 @@ class Text:
         """
         Deferred initialization when lazy loaded
         """
-
+        # NOTE: Give the user a clear error message stating that the window is not created yet
         arcade.get_window()
 
         self._arguments["font_name"] = _attempt_font_name_resolution(self._arguments["font_name"])  # type: ignore
         self._label = pyglet.text.Label(**self._arguments)  # type: ignore
-
         self._initialized = True
 
     def __enter__(self):
@@ -645,7 +644,6 @@ class Text:
             instance. For information on how to do this, see
             :ref:`sprite_move_scrolling`.
         """
-        self._init_deferred()
         _draw_pyglet_label(self.label)
 
     def draw_debug(

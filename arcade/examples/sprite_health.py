@@ -7,7 +7,6 @@ If Python and Arcade are installed, this example can be run from the command lin
 python -m arcade.examples.sprite_health
 """
 import math
-from typing import Tuple
 
 import arcade
 from arcade.types import Color
@@ -102,13 +101,13 @@ class IndicatorBar:
         self,
         owner: Player,
         sprite_list: arcade.SpriteList,
-        position: Tuple[float, float] = (0, 0),
+        position: tuple[float, float] = (0, 0),
         full_color: Color = arcade.color.GREEN,
         background_color: Color = arcade.color.BLACK,
         width: int = 100,
         height: int = 4,
         border_size: int = 4,
-        scale: Tuple[float, float] = (1.0, 1.0),
+        scale: tuple[float, float] = (1.0, 1.0),
     ) -> None:
         # Store the reference to the owner and the sprite list
         self.owner: Player = owner
@@ -120,7 +119,7 @@ class IndicatorBar:
         self._center_x: float = 0.0
         self._center_y: float = 0.0
         self._fullness: float = 0.0
-        self._scale: Tuple[float, float] = (1.0, 1.0)
+        self._scale: tuple[float, float] = (1.0, 1.0)
 
         # Create the boxes needed to represent the indicator bar
         self._background_box: arcade.SpriteSolidColor = arcade.SpriteSolidColor(
@@ -220,12 +219,12 @@ class IndicatorBar:
             self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale[0]
 
     @property
-    def position(self) -> Tuple[float, float]:
+    def position(self) -> tuple[float, float]:
         """Returns the current position of the bar."""
         return self._center_x, self._center_y
 
     @position.setter
-    def position(self, new_position: Tuple[float, float]) -> None:
+    def position(self, new_position: tuple[float, float]) -> None:
         """Sets the new position of the bar."""
         # Check if the position has changed. If so, change the bar's position
         if new_position != self.position:
@@ -237,12 +236,12 @@ class IndicatorBar:
             self.full_box.left = self._center_x - (self._bar_width / 2) * self.scale[0]
 
     @property
-    def scale(self) -> Tuple[float, float]:
+    def scale(self) -> tuple[float, float]:
         """Returns the scale of the bar."""
         return self._scale
 
     @scale.setter
-    def scale(self, value: Tuple[float, float]) -> None:
+    def scale(self, value: tuple[float, float]) -> None:
         """Sets the new scale of the bar."""
         # Check if the scale has changed. If so, change the bar's scale
         if value != self.scale:

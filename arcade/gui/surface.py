@@ -1,14 +1,16 @@
+from array import array
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Generator
 
 from PIL import Image
+from pyglet.math import Vec2, Vec4
 from typing_extensions import Self
 
 import arcade
 from arcade import Texture
 from arcade.camera import CameraData, OrthographicProjectionData, OrthographicProjector
 from arcade.color import TRANSPARENT_BLACK
-from arcade.gl import Framebuffer
+from arcade.gl import BufferDescription, Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.types import LBWH, RGBA255, Point, Rect
 
@@ -37,6 +39,7 @@ class Surface:
         self._pos = position
         self._pixel_ratio = pixel_ratio
         self._pixelated = False
+        self._area: Rect | None = None  # Cached area for the last draw call
 
         self.texture = self.ctx.texture(self.size_scaled, components=4)
         self.fbo: Framebuffer = self.ctx.framebuffer(color_attachments=[self.texture])
@@ -53,12 +56,17 @@ class Surface:
             *self.ctx.BLEND_DEFAULT,
         )
 
-        self._geometry = self.ctx.geometry()
+        # 5 floats per vertex (pos 3f, tex 2f) with 4 vertices
+        self._buffer = self.ctx.buffer(reserve=4 * 5 * 4)
+        self._geometry = self.ctx.geometry(
+            content=[BufferDescription(self._buffer, "3f 2f", ["in_pos", "in_uv"])],
+            mode=self.ctx.TRIANGLE_STRIP,
+        )
         self._program = self.ctx.load_program(
             vertex_shader=":system:shaders/gui/surface_vs.glsl",
-            geometry_shader=":system:shaders/gui/surface_gs.glsl",
             fragment_shader=":system:shaders/gui/surface_fs.glsl",
         )
+        self._update_geometry()
 
         self._cam = OrthographicProjector(
             view=CameraData(),
@@ -228,6 +236,8 @@ class Surface:
             area: Limit the area in the surface we're drawing
                 (l, b, w, h)
         """
+        self._update_geometry(area=area)
+
         # Set blend function
         blend_func = self.ctx.blend_func
         self.ctx.blend_func = self.blend_func_render
@@ -239,10 +249,7 @@ class Surface:
             self.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         self.texture.use(0)
-        self._program["pos"] = self._pos
-        self._program["size"] = self._size
-        self._program["area"] = (0, 0, *self._size) if not area else area.lbwh
-        self._geometry.render(self._program, vertices=1)
+        self._geometry.render(self._program)
 
         # Restore blend function
         self.ctx.blend_func = blend_func
@@ -267,3 +274,52 @@ class Surface:
     def to_image(self) -> Image.Image:
         """Convert the surface to an PIL image"""
         return self.ctx.get_framebuffer_image(self.fbo)
+
+    def _update_geometry(self, area: Rect | None = None) -> None:
+        """
+        Update the internal geometry of the surface mesh.
+
+        The geometry is a triangle strip with 4 vertices.
+        """
+        if area is None:
+            area = LBWH(0, 0, *self.size)
+
+        if self._area == area:
+            return
+        self._area = area
+
+        # Clamp the area inside the surface
+        # This is the local area inside the surface
+        _size = Vec2(*self.size)
+        _pos = Vec2(*self.position)
+        _area_pos = Vec2(area.left, area.bottom)
+        _area_size = Vec2(area.width, area.height)
+
+        b1 = _area_pos.clamp(Vec2(0.0), _size)
+        end_point = _area_pos + _area_size
+        b2 = end_point.clamp(Vec2(0.0), _size)
+        b = b2 - b1
+        l_area = Vec4(b1.x, b1.y, b.x, b.y)
+
+        # Create the 4 corners of the rectangle
+        # These are the final/global coordinates rendered
+        p_ll = _pos + l_area.xy  # type: ignore
+        p_lr = _pos + l_area.xy + Vec2(l_area.z, 0.0)  # type: ignore
+        p_ul = _pos + l_area.xy + Vec2(0.0, l_area.w)  # type: ignore
+        p_ur = _pos + l_area.xy + l_area.zw  # type: ignore
+
+        # Calculate the UV coordinates
+        bottom = l_area.y / _size.y
+        left = l_area.x / _size.x
+        top = (l_area.y + l_area.w) / _size.y
+        right = (l_area.x + l_area.z) / _size.x
+
+        # fmt: off
+        vertices = array("f", (
+            p_ll.x, p_ll.y, 0.0, left, bottom,
+            p_lr.x, p_lr.y, 0.0, right, bottom,
+            p_ul.x, p_ul.y, 0.0, left, top,
+            p_ur.x, p_ur.y, 0.0, right, top,
+        ))
+        # fmt: on
+        self._buffer.write(vertices)

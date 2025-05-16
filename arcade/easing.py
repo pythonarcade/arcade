@@ -2,9 +2,9 @@
 Functions used to support easing
 """
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from math import cos, pi, sin
-from typing import Callable
 
 from .math import get_distance
 

@@ -3,9 +3,27 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
-## Version 3.1.1
+## Unreleased
 
-* Text objects are now lazy and can be created before the window
+- Fixed an issue causing a crash when closing the window
+- Added `Window.close` (bool) attribute indicating if the window is closed
+
+## Version 3.2
+
+- GUI
+  - Fix `UIScrollArea.add` always returning None
+  - Support `layer` in `UIView.add_widget()`
+  - Fix a bug which caused `UIScrollArea` to refresh on every frame
+  - Add stepping to `UISlider` (thanks [csd4ni3l](https://github.com/csd4ni3l))
+  - Experimental controller support (incl. documentation)
+- Text objects are now lazy and can be created before the window
+- Introduce `arcade.SpriteSequence[T]` as a covariant supertype of `arcade.SpriteList[T]`
+  (this is similar to Python's `Sequence[T]`, which is a supertype of `list[T]`)
+  and various improvements to the typing of the API that leverage it
+- Fixed a nasty memory leak in texture atlases. This only affects projects managing their own atlases
+- Fixed a bug causing some events to not trigger on the window's keyboard and mouse state handlers
+- New minimum pyglet version is now 2.1.5
+- Some shaders programs were rewritten to not use geometry shaders in preparation for webgl support
 
 ## Version 3.1.0
 
@@ -20,11 +38,11 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - `arcade.gui.widgets.text.UIInputText`
     - now supports styles for `normal`, `disabled`, `hovered`, `pressed` and `invalid` states
     - provides a `invalid` property to indicate if the input is invalid
-  - Added experimental `arcade.gui.experimental.UIRestrictedInput` 
+  - Added experimental `arcade.gui.experimental.UIRestrictedInput`
     a subclass of `UIInputText` that restricts the input to a specific set of characters
   - `arcade.gui.NinePatchTexture` is now lazy and can be created before a window exists allowing creation during imports.
   - Improve `arcade.gui.experimental.scroll_area.ScrollBar` behavior to match HTML scrollbars
-- Support drawing hitboxes using RBG or RGBA 
+- Support drawing hitboxes using RBG or RGBA
 - Fixed a bug causing some events to not trigger on the window's keyboard and mouse state handlers
 - Many documenation fixes and improvements
 - Various example fixes

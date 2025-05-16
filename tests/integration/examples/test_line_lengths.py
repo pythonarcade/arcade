@@ -1,6 +1,6 @@
 """
 Examples should never exceed a certain line length to ensure readability
-in the documentation. The source code gets clipped after 90 ish characters.
+in the documentation. The source code gets clipped after 100 ish characters.
 
 Adapted from util/check_example_line_length.py
 """
@@ -29,7 +29,7 @@ def is_ignored(path: Path):
 def test_line_lengths():
     paths = EXAMPLE_ROOT.glob("**/*.py")
 
-    regex = re.compile("^.{100}.*$")
+    regex = re.compile("^.{100}.+$")
     grand_total = 0
     file_count = 0
 
@@ -42,7 +42,7 @@ def test_line_lengths():
         with open(path, encoding="utf8") as f:
             for line in f:
                 line_no += 1
-                result = regex.search(line.strip("\r"))
+                result = regex.search(line.strip("\r").strip("\n"))
                 if result:
                     print(f"  {path.relative_to(EXAMPLE_ROOT)}:{line_no}: " + line.strip())
                     grand_total += 1

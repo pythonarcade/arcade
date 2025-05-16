@@ -1,5 +1,4 @@
 import math
-from typing import Union
 
 from typing_extensions import override
 
@@ -28,7 +27,7 @@ class UIImage(UIWidget):
         **kwargs: passed to UIWidget
     """
 
-    texture = Property[Union[Texture, NinePatchTexture]]()
+    texture = Property[Texture | NinePatchTexture]()
     """Texture to show"""
     alpha = Property(255)
     """Alpha value of the texture, value between 0 and 255.
@@ -40,7 +39,7 @@ class UIImage(UIWidget):
     def __init__(
         self,
         *,
-        texture: Union[Texture, NinePatchTexture],
+        texture: Texture | NinePatchTexture,
         width: float | None = None,
         height: float | None = None,
         angle: int = 0,

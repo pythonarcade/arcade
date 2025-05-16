@@ -6,7 +6,7 @@ to start using particle systems.
 """
 
 import random
-from typing import Sequence
+from collections.abc import Sequence
 
 from arcade.math import rand_in_circle, rand_on_circle
 from arcade.types import PathOrTexture, Point

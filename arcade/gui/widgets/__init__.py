@@ -1,5 +1,9 @@
+from __future__ import annotations
+
 from abc import ABC
-from typing import Dict, Iterable, List, NamedTuple, Optional, TYPE_CHECKING, Tuple, TypeVar, Union
+from collections.abc import Iterable
+from enum import IntEnum
+from typing import TYPE_CHECKING, NamedTuple, TypeVar
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from pyglet.math import Vec2
@@ -25,14 +29,25 @@ from arcade.utils import copy_dunders_unimplemented
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
-__all__ = ["Surface", "UIDummy"]
-
 W = TypeVar("W", bound="UIWidget")
 
 
+class FocusMode(IntEnum):
+    """Defines the focus mode of a widget.
+
+    0: Not focusable
+    1: Focusable
+
+    We might support different focus modes in the future, but for now on/off is enough.
+    """
+
+    NONE = 0
+    ALL = 2
+
+
 class _ChildEntry(NamedTuple):
-    child: "UIWidget"
-    data: Dict
+    child: UIWidget
+    data: dict
 
 
 @copy_dunders_unimplemented
@@ -57,16 +72,18 @@ class UIWidget(EventDispatcher, ABC):
 
     rect = Property(LBWH(0, 0, 1, 1))
     visible = Property(True)
+    focused = Property(False)
+    focus_mode: FocusMode = FocusMode.NONE
 
-    size_hint = Property[Optional[Tuple[Optional[float], Optional[float]]]](None)
-    size_hint_min = Property[Optional[Tuple[Optional[float], Optional[float]]]](None)
-    size_hint_max = Property[Optional[Tuple[Optional[float], Optional[float]]]](None)
+    size_hint = Property[tuple[float | None, float | None] | None](None)
+    size_hint_min = Property[tuple[float | None, float | None] | None](None)
+    size_hint_max = Property[tuple[float | None, float | None] | None](None)
 
     _children = ListProperty[_ChildEntry]()
     _border_width = Property(0)
-    _border_color = Property[Optional[Color]](arcade.color.BLACK)
-    _bg_color = Property[Optional[Color]]()
-    _bg_tex = Property[Union[Texture, NinePatchTexture, None]]()
+    _border_color = Property[Color | None](arcade.color.BLACK)
+    _bg_color = Property[Color | None]()
+    _bg_tex = Property[Texture | NinePatchTexture | None]()
     _padding_top = Property(0)
     _padding_right = Property(0)
     _padding_bottom = Property(0)
@@ -84,11 +101,11 @@ class UIWidget(EventDispatcher, ABC):
         y: float = 0,
         width: float = 100,
         height: float = 100,
-        children: Iterable["UIWidget"] = tuple(),
+        children: Iterable[UIWidget] = tuple(),
         # Properties which might be used by layouts
-        size_hint: Optional[Tuple[float | None, float | None]] = None,  # in percentage
-        size_hint_min: Optional[Tuple[float | None, float | None]] = None,  # in pixel
-        size_hint_max: Optional[Tuple[float | None, float | None]] = None,  # in pixel
+        size_hint: tuple[float | None, float | None] | None = None,  # in percentage
+        size_hint_min: tuple[float | None, float | None] | None = None,  # in pixel
+        size_hint_max: tuple[float | None, float | None] | None = None,  # in pixel
         **kwargs,
     ):
         self._requires_render = True
@@ -107,6 +124,7 @@ class UIWidget(EventDispatcher, ABC):
             self.add(child)
 
         bind(self, "rect", self.trigger_full_render)
+        bind(self, "focused", self.trigger_full_render)
         bind(
             self, "visible", self.trigger_full_render
         )  # TODO maybe trigger_parent_render would be enough
@@ -148,7 +166,7 @@ class UIWidget(EventDispatcher, ABC):
 
         return child
 
-    def remove(self, child: "UIWidget") -> dict | None:
+    def remove(self, child: UIWidget) -> dict | None:
         """Removes a child from the UIManager which was directly added to it.
         This will not remove widgets which are added to a child of UIManager.
 
@@ -190,7 +208,7 @@ class UIWidget(EventDispatcher, ABC):
 
         return EVENT_UNHANDLED
 
-    def _walk_parents(self) -> Iterable[Union["UIWidget", "UIManager"]]:
+    def _walk_parents(self) -> Iterable[UIWidget | UIManager]:
         parent = self.parent
         while isinstance(parent, UIWidget):
             yield parent
@@ -242,6 +260,8 @@ class UIWidget(EventDispatcher, ABC):
             rendered = True
             self.do_render_base(surface)
             self.do_render(surface)
+            if self.focused:
+                self.do_render_focus(surface)
             self._requires_render = False
 
         # only render children if self is visible
@@ -292,6 +312,15 @@ class UIWidget(EventDispatcher, ABC):
         """
         pass
 
+    def do_render_focus(self, surface: Surface):
+        """Render the widgets focus representation overlay`"""
+        self.prepare_render(surface)
+        arcade.draw_rect_outline(
+            rect=LBWH(0, 0, self.content_width, self.content_height),
+            color=arcade.color.WHITE,
+            border_width=4,
+        )
+
     def dispatch_ui_event(self, event: UIEvent):
         """Dispatch a :class:`UIEvent` using pyglet event dispatch mechanism"""
         return self.dispatch_event("on_event", event)
@@ -313,6 +342,19 @@ class UIWidget(EventDispatcher, ABC):
             anchor: anchor point
         """
         self.rect = self.rect.scale(new_scale=factor, anchor=anchor)
+
+    def get_ui_manager(self) -> UIManager | None:
+        """The UIManager this widget is attached to. During creation, this will be None."""
+        from arcade.gui.ui_manager import UIManager
+
+        w: UIWidget | None = self
+        while w and w.parent:
+            parent = w.parent
+            if isinstance(parent, UIManager):
+                return parent
+
+            w = parent
+        return None
 
     @property
     def left(self) -> float:
@@ -345,7 +387,7 @@ class UIWidget(EventDispatcher, ABC):
         return self.rect.center
 
     @center.setter
-    def center(self, value: Tuple[int, int]):
+    def center(self, value: tuple[int, int]):
         self.rect = self.rect.align_center(value)
 
     @property
@@ -369,7 +411,7 @@ class UIWidget(EventDispatcher, ABC):
         )
 
     @padding.setter
-    def padding(self, args: Union[int, Tuple[int, int], Tuple[int, int, int, int]]):
+    def padding(self, args: int | tuple[int, int] | tuple[int, int, int, int]):
         if isinstance(args, int):  # self.padding = 10 -> 10, 10, 10, 10
             args = (args, args, args, args)
 
@@ -383,7 +425,7 @@ class UIWidget(EventDispatcher, ABC):
         self._padding_left = pl
 
     @property
-    def children(self) -> List["UIWidget"]:
+    def children(self) -> list[UIWidget]:
         """Provides all child widgets."""
         return [child for child, data in self._children]
 
@@ -443,8 +485,8 @@ class UIWidget(EventDispatcher, ABC):
     def with_background(
         self,
         *,
-        color: Union[None, Color] = ...,  # type: ignore
-        texture: Union[None, Texture, NinePatchTexture] = ...,  # type: ignore
+        color: None | Color = ...,  # type: ignore
+        texture: None | Texture | NinePatchTexture = ...,  # type: ignore
     ) -> Self:
         """Set widgets background.
 
@@ -470,7 +512,7 @@ class UIWidget(EventDispatcher, ABC):
         return self
 
     @property
-    def content_size(self) -> Tuple[float, float]:
+    def content_size(self) -> tuple[float, float]:
         """Returns the size of the content area,
         which is the size of the widget minus padding and border."""
         return self.content_width, self.content_height
@@ -549,6 +591,8 @@ class UIInteractiveWidget(UIWidget):
         interaction_buttons: defines, which mouse buttons should trigger
             the interaction (default: left mouse button)
     """
+
+    focus_mode = FocusMode.ALL
 
     # States
     hovered = Property(False)
@@ -768,7 +812,7 @@ class UILayout(UIWidget):
     """
 
     @staticmethod
-    def min_size_of(child: UIWidget) -> Tuple[float, float]:
+    def min_size_of(child: UIWidget) -> tuple[float, float]:
         """Resolves the minimum size of a child. If it has a size_hint set for the axis,
         it will use size_hint_min if set, otherwise the actual size will be used.
         """
@@ -867,3 +911,6 @@ class UISpace(UIWidget):
     @color.setter
     def color(self, value):
         self.with_background(color=value)
+
+
+__all__ = ["Surface", "UIDummy", "FocusMode", "UIInteractiveWidget", "UIWidget"]

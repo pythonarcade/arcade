@@ -1,13 +1,13 @@
 import warnings
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Union
+from typing import Literal
 
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
-from typing_extensions import Literal, override
+from typing_extensions import override
 
 import arcade
 from arcade import uicolor
@@ -513,7 +513,7 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        style: Union[dict[str, UIInputTextStyle], None] = None,
+        style: dict[str, UIInputTextStyle] | None = None,
         **kwargs,
     ):
         if border_color != arcade.color.WHITE or border_width != 2:

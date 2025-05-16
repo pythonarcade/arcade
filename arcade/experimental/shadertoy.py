@@ -430,7 +430,7 @@ class ShadertoyBuffer(ShadertoyBase):
             return
         self._size = size
         # Resize the internal texture and fbo + clear
-        self._texture.resize((self._size))
+        self._texture.resize(self._size)
         self._fbo.resize()
         self._fbo.clear()
 

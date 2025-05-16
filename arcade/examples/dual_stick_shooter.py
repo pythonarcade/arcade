@@ -31,17 +31,17 @@ ROTATE_OFFSET = -90
 def dump_obj(obj):
     for key in sorted(vars(obj)):
         val = getattr(obj, key)
-        print("{:30} = {} ({})".format(key, val, type(val).__name__))
+        print(f"{key:30} = {val} ({type(val).__name__})")
 
 
 def dump_controller(controller):
-    print("========== {}".format(controller))
-    print("Left X        {}".format(controller.leftx))
-    print("Left Y        {}".format(controller.lefty))
-    print("Left Trigger  {}".format(controller.lefttrigger))
-    print("Right X       {}".format(controller.rightx))
-    print("Right Y       {}".format(controller.righty))
-    print("Right Trigger {}".format(controller.righttrigger))
+    print(f"========== {controller}")
+    print(f"Left X        {controller.leftx}")
+    print(f"Left Y        {controller.lefty}")
+    print(f"Left Trigger  {controller.lefttrigger}")
+    print(f"Right X       {controller.rightx}")
+    print(f"Right Y       {controller.righty}")
+    print(f"Right Trigger {controller.righttrigger}")
     print("========== Extra controller")
     dump_obj(controller)
     print("========== Extra controller.device")

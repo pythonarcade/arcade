@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import contextmanager
 from math import atan2, cos, degrees, radians, sin
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self
@@ -223,12 +224,12 @@ class Camera2D:
             left, right = projection_data.left, projection_data.right
             if projection_data.left == projection_data.right:
                 raise ZeroProjectionDimension(
-                    (f"projection width is 0 due to equal {left=}and {right=} values")
+                    f"projection width is 0 due to equal {left=}and {right=} values"
                 )
             bottom, top = projection_data.bottom, projection_data.top
             if bottom == top:
                 raise ZeroProjectionDimension(
-                    (f"projection height is 0 due to equal {bottom=}and {top=}")
+                    f"projection height is 0 due to equal {bottom=}and {top=}"
                 )
             near, far = projection_data.near, projection_data.far
             if near == far:
@@ -583,7 +584,7 @@ class Camera2D:
     def projection(self, value: Rect) -> None:
         # Unpack and validate
         if not value:
-            raise ZeroProjectionDimension((f"Projection area is 0, {value.lrbt}"))
+            raise ZeroProjectionDimension(f"Projection area is 0, {value.lrbt}")
 
         _z = self._camera_data.zoom
 

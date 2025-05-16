@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import contextmanager
 from math import radians, tan
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self

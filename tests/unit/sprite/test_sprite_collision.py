@@ -311,3 +311,15 @@ def test_get_sprites_in_rect(use_spatial_hash):
     assert set(arcade.get_sprites_in_rect(arcade.LRBT(100, 200, 100, 200), sp)) == set()
     assert set(arcade.get_sprites_in_rect(arcade.LRBT(-100, 0, -100, 0), sp)) == {b, d}
     assert set(arcade.get_sprites_in_rect(arcade.LRBT(100, 0, 100, 0), sp)) == {a, c}
+
+
+def test_cpu_collision_with_lazy_list(window):
+    """
+    Do GPU collision check with lazy list.
+    This ensures that check_for_collision_with_list() will trigger
+    a spritelist initialization if his is not done yet.
+    """
+    sprite = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
+    spritelist = arcade.SpriteList(lazy=True)
+    spritelist.append(arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED))
+    arcade.check_for_collision_with_list(sprite, spritelist, method=2)

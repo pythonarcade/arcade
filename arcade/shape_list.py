@@ -10,10 +10,9 @@ import itertools
 import math
 from array import array
 from collections import OrderedDict
+from collections.abc import Iterable, Sequence
 from typing import (
     Generic,
-    Iterable,
-    Sequence,
     TypeVar,
     cast,
 )

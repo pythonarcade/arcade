@@ -13,9 +13,9 @@ import copy
 import math
 import os
 from collections import OrderedDict
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, List, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import pytiled_parser
 import pytiled_parser.tiled_object
@@ -373,7 +373,7 @@ class TileMap:
         """
         assert isinstance(layer_path, str)
 
-        def _get_tilemap_layer(my_path: List[str], layers):
+        def _get_tilemap_layer(my_path: list[str], layers):
             layer_name = my_path.pop(0)
             for my_layer in layers:
                 if my_layer.name == layer_name:
@@ -670,7 +670,7 @@ class TileMap:
     def _process_image_layer(
         self,
         layer: pytiled_parser.ImageLayer,
-        texture_atlas: "DefaultTextureAtlas",
+        texture_atlas: DefaultTextureAtlas,
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
         hit_box_algorithm: HitBoxAlgorithm | None = None,
@@ -758,7 +758,7 @@ class TileMap:
     def _process_tile_layer(
         self,
         layer: pytiled_parser.TileLayer,
-        texture_atlas: "DefaultTextureAtlas",
+        texture_atlas: DefaultTextureAtlas,
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
         hit_box_algorithm: HitBoxAlgorithm | None = None,
@@ -786,11 +786,9 @@ class TileMap:
                 tile = self._get_tile_by_gid(item)
                 if tile is None:
                     raise ValueError(
-                        (
-                            f"Couldn't find tile for item {item} in layer "
-                            f"'{layer.name}' in file '{self.tiled_map.map_file}'"
-                            f"at ({column_index}, {row_index})."
-                        )
+                        f"Couldn't find tile for item {item} in layer "
+                        f"'{layer.name}' in file '{self.tiled_map.map_file}'"
+                        f"at ({column_index}, {row_index})."
                     )
 
                 my_sprite = self._create_sprite_from_tile(
@@ -836,7 +834,7 @@ class TileMap:
     def _process_object_layer(
         self,
         layer: pytiled_parser.ObjectLayer,
-        texture_atlas: "DefaultTextureAtlas",
+        texture_atlas: DefaultTextureAtlas,
         scaling: float = 1.0,
         use_spatial_hash: bool = False,
         hit_box_algorithm: HitBoxAlgorithm | None = None,

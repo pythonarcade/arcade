@@ -1,4 +1,8 @@
-from arcade.gui import Surface, UIEvent, UIInputText, UITextInputEvent
+from __future__ import annotations
+
+from arcade.gui.events import UIEvent, UITextInputEvent
+from arcade.gui.surface import Surface
+from arcade.gui.widgets.text import UIInputText
 
 
 class UIPasswordInput(UIInputText):

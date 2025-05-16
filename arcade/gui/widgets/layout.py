@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import warnings
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Tuple, TypeVar
+from typing import Literal, TypeVar
 
-from typing_extensions import Literal, override
+from typing_extensions import override
 
 from arcade.gui.property import bind, unbind
 from arcade.gui.widgets import UILayout, UIWidget, _ChildEntry
@@ -74,7 +75,7 @@ class UIAnchorLayout(UILayout):
         y: float = 0,
         width: float = 1,
         height: float = 1,
-        children: Iterable["UIWidget"] = tuple(),
+        children: Iterable[UIWidget] = tuple(),
         size_hint=(1, 1),
         size_hint_min=None,
         size_hint_max=None,
@@ -296,7 +297,7 @@ class UIBoxLayout(UILayout):
         return super().add(child, **kwargs)
 
     @override
-    def remove(self, child: "UIWidget"):
+    def remove(self, child: UIWidget):
         """Remove a child from the layout."""
         # unsubscribe from child's changes
         unbind(child, "_children", self._trigger_size_hint_update)
@@ -482,7 +483,7 @@ class UIGridLayout(UILayout):
         row_count: int = 1,
         **kwargs,
     ):
-        super(UIGridLayout, self).__init__(
+        super().__init__(
             x=x,
             y=y,
             width=width,
@@ -550,7 +551,7 @@ class UIGridLayout(UILayout):
             **kwargs,
         )
 
-    def remove(self, child: "UIWidget"):
+    def remove(self, child: UIWidget):
         """Remove a child from the layout."""
         # unsubscribe from child's changes
         unbind(child, "_children", self._trigger_size_hint_update)
@@ -677,7 +678,7 @@ class UIGridLayout(UILayout):
         for i in range(self.row_count):
             rows.append([])
 
-        lookup: Dict[Tuple[int, int], _ChildEntry] = {}
+        lookup: dict[tuple[int, int], _ChildEntry] = {}
         for entry in self._children:
             col_num = entry.data["column"]
             row_num = entry.data["row"]
@@ -868,7 +869,7 @@ class _C:
         return _C.from_widget(widget, "height")
 
 
-def _box_orthogonal_algorithm(constraints: list[_C], container_size: float) -> List[float]:
+def _box_orthogonal_algorithm(constraints: list[_C], container_size: float) -> list[float]:
     """Calculate the 1 dimensional size of each entry based on the hint value and the available
     space in the container.
 
@@ -889,7 +890,7 @@ def _box_orthogonal_algorithm(constraints: list[_C], container_size: float) -> L
     return [c._final_size for c in constraints]
 
 
-def _box_axis_algorithm(constraints: list[_C], container_size: float) -> List[float]:
+def _box_axis_algorithm(constraints: list[_C], container_size: float) -> list[float]:
     """
     The box algorithm calculates the 1 dimensional size of each entry based on the hint value and
     the available space in the container.

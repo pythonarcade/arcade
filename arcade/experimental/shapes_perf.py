@@ -212,11 +212,9 @@ class GameWindow(arcade.Window):
 
         if self.execution_time > 1.0 and self.frames > 0:
             print(
-                (
-                    f"frames {self.frames}, "
-                    f"execution time {round(self.execution_time, 3)}, "
-                    f"frame time {round(self.execution_time / self.frames, 3)}"
-                )
+                f"frames {self.frames}, "
+                f"execution time {round(self.execution_time, 3)}, "
+                f"frame time {round(self.execution_time / self.frames, 3)}"
             )
             self.execution_time = 0
             self.frames = 0

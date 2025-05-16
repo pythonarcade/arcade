@@ -4,8 +4,9 @@ These are placed in their own module to simplify imports due to their
 wide usage throughout Arcade's camera code.
 """
 
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Final, Generator, Protocol
+from typing import Final, Protocol
 
 from pyglet.math import Vec2, Vec3
 from typing_extensions import Self

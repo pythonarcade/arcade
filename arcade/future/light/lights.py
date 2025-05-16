@@ -1,5 +1,5 @@
 from array import array
-from typing import Iterator, Sequence
+from collections.abc import Iterator, Sequence
 
 from arcade import gl
 from arcade.color import WHITE

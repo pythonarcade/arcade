@@ -35,6 +35,4 @@ Find the required information in the following sections:
     style
     own_widgets
     own_layout
-
-
-
+    controller_support

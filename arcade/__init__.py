@@ -12,8 +12,8 @@ from typing import Final
 
 from pathlib import Path
 
-if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 9):
-    sys.exit("The Arcade Library requires Python 3.9 or higher.")
+if sys.version_info[0] < 3 or (sys.version_info[0] == 3 and sys.version_info[1] < 10):
+    sys.exit("The Arcade Library requires Python 3.10 or higher.")
 
 
 def configure_logging(level: int | None = None):
@@ -168,6 +168,7 @@ from .sprite import TextureKeyframe
 from .sprite import PyMunk
 from .sprite import PymunkMixin
 from .sprite import SpriteType
+from .sprite import SpriteType_co
 from .sprite import Sprite
 from .sprite import BasicSprite
 
@@ -176,6 +177,7 @@ from .sprite import SpriteCircle
 from .sprite import SpriteSolidColor
 
 from .sprite_list import SpriteList
+from .sprite_list import SpriteSequence
 from .sprite_list import check_for_collision
 from .sprite_list import check_for_collision_with_list
 from .sprite_list import check_for_collision_with_lists
@@ -283,9 +285,11 @@ __all__ = [
     "BasicSprite",
     "Sprite",
     "SpriteType",
+    "SpriteType_co",
     "PymunkMixin",
     "SpriteCircle",
     "SpriteList",
+    "SpriteSequence",
     "SpriteSolidColor",
     "Text",
     "Texture",

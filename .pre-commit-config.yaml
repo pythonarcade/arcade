@@ -9,7 +9,8 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.10
+    # Ruff version.
+    rev: v0.11.4
     hooks:
       # Run the linter.
       - id: ruff
@@ -21,7 +22,11 @@ repos:
     hooks:
       - id: mypy
         args: [ --explicit-package-bases ]
+        language: system
+        exclude: ^tests/
   - repo: https://github.com/RobertCraigie/pyright-python
     rev: v1.1.396
     hooks:
       - id: pyright
+        language: system
+        exclude: ^tests/

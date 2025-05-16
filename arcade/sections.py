@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING, Generator, Iterable
+from collections.abc import Generator, Iterable
+from typing import TYPE_CHECKING
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 
@@ -264,7 +265,7 @@ class Section:
         else:
             return self._view.window
 
-    def overlaps_with(self, section: "Section") -> bool:
+    def overlaps_with(self, section: Section) -> bool:
         """Checks if this section overlaps with another section
 
         Args:

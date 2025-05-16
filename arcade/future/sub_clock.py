@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Union
-
 from arcade.clock import GLOBAL_CLOCK, Clock
 
 
@@ -55,7 +53,7 @@ class SubClock(Clock):
             i.e. a value of 0.5 means time elapsed half as fast for this clock. Defaults to 1.0.
     """
 
-    def __init__(self, parent: Union[Clock, SubClock, None] = None, tick_speed: float = 1) -> None:
+    def __init__(self, parent: Clock | SubClock | None = None, tick_speed: float = 1) -> None:
         parent = parent or GLOBAL_CLOCK
         super().__init__(parent._elapsed_time, parent._tick, tick_speed)
         self.children: list[SubClock] = []

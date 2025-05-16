@@ -410,55 +410,17 @@ class GalleryView(UIView):
                 size_hint=(0.3, 0),
             )
         )
-        slider_row.add(
+        s1 = slider_row.add(UISlider(size_hint=(0.3, 1), step=1, style=UISlider.NO_STEP_STYLE))
+        s2 = slider_row.add(
             UISlider(
-                size_hint=(0.2, None),
+                size_hint=(0.3, 1),
+                step=5,
             )
         )
-
-        tex_slider_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
-        box.add(tex_slider_row)
-
-        tex_slider_row.add(
-            UILabel(
-                "UITextureSlider",
-                font_name=DETAILS_FONT,
-                font_size=16,
-                size_hint=(0.3, 0),
-            )
-        )
-
-        s1 = tex_slider_row.add(
-            UITextureSlider(
-                thumb_texture=TEX_SLIDER_THUMB_BLUE,
-                track_texture=NinePatchTexture(10, 10, 10, 10, TEX_SLIDER_TRACK_BLUE),
-                size_hint=(0.3, None),
-            )
-        )
-
-        green_style = deepcopy(UITextureSlider.DEFAULT_STYLE)
-        green_style["normal"].filled_track = arcade.uicolor.GREEN_GREEN_SEA
-        green_style["hover"].filled_track = arcade.uicolor.GREEN_EMERALD
-        green_style["press"].filled_track = arcade.uicolor.GREEN_GREEN_SEA
-        s2 = tex_slider_row.add(
-            UITextureSlider(
-                thumb_texture=TEX_SLIDER_THUMB_GREEN,
-                track_texture=NinePatchTexture(10, 10, 10, 10, TEX_SLIDER_TRACK_GREEN),
-                size_hint=(0.3, None),
-                style=green_style,
-            )
-        )
-
-        red_style = deepcopy(UITextureSlider.DEFAULT_STYLE)
-        red_style["normal"].filled_track = arcade.uicolor.RED_POMEGRANATE
-        red_style["hover"].filled_track = arcade.uicolor.RED_ALIZARIN
-        red_style["press"].filled_track = arcade.uicolor.RED_POMEGRANATE
-        s3 = tex_slider_row.add(
-            UITextureSlider(
-                thumb_texture=TEX_SLIDER_THUMB_RED,
-                track_texture=NinePatchTexture(10, 10, 10, 10, TEX_SLIDER_TRACK_RED),
-                size_hint=(0.3, None),
-                style=red_style,
+        s3 = slider_row.add(
+            UISlider(
+                size_hint=(0.3, 1),
+                step=10,
             )
         )
 
@@ -476,6 +438,67 @@ class GalleryView(UIView):
         def _(event: UIOnChangeEvent):
             s1.value = event.new_value
             s2.value = event.new_value
+
+        tex_slider_row = UIBoxLayout(vertical=False, size_hint=(1, 0.1), space_between=10)
+        box.add(tex_slider_row)
+
+        tex_slider_row.add(
+            UILabel(
+                "UITextureSlider",
+                font_name=DETAILS_FONT,
+                font_size=16,
+                size_hint=(0.3, 0),
+            )
+        )
+
+        ts1 = tex_slider_row.add(
+            UITextureSlider(
+                thumb_texture=TEX_SLIDER_THUMB_BLUE,
+                track_texture=NinePatchTexture(10, 10, 10, 10, TEX_SLIDER_TRACK_BLUE),
+                size_hint=(0.3, None),
+            )
+        )
+
+        green_style = deepcopy(UITextureSlider.DEFAULT_STYLE)
+        green_style["normal"].filled_track = arcade.uicolor.GREEN_GREEN_SEA
+        green_style["hover"].filled_track = arcade.uicolor.GREEN_EMERALD
+        green_style["press"].filled_track = arcade.uicolor.GREEN_GREEN_SEA
+        ts2 = tex_slider_row.add(
+            UITextureSlider(
+                thumb_texture=TEX_SLIDER_THUMB_GREEN,
+                track_texture=NinePatchTexture(10, 10, 10, 10, TEX_SLIDER_TRACK_GREEN),
+                size_hint=(0.3, None),
+                style=green_style,
+            )
+        )
+
+        red_style = deepcopy(UITextureSlider.DEFAULT_STYLE)
+        red_style["normal"].filled_track = arcade.uicolor.RED_POMEGRANATE
+        red_style["hover"].filled_track = arcade.uicolor.RED_ALIZARIN
+        red_style["press"].filled_track = arcade.uicolor.RED_POMEGRANATE
+        ts3 = tex_slider_row.add(
+            UITextureSlider(
+                thumb_texture=TEX_SLIDER_THUMB_RED,
+                track_texture=NinePatchTexture(10, 10, 10, 10, TEX_SLIDER_TRACK_RED),
+                size_hint=(0.3, None),
+                style=red_style,
+            )
+        )
+
+        @ts1.event("on_change")
+        def _(event: UIOnChangeEvent):
+            ts2.value = event.new_value
+            ts3.value = event.new_value
+
+        @ts2.event("on_change")
+        def _(event: UIOnChangeEvent):
+            ts1.value = event.new_value
+            ts3.value = event.new_value
+
+        @ts3.event("on_change")
+        def _(event: UIOnChangeEvent):
+            ts1.value = event.new_value
+            ts2.value = event.new_value
 
         box.add(UISpace(size_hint=(0.2, 0.1)))
         text_area = box.add(

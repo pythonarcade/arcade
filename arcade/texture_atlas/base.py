@@ -251,7 +251,7 @@ class TextureAtlasBase(abc.ABC):
     @contextlib.contextmanager
     def render_into(
         self,
-        texture: "Texture",
+        texture: Texture,
         projection: tuple[float, float, float, float] | None = None,
     ):
         """
