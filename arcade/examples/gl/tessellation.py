@@ -10,7 +10,7 @@ from array import array
 
 import arcade
 from arcade.gl import BufferDescription
-import pyglet.gl
+import pyglet.graphics.api.gl
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720

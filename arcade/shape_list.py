@@ -17,7 +17,7 @@ from typing import (
     cast,
 )
 
-import pyglet.gl as gl
+import pyglet.graphics.api.gl as gl
 
 from arcade import ArcadeContext, get_points_for_thick_line, get_window
 from arcade.gl import Buffer, BufferDescription, Geometry, Program

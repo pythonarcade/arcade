@@ -9,8 +9,8 @@ from typing import Any
 
 import pyglet
 from PIL import Image
-from pyglet import gl
-from pyglet.graphics.shader import UniformBufferObject
+from pyglet.graphics.api import gl
+from pyglet.graphics.shader import UniformBufferObjectBase
 from pyglet.math import Mat4
 
 import arcade
@@ -58,7 +58,7 @@ class ArcadeContext(Context):
         super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
 
         # Set up a default orthogonal projection for sprites and shapes
-        self._window_block: UniformBufferObject = window.ubo
+        self._window_block: UniformBufferObjectBase = window._matrices.ubo
         self.bind_window_block()
 
         self.blend_func = self.BLEND_DEFAULT

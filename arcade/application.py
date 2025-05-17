@@ -12,11 +12,13 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 import pyglet
-import pyglet.gl as gl
+import pyglet.graphics.api.gl as gl
+import pyglet.graphics.api.gl.lib as gllib
 import pyglet.window.mouse
 from pyglet.display.base import Screen, ScreenMode
 from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor
+from pyglet.graphics.api.base import GraphicsConfig
 
 import arcade
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
@@ -189,7 +191,7 @@ class Window(pyglet.window.Window):
         # Attempt to make window with antialiasing
         if antialiasing:
             try:
-                config = gl.Config(
+                config = gl.base.OpenGLConfig(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
                     opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
@@ -203,17 +205,13 @@ class Window(pyglet.window.Window):
                     blue_size=8,
                     alpha_size=8,
                 )
-                display = pyglet.display.get_display()
-                screen = screen or display.get_default_screen()
-                if screen:
-                    config = screen.get_best_config(config)
-            except pyglet.window.NoSuchConfigException:
+            except RuntimeError:
                 LOG.warning("Skipping antialiasing due missing hardware/driver support")
                 config = None
                 antialiasing = False
         # If we still don't have a config
         if not config:
-            config = gl.Config(
+            config = gl.base.OpenGLConfig(
                 major_version=gl_version[0],
                 minor_version=gl_version[1],
                 opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
@@ -225,6 +223,7 @@ class Window(pyglet.window.Window):
                 blue_size=8,
                 alpha_size=8,
             )
+        config = config.match(self)
         try:
             super().__init__(
                 width=width,
@@ -248,7 +247,7 @@ class Window(pyglet.window.Window):
         if antialiasing:
             try:
                 gl.glEnable(gl.GL_MULTISAMPLE_ARB)
-            except gl.GLException:
+            except gllib.GLException:
                 LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
         _setup_clock()

@@ -1,5 +1,5 @@
 import pytest
-from pyglet import gl
+from pyglet.graphics.api import gl
 from arcade.gl import types
 
 

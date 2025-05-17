@@ -4,7 +4,7 @@ import weakref
 from ctypes import byref, string_at
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.gl.buffer import Buffer
 from arcade.types import BufferProtocol

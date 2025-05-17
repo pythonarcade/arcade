@@ -14,7 +14,7 @@ from ctypes import (
 )
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.gl.compute_shader import ComputeShader
 

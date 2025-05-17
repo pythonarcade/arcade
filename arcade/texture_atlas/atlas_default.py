@@ -15,7 +15,7 @@ from weakref import WeakSet, WeakValueDictionary, finalize, ref
 import PIL.Image
 from PIL import Image, ImageDraw
 from PIL.Image import Resampling
-from pyglet.image.atlas import (
+from pyglet.graphics.atlas import (
     Allocator,
     AllocatorException,
 )

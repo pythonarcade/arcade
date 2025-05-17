@@ -1,7 +1,7 @@
 import struct
 import pytest
 import arcade
-from pyglet import gl
+from pyglet.graphics.api import gl
 from pyglet.math import Mat4, Mat3
 from arcade.gl import ShaderException
 from arcade.gl.backends.opengl.uniform import UniformBlock

@@ -4,7 +4,7 @@ import weakref
 from ctypes import Array, c_int, c_uint, string_at
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.gl.framebuffer import DefaultFrameBuffer, Framebuffer
 from arcade.gl.types import pixel_formats

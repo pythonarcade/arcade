@@ -15,7 +15,7 @@ from ctypes import (
 )
 from typing import TYPE_CHECKING, Any, Iterable
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.gl.exceptions import ShaderException
 from arcade.gl.program import Program

@@ -1,6 +1,6 @@
 import PIL.Image
 import pytest
-from pyglet.image.atlas import AllocatorException
+from pyglet.graphics.atlas import AllocatorException
 import arcade
 from arcade import DefaultTextureAtlas, load_texture
 

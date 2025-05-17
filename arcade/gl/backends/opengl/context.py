@@ -2,7 +2,7 @@ from ctypes import c_char_p, c_float, c_int, cast
 from typing import Dict, Iterable, List, Sequence, Tuple
 
 import pyglet
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.context import ArcadeContext
 from arcade.gl import enums
@@ -57,7 +57,7 @@ class OpenGLContext(Context):
         # Assumed to be supported in gles
         self._ext_separate_shader_objects_enabled = True
         if self.gl_api == "opengl":
-            have_ext = gl.gl_info.have_extension("GL_ARB_separate_shader_objects")
+            have_ext = self.window.context.get_info().have_extension("GL_ARB_separate_shader_objects")  # type: ignore This is guaranteed to be an OpenGLSurfaceContext
             self._ext_separate_shader_objects_enabled = self.gl_version >= (4, 1) or have_ext
 
         # We enable scissor testing by default.
@@ -78,7 +78,7 @@ class OpenGLContext(Context):
 
     @Context.extensions.getter
     def extensions(self) -> set[str]:
-        return gl.gl_info.get_extensions()
+        return self.window.context.get_info().extensions  # type: ignore
 
     @property
     def error(self) -> str | None:

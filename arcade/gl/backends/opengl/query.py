@@ -3,7 +3,7 @@ from __future__ import annotations
 import weakref
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.gl.query import Query
 

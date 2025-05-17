@@ -15,7 +15,7 @@ from arcade.shape_list import (
     create_line_generic,
     create_line_strip,
 )
-import pyglet.gl as gl
+import pyglet.graphics.api.gl as gl
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
