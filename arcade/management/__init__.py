@@ -28,7 +28,11 @@ def show_info():
     print("-" * len(version_str))
     print("vendor:", window.ctx.info.VENDOR)
     print("renderer:", window.ctx.info.RENDERER)
-    print("version:", window.ctx.gl_version)
+    # TODO: Abstracted GL backend
+    # The context doesn't necessarily have this, this will need changed later
+    # Probably the context needs to provide an info function that will spit back relevent stuff
+    # rather than hardcoding the things we want here
+    print("version:", window.ctx.gl_version)  # type: ignore
     print("python:", sys.version)
     print("platform:", sys.platform)
     print("pyglet version:", pyglet.version)

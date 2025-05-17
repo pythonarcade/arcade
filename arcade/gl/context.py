@@ -859,7 +859,7 @@ class Context(ABC):
         filter=None,
         samples: int = 0,
         immutable: bool = False,
-        internal_format,
+        internal_format=None,
         compressed: bool = False,
         compressed_data: bool = False,
     ) -> Texture2D:

@@ -125,6 +125,9 @@ exclude = ["arcade/examples/*", "benchmarks/*"]
 
 [tool.mypy]
 disable_error_code = "annotation-unchecked"
+exclude = [
+    "arcade/gl/backends"
+]
 
 [tool.pytest.ini_options]
 norecursedirs = [
@@ -149,6 +152,7 @@ exclude = [
     "arcade/__pyinstaller",
     "arcade/examples",
     "arcade/experimental",
+    "arcade/gl/backends",
     "tests",
     "doc",
     "make.py",

@@ -133,6 +133,14 @@ class TextureArray(ABC):
         self._compressed = compressed
         self._compressed_data = compressed_data
 
+        # These three ultimately need to be set by the implementing backend.
+        # We're creating them here first to trick some of the methods on the
+        # base class to being able to see them. So that we don't have to
+        # implement a getter on every backend
+        self._filter = (0, 0)  # Mypy needs this to be a tuple[int, int] to be happy
+        self._wrap_x = 0  # Mypy needs this to be an int to be happy
+        self._wrap_y = 0  # Mypy needs this to be an int to be happy
+
         if self._components not in [1, 2, 3, 4]:
             raise ValueError("Components must be 1, 2, 3 or 4")
 

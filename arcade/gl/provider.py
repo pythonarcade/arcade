@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext
 
-    from .context import Context
+    from .context import Context, Info
 
 _current_provider: Optional[BaseProvider] = None
 
@@ -31,12 +31,16 @@ def get_context(*args, **kwargs) -> Context:
     if _current_provider is None:
         set_provider("opengl")
 
+    assert _current_provider is not None  # this can't really be None at this point, but mypy
+
     return _current_provider.create_context(*args, **kwargs)
 
 
 def get_arcade_context(*args, **kwargs) -> ArcadeContext:
     if _current_provider is None:
         set_provider("opengl")
+
+    assert _current_provider is not None  # this can't really be None at this point, but mypy
 
     return _current_provider.create_arcade_context(*args, **kwargs)
 
@@ -47,7 +51,7 @@ class BaseProvider(ABC):
         pass
 
     @abstractmethod
-    def create_info(self, ctx: Context):
+    def create_info(self, ctx: Context) -> Info:
         pass
 
     @abstractmethod
