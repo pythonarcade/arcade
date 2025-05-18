@@ -6,19 +6,13 @@ from typing import TYPE_CHECKING
 
 from pyglet.graphics.api import gl
 
-from arcade.gl.buffer import Buffer
+from arcade.gl.buffer import Buffer, _usages
 from arcade.types import BufferProtocol
 
 from .utils import data_to_ctypes
 
 if TYPE_CHECKING:
     from arcade.gl import Context
-
-_usages = {
-    "static": gl.GL_STATIC_DRAW,
-    "dynamic": gl.GL_DYNAMIC_DRAW,
-    "stream": gl.GL_STREAM_DRAW,
-}
 
 
 class OpenGLBuffer(Buffer):

@@ -8,7 +8,7 @@ class Provider(BaseProvider):
         return WebGLContext(*args, **kwargs)
 
     def create_info(self, ctx):
-        return WebGLInfo(ctx)
+        return WebGLInfo(ctx)  # type: ignore
 
     def create_arcade_context(self, *args, **kwargs):
         return WebGLArcadeContext(*args, **kwargs)

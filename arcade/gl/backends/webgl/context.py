@@ -1,29 +1,35 @@
-from typing import Tuple
+from typing import Dict, Iterable, List, Sequence, Tuple, TYPE_CHECKING
 
 import pyglet
 
 from arcade.context import ArcadeContext
 from arcade.gl.context import Context, Info
+from arcade.gl.types import BufferDescription
+from arcade.types import BufferProtocol
 
 from arcade.gl import enums
 
 import pyglet.graphics.api
-from pyglet.graphics.api.webgl.webgl_js import WebGL2RenderingContext
+
+from .buffer import WebGLBuffer
+
+if TYPE_CHECKING:
+    from pyglet.graphics.api.webgl.webgl_js import WebGL2RenderingContext
 
 
 class WebGLContext(Context):
     gl_api: str = "webgl"
 
     def __init__(
-            self, window: pyglet.window.Window, gl_api: str = "webgl"
+            self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "webgl"  # type: ignore
     ):
-        super().__init__(window)
-
         if gl_api != "webgl":
             raise ValueError("Tried to create a WebGLContext with an incompatible api selected.")
         
         self.gl_api = gl_api
         self._gl: WebGL2RenderingContext = pyglet.graphics.api.core.current_context.gl
+
+        super().__init__(window, gc_mode)
 
         self._gl.enable(enums.SCISSOR_TEST)
 
@@ -130,7 +136,97 @@ class WebGLContext(Context):
 
     def _create_default_framebuffer(self):
         raise NotImplementedError("Not done yet")
+    
+    def buffer(
+        self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static"
+    ) -> WebGLBuffer:
+        return WebGLBuffer(self, data, reserve=reserve, usage=usage)
+    
+    def program(
+        self,
+        *,
+        vertex_shader: str,
+        fragment_shader: str | None = None,
+        geometry_shader: str | None = None,
+        tess_control_shader: str | None = None,
+        tess_evaluation_shader: str | None = None,
+        common: List[str] | None = None,
+        defines: Dict[str, str] | None = None,
+        varyings: Sequence[str] | None = None,
+        varyings_capture_mode: str = "interleaved",
+    ):
+        raise NotImplementedError("Not done yet")
 
+    def geometry(
+        self,
+        content: Sequence[BufferDescription] | None = None,
+        index_buffer: WebGLBuffer | None = None,
+        mode: int | None = None,
+        index_element_size: int = 4,
+    ):
+        raise NotImplementedError("Not done yet")
+    
+    def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> None:
+        raise NotImplementedError("compute_shader is not supported with WebGL")
+
+    def texture(
+        self,
+        size: Tuple[int, int],
+        *,
+        components: int = 4,
+        dtype: str = "f1",
+        data: BufferProtocol | None = None,
+        wrap_x: int | None = None,
+        wrap_y: int | None = None,
+        filter: Tuple[int, int] | None = None,
+        samples: int = 0,
+        immutable: bool = False,
+        internal_format: int | None = None,
+        compressed: bool = False,
+        compressed_data: bool = False,
+    ):
+        raise NotImplementedError("Not done yet")
+    
+    def depth_texture(
+        self, size: Tuple[int, int], *, data: BufferProtocol | None = None
+    ):
+        raise NotImplementedError("Not done yet")
+    
+    def framebuffer(
+        self,
+        *,
+        color_attachments = None,
+        depth_attachment = None,
+    ):
+        raise NotImplementedError("Not done yet")
+    
+    def copy_framebuffer(
+        self,
+        src,
+        dst,
+        src_attachment_index: int = 0,
+        depth: bool = True,
+    ):
+        raise NotImplementedError("Not done yet")
+    
+    def sampler(self, texture):
+        raise NotImplementedError("Not done yet")
+        
+    def texture_array(
+        self,
+        size: Tuple[int, int, int],
+        *,
+        components: int = 4,
+        dtype: str = "f1",
+        data: BufferProtocol | None = None,
+        wrap_x: int | None = None,
+        wrap_y: int | None = None,
+        filter: Tuple[int, int] | None = None,
+    ):
+        raise NotImplementedError("Not done yet")
+    
+    def query(self, *, samples=True, time=True, primitives=True):
+        raise NotImplementedError("Not done yet")
 
 class WebGLArcadeContext(ArcadeContext, WebGLContext):
     def __init__(self, *args, **kwargs):
@@ -139,5 +235,21 @@ class WebGLArcadeContext(ArcadeContext, WebGLContext):
 
 
 class WebGLInfo(Info):
-    def __init__(self, ctx):
+    def __init__(self, ctx: WebGLContext):
         super().__init__(ctx)
+        self._ctx = ctx
+
+    def get_int_tuple(self, enum, length: int):
+        # TODO: this might not work
+        values = self._ctx._gl.getParameter(enum)
+        return tuple(values)
+    
+    def get(self, enum, default=0):
+        value = self._ctx._gl.getParameter(enum)
+        return value or default
+    
+    def get_float(self, enum, default=0.0):
+        return self.get(enum, default)  # type: ignore
+    
+    def get_str(self, enum):
+        return self.get(enum)
