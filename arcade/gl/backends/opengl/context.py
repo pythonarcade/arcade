@@ -288,7 +288,7 @@ class OpenGLContext(Context):
         )
 
     def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> OpenGLComputeShader:
-        src = ShaderSource(self, source, common, pyglet.gl.GL_COMPUTE_SHADER)
+        src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)
         return OpenGLComputeShader(self, src.get_source())
 
     def texture(
@@ -491,7 +491,7 @@ class OpenGLInfo(Info):
             values = (c_int * length)()
             gl.glGetIntegerv(enum, values)
             return tuple(values)
-        except pyglet.gl.lib.GLException:
+        except gl.lib.GLException:
             return tuple([0] * length)
 
     def get(self, enum, default=0) -> int:
@@ -521,7 +521,7 @@ class OpenGLInfo(Info):
             value = c_float()
             gl.glGetFloatv(enum, value)
             return value.value
-        except pyglet.gl.lib.GLException:
+        except gl.GLException:
             return default
 
     def get_str(self, enum) -> str:
@@ -533,5 +533,5 @@ class OpenGLInfo(Info):
         """
         try:
             return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
-        except pyglet.gl.lib.GLException:
+        except gl.GLException:
             return "Unknown"

@@ -12,13 +12,15 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 import pyglet
-import pyglet.graphics.api.gl as gl
-import pyglet.graphics.api.gl.lib as gllib
+
+from arcade.utils import is_pyodide
+if is_pyodide():
+    pyglet.options.backend = "webgl"
+
 import pyglet.window.mouse
 from pyglet.display.base import Screen, ScreenMode
 from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor
-from pyglet.graphics.api.base import GraphicsConfig
 
 import arcade
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK, _setup_clock, _setup_fixed_clock
@@ -26,7 +28,7 @@ from arcade.color import BLACK
 from arcade.context import ArcadeContext
 from arcade.gl.provider import get_arcade_context, set_provider
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
-from arcade.utils import is_pyodide, is_raspberry_pi
+from arcade.utils import is_raspberry_pi
 from arcade.window_commands import get_display_size, set_window
 
 if TYPE_CHECKING:
@@ -175,6 +177,7 @@ class Window(pyglet.window.Window):
             gl_api = "webgl"
 
         if gl_api == "webgl":
+            pyglet.options.backend = "webgl"
             desired_gl_provider = "webgl"
 
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
@@ -189,15 +192,35 @@ class Window(pyglet.window.Window):
 
         config = None
         # Attempt to make window with antialiasing
-        if antialiasing:
-            try:
+        if gl_api == "opengl" or gl_api == "opengles":
+            import pyglet.graphics.api.gl as gl
+            if antialiasing:
+                try:
+                    config = gl.base.OpenGLConfig(
+                        major_version=gl_version[0],
+                        minor_version=gl_version[1],
+                        opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
+                        double_buffer=True,
+                        sample_buffers=1,
+                        samples=samples,
+                        depth_size=24,
+                        stencil_size=8,
+                        red_size=8,
+                        green_size=8,
+                        blue_size=8,
+                        alpha_size=8,
+                    )
+                except RuntimeError:
+                    LOG.warning("Skipping antialiasing due missing hardware/driver support")
+                    config = None
+                    antialiasing = False
+            # If we still don't have a config
+            if not config:
                 config = gl.base.OpenGLConfig(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
                     opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
                     double_buffer=True,
-                    sample_buffers=1,
-                    samples=samples,
                     depth_size=24,
                     stencil_size=8,
                     red_size=8,
@@ -205,25 +228,7 @@ class Window(pyglet.window.Window):
                     blue_size=8,
                     alpha_size=8,
                 )
-            except RuntimeError:
-                LOG.warning("Skipping antialiasing due missing hardware/driver support")
-                config = None
-                antialiasing = False
-        # If we still don't have a config
-        if not config:
-            config = gl.base.OpenGLConfig(
-                major_version=gl_version[0],
-                minor_version=gl_version[1],
-                opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
-                double_buffer=True,
-                depth_size=24,
-                stencil_size=8,
-                red_size=8,
-                green_size=8,
-                blue_size=8,
-                alpha_size=8,
-            )
-        config = config.match(self)
+            config = config.match(self)
         try:
             super().__init__(
                 width=width,
@@ -244,11 +249,14 @@ class Window(pyglet.window.Window):
                 "Unable to create an OpenGL 3.3+ context. "
                 "Check to make sure your system supports OpenGL 3.3 or higher."
             )
-        if antialiasing:
-            try:
-                gl.glEnable(gl.GL_MULTISAMPLE_ARB)
-            except gllib.GLException:
-                LOG.warning("Warning: Anti-aliasing not supported on this computer.")
+        if gl_api == "opengl" or gl_api == "opengles":
+            if antialiasing:
+                import pyglet.graphics.api.gl as gl
+                import pyglet.graphics.api.gl.lib as gllib
+                try:
+                    gl.glEnable(gl.GL_MULTISAMPLE_ARB)
+                except gllib.GLException:
+                    LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
         _setup_clock()
         _setup_fixed_clock(fixed_rate)

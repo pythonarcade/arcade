@@ -20,8 +20,7 @@ classifiers = [
 ]
 dependencies = [
     "pyglet",
-    "pillow~=11.0.0",
-    "pymunk~=6.9.0",
+    "pillow",
     "pytiled-parser~=2.2.9",
 ]
 dynamic = ["version"]

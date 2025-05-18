@@ -1,16 +1,21 @@
 from PIL.Image import Image
 
 from arcade.types import Point2List
+from arcade.utils import is_pyodide
 
 from .base import HitBox, HitBoxAlgorithm, RotatableHitBox
 from .bounding_box import BoundingHitBoxAlgorithm
-from .pymunk import PymunkHitBoxAlgorithm
+
 from .simple import SimpleHitBoxAlgorithm
 
 #: The simple hit box algorithm.
 algo_simple = SimpleHitBoxAlgorithm()
 #: The detailed hit box algorithm.
-algo_detailed = PymunkHitBoxAlgorithm()
+
+if not is_pyodide():
+    from .pymunk import PymunkHitBoxAlgorithm
+    algo_detailed = PymunkHitBoxAlgorithm()
+    
 #: The bounding box hit box algorithm.
 algo_bounding_box = BoundingHitBoxAlgorithm()
 #: The default hit box algorithm.

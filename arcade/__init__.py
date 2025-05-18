@@ -198,9 +198,10 @@ from .physics_engines import PhysicsEngineSimple
 from .tilemap import load_tilemap
 from .tilemap import TileMap
 
-from .pymunk_physics_engine import PymunkPhysicsEngine
-from .pymunk_physics_engine import PymunkPhysicsObject
-from .pymunk_physics_engine import PymunkException
+if sys.platform != "emscripten":
+    from .pymunk_physics_engine import PymunkPhysicsEngine
+    from .pymunk_physics_engine import PymunkPhysicsObject
+    from .pymunk_physics_engine import PymunkException
 
 from .version import VERSION
 

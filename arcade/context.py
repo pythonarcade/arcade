@@ -9,7 +9,6 @@ from typing import Any
 
 import pyglet
 from PIL import Image
-from pyglet.graphics.api import gl
 from pyglet.graphics.shader import UniformBufferObjectBase
 from pyglet.math import Mat4
 
@@ -232,13 +231,19 @@ class ArcadeContext(Context):
         This should always be bound to index 0 so all shaders
         have access to them.
         """
-        gl.glBindBufferRange(
-            gl.GL_UNIFORM_BUFFER,
-            0,
-            self._window_block.buffer.id,
-            0,
-            128,  # 32 x 32bit floats (two mat4)
-        )
+        # TODO: This is really hacky. gl_api is provided by the WebGLContext and OpenGLContext classes which this will be instance of
+        # but type checks don't know that
+        if self.gl_api == "webgl":  # type: ignore
+            pass
+        else:
+            from pyglet.graphics.api import gl
+            gl.glBindBufferRange(
+                gl.GL_UNIFORM_BUFFER,
+                0,
+                self._window_block.buffer.id,  # type: ignore
+                0,
+                128,  # 32 x 32bit floats (two mat4)
+            )
 
     @property
     def default_atlas(self) -> TextureAtlasBase:
