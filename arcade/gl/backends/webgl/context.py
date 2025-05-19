@@ -204,7 +204,9 @@ class WebGLContext(Context):
             compressed_data=compressed_data,
         )
 
-    def depth_texture(self, size: Tuple[int, int], *, data: BufferProtocol | None = None) -> WebGLTexture2D:
+    def depth_texture(
+        self, size: Tuple[int, int], *, data: BufferProtocol | None = None
+    ) -> WebGLTexture2D:
         return WebGLTexture2D(self, size, data=data, depth=True)
 
     def framebuffer(
@@ -216,7 +218,7 @@ class WebGLContext(Context):
         return WebGLFramebuffer(
             self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
         )
-    
+
     def copy_framebuffer(
         self,
         src: WebGLFramebuffer,
@@ -233,10 +235,21 @@ class WebGLContext(Context):
         else:
             self._gl.drawBuffers([enums.COLOR_ATTACHMENT0])
 
-        self._gl.blitFramebuffer(0, 0, src.width, src.height, 0, 0, src.width, src.height, enums.COLOR_BUFFER_BIT | enums.DEPTH_BUFFER_BIT, enums.NEAREST)
+        self._gl.blitFramebuffer(
+            0,
+            0,
+            src.width,
+            src.height,
+            0,
+            0,
+            src.width,
+            src.height,
+            enums.COLOR_BUFFER_BIT | enums.DEPTH_BUFFER_BIT,
+            enums.NEAREST,
+        )
 
         self._gl.readBuffer(enums.COLOR_ATTACHMENT0)
-        
+
     def sampler(self, texture):
         raise NotImplementedError("Not done yet")
 

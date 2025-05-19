@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from arcade.gl import enums
 from arcade.gl.texture import Texture2D
@@ -12,8 +12,9 @@ from .buffer import Buffer
 from .utils import data_to_memoryview
 
 if TYPE_CHECKING:
-    from arcade.gl.backends.webgl.context import WebGLContext
     from pyglet.graphics.api.webgl.webgl_js import WebGLTexture
+
+    from arcade.gl.backends.webgl.context import WebGLContext
 
 
 class WebGLTexture2D(Texture2D):
@@ -86,7 +87,7 @@ class WebGLTexture2D(Texture2D):
     def resize(self, size: tuple[int, int]):
         if self._immutable:
             raise ValueError("Immutable textures cannot be resized")
-        
+
         self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
         self._ctx._gl.bindTexture(self._target, self._glo)
 
@@ -145,13 +146,7 @@ class WebGLTexture2D(Texture2D):
             else:
                 if self._compressed_data is True:
                     self._ctx._gl.compressedTexImage2D(
-                        self._target,
-                        0,
-                        self._internal_format,
-                        self._width,
-                        self._height,
-                        0,
-                        data
+                        self._target, 0, self._internal_format, self._width, self._height, 0, data
                     )
                 else:
                     self._ctx._gl.texImage2D(
@@ -163,21 +158,21 @@ class WebGLTexture2D(Texture2D):
                         0,
                         self._format,  # type: ignore
                         self._type,
-                        data
+                        data,
                     )
 
     @property
     def ctx(self) -> WebGLContext:
         return self._ctx
-    
+
     @property
     def glo(self) -> Optional[WebGLTexture]:
         return self._glo
-    
+
     @property
     def compressed(self) -> bool:
         return self._compressed
-    
+
     @property
     def width(self) -> int:
         """The width of the texture in pixels"""
@@ -202,7 +197,7 @@ class WebGLTexture2D(Texture2D):
     def samples(self) -> int:
         """Number of samples if multisampling is enabled (read only)"""
         return self._samples
-    
+
     @property
     def byte_size(self) -> int:
         """The byte size of the texture."""
@@ -227,20 +222,20 @@ class WebGLTexture2D(Texture2D):
     def immutable(self) -> bool:
         """Does this texture have immutable storage?"""
         return self._immutable
-    
+
     @property
     def swizzle(self) -> str:
         raise NotImplementedError("Texture Swizzle is not supported with WebGL")
-    
+
     @swizzle.setter
     def swizzle(self, value: str):
         raise NotImplementedError("Texture Swizzle is not supported with WebGL")
-    
+
     @Texture2D.filter.setter
     def filter(self, value: tuple[int, int]):
         if not isinstance(value, tuple) or not len(value) == 2:
             raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
-        
+
         self._filter = value
         self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
         self._ctx._gl.bindTexture(self._target, self._glo)
@@ -267,52 +262,61 @@ class WebGLTexture2D(Texture2D):
         self._anisotropy = max(1.0, min(value, self._ctx.info.MAX_TEXTURE_MAX_ANISOTROPY))
         self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
         self._ctx._gl.bindTexture(self._target, self._glo)
-        self._ctx._gl.texParameterf(self._target, enums.TEXTURE_MAX_ANISOTROPY_EXT, self._anisotropy)
-        
+        self._ctx._gl.texParameterf(
+            self._target, enums.TEXTURE_MAX_ANISOTROPY_EXT, self._anisotropy
+        )
+
     @Texture2D.compare_func.setter
     def compare_func(self, value: str | None):
         if not self._depth:
             raise ValueError("Depth comparison function can only be set on depth textures")
-        
+
         if not isinstance(value, str) and value is not None:
             raise ValueError(f"Value must a string of: {compare_funcs.keys()}")
-        
+
         func = compare_funcs.get(value, None)
         if func is None:
             raise ValueError(f"Value must a string of: {compare_funcs.keys()}")
-        
+
         self._compare_func = value
         self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
         self._ctx._gl.bindTexture(self._target, self._glo)
         if value is None:
             self._ctx._gl.texParameteri(self._target, enums.TEXTURE_COMPARE_MODE, enums.NONE)
         else:
-            self._ctx._gl.texParameteri(self._target, enums.TEXTURE_COMPARE_MODE, enums.COMPARE_REF_TO_TEXTURE)
+            self._ctx._gl.texParameteri(
+                self._target, enums.TEXTURE_COMPARE_MODE, enums.COMPARE_REF_TO_TEXTURE
+            )
             self._ctx._gl.texParameteri(self._target, enums.TEXTURE_COMPARE_FUNC, func)
 
     def read(self, level: int = 0, alignment: int = 1) -> bytes:
         # WebGL has no getTexImage, so attach this to a framebuffer and read from that
         fbo = self._ctx.framebuffer(color_attachments=[self])
         return fbo.read(components=self._components, dtype=self._dtype)
-    
-    def write(self, data: BufferOrBufferProtocol, level: int = 0, viewport = None) -> None:
+
+    def write(self, data: BufferOrBufferProtocol, level: int = 0, viewport=None) -> None:
         x, y, w, h = 0, 0, self._width, self._height
         if viewport:
             if len(viewport) == 2:
-                w, h, = viewport
+                (
+                    w,
+                    h,
+                ) = viewport
             elif len(viewport) == 4:
                 x, y, w, h = viewport
             else:
                 raise ValueError("Viewport must be of length 2 or 4")
-        
+
         if isinstance(data, Buffer):
-            # type ignore here because 
+            # type ignore here because
             self._ctx._gl.bindBuffer(enums.PIXEL_UNPACK_BUFFER, data.glo)  # type: ignore
             self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
             self._ctx._gl.bindTexture(self._target, self._glo)
             self._ctx._gl.pixelStorei(enums.PACK_ALIGNMENT, 1)
             self._ctx._gl.pixelStorei(enums.UNPACK_ALIGNMENT, 1)
-            self._ctx._gl.texSubImage2D(self._target, level, x, y, w, h, self._format, self._type, 0)  # type: ignore
+            self._ctx._gl.texSubImage2D(
+                self._target, level, x, y, w, h, self._format, self._type, 0
+            )  # type: ignore
             self._ctx._gl.bindBuffer(enums.PIXEL_UNPACK_BUFFER, None)
         else:
             byte_size, data = data_to_memoryview(data)
@@ -321,12 +325,14 @@ class WebGLTexture2D(Texture2D):
             self._ctx._gl.bindTexture(self._target, self._glo)
             self._ctx._gl.pixelStorei(enums.PACK_ALIGNMENT, 1)
             self._ctx._gl.pixelStorei(enums.UNPACK_ALIGNMENT, 1)
-            self._ctx._gl.texSubImage2D(self._target, level, x, y, w, h, self._format, self._type, data)  # type: ignore
+            self._ctx._gl.texSubImage2D(
+                self._target, level, x, y, w, h, self._format, self._type, data
+            )  # type: ignore
 
     def _validate_data_size(self, byte_data, byte_size, width, height) -> None:
         if self._compressed is True:
             return
-        
+
         expected_size = width * height * self._component_size * self._components
         if byte_size != expected_size:
             raise ValueError(
@@ -361,7 +367,7 @@ class WebGLTexture2D(Texture2D):
 
     def bind_to_image(self, unit: int, read: bool = True, write: bool = True, level: int = 0):
         raise NotImplementedError("bind_to_image not supported with WebGL")
-    
+
     def get_handle(self, resident: bool = True) -> int:
         raise NotImplementedError("get_handle is not supported with WebGL")
 

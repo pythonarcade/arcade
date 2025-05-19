@@ -13,11 +13,12 @@ from arcade.types import RGBOrA255, RGBOrANormalized
 from .texture import WebGLTexture2D
 
 if TYPE_CHECKING:
-    from arcade.gl.backends.webgl.context import WebGLContext
     from pyglet.graphics.api.webgl.webgl_js import WebGLFramebuffer as JSWebGLFramebuffer
 
+    from arcade.gl.backends.webgl.context import WebGLContext
+
+
 class WebGLFramebuffer(Framebuffer):
-    
     __slots__ = "_glo"
 
     def __init__(
@@ -28,7 +29,9 @@ class WebGLFramebuffer(Framebuffer):
         depth_attachment: WebGLTexture2D | None = None,
     ):
         super().__init__(
-            ctx, color_attachments=color_attachments, depth_attachment=depth_attachment  # type: ignore
+            ctx,
+            color_attachments=color_attachments,
+            depth_attachment=depth_attachment,  # type: ignore
         )
         self._ctx = ctx
 
@@ -41,7 +44,7 @@ class WebGLFramebuffer(Framebuffer):
                 enums.COLOR_ATTACHMENT0 + i,
                 tex._target,  # type: ignore
                 tex.glo,  # type: ignore
-                0
+                0,
             )
 
         if self.depth_attachment:
@@ -50,12 +53,14 @@ class WebGLFramebuffer(Framebuffer):
                 enums.DEPTH_ATTACHMENT,
                 self.depth_attachment._target,  # type: ignore
                 self.depth_attachment.glo,  # type: ignore
-                0
+                0,
             )
 
         self._check_completeness(ctx)
 
-        self._draw_buffers = [enums.COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)]
+        self._draw_buffers = [
+            enums.COLOR_ATTACHMENT0 + i for i, _ in enumerate(self._color_attachments)
+        ]
 
         # Restore the original framebuffer to avoid confusion
         self._ctx.active_framebuffer.use(force=True)
@@ -70,12 +75,12 @@ class WebGLFramebuffer(Framebuffer):
     @property
     def glo(self) -> JSWebGLFramebuffer | None:
         return self._glo
-    
+
     @Framebuffer.viewport.setter
     def viewport(self, value: tuple[int, int, int, int]):
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport should be a 4-component tuple")
-        
+
         self._viewport = value
 
         # If the framebuffer is active we need to set the viewport now
@@ -107,7 +112,7 @@ class WebGLFramebuffer(Framebuffer):
     def _use(self, *, force: bool = False):
         if self._ctx.active_framebuffer == self and not force:
             return
-        
+
         self._ctx._gl.bindFramebuffer(enums.FRAMEBUFFER, self._glo)
 
         if self._draw_buffers:
@@ -151,7 +156,7 @@ class WebGLFramebuffer(Framebuffer):
                     clear_color = color_normalized
                 else:
                     raise ValueError("Color should be a 3 or 4 component tuple")
-                
+
             self._ctx._gl.clearColor(*clear_color)
 
             if self.depth_attachment:
@@ -159,7 +164,7 @@ class WebGLFramebuffer(Framebuffer):
                 self._ctx._gl.clear(enums.COLOR_BUFFER_BIT | enums.DEPTH_BUFFER_BIT)
             else:
                 self._ctx._gl.clear(enums.COLOR_BUFFER_BIT)
-            
+
             self.scissor = scissor_values
 
     def read(self, *, viewport=None, components=3, attachment=0, dtype="f1") -> bytes:
@@ -170,7 +175,7 @@ class WebGLFramebuffer(Framebuffer):
             component_size = frmt[3]
         except Exception:
             raise ValueError(f"Invalid dtype '{dtype}'")
-        
+
         with self.activate():
             if not self.is_default:
                 self._ctx._gl.readBuffer(enums.COLOR_ATTACHMENT0 + attachment)
@@ -181,7 +186,7 @@ class WebGLFramebuffer(Framebuffer):
             if viewport:
                 x, y, width, height = viewport
             else:
-                x, y, width, height = 0, 0,  *self.size
+                x, y, width, height = 0, 0, *self.size
 
             array_size = components * component_size * width * height
             if pixel_type == enums.UNSIGNED_BYTE:
@@ -196,10 +201,10 @@ class WebGLFramebuffer(Framebuffer):
 
             if not self.is_default:
                 self._ctx._gl.readBuffer(enums.COLOR_ATTACHMENT0)
-            
+
         # TODO: Is this right or does this need something more for conversion to bytes?
         return js_array_buffer
-    
+
     def delete(self):
         WebGLFramebuffer.delete_glo(self._ctx, self._glo)
         self._glo = None
@@ -210,10 +215,9 @@ class WebGLFramebuffer(Framebuffer):
             ctx._gl.deleteFramebuffer(glo)
 
         ctx.stats.decr("framebuffer")
-    
+
     @staticmethod
     def _check_completeness(ctx: WebGLContext) -> None:
-
         # See completeness rules : https://www.khronos.org/opengl/wiki/Framebuffer_Object
         states = {
             enums.FRAMEBUFFER_UNSUPPORTED: "Framebuffer unsupported. Try another format.",
@@ -229,10 +233,10 @@ class WebGLFramebuffer(Framebuffer):
             raise ValueError(
                 "Framebuffer is incomplete. {}".format(states.get(status, "Unknown error"))
             )
-        
+
     def __repr__(self):
         return "<Framebuffer glo={}>".format(self._glo)
-    
+
 
 class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):
     is_default = True
@@ -253,7 +257,7 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):
     def viewport(self, value: tuple[int, int, int, int]):
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport shouldbe a 4-component tuple")
-        
+
         ratio = self._ctx.window.get_pixel_ratio()
         self._viewport = (
             int(value[0] * ratio),
