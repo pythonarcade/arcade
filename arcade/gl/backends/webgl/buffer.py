@@ -5,20 +5,20 @@ from typing import TYPE_CHECKING, cast
 
 import js  # type: ignore
 
+from arcade.gl import enums
 from arcade.gl.buffer import Buffer, _usages
 from arcade.types import BufferProtocol
-from arcade.gl import enums
 
 from .utils import data_to_memoryview
 
 if TYPE_CHECKING:
-    from arcade.gl.backends.webgl.context import WebGLContext
-    from pyglet.graphics.api.webgl.webgl_js import WebGLBuffer as JSWebGLBuffer
     from pyglet.graphics.api.webgl.webgl_js import WebGL2RenderingContext
+    from pyglet.graphics.api.webgl.webgl_js import WebGLBuffer as JSWebGLBuffer
+
+    from arcade.gl.backends.webgl.context import WebGLContext
 
 
 class WebGLBuffer(Buffer):
-
     __slots__ = "_glo", "_usage"
 
     def __init__(
@@ -26,7 +26,7 @@ class WebGLBuffer(Buffer):
         ctx: WebGLContext,
         data: BufferProtocol | None = None,
         reserve: int = 0,
-        usage: str = "static"
+        usage: str = "static",
     ):
         super().__init__(ctx)
         self._ctx: WebGLContext = ctx
@@ -35,7 +35,7 @@ class WebGLBuffer(Buffer):
 
         if self._glo is None:
             raise RuntimeError("Cannot create Buffer object.")
-        
+
         ctx._gl.bindBuffer(enums.ARRAY_BUFFER, self._glo)
 
         if data is not None and len(data) > 0:  # type: ignore
@@ -49,13 +49,13 @@ class WebGLBuffer(Buffer):
             ctx._gl.bufferData(enums.ARRAY_BUFFER, self._size, self._usage)
         else:
             raise ValueError("Buffer takes byte data or number of reserved bytes")
-        
+
         if self._ctx.gc_mode == "auto":
             weakref.finalize(self, WebGLBuffer.delete_glo, self.ctx, self._glo)  # type: ignore
 
     def __repr__(self):
         return f"<Buffer {self._glo}>"
-    
+
     def __del__(self):
         if self._ctx.gc_mode == "context_gc" and self._glo is not None:
             self._ctx.objects.append(self)
@@ -63,7 +63,7 @@ class WebGLBuffer(Buffer):
     @property
     def glo(self) -> JSWebGLBuffer | None:
         return self._glo
-    
+
     def delete(self) -> None:
         WebGLBuffer.delete_glo(self._ctx, self._glo)  # type: ignore
         self._glo = None
@@ -93,14 +93,16 @@ class WebGLBuffer(Buffer):
 
         if size + source_offset > source.size:
             raise ValueError("Attempting to read outside the source buffer")
-        
+
         if size + offset > self._size:
             raise ValueError("Attempting to write outside the buffer")
-        
+
         self._ctx._gl.bindBuffer(enums.COPY_READ_BUFFER, source.glo)
         self._ctx._gl.bindBuffer(enums.COPY_WRITE_BUFFER, self._glo)
-        self._ctx._gl.copyBufferSubData(enums.COPY_READ_BUFFER, enums.COPY_WRITE_BUFFER, source_offset, offset, size)
-        
+        self._ctx._gl.copyBufferSubData(
+            enums.COPY_READ_BUFFER, enums.COPY_WRITE_BUFFER, source_offset, offset, size
+        )
+
     def orphan(self, size: int = -1, double: bool = False):
         if size > 0:
             self._size = size

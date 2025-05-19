@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 import pyglet
 
 from arcade.utils import is_pyodide
+
 if is_pyodide():
     pyglet.options.backend = "webgl"
 
@@ -194,6 +195,7 @@ class Window(pyglet.window.Window):
         # Attempt to make window with antialiasing
         if gl_api == "opengl" or gl_api == "opengles":
             import pyglet.graphics.api.gl as gl
+
             if antialiasing:
                 try:
                     config = gl.base.OpenGLConfig(
@@ -253,6 +255,7 @@ class Window(pyglet.window.Window):
             if antialiasing:
                 import pyglet.graphics.api.gl as gl
                 import pyglet.graphics.api.gl.lib as gllib
+
                 try:
                     gl.glEnable(gl.GL_MULTISAMPLE_ARB)
                 except gllib.GLException:

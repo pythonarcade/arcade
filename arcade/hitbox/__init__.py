@@ -14,8 +14,9 @@ algo_simple = SimpleHitBoxAlgorithm()
 
 if not is_pyodide():
     from .pymunk import PymunkHitBoxAlgorithm
+
     algo_detailed = PymunkHitBoxAlgorithm()
-    
+
 #: The bounding box hit box algorithm.
 algo_bounding_box = BoundingHitBoxAlgorithm()
 #: The default hit box algorithm.

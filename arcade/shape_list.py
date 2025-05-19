@@ -18,8 +18,7 @@ from typing import (
 )
 
 from arcade import ArcadeContext, get_points_for_thick_line, get_window
-from arcade.gl import Buffer, BufferDescription, Geometry, Program
-from arcade.gl import enums
+from arcade.gl import Buffer, BufferDescription, Geometry, Program, enums
 from arcade.math import rotate_point
 from arcade.types import RGBA255, Color, Point, PointList
 from arcade.utils import copy_dunders_unimplemented

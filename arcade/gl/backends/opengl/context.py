@@ -57,7 +57,9 @@ class OpenGLContext(Context):
         # Assumed to be supported in gles
         self._ext_separate_shader_objects_enabled = True
         if self.gl_api == "opengl":
-            have_ext = self.window.context.get_info().have_extension("GL_ARB_separate_shader_objects")  # type: ignore This is guaranteed to be an OpenGLSurfaceContext
+            have_ext = self.window.context.get_info().have_extension(
+                "GL_ARB_separate_shader_objects"
+            )  # type: ignore This is guaranteed to be an OpenGLSurfaceContext
             self._ext_separate_shader_objects_enabled = self.gl_version >= (4, 1) or have_ext
 
         # We enable scissor testing by default.

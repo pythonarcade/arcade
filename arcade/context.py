@@ -237,6 +237,7 @@ class ArcadeContext(Context):
             pass
         else:
             from pyglet.graphics.api import gl
+
             gl.glBindBufferRange(
                 gl.GL_UNIFORM_BUFFER,
                 0,
