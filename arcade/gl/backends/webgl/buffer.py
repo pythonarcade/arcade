@@ -40,7 +40,9 @@ class WebGLBuffer(Buffer):
 
         if data is not None and len(data) > 0:  # type: ignore
             self._size, data = data_to_memoryview(data)
-            ctx._gl.bufferData(enums.ARRAY_BUFFER, data, self._usage)
+            js_array_buffer = js.ArrayBuffer.new(self._size)
+            js_array_buffer.assign(data)
+            ctx._gl.bufferData(enums.ARRAY_BUFFER, js_array_buffer, self._usage)
         elif reserve > 0:
             self._size = reserve
             # WebGL allows passing an integer size instead of a memoryview

@@ -82,70 +82,81 @@ class ArcadeContext(Context):
             vertex_shader=":system:shaders/shape_element_list_vs.glsl",
             fragment_shader=":system:shaders/shape_element_list_fs.glsl",
         )
-        self.sprite_list_program_no_cull: Program = self.load_program(
-            vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
-            geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
-            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
-        )
-        self.sprite_list_program_no_cull["sprite_texture"] = 0
-        self.sprite_list_program_no_cull["uv_texture"] = 1
+        
+        if gl_api != "webgl":
+            self.sprite_list_program_no_cull: Program = self.load_program(
+                vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
+                geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
+                fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+            )
+            self.sprite_list_program_no_cull["sprite_texture"] = 0
+            self.sprite_list_program_no_cull["uv_texture"] = 1
+        else:
+            self.sprite_list_program_no_cull = None  # type: ignore
 
-        self.sprite_list_program_cull: Program = self.load_program(
-            vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
-            geometry_shader=":system:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
-            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
-        )
-        self.sprite_list_program_cull["sprite_texture"] = 0
-        self.sprite_list_program_cull["uv_texture"] = 1
+        if gl_api != "webgl":
+            self.sprite_list_program_cull: Program = self.load_program(
+                vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
+                geometry_shader=":system:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
+                fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+            )
+            self.sprite_list_program_cull["sprite_texture"] = 0
+            self.sprite_list_program_cull["uv_texture"] = 1
+        else:
+            self.sprite_list_program_cull = None  # type: ignore
 
-        self.sprite_program_single = self.load_program(
-            vertex_shader=":system:shaders/sprites/sprite_single_vs.glsl",
-            geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
-            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
-        )
-        self.sprite_program_single["sprite_texture"] = 0
-        self.sprite_program_single["uv_texture"] = 1
-        self.sprite_program_single["spritelist_color"] = 1.0, 1.0, 1.0, 1.0
+        if gl_api != "webgl":
+            self.sprite_program_single = self.load_program(
+                vertex_shader=":system:shaders/sprites/sprite_single_vs.glsl",
+                geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
+                fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+            )
+            self.sprite_program_single["sprite_texture"] = 0
+            self.sprite_program_single["uv_texture"] = 1
+            self.sprite_program_single["spritelist_color"] = 1.0, 1.0, 1.0, 1.0
+        else:
+            self.sprite_program_single = None  # type: ignore
 
         # Shapes
-        self.shape_line_program: Program = self.load_program(
-            vertex_shader=":system:shaders/shapes/line/unbuffered_vs.glsl",
-            fragment_shader=":system:shaders/shapes/line/unbuffered_fs.glsl",
-            geometry_shader=":system:shaders/shapes/line/unbuffered_geo.glsl",
-        )
-        self.shape_ellipse_filled_unbuffered_program: Program = self.load_program(
-            vertex_shader=":system:shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
-            fragment_shader=":system:shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
-            geometry_shader=":system:shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
-        )
-        self.shape_ellipse_outline_unbuffered_program: Program = self.load_program(
-            vertex_shader=":system:shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
-            fragment_shader=":system:shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
-            geometry_shader=":system:shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
-        )
-        self.shape_rectangle_filled_unbuffered_program = self.load_program(
-            vertex_shader=":system:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
-            fragment_shader=":system:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
-            geometry_shader=":system:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
-        )
-        # Atlas shaders
-        self.atlas_resize_program: Program = self.load_program(
-            vertex_shader=":system:shaders/atlas/resize_vs.glsl",
-            geometry_shader=":system:shaders/atlas/resize_gs.glsl",
-            fragment_shader=":system:shaders/atlas/resize_fs.glsl",
-        )
-        self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
-        self.atlas_resize_program["atlas_new"] = 1
-        self.atlas_resize_program["texcoords_old"] = 2
-        self.atlas_resize_program["texcoords_new"] = 3
+        if gl_api != "webgl":
+            self.shape_line_program: Program = self.load_program(
+                vertex_shader=":system:shaders/shapes/line/unbuffered_vs.glsl",
+                fragment_shader=":system:shaders/shapes/line/unbuffered_fs.glsl",
+                geometry_shader=":system:shaders/shapes/line/unbuffered_geo.glsl",
+            )
+            self.shape_ellipse_filled_unbuffered_program: Program = self.load_program(
+                vertex_shader=":system:shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
+                fragment_shader=":system:shaders/shapes/ellipse/filled_unbuffered_fs.glsl",
+                geometry_shader=":system:shaders/shapes/ellipse/filled_unbuffered_geo.glsl",
+            )
+            self.shape_ellipse_outline_unbuffered_program: Program = self.load_program(
+                vertex_shader=":system:shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
+                fragment_shader=":system:shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
+                geometry_shader=":system:shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
+            )
+            self.shape_rectangle_filled_unbuffered_program = self.load_program(
+                vertex_shader=":system:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
+                fragment_shader=":system:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
+                geometry_shader=":system:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
+            )
+            # Atlas shaders
+            self.atlas_resize_program: Program = self.load_program(
+                vertex_shader=":system:shaders/atlas/resize_vs.glsl",
+                geometry_shader=":system:shaders/atlas/resize_gs.glsl",
+                fragment_shader=":system:shaders/atlas/resize_fs.glsl",
+            )
+            self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
+            self.atlas_resize_program["atlas_new"] = 1
+            self.atlas_resize_program["texcoords_old"] = 2
+            self.atlas_resize_program["texcoords_new"] = 3
 
-        # SpriteList collision resources
-        self.collision_detection_program = self.load_program(
-            vertex_shader=":system:shaders/collision/col_trans_vs.glsl",
-            geometry_shader=":system:shaders/collision/col_trans_gs.glsl",
-        )
-        self.collision_buffer = self.buffer(reserve=1024 * 4)
-        self.collision_query = self.query(samples=False, time=False, primitives=True)
+            # SpriteList collision resources
+            self.collision_detection_program = self.load_program(
+                vertex_shader=":system:shaders/collision/col_trans_vs.glsl",
+                geometry_shader=":system:shaders/collision/col_trans_gs.glsl",
+            )
+            self.collision_buffer = self.buffer(reserve=1024 * 4)
+            self.collision_query = self.query(samples=False, time=False, primitives=True)
 
         # General Utility
 
@@ -205,7 +216,8 @@ class ArcadeContext(Context):
         self.label_cache: dict[str, arcade.Text] = {}
 
         # self.active_program = None
-        self.point_size = 1.0
+        if gl_api != "webgl":
+            self.point_size = 1.0
 
     def reset(self) -> None:
         """

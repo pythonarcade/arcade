@@ -14,6 +14,7 @@ from .framebuffer import WebGLDefaultFrameBuffer, WebGLFramebuffer
 from .glsl import ShaderSource
 from .program import WebGLProgram
 from .texture import WebGLTexture2D
+from .vertex_array import WebGLVertexArray, WebGLGeometry
 
 if TYPE_CHECKING:
     from pyglet.graphics.api.webgl.webgl_js import WebGL2RenderingContext
@@ -34,7 +35,7 @@ class WebGLContext(Context):
         self.gl_api = gl_api
         self._gl: WebGL2RenderingContext = pyglet.graphics.api.core.current_context.gl
 
-        super().__init__(window, gc_mode)
+        super().__init__(window, gc_mode, gl_api)
 
         self._gl.enable(enums.SCISSOR_TEST)
 
@@ -239,8 +240,14 @@ class WebGLContext(Context):
         index_buffer: WebGLBuffer | None = None,
         mode: int | None = None,
         index_element_size: int = 4,
-    ):
-        raise NotImplementedError("Not done yet")
+    ) -> WebGLGeometry:
+        return WebGLGeometry(
+            self,
+            content,
+            index_buffer=index_buffer,
+            mode=mode,
+            index_element_size=index_element_size,
+        )
 
     def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> None:
         raise NotImplementedError("compute_shader is not supported with WebGL")
