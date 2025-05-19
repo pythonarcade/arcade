@@ -9,8 +9,9 @@ get a window open.
 
 Installation
 ~~~~~~~~~~~~
-* For any of this to work, you need Python with the Arcade module. 
-Instructions for that are here: :ref:`install`.
+For any of this to work, you need Python with the Arcade module installed.
+
+* Instructions for that are here: :ref:`install`.
 
 Open a Window
 ~~~~~~~~~~~~~
