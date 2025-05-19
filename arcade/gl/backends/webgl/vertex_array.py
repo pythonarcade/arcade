@@ -11,20 +11,14 @@ from .buffer import WebGLBuffer
 from .program import WebGLProgram
 
 if TYPE_CHECKING:
-    from arcade.gl.backends.webgl.context import WebGLContext
     from pyglet.graphics.api.webgl.webgl_js import WebGLVertexArrayObject as JSWebGLVertexArray
 
-index_types = [
-    None,
-    enums.UNSIGNED_BYTE,
-    enums.UNSIGNED_SHORT,
-    None,
-    enums.UNSIGNED_INT
-]
+    from arcade.gl.backends.webgl.context import WebGLContext
+
+index_types = [None, enums.UNSIGNED_BYTE, enums.UNSIGNED_SHORT, None, enums.UNSIGNED_INT]
 
 
 class WebGLVertexArray(VertexArray):
-
     __slots__ = (
         "_glo",
         "_index_element_type",
@@ -68,11 +62,14 @@ class WebGLVertexArray(VertexArray):
     def delete_glo(ctx: WebGLContext, glo: JSWebGLVertexArray | None):
         if glo is not None:
             ctx._gl.deleteVertexArray(glo)
-        
+
         ctx.stats.decr("vertex_array")
 
     def _build(
-        self, program: WebGLProgram, content: Sequence[BufferDescription], index_buffer: WebGLBuffer | None
+        self,
+        program: WebGLProgram,
+        content: Sequence[BufferDescription],
+        index_buffer: WebGLBuffer | None,
     ) -> None:
         self._ctx._gl.bindVertexArray(self._glo)
 
@@ -93,7 +90,7 @@ class WebGLVertexArray(VertexArray):
                         f"description. Buffer descriptions: {content}"
                     )
                 )
-            
+
             if prog_attr.components != attr_descr.components:
                 raise ValueError(
                     (
@@ -102,7 +99,7 @@ class WebGLVertexArray(VertexArray):
                         " components. "
                     )
                 )
-            
+
             self._ctx._gl.enableVertexAttribArray(prog_attr.location)
             self._ctx._gl.bindBuffer(enums.ARRAY_BUFFER, buff_descr.buffer.glo)  # type: ignore
 
@@ -115,7 +112,7 @@ class WebGLVertexArray(VertexArray):
                 enums.SHORT,
                 enums.UNSIGNED_SHORT,
                 enums.BYTE,
-                enums.UNSIGNED_BYTE
+                enums.UNSIGNED_BYTE,
             )
             attrib_type = attr_descr.gl_type
             if attrib_type in int_types and buff_descr.normalized:
@@ -129,20 +126,23 @@ class WebGLVertexArray(VertexArray):
                         f"while the buffer description has type {gl_name(attr_descr.gl_type)}. "
                     )
                 )
-            
+
             if attrib_type in float_types or attrib_type in int_types:
                 self._ctx._gl.vertexAttribPointer(
-                    prog_attr.location, attr_descr.components, attr_descr.gl_type, normalized, buff_descr.stride, attr_descr.offset
+                    prog_attr.location,
+                    attr_descr.components,
+                    attr_descr.gl_type,
+                    normalized,
+                    buff_descr.stride,
+                    attr_descr.offset,
                 )
             else:
                 raise ValueError(f"Unsupported attribute type: {attr_descr.gl_type}")
-            
+
             if buff_descr.instanced:
                 self._ctx._gl.vertexAttribDivisor(prog_attr.location, 1)
 
-    def render(
-        self, mode: int, first: int = 0, vertices: int = 0, instances: int = 1
-    ) -> None:
+    def render(self, mode: int, first: int = 0, vertices: int = 0, instances: int = 1) -> None:
         self._ctx._gl.bindVertexArray(self._glo)
         if self._ibo is not None:
             self._ctx._gl.bindBuffer(enums.ELEMENT_ARRAY_BUFFER, self._ibo.glo)  # type: ignore
@@ -158,7 +158,7 @@ class WebGLVertexArray(VertexArray):
 
     def render_indirect(self, buffer: WebGLBuffer, mode: int, count, first, stride) -> None:
         raise NotImplementedError("Indrect Rendering not supported with WebGL")
-    
+
     def transform_interleaved(
         self,
         buffer: WebGLBuffer,
@@ -171,10 +171,10 @@ class WebGLVertexArray(VertexArray):
     ) -> None:
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of verticies: {vertices}")
-        
+
         if buffer_offset >= buffer.size:
             raise ValueError("buffer_offset at end or past the buffer size")
-        
+
         self._ctx._gl.bindVertexArray(self._glo)
         self._ctx._gl.enable(enums.RASTERIZER_DISCARD)
 
@@ -184,7 +184,7 @@ class WebGLVertexArray(VertexArray):
                 0,
                 buffer.glo,
                 buffer_offset,
-                buffer.size - buffer_offset
+                buffer.size - buffer_offset,
             )
         else:
             self._ctx._gl.bindBufferBase(enums.TRANSFORM_FEEDBACK_BUFFER, 0, buffer.glo)
@@ -193,7 +193,9 @@ class WebGLVertexArray(VertexArray):
 
         if self._ibo is not None:
             count = self._ibo.size // 4
-            self._ctx._gl.drawElementsInstanced(mode, vertices or count, enums.UNSIGNED_INT, 0, instances)
+            self._ctx._gl.drawElementsInstanced(
+                mode, vertices or count, enums.UNSIGNED_INT, 0, instances
+            )
         else:
             self._ctx._gl.drawArraysInstanced(mode, first, vertices, instances)
 
@@ -208,7 +210,7 @@ class WebGLVertexArray(VertexArray):
         first: int = 0,
         vertices: int = 0,
         instances: int = 1,
-        buffer_offset = 0
+        buffer_offset=0,
     ) -> None:
         if vertices < 0:
             raise ValueError(f"Cannot determine the number of vertices: {vertices}")
@@ -216,7 +218,7 @@ class WebGLVertexArray(VertexArray):
         size = min(buf.size for buf in buffers)
         if buffer_offset >= size:
             raise ValueError("buffer_offset at end or past the buffer size")
-        
+
         self._ctx._gl.bindVertexArray(self._glo)
         self._ctx._gl.enable(enums.RASTERIZER_DISCARD)
 
@@ -227,7 +229,7 @@ class WebGLVertexArray(VertexArray):
                     index,
                     buffer.glo,
                     buffer_offset,
-                    buffer.size - buffer_offset
+                    buffer.size - buffer_offset,
                 )
         else:
             for index, buffer in enumerate(buffers):
@@ -237,7 +239,9 @@ class WebGLVertexArray(VertexArray):
 
         if self._ibo is not None:
             count = self._ibo.size // 4
-            self._ctx._gl.drawElementsInstanced(mode, vertices or count, enums.UNSIGNED_INT, 0, instances)
+            self._ctx._gl.drawElementsInstanced(
+                mode, vertices or count, enums.UNSIGNED_INT, 0, instances
+            )
         else:
             self._ctx._gl.drawArraysInstanced(mode, first, vertices, instances)
 

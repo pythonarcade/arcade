@@ -386,7 +386,10 @@ class Geometry(ABC):
                             "or GL_TRIANGLE_FAN as input"
                         )
                 if program.geometry_input == self._ctx.TRIANGLES_ADJACENCY:
-                    if mode not in [self._ctx.TRIANGLES_ADJACENCY, self._ctx.TRIANGLE_STRIP_ADJACENCY]:
+                    if mode not in [
+                        self._ctx.TRIANGLES_ADJACENCY,
+                        self._ctx.TRIANGLE_STRIP_ADJACENCY,
+                    ]:
                         raise ValueError(
                             "Geometry shader expects GL_TRIANGLES_ADJACENCY or "
                             "GL_TRIANGLE_STRIP_ADJACENCY as input"

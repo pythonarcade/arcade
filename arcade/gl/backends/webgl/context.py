@@ -14,7 +14,7 @@ from .framebuffer import WebGLDefaultFrameBuffer, WebGLFramebuffer
 from .glsl import ShaderSource
 from .program import WebGLProgram
 from .texture import WebGLTexture2D
-from .vertex_array import WebGLVertexArray, WebGLGeometry
+from .vertex_array import WebGLGeometry, WebGLVertexArray
 
 if TYPE_CHECKING:
     from pyglet.graphics.api.webgl.webgl_js import WebGL2RenderingContext

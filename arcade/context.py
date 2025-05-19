@@ -82,7 +82,7 @@ class ArcadeContext(Context):
             vertex_shader=":system:shaders/shape_element_list_vs.glsl",
             fragment_shader=":system:shaders/shape_element_list_fs.glsl",
         )
-        
+
         if gl_api != "webgl":
             self.sprite_list_program_no_cull: Program = self.load_program(
                 vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
