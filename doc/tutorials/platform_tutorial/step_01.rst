@@ -14,7 +14,7 @@ Installation
 
 * Make sure the `Arcade library <https://pypi.org/project/arcade/>`_ is installed.
 
-  * You should first setup a virtual environment (venv) and activate it.
+  * You should first setup a virtual environment (venv) and activate it. This is hard.
   * Install Arcade with ``pip install arcade``.
   * Here are the longer, official :ref:`install`.
 
