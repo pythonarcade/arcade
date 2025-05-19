@@ -76,6 +76,9 @@ class WebGLBuffer(Buffer):
         ctx.stats.decr("buffer")
 
     def read(self, size: int = -1, offset: int = 0) -> bytes:
+        # framebuffer has kind of an example to do this but it's with typed arrays
+        # need to figure out how to read to a generic ArrayBuffer and get a memoryview from that
+        # for generic buffers since we have no idea what the data type might be
         raise NotImplementedError("Not done yet")
 
     def write(self, data: BufferProtocol, offset: int = 0):
