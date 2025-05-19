@@ -10,6 +10,8 @@ from arcade.gl.types import BufferDescription
 from arcade.types import BufferProtocol
 
 from .buffer import WebGLBuffer
+from .framebuffer import WebGLFramebuffer
+from .texture import WebGLTexture2D
 
 if TYPE_CHECKING:
     from pyglet.graphics.api.webgl.webgl_js import WebGL2RenderingContext
@@ -185,29 +187,56 @@ class WebGLContext(Context):
         internal_format: int | None = None,
         compressed: bool = False,
         compressed_data: bool = False,
-    ):
-        raise NotImplementedError("Not done yet")
+    ) -> WebGLTexture2D:
+        return WebGLTexture2D(
+            self,
+            size,
+            components=components,
+            data=data,
+            dtype=dtype,
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            filter=filter,
+            samples=samples,
+            immutable=immutable,
+            internal_format=internal_format,
+            compressed=compressed,
+            compressed_data=compressed_data,
+        )
 
-    def depth_texture(self, size: Tuple[int, int], *, data: BufferProtocol | None = None):
-        raise NotImplementedError("Not done yet")
+    def depth_texture(self, size: Tuple[int, int], *, data: BufferProtocol | None = None) -> WebGLTexture2D:
+        return WebGLTexture2D(self, size, data=data, depth=True)
 
     def framebuffer(
         self,
         *,
-        color_attachments=None,
-        depth_attachment=None,
-    ):
-        raise NotImplementedError("Not done yet")
-
+        color_attachments: WebGLTexture2D | List[WebGLTexture2D] | None = None,
+        depth_attachment: WebGLTexture2D | None = None,
+    ) -> WebGLFramebuffer:
+        return WebGLFramebuffer(
+            self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
+        )
+    
     def copy_framebuffer(
         self,
-        src,
-        dst,
+        src: WebGLFramebuffer,
+        dst: WebGLFramebuffer,
         src_attachment_index: int = 0,
         depth: bool = True,
     ):
-        raise NotImplementedError("Not done yet")
+        self._gl.bindFramebuffer(enums.READ_FRAMEBUFFER, src.glo)
+        self._gl.bindFramebuffer(enums.DRAW_FRAMEBUFFER, dst.glo)
 
+        self._gl.readBuffer(enums.COLOR_ATTACHMENT0 + src_attachment_index)
+        if dst.is_default:
+            self._gl.drawBuffers([enums.BACK])
+        else:
+            self._gl.drawBuffers([enums.COLOR_ATTACHMENT0])
+
+        self._gl.blitFramebuffer(0, 0, src.width, src.height, 0, 0, src.width, src.height, enums.COLOR_BUFFER_BIT | enums.DEPTH_BUFFER_BIT, enums.NEAREST)
+
+        self._gl.readBuffer(enums.COLOR_ATTACHMENT0)
+        
     def sampler(self, texture):
         raise NotImplementedError("Not done yet")
 
