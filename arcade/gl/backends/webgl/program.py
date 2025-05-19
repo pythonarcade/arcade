@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import Any, cast, Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Iterable, cast
 
 from arcade.gl import enums
 from arcade.gl.exceptions import ShaderException
@@ -11,12 +11,12 @@ from arcade.gl.types import SHADER_TYPE_NAMES, AttribFormat, GLTypes, PyGLenum
 from .uniform import Uniform, UniformBlock
 
 if TYPE_CHECKING:
-    from arcade.gl.backends.webgl.context import WebGLContext
     from pyglet.graphics.api.webgl.webgl_js import WebGLProgram as JSWebGLProgram
+
+    from arcade.gl.backends.webgl.context import WebGLContext
 
 
 class WebGLProgram(Program):
-
     _valid_capture_modes = ("interleaved", "separate")
 
     def __init__(
@@ -36,10 +36,10 @@ class WebGLProgram(Program):
 
         if tess_control_shader is not None:
             raise NotImplementedError("Tessellation Shaders not supported with WebGL")
-        
+
         if tess_evaluation_shader is not None:
             raise NotImplementedError("Tessellation Shaders not supported with WebGL")
-        
+
         super().__init__(ctx)
         self._ctx = ctx
 
@@ -58,7 +58,7 @@ class WebGLProgram(Program):
                 f"Invalid Capture Mode: {self._varyings_capture_mode}. "
                 f"Valid Modes are: {self._valid_capture_modes}."
             )
-        
+
         shaders: list[tuple[str, int]] = [(vertex_shader, enums.VERTEX_SHADER)]
         if fragment_shader:
             shaders.append((fragment_shader, enums.FRAGMENT_SHADER))
@@ -129,7 +129,7 @@ class WebGLProgram(Program):
         can only be set before the program is linked.
         """
         return self._varyings_capture_mode
-    
+
     @property
     def geometry_input(self) -> int:
         """
@@ -248,22 +248,24 @@ class WebGLProgram(Program):
     def _configure_varyings(self):
         if not self._varyings:
             return
-        
+
         mode = (
-            enums.INTERLEAVED_ATTRIBS if self._varyings_capture_mode == "interleaved" else enums.SEPARATE_ATTRIBS
+            enums.INTERLEAVED_ATTRIBS
+            if self._varyings_capture_mode == "interleaved"
+            else enums.SEPARATE_ATTRIBS
         )
 
         self._ctx._gl.transformFeedbackVaryings(
             self._glo,  # type: ignore this is guaranteed to not be None at this point
             self._varyings,
-            mode
+            mode,
         )
 
     def _introspect_attributes(self):
         num_attrs = self._ctx._gl.getProgramParameter(self._glo, enums.ACTIVE_ATTRIBUTES)
-        
+
         # TODO: Do we need to instrospect the varyings? The OpenGL backend doesn't
-        #num_varyings = self._ctx._gl.getProgramParameter(self._glo, enums.TRANSFORM_FEEDBACK_VARYINGS)
+        # num_varyings = self._ctx._gl.getProgramParameter(self._glo, enums.TRANSFORM_FEEDBACK_VARYINGS)
 
         for i in range(num_attrs):
             info = self._ctx._gl.getActiveAttrib(self._glo, i)
@@ -275,7 +277,7 @@ class WebGLProgram(Program):
                     type_info.gl_type,
                     type_info.components,
                     type_info.gl_size,
-                    location=location
+                    location=location,
                 )
             )
 
@@ -294,12 +296,12 @@ class WebGLProgram(Program):
                 continue
 
             name = name.replace("[0]", "")
-            self._uniforms[name] = Uniform(
-                self._ctx, self._glo, location, name, type, size
-            )
+            self._uniforms[name] = Uniform(self._ctx, self._glo, location, name, type, size)
 
     def _introspect_uniform_blocks(self):
-        active_uniform_blocks = self._ctx._gl.getProgramParameter(self._glo, enums.ACTIVE_UNIFORM_BLOCKS)
+        active_uniform_blocks = self._ctx._gl.getProgramParameter(
+            self._glo, enums.ACTIVE_UNIFORM_BLOCKS
+        )
 
         for location in range(active_uniform_blocks):
             index, size, name = self._query_uniform_block(location)
@@ -309,13 +311,17 @@ class WebGLProgram(Program):
     def _query_uniform(self, location: int) -> tuple[str, int, int]:
         info = self._ctx._gl.getActiveUniform(self._glo, location)
         return info.name, info.type, info.size
-    
+
     def _query_uniform_block(self, location: int) -> tuple[int, int, str]:
         name = self._ctx._gl.getActiveUniformBlockName(self._glo, location)
-        index = self._ctx._gl.getActiveUniformBlockParameter(self._glo, location, enums.UNIFORM_BLOCK_BINDING)
-        size = self._ctx._gl.getActiveUniformBlockParameter(self._glo, location, enums.UNIFORM_BLOCK_DATA_SIZE)
+        index = self._ctx._gl.getActiveUniformBlockParameter(
+            self._glo, location, enums.UNIFORM_BLOCK_BINDING
+        )
+        size = self._ctx._gl.getActiveUniformBlockParameter(
+            self._glo, location, enums.UNIFORM_BLOCK_DATA_SIZE
+        )
         return index, size, name
-    
+
     @staticmethod
     def compile_shader(ctx: WebGLContext, source: str, shader_type: int):
         shader = ctx._gl.createShader(shader_type)
@@ -336,7 +342,7 @@ class WebGLProgram(Program):
                 )
             )
         return shader
-    
+
     @staticmethod
     def link(ctx: WebGLContext, glo: JSWebGLProgram):
         ctx._gl.linkProgram(glo)
@@ -344,7 +350,6 @@ class WebGLProgram(Program):
         if not status:
             log = ctx._gl.getProgramInfoLog(glo)
             raise ShaderException("Program link error: {}".format(log))
-        
+
     def __repr__(self):
         return "<Program id={}>".format(self._glo)
-

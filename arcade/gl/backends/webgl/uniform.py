@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from typing import Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from arcade.gl import enums
 from arcade.gl.exceptions import ShaderException
 
-
 if TYPE_CHECKING:
-    from arcade.gl.backends.webgl.context import WebGLContext
     from pyglet.graphics.api.webgl.webgl_js import WebGLProgram as JSWebGLProgram
+
+    from arcade.gl.backends.webgl.context import WebGLContext
 
 
 class Uniform:
@@ -42,7 +42,9 @@ class Uniform:
         "_ctx",
     )
 
-    def __init__(self, ctx: WebGLContext, program: JSWebGLProgram, location, name, data_type, array_length):
+    def __init__(
+        self, ctx: WebGLContext, program: JSWebGLProgram, location, name, data_type, array_length
+    ):
         self._ctx = ctx
         self._program = program
         self._location = location
@@ -85,9 +87,7 @@ class Uniform:
     def _setup_getters_and_setters(self):
         """Maps the right getter and setter functions for this uniform"""
         try:
-            gl_type, gl_setter, length, count = self._ctx._uniform_setters[
-                self._data_type
-            ]
+            gl_type, gl_setter, length, count = self._ctx._uniform_setters[self._data_type]
             self._components = length
         except KeyError:
             raise ShaderException(f"Unsupported Uniform type: {self._data_type}")
@@ -118,6 +118,7 @@ class Uniform:
         """Create setters for OpenGL data."""
         # Matrix uniforms
         if is_matrix:
+
             def setter_func(value):  # type: ignore #conditional function variants must have identical signature
                 """Set OpenGL matrix uniform data."""
                 ctx._gl.useProgram(program)
@@ -125,6 +126,7 @@ class Uniform:
 
         # Single value and multi componentuniforms
         else:
+
             def setter_func(value):  # type: ignore #conditional function variants must have identical signature
                 """Set OpenGL uniform data value."""
                 ctx._gl.useProgram(program)
@@ -170,8 +172,10 @@ class UniformBlock:
     @property
     def binding(self) -> int:
         """Get or set the binding index for this uniform block"""
-        return self._ctx._gl.getActiveUniformBlockParameter(self.glo, self.index, enums.UNIFORM_BLOCK_BINDING)
-        
+        return self._ctx._gl.getActiveUniformBlockParameter(
+            self.glo, self.index, enums.UNIFORM_BLOCK_BINDING
+        )
+
     @binding.setter
     def binding(self, binding: int):
         self._ctx._gl.uniformBlockBinding(self.glo, self.index, binding)

@@ -10,7 +10,7 @@ from arcade.gl.types import BufferDescription
 from arcade.types import BufferProtocol
 
 from .buffer import WebGLBuffer
-from .framebuffer import WebGLFramebuffer, WebGLDefaultFrameBuffer
+from .framebuffer import WebGLDefaultFrameBuffer, WebGLFramebuffer
 from .glsl import ShaderSource
 from .program import WebGLProgram
 from .texture import WebGLTexture2D
@@ -79,7 +79,6 @@ class WebGLContext(Context):
                 1,
             ),
         }
-
 
     @Context.extensions.getter
     def extensions(self) -> set[str]:
@@ -208,10 +207,10 @@ class WebGLContext(Context):
 
         if tess_control_shader is not None:
             raise NotImplementedError("Tessellation Shaders not supported with WebGL")
-        
+
         if tess_evaluation_shader is not None:
             raise NotImplementedError("Tessellation Shaders not supported with WebGL")
-        
+
         source_vs = ShaderSource(self, vertex_shader, common, enums.VERTEX_SHADER)
         source_fs = (
             ShaderSource(self, fragment_shader, common, enums.FRAGMENT_SHADER)
