@@ -9,14 +9,8 @@ get a window open.
 
 Installation
 ~~~~~~~~~~~~
-* Make sure Python is installed. `Download Python here <https://www.python.org/downloads/>`_
-  if you don't already have it.
-
-* Make sure the `Arcade library <https://pypi.org/project/arcade/>`_ is installed.
-
-  * You should first setup a virtual environment (venv) and activate it. This is hard.
-  * Install Arcade with ``pip install arcade``.
-  * Here are the longer, official :ref:`install`.
+* For any of this to work, you need Python with the Arcade module. 
+Instructions for that are here: :ref:`install`.
 
 Open a Window
 ~~~~~~~~~~~~~
