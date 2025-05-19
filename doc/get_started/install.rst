@@ -8,6 +8,13 @@ Install
 
 .. _install_requirements:
 
+.. note:: These steps require some basic computer admin knowledge.
+
+    If you are comfortable installing programs and know how to run a
+    command prompt, this is a decent guide to setting things up. If the idea
+    of a virtual environment is new, a better guide for setting up Python is
+    here: `Your Python Coding Environment on Windows: Setup Guide <https://realpython.com/python-coding-setup-windows/>`_
+
 Requirements
 ------------
 Arcade requires a desktop, laptop, or compatible Single-Board Computer (SBC) with:
