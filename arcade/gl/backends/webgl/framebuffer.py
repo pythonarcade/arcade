@@ -245,7 +245,7 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):
         super().__init__(ctx)
         self._ctx = ctx
 
-        scissor_array = bytes(self._ctx._gl.getParameter(enums.SCISSOR_BOX).to_py())
+        scissor_array = self._ctx._gl.getParameter(enums.SCISSOR_BOX).to_py()
         x, y, width, height = list(scissor_array)
 
         self._viewport = x, y, width, height

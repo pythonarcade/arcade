@@ -10,7 +10,9 @@ from arcade.gl.types import BufferDescription
 from arcade.types import BufferProtocol
 
 from .buffer import WebGLBuffer
-from .framebuffer import WebGLFramebuffer
+from .framebuffer import WebGLFramebuffer, WebGLDefaultFrameBuffer
+from .glsl import ShaderSource
+from .program import WebGLProgram
 from .texture import WebGLTexture2D
 
 if TYPE_CHECKING:
@@ -35,6 +37,49 @@ class WebGLContext(Context):
         super().__init__(window, gc_mode)
 
         self._gl.enable(enums.SCISSOR_TEST)
+
+        self._build_uniform_setters()
+
+    def _build_uniform_setters(self):
+        self._uniform_setters = {
+            # Integers
+            enums.INT: (int, self._gl.uniform1i, 1, 1),
+            enums.INT_VEC2: (int, self._gl.uniform2iv, 2, 1),
+            enums.INT_VEC3: (int, self._gl.uniform3iv, 3, 1),
+            enums.INT_VEC4: (int, self._gl.uniform4iv, 4, 1),
+            # Unsigned Integers
+            enums.UNSIGNED_INT: (int, self._gl.uniform1ui, 1, 1),
+            enums.UNSIGNED_INT_VEC2: (int, self._gl.uniform2ui, 2, 1),
+            enums.UNSIGNED_INT_VEC3: (int, self._gl.uniform3ui, 3, 1),
+            enums.UNSIGNED_INT_VEC4: (int, self._gl.uniform4ui, 4, 1),
+            # Bools
+            enums.BOOL: (bool, self._gl.uniform1i, 1, 1),
+            enums.BOOL_VEC2: (bool, self._gl.uniform2iv, 2, 1),
+            enums.BOOL_VEC3: (bool, self._gl.uniform3iv, 3, 1),
+            enums.BOOL_VEC4: (bool, self._gl.uniform4iv, 4, 1),
+            # Floats
+            enums.FLOAT: (float, self._gl.uniform1f, 1, 1),
+            enums.FLOAT_VEC2: (float, self._gl.uniform2fv, 2, 1),
+            enums.FLOAT_VEC3: (float, self._gl.uniform3fv, 3, 1),
+            enums.FLOAT_VEC4: (float, self._gl.uniform4fv, 4, 1),
+            # Matrices
+            enums.FLOAT_MAT2: (float, self._gl.uniformMatrix2fv, 4, 1),
+            enums.FLOAT_MAT3: (float, self._gl.uniformMatrix3fv, 9, 1),
+            enums.FLOAT_MAT4: (float, self._gl.uniformMatrix4fv, 16, 1),
+            # 2D Samplers
+            enums.SAMPLER_2D: (int, self._gl.uniform1i, 1, 1),
+            enums.INT_SAMPLER_2D: (int, self._gl.uniform1i, 1, 1),
+            enums.UNSIGNED_INT_SAMPLER_2D: (int, self._gl.uniform1i, 1, 1),
+            # Array
+            enums.SAMPLER_2D_ARRAY: (
+                int,
+                self._gl.uniform1iv,
+                self._gl.uniform1iv,
+                1,
+                1,
+            ),
+        }
+
 
     @Context.extensions.getter
     def extensions(self) -> set[str]:
@@ -137,8 +182,8 @@ class WebGLContext(Context):
     def flush(self) -> None:
         self._gl.flush()
 
-    def _create_default_framebuffer(self):
-        raise NotImplementedError("Not done yet")
+    def _create_default_framebuffer(self) -> WebGLDefaultFrameBuffer:
+        return WebGLDefaultFrameBuffer(self)
 
     def buffer(
         self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static"
@@ -158,7 +203,36 @@ class WebGLContext(Context):
         varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ):
-        raise NotImplementedError("Not done yet")
+        if geometry_shader is not None:
+            raise NotImplementedError("Geometry Shaders not supported with WebGL")
+
+        if tess_control_shader is not None:
+            raise NotImplementedError("Tessellation Shaders not supported with WebGL")
+        
+        if tess_evaluation_shader is not None:
+            raise NotImplementedError("Tessellation Shaders not supported with WebGL")
+        
+        source_vs = ShaderSource(self, vertex_shader, common, enums.VERTEX_SHADER)
+        source_fs = (
+            ShaderSource(self, fragment_shader, common, enums.FRAGMENT_SHADER)
+            if fragment_shader
+            else None
+        )
+
+        out_attributes = list(varyings) if varyings is not None else []
+        if not source_fs and not out_attributes:
+            out_attributes = source_vs.out_attributes
+
+        return WebGLProgram(
+            self,
+            vertex_shader=source_vs.get_source(defines=defines),
+            fragment_shader=source_fs.get_source(defines=defines) if source_fs else None,
+            geometry_shader=None,
+            tess_control_shader=None,
+            tess_evaluation_shader=None,
+            varyings=out_attributes,
+            varyings_capture_mode=varyings_capture_mode,
+        )
 
     def geometry(
         self,

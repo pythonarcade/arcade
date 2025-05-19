@@ -224,7 +224,6 @@ class Context(ABC):
         self._stats: ContextStats = ContextStats(warn_threshold=1000)
 
         self._primitive_restart_index = -1
-        self.primitive_restart_index = self._primitive_restart_index
 
         # States
         self._blend_func: Tuple[int, int] | Tuple[int, int, int, int] = self.BLEND_DEFAULT

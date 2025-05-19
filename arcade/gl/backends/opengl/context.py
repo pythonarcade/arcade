@@ -44,6 +44,12 @@ class OpenGLContext(Context):
 
         self._gl_version = (self._info.MAJOR_VERSION, self._info.MINOR_VERSION)
 
+        # This can't be set in the abstract context because not all backends
+        # support primitive restart, and the getter in those backends will raise
+        # a NotImplementedError. So we need to do this specifically on the
+        # backends that support it
+        self.primitive_restart_index = self._primitive_restart_index
+
         # Hardcoded states
         # This should always be enabled
         # gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
