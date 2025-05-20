@@ -13,6 +13,7 @@ from .buffer import WebGLBuffer
 from .framebuffer import WebGLDefaultFrameBuffer, WebGLFramebuffer
 from .glsl import ShaderSource
 from .program import WebGLProgram
+from .query import WebGLQuery
 from .sampler import WebGLSampler
 from .texture import WebGLTexture2D
 from .texture_array import WebGLTextureArray
@@ -357,8 +358,8 @@ class WebGLContext(Context):
             filter=filter,
         )
 
-    def query(self, *, samples=True, time=True, primitives=True):
-        raise NotImplementedError("Not done yet")
+    def query(self, *, samples=True, time=False, primitives=True):
+        return WebGLQuery(self, samples=samples, time=time, primitives=primitives)
 
 
 class WebGLArcadeContext(ArcadeContext, WebGLContext):
