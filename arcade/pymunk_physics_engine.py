@@ -626,7 +626,6 @@ class PymunkPhysicsEngine:
         self.space.add(shape)
         physics_object.shape = shape
 
-
     def resync_sprites(self) -> None:
         """
         Set visual sprites to be the same location as physics engine sprites.
