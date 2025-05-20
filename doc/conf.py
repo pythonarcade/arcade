@@ -196,6 +196,7 @@ extensions = [
     'sphinx.ext.viewcode',  # display code with line numbers and line highlighting
     'sphinx_copybutton',  # Adds a copy button to code blocks
     'sphinx_sitemap',  # sitemap.xml generation
+    'sphinx_togglebutton', #A way to toggle sections of text/code on or off.
     'doc.extensions.prettyspecialmethods',  # Forker plugin for prettifying special methods
 ]
 

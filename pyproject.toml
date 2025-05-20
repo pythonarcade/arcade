@@ -43,6 +43,7 @@ dev = [
     "sphinx-autobuild==2024.10.3", # April 2024 | Due to this, Python 3.10+ is required to serve docs
     "sphinx-copybutton==0.5.2",    # April 2023
     "sphinx-sitemap==2.6.0",       # April 2024
+    "sphinx-togglebutton==0.3.2",  # May 2025
     "pygments==2.19.1",            # 2.18 has breaking changes in lexer
     "docutils==0.21.2",            # ?
     # "pyyaml==6.0.1",
