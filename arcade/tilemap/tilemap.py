@@ -29,6 +29,7 @@ from arcade import (
     TextureAnimationSprite,
     TextureKeyframe,
     get_window,
+    hexagon,
 )
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
 from arcade.types import RGBA255
@@ -153,6 +154,10 @@ class TileMap:
             SpriteLists will be created lazily.
         texture_cache_manager:
             The texture cache manager to use for loading textures.
+        hex_layout:
+            The hex layout to use for the map. If not supplied, the map will be
+            treated as a square map. If supplied, the map will be treated as a hexagonal map.
+
 
     The ``layer_options`` parameter can be used to specify per layer arguments.
     The available options for this are:
@@ -234,6 +239,7 @@ class TileMap:
         texture_atlas: TextureAtlasBase | None = None,
         lazy: bool = False,
         texture_cache_manager: arcade.TextureCacheManager | None = None,
+        hex_layout: hexagon.Layout | None = None,
     ) -> None:
         if not map_file and not tiled_map:
             raise AttributeError(
@@ -260,6 +266,8 @@ class TileMap:
                 texture_atlas = get_window().ctx.default_atlas
             except RuntimeError:
                 pass
+
+        self.hex_layout = hex_layout
 
         self._lazy = lazy
         self.texture_cache_manager = texture_cache_manager or arcade.texture.default_texture_cache
@@ -771,13 +779,79 @@ class TileMap:
             atlas=texture_atlas,
             lazy=self._lazy,
         )
+
+        if self.hex_layout is None:
+            map_array = layer.data
+            if TYPE_CHECKING:
+                # Can never be None because we already detect and reject infinite maps
+                assert map_array
+
+            # Loop through the layer and add in the list
+            for row_index, row in enumerate(map_array):
+                for column_index, item in enumerate(row):
+                    # Check for an empty tile
+                    if item == 0:
+                        continue
+
+                    tile = self._get_tile_by_gid(item)
+                    if tile is None:
+                        raise ValueError(
+                            f"Couldn't find tile for item {item} in layer "
+                            f"'{layer.name}' in file '{self.tiled_map.map_file}'"
+                            f"at ({column_index}, {row_index})."
+                        )
+
+                    my_sprite = self._create_sprite_from_tile(
+                        tile,
+                        scaling=scaling,
+                        hit_box_algorithm=hit_box_algorithm,
+                        custom_class=custom_class,
+                        custom_class_args=custom_class_args,
+                    )
+
+                    if my_sprite is None:
+                        print(
+                            f"Warning: Could not create sprite number {item} "
+                            f"in layer '{layer.name}' {tile.image}"
+                        )
+                    else:
+                        my_sprite.center_x = (
+                            column_index * (self.tiled_map.tile_size[0] * scaling)
+                            + my_sprite.width / 2
+                        ) + offset[0]
+                        my_sprite.center_y = (
+                            (self.tiled_map.map_size.height - row_index - 1)
+                            * (self.tiled_map.tile_size[1] * scaling)
+                            + my_sprite.height / 2
+                        ) + offset[1]
+
+                        # Tint
+                        if layer.tint_color:
+                            my_sprite.color = ArcadeColor.from_iterable(layer.tint_color)
+
+                        # Opacity
+                        opacity = layer.opacity
+                        if opacity:
+                            my_sprite.alpha = int(opacity * 255)
+
+                        sprite_list.visible = layer.visible
+                        sprite_list.append(my_sprite)
+
+                    if layer.properties:
+                        sprite_list.properties = layer.properties
+
+            return sprite_list
+
+        # Hexagonal map
         map_array = layer.data
         if TYPE_CHECKING:
             # Can never be None because we already detect and reject infinite maps
             assert map_array
 
+        # FIXME: get tile size from tileset
+
         # Loop through the layer and add in the list
-        for row_index, row in enumerate(map_array):
+        for row_index, row in enumerate(reversed(map_array)):
             for column_index, item in enumerate(row):
                 # Check for an empty tile
                 if item == 0:
@@ -785,11 +859,12 @@ class TileMap:
 
                 tile = self._get_tile_by_gid(item)
                 if tile is None:
-                    raise ValueError(
+                    msg = (
                         f"Couldn't find tile for item {item} in layer "
                         f"'{layer.name}' in file '{self.tiled_map.map_file}'"
                         f"at ({column_index}, {row_index})."
                     )
+                    raise ValueError(msg)
 
                 my_sprite = self._create_sprite_from_tile(
                     tile,
@@ -801,22 +876,24 @@ class TileMap:
 
                 if my_sprite is None:
                     print(
-                        f"Warning: Could not create sprite number {item} "
-                        f"in layer '{layer.name}' {tile.image}"
+                        f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image}"
                     )
                 else:
-                    my_sprite.center_x = (
-                        column_index * (self.tiled_map.tile_size[0] * scaling) + my_sprite.width / 2
-                    ) + offset[0]
-                    my_sprite.center_y = (
-                        (self.tiled_map.map_size.height - row_index - 1)
-                        * (self.tiled_map.tile_size[1] * scaling)
-                        + my_sprite.height / 2
-                    ) + offset[1]
+                    # FIXME: handle map scaling
+                    # Convert from odd-r offset to cube coordinates
+                    offset_coord = hexagon.OffsetCoord(column_index, row_index)
+                    hex_ = offset_coord.to_cube("even-r")
+
+                    # Convert hex position to pixel position
+                    pixel_pos = hex_.to_pixel(self.hex_layout)
+                    # FIXME: why is the y position negative?
+                    pixel_pos = hexagon.Vec2(pixel_pos.x, pixel_pos.y)
+                    my_sprite.center_x = pixel_pos.x
+                    my_sprite.center_y = pixel_pos.y
 
                     # Tint
                     if layer.tint_color:
-                        my_sprite.color = ArcadeColor.from_iterable(layer.tint_color)
+                        my_sprite.color = layer.tint_color
 
                     # Opacity
                     opacity = layer.opacity
@@ -1032,6 +1109,7 @@ def load_tilemap(
     offset: Vec2 = Vec2(0, 0),
     texture_atlas: DefaultTextureAtlas | None = None,
     lazy: bool = False,
+    hex_layout: hexagon.Layout | None = None,
 ) -> TileMap:
     """
     Given a .json map file, loads in and returns a `TileMap` object.
@@ -1065,6 +1143,9 @@ def load_tilemap(
             If not supplied the global default atlas will be used.
         lazy:
             SpriteLists will be created lazily.
+        hex_layout:
+            The hex layout to use for the map. If not supplied, the map will be
+            treated as a square map. If supplied, the map will be treated as a hexagonal map.
     """
     return TileMap(
         map_file=map_file,
@@ -1075,4 +1156,5 @@ def load_tilemap(
         offset=offset,
         texture_atlas=texture_atlas,
         lazy=lazy,
+        hex_layout=hex_layout,
     )
