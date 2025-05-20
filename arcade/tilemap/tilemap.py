@@ -894,7 +894,7 @@ class TileMap:
 
                     # Tint
                     if layer.tint_color:
-                        my_sprite.color = layer.tint_color
+                        my_sprite.color = ArcadeColor.from_iterable(layer.tint_color)
 
                     # Opacity
                     opacity = layer.opacity
