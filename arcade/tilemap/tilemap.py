@@ -876,7 +876,8 @@ class TileMap:
 
                 if my_sprite is None:
                     print(
-                        f"Warning: Could not create sprite number {item} in layer '{layer.name}' {tile.image}"
+                        f"Warning: Could not create sprite number {item} "
+                        f"in layer '{layer.name}' {tile.image}"
                     )
                 else:
                     # FIXME: handle map scaling
