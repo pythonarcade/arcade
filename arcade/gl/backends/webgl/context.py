@@ -13,6 +13,7 @@ from .buffer import WebGLBuffer
 from .framebuffer import WebGLDefaultFrameBuffer, WebGLFramebuffer
 from .glsl import ShaderSource
 from .program import WebGLProgram
+from .sampler import WebGLSampler
 from .texture import WebGLTexture2D
 from .vertex_array import WebGLGeometry, WebGLVertexArray
 
@@ -93,7 +94,7 @@ class WebGLContext(Context):
 
         return self._errors.get(err, "UNKNOWN_ERROR")
 
-    def enable(self, *flags, int):
+    def enable(self, *flags: int):
         self._flags.update(flags)
 
         for flag in flags:
@@ -330,8 +331,8 @@ class WebGLContext(Context):
 
         self._gl.readBuffer(enums.COLOR_ATTACHMENT0)
 
-    def sampler(self, texture):
-        raise NotImplementedError("Not done yet")
+    def sampler(self, texture: WebGLTexture2D):
+        return WebGLSampler(self, texture)
 
     def texture_array(
         self,
