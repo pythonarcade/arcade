@@ -609,7 +609,9 @@ class PymunkPhysicsEngine:
         """
         physics_object = self.sprites[sprite]
         old_shape = physics_object.shape
-        assert old_shape is not None, "Tried to update the shape for a Sprite which does not currently have a shape"
+        assert old_shape is not None, """
+        Tried to update the shape for a Sprite which does not currently have a shape
+        """
 
         # Set the physics shape to the sprite's hitbox
         poly = sprite.hit_box.points
