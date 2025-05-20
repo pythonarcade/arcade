@@ -94,7 +94,7 @@ exclude = [
     ".pytest_cache",
     "temp",
     "bugs",
-    "arcade/examples/platform_tutorial",
+    "arcade/examples/*",
 ]
 lint.ignore = [
     "E731", # E731 do not assign a lambda expression, use a def
