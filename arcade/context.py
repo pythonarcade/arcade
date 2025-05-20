@@ -54,8 +54,6 @@ class ArcadeContext(Context):
         gc_mode: str = "context_gc",
         gl_api: str = "gl",
     ) -> None:
-        super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
-
         # Set up a default orthogonal projection for sprites and shapes
         self._window_block: UniformBufferObjectBase = window._matrices.ubo
         self.bind_window_block()
