@@ -44,7 +44,7 @@ this going, you have succeeded in what is generally the hardest part of any new 
 
 
 Coding...The fun part! (Step 2)
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 You also need a code editor. There are dozens of options and we can't keep up with them
 here. A simple text editor could work, but better options abound. A web search is your
 friend - search for "Python editor" and pick one that looks good. Visual Studio Code
