@@ -15,6 +15,7 @@ from .glsl import ShaderSource
 from .program import WebGLProgram
 from .sampler import WebGLSampler
 from .texture import WebGLTexture2D
+from .texture_array import WebGLTextureArray
 from .vertex_array import WebGLGeometry, WebGLVertexArray
 
 if TYPE_CHECKING:
@@ -344,8 +345,17 @@ class WebGLContext(Context):
         wrap_x: int | None = None,
         wrap_y: int | None = None,
         filter: Tuple[int, int] | None = None,
-    ):
-        raise NotImplementedError("Not done yet")
+    ) -> WebGLTextureArray:
+        return WebGLTextureArray(
+            self,
+            size,
+            components=components,
+            dtype=dtype,
+            data=data,
+            wrap_x=wrap_x,
+            wrap_y=wrap_y,
+            filter=filter,
+        )
 
     def query(self, *, samples=True, time=True, primitives=True):
         raise NotImplementedError("Not done yet")
