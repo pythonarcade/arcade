@@ -62,3 +62,6 @@ temp/
 # pending: Sphinx 8.1.4 + deps are verified as working with Arcade
 # see util/sphinx_static_file_temp_fix.py
 .ENABLE_DEVMACHINE_SPHINX_STATIC_FIX
+
+webplayground/**/*.whl
+webplayground/**/*.zip
