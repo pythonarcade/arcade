@@ -11,6 +11,7 @@ Each of these sections has heading with the same name, but prefixed with
 a # --- so you can skip between them in diffs or your favorite editor
 via hotkeys.
 """
+
 import re
 import sys
 from collections.abc import Mapping
@@ -41,12 +42,10 @@ IMPORT_TREE = build_import_tree(ARCADE_ROOT)
 
 # --- 1. Special rules & excludes ---
 
-RULE_SHOW_INHERITANCE = (':show-inheritance:',)
-RULE_INHERITED_MEMBERS = (':inherited-members:',)
+RULE_SHOW_INHERITANCE = (":show-inheritance:",)
+RULE_INHERITED_MEMBERS = (":inherited-members:",)
 
-MEMBER_SPECIAL_RULES = {
-    "arcade.ArcadeContext" : RULE_SHOW_INHERITANCE + RULE_INHERITED_MEMBERS
-}
+MEMBER_SPECIAL_RULES = {"arcade.ArcadeContext": RULE_SHOW_INHERITANCE + RULE_INHERITED_MEMBERS}
 
 
 # Module and class members to exclude
@@ -69,8 +68,8 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.types.vector_like",
             "arcade.types.color",
             "arcade.types.rect",
-            "arcade.types.box"
-        ]
+            "arcade.types.box",
+        ],
     },
     "resources.rst": {
         "title": "Resources",
@@ -90,7 +89,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.draw.polygon",
             "arcade.draw.rect",
             "arcade.draw.triangle",
-        ]
+        ],
     },
     "sprites.rst": {
         "title": "Sprites",
@@ -101,8 +100,8 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.sprite.colored",
             "arcade.sprite.mixins",
             "arcade.sprite.animated",
-            "arcade.sprite.enums"
-        ]
+            "arcade.sprite.enums",
+        ],
     },
     "sprite_list.rst": {
         "title": "Sprite Lists",
@@ -110,8 +109,8 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.sprite_list",
             "arcade.sprite_list.sprite_list",
             "arcade.sprite_list.spatial_hash",
-            "arcade.sprite_list.collision"
-        ]
+            "arcade.sprite_list.collision",
+        ],
     },
     "clock.rst": {
         "title": "Clock",
@@ -119,30 +118,10 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.clock",
         ],
     },
-    "text.rst": {
-        "title": "Text",
-        "use_declarations_in": [
-            "arcade.text"
-        ]
-    },
-    "camera_2d.rst": {
-        "title": "Camera 2D",
-        "use_declarations_in": [
-            "arcade.camera.camera_2d"
-        ]
-    },
-    "sprite_scenes.rst": {
-        "title": "Sprite Scenes",
-        "use_declarations_in": [
-            "arcade.scene"
-        ]
-    },
-    "tilemap.rst": {
-        "title": "Tiled Map Reader",
-        "use_declarations_in": [
-            "arcade.tilemap.tilemap"
-        ]
-    },
+    "text.rst": {"title": "Text", "use_declarations_in": ["arcade.text"]},
+    "camera_2d.rst": {"title": "Camera 2D", "use_declarations_in": ["arcade.camera.camera_2d"]},
+    "sprite_scenes.rst": {"title": "Sprite Scenes", "use_declarations_in": ["arcade.scene"]},
+    "tilemap.rst": {"title": "Tiled Map Reader", "use_declarations_in": ["arcade.tilemap.tilemap"]},
     "texture.rst": {
         "title": "Texture Management",
         "use_declarations_in": [
@@ -152,8 +131,8 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.texture.generate",
             "arcade.texture.manager",
             "arcade.texture.spritesheet",
-            "arcade.texture.tools"
-        ]
+            "arcade.texture.tools",
+        ],
     },
     "hitbox.rst": {
         "title": "Hitbox",
@@ -167,9 +146,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
     },
     "texture_transforms.rst": {
         "title": "Texture Transforms",
-        "use_declarations_in": [
-            "arcade.texture.transforms"
-        ]
+        "use_declarations_in": ["arcade.texture.transforms"],
     },
     "texture_atlas.rst": {
         "title": "Texture Atlas",
@@ -180,40 +157,22 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.texture_atlas.region",
             "arcade.texture_atlas.uv_data",
             "arcade.texture_atlas.ref_counters",
-        ]
+        ],
     },
     "perf_info.rst": {
         "title": "Performance Information",
-        "use_declarations_in": [
-            "arcade.perf_info",
-            "arcade.perf_graph"
-        ]
+        "use_declarations_in": ["arcade.perf_info", "arcade.perf_graph"],
     },
     "physics_engines.rst": {
         "title": "Physics Engines",
-        "use_declarations_in": [
-            "arcade.physics_engines",
-            "arcade.pymunk_physics_engine"
-        ]
+        "use_declarations_in": ["arcade.physics_engines", "arcade.pymunk_physics_engine"],
     },
-    "geometry.rst": {
-        "title": "Geometry Support",
-        "use_declarations_in": [
-            "arcade.geometry"
-        ]
-    },
+    "geometry.rst": {"title": "Geometry Support", "use_declarations_in": ["arcade.geometry"]},
     "game_controller.rst": {
         "title": "Game Controller",
-        "use_declarations_in": [
-            "arcade.controller"
-        ]
+        "use_declarations_in": ["arcade.controller"],
     },
-    "joysticks.rst": {
-        "title": "Joystick",
-        "use_declarations_in": [
-            "arcade.joysticks"
-        ]
-    },
+    "joysticks.rst": {"title": "Joystick", "use_declarations_in": ["arcade.joysticks"]},
     "window.rst": {
         "title": "Window and View",
         "use_declarations_in": [
@@ -221,64 +180,23 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.window_commands",
             "arcade.sections",
             "arcade.screenshot",
-        ]
+        ],
     },
-    "sound.rst": {
-        "title": "Sound",
-        "use_declarations_in": [
-            "arcade.sound"
-        ]
-    },
-    "path_finding.rst": {
-        "title": "Pathfinding",
-        "use_declarations_in": [
-            "arcade.paths"
-        ]
-    },
+    "sound.rst": {"title": "Sound", "use_declarations_in": ["arcade.sound"]},
+    "path_finding.rst": {"title": "Pathfinding", "use_declarations_in": ["arcade.paths"]},
     "isometric.rst": {
         "title": "Isometric Map (incomplete)",
-        "use_declarations_in": [
-            "arcade.isometric"
-        ]
+        "use_declarations_in": ["arcade.isometric"],
     },
-    "easing.rst": {
-        "title": "Easing",
-        "use_declarations_in": [
-            "arcade.easing"
-        ]
-    },
+    "easing.rst": {"title": "Easing", "use_declarations_in": ["arcade.easing"]},
     "utility.rst": {
         "title": "Misc Utility Functions",
-        "use_declarations_in": [
-            "arcade",
-            "arcade.__main__",
-            "arcade.utils"
-        ]
+        "use_declarations_in": ["arcade", "arcade.__main__", "arcade.utils"],
     },
-    "drawing_batch.rst": {
-        "title": "Shape Lists",
-        "use_declarations_in": [
-            "arcade.shape_list"
-        ]
-    },
-    "open_gl.rst": {
-        "title": "OpenGL Context",
-        "use_declarations_in": [
-            "arcade.context"
-        ]
-    },
-    "math.rst": {
-        "title": "Math",
-        "use_declarations_in": [
-            "arcade.math"
-        ]
-    },
-    "earclip.rst": {
-        "title": "Earclip",
-        "use_declarations_in": [
-            "arcade.earclip"
-        ]
-    },
+    "drawing_batch.rst": {"title": "Shape Lists", "use_declarations_in": ["arcade.shape_list"]},
+    "open_gl.rst": {"title": "OpenGL Context", "use_declarations_in": ["arcade.context"]},
+    "math.rst": {"title": "Math", "use_declarations_in": ["arcade.math"]},
+    "earclip.rst": {"title": "Earclip", "use_declarations_in": ["arcade.earclip"]},
     "gui.rst": {
         "title": "GUI",
         "use_declarations_in": [
@@ -288,8 +206,8 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.gui.surface",
             "arcade.gui.ui_manager",
             "arcade.gui.nine_patch",
-            "arcade.gui.view"
-        ]
+            "arcade.gui.view",
+        ],
     },
     "gui_widgets.rst": {
         "title": "GUI Widgets",
@@ -301,51 +219,37 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.gui.widgets.slider",
             "arcade.gui.widgets.text",
             "arcade.gui.widgets.toggle",
-            "arcade.gui.widgets.image"
-        ]
+            "arcade.gui.widgets.image",
+        ],
     },
-    "gui_events.rst": {
-        "title": "GUI Events",
-        "use_declarations_in": [
-            "arcade.gui.events"
-        ]
-    },
+    "gui_events.rst": {"title": "GUI Events", "use_declarations_in": ["arcade.gui.events"]},
     "gui_properties.rst": {
         "title": "GUI Properties",
-        "use_declarations_in": [
-            "arcade.gui.property"
-        ]
+        "use_declarations_in": ["arcade.gui.property"],
     },
-    "gui_style.rst": {
-        "title": "GUI Style",
-        "use_declarations_in": [
-            "arcade.gui.style"
-        ]
-    },
+    "gui_style.rst": {"title": "GUI Style", "use_declarations_in": ["arcade.gui.style"]},
     "gui_experimental.rst": {
         "title": "GUI Experimental Features",
         "use_declarations_in": [
             "arcade.gui.experimental.password_input",
             "arcade.gui.experimental.scroll_area",
-            "arcade.gui.experimental.typed_text_input"
-        ]
+            "arcade.gui.experimental.typed_text_input",
+        ],
     },
     "advanced_cameras.rst": {
-       "title": "Advanced Camera Features",
-       "use_declarations_in": [
-           "arcade.camera.data_types",
-           "arcade.camera.projection_functions",
-           "arcade.camera.orthographic",
-           "arcade.camera.perspective",
-           "arcade.camera.default",
-           "arcade.camera.static"
-       ]
+        "title": "Advanced Camera Features",
+        "use_declarations_in": [
+            "arcade.camera.data_types",
+            "arcade.camera.projection_functions",
+            "arcade.camera.orthographic",
+            "arcade.camera.perspective",
+            "arcade.camera.default",
+            "arcade.camera.static",
+        ],
     },
     "exceptions.rst": {
-         "title": "Exceptions",
-            "use_declarations_in": [
-                "arcade.exceptions"
-            ],
+        "title": "Exceptions",
+        "use_declarations_in": ["arcade.exceptions"],
     },
     "start_finish_render.rst": {
         "title": "Start/Finish Render",
@@ -363,19 +267,19 @@ API_FILE_TO_TITLE_AND_MODULES = {
         ],
     },
     "future.rst": {
-       "title": "Future Features",
-       "use_declarations_in": [
-           "arcade.future.texture_render_target",
-           "arcade.future.input.inputs",
-           "arcade.future.input.manager",
-           "arcade.future.input.input_mapping",
-           "arcade.future.input.raw_dicts",
-           "arcade.future.background.background_texture",
-           "arcade.future.background.background",
-           "arcade.future.background.groups",
-           "arcade.future.light.lights",
-           "arcade.future.video.video_player"
-       ]
+        "title": "Future Features",
+        "use_declarations_in": [
+            "arcade.future.texture_render_target",
+            "arcade.future.input.inputs",
+            "arcade.future.input.manager",
+            "arcade.future.input.input_mapping",
+            "arcade.future.input.raw_dicts",
+            "arcade.future.background.background_texture",
+            "arcade.future.background.background",
+            "arcade.future.background.groups",
+            "arcade.future.light.lights",
+            "arcade.future.video.video_player",
+        ],
     },
 }
 
@@ -385,7 +289,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
 # Return structure of parsing looks like this
 DeclarationsDict = dict[
     str,  # "kind" name or "*"
-    list[str]  # A list of member names
+    list[str],  # A list of member names
 ]
 
 # Patterns + default config dict
@@ -395,16 +299,15 @@ CLASS_RE = re.compile(r"^class ([A-Za-z0-9]+[^\(:]*)")
 # in the rect, box, and other modules.
 FUNCTION_RE = re.compile("^def ([a-zA-Z][a-zA-Z0-9_]*)")
 TYPE_RE = re.compile("^(?!LOG =)([A-Za-z][A-Za-z0-9_]*) =")
-DEFAULT_EXPRESSIONS =  {
-    'class': CLASS_RE,
-    'function': FUNCTION_RE,
+DEFAULT_EXPRESSIONS = {
+    "class": CLASS_RE,
+    "function": FUNCTION_RE,
     # 'type': TYPE_RE
 }
 
 
 def get_file_declarations(
-        filepath: Path,
-        kind_to_regex: Mapping[str, re.Pattern] = DEFAULT_EXPRESSIONS
+    filepath: Path, kind_to_regex: Mapping[str, re.Pattern] = DEFAULT_EXPRESSIONS
 ) -> DeclarationsDict:
     """Use a mapping of kind names to regex to get declarations.
 
@@ -434,7 +337,7 @@ def get_file_declarations(
     filename = filepath.name
 
     # Set up our return value dict
-    parsed_values = {'*':[]}
+    parsed_values = {"*": []}
     for kind_name, exp in kind_to_regex.items():
         # print(f"  ...with {group_name} expression {e.pattern!r}")
         parsed_values[kind_name] = []
@@ -446,7 +349,7 @@ def get_file_declarations(
                     for kind, exp in kind_to_regex.items():
                         parsed_raw = exp.findall(line)
                         parsed_values[kind].extend(parsed_raw)
-                        parsed_values['*'].extend(parsed_raw)
+                        parsed_values["*"].extend(parsed_raw)
 
                 except Exception as e:
                     print(f"Exception processing {filename} on line {line_no}: {e}")
@@ -455,7 +358,6 @@ def get_file_declarations(
         print(f"Failed to open {filepath}: {e}")
 
     return parsed_values
-
 
 
 # --- 4. API file generation ---
@@ -481,8 +383,8 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
 
     try:
         full_api_file_name = API_DOC_GENERATION_DIR / api_file_name
-        title = page_config.get('title')
-        use_declarations_in = page_config.get('use_declarations_in', EMPTY_TUPLE)
+        title = page_config.get("title")
+        use_declarations_in = page_config.get("use_declarations_in", EMPTY_TUPLE)
         # print(f"API filename {api_file_name} gets {title=} with {use_declarations_in=}")
 
     except Exception as e:
@@ -527,7 +429,8 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
         if "test" in module_name:
             print(
                 f"WARNING: {module_name!r} appears to contain tests."
-                f"Those belong in the 'tests/' directory!")
+                f"Those belong in the 'tests/' directory!"
+            )
             continue
 
         # TODO: Figure out how to reliably parse & render types?
@@ -535,16 +438,15 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
         member_lists = get_file_declarations(module_path)
 
         # Skip a file if we got no imports
-        if not len(member_lists['*']):
+        if not len(member_lists["*"]):
             print(
                 f"WARNING: No members parsed for {module_name!r} with"
                 f" inferred path {module_path!r}. Check & update your"
-                f"config?")
+                f"config?"
+            )
             continue
 
-        def iter_declarations(
-                kind: str
-        ) -> Generator[tuple[str, str], None, None]:
+        def iter_declarations(kind: str) -> Generator[tuple[str, str], None, None]:
             kind_list = member_lists[kind]
             for name in filter(member_not_excluded, kind_list):
                 yield name, IMPORT_TREE.resolve(f"{module_name}.{name}")
@@ -558,7 +460,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
         #     api_file.write("\n")
 
         # Classes
-        for name, full_name in iter_declarations('class'):
+        for name, full_name in iter_declarations("class"):
             quick_index_file.write(f"   * - :py:class:`{full_name}`\n")
             quick_index_file.write(f"     - {title}\n")
 
@@ -578,7 +480,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
             # text_file.write(f"     - {path_name}\n")
 
         # Functions
-        for name, full_name in iter_declarations('function'):
+        for name, full_name in iter_declarations("function"):
             quick_index_file.write(f"   * - :py:func:`{full_name}`\n")
             quick_index_file.write(f"     - {title}\n")
 
@@ -595,18 +497,18 @@ def main():
     vfs = Vfs()
 
     # Delete the API directory files
-    vfs.request_culling_unwritten(API_DOC_GENERATION_DIR, '*.rst')
+    vfs.request_culling_unwritten(API_DOC_GENERATION_DIR, "*.rst")
 
     # Open in "w" mode to clear
     with vfs.open_ctx(QUICK_INDEX_FILE_PATH, "w") as text_file:
-        text_file.include_file(
-            REPO_ROOT /  'util' / 'template_quick_index.rst')
+        text_file.include_file(REPO_ROOT / "util" / "template_quick_index.rst")
 
         # text_file.write("The Arcade module\n")
         # text_file.write("-----------------\n\n")
 
-        text_file.write(dedent(
-            """
+        text_file.write(
+            dedent(
+                """
             .. list-table::
                :widths: 50 50
                :header-rows: 1
@@ -616,7 +518,8 @@ def main():
                * - Name
                  - Group
             """
-        ))
+            )
+        )
 
     for filename in API_FILE_TO_TITLE_AND_MODULES.keys():
         generate_api_file(filename, vfs)

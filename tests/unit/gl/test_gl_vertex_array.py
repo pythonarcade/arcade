@@ -1,6 +1,7 @@
 """
 Low level tests for OpenGL 3.3 wrappers.
 """
+
 import array
 import struct
 import pytest
@@ -12,21 +13,17 @@ from arcade.gl.program import Program
 def test_geometry(ctx):
     """Test vertex_array"""
     program = ctx.load_program(
-        vertex_shader=':resources:shaders/shapes/line/line_vertex_shader_vs.glsl',
-        fragment_shader=':resources:shaders/shapes/line/line_vertex_shader_fs.glsl',
+        vertex_shader=":resources:shaders/shapes/line/line_vertex_shader_vs.glsl",
+        fragment_shader=":resources:shaders/shapes/line/line_vertex_shader_fs.glsl",
     )
     num_vertices = 100
     content = [
         BufferDescription(
             ctx.buffer(reserve=4 * num_vertices),
-            '4f1',
-            ['in_color'],
+            "4f1",
+            ["in_color"],
         ),
-        BufferDescription(
-            ctx.buffer(reserve=8 * num_vertices),
-            '2f',
-            ['in_vert']
-        ),
+        BufferDescription(ctx.buffer(reserve=8 * num_vertices), "2f", ["in_vert"]),
     ]
     geo = ctx.geometry(content)
     assert geo.ctx == ctx
@@ -44,17 +41,22 @@ def test_geometry(ctx):
     geo.flush()
 
 
-def test_padding(ctx):\
-    ctx.geometry([BufferDescription(
-        ctx.buffer(reserve=4 * 7 * 10),
-        '2f 3x4 2f',
-        ('in_pos', 'in_vel'),
-    )])
+def test_padding(ctx):
+    ctx.geometry(
+        [
+            BufferDescription(
+                ctx.buffer(reserve=4 * 7 * 10),
+                "2f 3x4 2f",
+                ("in_pos", "in_vel"),
+            )
+        ]
+    )
 
 
 def test_transform(ctx):
     """Test basic transform"""
-    program = ctx.program(vertex_shader="""
+    program = ctx.program(
+        vertex_shader="""
         #version 330
         out float value;
         void main() {
@@ -65,7 +67,7 @@ def test_transform(ctx):
     buffer = ctx.buffer(reserve=4 * 5)
     vao = ctx.geometry()
     vao.transform(program, buffer, vertices=5)
-    assert struct.unpack('5f', buffer.read()) == (0.0, 1.0, 2.0, 3.0, 4.0)
+    assert struct.unpack("5f", buffer.read()) == (0.0, 1.0, 2.0, 3.0, 4.0)
 
 
 def test_index_buffer_32bit(ctx):
@@ -86,8 +88,8 @@ def test_index_buffer_32bit(ctx):
         }
         """,
     )
-    vertex_buffer = ctx.buffer(data=array.array('f', [0.0] * 2 * 4))
-    ibo = ctx.buffer(data=array.array('I', [0, 1, 2, 0, 1, 3]))
+    vertex_buffer = ctx.buffer(data=array.array("f", [0.0] * 2 * 4))
+    ibo = ctx.buffer(data=array.array("I", [0, 1, 2, 0, 1, 3]))
     vao = ctx.geometry(
         [
             BufferDescription(vertex_buffer, "2f", ["in_position"]),
@@ -120,8 +122,8 @@ def test_index_buffer_16bit(ctx):
         }
         """,
     )
-    vertex_buffer = ctx.buffer(data=array.array('f', [0.0] * 2 * 4))
-    ibo = ctx.buffer(data=array.array('H', [0, 1, 2, 0, 1, 3]))
+    vertex_buffer = ctx.buffer(data=array.array("f", [0.0] * 2 * 4))
+    ibo = ctx.buffer(data=array.array("H", [0, 1, 2, 0, 1, 3]))
     vao = ctx.geometry(
         [
             BufferDescription(vertex_buffer, "2f", ["in_position"]),
@@ -154,8 +156,8 @@ def test_index_buffer_8bit(ctx):
         }
         """,
     )
-    vertex_buffer = ctx.buffer(data=array.array('f', [0.0] * 2 * 4))
-    ibo = ctx.buffer(data=array.array('B', [0, 1, 2, 0, 1, 3]))
+    vertex_buffer = ctx.buffer(data=array.array("f", [0.0] * 2 * 4))
+    ibo = ctx.buffer(data=array.array("B", [0, 1, 2, 0, 1, 3]))
     vao = ctx.geometry(
         [
             BufferDescription(vertex_buffer, "2f", ["in_position"]),
@@ -190,19 +192,15 @@ def test_incomplete_geometry(ctx):
 def test_appending_extra_buffer_description(ctx):
     """Attempt to append a BufferDescription with the same attribute name"""
     with pytest.raises(ValueError):
-        geometry = ctx.geometry(
-            [
-                BufferDescription(ctx.buffer(reserve=16), "2f", ['in_position'])
-            ]
+        geometry = ctx.geometry([BufferDescription(ctx.buffer(reserve=16), "2f", ["in_position"])])
+        geometry.append_buffer_description(
+            BufferDescription(ctx.buffer(reserve=16), "4f", ["in_position"])
         )
-        geometry.append_buffer_description(BufferDescription(ctx.buffer(reserve=16), '4f', ['in_position']))
 
 
 def test_vertex_array_wrong_attrib_mapping(ctx):
     """Attempt to map an float buffer into an int attribute"""
-    geometry =ctx.geometry(
-        [BufferDescription(ctx.buffer(reserve=16), '2f', ['in_pos'])]
-    )
+    geometry = ctx.geometry([BufferDescription(ctx.buffer(reserve=16), "2f", ["in_pos"])])
     program = ctx.program(
         vertex_shader="""
             #version 330

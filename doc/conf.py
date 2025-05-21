@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Sphinx configuration file"""
+
 import os
 from functools import cache
 import logging
@@ -17,7 +18,7 @@ REPO_LOCAL_ROOT = HERE.parent.parent
 ARCADE_MODULE = REPO_LOCAL_ROOT / "arcade"
 UTIL_DIR = REPO_LOCAL_ROOT / "util"
 
-log = logging.getLogger('conf.py')
+log = logging.getLogger("conf.py")
 logging.basicConfig(level=logging.WARNING)
 # logging.basicConfig(level=logging.INFO)
 
@@ -37,8 +38,8 @@ col_width = max(map(len, os.environ.keys()))
 READTHEDOCS = dict()
 ENV = dict()
 for k, v in os.environ.items():
-    if k.startswith('READTHEDOCS_'):
-        READTHEDOCS[k.removeprefix('READTHEDOCS_')] = v
+    if k.startswith("READTHEDOCS_"):
+        READTHEDOCS[k.removeprefix("READTHEDOCS_")] = v
     ENV[k] = v
 
 from util.doc_helpers.real_filesystem import copy_media
@@ -68,14 +69,15 @@ for k, v in ENV.items():
 # Don't change to
 # from arcade.version import VERSION
 # or read the docs build will fail.
-from version import VERSION # pyright: ignore [reportMissingImports]
+from version import VERSION  # pyright: ignore [reportMissingImports]
+
 log.info(f" Got version {VERSION=!r}")
 
 
 print()
-GIT_REF = 'development'
+GIT_REF = "development"
 if READTHEDOCS:
-    if READTHEDOCS.get('VERSION') in ('latest', 'stable'):
+    if READTHEDOCS.get("VERSION") in ("latest", "stable"):
         log.info(" !!!!! APPEARS TO BE A REAL RELEASE  !!!!!")
     else:
         log.info(" +++++ Building a PR or development  +++++")
@@ -85,8 +87,8 @@ print()
 
 
 # We'll pass this to our generation scripts to initialize their globals
-REPO_URL_BASE="https://github.com/pythonarcade/arcade"
-FMT_URL_REF_BASE=f"{REPO_URL_BASE}/blob/{GIT_REF}"
+REPO_URL_BASE = "https://github.com/pythonarcade/arcade"
+FMT_URL_REF_BASE = f"{REPO_URL_BASE}/blob/{GIT_REF}"
 
 RESOURCE_GLOBALS = dict(
     GIT_REF=GIT_REF,  # pending: post-3.0 clean-up, not sure if things use it now?
@@ -96,11 +98,11 @@ RESOURCE_GLOBALS = dict(
     # This double-bracket escapes brackets in f-strings
     FMT_URL_REF_PAGE=f"{FMT_URL_REF_BASE}/{{}}",
     FMT_URL_REF_EMBED=f"{FMT_URL_REF_BASE}/{{}}?raw=true",
-    RTD_EVIL=READTHEDOCS['CANONICAL_URL'] if READTHEDOCS else ""  # pending: post-3.0 cleanup
+    RTD_EVIL=READTHEDOCS["CANONICAL_URL"] if READTHEDOCS else "",  # pending: post-3.0 cleanup
 )
 
-def run_util(filename, run_name="__main__", init_globals=None):
 
+def run_util(filename, run_name="__main__", init_globals=None):
     full_absolute_path = UTIL_DIR / filename
     full_str = str(full_absolute_path)
 
@@ -108,7 +110,7 @@ def run_util(filename, run_name="__main__", init_globals=None):
     log.info(f"  run_name={run_name!r}")
     kwargs = dict(run_name=run_name)
     if init_globals is not None:
-        kwargs['init_globals'] = init_globals
+        kwargs["init_globals"] = init_globals
         log.info(f"  init_globals={{")
         num_left = len(init_globals)
         for k, v in init_globals.items():
@@ -119,6 +121,7 @@ def run_util(filename, run_name="__main__", init_globals=None):
 
     runpy.run_path(full_str, **kwargs)
 
+
 # Temp fix for Sphinx not copying static files  # pending: post-3.0 refactor
 # Enable by creating a .ENABLE_DEVMACHINE_SPHINX_STATIC_FIX
 run_util("sphinx_static_file_temp_fix.py")
@@ -128,56 +131,47 @@ run_util("generate_example_thumbnails.py")
 # Create a tabular representation of the resources with embeds
 run_util("create_resources_listing.py", init_globals=RESOURCE_GLOBALS)
 # Run the generate quick API index script
-run_util('../util/update_quick_index.py')
+run_util("../util/update_quick_index.py")
 
 
-OUT_STATIC = REPO_LOCAL_ROOT / 'build/html/_static/'
+OUT_STATIC = REPO_LOCAL_ROOT / "build/html/_static/"
 
-src_res_dir = ARCADE_MODULE / 'resources/assets'
-out_res_dir = REPO_LOCAL_ROOT / 'build/html/_static/assets'
+src_res_dir = ARCADE_MODULE / "resources/assets"
+out_res_dir = REPO_LOCAL_ROOT / "build/html/_static/assets"
 
 # pending: post-3.0 cleanup to find the right source events to make this work?
 # if exc or app.builder.format != "html":
 #     return
 # static_dir = (app.outdir / '_static').resolve()
 copy_what = {  # pending: post-3.0 cleanup to tie this into resource generation correctly
-    'sounds': ('*.wav', '*.ogg', '*.mp3'),
-    'music': ('*.wav', '*.ogg', '*.mp3'),
-    'video': ('*.mp4', '*.webm', )
+    "sounds": ("*.wav", "*.ogg", "*.mp3"),
+    "music": ("*.wav", "*.ogg", "*.mp3"),
+    "video": (
+        "*.mp4",
+        "*.webm",
+    ),
 }
 copy_media(src_res_dir, out_res_dir, copy_what)
 
 # We are no longer asking. We are copying.
-copy_media(
-   REPO_LOCAL_ROOT / "doc/_static/icons",
-   OUT_STATIC / "icons" ,
-   {
-       'tabler': ("*.svg",)
-   }
-)
-copy_media(
-   REPO_LOCAL_ROOT / "doc/_static/",
-   OUT_STATIC ,
-   {
-       'filetiles': ("*.png",)
-   }
-)
-#copy_media(
+copy_media(REPO_LOCAL_ROOT / "doc/_static/icons", OUT_STATIC / "icons", {"tabler": ("*.svg",)})
+copy_media(REPO_LOCAL_ROOT / "doc/_static/", OUT_STATIC, {"filetiles": ("*.png",)})
+# copy_media(
 #    REP / ""
-#)
+# )
 
 
 autodoc_inherit_docstrings = False
 autodoc_default_options = {
-    'members': True,
+    "members": True,
     # 'member-order': 'groupwise',
-    'member-order': 'alphabetical',
-    'undoc-members': True,
-    'show-inheritance': True
+    "member-order": "alphabetical",
+    "undoc-members": True,
+    "show-inheritance": True,
 }
-toc_object_entries_show_parents = 'hide'
+toc_object_entries_show_parents = "hide"
 # Special methods in api docs gets a special prefix emoji
-prettyspecialmethods_signature_prefix = '🧙'
+prettyspecialmethods_signature_prefix = "🧙"
 
 
 RELEASE = VERSION
@@ -187,16 +181,17 @@ RELEASE = VERSION
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_rtd_theme',  # Read the Docs theme
-    'sphinx_rtd_dark_mode',  # Dark mode for the RTD theme
-    'sphinx.ext.autodoc',  # API doc generation tools
-    'sphinx.ext.napoleon',  # Support for NumPy and Google style docstrings
-    'sphinx.ext.imgconverter',  # Converts .gif for PDF doc build
-    'sphinx.ext.intersphinx',  # Link to other projects' docs
-    'sphinx.ext.viewcode',  # display code with line numbers and line highlighting
-    'sphinx_copybutton',  # Adds a copy button to code blocks
-    'sphinx_sitemap',  # sitemap.xml generation
-    'doc.extensions.prettyspecialmethods',  # Forker plugin for prettifying special methods
+    "sphinx_rtd_theme",  # Read the Docs theme
+    "sphinx_rtd_dark_mode",  # Dark mode for the RTD theme
+    "sphinx.ext.autodoc",  # API doc generation tools
+    "sphinx.ext.napoleon",  # Support for NumPy and Google style docstrings
+    "sphinx.ext.imgconverter",  # Converts .gif for PDF doc build
+    "sphinx.ext.intersphinx",  # Link to other projects' docs
+    "sphinx.ext.viewcode",  # display code with line numbers and line highlighting
+    "sphinx_copybutton",  # Adds a copy button to code blocks
+    "sphinx_sitemap",  # sitemap.xml generation
+    "sphinx_togglebutton",  # A way to toggle sections of text/code on or off.
+    "doc.extensions.prettyspecialmethods",  # Forker plugin for prettifying special methods
 ]
 
 # pending: post-3.0 cleanup:
@@ -206,19 +201,19 @@ extensions = [
 # copybutton_image_svg = (REPO_LOCAL_ROOT / "doc/_static/icons/tabler/copy.svg").read_text()
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'Python Arcade Library'
-copyright = '2025, Paul Vincent Craven'
-author = 'Paul Vincent Craven'
+project = "Python Arcade Library"
+copyright = "2025, Paul Vincent Craven"
+author = "Paul Vincent Craven"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -245,7 +240,7 @@ exclude_patterns = [
 ]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'default'  # will use "sphinx" or the theme's default
+pygments_style = "default"  # will use "sphinx" or the theme's default
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 # todo_include_todos = True
@@ -261,81 +256,79 @@ pygments_style = 'default'  # will use "sphinx" or the theme's default
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 # See sphinx-rtd-theme docs for details on each option:
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
 html_theme_options = {
-    'logo_only': False,
-    'sticky_navigation': True,
-    'navigation_depth': 3,
-    'collapse_navigation': False,
+    "logo_only": False,
+    "sticky_navigation": True,
+    "navigation_depth": 3,
+    "collapse_navigation": False,
 }
 
 # The single config option provided by sphinx-rtd-dark-mode
 # https://github.com/MrDogeBro/sphinx_rtd_dark_mode#config
 default_dark_mode = True
 
-html_title = f'Python Arcade {version}'
+html_title = f"Python Arcade {version}"
 
 html_js_files = [
-    'https://code.jquery.com/jquery-3.6.3.min.js',
-    'https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js',
+    "https://code.jquery.com/jquery-3.6.3.min.js",
+    "https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js",
 ]
 
 html_css_files = [
-    'https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css',
+    "https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css",
 ]
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = '_static/android-chrome-192x192.png'
+html_logo = "_static/android-chrome-192x192.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = '_static/favicon.ico'
+html_favicon = "_static/favicon.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
-html_extra_path = ['html_extra']
+html_extra_path = ["html_extra"]
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Arcade'
-html_baseurl = 'https://api.arcade.academy/'
+htmlhelp_basename = "Arcade"
+html_baseurl = "https://api.arcade.academy/"
 
 # Fix line numbers on code listings until the RTD theme updates to sphinx 4+
 # html_codeblock_linenos_style = 'table'
 
 # Configuration for intersphinx enabling linking other projects
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3', None),
+    "python": ("https://docs.python.org/3", None),
     # As of January 25th, pyglet's 2.1.X branch is on this URL and their
     # development build on readthedocs is for their in-progress 3.0.0 alpha.
-    'pyglet': ('https://pyglet.readthedocs.io/en/latest/', None),
-    'PIL': ('https://pillow.readthedocs.io/en/stable', None),
-    'pymunk': ('https://www.pymunk.org/en/latest/', None),
+    "pyglet": ("https://pyglet.readthedocs.io/en/latest/", None),
+    "PIL": ("https://pillow.readthedocs.io/en/stable", None),
+    "pymunk": ("https://www.pymunk.org/en/latest/", None),
 }
 
 # These will be joined as one block and prepended to every source file.
 # Substitutions for |version| and |release| are predefined by Sphinx.
 PROLOG_PARTS = [
-    #".. include:: /links.rst",
+    # ".. include:: /links.rst",
     ".. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.Player`",
     ".. _Arcade's License File on GitHub: {FMT_URL_REF_BASE}/license.rst",
-
     (  # Allows explaining how to copy anywhere in the doc.
-        '.. |Example Copy Button| raw:: html\n\n'
+        ".. |Example Copy Button| raw:: html\n\n"
         '   <div class="arcade-ezcopy doc-ui-example-dummy" style="display: inline-block;">\n'
         '      <img src="/_static/copy-button.svg"/>\n\n'
-        '   </div>\n\n'
-    )
-
+        "   </div>\n\n"
+    ),
 ]
 with open("_includes/links.rst") as f:
     PROLOG_PARTS.extend(f.readlines())
@@ -390,10 +383,12 @@ def inspect_docstring_for_member(
     if what == "class":
         doc = _obj.__init__.__doc__
         if doc and isinstance(doc, str) and not doc.startswith("Initialize self"):
-            raise ValueError((
-                f"Class {name} has a docstring on __init__. "
-                "The class docstring should cover docs for the initializer:\n {_obj.__init__.__doc__}"
-            ))
+            raise ValueError(
+                (
+                    f"Class {name} has a docstring on __init__. "
+                    "The class docstring should cover docs for the initializer:\n {_obj.__init__.__doc__}"
+                )
+            )
 
 
 def generate_color_table(filename, source):
@@ -410,7 +405,9 @@ def generate_color_table(filename, source):
     #    green   '(?P<green>\d*)' followed by
     #    blue    '(?P<blue>\d*)' followed by
     #    alpha   '(?P<alpha>\d*)'
-    color_match = re.compile(r'(?P<name>[a-z_A-Z]*)(?:[ =]*Color[ (]*)(?P<red>\d*)[ ,]*(?P<green>\d*)[ ,]*(?P<blue>\d*)[ ,]*(?P<alpha>\d*)')
+    color_match = re.compile(
+        r"(?P<name>[a-z_A-Z]*)(?:[ =]*Color[ (]*)(?P<red>\d*)[ ,]*(?P<green>\d*)[ ,]*(?P<blue>\d*)[ ,]*(?P<alpha>\d*)"
+    )
 
     with open(filename) as color_file:
         for line in color_file:
@@ -420,7 +417,7 @@ def generate_color_table(filename, source):
                 continue
 
             name, r, g, b, a = matches.groupdict().values()
-            color_rgb_comma_sep= f"{r}, {g}, {b}"
+            color_rgb_comma_sep = f"{r}, {g}, {b}"
 
             # Generate the alpha for CSS color function
             rgba_css = f"rgba({color_rgb_comma_sep}, {int(a) / 255!s:.4})"
@@ -428,12 +425,14 @@ def generate_color_table(filename, source):
             append_text += "    <tr>"
             append_text += (
                 f"<td>"
-                f"<code class=\"docutils literal notranslate\">"
-                f"<span class=\"pre\">{name}</span>"
+                f'<code class="docutils literal notranslate">'
+                f'<span class="pre">{name}</span>'
                 f"</code>"
                 f"</td>"
             )
-            append_text += f"<td class=\"color-swatch\"><div style=\"background: {rgba_css};\">&nbsp</div></td>"
+            append_text += (
+                f'<td class="color-swatch"><div style="background: {rgba_css};">&nbsp</div></td>'
+            )
             append_text += f"<td>({color_rgb_comma_sep}, {a})</td>"
             append_text += "</tr>\n"
 
@@ -460,6 +459,7 @@ def source_read_handler(_app, doc_name: str, source):
     Event handler for source-read event.
     Where we can modify the source of a document before it is parsed.
     """
+
     def _get_dir(app, path):
         path = get_module_root(_app.confdir) / path
         print(f"Generated corrected module path: {path!r}")
@@ -473,6 +473,7 @@ def source_read_handler(_app, doc_name: str, source):
     elif doc_name == "api_docs/arcade.uicolor":
         generate_color_table(_get_dir(_app, "uicolor.py"), source)
 
+
 def on_autodoc_process_bases(app, name, obj, options, bases):
     """We don't care about the `object` base class, so remove it from the list of bases."""
     bases[:] = [base for base in bases if base is not object]
@@ -484,10 +485,10 @@ class A(NamedTuple):
 
 
 APP_CONFIG_DIRS = (
-    A('outdir'),
-    A('srcdir', 'NOTE: This is reST source, not Python source!'),
-    A('confdir'),
-    A('doctreedir'),
+    A("outdir"),
+    A("srcdir", "NOTE: This is reST source, not Python source!"),
+    A("confdir"),
+    A("doctreedir"),
 )
 
 
@@ -496,18 +497,16 @@ class ResourceRole(SphinxRole):  # pending: 3.1
 
     This needs improvement.
     """
+
     def run(self) -> tuple[list[nodes.Node], list[nodes.system_message]]:
         raw = self.text.removeprefix(":resource:")
-        page_id =  self.text\
-            .replace(':', '')\
-            .replace('/', '-')\
-            .replace('_', '-')\
-            .replace('.', '-')
+        page_id = self.text.replace(":", "").replace("/", "-").replace("_", "-").replace(".", "-")
 
         filename = f"'{raw.split('/')[-1]}'"
-        node = nodes.reference(text=filename, refuri=''.join([
-             '/api_docs/resources.html#', page_id]),
-            )
+        node = nodes.reference(
+            text=filename,
+            refuri="".join(["/api_docs/resources.html#", page_id]),
+        )
 
         log.info(" Attempted ResourceRole", locals())
         return [node], []
@@ -532,14 +531,15 @@ def setup(app):
     # IMPORTANT: We can't use app.add_autodocumenter!
     # See the docstring of ClassDocumenter above for why.
     # sphinx.ext.autodoc.ClassDocumenter = ClassDocumenter
-    app.connect('source-read', source_read_handler)
+    app.connect("source-read", source_read_handler)
     app.connect("autodoc-process-docstring", inspect_docstring_for_member)
-    app.connect('autodoc-process-signature', strip_init_return_typehint, -1000)
-    app.connect('autodoc-process-bases', on_autodoc_process_bases)
+    app.connect("autodoc-process-signature", strip_init_return_typehint, -1000)
+    app.connect("autodoc-process-bases", on_autodoc_process_bases)
     # app.add_transform(Transform)
-    app.add_role('resource', ResourceRole())
+    app.add_role("resource", ResourceRole())
     # Don't do anything that can fail on this event or it'll kill your build hard
     # app.connect('build-finished', throws_exception)
+
 
 # ------------------------------------------------------
 # Old hacks that breaks the api docs. !!! DO NOT USE !!!

@@ -49,7 +49,7 @@ class GameView(arcade.Window):
         # Create the ground
         # This shows using a loop to place multiple sprites horizontally
         for x in range(0, 1250, 64):
-            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", scale=0.5)
+            wall = arcade.Sprite(":resources:images/tiles/grassMid.png", scale=TILE_SCALING)
             wall.center_x = x
             wall.center_y = 32
             self.wall_list.append(wall)
@@ -61,8 +61,7 @@ class GameView(arcade.Window):
         for coordinate in coordinate_list:
             # Add a crate on the ground
             wall = arcade.Sprite(
-                ":resources:images/tiles/boxCrate_double.png", scale=0.5
-            )
+                ":resources:images/tiles/boxCrate_double.png", scale=TILE_SCALING)
             wall.position = coordinate
             self.wall_list.append(wall)
 

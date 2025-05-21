@@ -425,35 +425,46 @@ class UIBoxLayout(UILayout):
 
 
 class UIGridLayout(UILayout):
-    """Place widgets in a grid.
+    """Arranges each child widget over one or more columns and rows.
 
-    Widgets can span multiple columns and rows.
-    By default, the layout will only use the minimal required space (``size_hint = (0, 0)``).
+    The layout's ``size_hint`` requests a target size as a :py:class:`tuple`
+    of ``(x, y)`` floats as ratios relative to the layout's parent:
 
-    Widgets can provide a ``size_hint`` to request dynamic space relative to the layout size.
-    A size_hint of ``(1, 1)`` will fill the available space, while ``(0.1, 0.1)``
-    will use maximum 10% of the layouts total size.
+    * The default of ``(0, 0)`` requests the minimum possible space
+    * ``(1.0, 1.0)`` requests the maximum possible space
+    * ``(0.1, 0.1)`` requests 10% of the layout parent's total size
 
-    Children are resized based on ``size_hint``. Maximum and minimum
-    ``size_hint``s only take effect if a ``size_hint`` is given.
+    Each child widget's ``size_hint`` value will be used to:
 
-    The layouts ``size_hint_min`` is automatically
-    updated based on the minimal required space by children, after layouting.
+    * control its size within the layout
+    * automatically re-calculate the layout's ``size_hint_min``
 
-    The width of columns and height of rows are calculated based on the size hints of the children.
-    The highest size_hint_min of a child in a column or row is used. If a child has no size_hint,
-    the actual size is considered.
+    The width of each column and height of each row will be calculated
+    on update by reading the sizing data of each child widget. For each
+    row/column, the corresponding values along its axis will be read
+    from widgets along its axis:
+
+    * the maximum ``size_hint_min`` of its widgets
+    * the minimum ``size_hint_max`` of its widgets
+
+    If any widget lacks size hint data, its "actual" will be used instead.
+    See :py:meth:`~.do_layout` to learn more.
+
+    .. note::
+
+       Maximum and minimum size hints only take effect when a ``size_hint``
+       is set.
 
     Args:
         x: ``x`` coordinate of bottom left corner.
         y: ``y`` coordinate of bottom left corner.
         width: Width of the layout.
         height: Height of the layout.
-        align_horizontal: Align children in orthogonal direction.
-            Options include ``left``, ``center``, and ``right``.
-        align_vertical: Align children in orthogonal direction. Options
-            include ``top``, ``center``, and ``bottom``.
-        children: Initial list of children. More can be added later.
+        align_horizontal: Align children in along the X axis to the
+            ``"left"``, ``"center"``, or ``"right"``.
+        align_vertical: Align children in along the Y axis to the
+            ``"top"``, ``"center"``, or ``"bottom"``.
+        children: An initial iterable of children. More can be added later.
         size_hint: A size hint for :py:class:`~arcade.gui.UILayout`, if
             the :py:class:`~arcade.gui.UIWidget` would like to grow.
         size_hint_max: Maximum width and height in pixels.
@@ -651,18 +662,26 @@ class UIGridLayout(UILayout):
         )
 
     def do_layout(self):
-        """Executes the layout algorithm.
-
-        Children are placed in a grid layout based on the size hints.
+        """Arrange children in the grid based on their size hints.
 
         Algorithm
         ---------
 
-        0. generate list for all rows and columns
-        1. per column, collect max of size_hint_min and max size_hint (widths)
-        2. per row, collect max of size_hint_min and max size_hint (heights)
-        3.  use box layout algorithm to distribute space
-        4.  place widgets in grid layout
+        0. Generate lists of child widgets for each row and column
+        1. For each column, calculate the following values:
+
+           * If a widget lacks size hints, substitute the "actual" width instead
+           * The :py:func:`max` of all its child ``size_hint_min[0]`` values
+           * The :py:func:`max` of all its child ``size_hint[0]`` values
+
+        2. For each row, calculate the following values:
+
+           * If a widget lacks size hints, substitute the "actual" height instead
+           * The :py:func:`max` of all its child ``size_hint_min[1]`` values
+           * The :py:func:`max` of all its child ``size_hint[1]`` values
+
+        3.  Use box layout algorithm to allocate on-screen space
+        4.  Re-size and place the widgets to match the calculated grid layout
 
         """
 

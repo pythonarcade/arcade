@@ -173,7 +173,7 @@ def test_color_from_hex_string():
     assert Color.from_hex_string("#fff") == (255, 255, 255, 255)
     assert Color.from_hex_string("FFF") == (255, 255, 255, 255)
 
-    for bad_value in ("ppp", 'ff', "e"):
+    for bad_value in ("ppp", "ff", "e"):
         with pytest.raises(ValueError):
             Color.from_hex_string(bad_value)
 
@@ -197,7 +197,7 @@ def test_color_rgb_property():
 
     # Spot check unique colors
     assert colors.COBALT.rgb == (0, 71, 171)
-    assert Color(1,3,5,7).rgb == (1, 3, 5)
+    assert Color(1, 3, 5, 7).rgb == (1, 3, 5)
 
 
 def test_deepcopy_color_values():
@@ -246,11 +246,10 @@ def randint_is_constant(monkeypatch):
     repeated value (128, or 0x80 in hex) to represent a channel fetched
     from random rather than taken from user input.
     """
-    monkeypatch.setattr('random.randint', Mock(return_value=0x80808080))
+    monkeypatch.setattr("random.randint", Mock(return_value=0x80808080))
 
 
 def test_color_random(randint_is_constant):
-
     for combo in product((None, 0), repeat=4):
         color = Color.random(*combo)
         for channel_value, channel_arg in zip(color, combo):

@@ -5,11 +5,11 @@ from PIL import Image
 
 
 def main():
-    input_path = Path('example_code/images')
-    output_path = Path('example_code/images/thumbs/')
+    input_path = Path("example_code/images")
+    output_path = Path("example_code/images/thumbs/")
 
-    png_input_files = input_path.glob('*.png')
-    gif_input_files = input_path.glob('*.gif')
+    png_input_files = input_path.glob("*.png")
+    gif_input_files = input_path.glob("*.gif")
 
     modified_files = []
 
@@ -40,12 +40,12 @@ def generate_thumbnails(input_files, output_path):
     output_path.mkdir(exist_ok=True)
 
     for input_file in input_files:
-        print('Generating thumbnail: ' + input_file.name)
+        print("Generating thumbnail: " + input_file.name)
         im = Image.open(input_file)
         im.thumbnail(size)
         im.save(output_path / input_file.name)
     print("Done generating thumbnails.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -48,4 +48,3 @@ def test_regex_input_accepts_only_matching_patterns(ui):
         ui.type_text(l)
 
     assert fi.text == "1234567890"
-

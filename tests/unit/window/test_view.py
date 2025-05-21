@@ -24,7 +24,8 @@ def test_on_hide_view_called(window):
     window.show_view(view2)
 
     hide_mock.assert_called_once()
-    
+
+
 def test_view_background_color(window):
     view = View(window, color.ARCADE_GREEN)
     assert view.background_color == color.ARCADE_GREEN

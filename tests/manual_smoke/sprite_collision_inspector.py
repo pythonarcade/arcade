@@ -14,11 +14,12 @@ GRID_HIGHLIGHT = arcade.color.GREEN
 
 TEX_GREY_PANEL_RAW = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 def _tname(t: Any) -> str:
     if not isinstance(t, builtins.type):
-        return  t.__class__.__name__
+        return t.__class__.__name__
     else:
         return t.__name__
 
@@ -61,7 +62,7 @@ class TypedTextInput(UIInputText, Generic[T]):
             size_hint=size_hint,
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
-            **kwargs
+            **kwargs,
         )
         self._error_color = error_color
         self._parsed_type: Type[T] = parsed_type
@@ -102,9 +103,7 @@ class TypedTextInput(UIInputText, Generic[T]):
             return
 
         self.caret.color = validated
-        self.doc.set_style(
-            0, len(self.text), dict(color=validated)
-        )
+        self.doc.set_style(0, len(self.text), dict(color=validated))
         self.trigger_full_render()
 
     @property
@@ -123,7 +122,6 @@ class TypedTextInput(UIInputText, Generic[T]):
             raise e
 
 
-
 def draw_crosshair(
     where: tuple[float, float],
     color=arcade.color.BLACK,
@@ -131,58 +129,40 @@ def draw_crosshair(
     border_width: float = 1.0,
 ) -> None:
     x, y = where
-    arcade.draw.circle.draw_circle_outline(
-        x, y,
-        radius,
-        color=color,
-        border_width=border_width
-    )
-    arcade.draw.draw_line(
-        x, y - radius, x, y + radius,
-        color=color, line_width=border_width)
+    arcade.draw.circle.draw_circle_outline(x, y, radius, color=color, border_width=border_width)
+    arcade.draw.draw_line(x, y - radius, x, y + radius, color=color, line_width=border_width)
 
-    arcade.draw.draw_line(
-        x - radius, y, x + radius, y,
-        color=color, line_width=border_width)
+    arcade.draw.draw_line(x - radius, y, x + radius, y, color=color, line_width=border_width)
 
 
 class MyGame(arcade.Window):
-
     def add_field_row(self, label_text: str, widget: UIWidget) -> None:
         children = (
             arcade.gui.widgets.text.UITextArea(
-                text=label_text,
-                width=100,
-                height=20,
-                color=arcade.color.BLACK,
-                font_size=12
+                text=label_text, width=100, height=20, color=arcade.color.BLACK, font_size=12
             ),
-            widget
+            widget,
         )
         row = UIBoxLayout(vertical=False, space_between=10, children=children)
         self.rows.add(row)
 
-    def __init__(
-            self,
-            width: int = 1280,
-            height: int = 720,
-            grid_tile_px: int = 100
-    ):
-
+    def __init__(self, width: int = 1280, height: int = 720, grid_tile_px: int = 100):
         super().__init__(width, height, "Collision Inspector")
         # why does this need a context again?
         self.nine_patch = NinePatchTexture(
-            left=5, right=5, top=5, bottom=5, texture=TEX_GREY_PANEL_RAW)
+            left=5, right=5, top=5, bottom=5, texture=TEX_GREY_PANEL_RAW
+        )
         self.ui = UIManager()
         self.spritelist: SpriteList[Sprite] = arcade.SpriteList()
 
-
         textbox_template = dict(width=40, height=20, text_color=arcade.color.BLACK)
-        self.cursor_x_field = UIInputText(
-            text="1.0", **textbox_template).with_background(texture=self.nine_patch)
+        self.cursor_x_field = UIInputText(text="1.0", **textbox_template).with_background(
+            texture=self.nine_patch
+        )
 
-        self.cursor_y_field = UIInputText(
-            text="1.0", **textbox_template).with_background(texture=self.nine_patch)
+        self.cursor_y_field = UIInputText(text="1.0", **textbox_template).with_background(
+            texture=self.nine_patch
+        )
 
         self.rows = UIBoxLayout(space_between=20).with_background(color=arcade.color.GRAY)
 
@@ -206,11 +186,7 @@ class MyGame(arcade.Window):
         self.on_widget = False
 
     def build_sprite_grid(
-            self,
-            columns: int,
-            rows: int,
-            grid_tile_px: int,
-            offset: tuple[float, float] = (0, 0)
+        self, columns: int, rows: int, grid_tile_px: int, offset: tuple[float, float] = (0, 0)
     ):
         offset_x, offset_y = offset
         self.spritelist.clear()
@@ -253,5 +229,6 @@ class MyGame(arcade.Window):
             draw_crosshair(self.cursor)
 
         self.ui.draw()
+
 
 MyGame().run()

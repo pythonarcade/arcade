@@ -47,7 +47,7 @@ def test_contains():
     scene = arcade.Scene()
     assert "Walls" not in scene
     assert None not in scene
-    
+
     walls_spriteList = arcade.SpriteList()
     scene.add_sprite_list("Walls", use_spatial_hash=True, sprite_list=walls_spriteList)
     assert "Walls" in scene

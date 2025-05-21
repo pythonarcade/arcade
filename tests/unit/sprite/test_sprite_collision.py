@@ -4,12 +4,11 @@ import arcade
 
 
 def test_sprites_at_point():
-
     coin_list = arcade.SpriteList()
     sprite = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
     # an adjacent sprite with the same level horizontal bottom edge
     sprite2 = arcade.SpriteSolidColor(50, 50, center_x=50, center_y=0, color=arcade.csscolor.RED)
-    
+
     coin_list.append(sprite)
     coin_list.append(sprite2)
 
@@ -96,7 +95,6 @@ def test_sprite_collides_with_sprite():
     # border to the right
     sprite_two.center_x = 10
     assert sprite_one.collides_with_sprite(sprite_two) is False
-
 
     # Borders, opposite side
     sprite_two.center_x = -10

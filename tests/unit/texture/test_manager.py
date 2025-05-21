@@ -1,9 +1,11 @@
 """Test the TextureCacheManager"""
+
 import arcade
 from arcade.types.rect import LBWH
 
 SPRITESHEET_PATH = ":assets:images/spritesheets/codepage_437.png"
 TEST_TEXTURE = ":assets:images/test_textures/test_texture.png"
+
 
 def test_create():
     arcade.texture.TextureCacheManager()
@@ -34,7 +36,10 @@ def test_load_spritesheet_texture():
     # Load a few more textures
     for i in range(10):
         texture = manager.load_or_get_spritesheet_texture(SPRITESHEET_PATH, LBWH(i * 9, 0, 8, 16))
-        assert manager.load_or_get_spritesheet_texture(SPRITESHEET_PATH, LBWH(i * 9, 0, 8, 16)) == texture
+        assert (
+            manager.load_or_get_spritesheet_texture(SPRITESHEET_PATH, LBWH(i * 9, 0, 8, 16))
+            == texture
+        )
 
     # We should still have 1 spritesheet
     assert len(manager._sprite_sheets) == 1
@@ -47,7 +52,7 @@ def test_load_spritesheet_texture():
     manager.flush()
     assert len(manager._sprite_sheets) == 0
     assert len(manager.texture_cache._file_entries) == 0
-    assert len(manager.texture_cache._entries) == 0 
+    assert len(manager.texture_cache._entries) == 0
     assert len(manager.image_data_cache) == 0
 
 

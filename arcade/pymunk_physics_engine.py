@@ -600,6 +600,32 @@ class PymunkPhysicsEngine:
         if separate_handler:
             h.separate = _f4
 
+    def update_sprite(self, sprite: Sprite) -> None:
+        """
+        Updates a Sprite's Shape to match it's current hitbox
+
+        Args:
+            sprite: The Sprite to update
+        """
+        physics_object = self.sprites[sprite]
+        old_shape = physics_object.shape
+        assert old_shape is not None, """
+        Tried to update the shape for a Sprite which does not currently have a shape
+        """
+
+        # Set the physics shape to the sprite's hitbox
+        poly = sprite.hit_box.points
+        scaled_poly = [[x * sprite.scale_x for x in z] for z in poly]
+        shape = pymunk.Poly(physics_object.body, scaled_poly, radius=old_shape.radius)  # type: ignore
+
+        shape.collision_type = old_shape.collision_type
+        shape.elasticity = old_shape.elasticity
+        shape.friction = old_shape.friction
+
+        self.space.remove(old_shape)
+        self.space.add(shape)
+        physics_object.shape = shape
+
     def resync_sprites(self) -> None:
         """
         Set visual sprites to be the same location as physics engine sprites.

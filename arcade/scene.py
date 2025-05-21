@@ -11,6 +11,7 @@ It allows you to do the following:
 """
 
 from collections.abc import Iterable
+from typing import TypeVar
 from warnings import warn
 
 from arcade import Sprite, SpriteList
@@ -19,6 +20,8 @@ from arcade.tilemap import TileMap
 from arcade.types import Color, RGBOrA255
 
 __all__ = ["Scene", "SceneKeyError"]
+
+_S = TypeVar("_S", bound=Sprite)
 
 
 class SceneKeyError(KeyError):
@@ -151,7 +154,7 @@ class Scene:
 
         raise SceneKeyError(key)
 
-    def add_sprite(self, name: str, sprite: Sprite) -> None:
+    def add_sprite(self, name: str, sprite: _S) -> _S:
         """
         Add a Sprite to the SpriteList with the specified name.
 
@@ -177,12 +180,14 @@ class Scene:
             new_list.append(sprite)
             self.add_sprite_list(name=name, sprite_list=new_list)
 
+        return sprite
+
     def add_sprite_list(
         self,
         name: str,
         use_spatial_hash: bool = False,
         sprite_list: SpriteList | None = None,
-    ) -> None:
+    ) -> SpriteList:
         """
         Add a SpriteList to the scene with the specified name.
 
@@ -207,6 +212,7 @@ class Scene:
             )
         self._name_mapping[name] = sprite_list
         self._sprite_lists.append(sprite_list)
+        return sprite_list
 
     def add_sprite_list_before(
         self,
@@ -214,7 +220,7 @@ class Scene:
         before: str,
         use_spatial_hash: bool = False,
         sprite_list: SpriteList | None = None,
-    ) -> None:
+    ) -> SpriteList:
         """
         Add a sprite list to the scene with the specified name before another SpriteList.
 
@@ -244,6 +250,7 @@ class Scene:
         before_list = self._name_mapping[before]
         index = self._sprite_lists.index(before_list)
         self._sprite_lists.insert(index, sprite_list)
+        return sprite_list
 
     def move_sprite_list_before(
         self,
@@ -279,7 +286,7 @@ class Scene:
         after: str,
         use_spatial_hash: bool = False,
         sprite_list: SpriteList | None = None,
-    ) -> None:
+    ) -> SpriteList:
         """
         Add a SpriteList to the scene with the specified name after a specific SpriteList.
 
@@ -309,6 +316,7 @@ class Scene:
         after_list = self._name_mapping[after]
         index = self._sprite_lists.index(after_list) + 1
         self._sprite_lists.insert(index, sprite_list)
+        return sprite_list
 
     def move_sprite_list_after(
         self,
@@ -338,19 +346,21 @@ class Scene:
         old_index = self._sprite_lists.index(name_list)
         self._sprite_lists.insert(new_index, self._sprite_lists.pop(old_index))
 
-    def remove_sprite_list_by_index(self, index: int) -> None:
+    def remove_sprite_list_by_index(self, index: int) -> SpriteList:
         """
         Remove a layer from the scene by its index in the draw order.
 
         Args:
             index: The index of the sprite list to remove.
         """
-        self.remove_sprite_list_by_object(self._sprite_lists[index])
+        sprite_list = self._sprite_lists[index]
+        self.remove_sprite_list_by_object(sprite_list)
+        return sprite_list
 
     def remove_sprite_list_by_name(
         self,
         name: str,
-    ) -> None:
+    ) -> SpriteList:
         """
         Remove a layer from the scene by its name.
 
@@ -363,6 +373,7 @@ class Scene:
         sprite_list = self._name_mapping[name]
         self._sprite_lists.remove(sprite_list)
         del self._name_mapping[name]
+        return sprite_list
 
     def remove_sprite_list_by_object(self, sprite_list: SpriteList) -> None:
         """

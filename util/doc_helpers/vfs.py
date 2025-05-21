@@ -27,6 +27,7 @@ We can prevent this loop by limiting writes. This module achieves this
 by reading each file before write and aborting if its contents would be
 unchanged.
 """
+
 from contextlib import suppress, contextmanager
 from io import StringIO
 from pathlib import Path
@@ -73,7 +74,7 @@ class VirtualFile:
                 f.write(content)
 
 
-F = TypeVar('F', bound=VirtualFile)
+F = TypeVar("F", bound=VirtualFile)
 
 
 class Vfs(Generic[F]):

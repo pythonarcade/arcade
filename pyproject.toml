@@ -42,6 +42,7 @@ dev = [
     "sphinx-autobuild==2024.10.3", # April 2024 | Due to this, Python 3.10+ is required to serve docs
     "sphinx-copybutton==0.5.2",    # April 2023
     "sphinx-sitemap==2.6.0",       # April 2024
+    "sphinx-togglebutton==0.3.2",  # May 2025
     "pygments==2.19.1",            # 2.18 has breaking changes in lexer
     "docutils==0.21.2",            # ?
     # "pyyaml==6.0.1",
@@ -82,7 +83,7 @@ build-backend = "setuptools.build_meta"
 [tool.ruff]
 line-length = 100
 output-format = "full"
-exclude = [
+lint.exclude = [
     "venv",
     ".venv*",
     "tests",
@@ -93,7 +94,7 @@ exclude = [
     ".pytest_cache",
     "temp",
     "bugs",
-    "arcade/examples/platform_tutorial",
+    "arcade/examples/*",
 ]
 lint.ignore = [
     "E731", # E731 do not assign a lambda expression, use a def
@@ -112,7 +113,7 @@ lint.select = [
 
 [tool.ruff.format]
 docstring-code-format = false
-exclude = ["arcade/examples/*", "benchmarks/*"]
+exclude = ["arcade/examples/*", "benchmarks/*", "doc/*"]
 
 # This ignores __init__.py files and examples for import sorting
 [tool.ruff.lint.per-file-ignores]
@@ -124,9 +125,7 @@ exclude = ["arcade/examples/*", "benchmarks/*"]
 
 [tool.mypy]
 disable_error_code = "annotation-unchecked"
-exclude = [
-    "arcade/gl/backends"
-]
+exclude = ["arcade/gl/backends"]
 
 [tool.pytest.ini_options]
 norecursedirs = [
@@ -141,7 +140,7 @@ norecursedirs = [
 ]
 markers = [
     "backendgl: Run OpenGL (or OpenGL ES) backend specific tests",
-    "backendwebgl: Run WebGL backend specific tests"
+    "backendwebgl: Run WebGL backend specific tests",
 ]
 
 [tool.pyright]

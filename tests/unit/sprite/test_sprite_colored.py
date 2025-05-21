@@ -1,6 +1,7 @@
 """
 SpriteCircle and SpriteSolidColor
 """
+
 import arcade
 
 

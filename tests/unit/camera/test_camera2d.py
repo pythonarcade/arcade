@@ -142,7 +142,8 @@ def test_move_camera_and_unproject(window: Window):
 
     assert screen_coordinate == (pytest.approx(0), pytest.approx(0))
 
-@pytest.mark.parametrize('angle', ROTATIONS)
+
+@pytest.mark.parametrize("angle", ROTATIONS)
 def test_rotate_camera_with_angle(window: Window, angle: float):
     camera = Camera2D()
     camera.angle = angle
@@ -151,7 +152,8 @@ def test_rotate_camera_with_angle(window: Window, angle: float):
     assert camera.up.x == pytest.approx(up.x)
     assert camera.up.y == pytest.approx(up.y)
 
-@pytest.mark.parametrize('angle', ROTATIONS)
+
+@pytest.mark.parametrize("angle", ROTATIONS)
 def test_camera_corner_properties(window: Window, angle: float):
     camera = Camera2D(projection=LRBT(-1.0, 1.0, -1.0, 1.0), position=(0.0, 0.0))
     camera.angle = angle

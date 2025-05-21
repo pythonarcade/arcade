@@ -1,6 +1,7 @@
 """
 Low level tests for OpenGL 3.3 wrappers.
 """
+
 from arcade.gl import geometry
 
 

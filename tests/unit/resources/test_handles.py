@@ -38,4 +38,3 @@ def test_add_handles(monkeypatch):
 def test_misc():
     path = resources.resolve(":resources:images/cards/cardBack_blue1.png")
     assert resources.resolve(path) == path
-

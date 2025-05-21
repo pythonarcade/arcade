@@ -2,7 +2,10 @@ Windows
 =======
 
 To develop with the Arcade library, we need to install Python, then install
-Arcade.
+Arcade. If you are comfortable setting things up and know how to run a
+command prompt, this is a decent guide to setting things up. If the idea
+of a virtual environment is new, a better guide for setting up Python is 
+here: `Your Python Coding Environment on Windows: Setup Guide <https://realpython.com/python-coding-setup-windows/>`_
 
 Step 1: Install Python
 ----------------------

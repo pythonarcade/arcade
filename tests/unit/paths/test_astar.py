@@ -1,6 +1,7 @@
 """
 Test for A-Star path routing
 """
+
 import arcade
 
 SPRITE_IMAGE_SIZE = 128
@@ -17,14 +18,18 @@ def test_astar(window):
     enemy_list = arcade.SpriteList()
 
     # Set up the player
-    player = arcade.Sprite(":resources:images/animated_characters/female_person/femalePerson_idle.png",
-                           scale=SPRITE_SCALING)
+    player = arcade.Sprite(
+        ":resources:images/animated_characters/female_person/femalePerson_idle.png",
+        scale=SPRITE_SCALING,
+    )
     player.center_x = SPRITE_SIZE * 1
     player.center_y = SPRITE_SIZE * 1
     player_list.append(player)
 
     # Set enemies
-    enemy = arcade.Sprite(":resources:images/animated_characters/zombie/zombie_idle.png", scale=SPRITE_SCALING)
+    enemy = arcade.Sprite(
+        ":resources:images/animated_characters/zombie/zombie_idle.png", scale=SPRITE_SCALING
+    )
     enemy.center_x = SPRITE_SIZE * 5
     enemy.center_y = SPRITE_SIZE * 5
     enemy_list.append(enemy)
@@ -46,30 +51,40 @@ def test_astar(window):
     # Note: If the enemy sprites are the same size, we only need to calculate
     # one of these. We do NOT need a different one for each enemy. The sprite
     # is just used for a size calculation.
-    barrier_list = arcade.AStarBarrierList(enemy,
-                                           wall_list,
-                                           grid_size,
-                                           playing_field_left_boundary,
-                                           playing_field_right_boundary,
-                                           playing_field_bottom_boundary,
-                                           playing_field_top_boundary)
+    barrier_list = arcade.AStarBarrierList(
+        enemy,
+        wall_list,
+        grid_size,
+        playing_field_left_boundary,
+        playing_field_right_boundary,
+        playing_field_bottom_boundary,
+        playing_field_top_boundary,
+    )
 
     # print()
-    path = arcade.astar_calculate_path(enemy.position,
-                                       player.position,
-                                       barrier_list,
-                                       diagonal_movement=False)
+    path = arcade.astar_calculate_path(
+        enemy.position, player.position, barrier_list, diagonal_movement=False
+    )
 
     # barrier_list.recalculate()
     # print(f"barrier_list: {barrier_list.barrier_list}")
 
     # print("Path 1", path)
-    assert path == [(160, 160), (128, 160), (128, 128), (96, 128), (96, 96), (64, 96), (64, 64), (32, 64), (32, 32)]
+    assert path == [
+        (160, 160),
+        (128, 160),
+        (128, 128),
+        (96, 128),
+        (96, 96),
+        (64, 96),
+        (64, 64),
+        (32, 64),
+        (32, 32),
+    ]
 
-    path = arcade.astar_calculate_path(enemy.position,
-                                       player.position,
-                                       barrier_list,
-                                       diagonal_movement=True)
+    path = arcade.astar_calculate_path(
+        enemy.position, player.position, barrier_list, diagonal_movement=True
+    )
     assert path == [(160, 160), (128, 128), (96, 96), (64, 64), (32, 32)]
     # print("Path 2", path)
 
@@ -100,9 +115,17 @@ def test_astar(window):
 
     barrier_list.recalculate()
 
-    path = arcade.astar_calculate_path(enemy.position,
-                                       player.position,
-                                       barrier_list,
-                                       diagonal_movement=True)
+    path = arcade.astar_calculate_path(
+        enemy.position, player.position, barrier_list, diagonal_movement=True
+    )
 
-    assert path == [(160, 160), (128, 160), (96, 192), (64, 160), (64, 128), (64, 96), (64, 64), (32, 32)]
+    assert path == [
+        (160, 160),
+        (128, 160),
+        (96, 192),
+        (64, 160),
+        (64, 128),
+        (64, 96),
+        (64, 64),
+        (32, 32),
+    ]
