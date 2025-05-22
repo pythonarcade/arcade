@@ -241,8 +241,8 @@ class ArcadeContext(Context):
         This should always be bound to index 0 so all shaders
         have access to them.
         """
-        # TODO: This is really hacky. gl_api is provided by the WebGLContext and OpenGLContext classes which this will be instance of
-        # but type checks don't know that
+        # TODO: This is really hacky. gl_api is provided by the WebGLContext and OpenGLContext
+        # classes which this will be instance of but type checks don't know that
         if self.gl_api == "webgl":  # type: ignore
             pass
         else:

@@ -8,9 +8,10 @@ from arcade.gl.sampler import Sampler
 from arcade.gl.types import compare_funcs
 
 if TYPE_CHECKING:
+    from pyglet.graphics.api.webgl.webgl_js import WebGLSampler as JSWebGLSampler
+
     from arcade.gl.backends.webgl.context import WebGLContext
     from arcade.gl.backends.webgl.texture import WebGLTexture2D
-    from pyglet.graphics.api.webgl.webgl_js import WebGLSampler as JSWebGLSampler
 
 
 class WebGLSampler(Sampler):
@@ -47,7 +48,7 @@ class WebGLSampler(Sampler):
     @property
     def glo(self) -> JSWebGLSampler | None:
         return self._glo
-    
+
     def use(self, unit: int):
         self._ctx._gl.bindSampler(unit, self._glo)
 
@@ -58,17 +59,17 @@ class WebGLSampler(Sampler):
     def filter(self, value: tuple[int, int]):
         if not isinstance(value, tuple) or not len(value) == 2:
             raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
-        
+
         self._filter = value
         self._ctx._gl.samplerParameteri(
             self._glo,  # type: ignore
             enums.TEXTURE_MIN_FILTER,
-            self._filter[0]
+            self._filter[0],
         )
         self._ctx._gl.samplerParameterf(
             self._glo,  # type: ignore
             enums.TEXTURE_MAG_FILTER,
-            self._filter[1]
+            self._filter[1],
         )
 
     @Sampler.wrap_x.setter
@@ -77,7 +78,7 @@ class WebGLSampler(Sampler):
         self._ctx._gl.samplerParameteri(
             self._glo,  # type: ignore
             enums.TEXTURE_WRAP_S,
-            value
+            value,
         )
 
     @Sampler.wrap_y.setter
@@ -86,7 +87,7 @@ class WebGLSampler(Sampler):
         self._ctx._gl.samplerParameteri(
             self._glo,  # type: ignore
             enums.TEXTURE_WRAP_T,
-            value
+            value,
         )
 
     @Sampler.anisotropy.setter
@@ -95,38 +96,38 @@ class WebGLSampler(Sampler):
         self._ctx._gl.samplerParameterf(
             self._glo,  # type: ignore
             enums.TEXTURE_MAX_ANISOTROPY_EXT,
-            self._anisotropy
+            self._anisotropy,
         )
 
     @Sampler.compare_func.setter
     def compare_func(self, value: str | None):
         if not self.texture._depth:
             raise ValueError("Depth comparison function can only be set on depth textures")
-        
+
         if not isinstance(value, str) and value is not None:
             raise ValueError(f"value must be as string: {compare_funcs.keys()}")
-        
+
         func = compare_funcs.get(value, None)
         if func is None:
             raise ValueError(f"value must be as string: {compare_funcs.keys()}")
-        
+
         self._compare_func = value
         if value is None:
             self._ctx._gl.samplerParameteri(
                 self._glo,  # type: ignore
                 enums.TEXTURE_COMPARE_MODE,
-                enums.NONE
+                enums.NONE,
             )
         else:
             self._ctx._gl.samplerParameteri(
                 self._glo,  # type: ignore
                 enums.TEXTURE_COMPARE_MODE,
-                enums.COMPARE_REF_TO_TEXTURE
+                enums.COMPARE_REF_TO_TEXTURE,
             )
             self._ctx._gl.samplerParameteri(
                 self._glo,  # type: ignore
                 enums.TEXTURE_COMPARE_FUNC,
-                func
+                func,
             )
 
     @staticmethod

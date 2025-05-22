@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Iterable, cast
 from arcade.gl import enums
 from arcade.gl.exceptions import ShaderException
 from arcade.gl.program import Program
-from arcade.gl.types import SHADER_TYPE_NAMES, AttribFormat, GLTypes, PyGLenum
+from arcade.gl.types import SHADER_TYPE_NAMES, AttribFormat, GLTypes
 
 from .uniform import Uniform, UniformBlock
 
@@ -265,7 +265,10 @@ class WebGLProgram(Program):
         num_attrs = self._ctx._gl.getProgramParameter(self._glo, enums.ACTIVE_ATTRIBUTES)
 
         # TODO: Do we need to instrospect the varyings? The OpenGL backend doesn't
-        # num_varyings = self._ctx._gl.getProgramParameter(self._glo, enums.TRANSFORM_FEEDBACK_VARYINGS)
+        # num_varyings = self._ctx._gl.getProgramParameter(
+        #   self._glo,
+        #   enums.TRANSFORM_FEEDBACK_VARYINGS
+        # )
 
         for i in range(num_attrs):
             info = self._ctx._gl.getActiveAttrib(self._glo, i)

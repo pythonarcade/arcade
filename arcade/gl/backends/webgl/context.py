@@ -17,7 +17,7 @@ from .query import WebGLQuery
 from .sampler import WebGLSampler
 from .texture import WebGLTexture2D
 from .texture_array import WebGLTextureArray
-from .vertex_array import WebGLGeometry, WebGLVertexArray
+from .vertex_array import WebGLGeometry, WebGLVertexArray  # noqa: F401
 
 if TYPE_CHECKING:
     from pyglet.graphics.api.webgl.webgl_js import WebGL2RenderingContext

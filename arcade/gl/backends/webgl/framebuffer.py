@@ -255,13 +255,13 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):
     @DefaultFrameBuffer.viewport.setter
     def viewport(self, value: tuple[int, int, int, int]):
         # This is the exact same as the WebGLFramebuffer setter
-        # WebGL backend doesn't need to handle pixel scaling for the 
+        # WebGL backend doesn't need to handle pixel scaling for the
         # default framebuffer like desktop does, the browser does that
         # for us. However we need a separate implementation for the
         # function because of ABC
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport shouldbe a 4-component tuple")
-        
+
         self._viewport = value
 
         if self._ctx.active_framebuffer == self:
@@ -274,7 +274,7 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):
     @DefaultFrameBuffer.scissor.setter
     def scissor(self, value):
         # This is the exact same as the WebGLFramebuffer setter
-        # WebGL backend doesn't need to handle pixel scaling for the 
+        # WebGL backend doesn't need to handle pixel scaling for the
         # default framebuffer like desktop does, the browser does that
         # for us. However we need a separate implementation for the
         # function because of ABC

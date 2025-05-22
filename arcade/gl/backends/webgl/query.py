@@ -7,8 +7,10 @@ from arcade.gl import enums
 from arcade.gl.query import Query
 
 if TYPE_CHECKING:
-    from arcade.gl.backends.webgl.context import WebGLContext
     from pyglet.graphics.api.webgl.webgl_js import WebGLQuery as JSWebGLQuery
+
+    from arcade.gl.backends.webgl.context import WebGLContext
+
 
 class WebGLQuery(Query):
     __slots__ = (
@@ -21,7 +23,7 @@ class WebGLQuery(Query):
         super().__init__(ctx, samples, time, primitives)
         self._ctx = ctx
 
-        if time == True:
+        if time:
             raise NotImplementedError("Time queries are not supported with WebGL")
 
         glos = []
@@ -45,7 +47,7 @@ class WebGLQuery(Query):
         if self._primitives_enabled:
             self._ctx._gl.beginQuery(
                 enums.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN,
-                self._glo_primitives_generated  # type: ignore
+                self._glo_primitives_generated,  # type: ignore
             )
 
     def __exit__(self):
@@ -53,27 +55,21 @@ class WebGLQuery(Query):
             self._ctx._gl.endQuery(enums.ANY_SAMPLES_PASSED)
             self._samples = self._ctx._gl.getQueryParameter(
                 self._glo_samples_passed,  # type: ignore
-                enums.QUERY_RESULT
+                enums.QUERY_RESULT,
             )
         if self._primitives_enabled:
             self._ctx._gl.endQuery(enums.TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN)
             self._primitives = self._ctx._gl.getQueryParameter(
                 self._glo_primitives_generated,  # type: ignore
-                enums.QUERY_RESULT
+                enums.QUERY_RESULT,
             )
 
     def delete(self):
-        WebGLQuery.delete_glo(
-            self._ctx,
-            [
-                self._glo_samples_passed,
-                self._glo_primitives_generated
-            ]
-        )
+        WebGLQuery.delete_glo(self._ctx, [self._glo_samples_passed, self._glo_primitives_generated])
 
     @staticmethod
     def delete_glo(ctx: WebGLContext, glos: list[JSWebGLQuery | None]):
         for glo in glos:
             ctx._gl.deleteQuery(glo)
-        
+
         ctx.stats.decr("query")

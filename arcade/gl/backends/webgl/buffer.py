@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 import js  # type: ignore
 
@@ -12,7 +12,6 @@ from arcade.types import BufferProtocol
 from .utils import data_to_memoryview
 
 if TYPE_CHECKING:
-    from pyglet.graphics.api.webgl.webgl_js import WebGL2RenderingContext
     from pyglet.graphics.api.webgl.webgl_js import WebGLBuffer as JSWebGLBuffer
 
     from arcade.gl.backends.webgl.context import WebGLContext

@@ -5,21 +5,19 @@ from typing import TYPE_CHECKING
 
 from arcade.gl import enums
 from arcade.gl.texture_array import TextureArray
-from arcade.gl.types import (
-    BufferOrBufferProtocol, compare_funcs, pixel_formats
-)
+from arcade.gl.types import BufferOrBufferProtocol, compare_funcs, pixel_formats
 from arcade.types import BufferProtocol
 
 from .buffer import Buffer
 from .utils import data_to_memoryview
 
 if TYPE_CHECKING:
-    from arcade.gl.backends.webgl.context import WebGLContext
     from pyglet.graphics.api.webgl.webgl_js import WebGLTexture as JSWebGLTexture
+
+    from arcade.gl.backends.webgl.context import WebGLContext
 
 
 class WebGLTextureArray(TextureArray):
-
     __slots__ = (
         "_glo",
         "_target",
@@ -68,7 +66,7 @@ class WebGLTextureArray(TextureArray):
             self._filter = enums.LINEAR, enums.LINEAR
         else:
             self._filter = enums.NEAREST, enums.NEAREST
-        
+
         self._wrap_x = enums.REPEAT
         self._wrap_y = enums.REPEAT
 
@@ -78,7 +76,7 @@ class WebGLTextureArray(TextureArray):
         self._glo = self._ctx._gl.createTexture()
         if self._glo is None:
             raise RuntimeError("Cannot create TextureArray. WebGL failed to generate a texture")
-        
+
         self._ctx._gl.bindTexture(self._target, self._glo)
         self._texture_2d_array(data)
 
@@ -92,7 +90,7 @@ class WebGLTextureArray(TextureArray):
     def resize(self, size: tuple[int, int]):
         if self._immutable:
             raise ValueError("Immutable textures cannot be resized")
-        
+
         self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
         self._ctx._gl.bindTexture(self._target, self._glo)
 
@@ -131,7 +129,7 @@ class WebGLTextureArray(TextureArray):
                 0,
                 enums.DEPTH_COMPONENT,
                 enums.UNSIGNED_INT,
-                data
+                data,
             )
             self.compare_func = "<="
         else:
@@ -180,11 +178,11 @@ class WebGLTextureArray(TextureArray):
     @property
     def glo(self) -> JSWebGLTexture | None:
         return self._glo
-    
+
     @property
     def swizzle(self) -> str:
         raise NotImplementedError("Texture Swizzle is not support with WebGL")
-    
+
     @swizzle.setter
     def swizzle(self, value: str):
         raise NotImplementedError("Texture Swizzle is not supported with WebGL")
@@ -193,7 +191,7 @@ class WebGLTextureArray(TextureArray):
     def filter(self, value: tuple[int, int]):
         if not isinstance(value, tuple) or not len(value) == 2:
             raise ValueError("Texture filter must be a 2 component tuple (min, mag)")
-        
+
         self._filter = value
         self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
         self._ctx._gl.bindTexture(self._target, self._glo)
@@ -219,13 +217,15 @@ class WebGLTextureArray(TextureArray):
         self._anisotropy = max(1.0, min(value, self._ctx.info.MAX_TEXTURE_MAX_ANISOTROPY))
         self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
         self._ctx._gl.bindTexture(self._target, self._glo)
-        self._ctx._gl.texParameterf(self._target, enums.TEXTURE_MAX_ANISOTROPY_EXT, self._anisotropy)
+        self._ctx._gl.texParameterf(
+            self._target, enums.TEXTURE_MAX_ANISOTROPY_EXT, self._anisotropy
+        )
 
     @TextureArray.compare_func.setter
     def compare_func(self, value: str | None):
         if not self._depth:
             raise ValueError("Depth comparison function can only be set on depth textures")
-        
+
         if not isinstance(value, str) and value is not None:
             raise ValueError(f"value must be as string: {compare_funcs.keys()}")
 
@@ -239,14 +239,16 @@ class WebGLTextureArray(TextureArray):
         if value is None:
             self._ctx._gl.texParameteri(self._target, enums.TEXTURE_COMPARE_MODE, enums.NONE)
         else:
-            self._ctx._gl.texParameteri(self._target, enums.TEXTURE_COMPARE_MODE, enums.COMPARE_REF_TO_TEXTURE)
+            self._ctx._gl.texParameteri(
+                self._target, enums.TEXTURE_COMPARE_MODE, enums.COMPARE_REF_TO_TEXTURE
+            )
             self._ctx._gl.texParameteri(self._target, enums.TEXTURE_COMPARE_FUNC, func)
 
     def read(self, level: int = 0, alignment: int = 1) -> bytes:
         # FIXME: Check if we can attach a layer to framebuffer for reading. OpenGL ES has same
-        # problems in the OpenGL backend. 
+        # problems in the OpenGL backend.
         raise NotImplementedError("Reading texture array data not supported with WebGL")
-    
+
     def write(self, data: BufferOrBufferProtocol, level: int = 0, viewport=None) -> None:
         x, y, l, w, h = 0, 0, 0, self._width, self._height
         if viewport:
@@ -261,7 +263,9 @@ class WebGLTextureArray(TextureArray):
             self._ctx._gl.bindTexture(self._target, self._glo)
             self._ctx._gl.pixelStorei(enums.PACK_ALIGNMENT, 1)
             self._ctx._gl.pixelStorei(enums.UNPACK_ALIGNMENT, 1)
-            self._ctx._gl.texSubImage3D(self._target, level, x, y, l, w, h, 1, self._format, self._type, 0)
+            self._ctx._gl.texSubImage3D(
+                self._target, level, x, y, l, w, h, 1, self._format, self._type, 0
+            )
             self._ctx._gl.bindBuffer(enums.PIXEL_UNPACK_BUFFER, None)
         else:
             byte_size, data = data_to_memoryview(data)
