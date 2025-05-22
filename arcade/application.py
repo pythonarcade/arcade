@@ -856,6 +856,12 @@ class Window(pyglet.window.Window):
         """
         return EVENT_UNHANDLED
 
+    def before_draw(self) -> None:
+        """
+        New event in base pyglet window. This is current unused in Arcade.
+        """
+        pass
+
     def on_draw(self) -> EVENT_HANDLE_STATE:
         """
         Override this function to add your custom drawing code.
