@@ -238,7 +238,7 @@ class WebGLFramebuffer(Framebuffer):
         return "<Framebuffer glo={}>".format(self._glo)
 
 
-class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):
+class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ignore
     is_default = True
 
     def __init__(self, ctx: WebGLContext):
@@ -251,6 +251,8 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):
         self._scissor = None
         self._width = width
         self._height = height
+
+        self._glo = None
 
     @DefaultFrameBuffer.viewport.setter
     def viewport(self, value: tuple[int, int, int, int]):
