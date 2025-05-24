@@ -103,7 +103,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         self,
         size: tuple[int, int],
         *,
-        border: int = 1,
+        border: int = 2,
         textures: Sequence[Texture] | None = None,
         auto_resize: bool = True,
         ctx: ArcadeContext | None = None,
@@ -667,8 +667,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
             force:
                 Force a resize even if the size is the same
         """
-        # LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
-        # print("Resizing atlas from", self._size, "to", size)
+        print("Resizing atlas from", self._size, "to", size)
 
         # Only resize if the size actually changed
         if size == self._size and not force:
@@ -732,8 +731,9 @@ class DefaultTextureAtlas(TextureAtlasBase):
             with self._ctx.enabled_only():
                 self._ctx.geometry_empty.render(
                     self._ctx.atlas_resize_program,
-                    mode=self._ctx.POINTS,
-                    vertices=self.max_width,
+                    mode=self._ctx.TRIANGLES,
+                    # Two triangles per texture
+                    vertices=UV_TEXTURE_WIDTH * self._capacity * 6,
                 )
 
         # duration = time.perf_counter() - resize_start
@@ -746,7 +746,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list doesn't need to be rebuilt.
         """
-        # LOG.info("Rebuilding atlas")
+        print("Rebuilding atlas")
 
         # Hold a reference to the old textures
         textures = self.textures

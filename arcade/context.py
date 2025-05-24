@@ -131,9 +131,13 @@ class ArcadeContext(Context):
         )
         # Atlas shaders
         self.atlas_resize_program: Program = self.load_program(
-            vertex_shader=":system:shaders/atlas/resize_vs.glsl",
-            geometry_shader=":system:shaders/atlas/resize_gs.glsl",
-            fragment_shader=":system:shaders/atlas/resize_fs.glsl",
+            # NOTE: This is the geo shader version of the atlas resize program.
+            # vertex_shader=":system:shaders/atlas/resize_vs.glsl",
+            # geometry_shader=":system:shaders/atlas/resize_gs.glsl",
+            # fragment_shader=":system:shaders/atlas/resize_fs.glsl",
+            # Vertex and fragment shader version
+            vertex_shader=":system:shaders/atlas/resize_simple_vs.glsl",
+            fragment_shader=":system:shaders/atlas/resize_simple_fs.glsl",
         )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
         self.atlas_resize_program["atlas_new"] = 1

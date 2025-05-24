@@ -11,7 +11,7 @@ def test_create(ctx, common):
     assert atlas.width == 100
     assert atlas.height == 200
     assert atlas.size == (100, 200)
-    assert atlas.border == 1
+    assert atlas.border == 2
     assert atlas.auto_resize is True
     assert isinstance(atlas.max_size, tuple)
     assert atlas.max_size > (0, 0)

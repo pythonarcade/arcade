@@ -4,11 +4,13 @@
 
 #include :system:shaders/lib/sprite.glsl
 
-// Old and new texture coordiantes
+// Old and new texture coordinates
 uniform sampler2D atlas_old;
 uniform sampler2D atlas_new;
+
 uniform sampler2D texcoords_old;
 uniform sampler2D texcoords_new;
+
 uniform mat4 projection;
 uniform float border;
 
@@ -33,7 +35,7 @@ void main() {
     // absolute value of the diagonal * size + border * 2
     vec2 size = abs(new_uv3 - new_uv0) * vec2(size_new) + vec2(border * 2.0);
 
-    // We need to offset the old coordiantes by border size
+    // We need to offset the old coordinates by border size
     vec2 pix_offset = vec2(border) / vec2(size_old);
     // (
     //     0.015625, 0.015625,  # minus, minus
