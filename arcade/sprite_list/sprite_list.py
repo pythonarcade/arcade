@@ -301,9 +301,6 @@ class SpriteList(SpriteSequence[SpriteType]):
             return
 
         self.ctx = get_window().ctx
-        self.program = self.ctx.sprite_list_program_cull
-        if not self._atlas:
-            self._atlas = self.ctx.default_atlas
 
         # Buffers for each sprite attribute (read by shader) with initial capacity
         self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
@@ -327,10 +324,19 @@ class SpriteList(SpriteSequence[SpriteType]):
                 ["in_color"],
             ),
         ]
+        # Geometry shader version
+        self.program = self.ctx.sprite_list_program_cull
+        if not self._atlas:
+            self._atlas = self.ctx.default_atlas
         self._geometry = self.ctx.geometry(
             contents,
             index_buffer=self._sprite_index_buf,
             index_element_size=4,  # 32 bit integers
+        )
+        # Vertex / fragment shader version
+        program = self.ctx.load_program(
+            vertex_shader=":system:shaders/sprites/sprite_list_simple_vs.glsl",
+            fragment_shader=":system:shaders/sprites/sprite_list_simple_fs.glsl",
         )
 
         self._initialized = True
