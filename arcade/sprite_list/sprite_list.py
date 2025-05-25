@@ -28,7 +28,7 @@ from arcade.types import RGBA255, Color, Point2, RGBANormalized, RGBOrA255, RGBO
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
-    from arcade import DefaultTextureAtlas, Texture
+    from arcade import Texture, ArcadeContext
     from arcade.texture_atlas import TextureAtlasBase
 
 # The default capacity from spritelists
@@ -253,17 +253,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         # Index buffer
         self._sprite_index_data = array("i", [0] * self._idx_capacity)
 
-        # Define and annotate storage space for buffers
-        self._sprite_pos_buf: Buffer | None = None
-        self._sprite_size_buf: Buffer | None = None
-        self._sprite_angle_buf: Buffer | None = None
-        self._sprite_color_buf: Buffer | None = None
-        self._sprite_texture_buf: Buffer | None = None
-
-        # Index buffer
-        self._sprite_index_buf: Buffer | None = None
-
-        self._geometry: Geometry | None = None
+        self._spritelist_data: SpriteListData
 
         # Flags for signaling if a buffer needs to be written to the OpenGL buffer
         self._sprite_pos_changed: bool = False
@@ -301,47 +291,15 @@ class SpriteList(SpriteSequence[SpriteType]):
             return
 
         self.ctx = get_window().ctx
-
-        # Buffers for each sprite attribute (read by shader) with initial capacity
-        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
-        self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 8)  # 2 x 32 bit floats
-        self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit float
-        self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 4 x bytes colors
-        self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit int
-        # Index buffer
-        self._sprite_index_buf = self.ctx.buffer(
-            reserve=self._idx_capacity * 4
-        )  # 32 bit unsigned integers
-
-        contents = [
-            gl.BufferDescription(self._sprite_pos_buf, "3f", ["in_pos"]),
-            gl.BufferDescription(self._sprite_size_buf, "2f", ["in_size"]),
-            gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
-            gl.BufferDescription(self._sprite_texture_buf, "1f", ["in_texture"]),
-            gl.BufferDescription(
-                self._sprite_color_buf,
-                "4f1",
-                ["in_color"],
-            ),
-        ]
-        # Geometry shader version
-        self.program = self.ctx.sprite_list_program_cull
         if not self._atlas:
             self._atlas = self.ctx.default_atlas
-        self._geometry = self.ctx.geometry(
-            contents,
-            index_buffer=self._sprite_index_buf,
-            index_element_size=4,  # 32 bit integers
+        self._spritelist_data = SpriteListBufferData(
+            self.ctx, capacity=self._buf_capacity, atlas=self._atlas
         )
-        # Vertex / fragment shader version
-        program = self.ctx.load_program(
-            vertex_shader=":system:shaders/sprites/sprite_list_simple_vs.glsl",
-            fragment_shader=":system:shaders/sprites/sprite_list_simple_fs.glsl",
-        )
-
         self._initialized = True
 
         # Load all the textures and write texture coordinates into buffers.
+        # This is important for lazy spritelists.
         for sprite in self.sprite_list:
             if sprite._texture is None:
                 raise ValueError("Attempting to use a sprite without a texture")
@@ -508,131 +466,12 @@ class SpriteList(SpriteSequence[SpriteType]):
         return self._atlas
 
     @property
-    def geometry(self) -> Geometry:
-        """
-        Returns the internal OpenGL geometry for this spritelist.
-        This can be used to execute custom shaders with the
-        spritelist data.
-
-        One or multiple of the following inputs must be defined in your vertex shader::
-
-            in vec2 in_pos;
-            in float in_angle;
-            in vec2 in_size;
-            in float in_texture;
-            in vec4 in_color;
-        """
+    def sprite_data(self) -> SpriteListData:
+        """Get the sprite data for this spritelist."""
         if not self._initialized:
             self.initialize()
 
-        return self._geometry  # type: ignore
-
-    @property
-    def buffer_positions(self) -> Buffer:
-        """
-        Get the internal OpenGL position buffer for this spritelist.
-
-        The buffer contains 32 bit float values with
-        x, y and z positions. These are the center positions
-        for each sprite.
-
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
-        instance with name ``in_pos``.
-        """
-        if self._sprite_pos_buf is None:
-            raise ValueError("SpriteList is not initialized")
-        return self._sprite_pos_buf
-
-    @property
-    def buffer_sizes(self) -> Buffer:
-        """
-        Get the internal OpenGL size buffer for this spritelist.
-
-        The buffer contains 32 bit float width and height values.
-
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
-        instance with name ``in_size``.
-        """
-        if self._sprite_size_buf is None:
-            raise ValueError("SpriteList is not initialized")
-        return self._sprite_size_buf
-
-    @property
-    def buffer_angles(self) -> Buffer:
-        """
-        Get the internal OpenGL angle buffer for the spritelist.
-
-        This buffer contains a series of 32 bit floats
-        representing the rotation angle for each sprite in degrees.
-
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
-        instance with name ``in_angle``.
-        """
-        if self._sprite_angle_buf is None:
-            raise ValueError("SpriteList is not initialized")
-        return self._sprite_angle_buf
-
-    @property
-    def buffer_colors(self) -> Buffer:
-        """
-        Get the internal OpenGL color buffer for this spritelist.
-
-        This buffer contains a series of 32 bit floats representing
-        the RGBA color for each sprite. 4 x floats = RGBA.
-
-
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
-        instance with name ``in_color``.
-        """
-        if self._sprite_color_buf is None:
-            raise ValueError("SpriteList is not initialized")
-        return self._sprite_color_buf
-
-    @property
-    def buffer_textures(self) -> Buffer:
-        """
-        Get the internal openGL texture id buffer for the spritelist.
-
-        This buffer contains a series of single 32 bit floats referencing
-        a texture ID. This ID references a texture in the texture
-        atlas assigned to this spritelist. The ID is used to look up
-        texture coordinates in a 32bit floating point texture the
-        texture atlas provides. This system makes sure we can resize
-        and rebuild a texture atlas without having to rebuild every
-        single spritelist.
-
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
-        instance with name ``in_texture``.
-
-        Note that it should ideally an unsigned integer, but due to
-        compatibility we store them as 32 bit floats. We cast them
-        to integers in the shader.
-        """
-        if self._sprite_texture_buf is None:
-            raise ValueError("SpriteList is not initialized")
-        return self._sprite_texture_buf
-
-    @property
-    def buffer_indices(self) -> Buffer:
-        """
-        Get the internal index buffer for this spritelist.
-
-        The data in the other buffers are not in the correct order
-        matching ``spritelist[i]``. The index buffer has to be
-        used used to resolve the right order. It simply contains
-        a series of integers referencing locations in the other buffers.
-
-        Also note that the length of this buffer might be bigger than
-        the number of sprites. Rely on ``len(spritelist)`` for the
-        correct length.
-
-        This index buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
-        instance and will be automatically be applied the the input buffers
-        when rendering or transforming.
-        """
-        if self._sprite_index_buf is None:
-            raise ValueError("SpriteList is not initialized")
-        return self._sprite_index_buf
+        return self._spritelist_data  # type: ignore[return-value]
 
     def _next_slot(self) -> int:
         """
@@ -876,7 +715,6 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._update_all(sprite)
 
         # Allocate room in the index buffer
-        self._normalize_index_buffer()
         # idx_slot = self._sprite_index_slots
         self._sprite_index_slots += 1
         self._grow_index_buffer()
@@ -888,9 +726,6 @@ class SpriteList(SpriteSequence[SpriteType]):
 
     def reverse(self) -> None:
         """Reverses the current list in-place"""
-        # Ensure the index buffer is normalized
-        self._normalize_index_buffer()
-
         # Reverse the sprites and index buffer
         self.sprite_list.reverse()
         # This seems to be the reasonable way to reverse a subset of an array
@@ -905,9 +740,6 @@ class SpriteList(SpriteSequence[SpriteType]):
         # The only thing we need to do when shuffling is
         # to shuffle the sprite_list and index buffer in
         # in the same operation. We don't change the sprite buffers
-
-        # Make sure the index buffer is the same length as the sprite list
-        self._normalize_index_buffer()
 
         # zip index and sprite into pairs and shuffle
         pairs = list(zip(self.sprite_list, self._sprite_index_data))
@@ -951,9 +783,6 @@ class SpriteList(SpriteSequence[SpriteType]):
             reverse:
                 If set to ``True`` the sprites will be sorted in reverse
         """
-        # Ensure the index buffer is normalized
-        self._normalize_index_buffer()
-
         # In-place sort the spritelist
         self.sprite_list.sort(key=key, reverse=reverse)
         # Loop over the sorted sprites and assign new values in index buffer
@@ -1056,35 +885,25 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._write_sprite_buffers_to_gpu()
 
     def _write_sprite_buffers_to_gpu(self) -> None:
-        if self._sprite_pos_changed and self._sprite_pos_buf:
-            self._sprite_pos_buf.orphan()
-            self._sprite_pos_buf.write(self._sprite_pos_data)
-            self._sprite_pos_changed = False
+        if not self._initialized:
+            self._init_deferred()
 
-        if self._sprite_size_changed and self._sprite_size_buf:
-            self._sprite_size_buf.orphan()
-            self._sprite_size_buf.write(self._sprite_size_data)
-            self._sprite_size_changed = False
-
-        if self._sprite_angle_changed and self._sprite_angle_buf:
-            self._sprite_angle_buf.orphan()
-            self._sprite_angle_buf.write(self._sprite_angle_data)
-            self._sprite_angle_changed = False
-
-        if self._sprite_color_changed and self._sprite_color_buf:
-            self._sprite_color_buf.orphan()
-            self._sprite_color_buf.write(self._sprite_color_data)
-            self._sprite_color_changed = False
-
-        if self._sprite_texture_changed and self._sprite_texture_buf:
-            self._sprite_texture_buf.orphan()
-            self._sprite_texture_buf.write(self._sprite_texture_data)
-            self._sprite_texture_changed = False
-
-        if self._sprite_index_changed and self._sprite_index_buf:
-            self._sprite_index_buf.orphan()
-            self._sprite_index_buf.write(self._sprite_index_data)
-            self._sprite_index_changed = False
+        self._spritelist_data.write_sprite_buffers_to_gpu(
+            # Buffer data
+            self._sprite_pos_data,
+            self._sprite_size_data,
+            self._sprite_angle_data,
+            self._sprite_color_data,
+            self._sprite_texture_data,
+            self._sprite_index_data,
+            # Changed flags
+            self._sprite_pos_changed,
+            self._sprite_size_changed,
+            self._sprite_angle_changed,
+            self._sprite_color_changed,
+            self._sprite_texture_changed,
+            self._sprite_index_changed,
+        )
 
     def initialize(self) -> None:
         """
@@ -1113,68 +932,17 @@ class SpriteList(SpriteSequence[SpriteType]):
             return
 
         self._init_deferred()
-        if not self.program:
-            raise ValueError("Attempting to render without shader program.")
         self._write_sprite_buffers_to_gpu()
-
-        prev_blend_func = self.ctx.blend_func
-        if self._blend:
-            self.ctx.enable(self.ctx.BLEND)
-            # Set custom blend function or revert to default
-            if blend_function is not None:
-                self.ctx.blend_func = blend_function
-            else:
-                self.ctx.blend_func = self.ctx.BLEND_DEFAULT
-        else:
-            self.ctx.disable(self.ctx.BLEND)
-
-        # Workarounds for Optional[TextureAtlas] + slow . lookup speed
-        atlas: DefaultTextureAtlas = self.atlas  # type: ignore
-        atlas_texture: Texture2D = atlas.texture
-
-        # Set custom filter or reset to default
-        if filter:
-            if hasattr(
-                filter,
-                "__len__",
-            ):  # assume it's a collection
-                if len(cast(Sized, filter)) != 2:
-                    raise ValueError("Can't use sequence of length != 2")
-                atlas_texture.filter = tuple(filter)  # type: ignore
-            else:  # assume it's an int
-                atlas_texture.filter = cast(OpenGlFilter, (filter, filter))
-        else:
-            # Handle the pixelated shortcut if filter is not set
-            if pixelated:
-                atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
-            else:
-                atlas_texture.filter = self.DEFAULT_TEXTURE_FILTER
-
-        self.program["spritelist_color"] = self._color
-
-        # Control center pixel interpolation:
-        # 0.0 = raw interpolation using texture corners
-        # 1.0 = center pixel interpolation
-        if self.ctx.NEAREST in atlas_texture.filter:
-            self.program.set_uniform_safe("uv_offset_bias", 0.0)
-        else:
-            self.program.set_uniform_safe("uv_offset_bias", 1.0)
-
-        atlas_texture.use(0)
-        atlas.use_uv_texture(1)
-        if not self._geometry:
-            raise ValueError("Attempting to render without '_geometry' field being set.")
-        self._geometry.render(
-            self.program,
-            mode=self.ctx.POINTS,
-            vertices=self._sprite_index_slots,
+        self._spritelist_data.render(
+            atlas=self._atlas,  # type: ignore
+            count=self._sprite_index_slots,
+            color=self._color,
+            default_texture_filter=self.DEFAULT_TEXTURE_FILTER,
+            filter=filter,
+            pixelated=pixelated,
+            blend_function=blend_function,
+            blend=self._blend,
         )
-
-        # Leave global states to default
-        if self._blend:
-            self.ctx.disable(self.ctx.BLEND)
-            if blend_function is not None:
-                self.ctx.blend_func = prev_blend_func
 
     def draw_hit_boxes(
         self, color: RGBOrA255 = (0, 0, 0, 255), line_thickness: float = 1.0
@@ -1196,25 +964,6 @@ class SpriteList(SpriteSequence[SpriteType]):
 
         arcade.draw_lines(points, color=converted_color, line_width=line_thickness)
 
-    def _normalize_index_buffer(self) -> None:
-        """
-        Removes unused slots in the index buffer.
-        The other buffers don't need this because they re-use slots.
-        New sprites on the other hand always needs to be added
-        to the end of the index buffer to preserve order
-        """
-        # NOTE: Currently we keep the index buffer normalized
-        #       but we can increase the performance in the future
-        #       delaying normalization.
-        # Need counter for how many slots are used in index buffer.
-        # 1) Sort the deleted indices (descending) and pop() them in a loop
-        # 2) Create a new array.array and manually copy every
-        #    item in the list except the deleted index slots
-        # 3) Use a transform (gpu) to trim the index buffer and
-        #    read this buffer back into a new array using array.from_bytes
-        # NOTE: Right now the index buffer is always normalized
-        pass
-
     def _grow_sprite_buffers(self) -> None:
         """Double the internal buffer sizes"""
         # Resize sprite buffers if needed
@@ -1233,12 +982,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._sprite_texture_data.extend([0] * extend_by)
 
         if self._initialized:
-            # Proper initialization implies these buffers are allocated
-            self._sprite_pos_buf.orphan(double=True)  # type: ignore
-            self._sprite_size_buf.orphan(double=True)  # type: ignore
-            self._sprite_angle_buf.orphan(double=True)  # type: ignore
-            self._sprite_color_buf.orphan(double=True)  # type: ignore
-            self._sprite_texture_buf.orphan(double=True)  # type: ignore
+            self._spritelist_data.grow_sprite_buffers()
 
         self._sprite_pos_changed = True
         self._sprite_size_changed = True
@@ -1248,6 +992,7 @@ class SpriteList(SpriteSequence[SpriteType]):
 
     def _grow_index_buffer(self) -> None:
         # Extend the index buffer capacity if needed
+        # TODO: We might not need this any more since index buffer is always normalized
         if self._sprite_index_slots <= self._idx_capacity:
             return
 
@@ -1255,8 +1000,8 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._idx_capacity = self._idx_capacity * 2
 
         self._sprite_index_data.extend([0] * extend_by)
-        if self._initialized and self._sprite_index_buf:
-            self._sprite_index_buf.orphan(size=self._idx_capacity * 4)
+        if self._initialized:
+            self._spritelist_data.grow_index_buffer()
 
         self._sprite_index_changed = True
 
@@ -1453,3 +1198,405 @@ class SpriteList(SpriteSequence[SpriteType]):
         slot = self.sprite_slot[sprite]
         self._sprite_angle_data[slot] = sprite._angle
         self._sprite_angle_changed = True
+
+
+class SpriteListData:
+    """Base class for sprite list data."""
+
+    def __init__(self, ctx: ArcadeContext, capacity: int) -> None:
+        self.ctx = ctx
+        self._buf_capacity = capacity
+        self._idx_capacity = capacity
+
+    def write_sprite_buffers_to_gpu(
+        self,
+        # The data itself
+        sprite_pos_data,
+        sprite_size_data,
+        sprite_angle_data,
+        sprite_color_data,
+        sprite_texture_data,
+        sprite_index_data,
+        # Changed flags
+        sprite_pos_changed: bool = True,
+        sprite_size_changed: bool = True,
+        sprite_angle_changed: bool = True,
+        sprite_color_changed: bool = True,
+        sprite_texture_changed: bool = True,
+        sprite_index_changed: bool = True,
+    ) -> None:
+        """
+        Write the sprite buffers to the GPU.
+
+        Args:
+            sprite_pos_data: Array of sprite positions.
+            sprite_size_data: Array of sprite sizes.
+            sprite_angle_data: Array of sprite angles.
+            sprite_color_data: Array of sprite colors.
+            sprite_texture_data: Array of sprite texture IDs.
+            sprite_index_data: Array of sprite indices.
+            sprite_pos_changed: Whether the position data has changed.
+            sprite_size_changed: Whether the size data has changed.
+            sprite_angle_changed: Whether the angle data has changed.
+            sprite_color_changed: Whether the color data has changed.
+            sprite_texture_changed: Whether the texture data has changed.
+            sprite_index_changed: Whether the index data has changed.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    def grow_sprite_buffers(self) -> None:
+        """
+        Grow the sprite buffer to accommodate more sprites.
+
+        This method is called when the internal buffer capacity is exceeded.
+        It should increase the buffer size and prepare for more sprites.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    def grow_index_buffer(self) -> None:
+        """
+        Grow the index buffer to accommodate more sprites.
+
+        This method is called when the internal index buffer capacity is exceeded.
+        It should increase the index buffer size and prepare for more sprites.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    def render(
+        self,
+        *,
+        atlas: TextureAtlasBase,
+        count: int,
+        color: tuple[float, float, float, float],
+        default_texture_filter: OpenGlFilter,
+        filter: PyGLenum | OpenGlFilter | None = None,
+        pixelated: bool | None = None,
+        blend_function: BlendFunction | None = None,
+        blend: bool = True,
+    ) -> None:
+        """
+        Render the sprite list using the provided shader program.
+
+        Args:
+            filter: Texture filter to use.
+            pixelated: Whether to use pixelated rendering.
+            blend_function: Blend function to use for rendering.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+
+class SpriteListBufferData(SpriteListData):
+    """Container for all gpu data used by the SpriteList."""
+
+    def __init__(self, ctx: ArcadeContext, capacity: int, atlas: TextureAtlasBase) -> None:
+        self.ctx = ctx
+        self._buf_capacity = capacity
+        self._idx_capacity = capacity
+        self._atlas = atlas
+
+        # Buffers for each sprite attribute (read by shader) with initial capacity
+        self._sprite_pos_buf = self.ctx.buffer(reserve=self._buf_capacity * 12)  # 3 x 32 bit floats
+        self._sprite_size_buf = self.ctx.buffer(reserve=self._buf_capacity * 8)  # 2 x 32 bit floats
+        self._sprite_angle_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit float
+        self._sprite_color_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 4 x bytes colors
+        self._sprite_texture_buf = self.ctx.buffer(reserve=self._buf_capacity * 4)  # 32 bit int
+        # Index buffer
+        self._sprite_index_buf = self.ctx.buffer(
+            reserve=self._idx_capacity * 4
+        )  # 32 bit unsigned integers
+
+        contents = [
+            gl.BufferDescription(self._sprite_pos_buf, "3f", ["in_pos"]),
+            gl.BufferDescription(self._sprite_size_buf, "2f", ["in_size"]),
+            gl.BufferDescription(self._sprite_angle_buf, "1f", ["in_angle"]),
+            gl.BufferDescription(self._sprite_texture_buf, "1f", ["in_texture"]),
+            gl.BufferDescription(
+                self._sprite_color_buf,
+                "4f1",
+                ["in_color"],
+            ),
+        ]
+        # Geometry shader version
+        self.program = self.ctx.sprite_list_program_cull
+        if not self._atlas:
+            self._atlas = self.ctx.default_atlas
+        self._geometry = self.ctx.geometry(
+            contents,
+            index_buffer=self._sprite_index_buf,
+            index_element_size=4,  # 32 bit integers
+        )
+
+    @property
+    def geometry(self) -> Geometry:
+        """
+        Returns the internal OpenGL geometry for this spritelist.
+        This can be used to execute custom shaders with the
+        spritelist data.
+
+        One or multiple of the following inputs must be defined in your vertex shader::
+
+            in vec2 in_pos;
+            in float in_angle;
+            in vec2 in_size;
+            in float in_texture;
+            in vec4 in_color;
+        """
+        return self._geometry  # type: ignore
+
+    @property
+    def buffer_positions(self) -> Buffer:
+        """
+        Get the internal OpenGL position buffer for this spritelist.
+
+        The buffer contains 32 bit float values with
+        x, y and z positions. These are the center positions
+        for each sprite.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_pos``.
+        """
+        return self._sprite_pos_buf
+
+    @property
+    def buffer_sizes(self) -> Buffer:
+        """
+        Get the internal OpenGL size buffer for this spritelist.
+
+        The buffer contains 32 bit float width and height values.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_size``.
+        """
+        if self._sprite_size_buf is None:
+            raise ValueError("SpriteList is not initialized")
+        return self._sprite_size_buf
+
+    @property
+    def buffer_angles(self) -> Buffer:
+        """
+        Get the internal OpenGL angle buffer for the spritelist.
+
+        This buffer contains a series of 32 bit floats
+        representing the rotation angle for each sprite in degrees.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_angle``.
+        """
+        return self._sprite_angle_buf
+
+    @property
+    def buffer_colors(self) -> Buffer:
+        """
+        Get the internal OpenGL color buffer for this spritelist.
+
+        This buffer contains a series of 32 bit floats representing
+        the RGBA color for each sprite. 4 x floats = RGBA.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_color``.
+        """
+        return self._sprite_color_buf
+
+    @property
+    def buffer_textures(self) -> Buffer:
+        """
+        Get the internal openGL texture id buffer for the spritelist.
+
+        This buffer contains a series of single 32 bit floats referencing
+        a texture ID. This ID references a texture in the texture
+        atlas assigned to this spritelist. The ID is used to look up
+        texture coordinates in a 32bit floating point texture the
+        texture atlas provides. This system makes sure we can resize
+        and rebuild a texture atlas without having to rebuild every
+        single spritelist.
+
+        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance with name ``in_texture``.
+
+        Note that it should ideally an unsigned integer, but due to
+        compatibility we store them as 32 bit floats. We cast them
+        to integers in the shader.
+        """
+        return self._sprite_texture_buf
+
+    @property
+    def buffer_indices(self) -> Buffer:
+        """
+        Get the internal index buffer for this spritelist.
+
+        The data in the other buffers are not in the correct order
+        matching ``spritelist[i]``. The index buffer has to be
+        used used to resolve the right order. It simply contains
+        a series of integers referencing locations in the other buffers.
+
+        Also note that the length of this buffer might be bigger than
+        the number of sprites. Rely on ``len(spritelist)`` for the
+        correct length.
+
+        This index buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        instance and will be automatically be applied the the input buffers
+        when rendering or transforming.
+        """
+        return self._sprite_index_buf
+
+    def write_sprite_buffers_to_gpu(
+        self,
+        # The data itself
+        sprite_pos_data,
+        sprite_size_data,
+        sprite_angle_data,
+        sprite_color_data,
+        sprite_texture_data,
+        sprite_index_data,
+        # Changed flags
+        sprite_pos_changed: bool = True,
+        sprite_size_changed: bool = True,
+        sprite_angle_changed: bool = True,
+        sprite_color_changed: bool = True,
+        sprite_texture_changed: bool = True,
+        sprite_index_changed: bool = True,
+    ) -> None:
+        """
+        Write the sprite buffers to the GPU.
+
+        Args:
+            sprite_pos_data: Array of sprite positions.
+            sprite_size_data: Array of sprite sizes.
+            sprite_angle_data: Array of sprite angles.
+            sprite_color_data: Array of sprite colors.
+            sprite_texture_data: Array of sprite texture IDs.
+            sprite_index_data: Array of sprite indices.
+            sprite_pos_changed: Whether the position data has changed.
+            sprite_size_changed: Whether the size data has changed.
+            sprite_angle_changed: Whether the angle data has changed.
+            sprite_color_changed: Whether the color data has changed.
+            sprite_texture_changed: Whether the texture data has changed.
+            sprite_index_changed: Whether the index data has changed.
+        """
+        if sprite_pos_changed:
+            self._sprite_pos_buf.orphan()
+            self._sprite_pos_buf.write(sprite_pos_data)
+            self._sprite_pos_changed = False
+
+        if sprite_size_changed:
+            self._sprite_size_buf.orphan()
+            self._sprite_size_buf.write(sprite_size_data)
+            self._sprite_size_changed = False
+
+        if sprite_angle_changed:
+            self._sprite_angle_buf.orphan()
+            self._sprite_angle_buf.write(sprite_angle_data)
+            self._sprite_angle_changed = False
+
+        if sprite_color_changed:
+            self._sprite_color_buf.orphan()
+            self._sprite_color_buf.write(sprite_color_data)
+            self._sprite_color_changed = False
+
+        if sprite_texture_changed:
+            self._sprite_texture_buf.orphan()
+            self._sprite_texture_buf.write(sprite_texture_data)
+            self._sprite_texture_changed = False
+
+        if sprite_index_changed:
+            self._sprite_index_buf.orphan()
+            self._sprite_index_buf.write(sprite_index_data)
+            self._sprite_index_changed = False
+
+    def grow_sprite_buffers(self) -> None:
+        # Proper initialization implies these buffers are allocated
+        self._sprite_pos_buf.orphan(double=True)
+        self._sprite_size_buf.orphan(double=True)
+        self._sprite_angle_buf.orphan(double=True)
+        self._sprite_color_buf.orphan(double=True)
+        self._sprite_texture_buf.orphan(double=True)
+
+    def grow_index_buffer(self) -> None:
+        self._sprite_index_buf.orphan(double=True)
+
+    def render(
+        self,
+        *,
+        atlas: TextureAtlasBase,
+        count: int,
+        color: tuple[float, float, float, float],
+        default_texture_filter: OpenGlFilter,
+        filter: PyGLenum | OpenGlFilter | None = None,
+        pixelated: bool | None = None,
+        blend_function: BlendFunction | None = None,
+        blend: bool = True,
+    ) -> None:
+        """
+        Render the sprite list using the provided shader program.
+
+        Args:
+            filter: Texture filter to use.
+            pixelated: Whether to use pixelated rendering.
+            blend_function: Blend function to use for rendering.
+        """
+        if not self.program:
+            raise ValueError("Attempting to render without shader program.")
+
+        prev_blend_func = self.ctx.blend_func
+        if blend:
+            self.ctx.enable(self.ctx.BLEND)
+            # Set custom blend function or revert to default
+            if blend_function is not None:
+                self.ctx.blend_func = blend_function
+            else:
+                self.ctx.blend_func = self.ctx.BLEND_DEFAULT
+        else:
+            self.ctx.disable(self.ctx.BLEND)
+
+        atlas_texture: Texture2D = atlas.texture
+
+        # Set custom filter or reset to default
+        if filter:
+            if hasattr(
+                filter,
+                "__len__",
+            ):  # assume it's a collection
+                if len(cast(Sized, filter)) != 2:
+                    raise ValueError("Can't use sequence of length != 2")
+                atlas_texture.filter = tuple(filter)  # type: ignore
+            else:  # assume it's an int
+                atlas_texture.filter = cast(OpenGlFilter, (filter, filter))
+        else:
+            # Handle the pixelated shortcut if filter is not set
+            if pixelated:
+                atlas_texture.filter = self.ctx.NEAREST, self.ctx.NEAREST
+            else:
+                atlas_texture.filter = default_texture_filter
+
+        self.program["spritelist_color"] = color
+
+        # Control center pixel interpolation:
+        # 0.0 = raw interpolation using texture corners
+        # 1.0 = center pixel interpolation
+        if self.ctx.NEAREST in atlas_texture.filter:
+            self.program.set_uniform_safe("uv_offset_bias", 0.0)
+        else:
+            self.program.set_uniform_safe("uv_offset_bias", 1.0)
+
+        atlas_texture.use(0)
+        atlas.use_uv_texture(1)
+        if not self._geometry:
+            raise ValueError("Attempting to render without '_geometry' field being set.")
+        self._geometry.render(
+            self.program,
+            mode=self.ctx.POINTS,
+            vertices=count,
+        )
+
+        # Leave global states to default
+        if blend:
+            self.ctx.disable(self.ctx.BLEND)
+            if blend_function is not None:
+                self.ctx.blend_func = prev_blend_func
+
+
+# Program without geo shader for later
+# program = self.ctx.load_program(
+#     vertex_shader=":system:shaders/sprites/sprite_list_simple_vs.glsl",
+#     fragment_shader=":system:shaders/sprites/sprite_list_simple_fs.glsl",
+# )

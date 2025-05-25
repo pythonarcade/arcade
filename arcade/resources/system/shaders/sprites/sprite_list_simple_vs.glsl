@@ -9,12 +9,14 @@ uniform sampler2D uv_texture;
 // 0.0 is no offset, 1.0 is half a pixel offset
 uniform float uv_offset_bias;
 
-in vec3 in_pos;
-in float in_angle;
-in vec2 in_size;
-in float in_texture;
-in vec4 in_color;
-//
+// Per sprite/instance data
+in vec3 in_instance_pos;
+in float in_instance_angle;
+in vec2 in_instance_size;
+in float in_instance_texture; // NOTE: This is a float due to compatibility
+in vec4 in_instance_color;
+// Instanced geometry (rectangle as triangle strip)
+in vec2 in_pos;
 
 out vec2 uv;
 out vec4 color;
@@ -24,9 +26,8 @@ out vec4 color;
 void main() {
     // Read texture coordinates from UV texture here
     vec2 uv0, uv1, uv2, uv3;
-    getSpriteUVs(uv_texture, int(in_texture), uv0, uv1, uv2, uv3);
+    getSpriteUVs(uv_texture, int(in_instance_texture), uv0, uv1, uv2, uv3);
 
     // TODO: Half pixel offset
     // TODO: Position, rotation, size, color, uvs
-
 }
