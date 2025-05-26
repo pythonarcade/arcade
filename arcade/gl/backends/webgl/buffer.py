@@ -85,11 +85,13 @@ class WebGLBuffer(Buffer):
     def write(self, data: BufferProtocol, offset: int = 0):
         self._ctx._gl.bindBuffer(enums.ARRAY_BUFFER, self._glo)
         size, data = data_to_memoryview(data)
+        js_array_buffer = js.ArrayBuffer.new(size)
+        js_array_buffer.assign(data)
         # Ensure we don't write outside the buffer
         size = min(size, self._size - offset)
         if size < 0:
             raise ValueError("Attempting to write negative number bytes to buffer")
-        self._ctx._gl.bufferSubData(enums.ARRAY_BUFFER, offset, data)
+        self._ctx._gl.bufferSubData(enums.ARRAY_BUFFER, offset, js_array_buffer)
 
     def copy_from_buffer(self, source: WebGLBuffer, size=-1, offset=0, source_offset=0):
         if size == -1:
