@@ -338,7 +338,8 @@ class WebGLTexture2D(Texture2D):
             raise ValueError(
                 f"Data size {len(byte_data)} does not match expected size {expected_size}"
             )
-        if len(byte_data) != byte_size:
+        byte_length = len(byte_data) if isinstance(byte_data, bytes) else byte_data.nbytes
+        if byte_length != byte_size:
             raise ValueError(
                 f"Data size {len(byte_data)} does not match reported size {expected_size}"
             )

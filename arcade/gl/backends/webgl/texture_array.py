@@ -288,6 +288,21 @@ class WebGLTextureArray(TextureArray):
                 data,
             )
 
+    def _validate_data_size(self, byte_data, byte_size, width, height) -> None:
+        if self._compressed is True:
+            return
+
+        expected_size = width * height * self._component_size * self._components
+        if byte_size != expected_size:
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match expected size {expected_size}"
+            )
+        byte_length = len(byte_data) if isinstance(byte_data, bytes) else byte_data.nbytes
+        if byte_length != byte_size:
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match reported size {expected_size}"
+            )
+
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
         self._ctx._gl.activeTexture(enums.TEXTURE0 + self._ctx.default_texture_unit)
         self._ctx._gl.bindTexture(self._target, self._glo)
