@@ -5,16 +5,20 @@
 uniform sampler2D sprite_texture;
 // Texture containing UVs for the entire atlas
 uniform sampler2D uv_texture;
+
+// Per instance data
+uniform sampler2D pos_data;
+uniform sampler2D size_data;
+uniform sampler2D color_data;
+uniform isampler2D texture_id_data;
+uniform isampler2D index_data;
+
 // How much half-pixel offset to apply to the UVs.
 // 0.0 is no offset, 1.0 is half a pixel offset
 uniform float uv_offset_bias;
 
 // Per sprite/instance data
 in vec3 in_instance_pos;
-in float in_instance_angle;
-in vec2 in_instance_size;
-in float in_instance_texture; // NOTE: This is a float due to compatibility
-in vec4 in_instance_color;
 // Instanced geometry (rectangle as triangle strip)
 in vec2 in_pos;
 

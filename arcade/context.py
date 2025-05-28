@@ -99,6 +99,19 @@ class ArcadeContext(Context):
         self.sprite_list_program_cull["sprite_texture"] = 0
         self.sprite_list_program_cull["uv_texture"] = 1
 
+        # self.sprite_list_program_no_geo = self.load_program(
+        #     vertex_shader=":system:shaders/sprites/sprite_list_simple_vs.glsl",
+        #     fragment_shader=":system:shaders/sprites/sprite_list_simple_fs.glsl",
+        # )
+        # self.sprite_list_program_no_geo["sprite_texture"] = 0
+        # self.sprite_list_program_no_geo["uv_texture"] = 1
+        # # Per-instance data
+        # self.sprite_list_program_no_geo["pos_data"] = 2
+        # self.sprite_list_program_no_geo["size_data"] = 3
+        # self.sprite_list_program_no_geo["color_data"] = 4
+        # self.sprite_list_program_no_geo["texture_id_data"] = 5
+        # self.sprite_list_program_no_geo["index_data"] = 6
+
         self.sprite_program_single = self.load_program(
             vertex_shader=":system:shaders/sprites/sprite_single_vs.glsl",
             geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
