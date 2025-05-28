@@ -20,7 +20,7 @@ from typing import (
 )
 
 from arcade import Sprite, SpriteType, SpriteType_co, get_window, gl
-from arcade.gl import Program, Texture2D
+from arcade.gl import Program, Texture2D, BufferDescription
 from arcade.gl.buffer import Buffer
 from arcade.gl.types import BlendFunction, OpenGlFilter, PyGLenum
 from arcade.gl.vertex_array import Geometry
@@ -293,9 +293,17 @@ class SpriteList(SpriteSequence[SpriteType]):
         self.ctx = get_window().ctx
         if not self._atlas:
             self._atlas = self.ctx.default_atlas
-        self._spritelist_data = SpriteListBufferData(
+
+        # NOTE: Instantiate the appropriate spritelist data class here
+        # Desktop GL (with geo shader)
+        # self._spritelist_data = SpriteListBufferData(
+        #     self.ctx, capacity=self._buf_capacity, atlas=self._atlas
+        # )
+        # WebGL (without geo shader)
+        self._spritelist_data = SpriteListTextureData(
             self.ctx, capacity=self._buf_capacity, atlas=self._atlas
         )
+
         self._initialized = True
 
         # Load all the textures and write texture coordinates into buffers.
@@ -1569,19 +1577,29 @@ class SpriteListTextureData(SpriteListData):
         self._atlas = atlas
 
         # Program without geo shader
-        self.program = self.ctx.load_program(
-            vertex_shader=":system:shaders/sprites/sprite_list_simple_vs.glsl",
-            fragment_shader=":system:shaders/sprites/sprite_list_simple_fs.glsl",
-        )
-        self._geometry: Geometry | None = None
+        self.program = self.ctx.sprite_list_program_no_geo
         self._atlas = atlas or self.ctx.default_atlas
+
+        # fmt: off
+        self._instance_buffer = self.ctx.buffer(
+            data=array("f", [
+                -0.5, +0.5,  # Upper left
+                -0.5, -0.5,  # lower left
+                +0.5, +0.5,  # upper right
+                +0.5, -0.5,  # lower right
+            ]),
+        )
+        # fmt: on
+        self._geometry = self.ctx.geometry(
+            [BufferDescription(self._instance_buffer, "2f", ["in_pos"], instanced=True)],
+        )
 
         # Texture buffers for per-sprite data. These are looked up using gl_InstanceID
         self._pos_angle_texture = self.ctx.texture(size=(capacity, 4), dtype="f4")
         self._size_texture = self.ctx.texture(size=(capacity, 2), dtype="f4")
         self._color_texture = self.ctx.texture(size=(capacity, 4), dtype="f4")
-        self._texture_id_texture = self.ctx.texture(size=(capacity, 1), dtype="I4")
-        self._index_texture = self.ctx.texture(size=(capacity, 1), dtype="I4")
+        self._texture_id_texture = self.ctx.texture(size=(capacity, 1), dtype="i4")
+        self._index_texture = self.ctx.texture(size=(capacity, 1), dtype="i4")
 
     def write_sprite_buffers_to_gpu(
         self,
@@ -1598,7 +1616,40 @@ class SpriteListTextureData(SpriteListData):
         sprite_texture_changed: bool = True,
         sprite_index_changed: bool = True,
     ) -> None:
-        pass
+        """
+        Write the sprite buffers to the GPU.
+
+        Args:
+            sprite_pos_angle_data: Array of sprite positions.
+            sprite_size_data: Array of sprite sizes.
+            sprite_color_data: Array of sprite colors.
+            sprite_texture_data: Array of sprite texture IDs.
+            sprite_index_data: Array of sprite indices.
+            sprite_pos_angle_changed: Whether the position data has changed.
+            sprite_size_changed: Whether the size data has changed.
+            sprite_color_changed: Whether the color data has changed.
+            sprite_texture_changed: Whether the texture data has changed.
+            sprite_index_changed: Whether the index data has changed.
+        """
+        if sprite_pos_angle_changed:
+            self._pos_angle_texture.write(sprite_pos_angle_data)
+            self._sprite_pos_angle_changed = False
+
+        if sprite_size_changed:
+            self._size_texture.write(sprite_size_data)
+            self._sprite_size_changed = False
+
+        if sprite_color_changed:
+            self._color_texture.write(sprite_color_data)
+            self._sprite_color_changed = False
+
+        if sprite_texture_changed:
+            self._texture_id_texture.write(sprite_texture_data)
+            self._sprite_texture_changed = False
+
+        if sprite_index_changed:
+            self._index_texture.write(sprite_index_data)
+            self._sprite_index_changed = False
 
     def grow_sprite_buffers(self) -> None:
         """Double the internal storage"""
@@ -1687,7 +1738,7 @@ class SpriteListTextureData(SpriteListData):
         self._geometry.render(
             self.program,
             mode=self.ctx.POINTS,
-            vertices=count,
+            instances=count,
         )
 
         # Leave global states to default

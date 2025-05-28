@@ -18,5 +18,5 @@ void main() {
     if (base_color.a == 0.0) {
         discard;
     }
-    f_color = base_color;
+    f_color = base_color + vec4(0.5, 0.5, 0.5, 1.0);
 }
