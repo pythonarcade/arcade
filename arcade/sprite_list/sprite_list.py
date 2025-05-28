@@ -1595,11 +1595,11 @@ class SpriteListTextureData(SpriteListData):
         )
 
         # Texture buffers for per-sprite data. These are looked up using gl_InstanceID
-        self._pos_angle_texture = self.ctx.texture(size=(capacity, 4), dtype="f4")
-        self._size_texture = self.ctx.texture(size=(capacity, 2), dtype="f4")
-        self._color_texture = self.ctx.texture(size=(capacity, 4), dtype="f4")
-        self._texture_id_texture = self.ctx.texture(size=(capacity, 1), dtype="i4")
-        self._index_texture = self.ctx.texture(size=(capacity, 1), dtype="i4")
+        self._pos_angle_texture = self.ctx.texture(size=(capacity, 1), components=4, dtype="f4")
+        self._size_texture = self.ctx.texture(size=(capacity, 1), components=2, dtype="f4")
+        self._color_texture = self.ctx.texture(size=(capacity, 1), components=4, dtype="f1")
+        self._texture_id_texture = self.ctx.texture(size=(capacity, 1), components=1, dtype="i4")
+        self._index_texture = self.ctx.texture(size=(capacity, 1), components=1, dtype="i4")
 
     def write_sprite_buffers_to_gpu(
         self,
@@ -1657,9 +1657,9 @@ class SpriteListTextureData(SpriteListData):
         self._buf_capacity = self._buf_capacity * 2
 
         # Extend the textures so we don't lose the old data
-        self._pos_angle_texture.resize((self._buf_capacity, 4))
-        self._size_texture.resize((self._buf_capacity, 2))
-        self._color_texture.resize((self._buf_capacity, 4))
+        self._pos_angle_texture.resize((self._buf_capacity, 1))
+        self._size_texture.resize((self._buf_capacity, 1))
+        self._color_texture.resize((self._buf_capacity, 1))
         self._texture_id_texture.resize((self._buf_capacity, 1))
 
     def grow_index_buffer(self) -> None:
