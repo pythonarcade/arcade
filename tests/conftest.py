@@ -348,6 +348,10 @@ class WindowProxy:
     def set_vsync(self, vsync):
         self.window.set_vsync(vsync)
 
+    @staticmethod
+    def register_event_type(*args, **kwargs):
+        pass
+
     @property
     def default_camera(self):
         """
