@@ -908,6 +908,11 @@ class SpriteList(SpriteSequence[SpriteType]):
             self._sprite_texture_changed,
             self._sprite_index_changed,
         )
+        self._sprite_pos_angle_changed = False
+        self._sprite_size_changed = False
+        self._sprite_color_changed = False
+        self._sprite_texture_changed = False
+        self._sprite_index_changed = False
 
     def initialize(self) -> None:
         """
@@ -974,6 +979,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         if self._sprite_buffer_slots <= self._buf_capacity:
             return
 
+        print("Growing sprite buffers...")
         # Double the capacity
         extend_by = self._buf_capacity
         self._buf_capacity = self._buf_capacity * 2
@@ -1591,15 +1597,19 @@ class SpriteListTextureData(SpriteListData):
         )
         # fmt: on
         self._geometry = self.ctx.geometry(
-            [BufferDescription(self._instance_buffer, "2f", ["in_pos"], instanced=True)],
+            [BufferDescription(self._instance_buffer, "2f", ["in_pos"])],
+            mode=self.ctx.TRIANGLE_STRIP,
         )
 
         # Texture buffers for per-sprite data. These are looked up using gl_InstanceID
         self._pos_angle_texture = self.ctx.texture(size=(capacity, 1), components=4, dtype="f4")
         self._size_texture = self.ctx.texture(size=(capacity, 1), components=2, dtype="f4")
         self._color_texture = self.ctx.texture(size=(capacity, 1), components=4, dtype="f1")
-        self._texture_id_texture = self.ctx.texture(size=(capacity, 1), components=1, dtype="i4")
+        self._texture_id_texture = self.ctx.texture(size=(capacity, 1), components=1, dtype="f4")
         self._index_texture = self.ctx.texture(size=(capacity, 1), components=1, dtype="i4")
+
+        # Debugging
+        self._query = self.ctx.query(primitives=True)
 
     def write_sprite_buffers_to_gpu(
         self,
@@ -1633,26 +1643,22 @@ class SpriteListTextureData(SpriteListData):
         """
         if sprite_pos_angle_changed:
             self._pos_angle_texture.write(sprite_pos_angle_data)
-            self._sprite_pos_angle_changed = False
 
         if sprite_size_changed:
             self._size_texture.write(sprite_size_data)
-            self._sprite_size_changed = False
 
         if sprite_color_changed:
             self._color_texture.write(sprite_color_data)
-            self._sprite_color_changed = False
 
         if sprite_texture_changed:
             self._texture_id_texture.write(sprite_texture_data)
-            self._sprite_texture_changed = False
 
         if sprite_index_changed:
             self._index_texture.write(sprite_index_data)
-            self._sprite_index_changed = False
 
     def grow_sprite_buffers(self) -> None:
         """Double the internal storage"""
+        print(f"Growing sprite buffers from {self._buf_capacity} to", self._buf_capacity * 2)
         # Double the capacity
         self._buf_capacity = self._buf_capacity * 2
 
@@ -1714,7 +1720,10 @@ class SpriteListTextureData(SpriteListData):
             else:
                 atlas_texture.filter = default_texture_filter
 
-        self.program["spritelist_color"] = color
+        try:
+            self.program["spritelist_color"] = color
+        except KeyError:
+            pass
 
         # Control center pixel interpolation:
         # 0.0 = raw interpolation using texture corners
@@ -1735,11 +1744,18 @@ class SpriteListTextureData(SpriteListData):
 
         if not self._geometry:
             raise ValueError("Attempting to render without '_geometry' field being set.")
-        self._geometry.render(
-            self.program,
-            mode=self.ctx.POINTS,
-            instances=count,
-        )
+
+        # a = array("i")
+        # a.frombytes(self._index_texture.read())
+        # print("Buffer", a)
+
+        with self._query:
+            self._geometry.render(
+                self.program,
+                # mode=self.ctx.TRIANGLE_STRIP,
+                instances=count,
+            )
+        # print(f"Primitives rendered: {self._query.primitives_generated} (count: {count})")
 
         # Leave global states to default
         if blend:

@@ -6,17 +6,18 @@ uniform sampler2D sprite_texture;
 // Global color set on the sprite list
 uniform vec4 spritelist_color;
 
-in vec2 uv;
-in vec4 color;
+in vec2 v_uv;
+in vec4 v_color;
 
 out vec4 f_color;
 
 void main() {
-    vec4 base_color = texture(sprite_texture, uv);
-    base_color *= color * spritelist_color;
+    // vec4 base_color = v_color;
+    vec4 base_color = texture(sprite_texture, v_uv);
+    base_color *= v_color * spritelist_color;
     // Alpha test
     if (base_color.a == 0.0) {
         discard;
     }
-    f_color = base_color + vec4(0.5, 0.5, 0.5, 1.0);
+    f_color = base_color;
 }

@@ -42,7 +42,7 @@ void main() {
     mat4 mvp = window.projection * window.view;
     // Do viewport culling for sprites.
     // We do this in normalized device coordinates to make it simple
-    // apply projection to the center point. This is important so we get zooming/scrollig right
+    // apply projection to the center point. This is important so we get zooming/scrolling right
     vec2 ct = (mvp * vec4(center.xy, 0.0, 1.0)).xy;
     // We can get away with cheaper calculation of size
     // The length of the diagonal is the cheapest estimation in case rotation is applied

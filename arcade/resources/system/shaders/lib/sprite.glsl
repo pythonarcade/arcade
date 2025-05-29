@@ -30,8 +30,8 @@ vec4 getInstanceColor(sampler2D colorData, int index) {
     return texelFetch(colorData, ivec2(index, 0), 0);
 }
 
-int getInstanceTextureId(isampler2D textureIdData, int index) {
-    return texelFetch(textureIdData, ivec2(index, 0), 0).x;
+int getInstanceTextureId(sampler2D textureIdData, int index) {
+    return int(texelFetch(textureIdData, ivec2(index, 0), 0).x);
 }
 
 int getInstanceIndex(isampler2D indexData, int index) {

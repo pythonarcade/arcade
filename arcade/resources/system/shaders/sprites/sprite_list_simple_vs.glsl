@@ -15,7 +15,7 @@ uniform sampler2D uv_texture;
 uniform sampler2D pos_data;
 uniform sampler2D size_data;
 uniform sampler2D color_data;
-uniform isampler2D texture_id_data;
+uniform sampler2D texture_id_data;
 uniform isampler2D index_data;
 
 // How much half-pixel offset to apply to the UVs.
@@ -26,8 +26,8 @@ uniform float uv_offset_bias;
 in vec2 in_pos;
 
 // Output to frag shader
-out vec2 uv;
-out vec4 color;
+out vec2 v_uv;
+out vec4 v_color;
 
 #include :system:shaders/lib/sprite.glsl
 
@@ -55,27 +55,8 @@ void main() {
     // TODO: Half pixel offset
 
     int vertex_id = gl_VertexID % 4;
-    color = color;
-    switch (vertex_id) {
-        case 0:
-            // Upper left
-            gl_Position = mvp * vec4(rot * size + center.xy, center.z, 1.0);
-            uv = uv0;
-            break;
-        case 1:
-            // lower left
-            gl_Position = mvp * vec4(rot * size + center.xy, center.z, 1.0);
-            uv = uv2;
-            break;
-        case 2:
-            // upper right
-            gl_Position = mvp * vec4(rot * size + center.xy, center.z, 1.0);
-            uv = uv1;
-            break;
-        case 3:
-            // lower right
-            gl_Position = mvp * vec4(rot * size + center.xy, center.z, 1.0);
-            uv = uv3;
-            break;
-    }
+    vec2 uvs[4] = {uv0, uv2, uv1, uv3};
+    v_color = color;
+    gl_Position = mvp * vec4(rot * (in_pos * size) + center.xy, 0.0, 1.0);
+    v_uv = uvs[vertex_id];
 }
