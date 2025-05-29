@@ -11,19 +11,14 @@ uniform sampler2D sprite_texture;
 // Texture containing UVs for the entire atlas
 uniform sampler2D uv_texture;
 
-// Per instance data
-uniform sampler2D pos_data;
-uniform sampler2D size_data;
-uniform sampler2D color_data;
-uniform sampler2D texture_id_data;
-uniform isampler2D index_data;
+uniform vec4 pos_rot;  // rect.x, rect.y, 0, angle
+uniform vec4 color;  // color.normalized
+uniform vec2 size;  // rect.width, rect.height
+uniform int texture_id;
 
 // How much half-pixel offset to apply to the UVs.
 // 0.0 is no offset, 1.0 is half a pixel offset
 uniform float uv_offset_bias;
-
-// Instanced geometry (rectangle as triangle strip)
-in vec2 in_pos;
 
 // Output to frag shader
 out vec2 v_uv;
@@ -31,15 +26,15 @@ out vec4 v_color;
 
 #include :system:shaders/lib/sprite.glsl
 
+
+const vec2 vertices[4] = vec2[4](
+    vec2(-0.5, +0.5),  // Upper left
+    vec2(-0.5, -0.5),  // lower left
+    vec2(+0.5, +0.5),  // upper right
+    vec2(+0.5, -0.5)   // lower right
+);
+
 void main() {
-    // Reading per-instance data from textures.
-    // First we need take the index texture into account to get the correct rendering order.
-    int index = getInstanceIndex(index_data, gl_InstanceID);
-    vec4 pos_rot = getInstancePosRot(pos_data, index);
-    vec2 size = getInstanceSize(size_data, index);  
-    vec4 color = getInstanceColor(color_data, index);
-    int texture_id = getInstanceTextureId(texture_id_data, index);
-    // Read texture coordinates from UV texture here
     vec2 uv0, uv1, uv2, uv3;
     getSpriteUVs(uv_texture, texture_id, uv0, uv1, uv2, uv3);
 
@@ -70,6 +65,6 @@ void main() {
     int vertex_id = gl_VertexID % 4;
     vec2 uvs[4] = vec2[4](uv0, uv2, uv1, uv3);
     v_color = color;
-    gl_Position = mvp * vec4(rot * (in_pos * size) + center.xy, 0.0, 1.0);
+    gl_Position = mvp * vec4(rot * (vertices[vertex_id] * size) + center.xy, 0.0, 1.0);
     v_uv = uvs[vertex_id];
 }

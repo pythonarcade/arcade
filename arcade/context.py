@@ -3,6 +3,7 @@ Arcade's version of the OpenGL Context.
 Contains pre-loaded programs
 """
 
+from array import array
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any
@@ -112,6 +113,7 @@ class ArcadeContext(Context):
         self.sprite_list_program_no_geo["texture_id_data"] = 5
         self.sprite_list_program_no_geo["index_data"] = 6
 
+        # Geo shader single sprite program
         self.sprite_program_single = self.load_program(
             vertex_shader=":system:shaders/sprites/sprite_single_vs.glsl",
             geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
@@ -120,6 +122,34 @@ class ArcadeContext(Context):
         self.sprite_program_single["sprite_texture"] = 0
         self.sprite_program_single["uv_texture"] = 1
         self.sprite_program_single["spritelist_color"] = 1.0, 1.0, 1.0, 1.0
+        # Non-geometry shader single sprite program
+        self.sprite_program_single_simple = self.load_program(
+            vertex_shader=":system:shaders/sprites/sprite_single_simple_vs.glsl",
+            fragment_shader=":system:shaders/sprites/sprite_list_simple_fs.glsl",
+        )
+        self.sprite_program_single_simple["sprite_texture"] = 0
+        self.sprite_program_single_simple["uv_texture"] = 1
+        self.sprite_program_single_simple["spritelist_color"] = 1.0, 1.0, 1.0, 1.0
+
+        # fmt: off
+        self.spritelist_geometry_simple = self.geometry(
+            [
+                BufferDescription(
+                    self.buffer(
+                        data=array("f", [
+                            -0.5, +0.5,  # Upper left
+                            -0.5, -0.5,  # lower left
+                            +0.5, +0.5,  # upper right
+                            +0.5, -0.5,  # lower right
+                        ])
+                    ),
+                    "2f",
+                    ["in_pos"]
+                ),
+            ],
+            mode=self.TRIANGLE_STRIP,
+        )
+        # fmt: on
 
         # Shapes
         self.shape_line_program: Program = self.load_program(

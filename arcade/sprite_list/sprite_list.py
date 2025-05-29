@@ -1721,21 +1721,7 @@ class SpriteListTextureData(SpriteListData):
         # Program without geo shader
         self.program = self.ctx.sprite_list_program_no_geo
         self._atlas = atlas or self.ctx.default_atlas
-
-        # fmt: off
-        self._instance_buffer = self.ctx.buffer(
-            data=array("f", [
-                -0.5, +0.5,  # Upper left
-                -0.5, -0.5,  # lower left
-                +0.5, +0.5,  # upper right
-                +0.5, -0.5,  # lower right
-            ]),
-        )
-        # fmt: on
-        self._geometry = self.ctx.geometry(
-            [BufferDescription(self._instance_buffer, "2f", ["in_pos"])],
-            mode=self.ctx.TRIANGLE_STRIP,
-        )
+        self._geometry = self.ctx.spritelist_geometry_simple
 
         # Texture buffers for per-sprite data. These are looked up using gl_InstanceID
         self._storage_pos_angle: Texture2D = self.ctx.texture(
