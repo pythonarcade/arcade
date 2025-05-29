@@ -323,14 +323,13 @@ class SpriteList(SpriteSequence[SpriteType]):
 
         # NOTE: Instantiate the appropriate spritelist data class here
         # Desktop GL (with geo shader)
-        self._spritelist_data = SpriteListBufferData(
-            self.ctx, capacity=self._buf_capacity, atlas=self._atlas
-        )
-        # WebGL (without geo shader)
-        # self._spritelist_data = SpriteListTextureData(
+        # self._spritelist_data = SpriteListBufferData(
         #     self.ctx, capacity=self._buf_capacity, atlas=self._atlas
         # )
-
+        # WebGL (without geo shader)
+        self._spritelist_data = SpriteListTextureData(
+            self.ctx, capacity=self._buf_capacity, atlas=self._atlas
+        )
         self._initialized = True
 
         # Load all the textures and write texture coordinates into buffers.
@@ -1646,12 +1645,7 @@ class SpriteListBufferData(SpriteListData):
         ctx = self.ctx
         ctx.collision_detection_program["check_pos"] = pos
         ctx.collision_detection_program["check_size"] = size
-
-        # Ensure the result buffer can fit all the sprites (worst case)
         buffer = ctx.collision_buffer
-        # NOTE: Right now the limit is 1000 hits
-        # Run the transform shader emitting sprites close to the configured position and size.
-        # This runs in a query so we can measure the number of sprites emitted.
         with ctx.collision_query:
             self._geometry.transform(  # type: ignore
                 ctx.collision_detection_program,
@@ -1842,14 +1836,35 @@ class SpriteListTextureData(SpriteListData):
             if blend_function is not None:
                 self.ctx.blend_func = prev_blend_func
 
-    # def get_nearby_sprite_indices(self, pos: Point2, size: Point2, length: int) -> list[int]:
-    #     """
-    #     Get indices of sprites that are nearby the given position and size.
+    def get_nearby_sprite_indices(self, pos: Point2, size: Point2, length: int) -> list[int]:
+        """
+        Get indices of sprites that are nearby the given position and size.
 
-    #     Args:
-    #         pos: The position to check for nearby sprites.
-    #         size: The size of the area to check for nearby sprites.
-    #         length: The number of sprites in the spritelist.
-    #     Returns:
-    #         A list of indices of nearby sprites.
-    #     """
+        Args:
+            pos: The position to check for nearby sprites.
+            size: The size of the area to check for nearby sprites.
+            length: The number of sprites in the spritelist.
+        Returns:
+            A list of indices of nearby sprites.
+        """
+        ctx = self.ctx
+        buffer = ctx.collision_buffer
+        program = ctx.collision_detection_program_simple
+        program["check_pos"] = pos
+        program["check_size"] = size
+
+        self._pos_angle_texture.use(0)
+        self._size_texture.use(1)
+        self._index_texture.use(2)
+
+        with ctx.collision_query:
+            ctx.geometry_empty.transform(
+                program,
+                buffer,
+                vertices=length,
+            )
+        emit_count = ctx.collision_query.primitives_generated
+        print(f"Collision query emitted {emit_count} sprites")
+        if emit_count == 0:
+            return []
+        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]

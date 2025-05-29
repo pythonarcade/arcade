@@ -157,11 +157,22 @@ class ArcadeContext(Context):
         self.atlas_resize_program["texcoords_old"] = 2
         self.atlas_resize_program["texcoords_new"] = 3
 
+        # NOTE: These should not be created when WebGL is used
         # SpriteList collision resources
+        # Buffer version of the collision detection program.
         self.collision_detection_program = self.load_program(
             vertex_shader=":system:shaders/collision/col_trans_vs.glsl",
             geometry_shader=":system:shaders/collision/col_trans_gs.glsl",
         )
+        # Texture version of the collision detection program.
+        self.collision_detection_program_simple = self.load_program(
+            vertex_shader=":system:shaders/collision/col_tex_trans_vs.glsl",
+            geometry_shader=":system:shaders/collision/col_tex_trans_gs.glsl",
+        )
+        self.collision_detection_program_simple["pos_angle_data"] = 0
+        self.collision_detection_program_simple["size_data"] = 1
+        self.collision_detection_program_simple["index_data"] = 2
+
         self.collision_buffer = self.buffer(reserve=1024 * 4)
         self.collision_query = self.query(samples=False, time=False, primitives=True)
 

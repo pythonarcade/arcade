@@ -1,5 +1,5 @@
 #version 330
-// A simple passthrough shader forwarding data to the geomtry shader
+// Buffer version if collision shader
 
 in vec4 in_pos;
 in vec2 in_size;

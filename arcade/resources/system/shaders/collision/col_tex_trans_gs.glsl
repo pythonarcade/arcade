@@ -1,5 +1,5 @@
 #version 330
-// Buffer version if collision shader
+// Texture version if collision shader
 
 layout(points) in;
 layout(points, max_vertices=1) out;
