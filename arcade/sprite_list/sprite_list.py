@@ -1608,9 +1608,6 @@ class SpriteListTextureData(SpriteListData):
         self._texture_id_texture = self.ctx.texture(size=(capacity, 1), components=1, dtype="f4")
         self._index_texture = self.ctx.texture(size=(capacity, 1), components=1, dtype="i4")
 
-        # Debugging
-        self._query = self.ctx.query(primitives=True)
-
     def write_sprite_buffers_to_gpu(
         self,
         # The data itself
@@ -1745,17 +1742,10 @@ class SpriteListTextureData(SpriteListData):
         if not self._geometry:
             raise ValueError("Attempting to render without '_geometry' field being set.")
 
-        # a = array("i")
-        # a.frombytes(self._index_texture.read())
-        # print("Buffer", a)
-
-        with self._query:
-            self._geometry.render(
-                self.program,
-                # mode=self.ctx.TRIANGLE_STRIP,
-                instances=count,
-            )
-        # print(f"Primitives rendered: {self._query.primitives_generated} (count: {count})")
+        self._geometry.render(
+            self.program,
+            instances=count,
+        )
 
         # Leave global states to default
         if blend:
