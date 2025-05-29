@@ -31,8 +31,16 @@ if TYPE_CHECKING:
     from arcade import Texture, ArcadeContext
     from arcade.texture_atlas import TextureAtlasBase
 
-# The default capacity from spritelists
-_DEFAULT_CAPACITY = 100
+
+def _align_capacity(capacity: int) -> int:
+    """
+    Aligns the capacity to be a multiple of 256.
+    This is important to make the data compatible with different
+    types of storage such as buffers and textures.
+    """
+    if capacity <= 0:
+        return 256
+    return (capacity + 255) // 256 * 256
 
 
 class SpriteSequence(Collection[SpriteType_co]):
@@ -227,10 +235,11 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._blend = True
         self._color: tuple[float, float, float, float] = (1.0, 1.0, 1.0, 1.0)
 
+        capacity = _align_capacity(capacity)
         # The initial capacity of the spritelist buffers (internal)
-        self._buf_capacity = abs(capacity) or _DEFAULT_CAPACITY
+        self._buf_capacity = capacity
         # The initial capacity of the index buffer (internal)
-        self._idx_capacity = abs(capacity) or _DEFAULT_CAPACITY
+        self._idx_capacity = capacity
         # The number of slots used in the sprite buffer
         self._sprite_buffer_slots = 0
         # Number of slots used in the index buffer
@@ -1660,15 +1669,15 @@ class SpriteListTextureData(SpriteListData):
         self._buf_capacity = self._buf_capacity * 2
 
         # Extend the textures so we don't lose the old data
-        self._pos_angle_texture.resize((self._buf_capacity, 1))
-        self._size_texture.resize((self._buf_capacity, 1))
-        self._color_texture.resize((self._buf_capacity, 1))
-        self._texture_id_texture.resize((self._buf_capacity, 1))
+        self._pos_angle_texture.resize((256, self._buf_capacity // 256))
+        self._size_texture.resize((256, self._buf_capacity // 256))
+        self._color_texture.resize((256, self._buf_capacity // 256))
+        self._texture_id_texture.resize((256, self._buf_capacity // 256))
 
     def grow_index_buffer(self) -> None:
         """Double the internal index buffer storage"""
         self._idx_capacity = self._idx_capacity * 2
-        self._index_texture.resize((self._buf_capacity, 1))
+        self._index_texture.resize((256, self._idx_capacity // 256))
 
     def render(
         self,

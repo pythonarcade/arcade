@@ -19,21 +19,21 @@ void getSpriteUVs(sampler2D uvData, int texture_id, out vec2 uv0, out vec2 uv1, 
 // These are used with the shader program that uses instancing to render sprites
 // meaning there is no geo shader involved. This should work for WebGL.
 vec4 getInstancePosRot(sampler2D posData, int index) {
-    return texelFetch(posData, ivec2(index, 0), 0);
+    return texelFetch(posData, ivec2(index % 256, index / 256), 0);
 }
 
 vec2 getInstanceSize(sampler2D sizeData, int index) {
-    return texelFetch(sizeData, ivec2(index, 0), 0).xy;
+    return texelFetch(sizeData, ivec2(index % 256, index / 256), 0).xy;
 }
 
 vec4 getInstanceColor(sampler2D colorData, int index) {
-    return texelFetch(colorData, ivec2(index, 0), 0);
+    return texelFetch(colorData, ivec2(index % 256, index / 256), 0);
 }
 
 int getInstanceTextureId(sampler2D textureIdData, int index) {
-    return int(texelFetch(textureIdData, ivec2(index, 0), 0).x);
+    return int(texelFetch(textureIdData, ivec2(index % 256, index / 256), 0).x);
 }
 
 int getInstanceIndex(isampler2D indexData, int index) {
-    return texelFetch(indexData, ivec2(index, 0), 0).x;
+    return texelFetch(indexData, ivec2(index % 256, index / 256), 0).x;
 }
