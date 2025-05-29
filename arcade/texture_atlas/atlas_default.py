@@ -667,7 +667,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
             force:
                 Force a resize even if the size is the same
         """
-        print("Resizing atlas from", self._size, "to", size)
+        # print("Resizing atlas from", self._size, "to", size)
 
         # Only resize if the size actually changed
         if size == self._size and not force:
@@ -746,7 +746,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list doesn't need to be rebuilt.
         """
-        print("Rebuilding atlas")
+        # print("Rebuilding atlas")
 
         # Hold a reference to the old textures
         textures = self.textures
