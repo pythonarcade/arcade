@@ -8,6 +8,7 @@ individual sprites.
 from __future__ import annotations
 
 import random
+import struct
 from abc import abstractmethod
 from array import array
 from collections import deque
@@ -136,6 +137,23 @@ class SpriteSequence(Collection[SpriteType_co]):
         Args:
             color: The color of the hit boxes
             line_thickness: The thickness of the lines
+        """
+        ...
+
+    @abstractmethod
+    def get_nearby_sprites_gpu(self, pos: Point2, size: Point2) -> list[SpriteType_co]:
+        """
+        Get a list of sprites that are nearby the given position and size
+        using the gpu. No spatial hashing is needed. This is a very fast method
+        to find nearby sprites in large spritelists but is very expensive
+        if the method is called many times per frame or if the sprite list
+        is small.
+
+        Args:
+            pos: The position to check for nearby sprites.
+            size: The size of the area to check for nearby sprites.
+        Returns:
+            A list of sprites nearby the given position and size.
         """
         ...
 
@@ -305,13 +323,13 @@ class SpriteList(SpriteSequence[SpriteType]):
 
         # NOTE: Instantiate the appropriate spritelist data class here
         # Desktop GL (with geo shader)
-        # self._spritelist_data = SpriteListBufferData(
-        #     self.ctx, capacity=self._buf_capacity, atlas=self._atlas
-        # )
-        # WebGL (without geo shader)
-        self._spritelist_data = SpriteListTextureData(
+        self._spritelist_data = SpriteListBufferData(
             self.ctx, capacity=self._buf_capacity, atlas=self._atlas
         )
+        # WebGL (without geo shader)
+        # self._spritelist_data = SpriteListTextureData(
+        #     self.ctx, capacity=self._buf_capacity, atlas=self._atlas
+        # )
 
         self._initialized = True
 
@@ -981,6 +999,30 @@ class SpriteList(SpriteSequence[SpriteType]):
 
         arcade.draw_lines(points, color=converted_color, line_width=line_thickness)
 
+    def get_nearby_sprites_gpu(self, pos: Point2, size: Point2) -> list[SpriteType]:
+        """
+        Get a list of sprites that are nearby the given position and size
+        using the gpu. No spatial hashing is needed. This is a very fast method
+        to find nearby sprites in large spritelists but is very expensive
+        if the method is called many times per frame or if the sprite list
+        is small.
+
+        Args:
+            pos: The position to check for nearby sprites.
+            size: The size of the area to check for nearby sprites.
+        Returns:
+            A list of sprites nearby the given position and size.
+        """
+        if not self._initialized:
+            self._init_deferred()
+
+        if len(self.sprite_list) == 0:
+            return []
+
+        self._write_sprite_buffers_to_gpu()
+        indices = self._spritelist_data.get_nearby_sprite_indices(pos, size, len(self.sprite_list))
+        return [self.sprite_list[i] for i in indices]
+
     def _grow_sprite_buffers(self) -> None:
         """Double the internal buffer sizes"""
         # Resize sprite buffers if needed
@@ -1294,6 +1336,19 @@ class SpriteListData:
         """
         raise NotImplementedError("This method should be implemented in subclasses.")
 
+    def get_nearby_sprite_indices(self, pos: Point2, size: Point2, length: int) -> list[int]:
+        """
+        Get indices of sprites that are nearby the given position and size.
+
+        Args:
+            pos: The position to check for nearby sprites.
+            size: The size of the area to check for nearby sprites.
+            length: The number of sprites in the list.
+        Returns:
+            A list of indices of nearby sprites.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
 
 class SpriteListBufferData(SpriteListData):
     """Container for all gpu data used by the SpriteList."""
@@ -1577,6 +1632,39 @@ class SpriteListBufferData(SpriteListData):
             if blend_function is not None:
                 self.ctx.blend_func = prev_blend_func
 
+    def get_nearby_sprite_indices(self, pos: Point2, size: Point2, length: int) -> list[int]:
+        """
+        Get indices of sprites that are nearby the given position and size.
+
+        Args:
+            pos: The position to check for nearby sprites.
+            size: The size of the area to check for nearby sprites.
+            length: The number of sprites in the spritelist.
+        Returns:
+            A list of indices of nearby sprites.
+        """
+        ctx = self.ctx
+        ctx.collision_detection_program["check_pos"] = pos
+        ctx.collision_detection_program["check_size"] = size
+
+        # Ensure the result buffer can fit all the sprites (worst case)
+        buffer = ctx.collision_buffer
+        # NOTE: Right now the limit is 1000 hits
+        # Run the transform shader emitting sprites close to the configured position and size.
+        # This runs in a query so we can measure the number of sprites emitted.
+        with ctx.collision_query:
+            self._geometry.transform(  # type: ignore
+                ctx.collision_detection_program,
+                buffer,
+                vertices=length,
+            )
+
+        # Store the number of sprites emitted
+        emit_count = ctx.collision_query.primitives_generated
+        if emit_count == 0:
+            return []
+        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]
+
 
 class SpriteListTextureData(SpriteListData):
     """Container for all gpu data used by the SpriteList without buffers."""
@@ -1753,3 +1841,15 @@ class SpriteListTextureData(SpriteListData):
             self.ctx.disable(self.ctx.BLEND)
             if blend_function is not None:
                 self.ctx.blend_func = prev_blend_func
+
+    # def get_nearby_sprite_indices(self, pos: Point2, size: Point2, length: int) -> list[int]:
+    #     """
+    #     Get indices of sprites that are nearby the given position and size.
+
+    #     Args:
+    #         pos: The position to check for nearby sprites.
+    #         size: The size of the area to check for nearby sprites.
+    #         length: The number of sprites in the spritelist.
+    #     Returns:
+    #         A list of indices of nearby sprites.
+    #     """
