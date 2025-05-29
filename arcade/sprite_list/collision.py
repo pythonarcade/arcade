@@ -1,9 +1,5 @@
-import struct
 from collections.abc import Iterable
 
-from arcade import (
-    get_window,
-)
 from arcade.geometry import (
     are_polygons_intersecting,
     is_point_in_polygon,

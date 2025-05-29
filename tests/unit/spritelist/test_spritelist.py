@@ -184,7 +184,7 @@ def test_can_shuffle(ctx):
         # Ensure the index buffer is referring to the correct slots
         # Raw buffer from OpenGL
         index_data = struct.unpack(
-            f"{num_sprites}i", spritelist._sprite_index_buf.read()[: num_sprites * 4]
+            f"{num_sprites}i", spritelist.data.storage_index.read()[: num_sprites * 4]
         )
         for i, sprite in enumerate(spritelist):
             # Check if slots are updated
@@ -221,14 +221,14 @@ def test_sort(ctx):
     assert spritelist._sprite_index_data[0:3] == array("f", [0, 1, 2])
 
 
-@pytest.mark.parametrize("capacity", (128, 512, 1024))
+@pytest.mark.parametrize("capacity", (256, 512, 1024))
 def test_clear(ctx, capacity):
     sp = arcade.SpriteList(capacity=capacity)
     sp.clear(capacity=None)
     assert len(sp._sprite_index_data) == capacity
-    assert len(sp._sprite_pos_data) == capacity * 3
-    assert sp._sprite_index_buf.size == capacity * 4
-    assert sp._sprite_pos_buf.size == capacity * 4 * 3
+    assert len(sp._sprite_pos_angle_data) == capacity * 4
+    assert len(sp.data.storage_index.read()) == capacity * 4
+    assert len(sp.data.storage_positions_angle.read()) == capacity * 4 * 4
 
     sp.extend(make_named_sprites(capacity))
     sp.clear(capacity=capacity)
@@ -237,9 +237,9 @@ def test_clear(ctx, capacity):
     assert sp._sprite_buffer_slots == 0
     assert sp.atlas is not None
     assert len(sp._sprite_index_data) == capacity
-    assert len(sp._sprite_pos_data) == capacity * 3
-    assert sp._sprite_index_buf.size == capacity * 4
-    assert sp._sprite_pos_buf.size == capacity * 4 * 3
+    assert len(sp._sprite_pos_angle_data) == capacity * 4
+    assert len(sp.data.storage_index.read()) == capacity * 4
+    assert len(sp.data.storage_positions_angle.read()) == capacity * 4 * 4
 
 
 def test_color():
