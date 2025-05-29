@@ -617,7 +617,6 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             sprite: Sprite to add to the list.
         """
-        # print(f"{id(self)} : {id(sprite)} append")
         if sprite in self.sprite_slot:
             raise ValueError("Sprite already in SpriteList")
 
@@ -988,7 +987,6 @@ class SpriteList(SpriteSequence[SpriteType]):
         if self._sprite_buffer_slots <= self._buf_capacity:
             return
 
-        print("Growing sprite buffers...")
         # Double the capacity
         extend_by = self._buf_capacity
         self._buf_capacity = self._buf_capacity * 2
@@ -1567,8 +1565,6 @@ class SpriteListBufferData(SpriteListData):
 
         atlas_texture.use(0)
         atlas.use_uv_texture(1)
-        if not self._geometry:
-            raise ValueError("Attempting to render without '_geometry' field being set.")
         self._geometry.render(
             self.program,
             mode=self.ctx.POINTS,
@@ -1664,7 +1660,6 @@ class SpriteListTextureData(SpriteListData):
 
     def grow_sprite_buffers(self) -> None:
         """Double the internal storage"""
-        print(f"Growing sprite buffers from {self._buf_capacity} to", self._buf_capacity * 2)
         # Double the capacity
         self._buf_capacity = self._buf_capacity * 2
 
@@ -1747,9 +1742,6 @@ class SpriteListTextureData(SpriteListData):
         self._color_texture.use(4)
         self._texture_id_texture.use(5)
         self._index_texture.use(6)
-
-        if not self._geometry:
-            raise ValueError("Attempting to render without '_geometry' field being set.")
 
         self._geometry.render(
             self.program,
