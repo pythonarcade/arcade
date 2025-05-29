@@ -1864,7 +1864,7 @@ class SpriteListTextureData(SpriteListData):
                 vertices=length,
             )
         emit_count = ctx.collision_query.primitives_generated
-        print(f"Collision query emitted {emit_count} sprites")
+        # print(f"Collision query emitted {emit_count} sprites")
         if emit_count == 0:
             return []
         return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]
