@@ -25,7 +25,7 @@ from arcade.gl import BufferDescription, Program, Texture2D
 from arcade.gl.buffer import Buffer
 from arcade.gl.types import BlendFunction, OpenGlFilter, PyGLenum
 from arcade.gl.vertex_array import Geometry
-from arcade.types import RGBA255, Color, Point2, Point, RGBANormalized, RGBOrA255, RGBOrANormalized
+from arcade.types import RGBA255, Color, Point, Point2, RGBANormalized, RGBOrA255, RGBOrANormalized
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
