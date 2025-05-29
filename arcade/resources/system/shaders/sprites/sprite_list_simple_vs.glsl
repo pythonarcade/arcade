@@ -55,7 +55,7 @@ void main() {
     // TODO: Half pixel offset
 
     int vertex_id = gl_VertexID % 4;
-    vec2 uvs[4] = {uv0, uv2, uv1, uv3};
+    vec2 uvs[4] = vec2[4](uv0, uv2, uv1, uv3);
     v_color = color;
     gl_Position = mvp * vec4(rot * (in_pos * size) + center.xy, 0.0, 1.0);
     v_uv = uvs[vertex_id];
