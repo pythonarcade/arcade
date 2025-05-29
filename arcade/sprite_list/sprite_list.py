@@ -21,7 +21,7 @@ from typing import (
 )
 
 from arcade import Sprite, SpriteType, SpriteType_co, get_window, gl
-from arcade.gl import BufferDescription, Program, Texture2D
+from arcade.gl import Program, Texture2D
 from arcade.gl.buffer import Buffer
 from arcade.gl.types import BlendFunction, OpenGlFilter, PyGLenum
 from arcade.gl.vertex_array import Geometry
