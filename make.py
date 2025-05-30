@@ -173,7 +173,9 @@ def clean():
             os.remove(item) if os.path.isfile(item) else rmtree(item)
 
 
-JobsAnnotation = Annotated[Optional[str], Option(help="Specify a number of parallel build tasks (defaults no N_CORES)")]
+JobsAnnotation = Annotated[
+    Optional[str], Option(help="Specify a number of parallel build tasks (defaults no N_CORES)")
+]
 
 
 @app.command(rich_help_panel="Docs")
@@ -192,7 +194,16 @@ def serve(jobs: JobsAnnotation = "auto"):
     Build and serve the docs with automatic rebuilds and live reload.
     """
     run_doc(
-        [SPHINX_AUTOBUILD, *SPHINXAUTOBUILDOPTS, "--jobs", jobs, "-b", "html", *ALLSPHINXOPTS, f"{BUILD_DIR}/html"]
+        [
+            SPHINX_AUTOBUILD,
+            *SPHINXAUTOBUILDOPTS,
+            "--jobs",
+            jobs,
+            "-b",
+            "html",
+            *ALLSPHINXOPTS,
+            f"{BUILD_DIR}/html",
+        ]
     )
 
 
