@@ -17,8 +17,10 @@ import subprocess
 from contextlib import contextmanager
 from pathlib import Path
 from shutil import rmtree, which
-from typing import Union
+from typing import Union, Annotated, Optional
 from collections.abc import Generator
+
+from typer import Option
 
 PathLike = Union[Path, str, bytes]
 
@@ -171,23 +173,26 @@ def clean():
             os.remove(item) if os.path.isfile(item) else rmtree(item)
 
 
+JobsAnnotation = Annotated[Optional[str], Option(help="Specify a number of parallel build tasks (defaults no N_CORES)")]
+
+
 @app.command(rich_help_panel="Docs")
-def html():
+def html(jobs: JobsAnnotation = "auto"):
     """
     Build the documentation (HTML)
     """
-    run_doc([SPHINX_BUILD, "-b", "html", *ALLSPHINXOPTS, f"{BUILD_DIR}/html"])
+    run_doc([SPHINX_BUILD, "--jobs", jobs, "-b", "html", *ALLSPHINXOPTS, f"{BUILD_DIR}/html"])
     print()
     print(f"Build finished. The HTML pages are in {FULL_BUILD_DIR}/html.")
 
 
 @app.command(rich_help_panel="Docs")
-def serve():
+def serve(jobs: JobsAnnotation = "auto"):
     """
     Build and serve the docs with automatic rebuilds and live reload.
     """
     run_doc(
-        [SPHINX_AUTOBUILD, *SPHINXAUTOBUILDOPTS, "-b", "html", *ALLSPHINXOPTS, f"{BUILD_DIR}/html"]
+        [SPHINX_AUTOBUILD, *SPHINXAUTOBUILDOPTS, "--jobs", jobs, "-b", "html", *ALLSPHINXOPTS, f"{BUILD_DIR}/html"]
     )
 
 
