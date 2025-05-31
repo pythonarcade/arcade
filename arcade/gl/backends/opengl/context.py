@@ -143,7 +143,7 @@ class OpenGLContext(Context):
         elif len(value) == 4:
             gl.glBlendFuncSeparate(*value)
         else:
-            ValueError("blend_func takes a tuple of 2 or 4 values")
+            raise ValueError("blend_func takes a tuple of 2 or 4 values")
 
     @property
     def front_face(self) -> str:
