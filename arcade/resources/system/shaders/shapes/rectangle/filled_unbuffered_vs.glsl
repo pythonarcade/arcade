@@ -19,6 +19,6 @@ void main() {
     );
     // vec2 size = shape.xy / 2.0;
     mat4 mvp = window.projection * window.view;
-    vec2 pos = in_instance_pos + (in_vert * shape.xy);
-    gl_Position = mvp * vec4(rot * pos, 0.0, 1.0);
+    vec2 pos = in_instance_pos + (rot * (in_vert * shape.xy));
+    gl_Position = mvp * vec4(pos, 0.0, 1.0);
 }
