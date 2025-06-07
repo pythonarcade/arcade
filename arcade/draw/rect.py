@@ -395,7 +395,7 @@ def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> Non
     buffer.orphan()
     buffer.write(data=array.array("f", (rect.x, rect.y)))
 
-    geometry.render(program, mode=ctx.POINTS, vertices=1)
+    geometry.render(program, instances=1)
 
     ctx.disable(ctx.BLEND)
 

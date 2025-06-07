@@ -170,8 +170,8 @@ class ArcadeContext(Context):
         self.shape_rectangle_filled_unbuffered_program = self.load_program(
             vertex_shader=":system:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
             fragment_shader=":system:shaders/shapes/rectangle/filled_unbuffered_fs.glsl",
-            geometry_shader=":system:shaders/shapes/rectangle/filled_unbuffered_geo.glsl",
         )
+
         # Atlas shaders
         self.atlas_resize_program: Program = self.load_program(
             # NOTE: This is the geo shader version of the atlas resize program.
@@ -253,9 +253,36 @@ class ArcadeContext(Context):
         )
         # rectangle filled
         self.shape_rectangle_filled_unbuffered_buffer = self.buffer(reserve=8)
+        # fmt: off
         self.shape_rectangle_filled_unbuffered_geometry: Geometry = self.geometry(
-            [BufferDescription(self.shape_rectangle_filled_unbuffered_buffer, "2f", ["in_vert"])]
+            [
+                # Instanced quad (triangle strip)
+                BufferDescription(
+                    self.buffer(
+                        data=array(
+                            "f",
+                            [
+                                -0.5, +0.5,  # Upper left
+                                -0.5, -0.5,  # lower left
+                                +0.5, +0.5,  # upper right
+                                +0.5, -0.5,  # lower right
+                            ],
+                        )
+                    ),
+                    "2f",
+                    ["in_vert"],
+                ),
+                # Per instance data
+                BufferDescription(
+                    self.shape_rectangle_filled_unbuffered_buffer,
+                    "2f",
+                    ["in_instance_pos"],
+                    instanced=True
+                ),
+            ],
+            mode=self.TRIANGLE_STRIP,
         )
+        # fmt: on
         self.geometry_empty: Geometry = self.geometry()
 
         self._atlas: TextureAtlasBase | None = None
