@@ -163,7 +163,6 @@ class ArcadeContext(Context):
         self.shape_ellipse_outline_unbuffered_program: Program = self.load_program(
             vertex_shader=":system:shaders/shapes/ellipse/outline_unbuffered_vs.glsl",
             fragment_shader=":system:shaders/shapes/ellipse/outline_unbuffered_fs.glsl",
-            geometry_shader=":system:shaders/shapes/ellipse/outline_unbuffered_geo.glsl",
         )
         self.shape_rectangle_filled_unbuffered_program = self.load_program(
             vertex_shader=":system:shaders/shapes/rectangle/filled_unbuffered_vs.glsl",
@@ -259,11 +258,8 @@ class ArcadeContext(Context):
         )
         # ellipse/circle filled. Empty geometry. We generate it on the fly in the vertex shader.
         self.shape_ellipse_unbuffered_geometry: Geometry = self.geometry()
-        # ellipse/circle outline
-        self.shape_ellipse_outline_unbuffered_buffer = self.buffer(reserve=8)
-        self.shape_ellipse_outline_unbuffered_geometry: Geometry = self.geometry(
-            [BufferDescription(self.shape_ellipse_outline_unbuffered_buffer, "2f", ["in_vert"])]
-        )
+        # ellipse/circle outline. Empty geometry. We generate it on the fly in the vertex shader.
+        self.shape_ellipse_outline_unbuffered_geometry: Geometry = self.geometry()
         # rectangle filled
         self.shape_rectangle_filled_unbuffered_buffer = self.buffer(reserve=8)
         # fmt: off
