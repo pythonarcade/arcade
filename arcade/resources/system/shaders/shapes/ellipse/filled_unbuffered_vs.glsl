@@ -10,8 +10,6 @@ uniform int segments;
 // [w, h, tilt]
 uniform vec3 shape;
 
-in vec2 in_vert;
-
 const float PI = 3.141592;
 
 void main() {
