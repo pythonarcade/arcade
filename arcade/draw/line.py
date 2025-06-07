@@ -80,7 +80,7 @@ def draw_line(
     line_pos_buffer.write(data=array.array("f", (start_x, start_y, end_x, end_y)))
 
     ctx.enable(ctx.BLEND)
-    geometry.render(program, mode=gl.LINES, vertices=2)
+    geometry.render(program, instances=1)
     ctx.disable(ctx.BLEND)
 
 
@@ -127,6 +127,6 @@ def draw_lines(point_list: Point2List, color: RGBOrA255, line_width: float = 1) 
     program["color"] = color_normalized
     line_buffer_pos.write(data=line_pos_array)
 
-    geometry.render(program, mode=gl.LINES, vertices=num_points)
+    geometry.render(program, instances=num_points // 2)
 
     ctx.disable(ctx.BLEND)

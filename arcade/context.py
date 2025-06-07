@@ -155,7 +155,6 @@ class ArcadeContext(Context):
         self.shape_line_program: Program = self.load_program(
             vertex_shader=":system:shaders/shapes/line/unbuffered_vs.glsl",
             fragment_shader=":system:shaders/shapes/line/unbuffered_fs.glsl",
-            geometry_shader=":system:shaders/shapes/line/unbuffered_geo.glsl",
         )
         self.shape_ellipse_filled_unbuffered_program: Program = self.load_program(
             vertex_shader=":system:shaders/shapes/ellipse/filled_unbuffered_vs.glsl",
@@ -230,16 +229,34 @@ class ArcadeContext(Context):
             ]
         )
         # Shape line(s)
-        # Reserve space for 1000 lines (2f pos, 4f color)
-        # TODO: Different version for buffered and unbuffered
-        # TODO: Make round-robin buffers
         self.shape_line_buffer_pos = self.buffer(reserve=8 * 10)
-        # self.shape_line_buffer_color = self.buffer(reserve=4 * 10)
         self.shape_line_geometry = self.geometry(
             [
-                BufferDescription(self.shape_line_buffer_pos, "2f", ["in_vert"]),
-                # BufferDescription(self.shape_line_buffer_color, '4f1', ['in_color'])
-            ]
+                # Instanced quad (triangle strip)
+                BufferDescription(
+                    self.buffer(
+                        data=array(
+                            "f",
+                            [
+                                0.0,  # 4 dummy vertices
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                            ],
+                        )
+                    ),
+                    "2f",
+                    ["in_vert"],
+                ),
+                BufferDescription(
+                    self.shape_line_buffer_pos, "4f", ["in_instance_pos"], instanced=True
+                ),
+            ],
+            mode=self.TRIANGLE_STRIP,
         )
         # ellipse/circle filled
         self.shape_ellipse_unbuffered_buffer = self.buffer(reserve=8)
