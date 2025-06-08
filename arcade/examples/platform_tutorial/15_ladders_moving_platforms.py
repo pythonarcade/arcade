@@ -4,6 +4,7 @@ Platformer Game
 python -m arcade.examples.platform_tutorial.15_ladders_moving_platforms
 """
 import arcade
+import time
 
 # Constants
 WINDOW_WIDTH = 1280
@@ -65,6 +66,10 @@ class GameView(arcade.Window):
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
         self.gameover_sound = arcade.load_sound(":resources:sounds/gameover1.wav")
 
+        # Jump interval (seconds)
+        self.jump_cooldown = 0.2
+        self.last_jump_time = 0.0
+
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
         layer_options = {
@@ -112,6 +117,9 @@ class GameView(arcade.Window):
             platforms=self.scene["Moving Platforms"],
             ladders=self.scene["Ladders"]
         )
+
+        # Enables multi-jump for users to double jump
+        self.physics_engine.enable_multi_jump(2)
 
         # Initialize our camera, setting a viewport the size of our window.
         self.camera = arcade.Camera2D()
@@ -175,6 +183,7 @@ class GameView(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
+        current_time = time.time()
 
         if key == arcade.key.ESCAPE:
             self.setup()
@@ -182,10 +191,14 @@ class GameView(arcade.Window):
         if key == arcade.key.UP or key == arcade.key.W:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
-            elif self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+            elif self.physics_engine.can_jump() and (current_time - self.last_jump_time) > (self.jump_cooldown):
+                # Calls jump function and maintains velocity while not
+                # allowing jumps to be repeated
+                self.physics_engine.jump(PLAYER_JUMP_SPEED)
                 arcade.play_sound(self.jump_sound)
-
+                self.last_jump_time = current_time
+            else:
+                pass
         if key == arcade.key.DOWN or key == arcade.key.S:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
@@ -203,7 +216,12 @@ class GameView(arcade.Window):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = 0
         elif key == arcade.key.UP or key == arcade.key.W:
-            self.player_sprite.change_y = 0
+            if self.physics_engine.is_on_ladder():
+                # makes it so change_y only zeroes when on ladder
+                # fixes error with user pressing up while falling
+                # leading to a issue where fall speed is reset
+                # and user could basically "glide"
+                self.player_sprite.change_y = 0
         elif key == arcade.key.DOWN or key == arcade.key.S:
             self.player_sprite.change_y = 0
 
