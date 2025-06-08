@@ -323,11 +323,11 @@ class SpriteList(SpriteSequence[SpriteType]):
 
         # NOTE: Instantiate the appropriate spritelist data class here
         # Desktop GL (with geo shader)
-        # self._data = SpriteListBufferData(
+        self._data = SpriteListBufferData(self.ctx, capacity=self._buf_capacity, atlas=self._atlas)
+        # WebGL (without geo shader)
+        # self._data = SpriteListTextureData(
         #     self.ctx, capacity=self._buf_capacity, atlas=self._atlas
         # )
-        # WebGL (without geo shader)
-        self._data = SpriteListTextureData(self.ctx, capacity=self._buf_capacity, atlas=self._atlas)
         self._initialized = True
 
         # Load all the textures and write texture coordinates into buffers.
@@ -1260,6 +1260,7 @@ class SpriteListData:
         self.ctx = ctx
         self._buf_capacity = capacity
         self._idx_capacity = capacity
+        self._geometry: Geometry
 
         # Generic GPU storage for sprite data
         self._storage_pos_angle: Buffer | Texture2D
@@ -1267,6 +1268,13 @@ class SpriteListData:
         self._storage_color: Buffer | Texture2D
         self._storage_texture_id: Buffer | Texture2D
         self._storage_index: Buffer | Texture2D
+
+    @property
+    def geometry(self) -> Geometry:
+        """
+        Returns the internal OpenGL geometry for this spritelist.
+        """
+        return self._geometry
 
     @property
     def storage_positions_angle(self) -> Buffer | Texture2D:
@@ -1440,23 +1448,6 @@ class SpriteListBufferData(SpriteListData):
             index_buffer=self._storage_index,
             index_element_size=4,  # 32 bit integers
         )
-
-    @property
-    def geometry(self) -> Geometry:
-        """
-        Returns the internal OpenGL geometry for this spritelist.
-        This can be used to execute custom shaders with the
-        spritelist data.
-
-        One or multiple of the following inputs must be defined in your vertex shader::
-
-            in vec2 in_pos;
-            in float in_angle;
-            in vec2 in_size;
-            in float in_texture;
-            in vec4 in_color;
-        """
-        return self._geometry
 
     @property
     def buffer_positions_angle(self) -> Buffer:
