@@ -1,4 +1,4 @@
-# Welcome to The Arcade Library!
+# Welcome to The Arcade Library
 
 <p align="center">
     <a href="https://img.shields.io/pypi/l/arcade">
@@ -40,24 +40,24 @@ for example game jam entries and more.
 
 ## Stable Documentation
 
-Read the stable documentation at https://api.arcade.academy.
+Read the stable documentation at <https://api.arcade.academy>.
 
 ## Development Previews
 
-Preview the next release at https://api.arcade.academy/en/development/.
+Preview the next release at <https://api.arcade.academy/en/development/>.
 
 ## Citation
 
 ```
-    @Online{PythonArcade,
-       author = {Paul Vincent Craven},
-       title = {Easy to use Python library for creating 2D Arcade games.},
-       date = {2023-01-01},
-       publisher = {GitHub},
-       journal = {GitHub repository},
-       howpublished = {\url{https://github.com/pythonarcade/arcade}},
-       commit = {<insert hash if needed>}
-    }
+@Online{PythonArcade,
+    author = {Paul Vincent Craven},
+    title = {Easy to use Python library for creating 2D Arcade games.},
+    date = {2025-01-01},
+    publisher = {GitHub},
+    journal = {GitHub repository},
+    howpublished = {\url{https://github.com/pythonarcade/arcade}},
+    commit = {<insert hash if needed>}
+}
 ```
 
 ## Contact the Maintainers
@@ -65,4 +65,4 @@ Preview the next release at https://api.arcade.academy/en/development/.
 The best way to contact and chat with the maintainers is on the
 [Arcade Discord Server][].
 
-paul@cravenfamily.com
+<paul@cravenfamily.com>
