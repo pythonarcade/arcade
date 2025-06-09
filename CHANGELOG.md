@@ -32,7 +32,10 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - Rewrote many shader programs to not use geometry shaders, which are not supported in WebGL
     and some other rendering backends
   - Fixed a few instances og exceptions not being raised properly in edge cases
-  - `SpriteList` now has multiple rendering systems supporting both WebGL and Desktop GL
+  - **BREAKING CHANGE**: `SpriteList` now has multiple rendering systems supporting both WebGL and Desktop GL.
+    If you have customized spritelist rendering you now need to modify the `SpriteListData` instance
+    on the spritelist accessed through `SpriteList.data`. This instance holds all the GPU-related
+    resources for the spritelist such as buffers, textures, geometry and shader program.
 
 ## Version 3.2
 
