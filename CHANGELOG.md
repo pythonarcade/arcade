@@ -3,10 +3,22 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
-## Unreleased
+## 3.3 (Unreleased)
 
 - Fixed an issue causing a crash when closing the window
-- Added `Window.close` (bool) attribute indicating if the window is closed
+- Added `Window.closed` (bool) attribute indicating if the window is closed
+- Fixed an issue where `on_draw` could be dispatched after the window was closed
+- Added `PymunkPhysicsEngine.update_sprite` for manually updating a sprite's shape
+  to synchronize sprite hit boxes with the physics engine
+- Fixed an issue causing `on_mouse_leave` to be called from disabled `Section`s
+- Various documentation fixes and improvements
+- Scene
+  - `Scene.add_sprite` now returns the added sprite
+  - `Scene.add_sprite_list` now returns the added sprite list
+  - `Scene.add_sprite_before` now returns the added sprite list
+  - `Scene.move_sprite_list_before` now returns the moved sprite list
+  - `Scene.remove_sprite_list_by_index` now returns the removed sprite list
+  - `Scene.remove_sprite_list_by_name` now returns the removed sprite list
 - GUI
   - Fix `UILabel` with enabled multiline sometimes cut off text
   - Improved `UIWidget` usability for resizing and positioning:
@@ -14,6 +26,13 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
     - Added property setters for `center_x` and `center_y`
     - Added property setters for `left`, `right`, `top`, and `bottom`
     - Users can now set widget position and size more intuitively without needing to access the `rect` property
+- Rendering:
+  - The `arcade.gl` package was restructured to be more modular in preparation for
+    other backends such as WebGL and WebGPU
+  - Rewrote many shader programs to not use geometry shaders, which are not supported in WebGL
+    and some other rendering backends
+  - Fixed a few instances og exceptions not being raised properly in edge cases
+  - `SpriteList` now has multiple rendering systems supporting both WebGL and Desktop GL
 
 ## Version 3.2
 
