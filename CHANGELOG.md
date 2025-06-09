@@ -3,7 +3,7 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
-## 3.3 (Unreleased)
+## 3.3.0
 
 - Fixed an issue causing a crash when closing the window
 - Added `Window.closed` (bool) attribute indicating if the window is closed
