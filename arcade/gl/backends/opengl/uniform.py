@@ -1,6 +1,6 @@
 import struct
-from ctypes import POINTER, c_double, c_float, c_int, c_uint, cast
 from collections.abc import Callable
+from ctypes import POINTER, c_double, c_float, c_int, c_uint, cast
 
 from pyglet import gl
 

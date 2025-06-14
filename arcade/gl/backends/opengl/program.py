@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typing
 import weakref
+from collections.abc import Iterable
 from ctypes import (
     POINTER,
     byref,
@@ -14,7 +15,6 @@ from ctypes import (
     pointer,
 )
 from typing import TYPE_CHECKING, Any
-from collections.abc import Iterable
 
 from pyglet import gl
 

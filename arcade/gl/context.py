@@ -4,13 +4,13 @@ import logging
 import weakref
 from abc import ABC, abstractmethod
 from collections import deque
+from collections.abc import Iterable, Sequence
 from contextlib import contextmanager
 from typing import (
     Any,
     Literal,
     overload,
 )
-from collections.abc import Iterable, Sequence
 
 import pyglet
 from pyglet.window import Window

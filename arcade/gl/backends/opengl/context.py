@@ -1,5 +1,5 @@
-from ctypes import c_char_p, c_float, c_int, cast
 from collections.abc import Iterable, Sequence
+from ctypes import c_char_p, c_float, c_int, cast
 
 import pyglet
 from pyglet import gl

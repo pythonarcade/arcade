@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import weakref
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
 from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 from .buffer import Buffer
 from .program import Program
@@ -496,9 +496,9 @@ class Geometry(ABC):
         if program._varyings_capture_mode == "interleaved":
             if not isinstance(buffer, Buffer):
                 raise ValueError(
-                        "Buffer must be a single Buffer object "
-                        "because the capture mode of the program is: "
-                        f"{program.varyings_capture_mode}"
+                    "Buffer must be a single Buffer object "
+                    "because the capture mode of the program is: "
+                    f"{program.varyings_capture_mode}"
                 )
             vao.transform_interleaved(
                 buffer,
@@ -512,9 +512,9 @@ class Geometry(ABC):
         else:
             if not isinstance(buffer, list):
                 raise ValueError(
-                        "buffer must be a list of Buffer object "
-                        "because the capture mode of the program is: "
-                        f"{program.varyings_capture_mode}"
+                    "buffer must be a list of Buffer object "
+                    "because the capture mode of the program is: "
+                    f"{program.varyings_capture_mode}"
                 )
             vao.transform_separate(
                 buffer,

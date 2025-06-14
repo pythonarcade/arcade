@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Generator
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
-from collections.abc import Generator
 
 from arcade.types import RGBOrA255, RGBOrANormalized
 

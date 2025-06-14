@@ -67,14 +67,14 @@ def test_it_can_extend_a_spritelist_from_a_list():
 def test_it_can_extend_a_spritelist_from_a_generator_expression():
     sprite_list = arcade.SpriteList()
     sprite_list.extend(
-            arcade.SpriteSolidColor(
-                width=32,
-                height=32,
-                center_x=coord,
-                center_y=coord,
-                color=arcade.color.RED,
-            )
-            for coord in range(5)
+        arcade.SpriteSolidColor(
+            width=32,
+            height=32,
+            center_x=coord,
+            center_y=coord,
+            color=arcade.color.RED,
+        )
+        for coord in range(5)
     )
     for coord, sprite in enumerate(sprite_list):
         assert sprite.position == (coord, coord)
