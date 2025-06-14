@@ -1,4 +1,3 @@
-from typing import List
 from unittest.mock import Mock
 
 import arcade
@@ -45,7 +44,7 @@ def test_left_click_on_widget(ui):
         ui.click(widget1.center_x, widget1.center_y, button=arcade.MOUSE_BUTTON_LEFT)
 
     # THEN
-    records: List[UIEvent]
+    records: list[UIEvent]
     assert len(records) == 3
     assert isinstance(records[0], UIMousePressEvent)
     assert isinstance(records[1], UIMouseReleaseEvent)
@@ -72,7 +71,7 @@ def test_ignores_right_click_on_widget(ui):
         ui.click(widget1.center_x, widget1.center_y, button=arcade.MOUSE_BUTTON_RIGHT)
 
     # THEN
-    records: List[UIEvent]
+    records: list[UIEvent]
     assert len(records) == 2
     assert isinstance(records[0], UIMousePressEvent)
     assert isinstance(records[1], UIMouseReleaseEvent)
@@ -91,7 +90,7 @@ def test_click_on_widget_if_disabled(ui):
         ui.click(widget1.center_x, widget1.center_y)
 
     # THEN
-    records: List[UIEvent]
+    records: list[UIEvent]
     assert len(records) == 2
     assert isinstance(records[0], UIMousePressEvent)
     assert isinstance(records[1], UIMouseReleaseEvent)
@@ -113,11 +112,11 @@ def test_click_on_overlay_widget_consumes_events(ui):
 
     # THEN
     # events are consumed before they get to underlying widget
-    w1_records: List[UIEvent]
+    w1_records: list[UIEvent]
     assert len(w1_records) == 0
 
     # events are dispatched on widget2
-    w2_records: List[UIEvent]
+    w2_records: list[UIEvent]
     assert len(w2_records) == 1
     click_event = w2_records[0]
     assert isinstance(click_event, UIOnClickEvent)
@@ -140,11 +139,11 @@ def test_click_consumed_by_nested_widget(ui):
 
     # THEN
     # events are consumed before they get to underlying widget
-    w1_records: List[UIEvent]
+    w1_records: list[UIEvent]
     assert len(w1_records) == 0
 
     # events are dispatched on widget2
-    w2_records: List[UIEvent]
+    w2_records: list[UIEvent]
     assert len(w2_records) == 1
     click_event = w2_records[0]
     assert isinstance(click_event, UIOnClickEvent)

@@ -1,6 +1,5 @@
 from pathlib import Path
 import pytest
-import arcade
 from arcade import resources
 
 MODULE_DIR = Path(__file__).parent.parent.resolve()

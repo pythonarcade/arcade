@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.WARNING)
 
 sys.path.insert(0, str(REPO_LOCAL_ROOT))
 sys.path.insert(0, str(ARCADE_MODULE))
-log.info(f"Inserted elements in system path: First two are now:")
+log.info("Inserted elements in system path: First two are now:")
 for i in range(2):
     log.info(f"  {i}: {sys.path[i]!r}")
 
@@ -111,13 +111,13 @@ def run_util(filename, run_name="__main__", init_globals=None):
     kwargs = dict(run_name=run_name)
     if init_globals is not None:
         kwargs["init_globals"] = init_globals
-        log.info(f"  init_globals={{")
+        log.info("  init_globals={")
         num_left = len(init_globals)
         for k, v in init_globals.items():
             end = "," if num_left else ""
             log.info(f"    {k!r} : {v!r}{end}")
             num_left -= num_left
-        log.info(f"  }}")
+        log.info("  }")
 
     runpy.run_path(full_str, **kwargs)
 
@@ -384,10 +384,8 @@ def inspect_docstring_for_member(
         doc = _obj.__init__.__doc__
         if doc and isinstance(doc, str) and not doc.startswith("Initialize self"):
             raise ValueError(
-                (
                     f"Class {name} has a docstring on __init__. "
                     "The class docstring should cover docs for the initializer:\n {_obj.__init__.__doc__}"
-                )
             )
 
 

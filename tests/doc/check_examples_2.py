@@ -20,7 +20,7 @@ def get_references_in_rsts():
         if filename.endswith(".rst") and filename != "index.rst":
             python_example_filename_list.append(filename)
             txt = Path(mypath / filename).read_text()
-            reference = re.findall("\.\. _(.*):", txt)
+            reference = re.findall(r"\.\. _(.*):", txt)
             references.extend(reference)
 
     return references
@@ -31,7 +31,7 @@ def main():
     files_to_reference = get_references_in_rsts()
 
     for reference in files_to_reference:
-        if not reference in references_in_index:
+        if reference not in references_in_index:
             print(f"index.rst is missing any mention of '{reference}'")
 
     print(

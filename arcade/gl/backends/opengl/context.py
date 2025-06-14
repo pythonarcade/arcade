@@ -1,5 +1,5 @@
 from ctypes import c_char_p, c_float, c_int, cast
-from typing import Dict, Iterable, List, Sequence, Tuple
+from collections.abc import Iterable, Sequence
 
 import pyglet
 from pyglet import gl
@@ -66,7 +66,7 @@ class OpenGLContext(Context):
         gl.glEnable(gl.GL_SCISSOR_TEST)
 
     @property
-    def gl_version(self) -> Tuple[int, int]:
+    def gl_version(self) -> tuple[int, int]:
         """
         The OpenGL major and minor version as a tuple.
 
@@ -136,7 +136,7 @@ class OpenGLContext(Context):
             gl.glDisable(flag)
 
     @Context.blend_func.setter
-    def blend_func(self, value: Tuple[int, int] | Tuple[int, int, int, int]):
+    def blend_func(self, value: tuple[int, int] | tuple[int, int, int, int]):
         self._blend_func = value
         if len(value) == 2:
             gl.glBlendFunc(*value)
@@ -225,8 +225,8 @@ class OpenGLContext(Context):
         geometry_shader: str | None = None,
         tess_control_shader: str | None = None,
         tess_evaluation_shader: str | None = None,
-        common: List[str] | None = None,
-        defines: Dict[str, str] | None = None,
+        common: list[str] | None = None,
+        defines: dict[str, str] | None = None,
         varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ) -> OpenGLProgram:
@@ -293,14 +293,14 @@ class OpenGLContext(Context):
 
     def texture(
         self,
-        size: Tuple[int, int],
+        size: tuple[int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
         wrap_x: PyGLenum | None = None,
         wrap_y: PyGLenum | None = None,
-        filter: Tuple[PyGLenum, PyGLenum] | None = None,
+        filter: tuple[PyGLenum, PyGLenum] | None = None,
         samples: int = 0,
         immutable: bool = False,
         internal_format: PyGLenum | None = None,
@@ -326,14 +326,14 @@ class OpenGLContext(Context):
         )
 
     def depth_texture(
-        self, size: Tuple[int, int], *, data: BufferProtocol | None = None
+        self, size: tuple[int, int], *, data: BufferProtocol | None = None
     ) -> OpenGLTexture2D:
         return OpenGLTexture2D(self, size, data=data, depth=True)
 
     def framebuffer(
         self,
         *,
-        color_attachments: OpenGLTexture2D | List[OpenGLTexture2D] | None = None,
+        color_attachments: OpenGLTexture2D | list[OpenGLTexture2D] | None = None,
         depth_attachment: OpenGLTexture2D | None = None,
     ) -> OpenGLFramebuffer:
         return OpenGLFramebuffer(
@@ -387,14 +387,14 @@ class OpenGLContext(Context):
 
     def texture_array(
         self,
-        size: Tuple[int, int, int],
+        size: tuple[int, int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
         wrap_x: PyGLenum | None = None,
         wrap_y: PyGLenum | None = None,
-        filter: Tuple[PyGLenum, PyGLenum] | None = None,
+        filter: tuple[PyGLenum, PyGLenum] | None = None,
     ) -> OpenGLTextureArray:
         return OpenGLTextureArray(
             self,

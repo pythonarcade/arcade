@@ -18,7 +18,7 @@ from collections.abc import Mapping
 
 from pathlib import Path
 from textwrap import dedent
-from typing import Generator
+from collections.abc import Generator
 
 # Ensure we get utility & Arcade imports first
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
@@ -401,8 +401,8 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     api_file = vfs.open(full_api_file_name, "w")
     api_file.write(f".. _{api_file_name[:-4]}_api:\n")
     # api_file.write(f".. py:module:: arcade\n")
-    api_file.write(f".. py:currentmodule:: arcade\n")
-    api_file.write(f"\n")
+    api_file.write(".. py:currentmodule:: arcade\n")
+    api_file.write("\n")
     api_file.write(f"{title}\n")
     api_file.write(f"{underline}\n\n")
 
@@ -466,7 +466,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
 
             # Write the entry to the file
             api_file.write(f".. autoclass:: {full_name}\n")
-            api_file.write(f"   :members:\n")
+            api_file.write("   :members:\n")
             # api_file.write(f"    :member-order: groupwise\n")
 
             # Apply special per-class addenda

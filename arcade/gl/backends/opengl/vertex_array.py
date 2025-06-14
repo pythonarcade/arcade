@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import weakref
 from ctypes import byref, c_void_p
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
+from collections.abc import Sequence
 
 from pyglet import gl
 
@@ -141,20 +142,16 @@ class OpenGLVertexArray(VertexArray):
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
             except KeyError:
                 raise ValueError(
-                    (
                         f"Program needs attribute '{prog_attr.name}', but is not present in buffer "
                         f"description. Buffer descriptions: {content}"
-                    )
                 )
 
             # Make sure components described in BufferDescription and in the shader match
             if prog_attr.components != attr_descr.components:
                 raise ValueError(
-                    (
                         f"Program attribute '{prog_attr.name}' has {prog_attr.components} "
                         f"components while the buffer description has {attr_descr.components} "
                         " components. "
-                    )
                 )
 
             gl.glEnableVertexAttribArray(prog_attr.location)
@@ -182,11 +179,9 @@ class OpenGLVertexArray(VertexArray):
             # Sanity check attribute types between shader and buffer description
             if attrib_type != prog_attr.gl_type:
                 raise ValueError(
-                    (
                         f"Program attribute '{prog_attr.name}' has type "
                         f"{gl_name(prog_attr.gl_type)} "
                         f"while the buffer description has type {gl_name(attr_descr.gl_type)}. "
-                    )
                 )
 
             if attrib_type in float_types:
@@ -464,7 +459,7 @@ class OpenGLGeometry(Geometry):
 
     def __init__(
         self,
-        ctx: "Context",
+        ctx: Context,
         content: Sequence[BufferDescription] | None,
         index_buffer: Buffer | None = None,
         mode: int | None = None,

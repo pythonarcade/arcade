@@ -644,7 +644,7 @@ class BasicSprite:
 
         """
         # abort if the multiplier wouldn't do anything
-        if isinstance(scale_by, (float, int)):
+        if isinstance(scale_by, float | int):
             if scale_by == 1.0:
                 return
             factor_x = scale_by

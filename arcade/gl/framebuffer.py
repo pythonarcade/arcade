@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
+from collections.abc import Generator
 
 from arcade.types import RGBOrA255, RGBOrANormalized
 
@@ -62,7 +63,7 @@ class Framebuffer(ABC):
 
     def __init__(
         self,
-        ctx: "Context",
+        ctx: Context,
         *,
         color_attachments: Texture2D | list[Texture2D],
         depth_attachment: Texture2D | None = None,
@@ -139,7 +140,7 @@ class Framebuffer(ABC):
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 
     @property
-    def ctx(self) -> "Context":
+    def ctx(self) -> Context:
         """The context this object belongs to."""
         return self._ctx
 
@@ -343,7 +344,7 @@ class DefaultFrameBuffer(Framebuffer, ABC):
     is_default = True
     """Is this the default framebuffer? (window buffer)"""
 
-    def __init__(self, ctx: "Context"):
+    def __init__(self, ctx: Context):
         self._ctx = ctx
         # TODO: Can we query this?
         self._samples = 0

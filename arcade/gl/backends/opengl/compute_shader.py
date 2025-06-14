@@ -87,7 +87,7 @@ class OpenGLComputeShader(ComputeShader):
             gl.glGetProgramiv(self._glo, gl.GL_INFO_LOG_LENGTH, length)
             log = c_buffer(length.value)
             gl.glGetProgramInfoLog(self._glo, len(log), None, log)
-            raise ShaderException("Program link error: {}".format(log.value.decode()))
+            raise ShaderException(f"Program link error: {log.value.decode()}")
 
         self._introspect_uniforms()
         self._introspect_uniform_blocks()

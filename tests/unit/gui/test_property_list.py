@@ -1,12 +1,11 @@
 import gc
-from typing import List
 
 from arcade.gui.property import bind, ListProperty, _ObservableList
 from .test_property import Observer
 
 
 class MyListHolder:
-    data: List = ListProperty()
+    data: list = ListProperty()
 
 
 def test_list_property_gc():

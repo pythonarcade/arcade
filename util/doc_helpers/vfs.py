@@ -31,7 +31,8 @@ unchanged.
 from contextlib import suppress, contextmanager
 from io import StringIO
 from pathlib import Path
-from typing import Generator, Type, TypeVar, Generic
+from typing import TypeVar, Generic
+from collections.abc import Generator
 
 
 class VirtualFile:
@@ -64,7 +65,7 @@ class VirtualFile:
     def _write_to_disk(self):
         before = None
         with suppress(Exception):
-            with open(self.path, "r") as f:
+            with open(self.path) as f:
                 before = f.read()
 
         content = self._content.getvalue()
@@ -91,8 +92,8 @@ class Vfs(Generic[F]):
     3. Once done, call vfs_instance.write() to sync to disk
     """
 
-    def __init__(self, file_type: Type[F] = VirtualFile):
-        self.file_type: Type[F] = file_type
+    def __init__(self, file_type: type[F] = VirtualFile):
+        self.file_type: type[F] = file_type
         self.files: dict[Path, F] = dict()
         self.files_to_delete: set[Path] = set()
 
@@ -126,7 +127,7 @@ class Vfs(Generic[F]):
         for file in self.files.values():
             file._write_to_disk()
         for path in self.files_to_delete:
-            if not path in file_paths:
+            if path not in file_paths:
                 print(f"Deleting {path}")
                 path.unlink()
 

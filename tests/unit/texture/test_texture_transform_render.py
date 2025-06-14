@@ -7,7 +7,6 @@ import pytest
 from pyglet.math import Mat4
 from PIL import Image, ImageDraw
 from arcade.texture.transforms import (
-    Transform,
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,

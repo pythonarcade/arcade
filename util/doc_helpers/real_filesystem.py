@@ -5,7 +5,8 @@ Helpers for dealing with the real-world file system.
 
 import shutil
 from pathlib import Path
-from typing import Generator, TypeVar, Hashable, Iterable, Mapping, Sequence, Callable
+from typing import TypeVar
+from collections.abc import Generator, Hashable, Iterable, Mapping, Sequence, Callable
 import logging
 
 H = TypeVar("H", bound=Hashable)

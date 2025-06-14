@@ -5,7 +5,6 @@ Strictly unit tests for the sprite class.
 import pytest as pytest
 
 import arcade
-from pyglet.math import Vec2
 
 frame_counter = 0
 SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(

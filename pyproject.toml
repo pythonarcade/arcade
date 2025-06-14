@@ -109,7 +109,7 @@ lint.select = [
     # Whitespace linting must be re-enabled manually for ruff
     # see https://beta.ruff.rs/docs/configuration/#using-pyprojecttoml
     "W",
-    # "UP", wait for arcade.gl abstraction merge
+    "UP",
 ]
 
 [tool.ruff.format]

@@ -1,6 +1,6 @@
 import pytest as pytest
 
-from arcade.clock import Clock, FixedClock, GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK
+from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK
 
 
 def test_clock():

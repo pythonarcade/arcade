@@ -1,7 +1,7 @@
 import math
 from copy import deepcopy
 from itertools import product
-from typing import Iterable, Callable, Tuple
+from collections.abc import Iterable, Callable
 from unittest.mock import Mock
 
 import pytest
@@ -94,7 +94,7 @@ def test_color_from_normalized():
     # some helper callables
     at_least_one_bad = at_least_one_in(BAD_NORMALIZED)
 
-    def local_convert(i: Iterable[float]) -> Tuple[int]:
+    def local_convert(i: Iterable[float]) -> tuple[int]:
         """Local helper converter, normalized float to byte ints"""
         return tuple(math.floor(c * 255) for c in i)
 

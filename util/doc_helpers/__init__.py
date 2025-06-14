@@ -1,5 +1,5 @@
 import re
-from typing import Iterable
+from collections.abc import Iterable
 from pathlib import Path
 
 from .vfs import VirtualFile, Vfs, F

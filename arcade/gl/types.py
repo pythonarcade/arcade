@@ -1,12 +1,13 @@
 import re
-from typing import Iterable, Sequence, TypeAlias, Union
+from collections.abc import Iterable, Sequence
+from typing import TypeAlias
 
 from arcade.types import BufferProtocol
 
 from . import enums
 from .buffer import Buffer
 
-BufferOrBufferProtocol = Union[BufferProtocol, Buffer]
+BufferOrBufferProtocol = BufferProtocol | Buffer
 
 GLenumLike = int
 PyGLenum = int
@@ -15,9 +16,7 @@ PyGLuint = int
 
 
 OpenGlFilter: TypeAlias = tuple[PyGLenum, PyGLenum]
-BlendFunction: TypeAlias = Union[
-    tuple[PyGLenum, PyGLenum], tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
-]
+BlendFunction: TypeAlias = tuple[PyGLenum, PyGLenum] | tuple[PyGLenum, PyGLenum, PyGLenum, PyGLenum]
 
 #: Depth compare functions
 compare_funcs: dict[str | None, int] = {
@@ -296,7 +295,7 @@ class BufferDescription:
         if not isinstance(buffer, Buffer):
             raise ValueError("buffer parameter must be an arcade.gl.Buffer")
 
-        if not isinstance(self.attributes, (list, tuple)):
+        if not isinstance(self.attributes, list | tuple):
             raise ValueError("Attributes must be a list or tuple")
 
         if self.normalized > set(self.attributes):

@@ -1,6 +1,4 @@
-from typing import List
 
-import pytest
 import arcade
 
 
@@ -134,7 +132,7 @@ def test_text_instances(window):
     window.clear()
     current_x = 20
 
-    text_list: List[arcade.Text] = []
+    text_list: list[arcade.Text] = []
 
     def new_text(*args, **kwargs) -> None:
         """

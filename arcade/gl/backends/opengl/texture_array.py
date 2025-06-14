@@ -301,12 +301,10 @@ class OpenGLTextureArray(TextureArray):
                         )
             except gl.GLException as ex:
                 raise gl.GLException(
-                    (
-                        f"Unable to create texture: {ex} : dtype={self._dtype} "
-                        f"size={self.size} components={self._components} "
-                        f"MAX_TEXTURE_SIZE = {self.ctx.info.MAX_TEXTURE_SIZE}"
-                        f": {ex}"
-                    )
+                    f"Unable to create texture: {ex} : dtype={self._dtype} "
+                    f"size={self.size} components={self._components} "
+                    f"MAX_TEXTURE_SIZE = {self.ctx.info.MAX_TEXTURE_SIZE}"
+                    f": {ex}"
                 )
 
     @property
@@ -591,7 +589,7 @@ class OpenGLTextureArray(TextureArray):
         self._glo.value = 0
 
     @staticmethod
-    def delete_glo(ctx: "Context", glo: gl.GLuint):
+    def delete_glo(ctx: Context, glo: gl.GLuint):
         """
         Destroy the texture.
 
@@ -691,6 +689,8 @@ class OpenGLTextureArray(TextureArray):
         return handle
 
     def __repr__(self) -> str:
-        return "<TextureArray glo={} size={}x{}x{} components={}>".format(
-            self._glo.value, self._width, self._layers, self._height, self._components
+        return (
+            f"<TextureArray glo={self._glo.value} "
+            f"size={self._width}x{self._layers}x{self._height} "
+            f"components={self._components}>"
         )

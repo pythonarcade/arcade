@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import weakref
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
+from collections.abc import Sequence
 
 from .buffer import Buffer
 from .program import Program
@@ -273,7 +274,7 @@ class Geometry(ABC):
         self._ctx.stats.incr("geometry")
 
     @property
-    def ctx(self) -> "Context":
+    def ctx(self) -> Context:
         """The context this geometry belongs to."""
         return self._ctx
 
@@ -495,11 +496,9 @@ class Geometry(ABC):
         if program._varyings_capture_mode == "interleaved":
             if not isinstance(buffer, Buffer):
                 raise ValueError(
-                    (
                         "Buffer must be a single Buffer object "
                         "because the capture mode of the program is: "
                         f"{program.varyings_capture_mode}"
-                    )
                 )
             vao.transform_interleaved(
                 buffer,
@@ -513,11 +512,9 @@ class Geometry(ABC):
         else:
             if not isinstance(buffer, list):
                 raise ValueError(
-                    (
                         "buffer must be a list of Buffer object "
                         "because the capture mode of the program is: "
                         f"{program.varyings_capture_mode}"
-                    )
                 )
             vao.transform_separate(
                 buffer,

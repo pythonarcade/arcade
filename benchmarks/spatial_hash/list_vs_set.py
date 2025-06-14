@@ -24,12 +24,12 @@ def add_remove_list():
 
 def copy_set():
     for i in range(100):
-        bucket = copy.copy(sprite_set)
+        _ = copy.copy(sprite_set)
 
 
 def update_set():
     for i in range(100):
-        s = set(sprite_set)
+        _ = set(sprite_set)
         # s.update(sprite_set)
 
 

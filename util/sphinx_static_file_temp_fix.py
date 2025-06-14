@@ -123,7 +123,7 @@ def main():
         # indented so we can grep for Done force-syncing in the logs
         from sphinx import __version__ as sphinx_version
 
-        log.info(f" SYNC: Force-sync enable file found and build-dir exists")
+        log.info(" SYNC: Force-sync enable file found and build-dir exists")
         if sphinx_version >= "8.1.4":
             log.warning(
                 " Sphinx >= 8.1.4 may patch broken _static copy\n"

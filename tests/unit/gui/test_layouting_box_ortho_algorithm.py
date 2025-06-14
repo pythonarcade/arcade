@@ -1,4 +1,4 @@
-from arcade.gui.widgets.layout import _C, _box_axis_algorithm, _box_orthogonal_algorithm
+from arcade.gui.widgets.layout import _C, _box_orthogonal_algorithm
 
 
 def test_simple_values(window):

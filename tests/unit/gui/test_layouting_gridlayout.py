@@ -1,7 +1,7 @@
 from pyglet.math import Vec2
 
 from arcade import LBWH
-from arcade.gui import UIAnchorLayout, UIBoxLayout, UIDummy, UIManager
+from arcade.gui import UIAnchorLayout, UIBoxLayout, UIDummy
 from arcade.gui.widgets.layout import UIGridLayout
 
 

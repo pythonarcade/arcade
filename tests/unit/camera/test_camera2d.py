@@ -1,4 +1,3 @@
-from typing import Tuple
 from math import radians
 
 import pytest as pytest
@@ -52,7 +51,7 @@ def same_near_far(request):
 
 def test_camera2d_from_camera_data_projection_xy_pairs_equal_raises_zeroprojectiondimension(
     window: Window,
-    bad_projection: Tuple[float, float, float, float],  # Clarify type for PyCharm
+    bad_projection: tuple[float, float, float, float],  # Clarify type for PyCharm
     camera_class,
 ):
     data = OrthographicProjectionData(*bad_projection, -100.0, 100.0)
@@ -62,7 +61,7 @@ def test_camera2d_from_camera_data_projection_xy_pairs_equal_raises_zeroprojecti
 
 
 def test_camera2d_init_xy_pairs_equal_raises_zeroprojectiondimension(
-    window: Window, bad_projection: Tuple[float, float, float, float], camera_class
+    window: Window, bad_projection: tuple[float, float, float, float], camera_class
 ):
     with pytest.raises(ZeroProjectionDimension):
         _ = camera_class(projection=LRBT(*bad_projection))

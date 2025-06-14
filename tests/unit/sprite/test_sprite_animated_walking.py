@@ -1,4 +1,3 @@
-import pytest
 import arcade
 
 COIN_SCALE = 0.5

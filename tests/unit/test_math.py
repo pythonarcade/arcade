@@ -5,7 +5,6 @@ Can run these tests individually with:
 python -m pytest tests/unit/test_utils.py
 """
 
-import arcade
 from pytest import approx
 from arcade.math import *
 from arcade.types import LBWH
