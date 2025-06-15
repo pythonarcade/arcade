@@ -100,12 +100,12 @@ class UIFocusMixin(UIWidget):
 
                 return EVENT_HANDLED
 
-            elif event.symbol == arcade.key.SPACE:
+            elif event.symbol == arcade.key.SPACE and self.focused_widget is not None:
                 self._start_interaction()
                 return EVENT_HANDLED
 
         elif isinstance(event, UIKeyReleaseEvent):
-            if event.symbol == arcade.key.SPACE:
+            if event.symbol == arcade.key.SPACE and self.focused_widget is not None:
                 self._end_interaction()
                 return EVENT_HANDLED
 
