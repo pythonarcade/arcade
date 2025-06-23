@@ -10,6 +10,8 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   atlas is resized or rebuilt. This way it's easy to track when texture coordinates
   has changed.
 - Added `Text.visible` (bool) property to control the visibility of text objects.
+- Fixed an issue causing points and lines to draw random primitives when
+  passing in an empty list.
 
 ## 3.3.0
 

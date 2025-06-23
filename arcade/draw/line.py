@@ -112,6 +112,8 @@ def draw_lines(point_list: Point2List, color: RGBOrA255, line_width: float = 1) 
 
     line_pos_array = array.array("f", (v for point in point_list for v in point))
     num_points = len(point_list)
+    if num_points == 0:
+        return
 
     # Grow buffer until large enough to hold all our data
     goal_buffer_size = num_points * 3 * 4
