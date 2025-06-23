@@ -3,6 +3,14 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## 3.3.1
+
+- Fixed an issue causing NinePatch to not render correctly
+- TextureAtlas now as a `version` attribute that is incremented when the
+  atlas is resized or rebuilt. This way it's easy to track when texture coordinates
+  has changed.
+- Added `Text.visible` (bool) property to control the visibility of text objects.
+
 ## 3.3.0
 
 - Fixed an issue causing a crash when closing the window
