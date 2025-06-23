@@ -112,6 +112,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         self._ctx = ctx or get_window().ctx
         self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
         self._size: tuple[int, int] = size
+        self._version = 0
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
         self._capacity = capacity
@@ -736,6 +737,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
                     vertices=UV_TEXTURE_WIDTH * self._capacity * 6,
                 )
 
+        self._version += 1
         # duration = time.perf_counter() - resize_start
         # LOG.info("[%s] Atlas resize took %s seconds", id(self), duration)
 
@@ -768,6 +770,8 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # Add textures back sorted by height to potentially make more room
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
             self._add(texture, create_finalizer=False)
+
+        self._version += 1
 
     def use_uv_texture(self, unit: int = 0) -> None:
         """
