@@ -137,7 +137,12 @@ def test_uv_buffers_after_change(ctx):
         assert len(atlas._texture_uvs._data.tobytes()) == len(atlas._texture_uvs.texture.read())
 
     buf_check(atlas)
+    version = atlas.version
     atlas.resize((200, 200))
+    assert atlas.version != version
     buf_check(atlas)
+
+    version = atlas.version
     atlas.rebuild()
+    assert atlas.version != version
     buf_check(atlas)
