@@ -13,4 +13,4 @@ Move with a Sprite Animation
 .. literalinclude:: ../../arcade/examples/sprite_move_animation.py
     :caption: sprite_move_animation.py
     :linenos:
-    :emphasize-lines: 22-28, 31-39, 48-67, 77-106
+    :emphasize-lines: 22-28, 31-39, 48-67, 77-106, 178-179
