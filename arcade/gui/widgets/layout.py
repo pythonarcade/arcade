@@ -270,13 +270,13 @@ class UIBoxLayout(UILayout):
 
         self._size_hint_requires_update = True
 
-        bind(self, "_children", self._update_size_hints)
-        bind(self, "_border_width", self._update_size_hints)
+        bind(self, "_children", self._update_size_hints, weak=True)
+        bind(self, "_border_width", self._update_size_hints, weak=True)
 
-        bind(self, "_padding_left", self._update_size_hints)
-        bind(self, "_padding_right", self._update_size_hints)
-        bind(self, "_padding_top", self._update_size_hints)
-        bind(self, "_padding_bottom", self._update_size_hints)
+        bind(self, "_padding_left", self._update_size_hints, weak=True)
+        bind(self, "_padding_right", self._update_size_hints, weak=True)
+        bind(self, "_padding_top", self._update_size_hints, weak=True)
+        bind(self, "_padding_bottom", self._update_size_hints, weak=True)
 
         self._update_size_hints()
 
@@ -288,11 +288,11 @@ class UIBoxLayout(UILayout):
             child: The widget to add to the layout.
         """
         # subscribe to child's changes, which might affect the own size hint
-        bind(child, "_children", self._trigger_size_hint_update)
-        bind(child, "rect", self._trigger_size_hint_update)
-        bind(child, "size_hint", self._trigger_size_hint_update)
-        bind(child, "size_hint_min", self._trigger_size_hint_update)
-        bind(child, "size_hint_max", self._trigger_size_hint_update)
+        bind(child, "_children", self._trigger_size_hint_update, weak=True)
+        bind(child, "rect", self._trigger_size_hint_update, weak=True)
+        bind(child, "size_hint", self._trigger_size_hint_update, weak=True)
+        bind(child, "size_hint_min", self._trigger_size_hint_update, weak=True)
+        bind(child, "size_hint_max", self._trigger_size_hint_update, weak=True)
 
         return super().add(child, **kwargs)
 
@@ -514,13 +514,13 @@ class UIGridLayout(UILayout):
         self.align_horizontal = align_horizontal
         self.align_vertical = align_vertical
 
-        bind(self, "_children", self._trigger_size_hint_update)
-        bind(self, "_border_width", self._trigger_size_hint_update)
+        bind(self, "_children", self._trigger_size_hint_update, weak=True)
+        bind(self, "_border_width", self._trigger_size_hint_update, weak=True)
 
-        bind(self, "_padding_left", self._trigger_size_hint_update)
-        bind(self, "_padding_right", self._trigger_size_hint_update)
-        bind(self, "_padding_top", self._trigger_size_hint_update)
-        bind(self, "_padding_bottom", self._trigger_size_hint_update)
+        bind(self, "_padding_left", self._trigger_size_hint_update, weak=True)
+        bind(self, "_padding_right", self._trigger_size_hint_update, weak=True)
+        bind(self, "_padding_top", self._trigger_size_hint_update, weak=True)
+        bind(self, "_padding_bottom", self._trigger_size_hint_update, weak=True)
 
         # initially update size hints
         # TODO is this required?
@@ -547,11 +547,11 @@ class UIGridLayout(UILayout):
             row_span: Number of rows the widget will stretch for.
         """
         # subscribe to child's changes, which might affect the own size hint
-        bind(child, "_children", self._trigger_size_hint_update)
-        bind(child, "rect", self._trigger_size_hint_update)
-        bind(child, "size_hint", self._trigger_size_hint_update)
-        bind(child, "size_hint_min", self._trigger_size_hint_update)
-        bind(child, "size_hint_max", self._trigger_size_hint_update)
+        bind(child, "_children", self._trigger_size_hint_update, weak=True)
+        bind(child, "rect", self._trigger_size_hint_update, weak=True)
+        bind(child, "size_hint", self._trigger_size_hint_update, weak=True)
+        bind(child, "size_hint_min", self._trigger_size_hint_update, weak=True)
+        bind(child, "size_hint_max", self._trigger_size_hint_update, weak=True)
 
         return super().add(
             child,

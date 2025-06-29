@@ -148,14 +148,14 @@ class UILabel(UIWidget):
         if height:
             self._label.height = int(height)
 
-        bind(self, "rect", self._update_label)
+        bind(self, "rect", self._update_label, weak=True)
 
         # update size hint when border or padding changes
-        bind(self, "_border_width", self._update_size_hint_min)
-        bind(self, "_padding_left", self._update_size_hint_min)
-        bind(self, "_padding_right", self._update_size_hint_min)
-        bind(self, "_padding_top", self._update_size_hint_min)
-        bind(self, "_padding_bottom", self._update_size_hint_min)
+        bind(self, "_border_width", self._update_size_hint_min, weak=True)
+        bind(self, "_padding_left", self._update_size_hint_min, weak=True)
+        bind(self, "_padding_right", self._update_size_hint_min, weak=True)
+        bind(self, "_padding_top", self._update_size_hint_min, weak=True)
+        bind(self, "_padding_bottom", self._update_size_hint_min, weak=True)
 
         self._update_size_hint_min()
 
@@ -570,11 +570,11 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
 
         self.register_event_type("on_change")
 
-        bind(self, "hovered", self._apply_style)
-        bind(self, "pressed", self._apply_style)
-        bind(self, "invalid", self._apply_style)
-        bind(self, "disabled", self._apply_style)
-        bind(self, "_active", self._on_active_changed)
+        bind(self, "hovered", self._apply_style, weak=True)
+        bind(self, "pressed", self._apply_style, weak=True)
+        bind(self, "invalid", self._apply_style, weak=True)
+        bind(self, "disabled", self._apply_style, weak=True)
+        bind(self, "_active", self._on_active_changed, weak=True)
 
         # initial style application
         self._apply_style()
@@ -859,7 +859,7 @@ class UITextArea(UIWidget):
             multiline=multiline,
         )
 
-        # bind(self, "rect", self._update_layout)
+        # bind(self, "rect", self._update_layout, weak=True)
 
     def fit_content(self):
         """Set the width and height of the text area to contain the whole text."""

@@ -71,9 +71,9 @@ class UIFocusMixin(UIWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        bind(self, "_debug", self.trigger_full_render)
-        bind(self, "_focused_widget", self.trigger_full_render)
-        bind(self, "_focusable_widgets", self.trigger_full_render)
+        bind(self, "_debug", self.trigger_full_render, weak=True)
+        bind(self, "_focused_widget", self.trigger_full_render, weak=True)
+        bind(self, "_focusable_widgets", self.trigger_full_render, weak=True)
 
     def on_event(self, event: UIEvent) -> bool | None:
         # pass events to children first, including controller events

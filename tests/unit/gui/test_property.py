@@ -213,6 +213,44 @@ def test_gc_entries_are_collected():
     assert len(MyObject.name.obs) == 0
 
 
+def test_obj_collected_when_using_weak_refs_for_bound_method():
+    class ObserverAndObject(Observer, MyObject):
+        pass
+
+    obj = ObserverAndObject()
+    bind(obj, "name", obj.call, weak=True)
+
+    # Keeps referenced objects
+    gc.collect()
+    assert len(MyObject.name.obs) == 1
+
+    # delete ref and trigger gc
+    del obj
+    gc.collect()
+
+    # No leftovers
+    assert len(MyObject.name.obs) == 0
+
+
+def test_gc_entries_not_collected_by_default():
+    class ObserverAndObject(Observer, MyObject):
+        pass
+
+    obj = ObserverAndObject()
+    bind(obj, "name", obj.call, weak=False)  # weak=False is the default
+
+    # Keeps referenced objects
+    gc.collect()
+    assert len(ObserverAndObject.name.obs) == 1
+
+    # delete ref and trigger gc
+    del obj
+    gc.collect()
+
+    # No leftovers
+    assert len(ObserverAndObject.name.obs) == 1
+
+
 def test_gc_keeps_bound_methods():
     observer = Observer()
     obj = MyObject()

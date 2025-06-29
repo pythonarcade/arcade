@@ -1,8 +1,11 @@
 import inspect
 import sys
 import traceback
+import weakref
 from collections.abc import Callable
 from contextlib import contextmanager, suppress
+from enum import Enum
+from inspect import ismethod
 from typing import Any, Generic, TypeVar, cast
 from weakref import WeakKeyDictionary, ref
 
@@ -18,57 +21,101 @@ InstanceNewOldListener = Callable[[Any, Any, Any], None]
 AnyListener = NoArgListener | InstanceListener | InstanceValueListener | InstanceNewOldListener
 
 
+class _ListenerType(Enum):
+    """Enum to represent the type of listener"""
+
+    NO_ARG = 0
+    INSTANCE = 1
+    INSTANCE_VALUE = 2
+    INSTANCE_NEW_OLD = 3
+
+    @staticmethod
+    def _detect_callback_type(callback: AnyListener) -> "_ListenerType":
+        """Normalizes the callback so every callback can be invoked with the same signature."""
+        signature = inspect.signature(callback)
+
+        # first detect the old *args default listener signatures
+        with suppress(TypeError):
+            signature.bind(..., ...)
+            return _ListenerType.INSTANCE_VALUE
+
+        # check for the most common signature
+        with suppress(TypeError):
+            signature.bind()
+            return _ListenerType.NO_ARG
+
+        # check for the other
+        with suppress(TypeError):
+            signature.bind(..., ..., ...)
+            return _ListenerType.INSTANCE_NEW_OLD
+
+        with suppress(TypeError):
+            signature.bind(...)
+            return _ListenerType.INSTANCE
+
+        raise TypeError("Callback is not callable")
+
+
+class _CustomWeakKeyDictionary(WeakKeyDictionary):
+    # Instance methods are bound methods, which can not be referenced by normal `ref()`
+    # A normal WeakKeyDictionary, would lose the reference to the bound method immediately,
+    # so we need to override the __setitem__ method to use a WeakMethod instead.
+
+    def __setitem__(self, key, value):
+        """Set an item in the dictionary, using a WeakMethod for bound methods."""
+        if ismethod(key):
+            # If the key is a method, we need to use a WeakMethod
+            key = weakref.WeakMethod(key, self._remove) # type: ignore[assignment]
+            self.data[key] = value # type: ignore[assignment]
+        else:
+            super().__setitem__(key, value)
+
+
 class _Obs(Generic[P]):
     """
     Internal holder for Property value and change listeners
     """
 
-    __slots__ = ("value", "_listeners")
+    __slots__ = ("value", "_listeners", "_weak_listeners")
 
     def __init__(self, value: P):
         self.value = value
         # This will keep any added listener even if it is not referenced anymore
         # and would be garbage collected
-        self._listeners: dict[AnyListener, InstanceNewOldListener] = dict()
+        self._listeners: dict[AnyListener, _ListenerType] = dict()
+        # This will use weak references to the listeners, so they can be garbage collected
+        self._weak_listeners: WeakKeyDictionary[AnyListener, _ListenerType] = (
+            _CustomWeakKeyDictionary()
+        )
 
     def add(
         self,
         callback: AnyListener,
+        weak: bool,
     ):
         """Add a callback to the list of listeners"""
-        self._listeners[callback] = _Obs._normalize_callback(callback)
+        # Instance methods are bound methods, which can not be referenced by normal `ref()`
+        # if listeners would be a WeakSet, we would have to add listeners as WeakMethod
+        # ourselves into `WeakSet.data`.
+
+        _listener_type = _ListenerType._detect_callback_type(callback)
+        if weak:
+            self._weak_listeners[callback] = _listener_type
+        else:
+            self._listeners[callback] = _listener_type
 
     def remove(self, callback):
         """Remove a callback from the list of listeners"""
         if callback in self._listeners:
             del self._listeners[callback]
 
+        elif callback in self._weak_listeners:
+            del self._weak_listeners[callback]
+
     @property
-    def listeners(self) -> list[InstanceNewOldListener]:
-        return list(self._listeners.values())
-
-    @staticmethod
-    def _normalize_callback(callback) -> InstanceNewOldListener:
-        """Normalizes the callback so every callback can be invoked with the same signature."""
-        signature = inspect.signature(callback)
-
-        with suppress(TypeError):
-            signature.bind(1, 1)
-            return lambda instance, new, old: callback(instance, new)
-
-        with suppress(TypeError):
-            signature.bind(1, 1, 1)
-            return lambda instance, new, old: callback(instance, new, old)
-
-        with suppress(TypeError):
-            signature.bind(1)
-            return lambda instance, new, old: callback(instance)
-
-        with suppress(TypeError):
-            signature.bind()
-            return lambda instance, new, old: callback()
-
-        raise TypeError("Callback is not callable")
+    def listeners(self) -> list[tuple[AnyListener, _ListenerType]]:
+        """Returns a list of all listeners and type, both weak and strong."""
+        return list(self._listeners.items()) + list(self._weak_listeners.items())
 
 
 class Property(Generic[P]):
@@ -147,9 +194,16 @@ class Property(Generic[P]):
 
         """
         obs = self._get_obs(instance)
-        for listener in obs.listeners:
+        for listener, _listener_type in obs.listeners:
             try:
-                listener(instance, value, old_value)
+                if _listener_type == _ListenerType.NO_ARG:
+                    listener()  # type: ignore[call-arg]
+                elif _listener_type == _ListenerType.INSTANCE:
+                    listener(instance)  # type: ignore[call-arg]
+                elif _listener_type == _ListenerType.INSTANCE_VALUE:
+                    listener(instance, value)  # type: ignore[call-arg]
+                elif _listener_type == _ListenerType.INSTANCE_NEW_OLD:
+                    listener(instance, value, old_value)  # type: ignore[call-arg]
             except Exception:
                 print(
                     f"Change listener for {instance}.{self.name} = {value} raised an exception!",
@@ -157,7 +211,7 @@ class Property(Generic[P]):
                 )
                 traceback.print_exc()
 
-    def bind(self, instance, callback):
+    def bind(self, instance: Any, callback: AnyListener, weak: bool):
         """Binds a function to the change event of the property.
 
         A reference to the function will be kept.
@@ -166,11 +220,7 @@ class Property(Generic[P]):
              instance: The instance to bind the callback to.
              callback: The callback to bind.
         """
-        obs = self._get_obs(instance)
-        # Instance methods are bound methods, which can not be referenced by normal `ref()`
-        # if listeners would be a WeakSet, we would have to add listeners as WeakMethod
-        # ourselves into `WeakSet.data`.
-        obs.add(callback)
+        self._get_obs(instance).add(callback, weak=weak)
 
     def unbind(self, instance, callback):
         """Unbinds a function from the change event of the property.
@@ -200,7 +250,7 @@ class Property(Generic[P]):
         self.set(instance, value)
 
 
-def bind(instance, property: str, callback):
+def bind(instance, property: str, callback: AnyListener, weak: bool = False):
     """Bind a function to the change event of the property.
 
     A reference to the function will be kept, so that it will be still
@@ -224,6 +274,12 @@ def bind(instance, property: str, callback):
         instance: Instance owning the property
         property: Name of the property
         callback: Function to call
+        weak: If True, the callback will be weakly referenced.
+            This means that the callback will be garbage collected
+            if there are no other references to it.
+            Defaults to False.
+            If a property is bound to a method of an instance, it is recommended
+            to set this to True, so that the instance can be garbage collected.
 
     Returns:
         None
@@ -233,7 +289,7 @@ def bind(instance, property: str, callback):
     if not isinstance(prop, Property):
         raise ValueError(f"{t.__name__}.{property} is not an arcade.gui.Property")
 
-    prop.bind(instance, callback)
+    prop.bind(instance, callback, weak=weak)
 
 
 def unbind(instance, property: str, callback):

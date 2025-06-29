@@ -1,4 +1,6 @@
-from arcade.gui import UIEvent
+import gc
+
+from arcade.gui import UIEvent, UIWidget
 from arcade.gui.widgets import UIDummy
 
 
@@ -103,3 +105,49 @@ def test_iterate_widget_children(window):
 
     # THEN
     assert list(parent) == [child1, child2]
+
+
+def test_chained_widgets_are_collected_by_gc():
+    """
+    Test that chained widgets are collected by garbage collector.
+    This is to ensure that there are no memory leaks when widgets are
+    added and removed in a chain.
+    """
+
+    def objs_in_memory(obj_type):
+        """Check if an object of a specific type is in memory."""
+        return len([obj for obj in gc.get_objects() if isinstance(obj, obj_type)])
+
+    gc.collect()
+    start_count = objs_in_memory(UIWidget)
+
+    root = UIWidget()
+    root.add(UIWidget())
+
+    # children are not collected until the parent is deleted
+    gc.collect()
+    assert objs_in_memory(UIWidget) == start_count + 2
+
+    del root
+    gc.collect()
+
+    if objs_in_memory(UIWidget) > start_count:
+        print("Render object graph...")
+        import objgraph
+
+        objgraph.show_chain(
+            objgraph.find_backref_chain(
+                [obj for obj in gc.get_objects() if isinstance(obj, UIWidget)][1],
+                objgraph.is_proper_module,
+            ),
+            # filename="chain.png",
+        )
+
+        # print("Render backrefs...")
+        # objgraph.show_backrefs(
+        #     [[obj for obj in gc.get_objects() if isinstance(obj, UIWidget)][1]],
+        #     max_depth=15,
+        #     # filename="sample-graph.png",
+        # )
+
+    assert objs_in_memory(UIWidget) == start_count

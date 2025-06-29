@@ -91,11 +91,11 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         self._cursor_width = self.height // 3
 
         # trigger render on value changes
-        bind(self, "value", self.trigger_full_render)
-        bind(self, "value", self._ensure_step)
-        bind(self, "hovered", self.trigger_render)
-        bind(self, "pressed", self.trigger_render)
-        bind(self, "disabled", self.trigger_render)
+        bind(self, "value", self.trigger_full_render, weak=True)
+        bind(self, "value", self._ensure_step, weak=True)
+        bind(self, "hovered", self.trigger_render, weak=True)
+        bind(self, "pressed", self.trigger_render, weak=True)
+        bind(self, "disabled", self.trigger_render, weak=True)
 
         self.register_event_type("on_change")
 

@@ -529,12 +529,10 @@ class UIManager(EventDispatcher):
             return
 
         if self._active_widget:
-            print(f"Deactivating widget {self._active_widget.__class__.__name__}")
             self._active_widget._active = False
 
         self._active_widget = widget
         if self._active_widget:
-            print(f"Activating widget {self._active_widget.__class__.__name__}")
             self._active_widget._active = True
 
     def debug(self):

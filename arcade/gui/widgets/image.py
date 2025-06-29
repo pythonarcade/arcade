@@ -55,9 +55,9 @@ class UIImage(UIWidget):
             height=height if height else texture.height,
             **kwargs,
         )
-        bind(self, "texture", self.trigger_render)
-        bind(self, "alpha", self.trigger_full_render)
-        bind(self, "angle", self.trigger_full_render)
+        bind(self, "texture", self.trigger_render, weak=True)
+        bind(self, "alpha", self.trigger_full_render, weak=True)
+        bind(self, "angle", self.trigger_full_render, weak=True)
 
     @override
     def do_render(self, surface: Surface):

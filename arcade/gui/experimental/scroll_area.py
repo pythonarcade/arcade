@@ -44,12 +44,12 @@ class UIScrollBar(UIWidget):
         self.with_border(color=arcade.uicolor.GRAY_CONCRETE)
         self.vertical = vertical
 
-        bind(self, "_thumb_hover", self.trigger_render)
-        bind(self, "_dragging", self.trigger_render)
-        bind(scroll_area, "scroll_x", self.trigger_full_render)
-        bind(scroll_area, "scroll_y", self.trigger_full_render)
-        bind(scroll_area, "content_height", self.trigger_full_render)
-        bind(scroll_area, "content_width", self.trigger_full_render)
+        bind(self, "_thumb_hover", self.trigger_render, weak=True)
+        bind(self, "_dragging", self.trigger_render, weak=True)
+        bind(scroll_area, "scroll_x", self.trigger_full_render, weak=True)
+        bind(scroll_area, "scroll_y", self.trigger_full_render, weak=True)
+        bind(scroll_area, "content_height", self.trigger_full_render, weak=True)
+        bind(scroll_area, "content_width", self.trigger_full_render, weak=True)
 
     def on_event(self, event: UIEvent) -> bool | None:
         # check if we are scrollable
@@ -235,8 +235,8 @@ class UIScrollArea(UILayout):
             size=canvas_size,
         )
 
-        bind(self, "scroll_x", self.trigger_full_render)
-        bind(self, "scroll_y", self.trigger_full_render)
+        bind(self, "scroll_x", self.trigger_full_render, weak=True)
+        bind(self, "scroll_y", self.trigger_full_render, weak=True)
 
     def add(self, child: W, **kwargs) -> W:
         """Add a child to the widget."""

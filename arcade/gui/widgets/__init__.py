@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import weakref
 from abc import ABC
 from collections.abc import Iterable
 from enum import IntEnum
 from types import EllipsisType
-from typing import TYPE_CHECKING, NamedTuple, TypeVar
+from typing import Any, Generic, TYPE_CHECKING, NamedTuple, TypeVar, overload
+from weakref import WeakKeyDictionary
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from pyglet.math import Vec2
@@ -31,6 +33,7 @@ if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
 W = TypeVar("W", bound="UIWidget")
+P = TypeVar("P")
 
 
 class FocusMode(IntEnum):
@@ -49,6 +52,51 @@ class FocusMode(IntEnum):
 class _ChildEntry(NamedTuple):
     child: UIWidget
     data: dict
+
+
+class WeakRef(Generic[P]):
+    """A weak reference to a UIWidget parent, which can be used to prevent memory leaks."""
+
+    __slots__ = ("name", "obs")
+    name: str
+    """Attribute name of the property"""
+    obs: WeakKeyDictionary[Any, weakref.ref[P]]
+    """Weak dictionary to hold the values"""
+
+    def __init__(self):
+        self.obs = WeakKeyDictionary()
+
+    def get(self, instance: Any) -> P | None:
+        """Get value for owner instance"""
+        # If the value is not set, return None
+        value = self.obs.get(instance)
+        return value() if value else None
+
+    def set(self, instance, value: P | None):
+        """Set value for owner instance"""
+        # Store a weak reference to the value
+        if value is None:
+            self.obs.pop(instance, None)
+        else:
+            self.obs[instance] = weakref.ref(value)
+
+    def __set_name__(self, owner, name):
+        self.name = name
+
+    @overload
+    def __get__(self, instance: None, instance_type) -> Self: ...
+
+    @overload
+    def __get__(self, instance: Any, instance_type) -> P | None: ...
+
+    def __get__(self, instance: Any | None, instance_type) -> Self | P | None:
+        """Get the value for the owner instance, or None if not set."""
+        if instance is None:
+            return self
+        return self.get(instance)
+
+    def __set__(self, instance, value: P | None):
+        self.set(instance, value)
 
 
 @copy_dunders_unimplemented
@@ -71,6 +119,9 @@ class UIWidget(EventDispatcher, ABC):
         size_hint_max: max width and height in pixel
     """
 
+    parent: WeakRef[UIManager | UIWidget | None] = WeakRef()
+    """A weak reference to the parent UIManager or UIWidget,
+    which does not prevent garbage collection of the parent."""
     rect = Property(LBWH(0, 0, 1, 1))
     visible = Property(True)
     focused = Property(False)
@@ -113,7 +164,6 @@ class UIWidget(EventDispatcher, ABC):
     ):
         self._requires_render = True
         self.rect = LBWH(x, y, width, height)
-        self.parent: UIManager | UIWidget | None = None
 
         # Size hints are properties that can be used by layouts
         self.size_hint = size_hint
@@ -126,21 +176,23 @@ class UIWidget(EventDispatcher, ABC):
         for child in children:
             self.add(child)
 
-        bind(self, "rect", self.trigger_full_render)
-        bind(self, "focused", self.trigger_full_render)
+        # bind properties to trigger rendering,
+        # use weak references to prevent memory leaks of this widget
+        bind(self, "rect", self.trigger_full_render, weak=True)
+        bind(self, "focused", self.trigger_full_render, weak=True)
         bind(
-            self, "visible", self.trigger_full_render
+            self, "visible", self.trigger_full_render, weak=True
         )  # TODO maybe trigger_parent_render would be enough
-        bind(self, "_children", self.trigger_render)
-        bind(self, "_border_width", self.trigger_render)
-        bind(self, "_border_color", self.trigger_render)
-        bind(self, "_bg_color", self.trigger_render)
-        bind(self, "_bg_tex", self.trigger_render)
-        bind(self, "_padding_top", self.trigger_render)
-        bind(self, "_padding_right", self.trigger_render)
-        bind(self, "_padding_bottom", self.trigger_render)
-        bind(self, "_padding_left", self.trigger_render)
-        bind(self, "_strong_background", self.trigger_render)
+        bind(self, "_children", self.trigger_render, weak=True)
+        bind(self, "_border_width", self.trigger_render, weak=True)
+        bind(self, "_border_color", self.trigger_render, weak=True)
+        bind(self, "_bg_color", self.trigger_render, weak=True)
+        bind(self, "_bg_tex", self.trigger_render, weak=True)
+        bind(self, "_padding_top", self.trigger_render, weak=True)
+        bind(self, "_padding_right", self.trigger_render, weak=True)
+        bind(self, "_padding_bottom", self.trigger_render, weak=True)
+        bind(self, "_padding_left", self.trigger_render, weak=True)
+        bind(self, "_strong_background", self.trigger_render, weak=True)
 
     def add(self, child: W, **kwargs) -> W:
         """Add a widget as a child.
@@ -692,9 +744,9 @@ class UIInteractiveWidget(UIWidget):
 
         self.interaction_buttons = interaction_buttons
 
-        bind(self, "pressed", self.trigger_render)
-        bind(self, "hovered", self.trigger_render)
-        bind(self, "disabled", self.trigger_render)
+        bind(self, "pressed", self.trigger_render, weak=True)
+        bind(self, "hovered", self.trigger_render, weak=True)
+        bind(self, "disabled", self.trigger_render, weak=True)
 
     def on_event(self, event: UIEvent) -> bool | None:
         """Handles mouse events and triggers on_click event if the widget is clicked.
