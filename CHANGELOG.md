@@ -3,12 +3,11 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
-## Unreleased
+## 3.3.2
 
 - GUI
   - Fix UIScrollBar creation
   - Fix memory leak: widgets were not garbage collected
-
 
 ## 3.3.1
 
