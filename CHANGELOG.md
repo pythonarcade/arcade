@@ -3,6 +3,11 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## Unreleased
+
+- GUI
+  - Fix a bug, where the caret of UIInputText was misplaced after resizing the widget
+
 ## 3.3.2
 
 - GUI
