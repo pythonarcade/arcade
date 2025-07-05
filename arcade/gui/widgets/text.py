@@ -735,6 +735,9 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
             layout.y = 0
             layout.end_update()
 
+            # manually update caret position
+            self.caret.on_layout_update()
+
     @property
     def text(self):
         """Text of the input field."""
