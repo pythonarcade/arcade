@@ -50,7 +50,19 @@ def resolve_resource_path(path: str | Path) -> Path:
     return resolve(path)
 
 
-def resolve(path: str | Path) -> Path:
+def create_path(path: Path) -> None:
+    """
+    Create a file or directory at the given path.
+    If the path has a suffix, it's treated as a file, otherwise, as a directory.
+    """
+    if path.suffix:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.touch(exist_ok=True)
+    else:
+        path.mkdir(parents=True, exist_ok=True)
+
+
+def resolve(path: str | Path, *, create: bool = False) -> Path:
     """
     Attempts to resolve a path to a resource including resource handles.
 
@@ -67,6 +79,7 @@ def resolve(path: str | Path) -> Path:
 
     Args:
         path: A Path or string
+        create: If True, create the path if it doesn't exist.
     """
     # Convert to a Path object and resolve resource handle
     if isinstance(path, str):
@@ -87,21 +100,29 @@ def resolve(path: str | Path) -> Path:
             # match. This allows for overriding of resources.
             paths = get_resource_handle_paths(handle)
             for handle_path in reversed(paths):
-                path = handle_path / resource
-                if path.exists():
+                candidate_path = handle_path / resource
+                if candidate_path.exists():
+                    path = candidate_path
                     break
             else:
-                searched_paths = "\n".join(f"-> {p}" for p in reversed(paths))
-                raise FileNotFoundError(
-                    f"Cannot locate resource '{resource}' using handle "
-                    f"'{handle}' in any of the following paths:\n"
-                    f"{searched_paths}"
-                )
+                if create:
+                    path = paths[-1] / resource
+                    create_path(path)
+                else:
+                    searched_paths = "\n".join(f"-> {p}" for p in reversed(paths))
+                    raise FileNotFoundError(
+                        f"Cannot locate resource '{resource}' using handle "
+                        f"'{handle}' in any of the following paths:\n"
+                        f"{searched_paths}"
+                    )
 
             # Always convert into a Path object
-            path = Path(handle_path / resource)
+            path = Path(path)
         else:
             path = Path(path)
+
+    if create:
+        create_path(path)
 
     try:
         path = Path(path.resolve(strict=True))
