@@ -553,6 +553,8 @@ class Window(pyglet.window.Window):
 
             # In case the window close in on_update, on_fixed_update or input callbacks
             if not self.closed:
+                # Reset the context, camera, and active framebuffer.
+                self._ctx.reset()
                 self.draw(self._accumulated_draw_time)
             self._accumulated_draw_time %= self._draw_rate
 
