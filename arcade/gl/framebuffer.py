@@ -225,6 +225,9 @@ class Framebuffer(ABC):
         self._use(force=force)
         self._ctx.active_framebuffer = self
 
+        # This is a hack to ensure the default camera has the correct viewport.
+        self._ctx.viewport = self.viewport
+
     @abstractmethod
     def _use(self, *, force: bool = False):
         """Internal use that do not change the global active framebuffer"""
