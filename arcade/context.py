@@ -56,7 +56,6 @@ class ArcadeContext(Context):
         gc_mode: str = "context_gc",
         gl_api: str = "gl",
     ) -> None:
-        
         super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
 
         # Set up a default orthogonal projection for sprites and shapes
@@ -69,7 +68,6 @@ class ArcadeContext(Context):
         self.current_camera: Projector = self._default_camera
 
         self.viewport = (0, 0, window.width, window.height)
-        
 
         # --- Pre-load system shaders here ---
         # FIXME: These pre-created resources needs to be packaged nicely
@@ -355,7 +353,7 @@ class ArcadeContext(Context):
             )
 
         return self._atlas
- 
+
     @property
     def viewport(self) -> tuple[int, int, int, int]:
         """

@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 __all__ = ("ViewportProjector",)
 
+
 class ViewportProjector:
     """
     A simple Projector which does not rely on any camera PoDs.

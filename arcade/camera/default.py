@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from pyglet.math import Mat4
+
 from arcade.types import LBWH
 
 from .viewport import ViewportProjector
