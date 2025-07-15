@@ -3,7 +3,7 @@ The Camera Types, Classes, and Methods of Arcade.
 Providing a multitude of camera's for any need.
 """
 
-from arcade.camera.data_types import (
+from .data_types import (
     Projection,
     Projector,
     CameraData,
@@ -11,7 +11,7 @@ from arcade.camera.data_types import (
     PerspectiveProjectionData,
 )
 
-from arcade.camera.projection_functions import (
+from .projection_functions import (
     generate_view_matrix,
     generate_orthographic_matrix,
     generate_perspective_matrix,
@@ -21,10 +21,10 @@ from arcade.camera.projection_functions import (
     unproject_perspective,
 )
 
-from arcade.camera.orthographic import OrthographicProjector
-from arcade.camera.perspective import PerspectiveProjector
-
-from arcade.camera.camera_2d import Camera2D
+from .viewport import ViewportProjector
+from .orthographic import OrthographicProjector
+from .perspective import PerspectiveProjector
+from .camera_2d import Camera2D
 
 import arcade.camera.grips as grips
 
@@ -32,6 +32,7 @@ import arcade.camera.grips as grips
 __all__ = [
     "Projection",
     "Projector",
+    "ViewportProjector",
     "CameraData",
     "generate_view_matrix",
     "OrthographicProjectionData",
