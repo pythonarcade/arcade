@@ -289,7 +289,7 @@ def rand_vec_spread_deg(angle: float, half_angle_spread: float, length: float) -
         length (float): The length of the vector
     """
     a = rand_angle_spread_deg(angle, half_angle_spread)
-    vel = Vec2.from_polar(a, length)
+    vel = Vec2.from_polar(math.radians(a), length)
     return vel.x, vel.y
 
 
@@ -421,7 +421,7 @@ def rotate_around_point(source: Point2, target: Point2, angle: float):
     dx = diff_x * c - diff_y * s
     dy = diff_x * s + diff_y * c
 
-    return target[0] + dx, target[1] + dy
+    return source[0] + dx, source[1] + dy
 
 
 def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
@@ -451,7 +451,7 @@ def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     x_diff = x2 - x1
     y_diff = y2 - y1
-    return math.atan2(x_diff, y_diff)
+    return math.atan2(y_diff, x_diff)
 
 
 def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[float, float, float]:
