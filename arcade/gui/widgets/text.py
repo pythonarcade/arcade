@@ -855,14 +855,14 @@ class UITextArea(UIWidget):
             ),
         )
 
-        self.layout = pyglet.text.layout.ScrollableTextLayout(
+        self.layout = pyglet.text.layout.IncrementalTextLayout(
             self.doc,
             width=int(self.content_width),
             height=int(self.content_height),
             multiline=multiline,
         )
 
-        bind(self, "rect", self._update_layout)
+        bind(self, "rect", UITextArea._update_layout)
 
     def fit_content(self):
         """Set the width and height of the text area to contain the whole text."""
@@ -894,6 +894,7 @@ class UITextArea(UIWidget):
             layout.begin_update()
             layout.width = content_width
             layout.height = content_height
+            layout.y = 0  # reset y position to 0 (Required by IncrementalTextLayout)
             layout.end_update()
 
     @override
