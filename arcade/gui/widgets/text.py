@@ -13,6 +13,7 @@ import arcade
 from arcade import uicolor
 from arcade.gui.events import (
     UIEvent,
+    UIKeyEvent,
     UIMouseDragEvent,
     UIMouseEvent,
     UIMousePressEvent,
@@ -23,7 +24,6 @@ from arcade.gui.events import (
     UITextInputEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,
-    UIKeyEvent,
 )
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
