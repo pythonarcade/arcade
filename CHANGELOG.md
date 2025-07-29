@@ -7,6 +7,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 - GUI
   - Fix a bug, where the caret of UIInputText was misplaced after resizing the widget
+  - Use incremental layout for UIScrollArea to improve performance of changing text
 
 ## 3.3.2
 
