@@ -29,12 +29,11 @@ class _WindowControllerBridge:
             self.on_connect(controller)
 
     def on_connect(self, controller: Controller):
-        controller.push_handlers(self)
-
         try:
             controller.open()
         except Exception as e:
             warnings.warn(f"Failed to open controller {controller}: {e}")
+        controller.push_handlers(self)
 
         self.window.dispatch_event("on_connect", controller)
 
