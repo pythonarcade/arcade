@@ -292,4 +292,4 @@ class UIFocusMixin(UIWidget):
 
 
 class UIFocusGroup(UIFocusMixin, UIAnchorLayout):
-    pass
+    """This will be removed in the future. UIFocusMixin is planned to be integrated into UILayout."""
