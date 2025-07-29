@@ -9,7 +9,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_controller_support_grid
 """
 
-
 import arcade
 from arcade.examples.gui.exp_controller_support import ControllerIndicator
 from arcade.experimental.controller_window import ControllerView, ControllerWindow
@@ -87,6 +86,13 @@ class MyView(ControllerView, UIView):
         setup_grid_focus_transition(_grid)
 
         self.root.detect_focusable_widgets()
+
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        # make the example close with the escape key
+        if symbol == arcade.key.ESCAPE:
+            self.window.close()
+            return True
+        return super().on_key_press(symbol, modifiers)
 
 
 if __name__ == "__main__":

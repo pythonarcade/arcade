@@ -9,7 +9,6 @@ If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.exp_controller_support
 """
 
-
 import arcade
 from arcade import Texture
 from arcade.experimental.controller_window import ControllerWindow, ControllerView
@@ -143,6 +142,7 @@ class ControllerModal(UIMouseFilterMixin, UIFocusGroup):
         root.add(UIFlatButton(text="Close")).on_click = self.close
 
         self.detect_focusable_widgets()
+        self.set_focus()
 
     def on_event(self, event):
         if super().on_event(event):
@@ -189,6 +189,13 @@ class MyView(ControllerView, UIView):
     def on_button_click(self, event: UIOnClickEvent):
         print("Button clicked")
         self.root.add(ControllerModal())
+
+    def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        # make the example close with the escape key
+        if symbol == arcade.key.ESCAPE:
+            self.window.close()
+            return True
+        return super().on_key_press(symbol, modifiers)
 
 
 if __name__ == "__main__":
