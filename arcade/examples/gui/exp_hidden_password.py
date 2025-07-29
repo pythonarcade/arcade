@@ -13,10 +13,12 @@ python -m arcade.examples.gui.exp_hidden_password
 """
 
 import arcade
+from arcade.experimental.controller_window import ControllerWindow
 from arcade.gui import UIInputText, UIOnClickEvent, UIView
+from arcade.gui.experimental.focus import UIFocusGroup
 from arcade.gui.experimental.password_input import UIPasswordInput
 from arcade.gui.widgets.buttons import UIFlatButton
-from arcade.gui.widgets.layout import UIGridLayout, UIAnchorLayout
+from arcade.gui.widgets.layout import UIGridLayout
 from arcade.gui.widgets.text import UILabel
 from arcade import resources
 
@@ -80,32 +82,25 @@ class MyView(UIView):
             column_span=2,
         )
 
-        anchor = UIAnchorLayout()  # to center grid on screen
+        anchor = UIFocusGroup()  # to center grid on screen
         anchor.add(grid)
 
         self.add_widget(anchor)
 
         # activate username input field
-        self.username_input.activate()
+        anchor.detect_focusable_widgets()
+        anchor.set_focus()
 
     def on_key_press(self, symbol: int, modifiers: int) -> bool | None:
+        # make the example close with the escape key
+        if symbol == arcade.key.ESCAPE:
+            self.window.close()
+            return True
+
         # if username field active, switch fields with enter
-        if self.username_input.active:
-            if symbol == arcade.key.TAB:
+        elif self.username_input.active or self.password_input.active:
+            if symbol == arcade.key.ENTER:
                 self.username_input.deactivate()
-                self.password_input.activate()
-                return True
-            elif symbol == arcade.key.ENTER:
-                self.username_input.deactivate()
-                self.on_login(None)
-                return True
-        # if password field active, login with enter
-        elif self.password_input.active:
-            if symbol == arcade.key.TAB:
-                self.username_input.activate()
-                self.password_input.deactivate()
-                return True
-            elif symbol == arcade.key.ENTER:
                 self.password_input.deactivate()
                 self.on_login(None)
                 return True
@@ -118,7 +113,7 @@ class MyView(UIView):
 
 
 def main():
-    window = arcade.Window(title="GUI Example: Hidden Password")
+    window = ControllerWindow(title="GUI Example: Hidden Password")
     window.show_view(MyView())
     window.run()
 
