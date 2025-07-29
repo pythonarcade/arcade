@@ -22,6 +22,10 @@ from arcade.gui.events import (
     UIMouseReleaseEvent,
     UIOnClickEvent,
     UIOnUpdateEvent,
+    UIControllerButtonPressEvent,
+    UIControllerButtonReleaseEvent,
+    UIKeyPressEvent,
+    UIKeyReleaseEvent,
 )
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import ListProperty, Property, bind
@@ -745,6 +749,13 @@ class UIInteractiveWidget(UIWidget):
         bind(self, "pressed", UIInteractiveWidget.trigger_render)
         bind(self, "hovered", UIInteractiveWidget.trigger_render)
         bind(self, "disabled", UIInteractiveWidget.trigger_render)
+        bind(self, "focused", UIInteractiveWidget._on_focus_change)
+
+    def _on_focus_change(self):
+        """If focus lost, release active state"""
+        if self.pressed and not self.focused:
+            self.pressed = False
+            self._release_active()
 
     def on_event(self, event: UIEvent) -> bool | None:
         """Handles mouse events and triggers on_click event if the widget is clicked.
@@ -754,6 +765,7 @@ class UIInteractiveWidget(UIWidget):
         if super().on_event(event):
             return EVENT_HANDLED
 
+        # mouse event handling
         if isinstance(event, UIMouseMovementEvent):
             self.hovered = self.rect.point_in_rect(event.pos)
 
@@ -787,6 +799,43 @@ class UIInteractiveWidget(UIWidget):
                         ),
                     )
                     return EVENT_HANDLED  # TODO should we return the result from on_click?
+
+        # focus related events
+        if self.focused:
+            if isinstance(event, UIKeyPressEvent) and event.symbol == arcade.key.SPACE:
+                self.pressed = True
+                self._grap_active()  # make this the active widget
+                return EVENT_HANDLED
+
+            if isinstance(event, UIControllerButtonPressEvent) and event.button in ("a",):
+                self.pressed = True
+                self._grap_active()  # make this the active widget
+                return EVENT_HANDLED
+
+            if self.pressed:
+                keyboard_interaction = (
+                    isinstance(event, UIKeyReleaseEvent) and event.symbol == arcade.key.SPACE
+                )
+                controller_interaction = isinstance(
+                    event, UIControllerButtonReleaseEvent
+                ) and event.button in ("a",)
+
+                if keyboard_interaction or controller_interaction:
+                    self.pressed = False
+                    if not self.disabled:
+                        # Dispatch new on_click event, source is this widget itself
+                        self._grap_active()
+                        self.dispatch_event(
+                            "on_click",
+                            UIOnClickEvent(  # simulate mouse click
+                                source=self,
+                                x=int(self.center_x),
+                                y=int(self.center_y),
+                                button=self.interaction_buttons[0],
+                                modifiers=0,
+                            ),
+                        )
+                        return EVENT_HANDLED  # TODO should we return the result from on_click?
 
         return EVENT_UNHANDLED
 

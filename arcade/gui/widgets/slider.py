@@ -18,7 +18,11 @@ from arcade.gui import (
     UIMouseDragEvent,
     UIOnClickEvent,
 )
-from arcade.gui.events import UIOnChangeEvent
+from arcade.gui.events import (
+    UIControllerButtonReleaseEvent,
+    UIControllerDpadEvent,
+    UIOnChangeEvent,
+)
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.types import RGBA255
@@ -223,6 +227,15 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
         if self.disabled:
             return EVENT_UNHANDLED
 
+        # handle UIControllerButtonEvent events,
+        # before UIInteractiveWidgets dispatches an on_click event
+        if self.focused and isinstance(event, UIControllerButtonReleaseEvent):
+            if event.button == "a":
+                self.pressed = False
+                self._release_active()
+
+            return EVENT_HANDLED
+
         if super().on_event(event):
             return EVENT_HANDLED
 
@@ -231,6 +244,18 @@ class UIBaseSlider(UIInteractiveWidget, metaclass=ABCMeta):
                 self._thumb_x = event.x
 
                 return EVENT_HANDLED
+
+        if self.pressed and isinstance(event, UIControllerDpadEvent):
+            # pass dpad events to the interacting widget
+            if event.vector.x == 1:
+                self.norm_value += 0.1
+                return EVENT_HANDLED
+
+            elif event.vector.x == -1:
+                self.norm_value -= 0.1
+                return EVENT_HANDLED
+
+            return EVENT_HANDLED
 
         return EVENT_UNHANDLED
 

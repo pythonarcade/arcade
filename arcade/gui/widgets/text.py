@@ -574,10 +574,17 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
         bind(self, "pressed", UIInputText._apply_style)
         bind(self, "invalid", UIInputText._apply_style)
         bind(self, "disabled", UIInputText._apply_style)
+        bind(self, "focused", UIInputText._on_focus_change)
         bind(self, "_active", UIInputText._on_active_changed)
 
         # initial style application
         self._apply_style()
+
+    def _on_focus_change(self):
+        if self.focused:
+            self.activate()
+        elif self.active:
+            self.deactivate()
 
     def _on_active_changed(self):
         """Handle the active state change of the input
