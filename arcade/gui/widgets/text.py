@@ -719,10 +719,7 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
         """Programmatically deactivate the text input field."""
 
         if self._active:
-            print("Release active text input field")
             self._release_active()  # will set _active to False
-        else:
-            print("Text input field is not active, cannot deactivate")
 
         self.trigger_full_render()
         self.caret.on_deactivate()
