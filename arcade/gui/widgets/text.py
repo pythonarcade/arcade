@@ -23,6 +23,7 @@ from arcade.gui.events import (
     UITextInputEvent,
     UITextMotionEvent,
     UITextMotionSelectEvent,
+    UIKeyEvent,
 )
 from arcade.gui.property import Property, bind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
@@ -670,6 +671,12 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
         # If active pass all non press events to caret
         if self._active:
             old_text = self.text
+
+            if self.focused and isinstance(event, UIKeyEvent) and event.symbol == arcade.key.SPACE:
+                # if widget is focused, we consume the space key
+                # to prevent flickering of the focus
+                return EVENT_HANDLED
+
             # Act on events if active
             if isinstance(event, UITextInputEvent):
                 self.caret.on_text(event.text)
