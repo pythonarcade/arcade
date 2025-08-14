@@ -198,3 +198,6 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "PyInstaller.*"
 ignore_missing_imports = true
+
+[tool.uv.sources]
+pyglet = { git = "https://github.com/pyglet/pyglet.git", branch = "development" }
