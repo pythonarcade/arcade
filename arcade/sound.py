@@ -88,7 +88,7 @@ class Sound:
         pan: float = 0.0,
         loop: bool = False,
         speed: float = 1.0,
-    ) -> media.Player:
+    ) -> media.AudioPlayer:
         """Try to play this :py:class:`Sound` and return a |pyglet Player|.
 
         .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
@@ -113,7 +113,7 @@ class Sound:
                 " If you need more use a Static source."
             )
 
-        player: media.Player = media.Player()
+        player: media.AudioPlayer = media.AudioPlayer()
         player.volume = volume
         player.position = (
             pan,
@@ -145,7 +145,7 @@ class Sound:
         player.on_player_eos = _on_player_eos  # type: ignore
         return player
 
-    def stop(self, player: media.Player) -> None:
+    def stop(self, player: media.AudioPlayer) -> None:
         """Stop and :py:meth:`~pyglet.media.player.Player.delete` ``player``.
 
         All references to it in the internal table for
@@ -165,12 +165,12 @@ class Sound:
         # We validate that duration is known when loading the source
         return self.source.duration  # type: ignore
 
-    def is_complete(self, player: media.Player) -> bool:
+    def is_complete(self, player: media.AudioPlayer) -> bool:
         """``True`` if the sound is done playing."""
         # We validate that duration is known when loading the source
         return player.time >= self.source.duration  # type: ignore
 
-    def is_playing(self, player: media.Player) -> bool:
+    def is_playing(self, player: media.AudioPlayer) -> bool:
         """``True`` if ``player`` is currently playing, otherwise ``False``.
 
         Args:
@@ -182,7 +182,7 @@ class Sound:
         """
         return player.playing
 
-    def get_volume(self, player: media.Player) -> float:
+    def get_volume(self, player: media.AudioPlayer) -> float:
         """Get the current volume.
 
         Args:
@@ -193,7 +193,7 @@ class Sound:
         """
         return player.volume  # type: ignore  # pending https://github.com/pyglet/pyglet/issues/847
 
-    def set_volume(self, volume: float, player: media.Player) -> None:
+    def set_volume(self, volume: float, player: media.AudioPlayer) -> None:
         """Set the volume of a sound as it is playing.
 
         Args:
@@ -203,7 +203,7 @@ class Sound:
         """
         player.volume = volume
 
-    def get_stream_position(self, player: media.Player) -> float:
+    def get_stream_position(self, player: media.AudioPlayer) -> float:
         """Return where we are in the stream. This will reset back to
         zero when it is done playing.
 
@@ -254,7 +254,7 @@ def play_sound(
     pan: float = 0.0,
     loop: bool = False,
     speed: float = 1.0,
-) -> media.Player | None:
+) -> media.AudioPlayer | None:
     """Try to play the ``sound`` and return a |pyglet Player|.
 
     The ``sound`` must be a loaded :py:class:`Sound` object. If you
@@ -322,7 +322,7 @@ def play_sound(
         return None
 
 
-def stop_sound(player: media.Player) -> None:
+def stop_sound(player: media.AudioPlayer) -> None:
     """Stop and delete a |pyglet Player| which is currently playing.
 
     Args:
@@ -330,7 +330,7 @@ def stop_sound(player: media.Player) -> None:
             or :py:meth:`Sound.play`.
     """
 
-    if not isinstance(player, media.Player):
+    if not isinstance(player, media.AudioPlayer):
         raise TypeError(
             "stop_sound takes a media player object returned from the play_sound() command, not a "
             "loaded Sound object."
