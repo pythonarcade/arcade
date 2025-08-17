@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import pyglet
+from pyglet.enums import Weight, Style
 
 import arcade
 from arcade.exceptions import PerformanceWarning, warning
@@ -285,8 +286,8 @@ class Text:
             width=width,
             align=align,
             font_name=font_name,
-            weight=pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL,
-            italic=italic,
+            weight=Weight.BOLD if bold else Weight.NORMAL,
+            style=Style.ITALIC if italic else Style.NORMAL,
             anchor_x=anchor_x,
             anchor_y=anchor_y,
             multiline=multiline,
@@ -609,11 +610,11 @@ class Text:
         * ``"light"``
 
         """
-        return self.label.weight == pyglet.text.Weight.BOLD
+        return self.label.weight == Weight.BOLD
 
     @bold.setter
     def bold(self, bold: bool | str):
-        self.label.weight = pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL
+        self.label.weight = Weight.BOLD if bold else Weight.NORMAL
 
     @property
     def italic(self) -> bool | str:

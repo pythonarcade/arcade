@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.27.6/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.js"></script>
 </head>
 
 <body>
@@ -15,7 +15,7 @@
             await micropip.install("http://localhost:8000/pyglet-3.0.0a1-py3-none-any.whl");
             await micropip.install("http://localhost:8000/arcade-3.2.0-py3-none-any.whl");
 
-            let response = await fetch("http://localhost:8000/instancing/package.zip");
+            let response = await fetch("./package.zip");
             let buffer = await response.arrayBuffer();
             await pyodide.unpackArchive(buffer, "zip", "package");
             pkg = pyodide.pyimport("package");
