@@ -128,6 +128,28 @@ def test_do_layout_vertical_space_between(window):
     assert element_2.top == 300
 
 
+def test_do_layout_ignores_child_with_visible_None(window):
+    # add two 100x100 Dummy widgets
+    element_1 = UIDummy()
+    element_1.visible = None
+    element_2 = UIDummy()
+
+    group = UIBoxLayout(vertical=True, children=[element_1, element_2])
+    assert group.size_hint_min == (100, 100)
+    group.rect = LBWH(100, 200, 100, 100)
+
+    group._do_layout()
+
+    # element 1 in initial position
+    assert element_1.bottom == 0
+    assert element_1.left == 0
+
+    # element 2 fills the group
+    assert element_2.top == 300
+    assert element_2.bottom == 200
+    assert element_2.left == 100
+
+
 # Horizontal
 def test_do_layout_horizontal_with_initial_children(window):
     # add two 100x100 Dummy widgets

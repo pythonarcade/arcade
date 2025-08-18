@@ -127,7 +127,9 @@ class UIWidget(EventDispatcher, ABC):
     """A weak reference to the parent UIManager or UIWidget,
     which does not prevent garbage collection of the parent."""
     rect = Property(LBWH(0, 0, 1, 1))
-    visible = Property(True)
+    visible = Property[bool | None](True)
+    """If True, the widget is visible and will be rendered. If None,
+    the widget should also be skipped by layouts."""
     focused = Property(False)
     focus_mode: FocusMode = FocusMode.NONE
 

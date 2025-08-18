@@ -315,7 +315,9 @@ class UIBoxLayout(UILayout):
         self._size_hint_requires_update = False
 
         required_space_between = max(0, len(self.children) - 1) * self._space_between
-        min_child_sizes = [UILayout.min_size_of(child) for child in self.children]
+        min_child_sizes = [
+            UILayout.min_size_of(child) for child in self.children if child.visible is not None
+        ]
 
         if len(self.children) == 0:
             width = 0
@@ -360,10 +362,14 @@ class UIBoxLayout(UILayout):
         if not self.children:
             return
 
+        children_to_render = [
+            (child, data) for child, data in self._children if child.visible is not None
+        ]
+
         # main axis
         constraints = [
             _C.from_widget_height(child) if self.vertical else _C.from_widget_width(child)
-            for child, _ in self._children
+            for child, _ in children_to_render
         ]
 
         available_space = (
@@ -374,14 +380,14 @@ class UIBoxLayout(UILayout):
         # orthogonal axis
         constraints = [
             _C.from_widget_width(child) if self.vertical else _C.from_widget_height(child)
-            for child, _ in self._children
+            for child, _ in children_to_render
         ]
         orthogonal_sizes = _box_orthogonal_algorithm(
             constraints, self.content_width if self.vertical else self.content_height
         )
 
         for (child, data), main_size, ortho_size in zip(
-            self._children, main_sizes, orthogonal_sizes
+            children_to_render, main_sizes, orthogonal_sizes
         ):
             # apply calculated sizes, condition regarding existing size_hint
             # are already covered in calculation input
