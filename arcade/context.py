@@ -330,8 +330,8 @@ class ArcadeContext(Context):
             gl.GL_UNIFORM_BUFFER,
             0,
             self._window_block.buffer.id,
-            0,
-            128,  # 32 x 32bit floats (two mat4)
+            0,  # type: ignore
+            128,  # 32 x 32bit floats (two mat4) # type: ignore
         )
 
     @property
