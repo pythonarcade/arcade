@@ -51,6 +51,9 @@ class ShaderSource:
         self._lines[0] = "#version 300 es"
         self._lines.insert(1, "precision mediump float;")
 
+        # TODO: Does this also need done for GLES and we just haven't encountered the problem yet?
+        self._lines.insert(1, "precision mediump isampler2D;")
+
         self._version = self._find_glsl_version()
 
         # Inject common source
@@ -85,7 +88,9 @@ class ShaderSource:
             if "main()" in line:
                 break
         else:
-            raise ShaderException("No main() function found when injecting common source")
+            raise ShaderException(
+                "No main() function found when injecting common source"
+            )
 
         # Insert all common sources
         for source in common:
@@ -111,7 +116,9 @@ class ShaderSource:
             except Exception:
                 pass
 
-        source = "\n".join(f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines))
+        source = "\n".join(
+            f"{str(i + 1).zfill(3)}: {line} " for i, line in enumerate(self._lines)
+        )
 
         raise ShaderException(
             (
@@ -154,6 +161,8 @@ class ShaderSource:
         Note that this currently doesn't work for structs.
         """
         for line in self._lines:
-            res = re.match(r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip())
+            res = re.match(
+                r"(layout(.+)\))?(\s+)?(out)(\s+)(\w+)(\s+)(\w+)", line.strip()
+            )
             if res:
                 self._out_attributes.append(res.groups()[-1])
