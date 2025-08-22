@@ -321,13 +321,11 @@ class SpriteList(SpriteSequence[SpriteType]):
         if not self._atlas:
             self._atlas = self.ctx.default_atlas
 
-        # NOTE: Instantiate the appropriate spritelist data class here
-        # Desktop GL (with geo shader)
-        self._data = SpriteListBufferData(self.ctx, capacity=self._buf_capacity, atlas=self._atlas)
-        # WebGL (without geo shader)
-        # self._data = SpriteListTextureData(
-        #     self.ctx, capacity=self._buf_capacity, atlas=self._atlas
-        # )
+        if self.ctx._gl_api == "webgl":
+            self._data = SpriteListTextureData(self.ctx, capacity=self._buf_capacity, atlas=self._atlas)
+        else:
+            self._data = SpriteListBufferData(self.ctx, capacity=self._buf_capacity, atlas=self._atlas)
+
         self._initialized = True
 
         # Load all the textures and write texture coordinates into buffers.
