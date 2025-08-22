@@ -14,7 +14,7 @@ pyglet_wheel_filename = "pyglet-3.0.0a1-py3-none-any.whl"
 path_pyglet_wheel = path_pyglet / "dist" / pyglet_wheel_filename
 
 path_arcade = Path("../")
-arcade_wheel_filename = "arcade-3.2.0-py3-none-any.whl"
+arcade_wheel_filename = "arcade-3.3.2-py3-none-any.whl"
 path_arcade_wheel = path_arcade / "dist" / arcade_wheel_filename
 
 
