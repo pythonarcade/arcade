@@ -367,6 +367,15 @@ class WebGLArcadeContext(ArcadeContext, WebGLContext):
         WebGLContext.__init__(self, *args, **kwargs)
         ArcadeContext.__init__(self, *args, **kwargs)
 
+    def bind_window_block(self):
+        self._gl.bindBufferRange(
+            enums.UNIFORM_BUFFER,
+            0,
+            self._window_block.buffer.id,
+            0,
+            128,
+        )
+
 
 class WebGLInfo(Info):
     def __init__(self, ctx: WebGLContext):
