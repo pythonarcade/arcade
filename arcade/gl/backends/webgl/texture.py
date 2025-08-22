@@ -3,9 +3,12 @@ from __future__ import annotations
 import weakref
 from typing import TYPE_CHECKING, Optional
 
+from pyodide.ffi import to_js
+
 from arcade.gl import enums
 from arcade.gl.texture import Texture2D
-from arcade.gl.types import BufferOrBufferProtocol, compare_funcs, pixel_formats
+from arcade.gl.types import (BufferOrBufferProtocol, compare_funcs,
+                             pixel_formats)
 from arcade.types import BufferProtocol
 
 from .buffer import Buffer
@@ -326,7 +329,7 @@ class WebGLTexture2D(Texture2D):
             self._ctx._gl.pixelStorei(enums.PACK_ALIGNMENT, 1)
             self._ctx._gl.pixelStorei(enums.UNPACK_ALIGNMENT, 1)
             self._ctx._gl.texSubImage2D(
-                self._target, level, x, y, w, h, self._format, self._type, data
+                self._target, level, x, y, w, h, self._format, self._type, to_js(data), 0
             )  # type: ignore
 
     def _validate_data_size(self, byte_data, byte_size, width, height) -> None:
