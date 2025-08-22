@@ -8,20 +8,19 @@
 
 // Old and new texture coordinates
 uniform sampler2D atlas_old;
-uniform sampler2D atlas_new;
 
 uniform sampler2D texcoords_old;
 uniform sampler2D texcoords_new;
 
 uniform mat4 projection;
 uniform float border;
+uniform vec2 size_new;
 
 out vec2 uv;
 
 void main() {
     // Get the texture sizes
     ivec2 size_old = textureSize(atlas_old, 0).xy;
-    ivec2 size_new = textureSize(atlas_new, 0).xy;
 
     // Read texture coordinates from UV texture here
     int texture_id = gl_VertexID / 6;

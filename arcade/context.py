@@ -186,9 +186,8 @@ class ArcadeContext(Context):
             fragment_shader=":system:shaders/atlas/resize_simple_fs.glsl",
         )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
-        self.atlas_resize_program["atlas_new"] = 1
-        self.atlas_resize_program["texcoords_old"] = 2
-        self.atlas_resize_program["texcoords_new"] = 3
+        self.atlas_resize_program["texcoords_old"] = 1
+        self.atlas_resize_program["texcoords_new"] = 2
 
         if gl_api != "webgl":
             # SpriteList collision resources
