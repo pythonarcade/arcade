@@ -328,6 +328,8 @@ class WebGLTexture2D(Texture2D):
             self._ctx._gl.bindTexture(self._target, self._glo)
             self._ctx._gl.pixelStorei(enums.PACK_ALIGNMENT, 1)
             self._ctx._gl.pixelStorei(enums.UNPACK_ALIGNMENT, 1)
+            # TODO: Does this to_js call create a memory leak? Need to investigate this more
+            # https://pyodide.org/en/stable/usage/type-conversions.html#type-translations-pyproxy-to-js
             self._ctx._gl.texSubImage2D(
                 self._target, level, x, y, w, h, self._format, self._type, to_js(data), 0
             )  # type: ignore
