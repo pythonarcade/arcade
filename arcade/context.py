@@ -90,8 +90,17 @@ class ArcadeContext(Context):
             )
             self.sprite_list_program_no_cull["sprite_texture"] = 0
             self.sprite_list_program_no_cull["uv_texture"] = 1
+
+            self.sprite_list_program_cull: Program = self.load_program(
+                vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
+                geometry_shader=":system:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
+                fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+            )
+            self.sprite_list_program_cull["sprite_texture"] = 0
+            self.sprite_list_program_cull["uv_texture"] = 1
         else:
             self.sprite_list_program_no_cull = None  # type: ignore
+            self.sprite_list_program_cull = None  # type: ignore
 
         self.sprite_list_program_no_geo = self.load_program(
             vertex_shader=":system:shaders/sprites/sprite_list_simple_vs.glsl",
@@ -244,7 +253,10 @@ class ArcadeContext(Context):
                     ["in_vert"],
                 ),
                 BufferDescription(
-                    self.shape_line_buffer_pos, "4f", ["in_instance_pos"], instanced=True
+                    self.shape_line_buffer_pos,
+                    "4f",
+                    ["in_instance_pos"],
+                    instanced=True,
                 ),
             ],
             mode=self.TRIANGLE_STRIP,
@@ -320,12 +332,8 @@ class ArcadeContext(Context):
         This should always be bound to index 0 so all shaders
         have access to them.
         """
-        gl.glBindBufferRange(
-            gl.GL_UNIFORM_BUFFER,
-            0,
-            self._window_block.buffer.id,
-            0,  # type: ignore
-            128,  # 32 x 32bit floats (two mat4) # type: ignore
+        raise NotImplementedError(
+            "The currently selected GL backend does not implement ArcadeContext.bind_window_block"
         )
 
     @property

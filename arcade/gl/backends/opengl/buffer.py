@@ -4,6 +4,7 @@ import weakref
 from ctypes import byref, string_at
 from typing import TYPE_CHECKING
 
+from pyglet.graphics import core
 from pyglet.graphics.api import gl
 
 from arcade.gl.buffer import Buffer, _usages
@@ -114,7 +115,7 @@ class OpenGLBuffer(Buffer):
                 The OpenGL buffer id
         """
         # If we have no context, then we are shutting down, so skip this
-        if gl.current_context is None:
+        if core.current_context is None:
             return
 
         if glo.value != 0:

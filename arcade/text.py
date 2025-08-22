@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import pyglet
-from pyglet.enums import Weight, Style
+from pyglet.enums import Style, Weight
 
 import arcade
 from arcade.exceptions import PerformanceWarning, warning

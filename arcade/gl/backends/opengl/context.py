@@ -29,7 +29,10 @@ class OpenGLContext(Context):
     _valid_apis = ("opengl", "opengles")
 
     def __init__(
-        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "opengl"
+        self,
+        window: pyglet.window.Window,
+        gc_mode: str = "context_gc",
+        gl_api: str = "opengl",
     ):
         super().__init__(window, gc_mode)
 
@@ -221,7 +224,11 @@ class OpenGLContext(Context):
         return OpenGLDefaultFrameBuffer(self)
 
     def buffer(
-        self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static"
+        self,
+        *,
+        data: BufferProtocol | None = None,
+        reserve: int = 0,
+        usage: str = "static",
     ) -> OpenGLBuffer:
         return OpenGLBuffer(self, data, reserve=reserve, usage=usage)
 
@@ -272,10 +279,10 @@ class OpenGLContext(Context):
         return OpenGLProgram(
             self,
             vertex_shader=source_vs.get_source(defines=defines),
-            fragment_shader=source_fs.get_source(defines=defines) if source_fs else None,
-            geometry_shader=source_geo.get_source(defines=defines) if source_geo else None,
-            tess_control_shader=source_tc.get_source(defines=defines) if source_tc else None,
-            tess_evaluation_shader=source_te.get_source(defines=defines) if source_te else None,
+            fragment_shader=(source_fs.get_source(defines=defines) if source_fs else None),
+            geometry_shader=(source_geo.get_source(defines=defines) if source_geo else None),
+            tess_control_shader=(source_tc.get_source(defines=defines) if source_tc else None),
+            tess_evaluation_shader=(source_te.get_source(defines=defines) if source_te else None),
             varyings=out_attributes,
             varyings_capture_mode=varyings_capture_mode,
         )
@@ -345,7 +352,9 @@ class OpenGLContext(Context):
         depth_attachment: OpenGLTexture2D | None = None,
     ) -> OpenGLFramebuffer:
         return OpenGLFramebuffer(
-            self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
+            self,
+            color_attachments=color_attachments or [],
+            depth_attachment=depth_attachment,
         )
 
     def copy_framebuffer(
@@ -423,6 +432,15 @@ class OpenGLArcadeContext(ArcadeContext, OpenGLContext):
     def __init__(self, *args, **kwargs):
         OpenGLContext.__init__(self, *args, **kwargs)
         ArcadeContext.__init__(self, *args, **kwargs)
+
+    def bind_window_block(self):
+        gl.glBindBufferRange(
+            gl.GL_UNIFORM_BUFFER,
+            0,
+            self._window_block.buffer.id,
+            0,  # type: ignore
+            128,  # 32 x 32bit floats (two mat4) # type: ignore
+        )
 
 
 class OpenGLInfo(Info):

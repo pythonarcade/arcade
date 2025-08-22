@@ -4,10 +4,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from ..types import BufferProtocol
-from .types import (
-    BufferOrBufferProtocol,
-    pixel_formats,
-)
+from .types import BufferOrBufferProtocol, pixel_formats
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context
@@ -425,6 +422,26 @@ class TextureArray(ABC):
                 If not provided the entire texture is written to.
         """
         raise NotImplementedError("The enabled graphics backend does not support this method.")
+
+    def _validate_data_size(
+        self, byte_data, byte_size: int, width: int, height: int, layers: int
+    ) -> None:
+        """Validate the size of the data to be written to the texture"""
+        # TODO: Validate data size for compressed textures
+        #       This might be a bit tricky since the size of the compressed
+        #       data would depend on the algorithm used.
+        if self._compressed is True:
+            return
+
+        expected_size = width * height * layers * self._component_size * self._components
+        if byte_size != expected_size:
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match expected size {expected_size}"
+            )
+        if len(byte_data) != byte_size:
+            raise ValueError(
+                f"Data size {len(byte_data)} does not match reported size {expected_size}"
+            )
 
     @abstractmethod
     def build_mipmaps(self, base: int = 0, max_level: int = 1000) -> None:
