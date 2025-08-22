@@ -612,6 +612,8 @@ class SectionManager:
             section.on_hide_section()
 
         section._view = None
+        if section in self.mouse_over_sections:
+            self.mouse_over_sections.remove(section)
         self._sections.remove(section)
 
         # keep sections order updated in the lists of sections
@@ -940,7 +942,7 @@ class SectionManager:
 
         prevent_dispatch_el = EVENT_UNHANDLED  # prevent dispatch for enter/leave events
         for section in before_sections:
-            if section not in current_sections:
+            if section.enabled and section not in current_sections:
                 if prevent_dispatch_el is EVENT_HANDLED:
                     break
                 # dispatch on_mouse_leave to before_section
@@ -1053,11 +1055,12 @@ class SectionManager:
         """
         prevent_dispatch = EVENT_UNHANDLED
         for section in self.mouse_over_sections:
-            if prevent_dispatch is EVENT_HANDLED:
-                break
-            prevent_dispatch = self.dispatch_mouse_event(
-                "on_mouse_leave", x, y, *args, **kwargs, current_section=section
-            )
+            if section.enabled:
+                if prevent_dispatch is EVENT_HANDLED:
+                    break
+                prevent_dispatch = self.dispatch_mouse_event(
+                    "on_mouse_leave", x, y, *args, **kwargs, current_section=section
+                )
         # clear the sections the mouse is over as it's out of the screen
         self.mouse_over_sections = []
         return prevent_dispatch

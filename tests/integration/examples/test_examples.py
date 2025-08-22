@@ -37,6 +37,7 @@ IGNORE_PATTERNS = [
     "multisample",  # Anything requiring multisampling we can't run in unit test
     "indirect",  # Indirect rendering cannot be run in unit test
     "bindless",  # Bindless textures cannot be run in unit test
+    "spritelist_interaction",  # Currently only works for spritelist buffer backend. Not textures.
 ]
 
 

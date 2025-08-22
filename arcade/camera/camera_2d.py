@@ -331,6 +331,8 @@ class Camera2D:
         x, y = self._projection_data.rect.x, self._projection_data.rect.y
         self._projection_data.rect = XYWH(x, y, self.viewport_width, self.viewport_height)
 
+    equalize = equalise
+
     def match_window(
         self,
         viewport: bool = True,
@@ -349,8 +351,8 @@ class Camera2D:
                 On by default
             scissor: Flag whether to also equalize the scissor box to the viewport.
                 On by default
-            position: Flag whether to also center the camera to the viewport.
-                Off by default
+            position: Flag whether to position the camera so that (0.0, 0.0) is in
+                the bottom-left
             aspect: The ratio between width and height that the viewport should
                 be constrained to. If unset then the viewport just matches the window
                 size. The aspect ratio describes how much larger the width should be
@@ -383,8 +385,8 @@ class Camera2D:
                 match the render target.
                 The projection center stays fixed, and the new projection matches only in size.
             scissor: Flag whether to update the scissor value.
-            position: Flag whether to also center the camera to the value.
-                Off by default
+            position: Flag whether to position the camera so that (0.0, 0.0) is in
+                the bottom-left
             aspect: The ratio between width and height that the value should
                 be constrained to. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
@@ -425,8 +427,8 @@ class Camera2D:
             projection: Flag whether to equalize the size of the projection to match the value.
                 The projection center stays fixed, and the new projection matches only in size.
             scissor: Flag whether to update the scissor value.
-            position: Flag whether to also center the camera to the value.
-                Off by default
+            position: Flag whether to position the camera so that (0.0, 0.0) is in
+                the bottom-left
             aspect: The ratio between width and height that the value should
                 be constrained to. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
@@ -452,7 +454,7 @@ class Camera2D:
             self.scissor = value
 
         if position:
-            self.position = value.center
+            self.position = Vec2(-self._projection_data.left, -self._projection_data.bottom)
 
     def aabb(self) -> Rect:
         """

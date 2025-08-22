@@ -1,4 +1,5 @@
 #version 330
+// Atlas resize without geometry shader
 
 // The old atlas texture. We copy sections to the new atlas texture
 // by render into an fbo with the target texture as the color attachment.

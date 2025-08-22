@@ -8,9 +8,7 @@ def test_create_lazy_equals_true():
     spritelist = arcade.SpriteList(lazy=True, use_spatial_hash=True)
 
     # Make sure OpenGL abstractions are not created
-    assert spritelist._sprite_pos_buf == None
-    assert spritelist._geometry == None
-    assert spritelist.atlas is None
+    assert spritelist._data is None
 
     # Make sure CPU-only behavior still works correctly
     for x in range(100):
@@ -37,8 +35,7 @@ def test_manual_initialization_after_lazy_equals_true(window):
     # Make sure initialization still worked correctly.
     spritelist.initialize()
     assert spritelist._initialized
-    assert spritelist._sprite_pos_buf
-    assert spritelist._geometry
+    assert spritelist._data
     assert isinstance(spritelist.atlas, DefaultTextureAtlas)
 
     # Uncomment the next line and set a breakpoint on it to

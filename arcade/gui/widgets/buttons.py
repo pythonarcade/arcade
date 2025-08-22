@@ -134,7 +134,7 @@ class UITextureButton(UIInteractiveWidget, UIStyledWidget[UITextureButtonStyle],
         if texture_disabled:
             self._textures["disabled"] = texture_disabled
 
-        bind(self, "_textures", self.trigger_render)
+        bind(self, "_textures", UITextureButton.trigger_render)
 
         # prepare label with default style
         _style = self.get_current_style()

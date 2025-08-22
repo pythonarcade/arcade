@@ -1,9 +1,5 @@
-import struct
 from collections.abc import Iterable
 
-from arcade import (
-    get_window,
-)
 from arcade.geometry import (
     are_polygons_intersecting,
     is_point_in_polygon,
@@ -134,50 +130,7 @@ def _get_nearby_sprites(
     sprite_count = len(sprite_list)
     if sprite_count == 0:
         return []
-
-    # Update the position and size to check
-    ctx = get_window().ctx
-    sprite_list._write_sprite_buffers_to_gpu()
-
-    ctx.collision_detection_program["check_pos"] = sprite.position
-    ctx.collision_detection_program["check_size"] = sprite.width, sprite.height
-
-    # Ensure the result buffer can fit all the sprites (worst case)
-    buffer = ctx.collision_buffer
-    if buffer.size < sprite_count * 4:
-        buffer.orphan(size=sprite_count * 4)
-
-    # Run the transform shader emitting sprites close to the configured position and size.
-    # This runs in a query so we can measure the number of sprites emitted.
-    with ctx.collision_query:
-        sprite_list.geometry.transform(  # type: ignore
-            ctx.collision_detection_program,
-            buffer,
-            vertices=sprite_count,
-        )
-
-    # Store the number of sprites emitted
-    emit_count = ctx.collision_query.primitives_generated
-    # print(
-    #     emit_count,
-    #     ctx.collision_query.time_elapsed,
-    #     ctx.collision_query.time_elapsed / 1_000_000_000,
-    # )
-
-    # If no sprites emitted we can just return an empty list
-    if emit_count == 0:
-        return []
-
-    # # Debug block for transform data to keep around
-    # print("emit_count", emit_count)
-    # data = buffer.read(size=emit_count * 4)
-    # print("bytes", data)
-    # print("data", struct.unpack(f'{emit_count}i', data))
-
-    # .. otherwise build and return a list of the sprites selected by the transform
-    return [
-        sprite_list[i] for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))
-    ]
+    return sprite_list.get_nearby_sprites_gpu(sprite.position, sprite.size)
 
 
 def check_for_collision_with_list(

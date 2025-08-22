@@ -14,6 +14,7 @@ from arcade.exceptions import PerformanceWarning, warning
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
 from arcade.types import Color, Point, RGBOrA255
+from arcade.types.rect import LRBT, Rect
 
 __all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
 
@@ -580,6 +581,18 @@ class Text:
         return self.label.bottom
 
     @property
+    def rect(self) -> Rect:
+        """Rect representing the bounds of the text.
+
+        .. tip:: Don't worry about `width` being `None`.
+
+            Although a label can be created with a `width=None`:
+            * The underlying :py:mod:`pyglet` label will have bounding dimensions
+            * This rect is for on-screen click and layout purposes, not maximum possible width
+        """
+        return LRBT(self.left, self.right, self.bottom, self.top)
+
+    @property
     def content_size(self) -> tuple[int, int]:
         """Get the pixel width and height of the text contents."""
         return self.label.content_width, self.label.content_height
@@ -633,6 +646,24 @@ class Text:
     @multiline.setter
     def multiline(self, multiline: bool):
         self.label.multiline = multiline
+
+    @property
+    def visible(self) -> bool:
+        """
+        Whether the text is visible or not.
+
+        This is a property of the underlying pyglet.Label.
+        """
+        return self.label.visible
+
+    @visible.setter
+    def visible(self, visible: bool):
+        """
+        Set the visibility of the text.
+
+        This is a property of the underlying pyglet.Label.
+        """
+        self.label.visible = visible
 
     def draw(self) -> None:
         """

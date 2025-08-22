@@ -1,6 +1,3 @@
-import array
-
-from arcade import gl
 from arcade.types import Color, RGBOrA255
 from arcade.window_commands import get_window
 
@@ -129,23 +126,31 @@ def draw_ellipse_filled(
     # Fail immediately if we have no window or context
     window = get_window()
     ctx = window.ctx
-    ctx.enable(ctx.BLEND)
 
     program = ctx.shape_ellipse_filled_unbuffered_program
     geometry = ctx.shape_ellipse_unbuffered_geometry
-    buffer = ctx.shape_ellipse_unbuffered_buffer  # type: ignore
 
     # Normalize the color because this shader takes a float uniform
     color_normalized = Color.from_iterable(color).normalized
 
+    # Auto select number of segments if not specified
+    if num_segments == -1:
+        size = max(width, height)
+        if size <= 12:
+            num_segments = 6
+        else:
+            num_segments = int(size) // 2
+
+    if num_segments < 3:
+        num_segments = 3
+
     # Pass data to the shader
+    program["center"] = center_x, center_y
     program["color"] = color_normalized
     program["shape"] = width / 2, height / 2, tilt_angle
     program["segments"] = num_segments
-    buffer.orphan()
-    buffer.write(data=array.array("f", (center_x, center_y)))
-
-    geometry.render(program, mode=gl.POINTS, vertices=1)
+    ctx.enable(ctx.BLEND)
+    geometry.render(program, mode=ctx.TRIANGLES, vertices=num_segments * 3)
     ctx.disable(ctx.BLEND)
 
 
@@ -190,20 +195,27 @@ def draw_ellipse_outline(
     ctx = window.ctx
     program = ctx.shape_ellipse_outline_unbuffered_program
     geometry = ctx.shape_ellipse_outline_unbuffered_geometry
-    buffer = ctx.shape_ellipse_outline_unbuffered_buffer  # type: ignore
 
     # Normalize the color because this shader takes a float uniform
     color_normalized = Color.from_iterable(color).normalized
 
-    ctx.enable(ctx.BLEND)
+    # Auto select number of segments if not specified
+    if num_segments == -1:
+        size = max(width, height)
+        if size <= 12:
+            num_segments = 6
+        else:
+            num_segments = int(size) // 2
+
+    if num_segments < 3:
+        num_segments = 3
 
     # Pass data to shader
+    program["center"] = center_x, center_y
     program["color"] = color_normalized
     program["shape"] = width / 2, height / 2, tilt_angle, border_width
     program["segments"] = num_segments
-    buffer.orphan()
-    buffer.write(data=array.array("f", (center_x, center_y)))
 
-    geometry.render(program, mode=gl.POINTS, vertices=1)
-
+    ctx.enable(ctx.BLEND)
+    geometry.render(program, mode=ctx.TRIANGLES, vertices=num_segments * 6)
     ctx.disable(ctx.BLEND)

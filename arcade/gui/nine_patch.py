@@ -78,7 +78,7 @@ class NinePatchTexture:
         self._initialized = False
         self._texture = texture
         self._custom_atlas = atlas
-        self._geometry_cache: tuple[int, int, int, int, Rect] | None = None
+        self._geometry_cache: tuple[int, int, int, int, int, Rect] | None = None
 
         # pixel texture co-ordinate start and end of central box.
         self._left = left
@@ -325,16 +325,20 @@ class NinePatchTexture:
         # References for the texture
         self._atlas = self._custom_atlas or self._ctx.default_atlas
         self._add_to_atlas(self.texture)
-
-        # NOTE: Important to create geometry after the texture is added to the atlas
-        # self._create_geometry(LBWH(0, 0, self.width, self.height))
         self._initialized = True
 
     def _create_geometry(self, rect: Rect):
         """Create vertices for the 9-patch texture."""
         # NOTE: This was ported from glsl geometry shader to python
         # Simulate old uniforms
-        cache_key = (self._left, self._right, self._bottom, self._top, rect)
+        cache_key = (
+            self._atlas.version,
+            self._left,
+            self._right,
+            self._bottom,
+            self._top,
+            rect,
+        )
         if cache_key == self._geometry_cache:
             return
         self._geometry_cache = cache_key

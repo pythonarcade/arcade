@@ -66,7 +66,7 @@ Animating Drawing Primitives
 
 .. figure:: images/thumbs/shapes.png
    :figwidth: 170px
-   :target: shapes-slow.html
+   :target: shapes.html#shapes-slow
 
    :ref:`shapes-slow`
 

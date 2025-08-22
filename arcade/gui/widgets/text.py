@@ -13,9 +13,11 @@ import arcade
 from arcade import uicolor
 from arcade.gui.events import (
     UIEvent,
+    UIKeyEvent,
     UIMouseDragEvent,
     UIMouseEvent,
     UIMousePressEvent,
+    UIMouseReleaseEvent,
     UIMouseScrollEvent,
     UIOnChangeEvent,
     UIOnClickEvent,
@@ -126,8 +128,8 @@ class UILabel(UIWidget):
         self._strong_background = True
 
         if adaptive_multiline:
-            # +1 is required to prevent line wrap
-            width = self._label.content_width + 1
+            # +1 is required to prevent line wrap, +1 is required to prevent issues with kerning
+            width = self._label.content_width + 2
 
         super().__init__(
             x=x,
@@ -147,14 +149,14 @@ class UILabel(UIWidget):
         if height:
             self._label.height = int(height)
 
-        bind(self, "rect", self._update_label)
+        bind(self, "rect", UILabel._update_label)
 
         # update size hint when border or padding changes
-        bind(self, "_border_width", self._update_size_hint_min)
-        bind(self, "_padding_left", self._update_size_hint_min)
-        bind(self, "_padding_right", self._update_size_hint_min)
-        bind(self, "_padding_top", self._update_size_hint_min)
-        bind(self, "_padding_bottom", self._update_size_hint_min)
+        bind(self, "_border_width", UILabel._update_size_hint_min)
+        bind(self, "_padding_left", UILabel._update_size_hint_min)
+        bind(self, "_padding_right", UILabel._update_size_hint_min)
+        bind(self, "_padding_top", UILabel._update_size_hint_min)
+        bind(self, "_padding_bottom", UILabel._update_size_hint_min)
 
         self._update_size_hint_min()
 
@@ -242,7 +244,8 @@ class UILabel(UIWidget):
 
     def _update_size_hint_min(self):
         """Update the minimum size hint based on the label content size."""
-        min_width = self._label.content_width + 1  # +1 required to prevent line wrap
+        # +1 is required to prevent line wrap, +1 is required to prevent issues with kerning
+        min_width = self._label.content_width + 2
         min_width += self._padding_left + self._padding_right + 2 * self._border_width
 
         min_height = self._label.content_height
@@ -543,7 +546,6 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
             **kwargs,
         )
 
-        self._active = False
         self._text_color = Color.from_iterable(text_color)
 
         self.doc: AbstractDocument = pyglet.text.decode_text(text)
@@ -569,13 +571,27 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
 
         self.register_event_type("on_change")
 
-        bind(self, "hovered", self._apply_style)
-        bind(self, "pressed", self._apply_style)
-        bind(self, "invalid", self._apply_style)
-        bind(self, "disabled", self._apply_style)
+        bind(self, "hovered", UIInputText._apply_style)
+        bind(self, "pressed", UIInputText._apply_style)
+        bind(self, "invalid", UIInputText._apply_style)
+        bind(self, "disabled", UIInputText._apply_style)
+        bind(self, "focused", UIInputText._on_focus_change)
+        bind(self, "_active", UIInputText._on_active_changed)
 
         # initial style application
         self._apply_style()
+
+    def _on_focus_change(self):
+        if self.focused:
+            self.activate()
+        elif self.active:
+            self.deactivate()
+
+    def _on_active_changed(self):
+        """Handle the active state change of the input
+        text field to care about loosing active state."""
+        if not self._active:
+            self.deactivate()
 
     def _apply_style(self):
         style = self.get_current_style()
@@ -629,12 +645,25 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
 
         Text input is only active when the user clicks on the input field."""
         # If active check to deactivate
-        if self._active and isinstance(event, UIMousePressEvent):
-            if self.rect.point_in_rect(event.pos):
-                x = int(event.x - self.left - self.LAYOUT_OFFSET)
-                y = int(event.y - self.bottom)
-                self.caret.on_mouse_press(x, y, event.button, event.modifiers)
-            else:
+        if self._active and isinstance(event, UIMouseEvent):
+            event_in_rect = self.rect.point_in_rect(event.pos)
+
+            # mouse press
+            if isinstance(event, UIMousePressEvent):
+                # inside the input field
+                if event_in_rect:
+                    x = int(event.x - self.left - self.LAYOUT_OFFSET)
+                    y = int(event.y - self.bottom)
+                    self.caret.on_mouse_press(x, y, event.button, event.modifiers)
+                else:
+                    # outside the input field
+                    self.deactivate()
+                    # return unhandled to allow other widgets to activate
+                    return EVENT_UNHANDLED
+
+            # mouse release outside the input field,
+            # which could be a click on another widget, which handles the press event
+            if isinstance(event, UIMouseReleaseEvent) and not event_in_rect:
                 self.deactivate()
                 # return unhandled to allow other widgets to activate
                 return EVENT_UNHANDLED
@@ -642,6 +671,12 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
         # If active pass all non press events to caret
         if self._active:
             old_text = self.text
+
+            if self.focused and isinstance(event, UIKeyEvent) and event.symbol == arcade.key.SPACE:
+                # if widget is focused, we consume the space key
+                # to prevent flickering of the focus
+                return EVENT_HANDLED
+
             # Act on events if active
             if isinstance(event, UITextInputEvent):
                 self.caret.on_text(event.text)
@@ -682,7 +717,7 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
         if self._active:
             return
 
-        self._active = True
+        self._grap_active()  # will set _active to True
         self.trigger_full_render()
         self.caret.on_activate()
         self.caret.position = len(self.doc.text)
@@ -690,10 +725,9 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
     def deactivate(self):
         """Programmatically deactivate the text input field."""
 
-        if not self._active:
-            return
+        if self._active:
+            self._release_active()  # will set _active to False
 
-        self._active = False
         self.trigger_full_render()
         self.caret.on_deactivate()
 
@@ -711,6 +745,9 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
             layout.x = self.LAYOUT_OFFSET
             layout.y = 0
             layout.end_update()
+
+            # manually update caret position
+            self.caret.on_layout_update()
 
     @property
     def text(self):
@@ -829,14 +866,14 @@ class UITextArea(UIWidget):
             ),
         )
 
-        self.layout = pyglet.text.layout.ScrollableTextLayout(
+        self.layout = pyglet.text.layout.IncrementalTextLayout(
             self.doc,
             width=int(self.content_width),
             height=int(self.content_height),
             multiline=multiline,
         )
 
-        # bind(self, "rect", self._update_layout)
+        bind(self, "rect", UITextArea._update_layout)
 
     def fit_content(self):
         """Set the width and height of the text area to contain the whole text."""
@@ -868,6 +905,7 @@ class UITextArea(UIWidget):
             layout.begin_update()
             layout.width = content_width
             layout.height = content_height
+            layout.y = 0  # reset y position to 0 (Required by IncrementalTextLayout)
             layout.end_update()
 
     @override

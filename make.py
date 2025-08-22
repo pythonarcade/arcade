@@ -19,6 +19,7 @@ from pathlib import Path
 from shutil import rmtree, which
 from typing import Union
 from collections.abc import Generator
+import time
 
 PathLike = Union[Path, str, bytes]
 
@@ -144,13 +145,28 @@ def run(args: str | list[str], cd: PathLike | None = None) -> None:
     """
     cmd = " ".join(args)
     print(">> Running command:", cmd)
+    start_time = time.perf_counter()
     if cd is not None:
         with cd_context(_resolve(cd, strict=True)):
             result = subprocess.run(args)
     else:
         result = subprocess.run(args)
 
-    print(">> Command finished:", cmd, "\n")
+    elapsed_time = time.perf_counter() - start_time
+    h, rem = divmod(elapsed_time, 3600)
+    m, s = divmod(rem, 60)
+
+    time_str = " ".join(
+        part
+        for part in [
+            f"{int(h)}h" if h >= 1 else "",
+            f"{int(m)}m" if m >= 1 or h >= 1 else "",
+            f"{int(s)}s",
+        ]
+        if part
+    )
+
+    print(f">> Command finished ({time_str}): {cmd} \n")
 
     # TODO: Should we exit here? Or continue to let other commands run also?
     if result.returncode != 0:

@@ -54,7 +54,7 @@ def draw_texture_rect(
         ctx.disable(ctx.BLEND)
 
     atlas = atlas or ctx.default_atlas
-    program = ctx.sprite_program_single
+    program = ctx.sprite_program_single_simple
 
     texture_id, _ = atlas.add(texture)
     if pixelated:
@@ -68,14 +68,13 @@ def draw_texture_rect(
     atlas.use_uv_texture(unit=1)
 
     geometry = ctx.geometry_empty
-    program["pos"] = rect.x, rect.y, 0
+    program["pos_rot"] = rect.x, rect.y, 0, angle
     program["color"] = color.normalized
     program["size"] = rect.width, rect.height
-    program["angle"] = angle
-    program["texture_id"] = float(texture_id)
+    program["texture_id"] = texture_id
     program["spritelist_color"] = 1.0, 1.0, 1.0, alpha_normalized
 
-    geometry.render(program, mode=gl.POINTS, vertices=1)
+    geometry.render(program, mode=gl.TRIANGLE_STRIP, vertices=4)
 
     if blend:
         ctx.disable(ctx.BLEND)
@@ -396,7 +395,7 @@ def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> Non
     buffer.orphan()
     buffer.write(data=array.array("f", (rect.x, rect.y)))
 
-    geometry.render(program, mode=ctx.POINTS, vertices=1)
+    geometry.render(program, instances=1)
 
     ctx.disable(ctx.BLEND)
 

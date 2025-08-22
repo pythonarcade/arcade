@@ -97,18 +97,36 @@ class LightLayer(RenderTargetTexture):
         self._rebuild = False
         self._stride = 28
         self._buffer = self.ctx.buffer(reserve=self._stride * 100)
+        # fmt: off
+        vertex_data = array('f', [
+            -1.0, +1.0, 0.0, 1.0,
+            -1.0, -1.0, 0.0, 0.0,
+            +1.0, +1.0, 1.0, 1.0,
+            +1.0, -1.0, 1.0, 0.0,
+        ])
+        # fmt: on
         self._vao = self.ctx.geometry(
             [
                 gl.BufferDescription(
+                    self.ctx.buffer(data=vertex_data),
+                    "2f 2f",
+                    ["in_vert", "in_uv"],
+                ),
+                gl.BufferDescription(
                     self._buffer,
                     "2f 1f 1f 3f",
-                    ["in_vert", "in_radius", "in_attenuation", "in_color"],
+                    [
+                        "in_instance_position",
+                        "in_instance_radius",
+                        "in_instance_attenuation",
+                        "in_instance_color",
+                    ],
+                    instanced=True,
                 ),
             ]
         )
         self._light_program = self.ctx.load_program(
             vertex_shader=":system:shaders/lights/point_lights_vs.glsl",
-            geometry_shader=":system:shaders/lights/point_lights_geo.glsl",
             fragment_shader=":system:shaders/lights/point_lights_fs.glsl",
         )
         self._combine_program = self.ctx.load_program(
@@ -214,10 +232,12 @@ class LightLayer(RenderTargetTexture):
         self._light_buffer.use()
         self._light_buffer.clear()
         if len(self._lights) > 0:
-            self._light_program["position"] = position
+            self._light_program["offset"] = position
             self.ctx.enable(self.ctx.BLEND)
             self.ctx.blend_func = self.ctx.BLEND_ADDITIVE
-            self._vao.render(self._light_program, mode=self.ctx.POINTS, vertices=len(self._lights))
+            self._vao.render(
+                self._light_program, mode=self.ctx.TRIANGLE_STRIP, instances=len(self._lights)
+            )
             self.ctx.blend_func = self.ctx.BLEND_DEFAULT
 
         # Combine pass

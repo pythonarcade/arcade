@@ -51,8 +51,9 @@ def test_place_widget_relative_to_own_content_rect(window):
     assert dummy.top == 378
 
 
-def test_place_box_layout(window):
-    subject = UIAnchorLayout(width=500, height=500)
+def test_place_box_layout(window, ui):
+    subject = UIAnchorLayout(width=500, height=500, size_hint=None)
+    ui.add(subject)
 
     box = UIBoxLayout()
     box.add(UIDummy(width=100, height=100))
@@ -60,7 +61,7 @@ def test_place_box_layout(window):
 
     subject.add(child=box, anchor_x="center_x", align_y=-20, anchor_y="top")
 
-    subject._do_layout()
+    ui.execute_layout()
 
     assert subject.rect == LBWH(0, 0, 500, 500)
     assert box.rect == LBWH(200, 280, 100, 200)

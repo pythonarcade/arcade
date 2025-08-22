@@ -49,14 +49,14 @@ class SpriteListInteraction(arcade.Window):
             #version 330
 
             // Sprite positions from SpriteList
-            in vec3 in_pos;
+            in vec4 in_pos;
 
             // Output to geometry shader
             out vec3 v_position;
 
             void main() {
                 // This shader just forwards info to geo shader
-                v_position = in_pos;
+                v_position = in_pos.xyz;
             }
             """,
             geometry_shader="""
@@ -120,7 +120,7 @@ class SpriteListInteraction(arcade.Window):
         # use to run our shader/gpu program. It only requires that we
         # use correctly named input name(s). in_pos in this example
         # what will automatically map in the position buffer to the vertex shader.
-        self.coins.geometry.render(self.program_visualize_dist, vertices=len(self.coins))
+        self.coins.data.geometry.render(self.program_visualize_dist, vertices=len(self.coins))
         arcade.draw_sprite(self.player)
 
         # Visualize the interaction radius

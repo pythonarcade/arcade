@@ -64,11 +64,12 @@ def draw_points(point_list: Point2List, color: RGBOrA255, size: float = 1.0) -> 
 
     # Get # of points and translate Python tuples to a C-style array
     num_points = len(point_list)
+    if num_points == 0:
+        return
     point_array = array.array("f", (v for point in point_list for v in point))
 
     # Resize buffer
     data_size = num_points * 8
-    # if data_size > buffer.size:
     buffer.orphan(size=data_size)
 
     ctx.enable(ctx.BLEND)
@@ -79,6 +80,6 @@ def draw_points(point_list: Point2List, color: RGBOrA255, size: float = 1.0) -> 
     buffer.write(data=point_array)
 
     # Only render the # of points we have complete data for
-    geometry.render(program, mode=ctx.POINTS, vertices=data_size // 8)
+    geometry.render(program, instances=num_points)
 
     ctx.disable(ctx.BLEND)

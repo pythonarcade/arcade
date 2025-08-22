@@ -103,7 +103,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         self,
         size: tuple[int, int],
         *,
-        border: int = 1,
+        border: int = 2,
         textures: Sequence[Texture] | None = None,
         auto_resize: bool = True,
         ctx: ArcadeContext | None = None,
@@ -112,6 +112,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         self._ctx = ctx or get_window().ctx
         self._max_size = self._ctx.info.MAX_VIEWPORT_DIMS
         self._size: tuple[int, int] = size
+        self._version = 0
         self._allocator = Allocator(*self._size)
         self._auto_resize = auto_resize
         self._capacity = capacity
@@ -667,7 +668,6 @@ class DefaultTextureAtlas(TextureAtlasBase):
             force:
                 Force a resize even if the size is the same
         """
-        # LOG.info("[%s] Resizing atlas from %s to %s", id(self), self._size, size)
         # print("Resizing atlas from", self._size, "to", size)
 
         # Only resize if the size actually changed
@@ -732,10 +732,12 @@ class DefaultTextureAtlas(TextureAtlasBase):
             with self._ctx.enabled_only():
                 self._ctx.geometry_empty.render(
                     self._ctx.atlas_resize_program,
-                    mode=self._ctx.POINTS,
-                    vertices=self.max_width,
+                    mode=self._ctx.TRIANGLES,
+                    # Two triangles per texture
+                    vertices=UV_TEXTURE_WIDTH * self._capacity * 6,
                 )
 
+        self._version += 1
         # duration = time.perf_counter() - resize_start
         # LOG.info("[%s] Atlas resize took %s seconds", id(self), duration)
 
@@ -746,7 +748,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         This method also tries to organize the textures more efficiently ordering them by size.
         The texture ids will persist so the sprite list doesn't need to be rebuilt.
         """
-        # LOG.info("Rebuilding atlas")
+        # print("Rebuilding atlas")
 
         # Hold a reference to the old textures
         textures = self.textures
@@ -768,6 +770,8 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # Add textures back sorted by height to potentially make more room
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
             self._add(texture, create_finalizer=False)
+
+        self._version += 1
 
     def use_uv_texture(self, unit: int = 0) -> None:
         """

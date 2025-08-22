@@ -5,8 +5,70 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+- GUI
+  - Fix a bug, where the caret of UIInputText was misplaced after resizing the widget
+  - Use incremental layout for UIScrollArea to improve performance of changing text
+  - Refactored and improved focus handling
+  - UIBoxLayout ignores widgets with `visible=None`
+
+## 3.3.2
+
+- GUI
+  - Fix UIScrollBar creation
+  - Fix memory leak: widgets were not garbage collected
+
+## 3.3.1
+
+- Fixed an issue causing NinePatch to not render correctly
+- TextureAtlas now as a `version` attribute that is incremented when the
+  atlas is resized or rebuilt. This way it's easy to track when texture coordinates
+  has changed.
+- Added `Text.visible` (bool) property to control the visibility of text objects.
+- Fixed an issue causing points and lines to draw random primitives when
+  passing in an empty list.
+- GUI
+  - Fix caret did not deactivate because of consumed mouse events. [2725](https://github.com/pythonarcade/arcade/issues/2725)
+  - Property listener can now receive:
+      - no args
+      - instance
+      - instance, value
+      - instance, value, old value
+    >   Listener accepting `*args` receive `instance, value` like in previous versions.
+
+## 3.3.0
+
 - Fixed an issue causing a crash when closing the window
-- Added `Window.close` (bool) attribute indicating if the window is closed
+- Added `Window.closed` (bool) attribute indicating if the window is closed
+- Fixed an issue where `on_draw` could be dispatched after the window was closed
+- Added `PymunkPhysicsEngine.update_sprite` for manually updating a sprite's shape
+  to synchronize sprite hit boxes with the physics engine
+- Fixed an issue causing `on_mouse_leave` to be called from disabled `Section`s
+- Various documentation fixes and improvements
+- Scene
+  - `Scene.add_sprite` now returns the added sprite
+  - `Scene.add_sprite_list` now returns the added sprite list
+  - `Scene.add_sprite_before` now returns the added sprite list
+  - `Scene.move_sprite_list_before` now returns the moved sprite list
+  - `Scene.remove_sprite_list_by_index` now returns the removed sprite list
+  - `Scene.remove_sprite_list_by_name` now returns the removed sprite list
+- GUI
+  - Fix `UILabel` with enabled multiline sometimes cut off text
+  - Improved `UIWidget` usability for resizing and positioning:
+    - Added property setters for `width`, `height`, and `size` that ensure positive values
+    - Added property setters for `center_x` and `center_y`
+    - Added property setters for `left`, `right`, `top`, and `bottom`
+    - Users can now set widget position and size more intuitively without needing to access the `rect` property
+
+- Rendering:
+  - The `arcade.gl` package was restructured to be more modular in preparation for
+    other backends such as WebGL and WebGPU
+  - Rewrote many shader programs to not use geometry shaders, which are not supported in WebGL
+    and some other rendering backends
+  - Fixed a few instances og exceptions not being raised properly in edge cases
+  - **BREAKING CHANGE**: `SpriteList` now has multiple rendering systems supporting both WebGL and Desktop GL.
+    If you have customized spritelist rendering you now need to modify the `SpriteListData` instance
+    on the spritelist accessed through `SpriteList.data`. This instance holds all the GPU-related
+    resources for the spritelist such as buffers, textures, geometry and shader program.
 
 ## Version 3.2
 

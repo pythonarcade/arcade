@@ -5,23 +5,16 @@ from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.math import Vec2
 
 import arcade
-from arcade import MOUSE_BUTTON_LEFT
 from arcade.gui.events import (
-    UIControllerButtonPressEvent,
-    UIControllerButtonReleaseEvent,
     UIControllerDpadEvent,
     UIControllerEvent,
     UIEvent,
     UIKeyPressEvent,
-    UIKeyReleaseEvent,
-    UIMousePressEvent,
-    UIMouseReleaseEvent,
 )
 from arcade.gui.property import ListProperty, Property, bind
 from arcade.gui.surface import Surface
-from arcade.gui.widgets import FocusMode, UIInteractiveWidget, UIWidget
+from arcade.gui.widgets import FocusMode, UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.gui.widgets.slider import UIBaseSlider
 
 
 class UIFocusable(UIWidget):
@@ -71,9 +64,9 @@ class UIFocusMixin(UIWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        bind(self, "_debug", self.trigger_full_render)
-        bind(self, "_focused_widget", self.trigger_full_render)
-        bind(self, "_focusable_widgets", self.trigger_full_render)
+        bind(self, "_debug", UIFocusMixin.trigger_full_render)
+        bind(self, "_focused_widget", UIFocusMixin.trigger_full_render)
+        bind(self, "_focusable_widgets", UIFocusMixin.trigger_full_render)
 
     def on_event(self, event: UIEvent) -> bool | None:
         # pass events to children first, including controller events
@@ -87,7 +80,11 @@ class UIFocusMixin(UIWidget):
                 self.set_focus()
                 return EVENT_HANDLED
 
-        if isinstance(event, UIKeyPressEvent):
+        if self.focused_widget is None:
+            # no focused widget, ignore events
+            return EVENT_UNHANDLED
+
+        elif isinstance(event, UIKeyPressEvent):
             if event.symbol == arcade.key.TAB:
                 if event.modifiers & arcade.key.MOD_SHIFT:
                     self.focus_previous()
@@ -96,54 +93,22 @@ class UIFocusMixin(UIWidget):
 
                 return EVENT_HANDLED
 
-            elif event.symbol == arcade.key.SPACE:
-                self._start_interaction()
-                return EVENT_HANDLED
-
-        elif isinstance(event, UIKeyReleaseEvent):
-            if event.symbol == arcade.key.SPACE:
-                self._end_interaction()
-                return EVENT_HANDLED
-
         elif isinstance(event, UIControllerDpadEvent):
-            if self._interacting:
-                # TODO this should be handled in the slider!
-                # pass dpad events to the interacting widget
-                if event.vector.x == 1 and isinstance(self._interacting, UIBaseSlider):
-                    self._interacting.norm_value += 0.1
-                    return EVENT_HANDLED
-
-                elif event.vector.x == -1 and isinstance(self._interacting, UIBaseSlider):
-                    self._interacting.norm_value -= 0.1
-                    return EVENT_HANDLED
-
+            # switch focus
+            if event.vector.x == 1:
+                self.focus_right()
                 return EVENT_HANDLED
 
-            else:
-                # switch focus
-                if event.vector.x == 1:
-                    self.focus_right()
-                    return EVENT_HANDLED
-
-                elif event.vector.y == 1:
-                    self.focus_up()
-                    return EVENT_HANDLED
-
-                elif event.vector.x == -1:
-                    self.focus_left()
-                    return EVENT_HANDLED
-
-                elif event.vector.y == -1:
-                    self.focus_down()
-                    return EVENT_HANDLED
-
-        elif isinstance(event, UIControllerButtonPressEvent):
-            if event.button == "a":
-                self._start_interaction()
+            elif event.vector.y == 1:
+                self.focus_up()
                 return EVENT_HANDLED
-        elif isinstance(event, UIControllerButtonReleaseEvent):
-            if event.button == "a":
-                self._end_interaction()
+
+            elif event.vector.x == -1:
+                self.focus_left()
+                return EVENT_HANDLED
+
+            elif event.vector.y == -1:
+                self.focus_down()
                 return EVENT_HANDLED
 
         return EVENT_UNHANDLED
@@ -274,48 +239,6 @@ class UIFocusMixin(UIWidget):
         # automatically wrap around via index -1
         self.set_focus(self._focusable_widgets[focused_index])
 
-    def _start_interaction(self):
-        # TODO this should be handled in the widget
-
-        widget = self.focused_widget
-
-        if isinstance(widget, UIInteractiveWidget):
-            widget.dispatch_ui_event(
-                UIMousePressEvent(
-                    source=self,
-                    x=int(widget.rect.center_x),
-                    y=int(widget.rect.center_y),
-                    button=MOUSE_BUTTON_LEFT,
-                    modifiers=0,
-                )
-            )
-            self._interacting = widget
-        else:
-            print("Cannot interact widget")
-
-    def _end_interaction(self):
-        widget = self.focused_widget
-
-        if isinstance(widget, UIInteractiveWidget):
-            if isinstance(self._interacting, UIBaseSlider):
-                # if slider, release outside the slider
-                x = self._interacting.rect.left - 1
-                y = self._interacting.rect.bottom - 1
-            else:
-                x = widget.rect.center_x
-                y = widget.rect.center_y
-
-            self._interacting = None
-            widget.dispatch_ui_event(
-                UIMouseReleaseEvent(
-                    source=self,
-                    x=int(x),
-                    y=int(y),
-                    button=MOUSE_BUTTON_LEFT,
-                    modifiers=0,
-                )
-            )
-
     def _do_render(self, surface: Surface, force=False) -> bool:
         rendered = super()._do_render(surface, force)
 
@@ -369,4 +292,5 @@ class UIFocusMixin(UIWidget):
 
 
 class UIFocusGroup(UIFocusMixin, UIAnchorLayout):
-    pass
+    """This will be removed in the future.
+    UIFocusMixin is planned to be integrated into UILayout."""

@@ -99,6 +99,12 @@ class UIManager(EventDispatcher):
     """Experimental feature to pixelate the UI, all textures will be rendered pixelated,
     which will mostly influence scaled background images.
     This property has to be set right after the UIManager is created."""
+    _active_widget: UIWidget | None = None
+    """The currently active widget. Any widget, which consumes mouse press or release events
+    should set itself as active widget.
+    UIManager ensures that only one widget can be active at a time,
+    which can be used by widgets like text fields to detect when they are disabled,
+    without relying on unconsumed mouse press or release events."""
 
     DEFAULT_LAYER = 0
     OVERLAY_LAYER = 10
@@ -517,6 +523,17 @@ class UIManager(EventDispatcher):
     def rect(self) -> Rect:
         """The rect of the UIManager, which is the window size."""
         return LBWH(0, 0, *self.window.get_size())
+
+    def _set_active_widget(self, widget: UIWidget | None):
+        if self._active_widget == widget:
+            return
+
+        if self._active_widget:
+            self._active_widget._active = False
+
+        self._active_widget = widget
+        if self._active_widget:
+            self._active_widget._active = True
 
     def debug(self):
         """Walks through all widgets of a UIManager and prints out layout information."""
