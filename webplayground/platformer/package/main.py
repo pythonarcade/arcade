@@ -229,11 +229,11 @@ class GameView(arcade.View):
         self.shoot_timer = 0
 
         # Load sounds
-        # self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
-        # self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
-        # self.gameover_sound = arcade.load_sound(":resources:sounds/gameover1.wav")
-        # self.shoot_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
-        # self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
+        self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
+        self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
+        self.gameover_sound = arcade.load_sound(":resources:sounds/gameover1.wav")
+        self.shoot_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
+        self.hit_sound = arcade.load_sound(":resources:sounds/hit5.wav")
 
     def setup(self):
         """Set up the game here. Call this function to restart the game."""
@@ -364,7 +364,7 @@ class GameView(arcade.View):
 
         if self.can_shoot:
             if self.shoot_pressed:
-                # arcade.play_sound(self.shoot_sound)
+                arcade.play_sound(self.shoot_sound)
                 bullet = arcade.Sprite(
                     ":resources:images/space_shooter/laserBlue01.png",
                     scaling=0.8,
@@ -422,7 +422,7 @@ class GameView(arcade.View):
                             collision.remove_from_sprite_lists()
                             self.score += 150
 
-                        # arcade.play_sound(self.hit_sound)
+                        arcade.play_sound(self.hit_sound)
 
                 return
 
@@ -438,14 +438,14 @@ class GameView(arcade.View):
 
         for collision in player_collision_list:
             if self.scene["Enemies"] in collision.sprite_lists:
-                # arcade.play_sound(self.gameover_sound)
+                arcade.play_sound(self.gameover_sound)
                 game_over = GameOverView()
                 self.window.show_view(game_over)
                 return
             else:
                 # Our collision is a coin, remove it
                 collision.remove_from_sprite_lists()
-                # arcade.play_sound(self.collect_coin_sound)
+                arcade.play_sound(self.collect_coin_sound)
                 self.score += 75
                 self.score_text.text = f"Score: {self.score}"
 
@@ -464,7 +464,7 @@ class GameView(arcade.View):
                 self.player_sprite.change_y = PLAYER_MOVEMENT_SPEED
             elif self.physics_engine.can_jump(y_distance=10):
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
-                # arcade.play_sound(self.jump_sound)
+                arcade.play_sound(self.jump_sound)
         elif self.down_pressed and not self.up_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = -PLAYER_MOVEMENT_SPEED
