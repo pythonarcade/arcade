@@ -264,7 +264,13 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ig
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport shouldbe a 4-component tuple")
 
-        self._viewport = value
+        ratio = self.ctx.window.get_pixel_ratio()
+        self._viewport = (
+            int(value[0] * ratio),
+            int(value[1] * ratio),
+            int(value[2] * ratio),
+            int(value[3] * ratio),
+        )
 
         if self._ctx.active_framebuffer == self:
             self._ctx._gl.viewport(*self._viewport)
@@ -285,7 +291,13 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ig
             if self._ctx.active_framebuffer == self:
                 self._ctx._gl.scissor(*self._viewport)
         else:
-            self._scissor = value
+            ratio = self.ctx.window.get_pixel_ratio()
+            self._scissor = (
+                int(value[0] * ratio),
+                int(value[1] * ratio),
+                int(value[2] * ratio),
+                int(value[3] * ratio),
+            )
 
             if self._ctx.active_framebuffer == self:
                 self._ctx._gl.scissor(*self._scissor)
