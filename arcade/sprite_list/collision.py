@@ -196,7 +196,7 @@ def check_for_collision_with_list(
 def check_for_collision_with_lists(
     sprite: BasicSprite,
     sprite_lists: Iterable[SpriteSequence[SpriteType]],
-    method=1,
+    method=0,
 ) -> list[SpriteType]:
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
@@ -207,8 +207,16 @@ def check_for_collision_with_lists(
         sprite_lists:
             SpriteLists to check against
         method:
-            Collision check method. 1 is Spatial Hashing if available,
-            2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
+            Collision check method. Defaults to 0.
+
+            - 0: auto-select. (spatial if available, GPU if 1500+ sprites, else simple)
+            - 1: Spatial Hashing if available,
+            - 2: GPU based
+            - 3: Simple check-everything.
+
+            Note that while the GPU method is very fast when you cannot use spatial hashing,
+            it's also very slow if you are calling this function many times per frame.
+            What method is the most appropriate depends entirely on your use case.
 
     Returns:
         List of sprites colliding, or an empty list.
@@ -224,9 +232,10 @@ def check_for_collision_with_lists(
     sprites_to_check: Iterable[SpriteType]
 
     for sprite_list in sprite_lists:
-        if sprite_list.spatial_hash is not None and method == 1:
+        # Spatial
+        if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
             sprites_to_check = sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
-        elif method == 3:
+        elif method == 3 or (method == 0 and len(sprite_list) <= 1500):
             sprites_to_check = sprite_list
         else:
             # GPU transform
