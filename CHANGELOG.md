@@ -9,7 +9,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   `check_for_collision_with_list` but allow passing multiple lists and looping the same behavior. The `lists` function however
   handled the collision method differently. Which resulted in only spatial hash being used if it was available, or GPU collision.
   It would never fallback to the pure CPU brute force approach, which is the best option for spritelists which don't have spatial hash
-  and less than 1,500 sprites. Certain games may see a substantial performance improvement from this change.
+  and less than 1,500 sprites. Certain games may see a substantial performance improvement from this change. See [2762](https://github.com/pythonarcade/arcade/pull/2762)
 
 - PyInstaller
   - Fixed an issue where imports for backends for the `arcade.gl` package could not be discovered by PyInstaller.
