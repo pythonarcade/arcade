@@ -22,6 +22,8 @@ if not is_win and not is_darwin and not is_unix:
         "Only Linux, Mac, and Windows are supported."
     )
 
+hiddenimports = ["arcade.gl.backends.opengl.provider", "arcade.gl.backends.opengl"]
+
 datas = []
 binaries = []
 
