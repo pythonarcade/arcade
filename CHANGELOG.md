@@ -5,6 +5,12 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+- Fixes a bug with the `check_for_collision_with_lists` function. This function is intended to mimic the functionality of
+  `check_for_collision_with_list` but allow passing multiple lists and looping the same behavior. The `lists` function however
+  handled the collision method differently. Which resulted in only spatial hash being used if it was available, or GPU collision.
+  It would never fallback to the pure CPU brute force approach, which is the best option for spritelists which don't have spatial hash
+  and less than 1,500 sprites. Certain games may see a substantial performance improvement from this change.
+
 - PyInstaller
   - Fixed an issue where imports for backends for the `arcade.gl` package could not be discovered by PyInstaller.
     Since 3.3.0 users have needed to add these hidden imports via the pyinstaller CLI in order for Arcade to work.
