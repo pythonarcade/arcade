@@ -7,9 +7,11 @@ import arcade
 
 def test_sprite_circle_props():
     """Test basic properties of SpriteCircle"""
-    sprite = arcade.SpriteCircle(50, arcade.color.RED)
+    sprite = arcade.SpriteCircle(50, arcade.color.RED, center_x=5, center_y=7)
     assert sprite.color == arcade.color.RED
     assert sprite.size == (100, 100)
+    assert sprite.center_x == 5
+    assert sprite.center_y == 7
 
 
 def test_sprite_circle_texture_cache():
