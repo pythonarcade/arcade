@@ -10,6 +10,7 @@ python -m arcade.examples.conway_alpha
 """
 
 import arcade
+from arcade import SpriteCircle, SpriteList
 import random
 
 # Set how many rows and columns we will have
@@ -45,12 +46,12 @@ def create_grids(
     sprites.
     """
     # One dimensional list of all sprites in the two-dimensional sprite list
-    grid_sprites_one_dim = arcade.SpriteList()
+    grid_sprites_one_dim: SpriteList[SpriteCircle] = SpriteList()
 
     # This will be a two-dimensional grid of sprites to mirror the two
     # dimensional grid of numbers. This points to the SAME sprites that are
     # in grid_sprite_list, just in a 2d manner.
-    grid_sprites_two_dim = []
+    grid_sprites_two_dim: list[list[SpriteCircle]] = []
 
     # Calculate values we'll re-use below
     cell_width, cell_height = cell_size
@@ -63,12 +64,8 @@ def create_grids(
     center_offset_x = half_width + cell_margin
     center_offset_y = half_height + cell_margin
 
-    shared_kwargs = dict(
-        # Fit the cell into the box
-        radius=min(half_width, half_height),
-        color=ALIVE_COLOR,
-        soft=True,
-    )
+    # Fit sprites into the cell size
+    radius = min(half_width, half_height)
 
     # Create a list of sprites to represent each grid location
     for row in range(ROW_COUNT):
@@ -80,7 +77,7 @@ def create_grids(
             y = row * y_step + center_offset_y
 
             # Make the sprite as a soft circle
-            sprite = arcade.SpriteCircle(center_x=x, center_y=y, **shared_kwargs)
+            sprite = SpriteCircle(radius, ALIVE_COLOR, True, center_x=x, center_y=y)
 
             # Add the sprite to both lists
             grid_sprites_one_dim.append(sprite)
