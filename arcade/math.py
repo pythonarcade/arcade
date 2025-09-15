@@ -311,38 +311,32 @@ def rand_vec_magnitude(
     return vel.x, vel.y
 
 
-def get_distance(x1: float, y1: float, x2: float, y2: float) -> float:
+def get_distance(pos1: Point2, pos2: Point2) -> float:
     """
     Get the distance between two points.
 
     Args:
-        x1 (float): x coordinate of the first point
-        y1 (float): y coordinate of the first point
-        x2 (float): x coordinate of the second point
-        y2 (float): y coordinate of the second point
+        pos1 (Point2): the first point
+        pos2 (Point2): the second point
     """
-    return math.hypot(x1 - x2, y1 - y2)
+    return math.hypot(pos1[0] - pos2[0], pos1[1] - pos2[1])
 
 
 def rotate_point(
-    x: float,
-    y: float,
-    cx: float,
-    cy: float,
+    point: Point2,
+    center: Point2,
     angle_degrees: float,
 ) -> Point2:
     """
     Rotate a point around a center.
 
     Args:
-        x (float): x value of the point you want to rotate
-        y (float): y value of the point you want to rotate
-        cx (float): x value of the center point you want to rotate around
-        cy (float): y value of the center point you want to rotate around
+        point (Point2): the point you want to rotate
+        center (Point2): the center point you want to rotate around
         angle_degrees (float): Angle, in degrees, to rotate
     """
-    temp_x = x - cx
-    temp_y = y - cy
+    temp_x = point[0] - point[0]
+    temp_y = point[1] - center[1]
 
     # now apply rotation
     angle_radians = math.radians(angle_degrees)
@@ -352,8 +346,8 @@ def rotate_point(
     rotated_y = -temp_x * sin_angle + temp_y * cos_angle
 
     # translate back
-    x = round(rotated_x + cx, _PRECISION)
-    y = round(rotated_y + cy, _PRECISION)
+    x = round(rotated_x + center[0], _PRECISION)
+    y = round(rotated_y + center[1], _PRECISION)
 
     return x, y
 
@@ -424,34 +418,28 @@ def rotate_around_point(source: Point2, target: Point2, angle: float):
     return target[0] + dx, target[1] + dy
 
 
-def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
+def get_angle_degrees(pos1: Point2, pos2: Point2) -> float:
     """
     Get the angle in degrees between two points.
 
     Args:
-        x1 (float): x coordinate of the first point
-        y1 (float): y coordinate of the first point
-        x2 (float): x coordinate of the second point
-        y2 (float): y coordinate of the second point
+        pos1 (Point2): the first point
+        pos2 (Point2): the second point
     """
-    x_diff = x2 - x1
-    y_diff = y2 - y1
-    return -math.degrees(math.atan2(y_diff, x_diff))
+    return math.degrees(get_angle_radians(pos1, pos2))
 
 
-def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
+def get_angle_radians(pos1: Point2, pos2: Point2) -> float:
     """
     Get the angle in radians between two points.
 
     Args:
-        x1 (float): x coordinate of the first point
-        y1 (float): y coordinate of the first point
-        x2 (float): x coordinate of the second point
-        y2 (float): y coordinate of the second point
+        pos1 (Point2): the first point
+        pos2 (Point2): the second point
     """
-    x_diff = x2 - x1
-    y_diff = y2 - y1
-    return math.atan2(x_diff, y_diff)
+    x_diff = pos2[0] - pos1[0]
+    y_diff = pos2[1] - pos1[1]
+    return math.atan2(y_diff, x_diff)
 
 
 def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[float, float, float]:

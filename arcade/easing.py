@@ -243,7 +243,7 @@ def ease_position(
     """
     Get an easing position
     """
-    distance = get_distance(start_position[0], start_position[1], end_position[0], end_position[1])
+    distance = get_distance(start_position, end_position)
 
     if rate is not None:
         time = distance / rate

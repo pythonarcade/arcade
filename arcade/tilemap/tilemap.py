@@ -891,7 +891,7 @@ class TileMap:
 
                 angle_degrees = math.degrees(rotation)
                 rotated_center_x, rotated_center_y = rotate_point(
-                    width / 2, height / 2, 0, 0, angle_degrees
+                    (width / 2, height / 2), (0, 0), angle_degrees
                 )
 
                 my_sprite.position = (x + rotated_center_x, y + rotated_center_y)

@@ -113,7 +113,7 @@ class Rotate90Transform(Transform):
         """
         Transform hit box points by rotating them 90 degrees clockwise.
         """
-        return tuple(rotate_point(point[0], point[1], 0, 0, 90) for point in points)
+        return tuple(rotate_point(point, (0, 0), 90) for point in points)
 
 
 class Rotate180Transform(Transform):
@@ -135,7 +135,7 @@ class Rotate180Transform(Transform):
         """
         Transform hit box points by rotating them 180 degrees clockwise.
         """
-        return tuple(rotate_point(point[0], point[1], 0, 0, 180) for point in points)
+        return tuple(rotate_point(point, (0, 0), 180) for point in points)
 
 
 class Rotate270Transform(Transform):
@@ -157,7 +157,7 @@ class Rotate270Transform(Transform):
         """
         Transform hit box points by rotating them 270 degrees clockwise.
         """
-        return tuple(rotate_point(point[0], point[1], 0, 0, 270) for point in points)
+        return tuple(rotate_point(point, (0, 0), 270) for point in points)
 
 
 class FlipLeftRightTransform(Transform):

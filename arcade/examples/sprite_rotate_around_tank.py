@@ -71,11 +71,11 @@ class RotatingSprite(arcade.Sprite):
 
         # Move the sprite along a circle centered around the passed point
         self.position = rotate_point(
-            self.center_x, self.center_y,
-            point[0], point[1], degrees)
+            (self.center_x, self.center_y),
+            point, degrees) # type: ignore
 
     def face_point(self, point: Point):
-        self.angle = get_angle_degrees(*self.position, *point)
+        self.angle = get_angle_degrees(self.position, point) # type: ignore
 
 
 class GameView(arcade.View):
@@ -209,8 +209,8 @@ class GameView(arcade.View):
         self._correct = correct
         if correct:
             angle = get_angle_radians(
-                self.tank.center_y, self.tank.center_x,
-                self.mouse_pos[1], self.mouse_pos[0])
+                (self.tank.center_y, self.tank.center_x),
+                (self.mouse_pos[1], self.mouse_pos[0]))
 
             self.barrel.position = (
                 self.barrel.center_x + math.sin(angle) * TANK_BARREL_LENGTH_HALF,

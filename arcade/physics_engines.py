@@ -125,7 +125,9 @@ def _move_sprite(
             # Resolve any collisions by this weird kludge
             _wiggle_until_free(moving_sprite, can_collide)
             if (
-                get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y)
+                get_distance(
+                    (original_x, original_y), (moving_sprite.center_x, moving_sprite.center_y)
+                )
                 > max_distance
             ):
                 # Ok, glitched trying to rotate. Reset.

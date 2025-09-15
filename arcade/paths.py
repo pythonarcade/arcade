@@ -413,7 +413,7 @@ def has_line_of_sight(
     if check_resolution <= 0:
         raise ValueError("check_resolution must be greater than zero")
 
-    distance = get_distance(observer[0], observer[1], target[0], target[1])
+    distance = get_distance(observer, target)
     if distance == 0:
         return True
 

@@ -20,7 +20,7 @@ def get_distance_between_sprites(sprite1: SpriteType, sprite2: SpriteType) -> fl
         sprite1: Sprite one
         sprite2: Sprite two
     """
-    return get_distance(*sprite1._position, *sprite2._position)
+    return get_distance(sprite1._position, sprite2._position)
 
 
 def get_closest_sprite(

@@ -420,10 +420,10 @@ def get_rectangle_points(
     y4 = -height / 2 + center_y
 
     if tilt_angle:
-        x1, y1 = rotate_point(x1, y1, center_x, center_y, tilt_angle)
-        x2, y2 = rotate_point(x2, y2, center_x, center_y, tilt_angle)
-        x3, y3 = rotate_point(x3, y3, center_x, center_y, tilt_angle)
-        x4, y4 = rotate_point(x4, y4, center_x, center_y, tilt_angle)
+        x1, y1 = rotate_point((x1, y1), (center_x, center_y), tilt_angle)
+        x2, y2 = rotate_point((x2, y2), (center_x, center_y), tilt_angle)
+        x3, y3 = rotate_point((x3, y3), (center_x, center_y), tilt_angle)
+        x4, y4 = rotate_point((x4, y4), (center_x, center_y), tilt_angle)
 
     return [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]
 
@@ -505,7 +505,7 @@ def create_rectangle(
         if tilt_angle != 0:
             point_list_2: list[Point] = []
             for point in data:
-                new_point = rotate_point(point[0], point[1], center_x, center_y, tilt_angle)
+                new_point = rotate_point(point, (center_x, center_y), tilt_angle)  # type: ignore
                 point_list_2.append(new_point)
             data = point_list_2
 
@@ -752,7 +752,7 @@ def create_ellipse(
         y = height / 2 * math.sin(theta) + center_y
 
         if tilt_angle:
-            x, y = rotate_point(x, y, center_x, center_y, tilt_angle)
+            x, y = rotate_point((x, y), (center_x, center_y), tilt_angle)
 
         point_list.append((x, y))
 
@@ -812,7 +812,7 @@ def create_ellipse_filled_with_colors(
         y = height * math.sin(theta) + center_y
 
         if tilt_angle:
-            x, y = rotate_point(x, y, center_x, center_y, tilt_angle)
+            x, y = rotate_point((x, y), (center_x, center_y), tilt_angle)
 
         point_list.append((x, y))
     point_list.append(point_list[1])

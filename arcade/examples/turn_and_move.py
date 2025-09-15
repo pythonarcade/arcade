@@ -63,7 +63,7 @@ class Player(arcade.Sprite):
         # Do math to calculate how to get the sprite to the destination.
         # Calculation the angle in radians between the start points
         # and end points. This is the angle the player will travel.
-        target_angle = arcade.math.get_angle_degrees(start_x, start_y, dest_x, dest_y)
+        target_angle = arcade.math.get_angle_degrees((start_x, start_y), (dest_x, dest_y))
         current_angle = self.angle - IMAGE_ROTATION
 
         new_angle = arcade.math.lerp_angle(current_angle, target_angle, self.rot_speed)

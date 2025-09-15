@@ -349,16 +349,16 @@ def draw_rect_outline(
         )
     else:
         point_list = (
-            rotate_point(o_left   , o_top   , x, y, tilt_angle),
-            rotate_point(i_left   , i_top   , x, y, tilt_angle),
-            rotate_point(o_right  , o_top   , x, y, tilt_angle),
-            rotate_point(i_right  , i_top   , x, y, tilt_angle),
-            rotate_point(o_right  , o_bottom, x, y, tilt_angle),
-            rotate_point(i_right  , i_bottom, x, y, tilt_angle),
-            rotate_point(o_left   , o_bottom, x, y, tilt_angle),
-            rotate_point(i_left   , i_bottom, x, y, tilt_angle),
-            rotate_point(o_left   , o_top   , x, y, tilt_angle),
-            rotate_point(i_left   , i_top   , x, y, tilt_angle)
+            rotate_point((o_left   , o_top)   , (x, y), tilt_angle),
+            rotate_point((i_left   , i_top)   , (x, y), tilt_angle),
+            rotate_point((o_right  , o_top)   , (x, y), tilt_angle),
+            rotate_point((i_right  , i_top)   , (x, y), tilt_angle),
+            rotate_point((o_right  , o_bottom), (x, y), tilt_angle),
+            rotate_point((i_right  , i_bottom), (x, y), tilt_angle),
+            rotate_point((o_left   , o_bottom), (x, y), tilt_angle),
+            rotate_point((i_left   , i_bottom), (x, y), tilt_angle),
+            rotate_point((o_left   , o_top)   , (x, y), tilt_angle),
+            rotate_point((i_left   , i_top)   , (x, y), tilt_angle)
         )
     # fmt: on
     _generic_draw_line_strip(point_list, color, gl.TRIANGLE_STRIP)

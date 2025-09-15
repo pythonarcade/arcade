@@ -59,7 +59,7 @@ def draw_arc_filled(
         uncentered_point_list = unrotated_point_list
     else:
         uncentered_point_list = [
-            rotate_point(point[0], point[1], 0, 0, tilt_angle) for point in unrotated_point_list
+            rotate_point(point, (0, 0), tilt_angle) for point in unrotated_point_list
         ]
 
     point_list = [(point[0] + center_x, point[1] + center_y) for point in uncentered_point_list]
@@ -132,7 +132,7 @@ def draw_arc_outline(
         uncentered_point_list = unrotated_point_list
     else:
         uncentered_point_list = [
-            rotate_point(point[0], point[1], 0, 0, tilt_angle) for point in unrotated_point_list
+            rotate_point(point, (0, 0), tilt_angle) for point in unrotated_point_list
         ]
 
     point_list = [(point[0] + center_x, point[1] + center_y) for point in uncentered_point_list]

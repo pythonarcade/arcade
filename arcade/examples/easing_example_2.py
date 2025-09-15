@@ -154,7 +154,7 @@ class GameView(arcade.View):
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         angle = arcade.math.get_angle_degrees(
-            x1=self.player_sprite.position[0], y1=self.player_sprite.position[1], x2=x, y2=y
+            self.player_sprite.position, (x, y)
         )
         self.player_sprite.angle = angle
 
