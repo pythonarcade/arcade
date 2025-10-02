@@ -54,11 +54,12 @@ dev = [
     "pytest-cov",
     "pytest-mock",
     "coverage",
-    "coveralls",          # Do we really need this?
+    "coveralls",        # Do we really need this?
     "ruff",
     "mypy",
     "pyright==1.1.387",
-    "typer[all]==0.12.5", # Needed for make.py
+    "click==8.1.7",     # Temp fix until we bump typer
+    "typer==0.12.5",    # Needed for make.py
     "wheel",
 ]
 # Testing only
