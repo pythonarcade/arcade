@@ -94,7 +94,7 @@ class Sound:
         .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
 
                        Neither ``loop`` nor simultaneous playbacks will work. See
-                       :py;class:`Sound` and :ref:`sound-loading-modes`.
+                       :py:class:`Sound` and :ref:`sound-loading-modes`.
 
         Args:
             volume: Volume (``0.0`` is silent, ``1.0`` is loudest).
@@ -220,7 +220,7 @@ def load_sound(path: str | Path, streaming: bool = False) -> Sound:
     .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
 
                    Neither ``loop`` nor simultaneous playbacks will work. See
-                   :py;class:`Sound` and :ref:`sound-loading-modes`.
+                   :py:class:`Sound` and :ref:`sound-loading-modes`.
 
     Args:
         path: a path which may be prefixed with a
@@ -230,7 +230,7 @@ def load_sound(path: str | Path, streaming: bool = False) -> Sound:
             save memory, ``False`` for short sounds to speed playback.
 
     Returns:
-        A :ref:playable <sound-basics-playing>` instance of a
+        A :ref:`playable <sound-basics-playing>` instance of a
         :py:class:`Sound` object.
     """
     # Initialize the audio driver if it hasn't been already.
@@ -264,7 +264,7 @@ def play_sound(
     .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
 
                    Neither ``loop`` nor simultaneous playbacks will work. See
-                   :py;class:`Sound` and :ref:`sound-loading-modes`.
+                   :py:class:`Sound` and :ref:`sound-loading-modes`.
 
     The output and return value depend on whether playback succeeded:
     .. # Note: substitutions don't really work inside tables, so the
