@@ -114,7 +114,9 @@ class InputManager:
         self.controller_deadzone = controller_deadzone
         if controller:
             self.controller = controller
-            self.controller.open()
+            if not self.controller.device.is_open:
+                self.controller.open()
+
             self.controller.push_handlers(
                 self.on_button_press,
                 self.on_button_release,
