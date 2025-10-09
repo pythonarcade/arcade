@@ -5,15 +5,21 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+- Support for Python 3.14
 - Fixes a bug with the `check_for_collision_with_lists` function. This function is intended to mimic the functionality of
   `check_for_collision_with_list` but allow passing multiple lists and looping the same behavior. The `lists` function however
   handled the collision method differently. Which resulted in only spatial hash being used if it was available, or GPU collision.
   It would never fallback to the pure CPU brute force approach, which is the best option for spritelists which don't have spatial hash
   and less than 1,500 sprites. Certain games may see a substantial performance improvement from this change. See [2762](https://github.com/pythonarcade/arcade/pull/2762)
+- Added `center_x` and `center_y` arguments to `arcade.SpriteCircle`. See [2766](https://github.com/pythonarcade/arcade/pull/2766)
+- Added a `rect` property to `arcade.Text` objects which will return an `arcade.Rect` based on the `left`, `right`, `bottom`, and `top` values of the Text object. See [2759](https://github.com/pythonarcade/arcade/pull/2759)
+
+- Camera
+  - Fixes the position flag in `Camera2D.match_window` to so (0, 0) as the bottom left, instead of matching the center. See [2646](https://github.com/pythonarcade/arcade/pull/2646)
 
 - PyInstaller
   - Fixed an issue where imports for backends for the `arcade.gl` package could not be discovered by PyInstaller.
-    Since 3.3.0 users have needed to add these hidden imports via the pyinstaller CLI in order for Arcade to work.
+    Since 3.3.0 users have needed to add these hidden imports via the pyinstaller CLI in order for Arcade to work. See [2764](https://github.com/pythonarcade/arcade/pull/2764)
 
 - GUI
   - Fix a bug, where the caret of UIInputText was misplaced after resizing the widget
