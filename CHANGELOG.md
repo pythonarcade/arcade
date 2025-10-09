@@ -19,7 +19,8 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 - PyInstaller
   - Fixed an issue where imports for backends for the `arcade.gl` package could not be discovered by PyInstaller.
-    Since 3.3.0 users have needed to add these hidden imports via the pyinstaller CLI in order for Arcade to work. See [2764](https://github.com/pythonarcade/arcade/pull/2764)
+    Since 3.3.0 users have needed to add these hidden imports via the pyinstaller CLI in order for Arcade to work. 
+    See [2764](https://github.com/pythonarcade/arcade/pull/2764)
 
 - GUI
   - Fix a bug, where the caret of UIInputText was misplaced after resizing the widget
