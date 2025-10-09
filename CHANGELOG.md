@@ -3,7 +3,7 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
-## Unreleased
+## 3.3.3
 
 - Support for Python 3.14
 - Fixes a bug with the `check_for_collision_with_lists` function. This function is intended to mimic the functionality of
