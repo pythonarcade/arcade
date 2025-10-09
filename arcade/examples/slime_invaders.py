@@ -74,7 +74,7 @@ class GameView(arcade.View):
         self.enemy_change_x = -ENEMY_SPEED
 
         # Don't show the mouse cursor
-        self.window.set_mouse_visible(False)
+        self.window.set_mouse_cursor_visible(False)
 
         # Load sounds. Sounds from kenney.nl
         self.gun_sound = arcade.load_sound(":resources:sounds/hurt5.wav")
@@ -196,7 +196,7 @@ class GameView(arcade.View):
         # Draw game over if the game state is such
         if self.game_state == GAME_OVER:
             self.game_over_text.draw()
-            self.window.set_mouse_visible(True)
+            self.window.set_mouse_cursor_visible(True)
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ESCAPE:

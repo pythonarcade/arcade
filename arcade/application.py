@@ -769,7 +769,7 @@ class Window(pyglet.window.Window):
         """
         return EVENT_UNHANDLED
 
-    def set_mouse_visible(self, visible: bool = True) -> None:
+    def set_mouse_cursor_visible(self, visible: bool = True) -> None:
         """
         Set whether to show the system's cursor while over the window
 
@@ -800,7 +800,7 @@ class Window(pyglet.window.Window):
         Args:
             visible: Whether to hide the system mouse cursor
         """
-        super().set_mouse_visible(visible)
+        super().set_mouse_cursor_visible(visible)
 
     def on_action(self, action_name: str, state) -> None:
         """
@@ -1145,17 +1145,17 @@ class Window(pyglet.window.Window):
         """Set if we sync our draws to the monitors vertical sync rate."""
         super().set_vsync(vsync)
 
-    def set_mouse_platform_visible(self, platform_visible=None) -> None:
+    def set_mouse_cursor_platform_visible(self, platform_visible=None) -> None:
         """
         .. warning:: You are probably looking for
-                     :meth:`~.Window.set_mouse_visible`!
+                     :meth:`~.Window.set_mouse_cursor_visible`!
 
         This is a lower level function inherited from the pyglet window.
 
         For more information on what this means, see the documentation
-        for :py:meth:`pyglet.window.Window.set_mouse_platform_visible`.
+        for :py:meth:`pyglet.window.Window.set_mouse_cursor_platform_visible`.
         """
-        super().set_mouse_platform_visible(platform_visible)
+        super().set_mouse_cursor_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True) -> None:
         """Capture the mouse."""

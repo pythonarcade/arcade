@@ -339,8 +339,8 @@ class WindowProxy:
     def get_pixel_ratio(self):
         return self.window.get_pixel_ratio()
 
-    def set_mouse_visible(self, visible):
-        self.window.set_mouse_visible(visible)
+    def set_mouse_cursor_visible(self, visible):
+        self.window.set_mouse_cursor_visible(visible)
 
     def center_window(self):
         self.window.center_window()

@@ -31,7 +31,7 @@ def test_window(window: arcade.Window):
 
     w.background_color = 255, 255, 255, 255
     assert w.background_color == (255, 255, 255, 255)
-    w.set_mouse_visible(True)
+    w.set_mouse_cursor_visible(True)
     w.set_size(width, height)
 
     v = window.ctx.viewport
