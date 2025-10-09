@@ -8,7 +8,9 @@ After installing the `arcade` package version 2.4.4+, this program can be run by
 typing:
 python -m arcade.examples.conway_alpha
 """
+
 import arcade
+from arcade import SpriteCircle, SpriteList
 import random
 
 # Set how many rows and columns we will have
@@ -35,34 +37,47 @@ ALPHA_ON = 255
 ALPHA_OFF = 0
 
 
-def create_grids():
+def create_grids(
+    cell_size: tuple[int, int] = (CELL_WIDTH, CELL_HEIGHT), cell_margin: int = CELL_MARGIN
+):
     """
     Create a 2D and 1D grid of sprites. We use the 1D SpriteList for drawing,
     and the 2D list for accessing via grid. Both lists point to the same set of
     sprites.
     """
     # One dimensional list of all sprites in the two-dimensional sprite list
-    grid_sprites_one_dim = arcade.SpriteList()
+    grid_sprites_one_dim: SpriteList[SpriteCircle] = SpriteList()
 
     # This will be a two-dimensional grid of sprites to mirror the two
     # dimensional grid of numbers. This points to the SAME sprites that are
     # in grid_sprite_list, just in a 2d manner.
-    grid_sprites_two_dim = []
+    grid_sprites_two_dim: list[list[SpriteCircle]] = []
+
+    # Calculate values we'll re-use below
+    cell_width, cell_height = cell_size
+    half_width = cell_width // 2
+    half_height = cell_height // 2
+
+    x_step = cell_width + cell_margin
+    y_step = cell_height + cell_margin
+
+    center_offset_x = half_width + cell_margin
+    center_offset_y = half_height + cell_margin
+
+    # Fit sprites into the cell size
+    radius = min(half_width, half_height)
 
     # Create a list of sprites to represent each grid location
     for row in range(ROW_COUNT):
         grid_sprites_two_dim.append([])
 
         for column in range(COLUMN_COUNT):
+            # Position the sprite
+            x = column * x_step + center_offset_x
+            y = row * y_step + center_offset_y
 
             # Make the sprite as a soft circle
-            sprite = arcade.SpriteCircle(CELL_WIDTH // 2, ALIVE_COLOR, soft=True)
-
-            # Position the sprite
-            x = column * (CELL_WIDTH + CELL_MARGIN) + (CELL_WIDTH / 2 + CELL_MARGIN)
-            y = row * (CELL_HEIGHT + CELL_MARGIN) + (CELL_HEIGHT / 2 + CELL_MARGIN)
-            sprite.center_x = x
-            sprite.center_y = y
+            sprite = SpriteCircle(radius, ALIVE_COLOR, True, center_x=x, center_y=y)
 
             # Add the sprite to both lists
             grid_sprites_one_dim.append(sprite)
@@ -72,7 +87,7 @@ def create_grids():
 
 
 def randomize_grid(grid: arcade.SpriteList):
-    """ Randomize the grid to alive/dead """
+    """Randomize the grid to alive/dead"""
     for cell in grid:
         pick = random.randrange(2)
         if pick:
@@ -106,24 +121,24 @@ class GameView(arcade.View):
         randomize_grid(self.layers_grid_sprites_one_dim[0])
 
     def reset(self):
-        """ Reset the grid """
+        """Reset the grid"""
         randomize_grid(self.layers_grid_sprites_one_dim[0])
 
     def on_draw(self):
-        """ Render the screen. """
+        """Render the screen."""
         # Clear all pixels in the window
         self.clear()
         self.layers_grid_sprites_one_dim[0].draw()
 
     def on_key_press(self, symbol: int, modifiers: int):
-        """ Handle key press events """
+        """Handle key press events"""
         if symbol == arcade.key.SPACE:
             self.reset()
         elif symbol == arcade.key.ESCAPE:
             self.window.close()
 
     def on_update(self, delta_time: float):
-        """ Update the grid """
+        """Update the grid"""
 
         # Flip layers
         if self.cur_layer == 0:
@@ -140,31 +155,37 @@ class GameView(arcade.View):
             for column in range(COLUMN_COUNT):
                 live_neighbors = 0
                 # -1 -1
-                if row > 0 and column > 0 \
-                        and layer1[row - 1][column - 1].alpha == ALPHA_ON:
+                if row > 0 and column > 0 and layer1[row - 1][column - 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # -1  0
                 if row > 0 and layer1[row - 1][column].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # -1 +1
-                if row > 0 and column < COLUMN_COUNT - 1\
-                        and layer1[row - 1][column + 1].alpha == ALPHA_ON:
+                if (
+                    row > 0
+                    and column < COLUMN_COUNT - 1
+                    and layer1[row - 1][column + 1].alpha == ALPHA_ON
+                ):
                     live_neighbors += 1
                 #  0 +1
-                if column < COLUMN_COUNT - 1 \
-                        and layer1[row][column + 1].alpha == ALPHA_ON:
+                if column < COLUMN_COUNT - 1 and layer1[row][column + 1].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # +1 +1
-                if row < ROW_COUNT - 1 \
-                        and column < COLUMN_COUNT - 1 \
-                        and layer1[row + 1][column + 1].alpha == ALPHA_ON:
+                if (
+                    row < ROW_COUNT - 1
+                    and column < COLUMN_COUNT - 1
+                    and layer1[row + 1][column + 1].alpha == ALPHA_ON
+                ):
                     live_neighbors += 1
                 # +1  0
                 if row < ROW_COUNT - 1 and layer1[row + 1][column].alpha == ALPHA_ON:
                     live_neighbors += 1
                 # +1 -1
-                if row < ROW_COUNT - 1 and column > 0 \
-                        and layer1[row + 1][column - 1].alpha == ALPHA_ON:
+                if (
+                    row < ROW_COUNT - 1
+                    and column > 0
+                    and layer1[row + 1][column - 1].alpha == ALPHA_ON
+                ):
                     live_neighbors += 1
                 #  0 -1
                 if column > 0 and layer1[row][column - 1].alpha == ALPHA_ON:
@@ -194,7 +215,7 @@ class GameView(arcade.View):
 
 
 def main():
-    """ Main function """
+    """Main function"""
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
     window.center_window()

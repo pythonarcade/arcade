@@ -375,7 +375,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
                 texture.image_data.hash,
             )
             # Don't bother removing texture on program exit
-            finalizer_ref.atexit = False
+            finalizer_ref.atexit = False  # type: ignore
             self._finalizers_created += 1
 
         self._textures_added += 1
