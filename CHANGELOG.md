@@ -3,6 +3,11 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## 4.0.0
+
+### New Features
+- Support for running with Pyodide in web browsers.
+
 ## 3.3.3
 
 - Support for Python 3.14
