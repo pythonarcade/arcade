@@ -238,6 +238,7 @@ from arcade import types as types
 from arcade import math as math
 from arcade import shape_list as shape_list
 from arcade import hitbox as hitbox
+from arcade import input as input
 from arcade import experimental as experimental
 from arcade.types import rect
 
@@ -387,6 +388,7 @@ __all__ = [
     "get_default_texture",
     "get_default_image",
     "hitbox",
+    "input",
     "experimental",
     "rect",
     "color",

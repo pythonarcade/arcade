@@ -1,3 +1,9 @@
+"""
+Example for handling input using the Arcade InputManager
+
+If Python and Arcade are installed, this example can be run from the command line with:
+python -m arcade.examples.input_manager
+"""
 #  type: ignore
 import random
 from collections.abc import Sequence
@@ -6,7 +12,7 @@ import pyglet
 from pyglet.input import Controller
 
 import arcade
-from arcade.future.input import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
+from arcade.input import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720

@@ -1,8 +1,8 @@
 #  type: ignore
 from __future__ import annotations
 
-from arcade.future.input import inputs
-from arcade.future.input.raw_dicts import RawAction, RawActionMapping, RawAxis, RawAxisMapping
+from arcade.input import inputs
+from arcade.input.raw_dicts import RawAction, RawActionMapping, RawAxis, RawAxisMapping
 
 
 class Action:

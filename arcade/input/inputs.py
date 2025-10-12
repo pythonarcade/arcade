@@ -8,7 +8,7 @@ However Controller buttons and axes are mapped to their Pyglet string values.
 from enum import Enum, auto
 from sys import platform
 
-from arcade.future.input.raw_dicts import RawBindBase
+from arcade.input.raw_dicts import RawBindBase
 
 
 class InputType(Enum):

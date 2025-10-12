@@ -8,6 +8,9 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 ### New Features
 - Support for running with Pyodide in web browsers.
 
+### Breaking Changes
+- `arcade.future.input` package has been moved to the top level `arcade.input`
+
 ## 3.3.3
 
 - Support for Python 3.14

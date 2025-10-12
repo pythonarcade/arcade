@@ -10,8 +10,8 @@ from pyglet.input.base import Controller
 from typing_extensions import TypedDict
 
 import arcade
-from arcade.future.input import inputs
-from arcade.future.input.input_mapping import (
+from arcade.input import inputs
+from arcade.input.input_mapping import (
     Action,
     ActionMapping,
     Axis,
@@ -19,8 +19,8 @@ from arcade.future.input.input_mapping import (
     serialize_action,
     serialize_axis,
 )
-from arcade.future.input.inputs import InputEnum, InputType
-from arcade.future.input.raw_dicts import RawAction, RawAxis
+from arcade.input.inputs import InputEnum, InputType
+from arcade.input.raw_dicts import RawAction, RawAxis
 from arcade.types import OneOrIterableOf
 from arcade.utils import grow_sequence
 
