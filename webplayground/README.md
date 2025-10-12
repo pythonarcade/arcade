@@ -1,25 +1,23 @@
 # Arcade Web Testing
-This directory contains a utility and some examples for early Testing of Arcade in web browsers.
+This directory contains a utility for early testing of Arcade in web browsers.
 
-An http server is provided with the `server.py` file. This file can be run with `python server.py` and will serve
-a local HTTP server on port 8000. From there, any desired example can be accessed in the browser by simply navigating
-to it's path. For example to view the `basic_renderer` example, you would navigate to `http://localhost:8000/basic_renderer`.
+An http server is provided with the `server.py` file. This file can be run with `python server.py` and will serve a local HTTP server on port 8000.
 
-There are some pre-requesites to running this server. It assums that you have the `development` branch of Pyglet 
+The index page will provide a list of all Arcade examples. This is generated dynamically on the fly when the page is loaded, and will show all examples in the `arcade.examples` package. This generates links which can be followed to open any example in the browser.
+
+There are some pre-requesites to running this server. It assumes that you have the `development` branch of Pyglet 
 checked out and in a folder named `pyglet` directly next to your Arcade repo directory. You will also need to have
-the `build` and `flit` packages from PyPi installed. These are used by Pyglet and Arcade to build wheel files, but are not
-generally installed for local development.
+the `build` and `flit` packages from PyPi installed. These are used by Pyglet and Arcade to build wheel files,
+but are not generally installed for local development.
 
 Assuming you have Pyglet ready to go, you can then start the server. It will build wheels for both Pyglet and Arcade, and copy them
-into this directory. This means that if you make changes to Arcade or Pyglet, you will need to restart this server in order to
-build new wheels for those changes to take effect. If you only change example code within this directory, there is no need to
-restart the server for it to take effect.
+into this directory. This means that if you make any, you will need to restart this server in order to build new wheels.
 
 ## How does this work?
 
-One problem with deploying into the web, is that the code and assets need to be injected into the WASM virtual filesystem. This can
-be easier said than done. The provided HTTP server has a special component to it, that when it receives a request ending in `.zip` it will
-look for a folder name matching the filename of the .zip. It will then create a .zip from that folder, and serve the zip file back.
+The web server itself is built with a nice little HTTP server library named [Bottle](https://github.com/bottlepy/bottle). We need to run an HTTP server locally
+to load anything into WASM in the browser, it will not work if we just server it files directly due to browser security constraints. For the Arcade examples specifically,
+we are taking advantage of the fact that the example code is packaged directly inside of Arcade to enable executing them in the browser.
 
-This means that in an HTML file, code for an example can be included by simple appending `.zip` to the path to the package and assuming
-it exists. The server will create it dynamically. For a very basic example, see `basic_renderer` in this directory.
+If we need to add extra code that is not part of the Arcade package, that will require extension of this server to handle packaging it properly for loading into WASM, and then
+serving that package.

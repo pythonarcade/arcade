@@ -12,8 +12,8 @@
             await pyodide.loadPackage("micropip");
             const micropip = pyodide.pyimport("micropip");
             await pyodide.loadPackage("pillow"); // Arcade needs Pillow
-            await micropip.install("http://localhost:8000/pyglet-3.0.0a1-py3-none-any.whl");
-            await micropip.install("http://localhost:8000/arcade-3.3.2-py3-none-any.whl");
+            await micropip.install("http://localhost:8000/static/{{pyglet_wheel}}");
+            await micropip.install("http://localhost:8000/static/{{arcade_wheel}}");
 
             let response = await fetch("./package.zip");
             let buffer = await response.arrayBuffer();

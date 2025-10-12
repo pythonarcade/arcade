@@ -61,6 +61,7 @@ dev = [
     "click==8.1.7",     # Temp fix until we bump typer
     "typer==0.12.5",    # Needed for make.py
     "wheel",
+    "bottle"            # Used for web testing playground
 ]
 # Testing only
 testing_libraries = ["pytest", "pytest-mock", "pytest-cov", "pyyaml==6.0.1"]
