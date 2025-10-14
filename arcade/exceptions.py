@@ -24,14 +24,14 @@ _TType = TypeVar("_TType", bound=type)
 _CT = TypeVar("_CT")  # Comparable type, ie supports the <= operator
 
 
-
 class NoArcadeWindowError(RuntimeError):
     """No valid Arcade window exists.
-    
+
     It may be handled as a :py:class:`RuntimeError`.
     """
+
     ...
- 
+
 
 class OutsideRangeError(ValueError):
     """
