@@ -27,6 +27,7 @@ __all__ = [
     "get_display_size",
     "get_window",
     "set_window",
+    "window_exists",
     "close_window",
     "run",
     "exit",
@@ -82,6 +83,21 @@ def set_window(window: Window | None) -> None:
     """
     global _window
     _window = window
+
+
+def window_exists() -> bool:
+    """
+    Returns True or False based on wether there is currently a Window.
+
+    Returns:
+        Boolean for if a window exists.
+    """
+    try:
+        get_window()
+    except NoArcadeWindowError:
+        return False
+
+    return True
 
 
 def close_window() -> None:

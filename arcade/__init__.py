@@ -90,6 +90,7 @@ from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
+from .window_commands import window_exists
 
 from .sections import Section, SectionManager
 
@@ -359,6 +360,7 @@ __all__ = [
     "create_text_sprite",
     "clear_timings",
     "get_window",
+    "window_exists",
     "get_fps",
     "has_line_of_sight",
     "load_animated_gif",
