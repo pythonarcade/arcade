@@ -26,7 +26,6 @@ _window: Window | None = None
 __all__ = [
     "get_display_size",
     "get_window",
-    "have_window",
     "set_window",
     "close_window",
     "run",
@@ -56,18 +55,6 @@ def get_display_size(screen_id: int = 0) -> tuple[int, int]:
     return screen.width, screen.height
 
 
-def have_window() -> bool:
-    """Returns ``True`` if an Arcade window exists.
-
-    .. tip:: Use this to avoid an :py:class:`~arcade.exceptions.NoArcadeWindowError`.
-
-
-    Returns:
-        Whether a :py:class:`~arcade.Window` exists.
-    """
-    return _window is None
-
-
 def get_window() -> Window:
     """Return a handle to the current window.
 
@@ -78,7 +65,6 @@ def get_window() -> Window:
     Raises:
         :py:class:`~arcade.exceptions.NoArcadeWindowError` when no window exists.
     """
-    # This avoids calling the function above because it may be a hot code path.
     if _window is None:
         raise NoArcadeWindowError(
             "No window is active. It has not been created yet, or it was closed."
