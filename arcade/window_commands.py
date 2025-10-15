@@ -60,7 +60,7 @@ def get_window() -> Window:
     """Return a handle to the current window.
 
     If no window exists, it will raise an exception you can
-    handle as a :py:class:`RuntimeError`. Use :py:func:`have_window`
+    handle as a :py:class:`RuntimeError`. Use :py:func:`window_exists`
     to prevent raising an exception.
 
     Raises:
