@@ -156,7 +156,6 @@ def _move_sprite(
             # accumulating motion from multiple platforms which can cause
             # sliding/jitter when the player is between blocks.
 
-
             # Prefer platforms (moving sprites) among the collisions.
             platform_items = [
                 item
@@ -167,9 +166,9 @@ def _move_sprite(
             # Choose the platform with the highest top (closest to the player)
             chosen_platform = None
             if platform_items:
-                chosen_platform = max(platform_items,
-                                    key=lambda s: getattr(s, "top",
-                                                        float("-inf")))
+                chosen_platform = max(
+                    platform_items, key=lambda s: getattr(s, "top", float("-inf"))
+                )
 
             # Nudge the player up until no longer colliding with each collided item
             for item in hit_list_x:
