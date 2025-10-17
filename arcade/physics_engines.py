@@ -149,14 +149,37 @@ def _move_sprite(
             #       f" {self.player_sprite.change_y}")
         elif moving_sprite.change_y < 0:
             # Reset number of jumps
+            # If we collided while moving down, we may be landing on one or more
+            # floor-like sprites. If multiple moving platforms overlap under
+            # the player, only apply the horizontal motion of a single
+            # platform (the one most directly under the player) to avoid
+            # accumulating motion from multiple platforms which can cause
+            # sliding/jitter when the player is between blocks.
+
+
+            # Prefer platforms (moving sprites) among the collisions.
+            platform_items = [
+                item
+                for item in hit_list_x
+                if getattr(item, "change_x", 0.0) != 0 or getattr(item, "change_y", 0.0) != 0
+            ]
+
+            # Choose the platform with the highest top (closest to the player)
+            chosen_platform = None
+            if platform_items:
+                chosen_platform = max(platform_items,
+                                    key=lambda s: getattr(s, "top",
+                                                        float("-inf")))
+
+            # Nudge the player up until no longer colliding with each collided item
             for item in hit_list_x:
                 while check_for_collision(moving_sprite, item):
                     # self.player_sprite.bottom = item.top <- Doesn't work for ramps
                     moving_sprite.center_y += 0.25
 
-                # NOTE: Not all sprites have velocity
-                if getattr(item, "change_x", 0.0) != 0:
-                    moving_sprite.center_x += item.change_x  # type: ignore
+            # Apply horizontal movement from the chosen platform (once)
+            if chosen_platform is not None and getattr(chosen_platform, "change_x", 0.0) != 0:
+                moving_sprite.center_x += chosen_platform.change_x  # type: ignore
 
             # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         else:
