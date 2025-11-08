@@ -3,6 +3,12 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## Unreleased
+
+- Upgraded Pillow to 12.0.0 for Python 3.14 support.
+- Adds a new `arcade.NoAracdeWindowError` exception type. This is raised when certain window operations are performed and there is no valid Arcade window found. Previously where this error would be raised, we raised a standard `RuntimeError`, this made it harder to properly catch and act accordingly. This new exception subclasses `RuntimeError`, so you can still catch this error the same way as before. The `arcade.get_window()` function will now raise this if there is no window.
+- Along with the new exception type, is a new `arcade.windows_exists()` function which will return True or False based on if there is currently an active window.
+
 ## 3.3.3
 
 - Support for Python 3.14
