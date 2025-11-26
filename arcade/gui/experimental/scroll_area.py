@@ -239,9 +239,6 @@ class UIScrollArea(UILayout):
 
     def add(self, child: W, **kwargs) -> W:
         """Add a child to the widget."""
-        if self._children:
-            raise ValueError("UIScrollArea can only have one child")
-
         super().add(child, **kwargs)
         self.trigger_full_render()
 
