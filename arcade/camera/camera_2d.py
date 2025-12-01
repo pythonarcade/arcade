@@ -515,14 +515,14 @@ class Camera2D:
     def move_to(self, position: Point2, *, duration: float | None = None) -> Point2:
         """
         Move the camera to the provided position.
-        If duration is None is the same as setting camera.position.
-        Rate makes it easy to move the camera smoothly over time.
+        If duration is None this is the same as setting camera.position.
+        duration makes it easy to move the camera smoothly over time.
 
-        When duration is not None it uses `arcade.math.smerp` method to
-        smoothly move to the target position. This means duration does
-        NOT equal the fraction to move. To make the motion frame rate
-        independant use `duration = dt * T` where T is the number
-        of seconds to move half the distance to the target position.
+        When duration is not None it uses :py:func:`arcade.math.smerp` method
+        to smoothly move to the target position. This means duration does NOT
+        equal the fraction to move. To make the motion frame rate independant
+        use ``duration = dt * T`` where ``T`` is the number of seconds to move
+        half the distance to the target position.
 
         Args:
             position: x, y position in world space to move too
@@ -549,8 +549,8 @@ class Camera2D:
     def move_by(self, change: Point2) -> Point2:
         """
         Move the camera in world space along the XY axes by the provided change.
-        If you want to drag the camera with a mouse `camera2D.drag_by` is the method
-        to use.
+        If you want to drag the camera with a mouse :py:func:`camera2D.drag_by`
+        is the method to use.
 
         Args:
             change: amount to move XY position in world space
@@ -569,24 +569,25 @@ class Camera2D:
         This is a utility method to make it easy to drag the camera correctly.
         normally zooming in/out, rotating the camera, and using a non 1:1 projection
         causes the mouse dragging to desync with the camera motion. It automatically
-        negates the change so the change represents the amount the camera `appears`
+        negates the change so the change represents the amount the camera appears
         to move. This is because moving the camera left makes everything appear to
-        move right. So a user moving the mouse right wants expects the camera to move
+        move right. So a user moving the mouse right expects the camera to move
         left.
 
-        The simplest use case is with the Window/View's `on_mouse_drag`
+        The simplest use case is with the Window/View's :py:func:`on_mouse_drag`
         ```python
         def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
             self.camera.drag_by((dx, dy))
         ```
 
-        ! This method is more expensive than `Camera2D.move_by` so use only when needed.
-        ! If your camera is 1:1 with the screen and you only zoom in and out you can get
-        ! away with `camera2D.move_by(-change / camera.zoom)`.
+        .. warning:: This method is more expensive than :py:func:`Camera2D.move_by` so
+                    use only when needed. If your camera is 1:1 with the screen and you
+                    only zoom in and out you can get away with
+                    ``camera2D.move_by(-change / camera.zoom)``.
 
-        ! This method must assume that viewport has the same pixel scale as the
-        ! window. If you are doing some form of upscaling you will have to scale
-        ! the mouse dx and dy by the difference in pixel scale.
+        .. warning:: This method must assume that viewport has the same pixel scale as the
+                    window. If you are doing some form of upscaling you will have to scale
+                    the mouse dx and dy by the difference in pixel scale.
 
         Args:
             change: The number of pixels to move the camera by
