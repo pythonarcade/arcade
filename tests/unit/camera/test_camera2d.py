@@ -82,12 +82,7 @@ def test_camera2d_init_inheritance_safety(window: Window, camera_class):
     assert isinstance(subclassed, Camera2DSub1)
 
 
-ASPECT_RATIOS = (
-    1.0,
-    4.0/3.0,
-    16.0/9.0,
-    16.0/10.0
-)
+ASPECT_RATIOS = (1.0, 4.0 / 3.0, 16.0 / 9.0, 16.0 / 10.0)
 
 
 def test_camera2d_init_aspect_equal_0_raises_zeroprojectiondimension(window: Window):
@@ -124,8 +119,8 @@ def test_camera2d_init_uses_render_target_size(window: Window, width, height):
     assert ortho_camera.viewport_bottom == 0
     assert ortho_camera.viewport_top == height
 
-    assert ortho_camera.position.x == width/2.0
-    assert ortho_camera.position.y == height/2.0
+    assert ortho_camera.position.x == width / 2.0
+    assert ortho_camera.position.y == height / 2.0
 
 
 @pytest.mark.parametrize("width, height", RENDER_TARGET_SIZES)
@@ -144,8 +139,8 @@ def test_camera2d_from_camera_data_uses_render_target_size(window: Window, width
     assert ortho_camera.viewport_bottom == 0
     assert ortho_camera.viewport_top == height
 
-    assert ortho_camera.position.x == width/2.0
-    assert ortho_camera.position.y == height/2.0
+    assert ortho_camera.position.x == width / 2.0
+    assert ortho_camera.position.y == height / 2.0
 
 
 def test_move_camera_and_project(window: Window):
