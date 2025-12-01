@@ -134,6 +134,7 @@ class Camera2D:
         else:
             width = viewport.width
             height = viewport.width / aspect
+        viewport = XYWH(viewport.x, viewport.y, width, height)
         half_width = width / 2
         half_height = height / 2
 
@@ -172,7 +173,7 @@ class Camera2D:
             left=left, right=right, top=top, bottom=bottom, near=near, far=far
         )
 
-        self.viewport: Rect = viewport or LRBT(0, 0, width, height)
+        self.viewport: Rect = viewport
         """
         A rect which describes how the final projection should be mapped
         from unit-space. defaults to the size of the render_target or window
