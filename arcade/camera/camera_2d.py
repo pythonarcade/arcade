@@ -331,8 +331,6 @@ class Camera2D:
         x, y = self._projection_data.rect.x, self._projection_data.rect.y
         self._projection_data.rect = XYWH(x, y, self.viewport_width, self.viewport_height)
 
-    equalize = equalise
-
     def match_window(
         self,
         viewport: bool = True,
