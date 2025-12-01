@@ -545,6 +545,24 @@ class Camera2D:
 
         self._camera_data.position = (x, y, z1)
         return x, y
+
+    def move_by(self, change: Point2) -> Point2:
+        """
+        Move the camera in world space along the XY axes by the provided change.
+        If you want to drag the camera with a mouse `camera2D.drag_by` is the method
+        to use.
+
+        Args:
+            change: amount to move XY position in world space
+
+        Returns:
+            final XY position of the camera
+        """
+        pos = self._camera_data.position
+        new = pos[0] + change[0], pos[1] + change[1]
+        self._camera_data.position = new[0], new[1], pos[2]
+        return new
+
     @property
     def view_data(self) -> CameraData:
         """The view data for the camera.
