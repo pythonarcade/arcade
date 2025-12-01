@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from contextlib import contextmanager
-from math import atan2, cos, degrees, radians, sin
+from math import atan2, cos, degrees, radians, sin, pow
 from typing import TYPE_CHECKING
 
 from pyglet.math import Vec2, Vec3
@@ -553,10 +553,30 @@ class Camera2D:
     # Setter with different signature will cause mypy issues
     # https://github.com/python/mypy/issues/3004
     @position.setter
-    def position(self, _pos: Point) -> None:
-        x, y, *_z = _pos
+    def position(self, pos: Point) -> None:
+        x, y, *_z = pos
         z = self._camera_data.position[2] if not _z else _z[0]
         self._camera_data.position = (x, y, z)
+
+    @property
+    def x(self) -> float:
+        """The 2D world position of the camera along the X axis"""
+        return self._camera_data.position[0]
+
+    @x.setter
+    def x(self, x: float) -> None:
+        pos = self._camera_data.position
+        self._camera_data.position = (x, pos[1], pos[2])
+
+    @property
+    def y(self) -> float:
+        """The 2D world position of the camera along the Y axis"""
+        return self._camera_data.position[1]
+
+    @y.setter
+    def y(self, y: float) -> None:
+        pos = self._camera_data.position
+        self._camera_data.position = (pos[0], y, pos[2])
 
     @property
     def projection(self) -> Rect:
