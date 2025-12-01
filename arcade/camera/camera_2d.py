@@ -60,7 +60,11 @@ class Camera2D:
             If the viewport is not 1:1 with the projection then positions in world space
             won't match pixels on screen.
         position:
-            The 2D position of the camera in the XY plane.
+            The 2D position of the camera.
+
+            This is in world space, so the same as :py:class:`Sprite` and draw commands.
+            The default projection is a :py:func:`XYWH` rect positioned at (0, 0) so the
+            position of the camera is the center of the viewport.
         up:
             A 2D vector which describes which direction is up
             (defines the +Y-axis of the camera space).
@@ -75,6 +79,11 @@ class Camera2D:
             The near clipping plane of the camera.
         far:
             The far clipping plane of the camera.
+        aspect: The ratio between width and height that the viewport should
+            be constrained to. If unset then the viewport just matches the given
+            size. The aspect ratio describes how much larger the width should be
+            compared to the height. i.e. for an aspect ratio of ``4:3`` you should
+            input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
         scissor:
             A ``Rect`` which will crop the camera's output to this area on screen.
             Unlike the viewport this has no influence on the visuals rendered with
@@ -96,6 +105,7 @@ class Camera2D:
         near: float = DEFAULT_NEAR_ORTHO,
         far: float = DEFAULT_FAR,
         *,
+        aspect: float | None = None,
         scissor: Rect | None = None,
         render_target: Framebuffer | None = None,
         window: Window | None = None,
@@ -111,7 +121,19 @@ class Camera2D:
         # but we need to have some form of default size.
         render_target = render_target or self._window.ctx.screen
         viewport = viewport or LBWH(*render_target.viewport)
-        width, height = viewport.size
+
+        if aspect is None:
+            width, height = viewport.size
+        elif aspect == 0.0:
+            raise ZeroProjectionDimension(
+                "aspect ratio is 0 which will cause invalid viewport dimensions."
+            )
+        elif viewport.height * aspect < viewport.width:
+            width = viewport.height * aspect
+            height = viewport.height
+        else:
+            width = viewport.width
+            height = viewport.width / aspect
         half_width = width / 2
         half_height = height / 2
 
@@ -136,8 +158,10 @@ class Camera2D:
                 f"projection depth is 0 due to equal {near=} and {far=} values"
             )
 
-        pos_x = position[0] if position is not None else half_width
-        pos_y = position[1] if position is not None else half_height
+        # By using -left and -bottom this ensures that (0.0, 0.0) is always
+        # in the bottom left corner of the viewport
+        pos_x = position[0] if position is not None else -left
+        pos_y = position[1] if position is not None else -bottom
         self._camera_data = CameraData(
             position=(pos_x, pos_y, 0.0),
             up=(up[0], up[1], 0.0),
@@ -350,7 +374,7 @@ class Camera2D:
             scissor: Flag whether to also equalize the scissor box to the viewport.
                 On by default
             position: Flag whether to position the camera so that (0.0, 0.0) is in
-                the bottom-left
+                the bottom-left of the viewport
             aspect: The ratio between width and height that the viewport should
                 be constrained to. If unset then the viewport just matches the window
                 size. The aspect ratio describes how much larger the width should be
@@ -384,7 +408,7 @@ class Camera2D:
                 The projection center stays fixed, and the new projection matches only in size.
             scissor: Flag whether to update the scissor value.
             position: Flag whether to position the camera so that (0.0, 0.0) is in
-                the bottom-left
+                the bottom-left of the viewport
             aspect: The ratio between width and height that the value should
                 be constrained to. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
@@ -426,7 +450,7 @@ class Camera2D:
                 The projection center stays fixed, and the new projection matches only in size.
             scissor: Flag whether to update the scissor value.
             position: Flag whether to position the camera so that (0.0, 0.0) is in
-                the bottom-left
+                the bottom-left of the viewport
             aspect: The ratio between width and height that the value should
                 be constrained to. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
@@ -452,7 +476,11 @@ class Camera2D:
             self.scissor = value
 
         if position:
-            self.position = Vec2(-self._projection_data.left, -self._projection_data.bottom)
+            self._camera_data.position = (
+                -self._projection_data.left,
+                -self._projection_data.bottom,
+                self._camera_data.position[2]
+            )
 
     def aabb(self) -> Rect:
         """
@@ -647,7 +675,7 @@ class Camera2D:
 
         This is in world space, so the same as :py:class:`Sprite` and draw commands.
         The default projection is a :py:func:`XYWH` rect positioned at (0, 0) so the
-        position of the camera is the center of the screen.
+        position of the camera is the center of the viewport.
         """
         return Vec2(self._camera_data.position[0], self._camera_data.position[1])
 
