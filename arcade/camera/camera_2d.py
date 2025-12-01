@@ -563,6 +563,51 @@ class Camera2D:
         self._camera_data.position = new[0], new[1], pos[2]
         return new
 
+    def drag_by(self, change: Point2) -> Point2:
+        """
+        Move the camera in world space by an amount in screen space.
+        This is a utility method to make it easy to drag the camera correctly.
+        normally zooming in/out, rotating the camera, and using a non 1:1 projection
+        causes the mouse dragging to desync with the camera motion. It automatically
+        negates the change so the change represents the amount the camera `appears`
+        to move. This is because moving the camera left makes everything appear to
+        move right. So a user moving the mouse right wants expects the camera to move
+        left.
+
+        The simplest use case is with the Window/View's `on_mouse_drag`
+        ```python
+        def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+            self.camera.drag_by((dx, dy))
+        ```
+
+        ! This method is more expensive than `Camera2D.move_by` so use only when needed.
+        ! If your camera is 1:1 with the screen and you only zoom in and out you can get
+        ! away with `camera2D.move_by(-change / camera.zoom)`.
+
+        ! This method must assume that viewport has the same pixel scale as the
+        ! window. If you are doing some form of upscaling you will have to scale
+        ! the mouse dx and dy by the difference in pixel scale.
+
+        Args:
+            change: The number of pixels to move the camera by
+
+        Returns:
+            The final position of the camera.
+        """
+
+        # Early exit to avoid expensive matrix generation
+        if change[0] == 0.0 and change[1] == 0.0:
+            return self._camera_data.position[0], self._camera_data.position[1]
+
+        x0, y0, _ = self.unproject((0, 0))
+        xc, yc, _ = self.unproject(change)
+
+        dx, dy = xc - x0, yc - y0
+        pos = self._camera_data.position
+        new = pos[0] - dx, pos[1] - dy
+        self._camera_data.position = new[0], new[1], pos[2]
+        return new
+
     @property
     def view_data(self) -> CameraData:
         """The view data for the camera.
