@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from contextlib import contextmanager
-from math import atan2, cos, degrees, radians, sin, pow
+from math import atan2, cos, degrees, pow, radians, sin
 from typing import TYPE_CHECKING
 
 from pyglet.math import Vec2, Vec3
