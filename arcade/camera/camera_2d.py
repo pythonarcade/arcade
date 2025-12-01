@@ -457,7 +457,11 @@ class Camera2D:
                 If unset then the value will not be updated.
         """
         if aspect is not None:
-            if value.height * aspect < value.width:
+            if aspect == 0.0:
+                raise ZeroProjectionDimension(
+                    "aspect ratio is 0 which will cause invalid viewport dimensions."
+                )
+            elif value.height * aspect < value.width:
                 w = value.height * aspect
                 h = value.height
             else:
