@@ -479,7 +479,7 @@ class Camera2D:
             self._camera_data.position = (
                 -self._projection_data.left,
                 -self._projection_data.bottom,
-                self._camera_data.position[2]
+                self._camera_data.position[2],
             )
 
     def aabb(self) -> Rect:
