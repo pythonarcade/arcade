@@ -322,7 +322,7 @@ class Camera2D:
         _view = generate_view_matrix(self.view_data)
         return unproject_orthographic(screen_coordinate, self.viewport.lbwh_int, _view, _projection)
 
-    def equalise(self) -> None:
+    def equalize(self) -> None:
         """
         Forces the projection to match the size of the viewport.
         When matching the projection to the viewport the method keeps
