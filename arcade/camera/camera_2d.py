@@ -644,7 +644,13 @@ class Camera2D:
 
     @property
     def position(self) -> Vec2:
-        """The 2D world position of the camera along the X and Y axes."""
+        """
+            The 2D position of the camera.
+
+            This is in world space, so the same as :py:class:`Sprite` and draw commands.
+            The default projection is a :py:func:`XYWH` rect positioned at (0, 0) so the
+            position of the camera is the center of the screen.
+        """
         return Vec2(self._camera_data.position[0], self._camera_data.position[1])
 
     # Setter with different signature will cause mypy issues
