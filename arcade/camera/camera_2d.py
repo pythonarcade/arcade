@@ -512,6 +512,39 @@ class Camera2D:
 
         return abs(dot_x) <= h_width and abs(dot_y) <= h_height
 
+    def move_to(self, position: Point2, *, duration: float | None = None) -> Point2:
+        """
+        Move the camera to the provided position.
+        If duration is None is the same as setting camera.position.
+        Rate makes it easy to move the camera smoothly over time.
+
+        When duration is not None it uses `arcade.math.smerp` method to
+        smoothly move to the target position. This means duration does
+        NOT equal the fraction to move. To make the motion frame rate
+        independant use `duration = dt * T` where T is the number
+        of seconds to move half the distance to the target position.
+
+        Args:
+            position: x, y position in world space to move too
+            duration: The number of frames it takes to approximately move half-way
+                to the target position
+
+        Returns:
+            The actual position the camera was set too.
+        """
+        if duration is None:
+            x, y = position
+            self._camera_data.position = (x, y, self._camera_data.position[2])
+            return position
+
+        x1, y1, z1 = self._camera_data.position
+        x2, y2 = position
+        d = pow(2, -duration)
+        x = x1 + (x2 - x1) * d
+        y = y1 + (y2 - y1) * d
+
+        self._camera_data.position = (x, y, z1)
+        return x, y
     @property
     def view_data(self) -> CameraData:
         """The view data for the camera.
