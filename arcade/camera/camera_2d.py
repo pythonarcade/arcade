@@ -575,10 +575,10 @@ class Camera2D:
         left.
 
         The simplest use case is with the Window/View's :py:func:`on_mouse_drag`
-        ```python
-        def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-            self.camera.drag_by((dx, dy))
-        ```
+        .. code-block:: python
+
+            def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+                    self.camera.drag_by((dx, dy))
 
         .. warning:: This method is more expensive than :py:func:`Camera2D.move_by` so
                     use only when needed. If your camera is 1:1 with the screen and you
