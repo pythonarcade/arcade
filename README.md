@@ -1,68 +1,37 @@
-# Welcome to The Arcade Library
+#make.py – Project Task Runner
+#explains make.py
+make.py is a Python-based task runner that invokes pytest for testing, ruff for linting and formatting, mypy and pyright for static type checking, and sphinx-build.
 
-<p align="center">
-    <a href="https://img.shields.io/pypi/l/arcade">
-        <img alt="MIT License" title="MIT License" src="https://img.shields.io/pypi/l/arcade">
-    </a>
-    <a href="http://makeapullrequest.com">
-        <img alt="Pull Requests Welcome" title="Pull Requests Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" />
-    </a>
-    <a href="http://www.firsttimersonly.com/">
-        <img alt="First Timers Friendly" title="First Timers Friendly" src="https://img.shields.io/badge/first--timers--only-friendly-blue.svg" />
-    </a>
-</p>
 
-Arcade is an easy-to-learn Python library for creating 2D video games.
-It is ideal for beginning programmers or programmers who want to create
-2D games without learning a complex framework.
+##Purpose
 
-[pyglet]: https://github.com/pyglet/pyglet
-[Games Made with Arcade]: https://api.arcade.academy/en/latest/community/games/sample_games.html
-Arcade is built on top of [pyglet][] and OpenGL. See [Games Made with Arcade][]
-for example game jam entries and more.
+The make.py script centralizes routine commands used during development, including:
 
-[Arcade Discord Server]: https://discord.gg/ZjGDqMp
+- Documentation builds
+- Code formatting and linting
+- Static type analysis
+- Unit and integration testing
 
-<p align="center">
-    <a href="https://img.shields.io/pypi/dm/arcade">
-        <img alt="PyPI - Downloads" title="PyPI - Downloads" src="https://img.shields.io/pypi/dm/arcade">
-    </a>
-    <a href="https://img.shields.io/github/commit-activity/m/pythonarcade/arcade">
-        <img alt="GitHub Commit Activity" title="GitHub Commit Activity" src="https://img.shields.io/github/commit-activity/m/pythonarcade/arcade">
-    </a>
-    <a href="https://img.shields.io/github/contributors/pythonarcade/arcade">
-        <img alt="GitHub Contributors" title="GitHub Contributors" src="https://img.shields.io/github/contributors/pythonarcade/arcade">
-    </a>
-    <a href="https://img.shields.io/github/stars/pythonarcade/arcade">
-        <img alt="GitHub Stars" title="GitHub Stars" src="https://img.shields.io/github/stars/pythonarcade/arcade">
-    </a>
-</p>
+This ensures that contributors use a consistent workflow regardless of operating system or shell environment.
 
-## Stable Documentation
+##Requirements
+To use make.py, the following Python packages must be available:
 
-Read the stable documentation at <https://api.arcade.academy>.
+- `typer`
+- `pytest`
+- `ruff`
+- `mypy`
+- `pyright`
+- `sphinx`
+- `sphinx-autobuild`
 
-## Development Previews
+If any of these are missing, make.py will exit with an error message indicating what needs to be installed.
 
-Preview the next release at <https://api.arcade.academy/en/development/>.
+##Command Structure
 
-## Citation
+All commands follow the same pattern:
 
-```
-@Online{PythonArcade,
-    author = {Paul Vincent Craven},
-    title = {Easy to use Python library for creating 2D Arcade games.},
-    date = {2025-01-01},
-    publisher = {GitHub},
-    journal = {GitHub repository},
-    howpublished = {\url{https://github.com/pythonarcade/arcade}},
-    commit = {<insert hash if needed>}
-}
-```
+```bash
+python make.py <command>
 
-## Contact the Maintainers
 
-The best way to contact and chat with the maintainers is on the
-[Arcade Discord Server][].
-
-<paul@cravenfamily.com>
