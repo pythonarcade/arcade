@@ -16,11 +16,11 @@ Then create a simple program with a frame buffer:
 Now, color everything that doesn't have an alpha of zero as green:
 
 .. literalinclude:: step_02.py
-    :caption: Pass-through frame buffer
+    :caption: Green where alpha is not zero in the FBO
     :linenos:
 
 Something about passing uniform data to the shader:
 
 .. literalinclude:: step_03.py
-    :caption: Pass-through frame buffer
+    :caption: Passing uniform data to the shader
     :linenos:

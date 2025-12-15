@@ -7,6 +7,7 @@ import warnings
 from typing import TypeVar
 
 __all__ = [
+    "NoArcadeWindowError",
     "OutsideRangeError",
     "IntOutsideRangeError",
     "FloatOutsideRangeError",
@@ -21,6 +22,15 @@ __all__ = [
 # Arcade, we make our own local type variables.
 _TType = TypeVar("_TType", bound=type)
 _CT = TypeVar("_CT")  # Comparable type, ie supports the <= operator
+
+
+class NoArcadeWindowError(RuntimeError):
+    """No valid Arcade window exists.
+
+    It may be handled as a :py:class:`RuntimeError`.
+    """
+
+    ...
 
 
 class OutsideRangeError(ValueError):

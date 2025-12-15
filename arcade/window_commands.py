@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 
 import pyglet
 
+from arcade.exceptions import NoArcadeWindowError
 from arcade.types import RGBA255, Color
 
 if TYPE_CHECKING:
@@ -26,6 +27,7 @@ __all__ = [
     "get_display_size",
     "get_window",
     "set_window",
+    "window_exists",
     "close_window",
     "run",
     "exit",
@@ -55,13 +57,19 @@ def get_display_size(screen_id: int = 0) -> tuple[int, int]:
 
 
 def get_window() -> Window:
-    """
-    Return a handle to the current window.
+    """Return a handle to the current window.
 
-    :return: Handle to the current window.
+    If no window exists, it will raise an exception you can
+    handle as a :py:class:`RuntimeError`. Use :py:func:`window_exists`
+    to prevent raising an exception.
+
+    Raises:
+        :py:class:`~arcade.exceptions.NoArcadeWindowError` when no window exists.
     """
     if _window is None:
-        raise RuntimeError("No window is active. It has not been created yet, or it was closed.")
+        raise NoArcadeWindowError(
+            "No window is active. It has not been created yet, or it was closed."
+        )
 
     return _window
 
@@ -75,6 +83,21 @@ def set_window(window: Window | None) -> None:
     """
     global _window
     _window = window
+
+
+def window_exists() -> bool:
+    """
+    Returns True or False based on wether there is currently a Window.
+
+    Returns:
+        Boolean for if a window exists.
+    """
+    try:
+        get_window()
+    except NoArcadeWindowError:
+        return False
+
+    return True
 
 
 def close_window() -> None:
