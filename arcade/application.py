@@ -19,6 +19,7 @@ if is_pyodide():
     pyglet.options.backend = "webgl"
 
 import pyglet.window.mouse
+import pyglet.config
 from pyglet.display.base import Screen, ScreenMode
 from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor
@@ -194,11 +195,9 @@ class Window(pyglet.window.Window):
         config = None
         # Attempt to make window with antialiasing
         if gl_api == "opengl" or gl_api == "opengles":
-            import pyglet.graphics.api.gl as gl
-
             if antialiasing:
                 try:
-                    config = gl.base.OpenGLConfig(
+                    config = pyglet.config.OpenGLConfig(
                         major_version=gl_version[0],
                         minor_version=gl_version[1],
                         opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
@@ -218,7 +217,7 @@ class Window(pyglet.window.Window):
                     antialiasing = False
             # If we still don't have a config
             if not config:
-                config = gl.base.OpenGLConfig(
+                config = pyglet.config.OpenGLConfig(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
                     opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
@@ -230,14 +229,13 @@ class Window(pyglet.window.Window):
                     blue_size=8,
                     alpha_size=8,
                 )
-            config = config.match(self)
         try:
             super().__init__(
                 width=width,
                 height=height,
                 caption=title,
                 resizable=resizable,
-                config=config,
+                config=config,  # type: ignore Pylance seems to think this is an EmscriptenWindow at this point?
                 vsync=vsync,
                 visible=visible,
                 style=style,
