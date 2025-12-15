@@ -14,7 +14,7 @@
             await pyodide.loadPackage("micropip");
             const micropip = pyodide.pyimport("micropip");
             await pyodide.loadPackage("pillow"); // Arcade needs Pillow
-            await micropip.install("http://localhost:8000/static/{{pyglet_wheel}}");
+            await micropip.install("pyglet==3.0.dev1", pre=true)
             await micropip.install("http://localhost:8000/static/{{arcade_wheel}}");
 
             // We are importing like this because some example files have numbers in the name, and you can't use those in normal import statements

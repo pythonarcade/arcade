@@ -14,10 +14,6 @@ from arcade import examples
 
 here = Path(__file__).parent.resolve()
 
-path_pyglet = Path("../../pyglet")
-pyglet_wheel_filename = "pyglet-3.0.0a1-py3-none-any.whl"
-path_pyglet_wheel = path_pyglet / "dist" / pyglet_wheel_filename
-
 path_arcade = Path("../")
 arcade_wheel_filename = "arcade-4.0.0.dev1-py3-none-any.whl"
 path_arcade_wheel = path_arcade / "dist" / arcade_wheel_filename
@@ -56,19 +52,12 @@ def example(name="platform_tutorial.01_open_window"):
         "example.tpl",
         name=name,
         arcade_wheel=arcade_wheel_filename,
-        pyglet_wheel=pyglet_wheel_filename,
     )
 
 
 def main():
     # Get us in this file's parent directory
     os.chdir(here)
-
-    # Go to pyglet and build a wheel
-    os.chdir(path_pyglet)
-    subprocess.run(["python", "make.py", "dist"])
-    os.chdir(here)
-    shutil.copy(path_pyglet_wheel, f"./{pyglet_wheel_filename}")
 
     # Go to arcade and build a wheel
     os.chdir(path_arcade)
