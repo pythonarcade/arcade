@@ -17,9 +17,12 @@ A = TypeVar("A", bound=Animatable)
 
 # === BEGIN EASING FUNCTIONS ===
 
-C1 = 1.70158
-C2 = C1 * 1.525
-C3 = C1 + 1
+# CONSTANTS USED FOR EASING EQUATIONS
+# *: The constants C2, C3, N1, and D1 don't have clean analogies,
+# so remain unnamed.
+TEN_PERCENT_BOUNCE = 1.70158
+C2 = TEN_PERCENT_BOUNCE * 1.525
+C3 = TEN_PERCENT_BOUNCE + 1
 TAU_ON_THREE = tau / 3
 TAU_ON_FOUR_AND_A_HALF = tau / 4.5
 N1 = 7.5625
@@ -161,12 +164,12 @@ def _ease_circ(t: float) -> float:
 
 def _ease_in_back(t: float) -> float:
     """http://easings.net/#easeInBack"""
-    return (C3 * t * t * t) - (C1 * t * t)
+    return (C3 * t * t * t) - (TEN_PERCENT_BOUNCE * t * t)
 
 
 def _ease_out_back(t: float) -> float:
     """http://easings.net/#easeOutBack"""
-    return 1 + C3 + pow(t - 1, 3) + C1 * pow(t - 1, 2)
+    return 1 + C3 + pow(t - 1, 3) + TEN_PERCENT_BOUNCE * pow(t - 1, 2)
 
 
 def _ease_back(t: float) -> float:
