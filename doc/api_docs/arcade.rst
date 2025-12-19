@@ -40,7 +40,7 @@ for the Python Arcade library. See also:
     api/path_finding
     api/isometric
     api/earclip
-    api/easing
+    api/anim
     api/open_gl
     api/math
     gl/index
