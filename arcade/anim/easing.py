@@ -231,7 +231,9 @@ def _ease_bounce(t: float) -> float:
 
 class Easing:
     """:py:class:`.EasingFunction`s meant for passing into :py:meth:`.ease`."""
-
+    # This is a bucket of staticmethods because typing.
+    # Enum hates this, and they can't be classmethods.
+    # Sorry that this looks strange! -- DigiDuncan
     LINEAR = staticmethod(_ease_linear)
     SINE = staticmethod(_ease_sine)
     SINE_IN = staticmethod(_ease_in_sine)
@@ -264,16 +266,16 @@ class Easing:
     BOUNCE_IN = staticmethod(_ease_in_bounce)
     BOUNCE_OUT = staticmethod(_ease_out_bounce)
     # Aliases to match easing.net names
-    SINE_IN_OUT = staticmethod(_ease_sine)
-    QUAD_IN_OUT = staticmethod(_ease_quad)
-    CUBIC_IN_OUT = staticmethod(_ease_cubic)
-    QUART_IN_OUT = staticmethod(_ease_quart)
-    QUINT_IN_OUT = staticmethod(_ease_quint)
-    EXPO_IN_OUT = staticmethod(_ease_expo)
-    CIRC_IN_OUT = staticmethod(_ease_circ)
-    BACK_IN_OUT = staticmethod(_ease_back)
-    ELASTIC_IN_OUT = staticmethod(_ease_elastic)
-    BOUNCE_IN_OUT = staticmethod(_ease_bounce)
+    SINE_IN_OUT = SINE
+    QUAD_IN_OUT = QUAD
+    CUBIC_IN_OUT = CUBIC
+    QUART_IN_OUT = QUART
+    QUINT_IN_OUT = QUINT
+    EXPO_IN_OUT = EXPO
+    CIRC_IN_OUT = CIRC
+    BACK_IN_OUT = BACK
+    ELASTIC_IN_OUT = ELASTIC
+    BOUNCE_IN_OUT = BOUNCE
 
 
 # === END EASING FUNCTIONS ===
