@@ -124,7 +124,7 @@ class Camera2D:
 
         if not isinstance(viewport, Rect):
             raise TypeError("viewport must be a Rect type,use arcade.LBWH or arcade.types.Viewport")
-      
+
         if aspect is None:
             width, height = viewport.size
         elif aspect == 0.0:
@@ -177,7 +177,7 @@ class Camera2D:
             left=left, right=right, top=top, bottom=bottom, near=near, far=far
         )
 
-        self.viewport: Rect = viewport
+        self.viewport = viewport
 
         """
         A rect which describes how the final projection should be mapped
@@ -477,8 +477,7 @@ class Camera2D:
                 h = value.width / aspect
             value = XYWH(value.x, value.y, w, h)
 
-        if viewport:
-            self._viewport = value
+        self.viewport = value
 
         if projection:
             x, y = self._projection_data.rect.x, self._projection_data.rect.y
