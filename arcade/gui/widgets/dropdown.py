@@ -6,6 +6,7 @@ import arcade
 from arcade import uicolor
 from arcade.gui import UIEvent, UIMousePressEvent
 from arcade.gui.events import UIControllerButtonPressEvent, UIOnChangeEvent, UIOnClickEvent
+from arcade.gui.experimental import UIScrollArea
 from arcade.gui.experimental.focus import UIFocusMixin
 from arcade.gui.ui_manager import UIManager
 from arcade.gui.widgets import UILayout, UIWidget
@@ -21,7 +22,7 @@ class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
 
     # TODO move also options logic to this class
 
-    def show(self, manager: UIManager):
+    def show(self, manager: UIManager | UIScrollArea):
         manager.add(self, layer=UIManager.OVERLAY_LAYER)
 
     def hide(self):
@@ -197,11 +198,19 @@ class UIDropdown(UILayout):
         self._overlay.detect_focusable_widgets()
 
     def _show_overlay(self):
-        manager = self.get_ui_manager()
-        if manager is None:
-            raise Exception("UIDropdown could not find UIManager in its parents.")
+        # traverse parents until UIManager or UIScrollArea is found
+        parent = self.parent
+        while parent is not None:
+            if isinstance(parent, UIManager):
+                break
+            if isinstance(parent, UIScrollArea):
+                break
+            parent = parent.parent
 
-        self._overlay.show(manager)
+        if parent is None:
+            raise Exception("UIDropdown could not find a valid parent for the overlay.")
+
+        self._overlay.show(parent)
 
     def _on_button_click(self, _: UIOnClickEvent):
         self._show_overlay()

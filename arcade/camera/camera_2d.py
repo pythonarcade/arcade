@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from contextlib import contextmanager
-from math import atan2, cos, degrees, radians, sin
+from math import atan2, cos, degrees, pow, radians, sin
 from typing import TYPE_CHECKING
 
 from pyglet.math import Vec2, Vec3
@@ -60,7 +60,11 @@ class Camera2D:
             If the viewport is not 1:1 with the projection then positions in world space
             won't match pixels on screen.
         position:
-            The 2D position of the camera in the XY plane.
+            The 2D position of the camera.
+
+            This is in world space, so the same as :py:class:`Sprite` and draw commands.
+            The default projection is a :py:func:`XYWH` rect positioned at (0, 0) so the
+            position of the camera is the center of the viewport.
         up:
             A 2D vector which describes which direction is up
             (defines the +Y-axis of the camera space).
@@ -75,6 +79,11 @@ class Camera2D:
             The near clipping plane of the camera.
         far:
             The far clipping plane of the camera.
+        aspect: The ratio between width and height that the viewport should
+            be constrained to. If unset then the viewport just matches the given
+            size. The aspect ratio describes how much larger the width should be
+            compared to the height. i.e. for an aspect ratio of ``4:3`` you should
+            input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
         scissor:
             A ``Rect`` which will crop the camera's output to this area on screen.
             Unlike the viewport this has no influence on the visuals rendered with
@@ -96,6 +105,7 @@ class Camera2D:
         near: float = DEFAULT_NEAR_ORTHO,
         far: float = DEFAULT_FAR,
         *,
+        aspect: float | None = None,
         scissor: Rect | None = None,
         render_target: Framebuffer | None = None,
         window: Window | None = None,
@@ -114,8 +124,21 @@ class Camera2D:
 
         if not isinstance(viewport, Rect):
             raise TypeError("viewport must be a Rect type,use arcade.LBWH or arcade.types.Viewport")
+      
+        if aspect is None:
+            width, height = viewport.size
+        elif aspect == 0.0:
+            raise ZeroProjectionDimension(
+                "aspect ratio is 0 which will cause invalid viewport dimensions."
+            )
+        elif viewport.height * aspect < viewport.width:
+            width = viewport.height * aspect
+            height = viewport.height
+        else:
+            width = viewport.width
+            height = viewport.width / aspect
+        viewport = XYWH(viewport.x, viewport.y, width, height)
 
-        width, height = viewport.size
         half_width = width / 2
         half_height = height / 2
 
@@ -140,8 +163,10 @@ class Camera2D:
                 f"projection depth is 0 due to equal {near=} and {far=} values"
             )
 
-        pos_x = position[0] if position is not None else half_width
-        pos_y = position[1] if position is not None else half_height
+        # By using -left and -bottom this ensures that (0.0, 0.0) is always
+        # in the bottom left corner of the viewport
+        pos_x = position[0] if position is not None else -left
+        pos_y = position[1] if position is not None else -bottom
         self._camera_data = CameraData(
             position=(pos_x, pos_y, 0.0),
             up=(up[0], up[1], 0.0),
@@ -152,7 +177,8 @@ class Camera2D:
             left=left, right=right, top=top, bottom=bottom, near=near, far=far
         )
 
-        self._viewport: Rect = viewport or LRBT(0, 0, width, height)
+        self.viewport: Rect = viewport
+
         """
         A rect which describes how the final projection should be mapped
         from unit-space. defaults to the size of the render_target or window
@@ -328,7 +354,7 @@ class Camera2D:
             screen_coordinate, self._viewport.lbwh_int, _view, _projection
         )
 
-    def equalise(self) -> None:
+    def equalize(self) -> None:
         """
         Forces the projection to match the size of the viewport.
         When matching the projection to the viewport the method keeps
@@ -336,8 +362,6 @@ class Camera2D:
         """
         x, y = self._projection_data.rect.x, self._projection_data.rect.y
         self._projection_data.rect = XYWH(x, y, self.viewport_width, self.viewport_height)
-
-    equalize = equalise
 
     def match_window(
         self,
@@ -358,7 +382,7 @@ class Camera2D:
             scissor: Flag whether to also equalize the scissor box to the viewport.
                 On by default
             position: Flag whether to position the camera so that (0.0, 0.0) is in
-                the bottom-left
+                the bottom-left of the viewport
             aspect: The ratio between width and height that the viewport should
                 be constrained to. If unset then the viewport just matches the window
                 size. The aspect ratio describes how much larger the width should be
@@ -392,7 +416,7 @@ class Camera2D:
                 The projection center stays fixed, and the new projection matches only in size.
             scissor: Flag whether to update the scissor value.
             position: Flag whether to position the camera so that (0.0, 0.0) is in
-                the bottom-left
+                the bottom-left of the viewport
             aspect: The ratio between width and height that the value should
                 be constrained to. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
@@ -434,14 +458,18 @@ class Camera2D:
                 The projection center stays fixed, and the new projection matches only in size.
             scissor: Flag whether to update the scissor value.
             position: Flag whether to position the camera so that (0.0, 0.0) is in
-                the bottom-left
+                the bottom-left of the viewport
             aspect: The ratio between width and height that the value should
                 be constrained to. i.e. for an aspect ratio of ``4:3`` you should
                 input ``4.0/3.0`` or ``1.33333...``. Cannot be equal to zero.
                 If unset then the value will not be updated.
         """
         if aspect is not None:
-            if value.height * aspect < value.width:
+            if aspect == 0.0:
+                raise ZeroProjectionDimension(
+                    "aspect ratio is 0 which will cause invalid viewport dimensions."
+                )
+            elif value.height * aspect < value.width:
                 w = value.height * aspect
                 h = value.height
             else:
@@ -460,7 +488,11 @@ class Camera2D:
             self.scissor = value
 
         if position:
-            self.position = Vec2(-self._projection_data.left, -self._projection_data.bottom)
+            self._camera_data.position = (
+                -self._projection_data.left,
+                -self._projection_data.bottom,
+                self._camera_data.position[2],
+            )
 
     def aabb(self) -> Rect:
         """
@@ -518,6 +550,103 @@ class Camera2D:
 
         return abs(dot_x) <= h_width and abs(dot_y) <= h_height
 
+    def move_to(self, position: Point2, *, duration: float | None = None) -> Point2:
+        """
+        Move the camera to the provided position.
+        If duration is None this is the same as setting camera.position.
+        duration makes it easy to move the camera smoothly over time.
+
+        When duration is not None it uses :py:func:`arcade.math.smerp` method
+        to smoothly move to the target position. This means duration does NOT
+        equal the fraction to move. To make the motion frame rate independant
+        use ``duration = dt * T`` where ``T`` is the number of seconds to move
+        half the distance to the target position.
+
+        Args:
+            position: x, y position in world space to move too
+            duration: The number of frames it takes to approximately move half-way
+                to the target position
+
+        Returns:
+            The actual position the camera was set too.
+        """
+        if duration is None:
+            x, y = position
+            self._camera_data.position = (x, y, self._camera_data.position[2])
+            return position
+
+        x1, y1, z1 = self._camera_data.position
+        x2, y2 = position
+        d = pow(2, -duration)
+        x = x1 + (x2 - x1) * d
+        y = y1 + (y2 - y1) * d
+
+        self._camera_data.position = (x, y, z1)
+        return x, y
+
+    def move_by(self, change: Point2) -> Point2:
+        """
+        Move the camera in world space along the XY axes by the provided change.
+        If you want to drag the camera with a mouse :py:func:`camera2D.drag_by`
+        is the method to use.
+
+        Args:
+            change: amount to move XY position in world space
+
+        Returns:
+            final XY position of the camera
+        """
+        pos = self._camera_data.position
+        new = pos[0] + change[0], pos[1] + change[1]
+        self._camera_data.position = new[0], new[1], pos[2]
+        return new
+
+    def drag_by(self, change: Point2) -> Point2:
+        """
+        Move the camera in world space by an amount in screen space.
+        This is a utility method to make it easy to drag the camera correctly.
+        normally zooming in/out, rotating the camera, and using a non 1:1 projection
+        causes the mouse dragging to desync with the camera motion. It automatically
+        negates the change so the change represents the amount the camera appears
+        to move. This is because moving the camera left makes everything appear to
+        move right. So a user moving the mouse right expects the camera to move
+        left.
+
+        The simplest use case is with the Window/View's :py:func:`on_mouse_drag`
+        .. code-block:: python
+
+            def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+                    self.camera.drag_by((dx, dy))
+
+        .. warning:: This method is more expensive than :py:func:`Camera2D.move_by` so
+                    use only when needed. If your camera is 1:1 with the screen and you
+                    only zoom in and out you can get away with
+                    ``camera2D.move_by(-change / camera.zoom)``.
+
+        .. warning:: This method must assume that viewport has the same pixel scale as the
+                    window. If you are doing some form of upscaling you will have to scale
+                    the mouse dx and dy by the difference in pixel scale.
+
+        Args:
+            change: The number of pixels to move the camera by
+
+        Returns:
+            The final position of the camera.
+        """
+
+        # Early exit to avoid expensive matrix generation
+        if change[0] == 0.0 and change[1] == 0.0:
+            return self._camera_data.position[0], self._camera_data.position[1]
+
+        x0, y0, _ = self.unproject((0, 0))
+        xc, yc, _ = self.unproject(change)
+
+        dx, dy = xc - x0, yc - y0
+        pos = self._camera_data.position
+        new = pos[0] - dx, pos[1] - dy
+        self._camera_data.position = new[0], new[1], pos[2]
+        return new
+
     @property
     def view_data(self) -> CameraData:
         """The view data for the camera.
@@ -553,16 +682,42 @@ class Camera2D:
 
     @property
     def position(self) -> Vec2:
-        """The 2D world position of the camera along the X and Y axes."""
+        """
+        The 2D position of the camera.
+
+        This is in world space, so the same as :py:class:`Sprite` and draw commands.
+        The default projection is a :py:func:`XYWH` rect positioned at (0, 0) so the
+        position of the camera is the center of the viewport.
+        """
         return Vec2(self._camera_data.position[0], self._camera_data.position[1])
 
     # Setter with different signature will cause mypy issues
     # https://github.com/python/mypy/issues/3004
     @position.setter
-    def position(self, _pos: Point) -> None:
-        x, y, *_z = _pos
+    def position(self, pos: Point) -> None:
+        x, y, *_z = pos
         z = self._camera_data.position[2] if not _z else _z[0]
         self._camera_data.position = (x, y, z)
+
+    @property
+    def x(self) -> float:
+        """The 2D world position of the camera along the X axis"""
+        return self._camera_data.position[0]
+
+    @x.setter
+    def x(self, x: float) -> None:
+        pos = self._camera_data.position
+        self._camera_data.position = (x, pos[1], pos[2])
+
+    @property
+    def y(self) -> float:
+        """The 2D world position of the camera along the Y axis"""
+        return self._camera_data.position[1]
+
+    @y.setter
+    def y(self, y: float) -> None:
+        pos = self._camera_data.position
+        self._camera_data.position = (pos[0], y, pos[2])
 
     @property
     def projection(self) -> Rect:
