@@ -33,12 +33,14 @@ from arcade.gui.property import ListProperty, Property, bind
 from arcade.gui.surface import Surface
 from arcade.types import AnchorPoint, AsFloat, Color
 from arcade.utils import copy_dunders_unimplemented
+from arcade.gui.transition import TransitionBase
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
 W = TypeVar("W", bound="UIWidget")
 P = TypeVar("P")
+T = TypeVar("T", bound="TransitionBase")
 
 
 class FocusMode(IntEnum):
@@ -182,6 +184,9 @@ class UIWidget(EventDispatcher, ABC):
 
         for child in children:
             self.add(child)
+
+        self._transitions: list[TransitionBase] = []
+        self.event("on_update")(self._update_transitions)
 
         bind(self, "rect", UIWidget.trigger_full_render)
         bind(self, "focused", UIWidget.trigger_full_render)
@@ -401,6 +406,27 @@ class UIWidget(EventDispatcher, ABC):
     def dispatch_ui_event(self, event: UIEvent):
         """Dispatch a :class:`UIEvent` using pyglet event dispatch mechanism"""
         return self.dispatch_event("on_event", event)
+
+    def _update_transitions(self, dt):
+        # Update transitions
+        for transaction in self._transitions[:]:
+            transaction.tick(self, dt)
+
+            if transaction.finished:
+                self._transitions.remove(transaction)
+
+    def add_transition(self, transition: T) -> T:
+        """
+        Add a transition, which will be updated using on_update time.
+        """
+        self._transitions.append(transition)
+        return transition
+
+    def clear_transitions(self):
+        """
+        Remove all transitions from this widget. Finished Transitions are removed automatically.
+        """
+        self._transitions.clear()
 
     def move(self, dx=0, dy=0):
         """Move the widget by dx and dy.

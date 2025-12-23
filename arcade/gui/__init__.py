@@ -30,6 +30,16 @@ from arcade.gui.widgets import UIInteractiveWidget
 from arcade.gui.widgets import UILayout
 from arcade.gui.widgets import UISpace
 from arcade.gui.view import UIView
+from arcade.gui.transition import (
+    TransitionBase,
+    EventTransitionBase,
+    TransitionAttr,
+    TransitionAttrIncr,
+    TransitionChain,
+    TransitionParallel,
+    TransitionDelay,
+    TransitionAttrSet,
+)
 from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets import UISpriteWidget
 from arcade.gui.widgets import UIInteractiveSpriteWidget
@@ -99,6 +109,16 @@ __all__ = [
     "UIWidget",
     "Surface",
     "NinePatchTexture",
+    # Transitions
+    "EaseFunctions",
+    "TransitionBase",
+    "EventTransitionBase",
+    "TransitionAttr",
+    "TransitionAttrIncr",
+    "TransitionAttrSet",
+    "TransitionChain",
+    "TransitionParallel",
+    "TransitionDelay",
     # Property classes
     "ListProperty",
     "DictProperty",
