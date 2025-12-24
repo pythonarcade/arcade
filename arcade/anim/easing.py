@@ -1,4 +1,5 @@
 """Core easing annotations and helper functions."""
+
 from math import cos, pi, sin, sqrt, tau
 from typing import Protocol, TypeVar
 
