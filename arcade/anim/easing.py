@@ -1,4 +1,5 @@
 """Core easing annotations and helper functions."""
+
 from collections.abc import Callable
 from math import cos, pi, sin, sqrt, tau
 from typing import Protocol, TypeVar
@@ -29,9 +30,7 @@ class EasingFunction(Protocol):
     method can be passed as an easing function.
     """
 
-    def __call__(self, __t: float) -> float:
-        ...
-
+    def __call__(self, __t: float) -> float: ...
 
 
 class Animatable(Protocol):
@@ -58,7 +57,6 @@ class Animatable(Protocol):
                    subtly different. It uses a separate :py:meth:`~object.__matmul__`
                    operator for multiplication.
     """
-
 
     def __mul__(self: T, other: T | float, /) -> T: ...
 
@@ -362,7 +360,6 @@ def lerp(x: float, minimum: A, maximum: A) -> A:
     return minimum + ((maximum - minimum) * x)
 
 
-
 def ease(
     minimum: A,
     maximum: A,
@@ -415,12 +412,5 @@ def ease(
     new_p = func(p)
     return lerp(new_p, minimum, maximum)
 
-__all__ = [
-    "Animatable",
-    "Easing",
-    "EasingFunction",
-    "ease",
-    "perc",
-    "lerp"
-]
 
+__all__ = ["Animatable", "Easing", "EasingFunction", "ease", "perc", "lerp"]
