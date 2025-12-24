@@ -331,8 +331,13 @@ def _clamp(x: float, low: float, high: float) -> float:
     return high if x > high else max(x, low)
 
 
-def perc(x: float, start: float, end: float) -> float:
-    """Convert ``x`` to percent-like progress from ``start`` to ``end``.
+def norm(x: float, start: float, end: float) -> float:
+    """Convert ``x`` to a progress ratio from ``start`` to ``end``.
+
+    The result will be a value normalized to between ``0.0``
+    and ``1.0`` if ``x`` is between ``start`` and ``end`. It
+    is not clamped, so the result may be less than ``0.0`` or
+    ``greater than ``1.0``.
 
     Arguments:
         x: A value between ``start`` and ``end``.
@@ -340,23 +345,24 @@ def perc(x: float, start: float, end: float) -> float:
         end: The end of the range.
 
     Returns:
-        A normalized percent-like completion as a :py:class:`float`.
+        A range completion progress as a :py:class:`float`.
     """
     return (x - start) / (end - start)
 
 
-def lerp(x: float, minimum: A, maximum: A) -> A:
-    """Get ``x`` of the way from ``minimum`` to ``maximum``.
+def lerp(progress: float, minimum: A, maximum: A) -> A:
+    """Get ``progress`` of the way from``minimum`` to ``maximum``.
 
     Arguments:
-        x: A percent-like progress measure from ``0`` to ``1.0``.
+        progress: How far from ``minimum`` to ``maximum`` to go
+            from ``0.0`` to ``1.0``.
         minimum: The start value along the path.
         maximum: The maximum value along the path.
 
     Returns:
-        A value ``x`` of the way from ``minimum`` to ``maximum``.
+        A value ``progress`` of the way from ``minimum`` to ``maximum``.
     """
-    return minimum + ((maximum - minimum) * x)
+    return minimum + ((maximum - minimum) * progress)
 
 
 def ease(
@@ -405,11 +411,11 @@ def ease(
         An eased value for the given time ``t``.
 
     """
-    p = perc(t, start, end)
+    p = norm(t, start, end)
     if clamped:
         p = _clamp(p, 0.0, 1.0)
     new_p = func(p)
     return lerp(new_p, minimum, maximum)
 
 
-__all__ = ["Animatable", "Easing", "EasingFunction", "ease", "perc", "lerp"]
+__all__ = ["Animatable", "Easing", "EasingFunction", "ease", "norm", "lerp"]
