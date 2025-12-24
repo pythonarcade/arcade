@@ -189,7 +189,10 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "use_declarations_in": ["arcade.isometric"],
     },
     "anim.rst": {
-        "title": "Easing", "use_declarations_in": ["arcade.anim.easing"]
+        "title": "Easing", "use_declarations_in": [
+            "arcade.anim",
+            "arcade.anim.easing"
+        ]
     },
     "utility.rst": {
         "title": "Misc Utility Functions",
