@@ -29,242 +29,215 @@ N1 = 7.5625
 D1 = 2.75
 
 
-def _ease_linear(t: float) -> float:
-    return t
-
-
-def _ease_in_sine(t: float) -> float:
-    """http://easings.net/#easeInSine"""
-    return 1 - cos((t * pi / 2))
-
-
-def _ease_out_sine(t: float) -> float:
-    """http://easings.net/#easeOutSine"""
-    return sin((t * pi) / 2)
-
-
-def _ease_sine(t: float) -> float:
-    """http://easings.net/#easeInOutSine"""
-    return -(cos(t * pi) - 1) / 2
-
-
-def _ease_in_quad(t: float) -> float:
-    """http://easings.net/#easeInQuad"""
-    return t * t
-
-
-def _ease_out_quad(t: float) -> float:
-    """http://easings.net/#easeOutQuad"""
-    return 1 - (1 - t) * (1 - t)
-
-
-def _ease_quad(t: float) -> float:
-    """http://easings.net/#easeInOutQuad"""
-    if t < 0.5:
-        return 2 * t * t
-    else:
-        return 1 - pow(-2 * t + 2, 2) / 2
-
-
-def _ease_in_cubic(t: float) -> float:
-    """http://easings.net/#easeInCubic"""
-    return t * t * t
-
-
-def _ease_out_cubic(t: float) -> float:
-    """http://easings.net/#easeOutCubic"""
-    return 1 - pow(1 - t, 3)
-
-
-def _ease_cubic(t: float) -> float:
-    """http://easings.net/#easeInOutCubic"""
-    if t < 0.5:
-        return 4 * t * t * t
-    else:
-        return 1 - pow(-2 * t + 2, 3) / 2
-
-
-def _ease_in_quart(t: float) -> float:
-    """http://easings.net/#easeInQuart"""
-    return t * t * t * t
-
-
-def _ease_out_quart(t: float) -> float:
-    """http://easings.net/#easeOutQuart"""
-    return 1 - pow(1 - t, 4)
-
-
-def _ease_quart(t: float) -> float:
-    """http://easings.net/#easeInOutQuart"""
-    if t < 0.5:
-        return 8 * t * t * t * t
-    else:
-        return 1 - pow(-2 * t + 2, 4) / 2
-
-
-def _ease_in_quint(t: float) -> float:
-    """http://easings.net/#easeInQint"""
-    return t * t * t * t * t
-
-
-def _ease_out_quint(t: float) -> float:
-    """http://easings.net/#easeOutQint"""
-    return 1 - pow(1 - t, 5)
-
-
-def _ease_quint(t: float) -> float:
-    """http://easings.net/#easeInOutQint"""
-    if t < 0.5:
-        return 16 * t * t * t * t * t
-    else:
-        return 1 - pow(-2 * t + 2, 5) / 2
-
-
-def _ease_in_expo(t: float) -> float:
-    """http://easings.net/#easeInExpo"""
-    if t == 0:
-        return 0
-    return pow(2, 10 * t - 10)
-
-
-def _ease_out_expo(t: float) -> float:
-    """http://easings.net/#easeOutExpo"""
-    if t == 1:
-        return 1
-    return 1 - pow(2, -10 * t)
-
-
-def _ease_expo(t: float) -> float:
-    """http://easings.net/#easeInOutExpo"""
-    if t == 0 or t == 1:
-        return t
-    elif t < 0.5:
-        return pow(2, 20 * t - 10) / 2
-    else:
-        return (2 - pow(2, -20 * t + 10)) / 2
-
-
-def _ease_in_circ(t: float) -> float:
-    """http://easings.net/#easeInCirc"""
-    return 1 - sqrt(1 - pow(t, 2))
-
-
-def _ease_out_circ(t: float) -> float:
-    """http://easings.net/#easeOutCirc"""
-    return sqrt(1 - pow(t - 1, 2))
-
-
-def _ease_circ(t: float) -> float:
-    """http://easings.net/#easeInOutCirc"""
-    if t < 0.5:
-        return (1 - sqrt(1 - pow(2 * t, 2))) / 2
-    else:
-        return (sqrt(1 - pow(-2 * t + 2, 2)) + 1) / 2
-
-
-def _ease_in_back(t: float) -> float:
-    """http://easings.net/#easeInBack"""
-    return (C3 * t * t * t) - (TEN_PERCENT_BOUNCE * t * t)
-
-
-def _ease_out_back(t: float) -> float:
-    """http://easings.net/#easeOutBack"""
-    return 1 + C3 + pow(t - 1, 3) + TEN_PERCENT_BOUNCE * pow(t - 1, 2)
-
-
-def _ease_back(t: float) -> float:
-    """http://easings.net/#easeInOutBack"""
-    if t < 0.5:
-        return (pow(2 * t, 2) * ((C2 + 1) * 2 * t - C2)) / 2
-    else:
-        return (pow(2 * t - 2, 2) * ((C2 + 1) * (t * 2 - 2) + C2) + 2) / 2
-
-
-def _ease_in_elastic(t: float) -> float:
-    """http://easings.net/#easeInElastic"""
-    if t == 0 or t == 1:
-        return t
-    return -pow(2, 10 * t - 10) * sin((t * 10 - 10.75) * TAU_ON_THREE)
-
-
-def _ease_out_elastic(t: float) -> float:
-    """http://easings.net/#easeOutElastic"""
-    if t == 0 or t == 1:
-        return t
-    return pow(2, -10 * t) * sin((t * 10 - 0.75) * TAU_ON_THREE) + 1
-
-
-def _ease_elastic(t: float) -> float:
-    """http://easings.net/#easeInOutElastic"""
-    if t == 0 or t == 1:
-        return t
-    if t < 0.5:
-        return -(pow(2, 20 * t - 10) * sin((20 * t - 11.125) * TAU_ON_FOUR_AND_A_HALF)) / 2
-    else:
-        return (pow(2, -20 * t + 10) * sin((20 * t - 11.125) * TAU_ON_FOUR_AND_A_HALF)) / 2 + 1
-
-
-def _ease_in_bounce(t: float) -> float:
-    """http://easings.net/#easeInBounce"""
-    return 1 - (_ease_out_bounce(1 - t))
-
-
-def _ease_out_bounce(t: float) -> float:
-    """http://easings.net/#easeOutBounce"""
-    if t < 1 / D1:
-        return N1 * t * t
-    elif t < 2 / D1:
-        return N1 * ((t - 1.5) / D1) * (t - 1.5) + 0.75
-    elif t < 2.5 / D1:
-        return N1 * ((t - 2.25) / D1) * (t - 2.25) + 0.9375
-    else:
-        return N1 * ((t - 2.625) / D1) * (t - 2.625) + 0.984375
-
-
-def _ease_bounce(t: float) -> float:
-    """http://easings.net/#easeInOutBounce"""
-    if t < 0.5:
-        return (1 - _ease_out_bounce(1 - 2 * t)) / 2
-    else:
-        return (1 + _ease_out_bounce(2 * t - 1)) / 2
-
-
 class Easing:
     """:py:class:`.EasingFunction`s meant for passing into :py:meth:`.ease`."""
+
     # This is a bucket of staticmethods because typing.
     # Enum hates this, and they can't be classmethods.
+    # That's why their capitalized, it's meant to be an Enum-like
     # Sorry that this looks strange! -- DigiDuncan
-    LINEAR = staticmethod(_ease_linear)
-    SINE = staticmethod(_ease_sine)
-    SINE_IN = staticmethod(_ease_in_sine)
-    SINE_OUT = staticmethod(_ease_out_sine)
-    QUAD = staticmethod(_ease_quad)
-    QUAD_IN = staticmethod(_ease_in_quad)
-    QUAD_OUT = staticmethod(_ease_out_quad)
-    CUBIC = staticmethod(_ease_cubic)
-    CUBIC_IN = staticmethod(_ease_in_cubic)
-    CUBIC_OUT = staticmethod(_ease_out_cubic)
-    QUART = staticmethod(_ease_quart)
-    QUART_IN = staticmethod(_ease_in_quart)
-    QUART_OUT = staticmethod(_ease_out_quart)
-    QUINT = staticmethod(_ease_quint)
-    QUINT_IN = staticmethod(_ease_in_quint)
-    QUINT_OUT = staticmethod(_ease_out_quint)
-    EXPO = staticmethod(_ease_expo)
-    EXPO_IN = staticmethod(_ease_in_expo)
-    EXPO_OUT = staticmethod(_ease_out_expo)
-    CIRC = staticmethod(_ease_circ)
-    CIRC_IN = staticmethod(_ease_in_circ)
-    CIRC_OUT = staticmethod(_ease_out_circ)
-    BACK = staticmethod(_ease_back)
-    BACK_IN = staticmethod(_ease_in_back)
-    BACK_OUT = staticmethod(_ease_out_back)
-    ELASTIC = staticmethod(_ease_elastic)
-    ELASTIC_IN = staticmethod(_ease_in_elastic)
-    ELASTIC_OUT = staticmethod(_ease_out_elastic)
-    BOUNCE = staticmethod(_ease_bounce)
-    BOUNCE_IN = staticmethod(_ease_in_bounce)
-    BOUNCE_OUT = staticmethod(_ease_out_bounce)
+
+    @staticmethod
+    def LINEAR(t: float) -> float:
+        """Essentially the 'null' case for easing. Does no easing."""
+        return t
+
+    @staticmethod
+    def SINE_IN(t: float) -> float:
+        """http://easings.net/#easeInSine"""
+        return 1 - cos((t * pi / 2))
+
+    @staticmethod
+    def SINE_OUT(t: float) -> float:
+        """http://easings.net/#easeOutSine"""
+        return sin((t * pi) / 2)
+
+    @staticmethod
+    def SINE(t: float) -> float:
+        """http://easings.net/#easeInOutSine"""
+        return -(cos(t * pi) - 1) / 2
+
+    @staticmethod
+    def QUAD_IN(t: float) -> float:
+        """http://easings.net/#easeInQuad"""
+        return t * t
+
+    @staticmethod
+    def QUAD_OUT(t: float) -> float:
+        """http://easings.net/#easeOutQuad"""
+        return 1 - (1 - t) * (1 - t)
+
+    @staticmethod
+    def QUAD(t: float) -> float:
+        """http://easings.net/#easeInOutQuad"""
+        if t < 0.5:
+            return 2 * t * t
+        else:
+            return 1 - pow(-2 * t + 2, 2) / 2
+
+    @staticmethod
+    def CUBIC_IN(t: float) -> float:
+        """http://easings.net/#easeInCubic"""
+        return t * t * t
+
+    @staticmethod
+    def CUBIC_OUT(t: float) -> float:
+        """http://easings.net/#easeOutCubic"""
+        return 1 - pow(1 - t, 3)
+
+    @staticmethod
+    def CUBIC(t: float) -> float:
+        """http://easings.net/#easeInOutCubic"""
+        if t < 0.5:
+            return 4 * t * t * t
+        else:
+            return 1 - pow(-2 * t + 2, 3) / 2
+
+    @staticmethod
+    def QUART_IN(t: float) -> float:
+        """http://easings.net/#easeInQuart"""
+        return t * t * t * t
+
+    @staticmethod
+    def QUART_OUT(t: float) -> float:
+        """http://easings.net/#easeOutQuart"""
+        return 1 - pow(1 - t, 4)
+
+    @staticmethod
+    def QUART(t: float) -> float:
+        """http://easings.net/#easeInOutQuart"""
+        if t < 0.5:
+            return 8 * t * t * t * t
+        else:
+            return 1 - pow(-2 * t + 2, 4) / 2
+
+    @staticmethod
+    def QUINT_IN(t: float) -> float:
+        """http://easings.net/#easeInQint"""
+        return t * t * t * t * t
+
+    @staticmethod
+    def QUINT_OUT(t: float) -> float:
+        """http://easings.net/#easeOutQint"""
+        return 1 - pow(1 - t, 5)
+
+    @staticmethod
+    def QUINT(t: float) -> float:
+        """http://easings.net/#easeInOutQint"""
+        if t < 0.5:
+            return 16 * t * t * t * t * t
+        else:
+            return 1 - pow(-2 * t + 2, 5) / 2
+
+    @staticmethod
+    def EXPO_IN(t: float) -> float:
+        """http://easings.net/#easeInExpo"""
+        if t == 0:
+            return 0
+        return pow(2, 10 * t - 10)
+
+    @staticmethod
+    def EXPO_OUT(t: float) -> float:
+        """http://easings.net/#easeOutExpo"""
+        if t == 1:
+            return 1
+        return 1 - pow(2, -10 * t)
+
+    @staticmethod
+    def EXPO(t: float) -> float:
+        """http://easings.net/#easeInOutExpo"""
+        if t == 0 or t == 1:
+            return t
+        elif t < 0.5:
+            return pow(2, 20 * t - 10) / 2
+        else:
+            return (2 - pow(2, -20 * t + 10)) / 2
+
+    @staticmethod
+    def CIRC_IN(t: float) -> float:
+        """http://easings.net/#easeInCirc"""
+        return 1 - sqrt(1 - pow(t, 2))
+
+    @staticmethod
+    def CIRC_OUT(t: float) -> float:
+        """http://easings.net/#easeOutCirc"""
+        return sqrt(1 - pow(t - 1, 2))
+
+    @staticmethod
+    def CIRC(t: float) -> float:
+        """http://easings.net/#easeInOutCirc"""
+        if t < 0.5:
+            return (1 - sqrt(1 - pow(2 * t, 2))) / 2
+        else:
+            return (sqrt(1 - pow(-2 * t + 2, 2)) + 1) / 2
+
+    @staticmethod
+    def BACK_IN(t: float) -> float:
+        """http://easings.net/#easeInBack"""
+        return (C3 * t * t * t) - (TEN_PERCENT_BOUNCE * t * t)
+
+    @staticmethod
+    def BACK_OUT(t: float) -> float:
+        """http://easings.net/#easeOutBack"""
+        return 1 + C3 + pow(t - 1, 3) + TEN_PERCENT_BOUNCE * pow(t - 1, 2)
+
+    @staticmethod
+    def BACK(t: float) -> float:
+        """http://easings.net/#easeInOutBack"""
+        if t < 0.5:
+            return (pow(2 * t, 2) * ((C2 + 1) * 2 * t - C2)) / 2
+        else:
+            return (pow(2 * t - 2, 2) * ((C2 + 1) * (t * 2 - 2) + C2) + 2) / 2
+
+    @staticmethod
+    def ELASTIC_IN(t: float) -> float:
+        """http://easings.net/#easeInElastic"""
+        if t == 0 or t == 1:
+            return t
+        return -pow(2, 10 * t - 10) * sin((t * 10 - 10.75) * TAU_ON_THREE)
+
+    @staticmethod
+    def ELASTIC_OUT(t: float) -> float:
+        """http://easings.net/#easeOutElastic"""
+        if t == 0 or t == 1:
+            return t
+        return pow(2, -10 * t) * sin((t * 10 - 0.75) * TAU_ON_THREE) + 1
+
+    @staticmethod
+    def ELASTIC(t: float) -> float:
+        """http://easings.net/#easeInOutElastic"""
+        if t == 0 or t == 1:
+            return t
+        if t < 0.5:
+            return -(pow(2, 20 * t - 10) * sin((20 * t - 11.125) * TAU_ON_FOUR_AND_A_HALF)) / 2
+        else:
+            return (pow(2, -20 * t + 10) * sin((20 * t - 11.125) * TAU_ON_FOUR_AND_A_HALF)) / 2 + 1
+
+    @staticmethod
+    def BOUNCE_IN(t: float) -> float:
+        """http://easings.net/#easeInBounce"""
+        return 1 - (Easing.BOUNCE_OUT(1 - t))
+
+    @staticmethod
+    def BOUNCE_OUT(t: float) -> float:
+        """http://easings.net/#easeOutBounce"""
+        if t < 1 / D1:
+            return N1 * t * t
+        elif t < 2 / D1:
+            return N1 * ((t - 1.5) / D1) * (t - 1.5) + 0.75
+        elif t < 2.5 / D1:
+            return N1 * ((t - 2.25) / D1) * (t - 2.25) + 0.9375
+        else:
+            return N1 * ((t - 2.625) / D1) * (t - 2.625) + 0.984375
+
+    @staticmethod
+    def BOUNCE(t: float) -> float:
+        """http://easings.net/#easeInOutBounce"""
+        if t < 0.5:
+            return (1 - Easing.BOUNCE_OUT(1 - 2 * t)) / 2
+        else:
+            return (1 + Easing.BOUNCE_OUT(2 * t - 1)) / 2
+
     # Aliases to match easing.net names
     SINE_IN_OUT = SINE
     QUAD_IN_OUT = QUAD
