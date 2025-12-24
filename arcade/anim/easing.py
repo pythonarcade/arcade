@@ -32,7 +32,7 @@ class EasingFunction(Protocol):
     def __call__(self, __t: float) -> float: ...
 
 
-class Animatable(Protocol):
+class Interpolatable(Protocol):
     """Matches types with support for the following operations:
 
     .. list-table::
@@ -64,7 +64,7 @@ class Animatable(Protocol):
     def __sub__(self: T, other: T | float, /) -> T: ...
 
 
-A = TypeVar("A", bound=Animatable)
+A = TypeVar("A", bound=Interpolatable)
 
 # === BEGIN EASING FUNCTIONS ===
 
@@ -418,4 +418,4 @@ def ease(
     return lerp(new_p, minimum, maximum)
 
 
-__all__ = ["Animatable", "Easing", "EasingFunction", "ease", "norm", "lerp"]
+__all__ = ["Interpolatable", "Easing", "EasingFunction", "ease", "norm", "lerp"]
