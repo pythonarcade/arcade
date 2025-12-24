@@ -1,3 +1,4 @@
+"""Core easing annotations and helper functions."""
 from collections.abc import Callable
 from math import cos, pi, sin, sqrt, tau
 from typing import Protocol, TypeVar
@@ -5,7 +6,60 @@ from typing import Protocol, TypeVar
 T = TypeVar("T")
 
 
+# This needs to be a Protocol rather than an annotation
+# due to our build configuration being set to pick up
+# classes but not type annotations.
+class EasingFunction(Protocol):
+    """Any :py:func:`callable` object which maps linear completion to a curve.
+
+    .. tip:: See :py:class:`Easing` for the most common easings.
+
+             Pass them to :py:func:`.ease` via the ``func``
+             keyword argument.
+
+    If the built-in easing curves are not enough, you can define
+    your own. Functions should match this pattern:
+
+    .. code-block:: python
+
+       def f(t: float) -> t:
+           ...
+
+    For advanced users, any object with a matching :py:meth:`~object.__call__`
+    method can be passed as an easing function.
+    """
+
+    def __call__(self, __t: float) -> float:
+        ...
+
+
+
 class Animatable(Protocol):
+    """Matches types with support for the following operations:
+
+    .. list-table::
+       :header-rows: 1
+
+       * - Method
+         - Summary
+
+       * - :py:meth:`~object.__mul__`
+         - Multiplication by a scalar
+
+       * - :py:meth:`~object.__add__`
+         - Addition
+
+       * - :py:meth:`~object.__sub__`
+         - Subtraction
+
+    .. important:: The :py:mod:`pyglet.math` matrix types are currently unsupported.
+
+                   Although vector types work, matrix multiplication is
+                   subtly different. It uses a separate :py:meth:`~object.__matmul__`
+                   operator for multiplication.
+    """
+
+
     def __mul__(self: T, other: T | float, /) -> T: ...
 
     def __add__(self: T, other: T | float, /) -> T: ...
@@ -30,7 +84,29 @@ D1 = 2.75
 
 
 class Easing:
-    """:py:class:`.EasingFunction`s meant for passing into :py:meth:`.ease`."""
+    """Built-in easing functions as static methods.
+
+    Each takes the following form:
+
+    .. code-block:: python
+
+       def f(t: float) -> float:
+         ...
+
+    Pass them into :py:func:`.ease` via the ``func`` keyword
+    argument:
+
+    .. code-block:: python
+
+         from arcade.anim import ease, Easing
+
+         value = ease(
+           1.0, 2.0,
+           2.0, 3.0,
+           2.4,
+           func=Easing.SINE_IN)
+
+    """
 
     # This is a bucket of staticmethods because typing.
     # Enum hates this, and they can't be classmethods.
@@ -259,22 +335,32 @@ def _clamp(x: float, low: float, high: float) -> float:
 
 
 def perc(x: float, start: float, end: float) -> float:
-    """
-    Convert a value ``x`` to be a percentage of progression between
-    ``start`` and ``end``.
+    """Convert ``x`` to percent-like progress from ``start`` to ``end``.
+
+    Arguments:
+        x: A value between ``start`` and ``end``.
+        start: The start of the range.
+        end: The end of the range.
+
+    Returns:
+        A normalized percent-like completion as a :py:class:`float`.
     """
     return (x - start) / (end - start)
 
 
 def lerp(x: float, minimum: A, maximum: A) -> A:
-    """
-    Convert a percentage ``x`` to be the value when progressed
-    that amount between ``minimum`` and ``maximum``.
+    """Get ``x`` of the way from ``minimum`` to ``maximum``.
+
+    Arguments:
+        x: A percent-like progress measure from ``0`` to ``1.0``.
+        minimum: The start value along the path.
+        maximum: The maximum value along the path.
+
+    Returns:
+        A value ``x`` of the way from ``minimum`` to ``maximum``.
     """
     return minimum + ((maximum - minimum) * x)
 
-
-EasingFunction = Callable[[float], float]
 
 
 def ease(
@@ -286,21 +372,55 @@ def ease(
     func: EasingFunction = Easing.LINEAR,
     clamped: bool = True,
 ) -> A:
-    """Ease a value according to a curve. Useful for animating properties over time.
+    """Ease a value according to a curve function passed as ``func``.
 
-    Args:
+    Override the default easing curve by passing any :py:class:`.Easing`
+    or :py:class:`.EasingFunction` of your choice.
+
+    The ``maximum`` and ``minimum`` must be of compatible types.
+    For example, these can include:
+
+    .. list-table::
+       :header-rows: 1
+
+       * - Type
+         - Value Example
+         - Explanation
+
+       * - :py:class:`float`
+         - ``0.5``
+         - Numbers such as volume or brightness.
+
+       * - :py:class:`~pyglet.math.Vec2`
+         - ``Vec2(500.0, 200.0)``
+         - A :py:mod:`pyglet.math` vector representing position.
+
+    Arguments:
         minimum: any math-like object (a position, scale, value...); the "start position."
         maximum: any math-like object (a position, scale, value...); the "end position."
         start: a :py:class:`float` defining where progression begins, the "start time."
         end: a :py:class:`float` defining where progression ends, the "end time."
         t: a :py:class:`float` defining the current progression, the "current time."
-        func: a :py:class:`.EasingFunction` to modify the result with, typically an
-        attribute of :py:class:`.Easing`. Defaults to :py:attr:`.Easing.LINEAR`.
-        clamped: a :py:class:`bool`; whether or not to allow the animation to continue past
-        the ``start`` and ``end`` "times". Defaults to ``True``.
+        func: Defaults to :py:attr:`Easing.LINEAR`, but you can pass an
+            :py:class:`Easing` or :py:class:`.EasingFunction` of your choice.
+        clamped: Whether the value will be clamped to ``minimum`` and ``maximum``.
+
+    Returns:
+        An eased value for the given time ``t``.
+
     """
     p = perc(t, start, end)
     if clamped:
         p = _clamp(p, 0.0, 1.0)
     new_p = func(p)
     return lerp(new_p, minimum, maximum)
+
+__all__ = [
+    "Animatable",
+    "Easing",
+    "EasingFunction",
+    "ease",
+    "perc",
+    "lerp"
+]
+
