@@ -1,6 +1,4 @@
 """Core easing annotations and helper functions."""
-
-from collections.abc import Callable
 from math import cos, pi, sin, sqrt, tau
 from typing import Protocol, TypeVar
 
