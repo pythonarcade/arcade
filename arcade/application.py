@@ -230,12 +230,13 @@ class Window(pyglet.window.Window):
                     alpha_size=8,
                 )
         try:
+            # This type ignore is here because somehow Pyright thinks this is an Emscripten window
             super().__init__(
                 width=width,
                 height=height,
                 caption=title,
                 resizable=resizable,
-                config=config,  # type: ignore Pylance seems to think this is an EmscriptenWindow at this point?
+                config=config,  # type: ignore
                 vsync=vsync,
                 visible=visible,
                 style=style,
@@ -356,8 +357,10 @@ class Window(pyglet.window.Window):
         """
         return self._current_view
 
+    # TODO: This is overriding the ctx function from Pyglet's BaseWindow which returns the
+    # SurfaceContext class from pyglet. We should probably rename this.
     @property
-    def ctx(self) -> ArcadeContext:
+    def ctx(self) -> ArcadeContext:  # type: ignore
         """
         The OpenGL context for this window.
 

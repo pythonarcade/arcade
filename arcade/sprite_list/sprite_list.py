@@ -1685,14 +1685,19 @@ class SpriteListBufferData(SpriteListData):
             A list of indices of nearby sprites.
         """
         ctx = self.ctx
+        if ctx._gl_api == "webgl":
+            raise RuntimeError("GPU Collision is not supported on WebGL Backends")
 
-        ctx.collision_detection_program["check_pos"] = pos
-        ctx.collision_detection_program["check_size"] = size
+        # All of these type ignores are because of GPU collision not being supported on WebGL
+        # Unfortuantely the type checkers don't have a sane way of understanding that, and it's
+        # not worth run-time checking all of these things, because they are guaranteed based on
+        # active GL api of the context. Pyright actually does seem to be able to figure it out
+        # but mypy does not
+
+        ctx.collision_detection_program["check_pos"] = pos  # type: ignore
+        ctx.collision_detection_program["check_size"] = size  # type: ignore
         buffer = ctx.collision_buffer
-        with ctx.collision_query:
-            # These calls are typed as | None because of the arcade.gl backends, but at this
-            # point if we have SpriteListBufferData these are guaranteed to be on a backend
-            # where they will not be None.
+        with ctx.collision_query:  # type: ignore
             self._geometry.transform(
                 ctx.collision_detection_program,  # type: ignore
                 buffer,  # type: ignore
@@ -1700,10 +1705,10 @@ class SpriteListBufferData(SpriteListData):
             )
 
         # Store the number of sprites emitted
-        emit_count = ctx.collision_query.primitives_generated
+        emit_count = ctx.collision_query.primitives_generated  # type: ignore
         if emit_count == 0:
             return []
-        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]
+        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]  # type: ignore
 
 
 class SpriteListTextureData(SpriteListData):
@@ -1892,25 +1897,30 @@ class SpriteListTextureData(SpriteListData):
         ctx = self.ctx
         if ctx._gl_api == "webgl":
             raise RuntimeError("GPU Collision is not supported on WebGL Backends")
+
+        # All of these type ignores are because of GPU collision not being supported on WebGL
+        # Unfortuantely the type checkers don't have a sane way of understanding that, and it's
+        # not worth run-time checking all of these things, because they are guaranteed based on
+        # active GL api of the context. Pyright actually does seem to be able to figure it out
+        # but mypy does not
+
         buffer = ctx.collision_buffer
         program = ctx.collision_detection_program_simple
-        program["check_pos"] = pos
-        program["check_size"] = size
+        program["check_pos"] = pos  # type: ignore
+        program["check_size"] = size  # type: ignore
 
         self._storage_pos_angle.use(0)
         self._storage_size.use(1)
         self._storage_index.use(2)
 
-        with ctx.collision_query:
-            # This is ignored because it is guaranteed to not be none by the above context GL api
-            # check. This is only able to be None when we are on WebGL.
+        with ctx.collision_query:  # type: ignore
             ctx.geometry_empty.transform(
-                program,
+                program,  # type: ignore
                 buffer,  # type: ignore
                 vertices=length,
             )
-        emit_count = ctx.collision_query.primitives_generated
+        emit_count = ctx.collision_query.primitives_generated  # type: ignore
         # print(f"Collision query emitted {emit_count} sprites")
         if emit_count == 0:
             return []
-        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]
+        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]  # type: ignore

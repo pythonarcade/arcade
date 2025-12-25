@@ -16,9 +16,11 @@ import arcade
 from arcade.camera import Projector
 from arcade.camera.default import DefaultProjector
 from arcade.gl import BufferDescription, Context
+from arcade.gl.buffer import Buffer
 from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.framebuffer import Framebuffer
 from arcade.gl.program import Program
+from arcade.gl.query import Query
 from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
 from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
@@ -55,7 +57,9 @@ class ArcadeContext(Context):
         gl_api: str = "gl",
     ) -> None:
         # Set up a default orthogonal projection for sprites and shapes
-        self._window_block = window._matrices.ubo
+        # Mypy can't figure out the dynamic creation of the matrices in Pyglet
+        # They are created based on the active backend.
+        self._window_block = window._matrices.ubo  # type: ignore
         self.bind_window_block()
 
         self.blend_func = self.BLEND_DEFAULT
@@ -191,12 +195,12 @@ class ArcadeContext(Context):
         if gl_api != "webgl":
             # SpriteList collision resources
             # Buffer version of the collision detection program.
-            self.collision_detection_program = self.load_program(
+            self.collision_detection_program: Program | None = self.load_program(
                 vertex_shader=":system:shaders/collision/col_trans_vs.glsl",
                 geometry_shader=":system:shaders/collision/col_trans_gs.glsl",
             )
             # Texture version of the collision detection program.
-            self.collision_detection_program_simple = self.load_program(
+            self.collision_detection_program_simple: Program | None = self.load_program(
                 vertex_shader=":system:shaders/collision/col_tex_trans_vs.glsl",
                 geometry_shader=":system:shaders/collision/col_tex_trans_gs.glsl",
             )
@@ -204,10 +208,13 @@ class ArcadeContext(Context):
             self.collision_detection_program_simple["size_data"] = 1
             self.collision_detection_program_simple["index_data"] = 2
 
-            self.collision_buffer = self.buffer(reserve=1024 * 4)
-            self.collision_query = self.query(samples=False, time=False, primitives=True)
+            self.collision_buffer: Buffer | None = self.buffer(reserve=1024 * 4)
+            self.collision_query: Query | None = self.query(
+                samples=False, time=False, primitives=True
+            )
         else:
             self.collision_detection_program = None
+            self.collision_detection_program_simple = None
             self.collision_buffer = None
             self.collision_query = None
 
