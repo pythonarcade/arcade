@@ -188,7 +188,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "title": "Isometric Map (incomplete)",
         "use_declarations_in": ["arcade.isometric"],
     },
-    "easing.rst": {"title": "Easing", "use_declarations_in": ["arcade.easing"]},
+    "anim.rst": {"title": "Easing", "use_declarations_in": ["arcade.anim", "arcade.anim.easing"]},
     "utility.rst": {
         "title": "Misc Utility Functions",
         "use_declarations_in": ["arcade", "arcade.__main__", "arcade.utils"],
