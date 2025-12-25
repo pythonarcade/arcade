@@ -1,6 +1,7 @@
 """
 Drawing text with pyglet label
 """
+
 from pathlib import Path
 from typing import Any
 
