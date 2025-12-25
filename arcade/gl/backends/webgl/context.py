@@ -49,7 +49,7 @@ class WebGLContext(Context):
 
         if unsupported_extensions:
             raise RuntimeError(
-                f"Tried to create a WebGL constant with the following missing extensions: {unsupported_extensions}"
+                f"Tried to create a WebGL context with missing extensions: {unsupported_extensions}"
             )
 
         super().__init__(window, gc_mode, gl_api)

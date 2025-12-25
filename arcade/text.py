@@ -1,8 +1,6 @@
 """
 Drawing text with pyglet label
 """
-
-from ctypes import c_int, c_ubyte
 from pathlib import Path
 from typing import Any
 
