@@ -59,7 +59,7 @@ import pyglet
 
 # Enable HiDPI support using stretch mode
 if os.environ.get("ARCADE_TEST"):
-    pyglet.options.dpi_scaling = "real"
+    pyglet.options.dpi_scaling = "platform"
 else:
     pyglet.options.dpi_scaling = "stretch"
 
@@ -67,13 +67,6 @@ else:
 headless: Final[bool] = bool(os.environ.get("ARCADE_HEADLESS"))
 if headless:
     pyglet.options.headless = headless
-
-
-# from arcade import utils
-# Disable shadow window on macs and in headless mode.
-# if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_raspberry_pi():
-# NOTE: We always disable shadow window now to have consistent behavior across platforms.
-pyglet.options.shadow_window = False
 
 # Imports from modules that don't do anything circular
 

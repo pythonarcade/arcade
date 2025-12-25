@@ -1681,13 +1681,17 @@ class SpriteListBufferData(SpriteListData):
             A list of indices of nearby sprites.
         """
         ctx = self.ctx
+
         ctx.collision_detection_program["check_pos"] = pos
         ctx.collision_detection_program["check_size"] = size
         buffer = ctx.collision_buffer
         with ctx.collision_query:
-            self._geometry.transform(  # type: ignore
-                ctx.collision_detection_program,
-                buffer,
+            # These calls are typed as | None because of the arcade.gl backends, but at this
+            # point if we have SpriteListBufferData these are guaranteed to be on a backend
+            # where they will not be None.
+            self._geometry.transform(
+                ctx.collision_detection_program,  # type: ignore
+                buffer,  # type: ignore
                 vertices=length,
             )
 
@@ -1882,6 +1886,8 @@ class SpriteListTextureData(SpriteListData):
             A list of indices of nearby sprites.
         """
         ctx = self.ctx
+        if (ctx._gl_api == "webgl"):
+            raise RuntimeError("GPU Collision is not supported on WebGL Backends")
         buffer = ctx.collision_buffer
         program = ctx.collision_detection_program_simple
         program["check_pos"] = pos
@@ -1892,9 +1898,11 @@ class SpriteListTextureData(SpriteListData):
         self._storage_index.use(2)
 
         with ctx.collision_query:
+            # This is ignored because it is guaranteed to not be none by the above context GL api
+            # check. This is only able to be None when we are on WebGL.
             ctx.geometry_empty.transform(
                 program,
-                buffer,
+                buffer,  # type: ignore
                 vertices=length,
             )
         emit_count = ctx.collision_query.primitives_generated

@@ -23,7 +23,7 @@ class VideoPlayer:
     """
 
     def __init__(self, path: str | Path, loop: bool = False):
-        self.player = pyglet.media.Player()
+        self.player = pyglet.media.VideoPlayer()
         self.player.loop = loop
         self.player.queue(pyglet.media.load(str(arcade.resources.resolve(path))))
         self.player.play()
@@ -80,7 +80,7 @@ class VideoPlayer:
             width *= video_format.sample_aspect
         elif video_format.sample_aspect < 1:
             height /= video_format.sample_aspect
-        return width, height
+        return int(width), int(height)
 
 
 class VideoPlayerView(arcade.View):
