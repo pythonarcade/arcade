@@ -8,6 +8,10 @@ from typing import Any
 import pyglet
 from pyglet.enums import Style, Weight
 
+# Pyright can't figure out the dynamic backend imports in pyglet.graphics
+# right now. Maybe can fix in future Pyglet version
+from pyglet.graphics import Batch, Group  # type: ignore
+
 import arcade
 from arcade.exceptions import PerformanceWarning, warning
 from arcade.resources import resolve
@@ -216,8 +220,8 @@ class Text:
         anchor_y: str = "baseline",
         multiline: bool = False,
         rotation: float = 0,
-        batch: pyglet.graphics.Batch | None = None,
-        group: pyglet.graphics.Group | None = None,
+        batch: Batch | None = None,
+        group: Group | None = None,
         z: float = 0,
         **kwargs,
     ):
@@ -297,7 +301,7 @@ class Text:
         self.label.end_update()
 
     @property
-    def batch(self) -> pyglet.graphics.Batch | None:
+    def batch(self) -> Batch | None:
         """The batch this text is in, if any.
 
         Can be unset by setting to ``None``.
@@ -305,11 +309,11 @@ class Text:
         return self.label.batch
 
     @batch.setter
-    def batch(self, batch: pyglet.graphics.Batch):
+    def batch(self, batch: Batch):
         self.label.batch = batch
 
     @property
-    def group(self) -> pyglet.graphics.Group | None:
+    def group(self) -> Group | None:
         """
         The specific group in a batch the text should belong to.
 
@@ -320,7 +324,7 @@ class Text:
         return self.label.group
 
     @group.setter
-    def group(self, group: pyglet.graphics.Group):
+    def group(self, group: Group):
         self.label.group = group
 
     @property

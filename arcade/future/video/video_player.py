@@ -77,10 +77,10 @@ class VideoPlayer:
         width = video_format.width
         height = video_format.height
         if video_format.sample_aspect > 1:
-            width *= video_format.sample_aspect
+            width = int(width * video_format.sample_aspect)
         elif video_format.sample_aspect < 1:
-            height /= video_format.sample_aspect
-        return int(width), int(height)
+            height = int(height / video_format.sample_aspect)
+        return width, height
 
 
 class VideoPlayerView(arcade.View):

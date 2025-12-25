@@ -62,6 +62,8 @@ def check_submodules(parent_module_absolute_name: str) -> None:
 
     # Check all modules nested immediately inside it on the file system
     for finder, child_module_name, is_pkg in pkgutil.iter_modules(parent_module_file_path):
+        if is_pkg:
+            continue
         child_module_file_path = Path(finder.path) / f"{child_module_name}.py"
         child_module_absolute_name = f"{parent_module_absolute_name}.{child_module_name}"
 

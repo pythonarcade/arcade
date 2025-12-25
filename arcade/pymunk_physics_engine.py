@@ -776,7 +776,7 @@ class PymunkPhysicsEngine:
         """
         grounding = {
             "normal": pymunk.Vec2d.zero(),
-            "penetration": pymunk.Vec2d.zero(),
+            "penetration": 0.0,
             "impulse": pymunk.Vec2d.zero(),
             "position": pymunk.Vec2d.zero(),
             "body": None,
@@ -806,7 +806,9 @@ class PymunkPhysicsEngine:
             ):
                 grounding["normal"] = n
                 grounding["penetration"] = -arbiter.contact_point_set.points[0].distance
-                grounding["body"] = arbiter.shapes[1].body
+                # Mypy is making bad inferences about what this is based on the other elements
+                # and this doesn't particularly feel worth a TypedDict
+                grounding["body"] = arbiter.shapes[1].body  # type: ignore
                 grounding["impulse"] = arbiter.total_impulse
                 grounding["position"] = arbiter.contact_point_set.points[0].point_b
 
