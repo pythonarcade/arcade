@@ -7,8 +7,7 @@ from pyodide.ffi import to_js
 
 from arcade.gl import enums
 from arcade.gl.texture import Texture2D
-from arcade.gl.types import (BufferOrBufferProtocol, compare_funcs,
-                             pixel_formats)
+from arcade.gl.types import BufferOrBufferProtocol, compare_funcs, pixel_formats
 from arcade.types import BufferProtocol
 
 from .buffer import Buffer

@@ -175,7 +175,11 @@ def check_for_collision_with_list(
     # Spatial
     if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
         sprites_to_check = sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
-    elif method == 3 or (method == 0 and len(sprite_list) <= 1500) or get_window().ctx._gl_api == "webgl":
+    elif (
+        method == 3
+        or (method == 0 and len(sprite_list) <= 1500)
+        or get_window().ctx._gl_api == "webgl"
+    ):
         sprites_to_check = sprite_list
     else:
         # GPU transform - Not on WebGL
@@ -236,7 +240,11 @@ def check_for_collision_with_lists(
         # Spatial
         if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
             sprites_to_check = sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
-        elif method == 3 or (method == 0 and len(sprite_list) <= 1500) or get_window().ctx._gl_api == "webgl":
+        elif (
+            method == 3
+            or (method == 0 and len(sprite_list) <= 1500)
+            or get_window().ctx._gl_api == "webgl"
+        ):
             sprites_to_check = sprite_list
         else:
             # GPU transform - Not on WebGL

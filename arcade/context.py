@@ -205,9 +205,7 @@ class ArcadeContext(Context):
             self.collision_detection_program_simple["index_data"] = 2
 
             self.collision_buffer = self.buffer(reserve=1024 * 4)
-            self.collision_query = self.query(
-                samples=False, time=False, primitives=True
-            )
+            self.collision_query = self.query(samples=False, time=False, primitives=True)
         else:
             self.collision_detection_program = None
             self.collision_buffer = None

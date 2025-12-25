@@ -18,8 +18,8 @@ from arcade.utils import is_pyodide
 if is_pyodide():
     pyglet.options.backend = "webgl"
 
-import pyglet.window.mouse
 import pyglet.config
+import pyglet.window.mouse
 from pyglet.display.base import Screen, ScreenMode
 from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor

@@ -322,9 +322,13 @@ class SpriteList(SpriteSequence[SpriteType]):
             self._atlas = self.ctx.default_atlas
 
         if self.ctx._gl_api == "webgl":
-            self._data = SpriteListTextureData(self.ctx, capacity=self._buf_capacity, atlas=self._atlas)
+            self._data = SpriteListTextureData(
+                self.ctx, capacity=self._buf_capacity, atlas=self._atlas
+            )
         else:
-            self._data = SpriteListBufferData(self.ctx, capacity=self._buf_capacity, atlas=self._atlas)
+            self._data = SpriteListBufferData(
+                self.ctx, capacity=self._buf_capacity, atlas=self._atlas
+            )
 
         self._initialized = True
 
@@ -1886,7 +1890,7 @@ class SpriteListTextureData(SpriteListData):
             A list of indices of nearby sprites.
         """
         ctx = self.ctx
-        if (ctx._gl_api == "webgl"):
+        if ctx._gl_api == "webgl":
             raise RuntimeError("GPU Collision is not supported on WebGL Backends")
         buffer = ctx.collision_buffer
         program = ctx.collision_detection_program_simple

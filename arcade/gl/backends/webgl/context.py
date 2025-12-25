@@ -40,7 +40,7 @@ class WebGLContext(Context):
 
         anistropy_ext = self._gl.getExtension("EXT_texture_filter_anisotropic")
         texture_float_linear_ext = self._gl.getExtension("OES_texture_float_linear")
-        
+
         unsupported_extensions = []
         if not anistropy_ext:
             unsupported_extensions.append("EXT_texture_filter_anisotropic")
@@ -48,7 +48,9 @@ class WebGLContext(Context):
             unsupported_extensions.append("OES_texture_float_linear")
 
         if unsupported_extensions:
-            raise RuntimeError(f"Tried to create a WebGL constant with the following missing extensions: {unsupported_extensions}")
+            raise RuntimeError(
+                f"Tried to create a WebGL constant with the following missing extensions: {unsupported_extensions}"
+            )
 
         super().__init__(window, gc_mode, gl_api)
 
