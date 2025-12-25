@@ -1,5 +1,7 @@
 # Builds the doc in PRs
 
+name: Docs Build
+
 on:
   push:
     branches: [development, maintenance]
