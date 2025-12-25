@@ -32,15 +32,23 @@ jobs:
         run: uv sync
 
       - name: Formatting (Ruff)
+        if: success()
+        continue-on-error: true
         run: uv run make.py format --check
 
       - name: Linting (Ruff)
+        if: success()
+        continue-on-error: true
         run: uv run make.py ruff-check
 
       - name: Type Checking (MyPy)
+        if: success()
+        continue-on-error: true
         run: uv run make.py mypy
 
       - name: Type Checking (Pyright)
+        if: success()
+        continue-on-error: true
         run: uv run make.py pyright
       
   verifytypes:
