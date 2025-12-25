@@ -35,7 +35,7 @@ Issues = "https://github.com/pythonarcade/arcade/issues"
 Source = "https://github.com/pythonarcade/arcade"
 Book = "https://learn.arcade.academy"
 
-[project.optional-dependencies]
+[dependency-groups]
 # Used for dev work
 dev = [
     "sphinx==8.1.3",               # April 2024 | Updated 2024-07-15, 7.4+ is broken with sphinx-autobuild
@@ -202,6 +202,3 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "PyInstaller.*"
 ignore_missing_imports = true
-
-[tool.uv.sources]
-pyglet = { git = "https://github.com/pyglet/pyglet.git", branch = "development" }
