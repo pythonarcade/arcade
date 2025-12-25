@@ -42,3 +42,28 @@ jobs:
 
       - name: Type Checking (Pyright)
         run: uv run make.py pyright
+      
+  verifytypes:
+    name: Verify Types
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Sync UV project
+        run: uv sync
+
+      - name: Pyright Type Completeness
+        # Suppress exit code because we do not expect to reach 100% type completeness any time soon
+        run: uv run pyright --verifytypes arcade || true
+

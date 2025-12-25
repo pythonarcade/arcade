@@ -22,7 +22,7 @@ jobs:
       # xvfb is used to run "headless" by providing a virtual X server
       # ffmpeg is used for handling mp3 files in some of our tests
       - name: Install xvfb and ffmpeg
-        run: sudo apt-get install xvfb
+        run: sudo apt-get install xvfb ffmpeg
 
       - name: Setup Python
         uses: actions/setup-python@v5
