@@ -38,6 +38,7 @@ jobs:
       - name: Run tests
         env:
           PYGLET_BACKEND: opengl
+          REPL_ID: hello # Arcade checks for this to disable anti-aliasing
         run: |
           xvfb-run --auto-servernum uv run arcade
           xvfb-run --auto-servernum uv run pytest --maxfail=10
