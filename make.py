@@ -208,6 +208,16 @@ def serve():
 
 
 @app.command(rich_help_panel="Docs")
+def docs_full():
+    """
+    Build the documentation fully and error on warnings. This is what is checked in CI.
+    """
+    run_doc([SPHINX_BUILD, DOC_DIR, "build", "-W"])
+    print()
+    print("Build finished")
+
+
+@app.command(rich_help_panel="Docs")
 def linkcheck():
     """
     Check for broken links in the documentation
