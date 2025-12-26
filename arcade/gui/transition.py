@@ -3,7 +3,7 @@ from typing import Callable, Any, Optional, List, TypeVar
 
 from pyglet.event import EventDispatcher
 
-from arcade.easing import linear
+from arcade.anim import Easing
 
 T = TypeVar("T", bound="TransitionBase")
 
@@ -100,7 +100,7 @@ class TransitionAttr(EventTransitionBase):
         attribute,
         duration: float,
         start=None,
-        ease_function=linear,
+        ease_function=Easing.LINEAR,
         delay=0.0,
         mutation_function: Callable[[Any, str, float], None] = setattr,
     ):
@@ -140,7 +140,7 @@ class TransitionAttrIncr(TransitionAttr):
         increment: float,
         attribute,
         duration: float,
-        ease_function=linear,
+        ease_function=Easing.LINEAR,
         delay=0.0,
         mutation_function: Callable[[Any, str, float], None] = setattr,
     ):
