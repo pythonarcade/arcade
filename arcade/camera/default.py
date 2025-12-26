@@ -51,11 +51,15 @@ class DefaultProjector:
         setting the viewport to match the size of the active
         framebuffer sets the viewport to None.
         """
+        # If another camera is active then the viewport was probably set
+        # by camera.use()
         if self._ctx.current_camera != self or self._updating:
             return
         self._updating = True
 
-        if self._ctx.viewport[2] != self.width or self._ctx.viewport[3] != self.height:
+            self._ctx.viewport[2] != self._ctx.fbo.width
+            or self._ctx.viewport[3] != self._ctx.fbo.height
+        ):
             self.viewport = LBWH(*self._ctx.viewport)
         else:
             self.viewport = None
@@ -96,18 +100,19 @@ class DefaultProjector:
     def width(self) -> int:
         if self._viewport is not None:
             return int(self._viewport.width)
-        return self._ctx.active_framebuffer.width
+        return self._ctx.fbo.width
 
     @property
     def height(self) -> int:
         if self._viewport is not None:
             return int(self._viewport.height)
         return self._ctx.active_framebuffer.height
+        return self._ctx.fbo.height
 
     def get_current_viewport(self) -> tuple[int, int, int, int]:
         if self._viewport is not None:
             return self._viewport.lbwh_int
-        return (0, 0, self._ctx.active_framebuffer.width, self._ctx.active_framebuffer.width)
+        return (0, 0, self._ctx.fbo.width, self._ctx.fbo.height)
 
     def use(self) -> None:
         """
@@ -117,7 +122,8 @@ class DefaultProjector:
         viewport = self.get_current_viewport()
 
         self._ctx.current_camera = self
-        self._ctx.viewport = viewport
+        if self._ctx.viewport != viewport:
+            self._ctx.viewport = viewport
         self._ctx.scissor = None if self._scissor is None else self._scissor.lbwh_int
 
         self._ctx.view_matrix = Mat4()
