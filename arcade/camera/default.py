@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from pyglet.math import Mat4, Vec2, Vec3
+from pyglet.window.key import F
 from typing_extensions import Self
 
 from arcade.types import LBWH, Point, Rect
@@ -40,6 +41,7 @@ class DefaultProjector:
         self._viewport: Rect | None = None
         self._scissor: Rect | None = None
         self._matrix: Mat4 | None = None
+        self._updating: bool = False
 
     def update_viewport(self):
         """
@@ -49,13 +51,17 @@ class DefaultProjector:
         setting the viewport to match the size of the active
         framebuffer sets the viewport to None.
         """
-        if self._ctx.current_camera != self:
+        if self._ctx.current_camera != self or self._updating:
             return
+        self._updating = True
+
         if self._ctx.viewport[2] != self.width or self._ctx.viewport[3] != self.height:
-            self._viewport = LBWH(*self._ctx.viewport)
-        self._viewport = None
+            self.viewport = LBWH(*self._ctx.viewport)
+        else:
+            self.viewport = None
 
         self.use()
+        self._updating = False
 
     @property
     def viewport(self) -> Rect | None:
@@ -98,24 +104,26 @@ class DefaultProjector:
             return int(self._viewport.height)
         return self._ctx.active_framebuffer.height
 
+    def get_current_viewport(self) -> tuple[int, int, int, int]:
+        if self._viewport is not None:
+            return self._viewport.lbwh_int
+        return (0, 0, self._ctx.active_framebuffer.width, self._ctx.active_framebuffer.width)
+
     def use(self) -> None:
         """
         Set the window's Projection and View matrices.
         """
 
-        viewport = (0, 0, self.width, self.height)
-        # If the viewport is correct and the default camera is in use,
-        # then don't waste time resetting the view and projection matrices
-        if self._ctx.viewport == viewport and self._ctx.current_camera == self:
-            return
+        viewport = self.get_current_viewport()
 
         self._ctx.current_camera = self
         self._ctx.viewport = viewport
+        self._ctx.scissor = None if self._scissor is None else self._scissor.lbwh_int
 
         self._ctx.view_matrix = Mat4()
         if self._matrix is None:
             self._matrix = Mat4.orthogonal_projection(
-                0, 0, viewport[2], viewport[3], DEFAULT_NEAR_ORTHO, DEFAULT_FAR
+                0, viewport[2], 0, viewport[3], DEFAULT_NEAR_ORTHO, DEFAULT_FAR
             )
         self._ctx.projection_matrix = self._matrix
 
