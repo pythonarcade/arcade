@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
 
+from arcade.camera.data_types import DEFAULT_FAR, DEFAULT_NEAR_ORTHO
 from arcade.types import LBWH, Point, Rect
 from arcade.window_commands import get_window
-from arcade.camera.data_types import DEFAULT_NEAR_ORTHO, DEFAULT_FAR
 
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext

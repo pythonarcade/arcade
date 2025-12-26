@@ -8,9 +8,9 @@ from pyglet.math import Mat4, Vec2, Vec3
 from pyglet.window.key import F
 from typing_extensions import Self
 
+from arcade.camera.data_types import DEFAULT_FAR, DEFAULT_NEAR_ORTHO
 from arcade.types import LBWH, Point, Rect
 from arcade.window_commands import get_window
-from arcade.camera.data_types import DEFAULT_NEAR_ORTHO, DEFAULT_FAR
 
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext
@@ -51,12 +51,14 @@ class DefaultProjector:
         setting the viewport to match the size of the active
         framebuffer sets the viewport to None.
         """
+
         # If another camera is active then the viewport was probably set
         # by camera.use()
         if self._ctx.current_camera != self or self._updating:
             return
         self._updating = True
 
+        if (
             self._ctx.viewport[2] != self._ctx.fbo.width
             or self._ctx.viewport[3] != self._ctx.fbo.height
         ):
@@ -106,7 +108,6 @@ class DefaultProjector:
     def height(self) -> int:
         if self._viewport is not None:
             return int(self._viewport.height)
-        return self._ctx.active_framebuffer.height
         return self._ctx.fbo.height
 
     def get_current_viewport(self) -> tuple[int, int, int, int]:
