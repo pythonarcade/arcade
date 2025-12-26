@@ -373,6 +373,15 @@ class ArcadeContext(Context):
         return self._atlas
 
     @property
+    def active_framebuffer(self):
+        return self._active_framebuffer
+
+    @active_framebuffer.setter
+    def active_framebuffer(self, framebuffer: Framebuffer):
+        self._active_framebuffer = framebuffer
+        self._default_camera.update_viewport()
+
+    @property
     def viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the viewport for the currently active framebuffer.
@@ -393,8 +402,7 @@ class ArcadeContext(Context):
     @viewport.setter
     def viewport(self, value: tuple[int, int, int, int]):
         self.active_framebuffer.viewport = value
-        if self._default_camera == self.current_camera:
-            self._default_camera.use()
+        self._default_camera.update_viewport()
 
     @property
     def projection_matrix(self) -> Mat4:
