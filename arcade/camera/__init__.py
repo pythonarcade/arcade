@@ -23,6 +23,7 @@ from arcade.camera.projection_functions import (
 
 from arcade.camera.orthographic import OrthographicProjector
 from arcade.camera.perspective import PerspectiveProjector
+from arcade.camera.viewport import ViewportProjector
 
 from arcade.camera.camera_2d import Camera2D
 
@@ -33,6 +34,7 @@ __all__ = [
     "Projection",
     "Projector",
     "CameraData",
+    "ViewportProjector",
     "generate_view_matrix",
     "OrthographicProjectionData",
     "generate_orthographic_matrix",
