@@ -1,38 +1,58 @@
-name: Distribute build to PyPi Production
-
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag to deploy'
-        required: true
-        type: string
+  push:
+    tags:
+      - '*'
+
+name: Create a Release
 
 jobs:
-
-  # --- Deploy to pypi
-  deploy-to-pypi-prod:
-
+  run:
     runs-on: ubuntu-latest
-    environment: deploy-pypi-prod
+    environment:
+      name: deploy-pypi-prod
+    permissions:
+      id-token: write
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-tags: 'true'
-          ref: ${{ github.event.inputs.tag }}
-      - name: Set up Python
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.x
-      - name: Install dependencies
-        run: >-
-          python -m pip install build twine
-      - name: Build and Upload to Prod PyPI
+          python-version: '3.14'
+        
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Build Project
+        run: uv build
+
+      - name: Publish to PyPi
+        run: uv publish
+
+      - name: Generate Release Notes
         run: |
-          python -m build --sdist --wheel --outdir dist/
-          python3 -m twine upload dist/*
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TWINE_PROD_TOKEN }}
-          TWINE_REPOSITORY: pypi
+          current_tag=${{ github.ref_name }}
+          previous_tag=$(git describe --abbrev=0 --match "*" --tags $current_tag^)
+          echo "current_tag=$current_tag"
+          echo "previous_tag=$previous_tag"
+          echo "commit_history"
+          echo "=============="
+          while read -r;
+          do
+            echo "- $REPLY" | tee -a body.md 
+          done < <(git log --pretty=oneline --abbrev-commit --decorate-refs-exclude=refs/tags $current_tag...$previous_tag)
+          echo "=============="
+
+      - name: Publish GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          bodyFile: "body.md"
+          tag: ${{ github.ref_name }}
+
+
+      
+
+    

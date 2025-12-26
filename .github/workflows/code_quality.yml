@@ -11,7 +11,7 @@ on:
 
 jobs:
 
-  build:
+  lints:
     name: Code Inspections
     runs-on: ubuntu-latest
 
@@ -51,8 +51,14 @@ jobs:
         continue-on-error: true
         run: uv run make.py pyright
       
-  verifytypes:
-    name: Verify Types
+      - name: Build Docs
+        continue-on-error: true
+        run: uv run make.py docs-full
+
+  # This is a second job instead of an extra step because it takes the longest
+  # So having it as a second job lets it run in parallel to the other checks.
+  docs:
+    name: Build Documentation
     runs-on: ubuntu-latest
 
     steps:
@@ -68,10 +74,8 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Sync UV project
+      - name: Sync UV Project
         run: uv sync
 
-      - name: Pyright Type Completeness
-        # Suppress exit code because we do not expect to reach 100% type completeness any time soon
-        run: uv run pyright --verifytypes arcade || true
-
+      - name: build-docs
+        run: uv run make.py docs-full
