@@ -5,11 +5,10 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from pyglet.math import Mat4, Vec2, Vec3
-from pyglet.window.key import F
 from typing_extensions import Self
 
 from arcade.camera.data_types import DEFAULT_FAR, DEFAULT_NEAR_ORTHO
-from arcade.types import LBWH, Point, Rect
+from arcade.types import Point
 from arcade.window_commands import get_window
 
 if TYPE_CHECKING:
@@ -24,13 +23,10 @@ class DefaultProjector:
     here to act as the default camera used internally by Arcade. There should be
     no instance where a developer would want to use this class.
 
-    The default viewport tries it's best to allow
-    simple usecases with no need to use a camera.
-
-    It does this by defaulting to the size of the active
-    framebuffer. If the user sets the framebuffer's viewport
-    without a camera then the default camera will match it
-    until the framebuffer is changed again.
+    The job of the default projector is to ensure that when no other Projector
+    (Camera2D, OthrographicProjector, PerspectiveProjector, etc) is in use the
+    projection and view matrices are correct such at (0.0, 0.0) is in the bottom
+    left corner of the viewport and that one pixel equals one 'unit'.
 
     Args:
         context: The window context to bind the camera to. Defaults to the currently active context.
@@ -38,10 +34,9 @@ class DefaultProjector:
 
     def __init__(self, *, context: ArcadeContext | None = None):
         self._ctx: ArcadeContext = context or get_window().ctx
-        self._viewport: Rect | None = None
-        self._scissor: Rect | None = None
+        self._viewport: tuple[int, int, int, int] | None = None
+        self._scissor: tuple[int, int, int, int] | None = None
         self._matrix: Mat4 | None = None
-        self._updating: bool = False
 
     def update_viewport(self):
         """
@@ -54,27 +49,25 @@ class DefaultProjector:
 
         # If another camera is active then the viewport was probably set
         # by camera.use()
-        if self._ctx.current_camera != self or self._updating:
+        if self._ctx.current_camera != self:
             return
-        self._updating = True
 
         if (
             self._ctx.viewport[2] != self._ctx.fbo.width
             or self._ctx.viewport[3] != self._ctx.fbo.height
         ):
-            self.viewport = LBWH(*self._ctx.viewport)
+            self.viewport = self._ctx.viewport
         else:
             self.viewport = None
 
         self.use()
-        self._updating = False
 
     @property
-    def viewport(self) -> Rect | None:
+    def viewport(self) -> tuple[int, int, int, int] | None:
         return self._viewport
 
     @viewport.setter
-    def viewport(self, viewport: Rect | None) -> None:
+    def viewport(self, viewport: tuple[int, int, int, int] | None) -> None:
         if viewport == self._viewport:
             return
         self._viewport = viewport
@@ -87,11 +80,11 @@ class DefaultProjector:
         self.viewport = None
 
     @property
-    def scissor(self) -> Rect | None:
+    def scissor(self) -> tuple[int, int, int, int] | None:
         return self._scissor
 
     @scissor.setter
-    def scissor(self, scissor: Rect | None) -> None:
+    def scissor(self, scissor: tuple[int, int, int, int] | None) -> None:
         self._scissor = scissor
 
     @scissor.deleter
@@ -101,18 +94,18 @@ class DefaultProjector:
     @property
     def width(self) -> int:
         if self._viewport is not None:
-            return int(self._viewport.width)
+            return int(self._viewport[2])
         return self._ctx.fbo.width
 
     @property
     def height(self) -> int:
         if self._viewport is not None:
-            return int(self._viewport.height)
+            return int(self._viewport[3])
         return self._ctx.fbo.height
 
     def get_current_viewport(self) -> tuple[int, int, int, int]:
         if self._viewport is not None:
-            return self._viewport.lbwh_int
+            return self._viewport
         return (0, 0, self._ctx.fbo.width, self._ctx.fbo.height)
 
     def use(self) -> None:
@@ -124,8 +117,8 @@ class DefaultProjector:
 
         self._ctx.current_camera = self
         if self._ctx.viewport != viewport:
-            self._ctx.viewport = viewport
-        self._ctx.scissor = None if self._scissor is None else self._scissor.lbwh_int
+            self._ctx.active_framebuffer.viewport = viewport
+        self._ctx.scissor = None if self._scissor is None else self._scissor
 
         self._ctx.view_matrix = Mat4()
         if self._matrix is None:
@@ -141,14 +134,20 @@ class DefaultProjector:
 
         usable with the 'with' block. e.g. 'with ViewportProjector.activate() as cam: ...'
         """
-        previous = self._ctx.current_camera
+        previous_projector = self._ctx.current_camera
+        previous_view = self._ctx.view_matrix
+        previous_projection = self._ctx.projection_matrix
+        previous_scissor = self._ctx.scissor
         previous_viewport = self._ctx.viewport
         try:
             self.use()
             yield self
         finally:
             self._ctx.viewport = previous_viewport
-            previous.use()
+            self._ctx.scissor = previous_scissor
+            self._ctx.projection_matrix = previous_projection
+            self._ctx.view_matrix = previous_view
+            self._ctx.current_camera = previous_projector
 
     def project(self, world_coordinate: Point) -> Vec2:
         """
