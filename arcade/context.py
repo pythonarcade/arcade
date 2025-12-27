@@ -334,6 +334,8 @@ class ArcadeContext(Context):
         self.projection_matrix = Mat4.orthogonal_projection(
             0, self.window.width, 0, self.window.height, -100, 100
         )
+        self._default_camera: DefaultProjector = DefaultProjector(context=self)
+        self.current_camera = self._default_camera
         self.enable_only(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
         self.point_size = 1.0

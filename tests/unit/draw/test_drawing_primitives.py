@@ -6,7 +6,6 @@ def test_draw_primitives(window):
     Render the screen.
     """
     window.background_color = arcade.color.WHITE
-    window.viewport = (0, 0, window.width, window.height)
     window.clear()
 
     # Draw a grid
