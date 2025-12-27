@@ -256,7 +256,7 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ig
 
     @DefaultFrameBuffer.viewport.setter
     def viewport(self, value: tuple[int, int, int, int]):
-        # This is the exact same as the WebGLFramebuffer setter
+        # This is very similar to the OpenGL backend setter
         # WebGL backend doesn't need to handle pixel scaling for the
         # default framebuffer like desktop does, the browser does that
         # for us. However we need a separate implementation for the
@@ -264,13 +264,7 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ig
         if not isinstance(value, tuple) or len(value) != 4:
             raise ValueError("viewport shouldbe a 4-component tuple")
 
-        ratio = self.ctx.window.get_pixel_ratio()
-        self._viewport = (
-            int(value[0] * ratio),
-            int(value[1] * ratio),
-            int(value[2] * ratio),
-            int(value[3] * ratio),
-        )
+        self._viewport = value
 
         if self._ctx.active_framebuffer == self:
             self._ctx._gl.viewport(*self._viewport)
@@ -281,23 +275,11 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ig
 
     @DefaultFrameBuffer.scissor.setter
     def scissor(self, value):
-        # This is the exact same as the WebGLFramebuffer setter
-        # WebGL backend doesn't need to handle pixel scaling for the
-        # default framebuffer like desktop does, the browser does that
-        # for us. However we need a separate implementation for the
-        # function because of ABC
         if value is None:
             self._scissor = None
             if self._ctx.active_framebuffer == self:
                 self._ctx._gl.scissor(*self._viewport)
         else:
-            ratio = self.ctx.window.get_pixel_ratio()
-            self._scissor = (
-                int(value[0] * ratio),
-                int(value[1] * ratio),
-                int(value[2] * ratio),
-                int(value[3] * ratio),
-            )
-
+            self._scissor = value
             if self._ctx.active_framebuffer == self:
                 self._ctx._gl.scissor(*self._scissor)
