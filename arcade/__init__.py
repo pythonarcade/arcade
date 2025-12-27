@@ -63,6 +63,12 @@ if os.environ.get("ARCADE_TEST"):
 else:
     pyglet.options.dpi_scaling = "stretch"
 
+# WebGL has an alpha channel in the backing buffer by default that is
+# 0.0 unless you explicitly clear the alpha channel to 1.0. Disabling
+# this channel causes it to behave more in line with how full OpenGL works.
+if sys.platform == "emscripten":
+    pyglet.options.pyodide.context_options["alpha"] = False
+
 # Env variable shortcut for headless mode
 headless: Final[bool] = bool(os.environ.get("ARCADE_HEADLESS"))
 if headless:
