@@ -61,7 +61,7 @@ def main():
 
     # Go to arcade and build a wheel
     os.chdir(path_arcade)
-    subprocess.run(["python", "-m", "build", "--wheel", "--outdir", "dist"])
+    subprocess.run(["uv", "build"])
     os.chdir(here)
     shutil.copy(path_arcade_wheel, f"./{arcade_wheel_filename}")
 
