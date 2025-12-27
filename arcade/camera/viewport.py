@@ -38,11 +38,11 @@ class ViewportProjector:
         self._ctx: ArcadeContext = context or get_window().ctx
         self._viewport: Rect = viewport or LBWH(*self._ctx.viewport)
         self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
-            0.0, self.viewport.width, 0.0, self.viewport.height, DEFAULT_NEAR_ORTHO, DEFAULT_FAR
+            0.0, self._viewport.width, 0.0, self._viewport.height, DEFAULT_NEAR_ORTHO, DEFAULT_FAR
         )
 
     @property
-    def viewport(self) -> Rect | None:
+    def viewport(self) -> Rect:
         """
         The viewport use to derive projection and view matrix.
         """
