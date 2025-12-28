@@ -9,7 +9,7 @@ jobs:
   run:
     runs-on: ubuntu-latest
     environment:
-      name: deploy-pypi-prod
+      name: release
     permissions:
       id-token: write
       contents: read
