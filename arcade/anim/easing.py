@@ -252,7 +252,7 @@ class Easing:
     @staticmethod
     def BACK_OUT(t: float) -> float:
         """http://easings.net/#easeOutBack"""
-        return 1 + C3 + pow(t - 1, 3) + TEN_PERCENT_BOUNCE * pow(t - 1, 2)
+        return 1 + C3 * pow(t - 1, 3) + TEN_PERCENT_BOUNCE * pow(t - 1, 2)
 
     @staticmethod
     def BACK(t: float) -> float:
@@ -297,11 +297,11 @@ class Easing:
         if t < 1 / D1:
             return N1 * t * t
         elif t < 2 / D1:
-            return N1 * ((t - 1.5) / D1) * (t - 1.5) + 0.75
+            return N1 * (t - 1.5 / D1) ** 2 + 0.75
         elif t < 2.5 / D1:
-            return N1 * ((t - 2.25) / D1) * (t - 2.25) + 0.9375
+            return N1 * (t - 2.25 / D1) ** 2 + 0.9375
         else:
-            return N1 * ((t - 2.625) / D1) * (t - 2.625) + 0.984375
+            return N1 * (t - 2.625 / D1) ** 2 + 0.984375
 
     @staticmethod
     def BOUNCE(t: float) -> float:
