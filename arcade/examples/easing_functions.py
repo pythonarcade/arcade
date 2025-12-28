@@ -10,7 +10,7 @@ from arcade.anim.easing import Easing, ease
 from arcade.clock import GLOBAL_CLOCK
 from arcade.types.rect import LBWH, Rect
 
-from pyglet.graphics import Batch
+from pyglet.graphics import Batch  # type: ignore -- Batch isn't in __all__?
 
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 800
@@ -25,7 +25,7 @@ arcade.load_font(":system:fonts/ttf/Fira Code/Fira_Code_Medium.ttf")
 # Label all the functions
 # There's nine "types", not counting linear, and three of each.
 
-EASING_TYPES = 9
+EASING_TYPES = 10
 EASING_SUB_TYPES = 3
 
 easing_functions = {
@@ -51,6 +51,9 @@ easing_functions = {
     "Circ": Easing.CIRC,
     "Circ In": Easing.CIRC_IN,
     "Circ Out": Easing.CIRC_OUT,
+    "Back": Easing.BACK,
+    "Back In": Easing.BACK_IN,
+    "Back Out": Easing.BACK_OUT,
     "Elastic": Easing.ELASTIC,
     "Elastic In": Easing.ELASTIC_IN,
     "Elastic Out": Easing.ELASTIC_OUT,
@@ -60,7 +63,7 @@ easing_functions = {
 }
 
 # We need these for sorting them later; they're in reverse order since we draw bottom-up.
-function_names = ["Bounce", "Elastic", "Circ", "Expo", "Quint", "Quart", "Cubic", "Quad", "Sine", "Linear"]
+function_names = ["Bounce", "Elastic", "Back", "Circ", "Expo", "Quint", "Quart", "Cubic", "Quad", "Sine", "Linear"]
 
 def px_to_pt(px: int) -> int:
     return round(px // (4 / 3))
@@ -75,15 +78,16 @@ class GameView(arcade.View):
 
         self.background_color = arcade.color.ARCADE_GREEN
         self.time = 0.0
+        self.paused = False
 
         # "Layouting"
         rect = self.window.rect
         self.areas: list[Rect] = []
-        # We want a 9 x 3 grid, but pretending there's an 11 x 3 grid
+        # We want a 10 x 3 grid, but pretending there's an 12 x 3 grid
         # and we're ignoring the first two rows.
         buffer = 10 # px
-        cols = 3
-        rows = 11
+        cols = EASING_SUB_TYPES
+        rows = EASING_TYPES + 2
         rect_width = rect.width / cols
         rect_height = rect.height / rows
 
@@ -105,7 +109,11 @@ class GameView(arcade.View):
 
         self.random_colors = [arcade.types.Color.random(a = 255) for _ in range(len(self.areas))]
 
-        self.title_text = arcade.Text("Easing Functions", buffer, self.window.rect.top - buffer, font_size = px_to_pt(int(rect_height - buffer)), font_name = "Josefin Sans", anchor_y = "top")
+        self.title_text = arcade.Text("Easing Functions", buffer, self.window.rect.top - buffer, font_size = px_to_pt(int(rect_height - buffer)),
+                                      font_name = "Josefin Sans", anchor_y = "top")
+        self.subtitle_text = arcade.Text("Press [SPACE] to pause/unpause.", self.window.rect.right - buffer, self.window.rect.top - buffer,
+                                         font_size = px_to_pt(int(rect_height - buffer) // 2), font_name = "Josefin Sans", color = arcade.color.ARCADE_YELLOW,
+                                         anchor_y = "top", anchor_x = "right")
 
         self.labels = []
         self.progress_labels = []
@@ -115,9 +123,11 @@ class GameView(arcade.View):
         for n, a in enumerate(self.areas):
             name = self.idx_to_func_name(n)
             func = easing_functions[name]
-            label = arcade.Text(func.__name__, a.left, a.bottom, font_size = px_to_pt(int(a.height / 2 - buffer)), font_name = "Fira Code", batch = self.text_batch)
+            label = arcade.Text(func.__name__, a.left, a.bottom, font_size = px_to_pt(int(a.height / 2 - buffer)),
+                                font_name = "Fira Code", batch = self.text_batch)
             self.labels.append(label)
-            progress_label = arcade.Text("0.00", a.right, a.bottom, font_size = px_to_pt(int(a.height / 2 - buffer)), font_name = "Josefin Sans", bold = "light", anchor_x = "right", batch = self.text_batch)
+            progress_label = arcade.Text("0.00", a.right, a.bottom, font_size = px_to_pt(int(a.height / 2 - buffer)),
+                                         font_name = "Josefin Sans", bold = "light", anchor_x = "right", batch = self.text_batch)
             self.progress_labels.append(progress_label)
             sprite = SpriteCircle(int(a.height / 4), arcade.color.ARCADE_YELLOW)
             sprite.left = a.left
@@ -138,10 +148,14 @@ class GameView(arcade.View):
                 return f"{t} Out"
 
     def on_update(self, delta_time):
-        if int(GLOBAL_CLOCK.time) % 2:
+        if int(GLOBAL_CLOCK.time) % 4 == 0:
             self.time = 1 - (GLOBAL_CLOCK.time % 1)
-        else:
+        elif int(GLOBAL_CLOCK.time) % 4 == 1:
+            self.time = 0
+        elif int(GLOBAL_CLOCK.time) % 4 == 2:
             self.time = GLOBAL_CLOCK.time % 1
+        else:
+            self.time = 1
 
         for n, a in enumerate(self.areas):
             name = self.idx_to_func_name(n)
@@ -152,7 +166,7 @@ class GameView(arcade.View):
             x = ease(a.left, right, 0, 1, self.time, func)
             p = ease(0.0, 1.0, 0, 1, self.time, func)
             sprite.left = x
-            self.progress_labels[n].text = f"{p:.02}"
+            self.progress_labels[n].text = f"{round(p, 2):.02}"
             
 
     def on_draw(self):
@@ -161,6 +175,7 @@ class GameView(arcade.View):
         """
         self.clear()
         self.title_text.draw()
+        self.subtitle_text.draw()
         for n, r in enumerate(self.areas):
             arcade.draw_rect_filled(r, arcade.color.BLACK.replace(a = 64))
         self.text_batch.draw()
@@ -170,6 +185,12 @@ class GameView(arcade.View):
         """ Handle key press events """
         if symbol == arcade.key.ESCAPE:
             self.window.close()
+        if symbol == arcade.key.SPACE:
+            self.paused = not self.paused
+            if self.paused:
+                GLOBAL_CLOCK.set_tick_speed(0)
+            else:
+                GLOBAL_CLOCK.set_tick_speed(1)
 
 
 def main():
