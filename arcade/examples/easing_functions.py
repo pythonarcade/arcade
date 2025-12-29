@@ -178,6 +178,18 @@ class GameView(arcade.View):
             self.sprites.append(sprite)
             self.spritelist.append(sprite)
 
+        self.lines = []
+        for a in self.areas:
+            y = a.bottom + (a.height * 0.75)
+            # Long line
+            self.lines.extend([(a.left, y), (a.right, y)])
+            # Left line
+            self.lines.extend([(a.left, y - buffer), (a.left, y + buffer)])
+            # Center line
+            self.lines.extend([(a.center_x, y - buffer), (a.center_x, y + buffer)])
+            # Right line
+            self.lines.extend([(a.right, y - buffer), (a.right, y + buffer)])
+
     def idx_to_func_name(self, i: int) -> str:
         if i >= len(self.areas):
             raise ValueError
@@ -220,6 +232,7 @@ class GameView(arcade.View):
         self.subtitle_text.draw()
         for n, r in enumerate(self.areas):
             arcade.draw_rect_filled(r, arcade.color.BLACK.replace(a=64))
+        arcade.draw_lines(self.lines, arcade.color.WHITE, 2)
         self.text_batch.draw()
         self.spritelist.draw()
 
