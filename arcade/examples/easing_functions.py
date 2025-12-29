@@ -83,6 +83,7 @@ function_names = [
 def px_to_pt(px: int) -> int:
     return round(px // (4 / 3))
 
+LINE_WIDTH = 2
 
 class GameView(arcade.View):
     """
@@ -182,13 +183,13 @@ class GameView(arcade.View):
         for a in self.areas:
             y = a.bottom + (a.height * 0.75)
             # Long line
-            self.lines.extend([(a.left, y), (a.right, y)])
+            self.lines.extend([(a.left + LINE_WIDTH, y), (a.right - LINE_WIDTH, y)])
             # Left line
-            self.lines.extend([(a.left, y - buffer), (a.left, y + buffer)])
+            self.lines.extend([(a.left + LINE_WIDTH, y - buffer), (a.left + LINE_WIDTH, y + buffer)])
             # Center line
             self.lines.extend([(a.center_x, y - buffer), (a.center_x, y + buffer)])
             # Right line
-            self.lines.extend([(a.right, y - buffer), (a.right, y + buffer)])
+            self.lines.extend([(a.right - LINE_WIDTH, y - buffer), (a.right - LINE_WIDTH, y + buffer)])
 
     def idx_to_func_name(self, i: int) -> str:
         if i >= len(self.areas):
@@ -220,8 +221,13 @@ class GameView(arcade.View):
             right = a.right - sprite.width
             x = ease(a.left, right, 0, 1, self.time, func)
             p = ease(0.0, 1.0, 0, 1, self.time, func)
+            rounded_p = round(p, 2)
             sprite.left = x
-            self.progress_labels[n].text = f"{round(p, 2):.02}"
+            self.progress_labels[n].text = f"{rounded_p:.02}"
+            if rounded_p > 1 or rounded_p < 0:
+                self.progress_labels[n].color = arcade.color.PINK_PEARL
+            else:
+                self.progress_labels[n].color = arcade.color.WHITE
 
     def on_draw(self):
         """
@@ -232,7 +238,7 @@ class GameView(arcade.View):
         self.subtitle_text.draw()
         for n, r in enumerate(self.areas):
             arcade.draw_rect_filled(r, arcade.color.BLACK.replace(a=64))
-        arcade.draw_lines(self.lines, arcade.color.WHITE, 2)
+        arcade.draw_lines(self.lines, arcade.color.WHITE, LINE_WIDTH)
         self.text_batch.draw()
         self.spritelist.draw()
 
