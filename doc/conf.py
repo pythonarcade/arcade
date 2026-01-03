@@ -212,7 +212,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Python Arcade Library"
-copyright = "2025, Paul Vincent Craven"
+copyright = "2026, Paul Vincent Craven"
 author = "Paul Vincent Craven"
 
 # The version info for the project you're documenting, acts as replacement for
