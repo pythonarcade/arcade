@@ -336,38 +336,58 @@ def get_distance(*args) -> float:
     else:
         raise ValueError("get_distance() takes 2 or 4 arguments")
 
+
+@overload
 def rotate_point(
     x: float,
     y: float,
     cx: float,
     cy: float,
     angle_degrees: float,
-) -> Point2:
-    """
-    Rotate a point around a center.
+) -> Point2: ... 
 
-    Args:
-        x (float): x value of the point you want to rotate
-        y (float): y value of the point you want to rotate
-        cx (float): x value of the center point you want to rotate around
-        cy (float): y value of the center point you want to rotate around
-        angle_degrees (float): Angle, in degrees, to rotate
-    """
-    temp_x = x - cx
-    temp_y = y - cy
+@overload
+def rotate_point(
+    p1: Point2 , p2: Point2,
+    angle_degrees: float,
+) -> Point2: ... 
+    
 
-    # now apply rotation
-    angle_radians = math.radians(angle_degrees)
-    cos_angle = math.cos(angle_radians)
-    sin_angle = math.sin(angle_radians)
-    rotated_x = temp_x * cos_angle + temp_y * sin_angle
-    rotated_y = -temp_x * sin_angle + temp_y * cos_angle
+def rotate_point(*args) -> Point2:  
 
-    # translate back
-    x = round(rotated_x + cx, _PRECISION)
-    y = round(rotated_y + cy, _PRECISION)
+    if len(args) == 3:
+        p1, p2, angle_degrees = args
+        temp_x = p1[0] - p2[0]
+        temp_y = p1[1] - p2[1]
+        angle_radians = math.radians(angle_degrees)
+        cos_angle = math.cos(angle_radians)
+        sin_angle = math.sin(angle_radians)
+        rotated_x = temp_x * cos_angle + temp_y * sin_angle
+        rotated_y = -temp_x * sin_angle + temp_y * cos_angle
 
-    return x, y
+        # translate back
+        x = round(rotated_x + p2[0], _PRECISION)
+        y = round(rotated_y + p2[1], _PRECISION)
+
+        return x, y
+    elif len(args) == 5:
+        x, y, cx, cy, angle_degrees = args
+        temp_x = x - cx
+        temp_y = y - cy
+        angle_radians = math.radians(angle_degrees)
+        cos_angle = math.cos(angle_radians)
+        sin_angle = math.sin(angle_radians)
+        rotated_x = temp_x * cos_angle + temp_y * sin_angle
+        rotated_y = -temp_x * sin_angle + temp_y * cos_angle
+
+        # translate back
+        x = round(rotated_x + cx, _PRECISION)
+        y = round(rotated_y + cy, _PRECISION)
+
+        return x, y
+    else:
+        raise ValueError("rotate_point() takes 2 or 4 arguments")
+    
 
 
 # scale around point
@@ -436,35 +456,49 @@ def rotate_around_point(source: Point2, target: Point2, angle: float):
     return target[0] + dx, target[1] + dy
 
 
-def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
-    """
-    Get the angle in degrees between two points.
+@overload
+def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float: ...
 
-    Args:
-        x1 (float): x coordinate of the first point
-        y1 (float): y coordinate of the first point
-        x2 (float): x coordinate of the second point
-        y2 (float): y coordinate of the second point
-    """
-    x_diff = x2 - x1
-    y_diff = y2 - y1
+
+@overload
+def get_angle_degrees(p1: Point2, p2: Point2) -> float: ...
+
+
+def get_angle_degrees(*args):
+    """same as other function can take arguments as p1,p2 [point range] or float args x1 y2.."""
+
+    if len(args) == 2:
+        p1, p2 = args
+        x_diff = p2[0] - p1[0]
+        y_diff = p2[1] - p1[1]
+    elif len(args) == 4:
+        x1, y1, x2, y2 = args
+        x_diff = x2 - x1
+        y_diff = y2 - y1
+    else:
+        raise ValueError("get_angle_degrees() takes 2 or 4 arguments")
     return -math.degrees(math.atan2(y_diff, x_diff))
 
 
-def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
-    """
-    Get the angle in radians between two points.
+@overload
+def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float: ...
+    
+@overload
+def get_angle_radians(p1: Point2, p2: Point2) -> float: ...
 
-    Args:
-        x1 (float): x coordinate of the first point
-        y1 (float): y coordinate of the first point
-        x2 (float): x coordinate of the second point
-        y2 (float): y coordinate of the second point
-    """
-    x_diff = x2 - x1
-    y_diff = y2 - y1
+
+def get_angle_radians(*args):
+    if len(args) == 4:
+        x1, y1, x2, y2 = args
+        x_diff = x2 - x1
+        y_diff = y2 - y1
+    elif len(args) == 2:
+        p1, p2 = args
+        x_diff = p2[0] - p1[0]
+        y_diff = p2[1] - p1[1]
+    else:
+        raise ValueError("get_angle_radians() takes 2 or 4 arguments")
     return math.atan2(x_diff, y_diff)
-
 
 def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[float, float, float]:
     """
