@@ -87,3 +87,16 @@ def test_rand_vec_spread_deg():
 def test_rand_vec_magnitude():
     """Smoke test"""
     rand_vec_magnitude(30.5, 3.3, 4.4)
+
+
+#adding more test for getdistance with floats of point2 and x1 type 
+
+def test_get_distance_with_floats():
+    """Test get_distance with x1, y1, x2, y2 parameters"""
+    assert get_distance(0, 0, 3, 4) == approx(5.0)
+    assert get_distance(1, 1, 4, 5) == approx(5.0)
+
+def test_get_distance_with_point2():
+    """Test get_distance with Point2 parameters"""
+    assert get_distance((0, 0), (3, 4)) == approx(5.0)
+    assert get_distance((1, 1), (4, 5)) == approx(5.0)

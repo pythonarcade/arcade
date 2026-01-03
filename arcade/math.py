@@ -1,6 +1,6 @@
 import math
 import random
-from typing import TypeVar
+from typing import TypeVar, overload
 
 from pyglet.math import Vec2, Vec3
 
@@ -311,18 +311,30 @@ def rand_vec_magnitude(
     return vel.x, vel.y
 
 
-def get_distance(x1: float, y1: float, x2: float, y2: float) -> float:
-    """
-    Get the distance between two points.
+@overload
+def get_distance(p1: Point2, p2: Point2) -> float: ... 
 
-    Args:
-        x1 (float): x coordinate of the first point
-        y1 (float): y coordinate of the first point
-        x2 (float): x coordinate of the second point
-        y2 (float): y coordinate of the second point
-    """
-    return math.hypot(x1 - x2, y1 - y2)
+@overload
+def get_distance(x1: float, y1: float, x2: float, y2: float) -> float: ...
 
+
+
+def get_distance(*args) -> float:
+    """ 
+    get distance between two points.
+    args: 
+        can be called as: 
+            get_distance(p1, p2) with point2 args
+            get_distance(x1, y1, x2, y2) with float args
+
+            get distance with x1 y1 can be removed later down the line for now it is for backwards compatiblity
+    """
+    if len(args) == 2:
+        return math.hypot(args[0][0] - args[1][0], args[0][1] - args[1][1])
+    elif len(args) == 4:
+        return math.hypot(args[0] - args[2], args[1] - args[3])
+    else:
+        raise ValueError("get_distance() takes 2 or 4 arguments")
 
 def rotate_point(
     x: float,
