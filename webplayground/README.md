@@ -5,6 +5,15 @@ An http server is provided with the `server.py` file. This file can be run with 
 
 The index page will provide a list of all Arcade examples. This is generated dynamically on the fly when the page is loaded, and will show all examples in the `arcade.examples` package. This generates links which can be followed to open any example in the browser.
 
+## Setup
+
+1. Create virtual environment `python -m venv venv`
+2. Start virtual environment `venv/scripts/activate`
+3. Install libraries `pip install .`
+4. Install more libraries: `pip install bottle uv`
+5. Change directories `cd webplayground`
+6. Start the server with: `python server.py`
+
 ## Testing Local Scripts
 
 You can now test your own local scripts **without restarting the server**!
@@ -22,7 +31,7 @@ See `local_scripts/README.md` and `local_scripts/example_test.py` for more detai
 
 You will need to have `uv` installed to build the Arcade wheel. You can install it with:
 
-When you start the server, it will automatically build an Arcade wheel and copy it into this directory. 
+When you start the server, it will automatically build an Arcade wheel and copy it into this directory.
 This means that if you make any changes to Arcade code, you will need to restart the server to build a new wheel with your changes.
 
 ## How does this work?
