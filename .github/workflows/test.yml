@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Update apt
+        run: sudo apt-get update
+
       # xvfb is used to run "headless" by providing a virtual X server
       # ffmpeg is used for handling mp3 files in some of our tests
       - name: Install xvfb and ffmpeg
