@@ -65,6 +65,28 @@ class InputDevice(Enum):
 
 
 class InputManager:
+    """
+    The InputManager is responsible for managing input for a given device, this can be the keyboard/mouse or a controller.
+
+    In general, you can share one InputManager for one controller and the keyboard/mouse, there are even utilities to handle
+    automatically switching between them as the active device. However if you intend to have multiple controllers connected
+    to your game, each controller should have it's own InputManager.
+
+    For runnable examples of how to use this, please see Arcdade's
+    :ref:`built-in InputManager examples <input_manager_examples>`.
+
+    Args:
+        controller:
+            Either a Pyglet Controller object or None if you only want to use the keyboard/mouse.
+        allow_keyboard:
+            Whether to allow keyboard input, defaults to True, can be changed safely after initialization.
+        action_handlers:
+            Either one or a collection of functions that will be called for every action that is triggered.
+            :py:meth:`InputManager.subscribe_to_action` may be preferred to subscribe to individual actions instead.
+        controller_deadzone:
+            The deadzone for controller input, defaults to 0.1. If changes to axis values are within this
+            range from the underlying hardware, they will be ignored.
+    """
     def __init__(
         self,
         controller: Controller | None = None,

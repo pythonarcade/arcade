@@ -1,27 +1,49 @@
+.. _pg_simple_input:
+
+Simple Input
+============
+
+This section will cover simple input handling in Arcade, which consists of just keyboard/mouse devices.
+
+There are two possible approaches to this to be aware of:
+
+* Event Based
+* Polling
+
+These two approaches work somewhat different, and will require different levels of code on your end to handle them.
+However these approaches are not mutually exclusive, you can use both at the same time for different purposes where
+one might be preferable to the other.
+
+Event Based
+-----------
+
+With the event based approach, your game will register handlers that Arcade will call whenever an input happens.
+
+For example, when you press the ``A`` button on your keyboard, Arcade would send an event to any registered handlers
+for key press events. And then similarly when the key is released, Arcade will send an event to handlers registered for
+key release events.
+
+Using this system if you want to know if a button is currently held down, it would be up to your application to track the
+state of the ``A`` key, changing it when your handlers receive a call for press and release events.
+
+Polling
+-------
+
+In contrast to the event based approach where Arcade notifies your application of input events, polling is the opposite way
+around. With polling you can ask Arcade at any point in time what the state of a given key or mouse button is. This can be
+useful when you want to modify some action that is being taken based on if a certain key is currently pressed or not, but
+if you rely exclusively on polling, you may not always respond immediately to input actions if you don't poll often enough.
+
+Whereas with the event based approach, Arcade will trigger your handlers immediately when the event happens.
+
 Keyboard
-========
+--------
 
-.. _keyboard_events:
-
-Events
-------
-
-What is a keyboard event?
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Keyboard events are Arcade's representation of physical keyboard interactions.
-
-For example, if your keyboard is working correctly and you type the letter A
-into the window of a running Arcade game, it will see two separate events:
-
-#. a key press event with the key code for ``A``
-#. a key release event with the key code for ``A``
-
-.. _keyboard_event_handlers:
+.. _pg_simple_input_keyboard:
 
 How do I handle keyboard events?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-You must implement key event handlers. These functions are called whenever a
+You must implement key event handler functions. These functions are called whenever a
 key event is detected:
 
 * :meth:`arcade.Window.on_key_press`
@@ -31,7 +53,7 @@ You need to implement your own versions of the above methods on your subclass
 of :class:`arcade.Window`. The :ref:`arcade.key <key>` module contains
 constants for specific keys.
 
-For runnable examples, see the following:
+For runnable examples, see the following, and look for the ``on_key_press`` and ``on_key_release`` functions:
 
 * :ref:`sprite_move_keyboard`
 * :ref:`sprite_move_keyboard_better`
@@ -40,10 +62,23 @@ For runnable examples, see the following:
 .. note:: If you are using :class:`Views <arcade.View>`, you can
           also implement key event handler methods on them.
 
-.. _keyboard_modifiers:
+How do I poll for keyboard state?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If you need to ask Arcade what the state of a given key is, you can do so through your :class:`arcade.Window` class.
+
+.. code-block:: python
+
+    import arcade
+
+    window = arcade.get_window()
+    a_key_pressed = window.keyboard[arcade.keys.A]
+    if a_key_pressed:
+        print("The A key is pressed")
 
 Modifiers
----------
+^^^^^^^^^
+
+.. _pg_simple_input_keyboard_modifiers:
 
 What is a modifier?
 ^^^^^^^^^^^^^^^^^^^
@@ -69,7 +104,7 @@ How do I use modifiers?
 
 As long as you don't need to distinguish between the left and right versions of
 modifiers keys, you can rely on the ``modifiers`` argument of :ref:`key event
-handlers <keyboard_event_handlers>`.
+handlers <pg_simple_input_keyboard>`.
 
 For every key event, the current state of all modifiers is passed to the
 handler method through the ``modifiers`` argument as a single integer. For each
@@ -113,4 +148,4 @@ specific modifier keys are currently pressed!
 
 Instead, you have to use specific key codes for left and right versions from
 :ref:`arcade.key <key>` to :ref:`track press and release events
-<keyboard_event_handlers>`.
+<pg_simple_input_keyboard>`.

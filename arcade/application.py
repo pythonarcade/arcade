@@ -680,7 +680,7 @@ class Window(pyglet.window.Window):
 
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         pass
 
@@ -705,7 +705,7 @@ class Window(pyglet.window.Window):
                 Which button is pressed
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return self.on_mouse_motion(x, y, dx, dy)
 
@@ -730,7 +730,7 @@ class Window(pyglet.window.Window):
                 - ``arcade.MOUSE_BUTTON_MIDDLE``
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return EVENT_UNHANDLED
 
@@ -831,7 +831,7 @@ class Window(pyglet.window.Window):
                 Key that was just pushed down
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return EVENT_UNHANDLED
 
@@ -853,7 +853,7 @@ class Window(pyglet.window.Window):
             symbol (int): Key that was released
             modifiers (int): Bitwise 'and' of all modifiers (shift,
                       ctrl, num lock) active during this event.
-                      See :ref:`keyboard_modifiers`.
+                      See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return EVENT_UNHANDLED
 
@@ -1440,7 +1440,7 @@ class View:
 
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         pass
 
@@ -1465,7 +1465,7 @@ class View:
                 Which button is pressed
             _modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
         return False
@@ -1492,7 +1492,7 @@ class View:
 
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         pass
 
@@ -1547,7 +1547,7 @@ class View:
                 Key that was just pushed down
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock) active
-                during this event. See :ref:`keyboard_modifiers`.
+                during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return False
 
@@ -1570,7 +1570,7 @@ class View:
                 Key that was released
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock) active
-                during this event. See :ref:`keyboard_modifiers`.
+                during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return False
 
