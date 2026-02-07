@@ -52,8 +52,6 @@ However when we assign keyboard keys, or buttons of any kind to an axis, all we 
 pressed or not, but there is no value to multiply against a scale. In the case of a key/button being added to an axis input, Arcade will
 use the scale specified as the value for the axis.
 
-In order to actually make use of that InputManager,
-
 Handling the Jump Action
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
