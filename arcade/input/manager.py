@@ -149,6 +149,20 @@ class InputManager:
             self.active_device = InputDevice.CONTROLLER
 
     def serialize(self) -> RawInputManager:
+        """
+        Serializes the current state of the InputManager into a RawInputManager dictionary which can easily be saved to JSON.
+
+        This does not include current values of inputs, but rather the structure of the InputManager. Including:
+          - Actions: All registered actions
+          - Axes: All registered axis inputs
+          - Current Mappings: All current mappings of underlying inputs to actions/axis
+
+        The output dictionary of this function can be passed to :meth:`arcade.InputManager.parse` to create a new InputManager
+        from a serialized one.
+
+        Returns:
+            A RawInputManager dictionary representing the current state of the InputManager.
+        """
         raw_actions = []
         for action in self.actions.values():
             raw_actions.append(serialize_action(action))
@@ -163,6 +177,13 @@ class InputManager:
 
     @classmethod
     def parse(cls, raw: RawInputManager) -> InputManager:
+        """
+        Create a new InputManager from a serialized dictionary. Can be used in combination with the :meth:`arcade.InputManager.serialize` to
+        save/load input configurations.
+
+        Returns:
+            A new InputManager with the state defined in the provided RawInputManager dictionary.
+        """
         final = cls(controller_deadzone=raw["controller_deadzone"])
 
         for raw_action in raw["actions"]:
@@ -191,6 +212,16 @@ class InputManager:
         return final
 
     def copy_existing(self, existing: InputManager):
+        """
+        Copies the state of another InputManager into this one. Note that this does not create a new InputManager, but modifies the one on which it is called.
+
+        This does not copy current input values, just the structure/mappings of the InputManager.
+
+        If you want to create a new InputManager from an existing one, use :meth:`arcade.InputManager.from_existing`
+
+        Args:
+            existing: The InputManager to copy from.
+        """
         self.actions = existing.actions.copy()
         self.keys_to_actions = existing.keys_to_actions.copy()
         self.controller_buttons_to_actions = existing.controller_buttons_to_actions.copy()
@@ -207,19 +238,38 @@ class InputManager:
         existing: InputManager,
         controller: pyglet.input.Controller | None = None,
     ) -> InputManager:
+        """
+        Create a new InputManager from an existing one. This does not copy current input values, just the structure/mappings of the InputManager.
+
+        If you want to create a new InputManager from a serialized dictionary, use :meth:`arcade.InputManager.parse`
+
+        Args:
+            existing: The InputManager to copy from.
+            controller: The controller to use for this InputManager. If None, no Controller will be bound.
+
+        Returns:
+            A new InputManager with the state defined in the provided existing InputManager.
+        """
         new = cls(
             allow_keyboard=existing.allow_keyboard,
             controller=controller,
             controller_deadzone=existing.controller_deadzone,
         )
         new.copy_existing(existing)
-        new.actions = existing.actions.copy()
 
         return new
 
     def bind_controller(self, controller: Controller):
+        """
+        Bind a controller to this InputManager. If a controller is already bound, it will be unbound first.
+
+        Upon binding a controller it will be set as the active device.
+
+        Args:
+            controller: The controller to bind to this InputManager.
+        """
         if self.controller:
-            self.controller.remove_handlers()
+            self.unbind_controller()
 
         self.controller = controller
         self.controller.open()
@@ -233,6 +283,9 @@ class InputManager:
         self.active_device = InputDevice.CONTROLLER
 
     def unbind_controller(self):
+        """
+        Unbind the currently bound controller from this InputManager.
+        """
         if not self.controller:
             return
 
@@ -251,6 +304,11 @@ class InputManager:
 
     @property
     def allow_keyboard(self):
+        """
+        Whether the keyboard is allowed for this InputManager. This also effects mouse input.
+
+        If this is false then all keyboard and mouse input will be ignored regardless of if there are mappings for them.
+        """
         return self._allow_keyboard
 
     @allow_keyboard.setter
@@ -273,14 +331,28 @@ class InputManager:
         self,
         name: str,
     ):
+        """
+        Create a new action with the given name. If an action with the same name already exists, this will do nothing.
+
+        Args:
+            name: The name of the action to create.
+        """
+        if name in self.actions:
+            return
+
         action = Action(name)
         self.actions[name] = action
 
     def remove_action(self, name: str):
-        self.clear_action_input(name)
+        """
+        Remove the specified action. If the action does not exist, this will do nothing.
 
+        Args:
+            name: The name of the action to remove.
+        """
         to_remove = self.actions.get(name, None)
         if to_remove:
+            self.clear_action_input(name)
             del self.actions[name]
 
     def add_action_input(
