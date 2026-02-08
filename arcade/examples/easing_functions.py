@@ -1,7 +1,8 @@
 """
 Example showing the different easing functions.
 
-If Python and Arcade are installed, this example can be run from the command line with:
+If Python and Arcade are installed, this example can be
+run from the command line with:
 python -m arcade.examples.easing_functions
 """
 
@@ -121,10 +122,12 @@ class GameView(arcade.View):
             elif col == 2:
                 new_rect = new_rect.align_right(rect.right)
             new_rect = new_rect.align_bottom(rect.bottom + rect_height * row)
-            new_rect = new_rect.resize(new_rect.width - buffer, new_rect.height - buffer)
+            new_rect = new_rect.resize(new_rect.width - buffer,
+                                       new_rect.height - buffer)
             self.areas.append(new_rect)
 
-        self.random_colors = [arcade.types.Color.random(a=255) for _ in range(len(self.areas))]
+        self.random_colors = [arcade.types.Color.random(a=255)
+                              for _ in range(len(self.areas))]
 
         self.title_text = arcade.Text(
             "Easing Functions",
@@ -185,11 +188,13 @@ class GameView(arcade.View):
             # Long line
             self.lines.extend([(a.left + LINE_WIDTH, y), (a.right - LINE_WIDTH, y)])
             # Left line
-            self.lines.extend([(a.left + LINE_WIDTH, y - buffer), (a.left + LINE_WIDTH, y + buffer)])
+            self.lines.extend([(a.left + LINE_WIDTH, y - buffer),
+                               (a.left + LINE_WIDTH, y + buffer)])
             # Center line
             self.lines.extend([(a.center_x, y - buffer), (a.center_x, y + buffer)])
             # Right line
-            self.lines.extend([(a.right - LINE_WIDTH, y - buffer), (a.right - LINE_WIDTH, y + buffer)])
+            self.lines.extend([(a.right - LINE_WIDTH, y - buffer),
+                               (a.right - LINE_WIDTH, y + buffer)])
 
     def idx_to_func_name(self, i: int) -> str:
         if i >= len(self.areas):
