@@ -255,7 +255,7 @@ class GameView(arcade.View):
 
 
 def main():
-    """Main function"""
+    """Main function."""
     # Create a window class. This is what actually shows up on screen
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
 
