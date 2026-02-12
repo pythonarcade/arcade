@@ -427,6 +427,26 @@ class InputManager:
                 self.controller_analog_to_axes[input.value] = set()
             self.controller_analog_to_axes[input.value].add(axis)
 
+    def add_axis_input_combined(self, axis: str, positive: InputEnum, negative: InputEnum, scale: float = 1.0):
+        """
+        This is a helper function that wraps :meth:`arcade.InputManager.add_axis_input` to add two inputs
+        with a positive and negative scale.
+
+        For example, you can do:
+        add_axis_input_combined("MoveHorizontal", arcade.Keys.RIGHT, arcade.Keys.LEFT, 1.0)
+        instead of:
+        add_axis_input("MoveHorizontal", arcade.Keys.RIGHT, 1.0)
+        add_axis_input("MoveHorizontal", arcade.Keys.LEFT, -1.0)
+
+        Args:
+            axis: The axis name to register the input for
+            positive: The input that will correspond to the positive side of the axis
+            negative: The input that will correspond to the negative side of the axis
+            scale: The value to multiply the input by, for non analog inputs the scale value is used literally.
+        """
+        self.add_axis_input(axis, positive, scale)
+        self.add_axis_input(axis, negative, -scale)
+
     def clear_axis_input(self, axis: str):
         self.axes[axis]._mappings.clear()
         _clean_dicts(
