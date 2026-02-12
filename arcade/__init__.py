@@ -145,6 +145,16 @@ if not headless:
     from .controller import ControllerManager
     from .controller import get_controllers
 
+from .input import ActionState
+from .input import ControllerAxes
+from .input import ControllerButtons
+from .input import InputManager
+from .input import Keys
+from .input import MouseAxes
+from .input import MouseButtons
+from .input import PSControllerButtons
+from .input import XBoxControllerButtons
+
 from .sound import Sound
 from .sound import load_sound
 from .sound import play_sound
