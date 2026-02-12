@@ -259,6 +259,15 @@ from .text import (
 )
 
 __all__ = [
+    "ActionState",
+    "ControllerAxes",
+    "ControllerButtons",
+    "InputManager",
+    "Keys",
+    "MouseAxes",
+    "MouseButtons",
+    "PSControllerButtons",
+    "XBoxControllerButtons",
     "AStarBarrierList",
     "AnimatedWalkingSprite",
     "TextureAnimationSprite",
