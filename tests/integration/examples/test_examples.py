@@ -38,6 +38,7 @@ IGNORE_PATTERNS = [
     "indirect",  # Indirect rendering cannot be run in unit test
     "bindless",  # Bindless textures cannot be run in unit test
     "spritelist_interaction",  # Currently only works for spritelist buffer backend. Not textures.
+    "numpy_sprite",  # Needs numpy installed as a dependency
 ]
 
 
