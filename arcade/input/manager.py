@@ -345,8 +345,7 @@ class InputManager:
 
     def remove_action(self, name: str):
         """
-        Remove the specified action. If the action does not exist, this will do nothing.
-
+        Remove the specified action. If the action does not exist, this will do nothing. All registered inputs for the action will be removed.
         Args:
             name: The name of the action to remove.
         """
@@ -363,6 +362,16 @@ class InputManager:
         mod_ctrl: bool = False,
         mod_alt: bool = False,
     ):
+        """
+        Register an input to an action.
+
+        Args:
+            action: The action to register the input for
+            input: The input to register
+            mod_shift: The input will only trigger if the Shift keyboard key is also held
+            mod_ctrl: The input will only trigger if the Control keyboard key is also held
+            mod_alt: The input will only trigger if the Alt keyboard key is also held
+        """
         mapping = ActionMapping(input, mod_shift, mod_ctrl, mod_alt)
         self.actions[action].add_mapping(mapping)
 
@@ -385,6 +394,12 @@ class InputManager:
             self.controller_axes_to_actions[input.value].add(action)
 
     def clear_action_input(self, action: str):
+        """
+        Clears all registered inputs for a given action.
+
+        Args:
+            action: The name of the action to clear.
+        """
         self.actions[action]._mappings.clear()
         _clean_dicts(
             action,
@@ -395,14 +410,38 @@ class InputManager:
         )
 
     def register_action_handler(self, handler: OneOrIterableOf[Callable[[str, ActionState], Any]]):
+        """
+        Register a callback function for all actions from this InputManager.
+
+        The callback function should accept a String with the name of the Action, and an ActionState.
+        This callback will receive all action events, regardless of if :meth:`arcade.InputManager.subscribe_to_action` has been used as well.
+
+        Args:
+            handler: The callback function to register.
+        """
         grow_sequence(self.on_action_listeners, handler, append_if=callable)
 
     def subscribe_to_action(self, name: str, subscriber: Callable[[ActionState], Any]):
+        """
+        Subscribe a callback to given action.
+
+        The callback function should accept an ActionState parameter.
+
+        Args:
+            name: The name of the action to subscribe to.
+            subscriber: The callback function which will be called.
+        """
         old = self.action_subscribers.get(name, set())
         old.add(subscriber)
         self.action_subscribers[name] = old
 
     def new_axis(self, name: str):
+        """
+        Create a new axis with the given name.
+
+        Args:
+            name: The name of the axis
+        """
         if name in self.axes:
             raise AttributeError(f"Tried to create Axis with duplicate name: {name}")
 
@@ -411,6 +450,14 @@ class InputManager:
         self.axes_state[name] = 0.0
 
     def add_axis_input(self, axis: str, input: InputEnum, scale: float = 1.0):
+        """
+        Register an input to an axis.
+
+        Args:
+            axis: The axis to register the input for
+            input: The input to register
+            scale: The value to multiply the input by, for non analog inputs the scale value is used literally.
+        """
         mapping = AxisMapping(input, scale)
         self.axes[axis].add_mapping(mapping)
 
@@ -448,20 +495,38 @@ class InputManager:
         self.add_axis_input(axis, negative, -scale)
 
     def clear_axis_input(self, axis: str):
+        """
+        Clear all registered inputs for the given axis.
+
+        Args:
+            axis: The axis to clear
+        """
         self.axes[axis]._mappings.clear()
         _clean_dicts(
             axis, self.keys_to_axes, self.controller_analog_to_axes, self.controller_buttons_to_axes
         )
 
-    def remove_axis(self, name: str):
-        self.clear_axis_input(name)
+    def remove_axis(self, axis: str):
+        """
+        Completely remove an axis from the manager. This will also clear the registered inputs for that axis.
 
-        to_remove = self.axes.get(name, None)
+        Args:
+            axis: The axis to remove
+        """
+        self.clear_axis_input(axis)
+
+        to_remove = self.axes.get(axis, None)
         if to_remove:
-            del self.axes[name]
-            del self.axes_state[name]
+            del self.axes[axis]
+            del self.axes_state[axis]
 
     def axis(self, name: str) -> float:
+        """
+        Get the current value of a given axis.
+
+        Args:
+            name: The axis to get the value of
+        """
         return self.axes_state[name]
 
     def dispatch_action(self, action: str, state: ActionState):
@@ -613,6 +678,9 @@ class InputManager:
         self.active_device = InputDevice.CONTROLLER
 
     def update(self):
+        """
+        Updates axis inputs, all axis values will remain unchanged unless this function is called, usually during on_update.
+        """
         for name in self.axes.keys():
             self.axes_state[name] = 0
 
