@@ -3,6 +3,16 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## 4.0.0.dev2
+
+### Fixes
+- Fixes to camera module handling framebuffer changes. See [2802](https://github.com/pythonarcade/arcade/pull/2802)
+- Small fixes to new easing functions. See [2810](https://github.com/pythonarcade/arcade/pull/2810)
+
+### Breaking Changes
+- Updated pyglet to 3.0.dev2
+- Small changes to the new input package between 4.0.0.dev1 and dev2. Namely `ControllerAxes` renamed/split to `ControllerSticks` and `ControllerTriggers`. There are more underlying changes which shouldn't impact the public API of InputManager. 
+
 ## 4.0.0.dev1
 
 ### New Features
