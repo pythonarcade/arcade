@@ -68,7 +68,8 @@ class GameView(arcade.View):
         # Create a new InputManager, and assign our controller to it(if we have one)
         self.input_manager = arcade.InputManager(controller)
 
-        # Add a new horizontal movement axis to the input manager and assign the LEFT/RIGHT arrow keys and left thumbstick to it
+        # Add a new horizontal movement axis to the input manager.
+        # Also assign the LEFT/RIGHT arrow keys and left thumbstick to it
         self.input_manager.new_axis("MoveHorizontal")
         self.input_manager.add_axis_input_combined(
             "MoveHorizontal",
