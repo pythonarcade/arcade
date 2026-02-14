@@ -146,8 +146,9 @@ if not headless:
     from .controller import get_controllers
 
 from .input import ActionState
-from .input import ControllerAxes
 from .input import ControllerButtons
+from .input import ControllerSticks
+from .input import ControllerTriggers
 from .input import InputManager
 from .input import Keys
 from .input import MouseAxes
@@ -260,8 +261,9 @@ from .text import (
 
 __all__ = [
     "ActionState",
-    "ControllerAxes",
     "ControllerButtons",
+    "ControllerSticks",
+    "ControllerTriggers",
     "InputManager",
     "Keys",
     "MouseAxes",

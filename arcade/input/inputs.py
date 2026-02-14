@@ -16,7 +16,8 @@ class InputType(Enum):
     MOUSE_BUTTON = 1
     MOUSE_AXIS = 2
     CONTROLLER_BUTTON = 3
-    CONTROLLER_AXIS = 4
+    CONTROLLER_AXIS_SINGLE = 4
+    CONTROLLER_AXIS_DOUBLE = 5
 
 
 class InputEnum(Enum):
@@ -39,19 +40,14 @@ class StrEnum(str, InputEnum):
         return name
 
 
-class ControllerAxes(StrEnum):
-    LEFT_STICK_X = "leftx"
-    LEFT_STICK_POSITIVE_X = "leftxpositive"
-    LEFT_STICK_NEGATIVE_X = "leftxnegative"
-    LEFT_STICK_Y = "lefty"
-    LEFT_STICK_POSITIVE_Y = "leftypositive"
-    LEFT_STICK_NEGATIVE_Y = "leftynegative"
-    RIGHT_STICK_X = "rightx"
-    RIGHT_STICK_POSITIVE_X = "rightxpositive"
-    RIGHT_STICK_NEGATIVE_X = "rightxnegative"
-    RIGHT_STICK_Y = "righty"
-    RIGHT_STICK_POSITIVE_Y = "rightypositive"
-    RIGHT_STICK_NEGATIVE_Y = "rightynegative"
+class ControllerSticks(StrEnum):
+    LEFT_STICK_X = "leftstickx"
+    LEFT_STICK_Y = "leftsticky"
+    RIGHT_STICK_X = "rightstickx"
+    RIGHT_STICK_Y = "rightsticky"
+
+
+class ControllerTriggers(StrEnum):
     LEFT_TRIGGER = "lefttrigger"
     RIGHT_TRIGGER = "righttrigger"
 
@@ -366,7 +362,8 @@ CLASS_TO_INPUT_TYPE: dict[type[InputEnum], InputType] = {
     MouseButtons: InputType.MOUSE_BUTTON,
     MouseAxes: InputType.MOUSE_AXIS,
     ControllerButtons: InputType.CONTROLLER_BUTTON,
-    ControllerAxes: InputType.CONTROLLER_AXIS,
+    ControllerTriggers: InputType.CONTROLLER_AXIS_SINGLE,
+    ControllerSticks: InputType.CONTROLLER_AXIS_DOUBLE,
 }
 
 INPUT_TYPE_TO_CLASS: dict[InputType, type[InputEnum]] = {
@@ -374,7 +371,8 @@ INPUT_TYPE_TO_CLASS: dict[InputType, type[InputEnum]] = {
     InputType.MOUSE_BUTTON: MouseButtons,
     InputType.MOUSE_AXIS: MouseAxes,
     InputType.CONTROLLER_BUTTON: ControllerButtons,
-    InputType.CONTROLLER_AXIS: ControllerAxes,
+    InputType.CONTROLLER_AXIS_SINGLE: ControllerTriggers,
+    InputType.CONTROLLER_AXIS_DOUBLE: ControllerSticks,
 }
 
 

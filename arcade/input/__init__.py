@@ -2,8 +2,9 @@
 #  type: ignore
 
 from .inputs import (
-    ControllerAxes,
     ControllerButtons,
+    ControllerSticks,
+    ControllerTriggers,
     XBoxControllerButtons,
     PSControllerButtons,
     Keys,
@@ -14,8 +15,9 @@ from .manager import ActionState, InputManager
 from .input_mapping import Action, ActionMapping, Axis, AxisMapping
 
 __all__ = [
-    "ControllerAxes",
     "ControllerButtons",
+    "ControllerSticks",
+    "ControllerTriggers",
     "XBoxControllerButtons",
     "PSControllerButtons",
     "Keys",

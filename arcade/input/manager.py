@@ -87,6 +87,7 @@ class InputManager:
             The deadzone for controller input, defaults to 0.1. If changes to axis values are within this
             range from the underlying hardware, they will be ignored.
     """
+
     def __init__(
         self,
         controller: Controller | None = None,
@@ -142,9 +143,11 @@ class InputManager:
             self.controller.push_handlers(
                 self.on_button_press,
                 self.on_button_release,
-                self.on_stick_motion,
+                self.on_leftstick_motion,
+                self.on_rightstick_motion,
                 self.on_dpad_motion,
-                self.on_trigger_motion,
+                self.on_lefttrigger_motion,
+                self.on_righttrigger_motion,
             )
             self.active_device = InputDevice.CONTROLLER
 
@@ -276,9 +279,11 @@ class InputManager:
         self.controller.push_handlers(
             self.on_button_press,
             self.on_button_release,
-            self.on_stick_motion,
+            self.on_leftstick_motion,
+            self.on_rightstick_motion,
             self.on_dpad_motion,
-            self.on_trigger_motion,
+            self.on_lefttrigger_motion,
+            self.on_righttrigger_motion,
         )
         self.active_device = InputDevice.CONTROLLER
 
@@ -292,9 +297,11 @@ class InputManager:
         self.controller.remove_handlers(
             self.on_button_press,
             self.on_button_release,
-            self.on_stick_motion,
+            self.on_leftstick_motion,
+            self.on_rightstick_motion,
             self.on_dpad_motion,
-            self.on_trigger_motion,
+            self.on_lefttrigger_motion,
+            self.on_righttrigger_motion,
         )
         self.controller.close()
         self.controller = None
@@ -388,7 +395,10 @@ class InputManager:
             if input.value not in self.mouse_buttons_to_actions:
                 self.mouse_buttons_to_actions[input.value] = set()
             self.mouse_buttons_to_actions[input.value].add(action)
-        elif mapping._input_type == InputType.CONTROLLER_AXIS:
+        elif (
+            mapping._input_type == InputType.CONTROLLER_AXIS_SINGLE
+            or mapping._input_type == InputType.CONTROLLER_AXIS_DOUBLE
+        ):
             if input.value not in self.controller_axes_to_actions:
                 self.controller_axes_to_actions[input.value] = set()
             self.controller_axes_to_actions[input.value].add(action)
@@ -469,12 +479,17 @@ class InputManager:
             if input.value not in self.controller_buttons_to_axes:
                 self.controller_buttons_to_axes[input.value] = set()
             self.controller_buttons_to_axes[input.value].add(axis)
-        elif mapping._input_type == InputType.CONTROLLER_AXIS:
+        elif (
+            mapping._input_type == InputType.CONTROLLER_AXIS_SINGLE
+            or mapping._input_type == InputType.CONTROLLER_AXIS_DOUBLE
+        ):
             if input.value not in self.controller_analog_to_axes:
                 self.controller_analog_to_axes[input.value] = set()
             self.controller_analog_to_axes[input.value].add(axis)
 
-    def add_axis_input_combined(self, axis: str, positive: InputEnum, negative: InputEnum, scale: float = 1.0):
+    def add_axis_input_combined(
+        self, axis: str, positive: InputEnum, negative: InputEnum, scale: float = 1.0
+    ):
         """
         This is a helper function that wraps :meth:`arcade.InputManager.add_axis_input` to add two inputs
         with a positive and negative scale.
@@ -618,64 +633,39 @@ class InputManager:
         for action_name in buttons_to_actions:
             self.dispatch_action(action_name, ActionState.RELEASED)
 
-    def on_stick_motion(self, controller: Controller, name: str, motion: pyglet.math.Vec2):
+    def handle_stick_motion(self, stick: str, motion: pyglet.math.Vec2):
         x_value, y_value = motion.x, motion.y
-        if name == "leftx":
-            self.window.dispatch_event(
-                "on_stick_motion",
-                self.controller,
-                "leftxpositive" if x_value > 0 else "leftxnegative",
-                x_value,
-                y_value,
-            )
-        elif name == "lefty":
-            self.window.dispatch_event(
-                "on_stick_motion",
-                self.controller,
-                "leftypositive" if y_value > 0 else "leftynegative",
-                x_value,
-                y_value,
-            )
-        elif name == "rightx":
-            self.window.dispatch_event(
-                "on_stick_motion",
-                self.controller,
-                "rightxpositive" if x_value > 0 else "rightxpositive",
-                x_value,
-                y_value,
-            )
-        elif name == "righty":
-            self.window.dispatch_event(
-                "on_stick_motion",
-                self.controller,
-                "rightypositive" if y_value > 0 else "rightynegative",
-                x_value,
-                y_value,
-            )
 
-        axes_to_actions = self.controller_axes_to_actions.get(name, set())
+        has_x = x_value > self.controller_deadzone or x_value < -self.controller_deadzone
+        has_y = y_value > self.controller_deadzone or y_value < -self.controller_deadzone
 
-        if (
-            x_value > self.controller_deadzone
-            or x_value < -self.controller_deadzone
-            or y_value > self.controller_deadzone
-            or y_value < -self.controller_deadzone
-        ):
-            self.active_device = InputDevice.CONTROLLER
-
+        if has_x:
+            axes_to_actions = self.controller_axes_to_actions.get(f"{stick}stickx", set())
             for action_name in axes_to_actions:
                 self.dispatch_action(action_name, ActionState.PRESSED)
 
-            return
+        if has_y:
+            axes_to_actions = self.controller_axes_to_actions.get(f"{stick}sticky", set())
+            for action_name in axes_to_actions:
+                self.dispatch_action(action_name, ActionState.PRESSED)
 
-        for action_name in axes_to_actions:
-            self.dispatch_action(action_name, ActionState.RELEASED)
+    def on_leftstick_motion(self, controller: Controller, motion: pyglet.math.Vec2):
+        self.handle_stick_motion("left", motion)
+
+    def on_rightstick_motion(self, controller: Controller, motion: pyglet.math.Vec2):
+        self.handle_stick_motion("right", motion)
 
     def on_dpad_motion(self, controller: Controller, motion: pyglet.math.Vec2):
         self.active_device = InputDevice.CONTROLLER
 
-    def on_trigger_motion(self, controller: Controller, trigger_name: str, value: float):
+    def handle_trigger_motion(self, trigger_name: str, value: float):
         self.active_device = InputDevice.CONTROLLER
+
+    def on_lefttrigger_motion(self, controller: Controller, value: float):
+        self.handle_trigger_motion("left", value)
+
+    def on_righttrigger_motion(self, controller: Controller, value: float):
+        self.handle_trigger_motion("right", value)
 
     def update(self):
         """
@@ -687,9 +677,17 @@ class InputManager:
         if self.controller and self.active_device == InputDevice.CONTROLLER:
             for name, axis in self.axes.items():
                 for mapping in tuple(axis._mappings):
-                    if mapping._input_type == InputType.CONTROLLER_AXIS:
+                    if mapping._input_type == InputType.CONTROLLER_AXIS_SINGLE:
                         scale = mapping._scale
                         input = getattr(self.controller, mapping._input.value)  # type: ignore
+                        if input > self.controller_deadzone or input < -self.controller_deadzone:
+                            self.axes_state[name] = input * scale
+                    if mapping._input_type == InputType.CONTROLLER_AXIS_DOUBLE:
+                        scale = mapping._scale
+                        direction = mapping._input.value[-1].lower()
+                        input = getattr(
+                            getattr(self.controller, mapping._input.value[:-1]), direction
+                        )
                         if input > self.controller_deadzone or input < -self.controller_deadzone:
                             self.axes_state[name] = input * scale
                     if mapping._input_type == InputType.CONTROLLER_BUTTON:
