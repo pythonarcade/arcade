@@ -71,12 +71,12 @@ class GameView(arcade.View):
         # Add a new horizontal movement axis to the input manager and assign the LEFT/RIGHT arrow keys and left thumbstick to it
         self.input_manager.new_axis("MoveHorizontal")
         self.input_manager.add_axis_input_combined("MoveHorizontal", arcade.Keys.RIGHT, arcade.Keys.LEFT)
-        self.input_manager.add_axis_input("MoveHorizontal", arcade.ControllerAxes.LEFT_STICK_X)
+        self.input_manager.add_axis_input("MoveHorizontal", arcade.ControllerSticks.LEFT_STICK_X)
 
         # Same thing for vertical movement axis
         self.input_manager.new_axis("MoveVertical")
         self.input_manager.add_axis_input_combined("MoveVertical", arcade.Keys.UP, arcade.Keys.DOWN)
-        self.input_manager.add_axis_input("MoveHorizontal", arcade.ControllerAxes.LEFT_STICK_Y)
+        self.input_manager.add_axis_input("MoveVertical", arcade.ControllerSticks.LEFT_STICK_Y)
 
         # Variables that will hold sprite lists
         self.player_list = None
