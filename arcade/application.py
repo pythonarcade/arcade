@@ -141,6 +141,12 @@ class Window(pyglet.window.Window):
         enable_polling:
             Enabled input polling capability.
             This makes the :py:attr:`keyboard` and :py:attr:`mouse` attributes available for use.
+        file_drops:
+            Should the window listen for file drops? If True, the window will dispatch
+            ``on_file_drop`` events when files are dropped onto the window.
+        **kwargs:
+            Further keyword arguments are passed to the pyglet window constructor.
+            This can be used to set advanced options that aren't explicitly handled by Arcade.
 
     Raises:
         NoOpenGLException: If the system does not support OpenGL requested OpenGL version.
@@ -168,6 +174,8 @@ class Window(pyglet.window.Window):
         draw_rate: float = 1 / 60,
         fixed_rate: float = 1.0 / 60.0,
         fixed_frame_cap: int | None = None,
+        file_drops: bool = False,
+        **kwargs,
     ) -> None:
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
@@ -240,6 +248,8 @@ class Window(pyglet.window.Window):
                 vsync=vsync,
                 visible=visible,
                 style=style,
+                file_drops=file_drops,
+                **kwargs,
             )
             # pending: weird import tricks resolved
             self.register_event_type("on_update")
