@@ -20,7 +20,7 @@ bottle.debug(True)
 here = Path(__file__).parent.resolve()
 
 path_arcade = Path("../")
-arcade_wheel_filename = "arcade-4.0.0.dev1-py3-none-any.whl"
+arcade_wheel_filename = "arcade-4.0.0.dev3-py3-none-any.whl"
 path_arcade_wheel = path_arcade / "dist" / arcade_wheel_filename
 
 # Directory for local test scripts

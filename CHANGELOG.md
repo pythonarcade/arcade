@@ -3,6 +3,11 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## 4.0.0.dev3
+
+### Fixes
+- Removes an unnecessary dependency on NumPy which caused breakage in web browsers.
+
 ## 4.0.0.dev2
 
 ### Fixes
