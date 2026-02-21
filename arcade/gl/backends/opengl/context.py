@@ -455,6 +455,8 @@ class OpenGLInfo(Info):
         self.MAJOR_VERSION = self.get(gl.GL_MAJOR_VERSION)
         """Major version number of the OpenGL API supported by the current context."""
 
+        self.CTX_INFO = f"opengl {self.MAJOR_VERSION}.{self.MINOR_VERSION}"
+
         self.MAX_COLOR_TEXTURE_SAMPLES = self.get(gl.GL_MAX_COLOR_TEXTURE_SAMPLES)
         """Maximum number of samples in a color multisample texture"""
 

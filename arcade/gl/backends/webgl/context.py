@@ -395,6 +395,7 @@ class WebGLInfo(Info):
     def __init__(self, ctx: WebGLContext):
         super().__init__(ctx)
         self._ctx = ctx
+        self.CTX_INFO = "webgl"
 
     def get_int_tuple(self, enum, length: int):
         # TODO: this might not work
