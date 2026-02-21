@@ -1,6 +1,5 @@
 import argparse
 import sys
-from typing import override
 
 import PIL
 import pyglet
@@ -18,11 +17,9 @@ class InfoCommand(BaseCommand):
             help="Print information about the installed Arcade version and system specifications",
         )
 
-    @override
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         pass
 
-    @override
     def handle(self, args: argparse.Namespace) -> int:
         window = arcade.Window(visible=False)
         version_str = f"Arcade {arcade.__version__}"
