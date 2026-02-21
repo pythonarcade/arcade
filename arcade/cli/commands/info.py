@@ -2,9 +2,10 @@ import argparse
 import sys
 from typing import override
 
-import arcade
-import pyglet
 import PIL
+import pyglet
+
+import arcade
 
 from .base import BaseCommand
 

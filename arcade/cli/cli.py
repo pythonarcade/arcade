@@ -4,6 +4,7 @@ from typing import Type
 
 from .commands import BaseCommand, InfoCommand
 
+
 class CLI:
     def __init__(self):
         self.commands: dict[str, BaseCommand] = {}
@@ -18,20 +19,17 @@ class CLI:
         parser = argparse.ArgumentParser(
             prog=self.prog,
             description=self.description,
-            formatter_class=argparse.RawDescriptionHelpFormatter
+            formatter_class=argparse.RawDescriptionHelpFormatter,
         )
 
-        subparsers = parser.add_subparsers(
-            dest="command",
-            help="Available commands"
-        )
+        subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
         for command_name, command in self.commands.items():
             command_parser = subparsers.add_parser(
                 command_name,
                 help=command.help,
                 description=command.description,
-                formatter_class=argparse.RawDescriptionHelpFormatter
+                formatter_class=argparse.RawDescriptionHelpFormatter,
             )
             command.add_arguments(command_parser)
 
