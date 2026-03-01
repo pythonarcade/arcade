@@ -23,11 +23,12 @@ def test_one():
     sprite_1 = tile_list[0]
     assert sprite_1 is not None
     #
-    # Test width, height and angle
+    # Test width, height, angle and visibility
     #
     assert sprite_1.width == 400
     assert sprite_1.height == 1000
     assert sprite_1.angle == -45
+    assert sprite_1.visible == False
 
     #
     # Test type and name properties

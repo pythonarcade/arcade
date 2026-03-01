@@ -896,6 +896,7 @@ class TileMap:
 
                 my_sprite.position = (x + rotated_center_x, y + rotated_center_y)
                 my_sprite.angle = angle_degrees
+                my_sprite.visible = cur_object.visible
 
                 if layer.tint_color:
                     my_sprite.color = ArcadeColor.from_iterable(layer.tint_color)

@@ -3,6 +3,11 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## Unreleased
+
+### Breaking Change
+- Tilemap: Sprites of an object tile layer will now apply visibility of the object. 
+
 ## 4.0.0.dev3
 
 ### Fixes
