@@ -87,7 +87,7 @@ class ModalSection(Section):
     def on_resize(self, width: int, height: int):
         """set position on screen resize"""
         self.left = width // 3
-        self.bottom = (height // 2) - self.height // 2
+        self.bottom = (height // 2) - self.height // 2  # type: ignore
         pos = self.left + self.width / 2, self.bottom + self.height / 2
         self.button.position = pos
 
@@ -203,7 +203,7 @@ class Panel(Section):
 
     def on_resize(self, width: int, height: int):
         # stick to the right
-        self.left = width - self.width
+        self.left = width - self.width  # type: ignore
         self.height = height - self.view.info_bar.height
         self.button_stop.position = self.left + self.width / 2, self.top - 80
 

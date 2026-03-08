@@ -2,75 +2,24 @@
 Drawing text with pyglet label
 """
 
-from ctypes import c_int, c_ubyte
 from pathlib import Path
 from typing import Any
 
 import pyglet
+from pyglet.enums import Style, Weight
+
+# Pyright can't figure out the dynamic backend imports in pyglet.graphics
+# right now. Maybe can fix in future Pyglet version
+from pyglet.graphics import Batch, Group  # type: ignore
 
 import arcade
 from arcade.exceptions import PerformanceWarning, warning
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
 from arcade.types import Color, Point, RGBOrA255
+from arcade.types.rect import LRBT, Rect
 
 __all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
-
-
-class _ArcadeTextLayoutGroup(pyglet.text.layout.TextLayoutGroup):
-    """Create a text layout rendering group.
-
-    Overrides pyglet blending handling to allow for additive blending.
-    Furthermore, it resets the blend function to the previous state.
-    """
-
-    _prev_blend: bool
-    _prev_blend_func: tuple[int, int, int, int]
-
-    def set_state(self) -> None:
-        self.program.use()
-        self.program["scissor"] = False
-
-        pyglet.gl.glActiveTexture(pyglet.gl.GL_TEXTURE0)
-        pyglet.gl.glBindTexture(self.texture.target, self.texture.id)
-
-        blend = c_ubyte()
-        pyglet.gl.glGetBooleanv(pyglet.gl.GL_BLEND, blend)
-        self._prev_blend = bool(blend.value)
-
-        src_rgb = c_int()
-        dst_rgb = c_int()
-        src_alpha = c_int()
-        dst_alpha = c_int()
-        pyglet.gl.glGetIntegerv(pyglet.gl.GL_BLEND_SRC_RGB, src_rgb)
-        pyglet.gl.glGetIntegerv(pyglet.gl.GL_BLEND_DST_RGB, dst_rgb)
-        pyglet.gl.glGetIntegerv(pyglet.gl.GL_BLEND_SRC_ALPHA, src_alpha)
-        pyglet.gl.glGetIntegerv(pyglet.gl.GL_BLEND_DST_ALPHA, dst_alpha)
-
-        self._prev_blend_func = (src_rgb.value, dst_rgb.value, src_alpha.value, dst_alpha.value)
-
-        pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
-        pyglet.gl.glBlendFuncSeparate(
-            pyglet.gl.GL_SRC_ALPHA,
-            pyglet.gl.GL_ONE_MINUS_SRC_ALPHA,
-            pyglet.gl.GL_ONE,
-            pyglet.gl.GL_ONE,
-        )
-
-    def unset_state(self) -> None:
-        if not self._prev_blend:
-            pyglet.gl.glDisable(pyglet.gl.GL_BLEND)
-
-        pyglet.gl.glBlendFuncSeparate(
-            self._prev_blend_func[0],
-            self._prev_blend_func[1],
-            self._prev_blend_func[2],
-            self._prev_blend_func[3],
-        )
-        self.program.stop()
-
-
-pyglet.text.layout.TextLayout.group_class = _ArcadeTextLayoutGroup
 
 
 def load_font(path: str | Path) -> None:
@@ -271,8 +220,8 @@ class Text:
         anchor_y: str = "baseline",
         multiline: bool = False,
         rotation: float = 0,
-        batch: pyglet.graphics.Batch | None = None,
-        group: pyglet.graphics.Group | None = None,
+        batch: Batch | None = None,
+        group: Group | None = None,
         z: float = 0,
         **kwargs,
     ):
@@ -285,8 +234,8 @@ class Text:
             width=width,
             align=align,
             font_name=font_name,
-            weight=pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL,
-            italic=italic,
+            weight=Weight.BOLD if bold else Weight.NORMAL,
+            style=Style.ITALIC if italic else Style.NORMAL,
             anchor_x=anchor_x,
             anchor_y=anchor_y,
             multiline=multiline,
@@ -352,7 +301,7 @@ class Text:
         self.label.end_update()
 
     @property
-    def batch(self) -> pyglet.graphics.Batch | None:
+    def batch(self) -> Batch | None:
         """The batch this text is in, if any.
 
         Can be unset by setting to ``None``.
@@ -360,11 +309,11 @@ class Text:
         return self.label.batch
 
     @batch.setter
-    def batch(self, batch: pyglet.graphics.Batch):
+    def batch(self, batch: Batch):
         self.label.batch = batch
 
     @property
-    def group(self) -> pyglet.graphics.Group | None:
+    def group(self) -> Group | None:
         """
         The specific group in a batch the text should belong to.
 
@@ -375,7 +324,7 @@ class Text:
         return self.label.group
 
     @group.setter
-    def group(self, group: pyglet.graphics.Group):
+    def group(self, group: Group):
         self.label.group = group
 
     @property
@@ -579,6 +528,18 @@ class Text:
         return self.label.bottom
 
     @property
+    def rect(self) -> Rect:
+        """Rect representing the bounds of the text.
+
+        .. tip:: Don't worry about `width` being `None`.
+
+            Although a label can be created with a `width=None`:
+            * The underlying :py:mod:`pyglet` label will have bounding dimensions
+            * This rect is for on-screen click and layout purposes, not maximum possible width
+        """
+        return LRBT(self.left, self.right, self.bottom, self.top)
+
+    @property
     def content_size(self) -> tuple[int, int]:
         """Get the pixel width and height of the text contents."""
         return self.label.content_width, self.label.content_height
@@ -609,11 +570,11 @@ class Text:
         * ``"light"``
 
         """
-        return self.label.weight == pyglet.text.Weight.BOLD
+        return self.label.weight == Weight.BOLD
 
     @bold.setter
     def bold(self, bold: bool | str):
-        self.label.weight = pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL
+        self.label.weight = Weight.BOLD if bold else Weight.NORMAL
 
     @property
     def italic(self) -> bool | str:
@@ -632,6 +593,24 @@ class Text:
     @multiline.setter
     def multiline(self, multiline: bool):
         self.label.multiline = multiline
+
+    @property
+    def visible(self) -> bool:
+        """
+        Whether the text is visible or not.
+
+        This is a property of the underlying pyglet.Label.
+        """
+        return self.label.visible
+
+    @visible.setter
+    def visible(self, visible: bool):
+        """
+        Set the visibility of the text.
+
+        This is a property of the underlying pyglet.Label.
+        """
+        self.label.visible = visible
 
     def draw(self) -> None:
         """

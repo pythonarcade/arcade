@@ -20,7 +20,6 @@ def test_rotation_mirror():
     assert my_map.width == 11
     assert my_map.height == 10
 
-
     # --- Platforms ---
     assert "Blocking Sprites" in my_map.sprite_lists
     wall_list = my_map.sprite_lists["Blocking Sprites"]
@@ -39,17 +38,23 @@ def test_rotation_mirror():
     # Transpose and flipped horizontally
     wall = wall_list[2]
     assert wall.position == (448, 64)
-    assert wall.texture._vertex_order == tt.FlipLeftRightTransform.transform_vertex_order(tt.TransposeTransform.order)
+    assert wall.texture._vertex_order == tt.FlipLeftRightTransform.transform_vertex_order(
+        tt.TransposeTransform.order
+    )
 
     # Transposed, flipped vertically and horizontally
     wall = wall_list[3]
     assert wall.position == (576, 64)
-    assert wall.texture._vertex_order == _transform(tt.TransposeTransform, tt.FlipLeftRightTransform, tt.FlipTopBottomTransform)
+    assert wall.texture._vertex_order == _transform(
+        tt.TransposeTransform, tt.FlipLeftRightTransform, tt.FlipTopBottomTransform
+    )
 
     # Horizontal flip and flipped vertically
     wall = wall_list[4]
     assert wall.position == (832, 64)
-    assert wall.texture._vertex_order == _transform(tt.FlipLeftRightTransform, tt.FlipTopBottomTransform)
+    assert wall.texture._vertex_order == _transform(
+        tt.FlipLeftRightTransform, tt.FlipTopBottomTransform
+    )
 
     # Vertical flip
     wall = wall_list[5]
@@ -59,7 +64,9 @@ def test_rotation_mirror():
     # Transposed and flipped vertically
     wall = wall_list[6]
     assert wall.position == (1216, 64)
-    assert wall.texture._vertex_order == _transform(tt.TransposeTransform, tt.FlipTopBottomTransform)
+    assert wall.texture._vertex_order == _transform(
+        tt.TransposeTransform, tt.FlipTopBottomTransform
+    )
 
     # Transposed
     wall = wall_list[7]
@@ -78,7 +85,7 @@ def test_object_rotation_orientation():
     # --- Object ---
     assert "Objects Sprites" in my_map.sprite_lists
     wall_list = my_map.sprite_lists["Objects Sprites"]
-    
+
     # Check for the direction of rotation
     # not rotated the top is aligned with the grid
     wall = wall_list[16]
@@ -96,7 +103,7 @@ def test_object_rotation_orientation():
     assert (wall.left / 128).is_integer()
     assert not (wall.right / 128).is_integer()
 
-    # Turned 180 
+    # Turned 180
     wall = wall_list[18]
     assert wall.properties["name"] == "r2"
     assert not (wall.top / 128).is_integer()
@@ -104,7 +111,7 @@ def test_object_rotation_orientation():
     assert (wall.left / 128).is_integer()
     assert (wall.right / 128).is_integer()
 
-    # Turned 270 to the left (90 to the right) 
+    # Turned 270 to the left (90 to the right)
     wall = wall_list[19]
     assert wall.properties["name"] == "r3"
     assert (wall.top / 128).is_integer()
@@ -121,68 +128,68 @@ def test_object_rotation_placement():
     assert "Objects Sprites" in my_map.sprite_lists
     wall_list = my_map.sprite_lists["Objects Sprites"]
 
-    line = 64+128*2
+    line = 64 + 128 * 2
     wall = wall_list[0]
     assert wall.properties["name"] == "not"
     assert wall.position == (64, line)
 
     wall = wall_list[1]
     assert wall.properties["name"] == "h"
-    assert wall.position == (64+128*1, line)
+    assert wall.position == (64 + 128 * 1, line)
 
     wall = wall_list[2]
     assert wall.properties["name"] == "90"
-    assert wall.position == (64+128*3, line)
+    assert wall.position == (64 + 128 * 3, line)
 
     wall = wall_list[3]
     assert wall.properties["name"] == "h90"
-    assert wall.position == (64+128*4, line)
+    assert wall.position == (64 + 128 * 4, line)
 
     wall = wall_list[4]
     assert wall.properties["name"] == "180"
-    assert wall.position == (64+128*6, line)
-    
+    assert wall.position == (64 + 128 * 6, line)
+
     wall = wall_list[5]
     assert wall.properties["name"] == "h180"
-    assert wall.position == (64+128*7, line)
+    assert wall.position == (64 + 128 * 7, line)
 
     wall = wall_list[6]
     assert wall.properties["name"] == "-90"
-    assert wall.position == (64+128*9, line)
+    assert wall.position == (64 + 128 * 9, line)
 
     wall = wall_list[7]
     assert wall.properties["name"] == "h-90"
-    assert wall.position == (64+128*10, line)
+    assert wall.position == (64 + 128 * 10, line)
 
-    line = 64+128*4
+    line = 64 + 128 * 4
     wall = wall_list[8]
     assert wall.properties["name"] == "v"
     assert wall.position == (64, line)
 
     wall = wall_list[9]
     assert wall.properties["name"] == "hv"
-    assert wall.position == (64+128*1, line)
+    assert wall.position == (64 + 128 * 1, line)
 
     wall = wall_list[10]
     assert wall.properties["name"] == "v90"
-    assert wall.position == (64+128*3, line)
+    assert wall.position == (64 + 128 * 3, line)
 
     wall = wall_list[11]
     assert wall.properties["name"] == "hv90"
-    assert wall.position == (64+128*4, line)
+    assert wall.position == (64 + 128 * 4, line)
 
     wall = wall_list[12]
     assert wall.properties["name"] == "v180"
-    assert wall.position == (64+128*6, line)
+    assert wall.position == (64 + 128 * 6, line)
 
     wall = wall_list[13]
     assert wall.properties["name"] == "hv180"
-    assert wall.position == (64+128*7, line)
+    assert wall.position == (64 + 128 * 7, line)
 
     wall = wall_list[14]
     assert wall.properties["name"] == "v-90"
-    assert wall.position == (64+128*9, line)
+    assert wall.position == (64 + 128 * 9, line)
 
     wall = wall_list[15]
     assert wall.properties["name"] == "hv-90"
-    assert wall.position == (64+128*10, line)
+    assert wall.position == (64 + 128 * 10, line)

@@ -71,13 +71,13 @@ class. Change:
 
 .. code-block:: python
 
-    self.set_mouse_visible(False)
+    self.set_mouse_cursor_visible(False)
 
 to:
 
 .. code-block:: python
 
-    self.window.set_mouse_visible(False)
+    self.window.set_mouse_cursor_visible(False)
 
 Now in the ``main`` function, instead of just creating a window, we'll create
 a window, a view, and then show that view.

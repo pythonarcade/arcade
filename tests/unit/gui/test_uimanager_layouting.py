@@ -25,9 +25,13 @@ def test_supports_size_hint(window):
     widget3 = UIDummy()
     widget3.size_hint = (1, None)
 
+    widget4 = UIDummy()
+    widget4.size_hint = (0, 0)
+
     manager.add(widget1)
     manager.add(widget2)
     manager.add(widget3)
+    manager.add(widget4)
 
     with sized(window, 200, 300):
         manager.draw()
@@ -35,6 +39,7 @@ def test_supports_size_hint(window):
     assert widget1.size == Vec2(200, 300)
     assert widget2.size == Vec2(100, 75)
     assert widget3.size == Vec2(200, 100)
+    assert widget4.size == Vec2(0, 0)
 
 
 def test_supports_size_hint_min(window):

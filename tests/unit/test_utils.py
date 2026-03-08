@@ -4,13 +4,13 @@ Unit tests for utils.py
 Can run these tests individually with:
 python -m pytest tests/unit/test_utils.py
 """
+
 from typing import Callable, Any
 
 from arcade import utils
 
 
-class _Dummy:
-    ...
+class _Dummy: ...
 
 
 def fn_returns_expect_for_nonstr_iterables(fn: Callable[[Any], bool], expect: bool):
@@ -27,7 +27,7 @@ def fn_returns_expect_for_nonstr_iterables(fn: Callable[[Any], bool], expect: bo
 
 def fn_returns_expect_for_noniterables(fn: Callable[[Any], bool], expect: bool):
     assert fn(1) == expect  # Numbers
-    assert fn(complex(1,2)) == expect  # Numbers part 2: complex is not iterable like pyglet vecs
+    assert fn(complex(1, 2)) == expect  # Numbers part 2: complex is not iterable like pyglet vecs
     assert fn(type) == expect  # types
     assert fn(_Dummy()) == expect  # Instances
     assert fn(print) == expect  # Functions

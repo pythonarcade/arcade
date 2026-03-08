@@ -1,7 +1,7 @@
 import re
 from typing import TYPE_CHECKING, Iterable
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 if TYPE_CHECKING:
     from .context import Context as ArcadeGlContext

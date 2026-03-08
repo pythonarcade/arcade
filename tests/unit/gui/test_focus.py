@@ -12,6 +12,7 @@ def test_focus_group_no_focus_set_by_default(ui):
 
     assert group.focused_widget is None
 
+
 def test_focus_group_focus_set(ui):
     group = UIFocusGroup()
 
@@ -26,6 +27,7 @@ def test_focus_group_focus_set(ui):
     assert group.focused_widget == btn_1
     assert btn_1.focused is True
     assert btn_2.focused is False
+
 
 def test_nested_groups_button_press(ui):
     """
@@ -50,6 +52,7 @@ def test_nested_groups_button_press(ui):
 
     assert btn_1.pressed is False
     assert btn_2.pressed is True
+
 
 def test_nested_groups_dpad(ui):
     """

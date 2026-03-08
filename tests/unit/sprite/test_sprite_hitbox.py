@@ -4,9 +4,7 @@ from arcade import hitbox
 
 def test_1():
     # setup
-    my_sprite = arcade.Sprite(
-        arcade.make_soft_square_texture(20, arcade.color.RED, 0, 255)
-    )
+    my_sprite = arcade.Sprite(arcade.make_soft_square_texture(20, arcade.color.RED, 0, 255))
     hit_box = arcade.hitbox.HitBox(((-10, -10), (-10, 10), (10, 10), (10, -10)))
     my_sprite.hit_box = hit_box
     my_sprite.scale = 1.0

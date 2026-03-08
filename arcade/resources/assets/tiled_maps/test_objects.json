@@ -171,7 +171,7 @@
                  "name":"crate1",
                  "rotation":-45,
                  "type":"crate",
-                 "visible":true,
+                 "visible":false,
                  "width":400,
                  "x":1500,
                  "y":1800

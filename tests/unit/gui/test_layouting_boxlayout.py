@@ -26,8 +26,9 @@ def test_do_layout_vertical_with_initial_children(window):
     assert element_2.left == 100
 
 
-def test_do_layout_vertical_add_children(window):
-    group = UIBoxLayout(vertical=True)
+def test_do_layout_vertical_add_children(window, ui):
+    group = UIBoxLayout(vertical=True, size_hint=None)
+    ui.add(group)
 
     element_1 = UIDummy()
     element_2 = UIDummy()
@@ -36,7 +37,7 @@ def test_do_layout_vertical_add_children(window):
     group.add(element_2)
 
     group.rect = LBWH(100, 200, *group.size_hint_min)
-    group.do_layout()
+    ui.execute_layout()
 
     assert element_1.top == 400
     assert element_1.bottom == 300
@@ -47,17 +48,18 @@ def test_do_layout_vertical_add_children(window):
     assert element_2.left == 100
 
 
-def test_do_layout_vertical_add_child_with_initial_children(window):
+def test_do_layout_vertical_add_child_with_initial_children(window, ui):
     element_1 = UIDummy()
     element_2 = UIDummy()
     element_3 = UIDummy()
 
-    group = UIBoxLayout(vertical=True, children=[element_1, element_2])
+    group = UIBoxLayout(vertical=True, children=[element_1, element_2], size_hint=None)
+    ui.add(group)
 
     group.add(element_3)
 
     group.rect = LBWH(100, 200, *group.size_hint_min)
-    group.do_layout()
+    ui.execute_layout()
 
     assert element_1.top == 500
     assert element_1.bottom == 400
@@ -126,6 +128,28 @@ def test_do_layout_vertical_space_between(window):
     assert element_2.top == 300
 
 
+def test_do_layout_ignores_child_with_visible_None(window):
+    # add two 100x100 Dummy widgets
+    element_1 = UIDummy()
+    element_1.visible = None
+    element_2 = UIDummy()
+
+    group = UIBoxLayout(vertical=True, children=[element_1, element_2])
+    assert group.size_hint_min == (100, 100)
+    group.rect = LBWH(100, 200, 100, 100)
+
+    group._do_layout()
+
+    # element 1 in initial position
+    assert element_1.bottom == 0
+    assert element_1.left == 0
+
+    # element 2 fills the group
+    assert element_2.top == 300
+    assert element_2.bottom == 200
+    assert element_2.left == 100
+
+
 # Horizontal
 def test_do_layout_horizontal_with_initial_children(window):
     # add two 100x100 Dummy widgets
@@ -146,8 +170,9 @@ def test_do_layout_horizontal_with_initial_children(window):
     assert element_2.top == 300
 
 
-def test_do_layout_horizontal_add_children(window):
-    group = UIBoxLayout(vertical=False)
+def test_do_layout_horizontal_add_children(window, ui):
+    group = UIBoxLayout(vertical=False, size_hint=None)
+    ui.add(group)
 
     element_1 = UIDummy()
     element_2 = UIDummy()
@@ -156,7 +181,7 @@ def test_do_layout_horizontal_add_children(window):
     group.add(element_2)
 
     group.rect = LBWH(100, 200, *group.size_hint_min)
-    group.do_layout()
+    ui.execute_layout()
 
     assert element_1.left == 100
     assert element_1.right == 200
@@ -191,16 +216,17 @@ def test_do_layout_horizontal_add_child_with_initial_children(window):
     assert element_3.top == 300
 
 
-def test_horizontal_group_keep_left_alignment_while_adding_children(window):
+def test_horizontal_group_keep_left_alignment_while_adding_children(window, ui):
     element_1 = UIDummy()
     element_2 = UIDummy()
     element_3 = UIDummy()
 
-    group = UIBoxLayout(vertical=False, children=[element_1, element_2])
+    group = UIBoxLayout(vertical=False, children=[element_1, element_2], size_hint=None)
+    ui.add(group)
     group.add(element_3)
 
     group.rect = LBWH(100, 200, *group.size_hint_min)
-    group.do_layout()
+    ui.execute_layout()
 
     assert group.left == 100
     assert group.top == 300
@@ -259,30 +285,40 @@ def test_do_layout_horizontal_space_between(window):
     assert element_2.left == 210
 
 
-def test_size_hint_min_contains_children_vertically(window):
-    box = UIBoxLayout()
+def test_size_hint_min_contains_children_vertically(window, ui):
+    box = UIBoxLayout(size_hint=None)
+    ui.add(box)
 
     box.add(UIDummy(width=100, height=100))
     box.add(UIDummy(width=100, height=100))
+
+    ui.execute_layout()
 
     assert box.size_hint_min == (100, 200)
 
 
-def test_size_hint_min_contains_children_horizontal(window):
-    box = UIBoxLayout(vertical=False)
+def test_size_hint_min_contains_children_horizontal(window, ui):
+    box = UIBoxLayout(vertical=False, size_hint=None)
+    ui.add(box)
+    ui.add(box)
 
     box.add(UIDummy(width=100, height=100))
     box.add(UIDummy(width=100, height=100))
+
+    ui.execute_layout()
 
     assert box.size_hint_min == (200, 100)
 
 
-def test_size_hint_contains_border_and_padding(window):
-    box = UIBoxLayout()
+def test_size_hint_contains_border_and_padding(window, ui):
+    box = UIBoxLayout(size_hint=None)
+    ui.add(box)
     box.with_border(width=3)
     box.with_padding(top=10, right=20, bottom=30, left=40)
     box.add(UIDummy(width=100, height=100))
     box.add(UIDummy(width=100, height=100))
+
+    ui.execute_layout()
 
     assert box.size_hint_min == (100 + 2 * 3 + 20 + 40, 200 + 2 * 3 + 10 + 30)
 

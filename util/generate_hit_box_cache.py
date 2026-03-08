@@ -1,6 +1,7 @@
 """
 Generates a cache of hit boxes for all the built in resources.
 """
+
 import sys
 import time
 from pathlib import Path
@@ -42,7 +43,7 @@ for path in image_paths:
         algorithm = "simple"
         textures.append(arcade.load_texture(path, hit_box_algorithm=algorithm))
         algorithm = "detailed"
-        textures.append(arcade.load_texture(path, hit_box_algorithm=algorithm))    
+        textures.append(arcade.load_texture(path, hit_box_algorithm=algorithm))
     except Exception as e:
         print()
         print(f"Error loading ({algorithm}): {path.relative_to(RESOURCE_DIR)}")

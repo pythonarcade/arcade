@@ -55,7 +55,7 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/07_camera.py
     :caption: Adding a Camera
     :linenos:
-    :emphasize-lines: 49-50, 96-97, 107-108, 120-121
+    :emphasize-lines: 49-50, 98-99, 109-110, 122-123
 
 Run This Chapter
 ~~~~~~~~~~~~~~~~

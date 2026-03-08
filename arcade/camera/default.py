@@ -7,64 +7,125 @@ from typing import TYPE_CHECKING
 from pyglet.math import Mat4, Vec2, Vec3
 from typing_extensions import Self
 
-from arcade.types import LBWH, Point, Rect
+from arcade.camera.data_types import DEFAULT_FAR, DEFAULT_NEAR_ORTHO
+from arcade.types import Point
 from arcade.window_commands import get_window
 
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext
 
-__all__ = ["ViewportProjector", "DefaultProjector"]
+__all__ = ()
 
 
-class ViewportProjector:
+class DefaultProjector:
     """
-    A simple Projector which does not rely on any camera PoDs.
+    An extremely limited projector which lacks any kind of control. This is only
+    here to act as the default camera used internally by Arcade. There should be
+    no instance where a developer would want to use this class.
 
-    Does not have a way of moving, rotating, or zooming the camera.
-    perfect for something like UI or for mapping to an offscreen framebuffer.
+    The job of the default projector is to ensure that when no other Projector
+    (Camera2D, OthrographicProjector, PerspectiveProjector, etc) is in use the
+    projection and view matrices are correct such at (0.0, 0.0) is in the bottom
+    left corner of the viewport and that one pixel equals one 'unit'.
 
     Args:
-        viewport: The viewport to project to.
-        context: The window context to bind the camera to. Defaults to the currently active window.
+        context: The window context to bind the camera to. Defaults to the currently active context.
     """
 
-    def __init__(
-        self,
-        viewport: Rect | None = None,
-        *,
-        context: ArcadeContext | None = None,
-    ):
+    def __init__(self, *, context: ArcadeContext | None = None):
         self._ctx: ArcadeContext = context or get_window().ctx
-        self._viewport: Rect = viewport or LBWH(*self._ctx.viewport)
-        self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
-            0.0, self._viewport.width, 0.0, self._viewport.height, -100, 100
-        )
+        self._viewport: tuple[int, int, int, int] | None = None
+        self._scissor: tuple[int, int, int, int] | None = None
+        self._matrix: Mat4 | None = None
+
+    def update_viewport(self):
+        """
+        Called when the ArcadeContext's viewport or active
+        framebuffer has been set. It only actually updates
+        the viewport if no other camera is active. Also
+        setting the viewport to match the size of the active
+        framebuffer sets the viewport to None.
+        """
+
+        # If another camera is active then the viewport was probably set
+        # by camera.use()
+        if self._ctx.current_camera != self:
+            return
+
+        if (
+            self._ctx.viewport[2] != self._ctx.fbo.width
+            or self._ctx.viewport[3] != self._ctx.fbo.height
+        ):
+            self.viewport = self._ctx.viewport
+        else:
+            self.viewport = None
+
+        self.use()
 
     @property
-    def viewport(self) -> Rect:
-        """
-        The viewport use to derive projection and view matrix.
-        """
+    def viewport(self) -> tuple[int, int, int, int] | None:
         return self._viewport
 
     @viewport.setter
-    def viewport(self, viewport: Rect) -> None:
+    def viewport(self, viewport: tuple[int, int, int, int] | None) -> None:
+        if viewport == self._viewport:
+            return
         self._viewport = viewport
-        self._projection_matrix = Mat4.orthogonal_projection(
-            0, viewport.width, 0, viewport.height, -100, 100
+        self._matrix = Mat4.orthogonal_projection(
+            0, self.width, 0, self.height, DEFAULT_NEAR_ORTHO, DEFAULT_FAR
         )
+
+    @viewport.deleter
+    def viewport(self):
+        self.viewport = None
+
+    @property
+    def scissor(self) -> tuple[int, int, int, int] | None:
+        return self._scissor
+
+    @scissor.setter
+    def scissor(self, scissor: tuple[int, int, int, int] | None) -> None:
+        self._scissor = scissor
+
+    @scissor.deleter
+    def scissor(self) -> None:
+        self._scissor = None
+
+    @property
+    def width(self) -> int:
+        if self._viewport is not None:
+            return int(self._viewport[2])
+        return self._ctx.fbo.width
+
+    @property
+    def height(self) -> int:
+        if self._viewport is not None:
+            return int(self._viewport[3])
+        return self._ctx.fbo.height
+
+    def get_current_viewport(self) -> tuple[int, int, int, int]:
+        if self._viewport is not None:
+            return self._viewport
+        return (0, 0, self._ctx.fbo.width, self._ctx.fbo.height)
 
     def use(self) -> None:
         """
-        Set the window's projection and view matrix.
-        Also sets the projector as the windows current camera.
+        Set the window's Projection and View matrices.
         """
-        self._ctx.current_camera = self
 
-        self._ctx.viewport = self.viewport.lbwh_int  # get the integer 4-tuple LBWH
+        viewport = self.get_current_viewport()
+
+        self._ctx.current_camera = self
+        if self._ctx.viewport != viewport:
+            self._ctx.active_framebuffer.viewport = viewport
+        self._ctx.scissor = None if self._scissor is None else self._scissor
 
         self._ctx.view_matrix = Mat4()
-        self._ctx.projection_matrix = self._projection_matrix
+        if self._matrix is None:
+            self._matrix = Mat4.orthogonal_projection(
+                0, viewport[2], 0, viewport[3], DEFAULT_NEAR_ORTHO, DEFAULT_FAR
+            )
+        self._ctx.projection_matrix = self._matrix
 
     @contextmanager
     def activate(self) -> Generator[Self, None, None]:
@@ -73,12 +134,20 @@ class ViewportProjector:
 
         usable with the 'with' block. e.g. 'with ViewportProjector.activate() as cam: ...'
         """
-        previous = self._ctx.current_camera
+        previous_projector = self._ctx.current_camera
+        previous_view = self._ctx.view_matrix
+        previous_projection = self._ctx.projection_matrix
+        previous_scissor = self._ctx.scissor
+        previous_viewport = self._ctx.viewport
         try:
             self.use()
             yield self
         finally:
-            previous.use()
+            self._ctx.viewport = previous_viewport
+            self._ctx.scissor = previous_scissor
+            self._ctx.projection_matrix = previous_projection
+            self._ctx.view_matrix = previous_view
+            self._ctx.current_camera = previous_projector
 
     def project(self, world_coordinate: Point) -> Vec2:
         """
@@ -97,46 +166,3 @@ class ViewportProjector:
         z = 0.0 if not _z else _z[0]
 
         return Vec3(x, y, z)
-
-
-# As this class is only supposed to be used internally
-# I wanted to place an _ in front, but the linting complains
-# about it being a protected class.
-class DefaultProjector(ViewportProjector):
-    """
-    An extremely limited projector which lacks any kind of control. This is only
-    here to act as the default camera used internally by Arcade. There should be
-    no instance where a developer would want to use this class.
-
-    Args:
-        context: The window context to bind the camera to. Defaults to the currently active window.
-    """
-
-    def __init__(self, *, context: ArcadeContext | None = None):
-        super().__init__(context=context)
-
-    def use(self) -> None:
-        """
-        Set the window's Projection and View matrices.
-
-        cache's the window viewport to determine the projection matrix.
-        """
-
-        viewport = self.viewport.lbwh_int
-        # If the viewport is correct and the default camera is in use,
-        # then don't waste time resetting the view and projection matrices
-        if self._ctx.viewport == viewport and self._ctx.current_camera == self:
-            return
-
-        # If the viewport has changed while the default camera is active then the
-        # default needs to update itself.
-        # If it was another camera's viewport being used the default camera should not update.
-        if self._ctx.viewport != viewport and self._ctx.current_camera == self:
-            self.viewport = LBWH(*self._ctx.viewport)
-        else:
-            self._ctx.viewport = viewport
-
-        self._ctx.current_camera = self
-
-        self._ctx.view_matrix = Mat4()
-        self._ctx.projection_matrix = self._projection_matrix

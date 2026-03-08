@@ -3,6 +3,7 @@ Quick Index Generator
 
 Generate quick API indexes in Restructured Text Format for Sphinx documentation.
 """
+
 # fmt: off
 # ruff: noqa
 import copy

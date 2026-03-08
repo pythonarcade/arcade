@@ -14,7 +14,7 @@ def test_get_image(window):
     """Get image from active framebuffer."""
     window.clear(color=arcade.color.WHITE)
     image = arcade.get_image()
-    assert image.tobytes()[0:16] == b'\xff' * 16
+    assert image.tobytes()[0:16] == b"\xff" * 16
 
     image = arcade.get_image(components=3)
-    assert image.tobytes()[0:16] == b'\xff' * 16
+    assert image.tobytes()[0:16] == b"\xff" * 16

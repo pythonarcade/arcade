@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import weakref
 from abc import ABC
 from collections.abc import Iterable
 from enum import IntEnum
-from typing import TYPE_CHECKING, NamedTuple, TypeVar
+from types import EllipsisType
+from typing import Any, Generic, TYPE_CHECKING, NamedTuple, TypeVar, overload
+from weakref import WeakKeyDictionary
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from pyglet.math import Vec2
@@ -19,6 +22,10 @@ from arcade.gui.events import (
     UIMouseReleaseEvent,
     UIOnClickEvent,
     UIOnUpdateEvent,
+    UIControllerButtonPressEvent,
+    UIControllerButtonReleaseEvent,
+    UIKeyPressEvent,
+    UIKeyReleaseEvent,
 )
 from arcade.gui.nine_patch import NinePatchTexture
 from arcade.gui.property import ListProperty, Property, bind
@@ -30,6 +37,7 @@ if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
 W = TypeVar("W", bound="UIWidget")
+P = TypeVar("P")
 
 
 class FocusMode(IntEnum):
@@ -48,6 +56,51 @@ class FocusMode(IntEnum):
 class _ChildEntry(NamedTuple):
     child: UIWidget
     data: dict
+
+
+class WeakRef(Generic[P]):
+    """A weak reference to a UIWidget parent, which is used to prevent memory leaks."""
+
+    __slots__ = ("name", "obs")
+    name: str
+    """Attribute name of the property"""
+    obs: WeakKeyDictionary[Any, weakref.ref[P]]
+    """Weak dictionary to hold the values"""
+
+    def __init__(self):
+        self.obs = WeakKeyDictionary()
+
+    def get(self, instance: Any) -> P | None:
+        """Get value for owner instance"""
+        # If the value is not set, return None
+        value = self.obs.get(instance)
+        return value() if value else None
+
+    def set(self, instance, value: P | None):
+        """Set value for owner instance"""
+        # Store a weak reference to the value
+        if value is None:
+            self.obs.pop(instance, None)
+        else:
+            self.obs[instance] = weakref.ref(value)
+
+    def __set_name__(self, owner, name):
+        self.name = name
+
+    @overload
+    def __get__(self, instance: None, instance_type) -> Self: ...
+
+    @overload
+    def __get__(self, instance: Any, instance_type) -> P | None: ...
+
+    def __get__(self, instance: Any | None, instance_type) -> Self | P | None:
+        """Get the value for the owner instance, or None if not set."""
+        if instance is None:
+            return self
+        return self.get(instance)
+
+    def __set__(self, instance, value: P | None):
+        self.set(instance, value)
 
 
 @copy_dunders_unimplemented
@@ -70,8 +123,13 @@ class UIWidget(EventDispatcher, ABC):
         size_hint_max: max width and height in pixel
     """
 
+    parent: WeakRef[UIManager | UIWidget | None] = WeakRef()
+    """A weak reference to the parent UIManager or UIWidget,
+    which does not prevent garbage collection of the parent."""
     rect = Property(LBWH(0, 0, 1, 1))
-    visible = Property(True)
+    visible = Property[bool | None](True)
+    """If True, the widget is visible and will be rendered. If None,
+    the widget should also be skipped by layouts."""
     focused = Property(False)
     focus_mode: FocusMode = FocusMode.NONE
 
@@ -93,6 +151,8 @@ class UIWidget(EventDispatcher, ABC):
     This is not part of the public API and subject to change.
     UILabel have a strong background if set.
     """
+    _active = Property[bool](False)
+    """If True, the widget is active"""
 
     def __init__(
         self,
@@ -110,7 +170,6 @@ class UIWidget(EventDispatcher, ABC):
     ):
         self._requires_render = True
         self.rect = LBWH(x, y, width, height)
-        self.parent: UIManager | UIWidget | None = None
 
         # Size hints are properties that can be used by layouts
         self.size_hint = size_hint
@@ -123,21 +182,21 @@ class UIWidget(EventDispatcher, ABC):
         for child in children:
             self.add(child)
 
-        bind(self, "rect", self.trigger_full_render)
-        bind(self, "focused", self.trigger_full_render)
+        bind(self, "rect", UIWidget.trigger_full_render)
+        bind(self, "focused", UIWidget.trigger_full_render)
         bind(
-            self, "visible", self.trigger_full_render
+            self, "visible", UIWidget.trigger_full_render
         )  # TODO maybe trigger_parent_render would be enough
-        bind(self, "_children", self.trigger_render)
-        bind(self, "_border_width", self.trigger_render)
-        bind(self, "_border_color", self.trigger_render)
-        bind(self, "_bg_color", self.trigger_render)
-        bind(self, "_bg_tex", self.trigger_render)
-        bind(self, "_padding_top", self.trigger_render)
-        bind(self, "_padding_right", self.trigger_render)
-        bind(self, "_padding_bottom", self.trigger_render)
-        bind(self, "_padding_left", self.trigger_render)
-        bind(self, "_strong_background", self.trigger_render)
+        bind(self, "_children", UIWidget.trigger_render)
+        bind(self, "_border_width", UIWidget.trigger_render)
+        bind(self, "_border_color", UIWidget.trigger_render)
+        bind(self, "_bg_color", UIWidget.trigger_render)
+        bind(self, "_bg_tex", UIWidget.trigger_render)
+        bind(self, "_padding_top", UIWidget.trigger_render)
+        bind(self, "_padding_right", UIWidget.trigger_render)
+        bind(self, "_padding_bottom", UIWidget.trigger_render)
+        bind(self, "_padding_left", UIWidget.trigger_render)
+        bind(self, "_strong_background", UIWidget.trigger_render)
 
     def add(self, child: W, **kwargs) -> W:
         """Add a widget as a child.
@@ -165,6 +224,23 @@ class UIWidget(EventDispatcher, ABC):
             self._children.insert(index, _ChildEntry(child, kwargs))
 
         return child
+
+    # TODO "focus" would be more intuative but clashes with the UIFocusGroups :/
+    # maybe the two systems should be merged?
+    def _grap_active(self):
+        """Sets itself as the single active widget in the UIManager."""
+        ui_manager: UIManager | None = self.get_ui_manager()
+        if ui_manager:
+            ui_manager._set_active_widget(self)
+
+    def _release_active(self):
+        """Make this widget inactive in the UIManager."""
+        if not self._active:
+            return
+
+        ui_manager: UIManager | None = self.get_ui_manager()
+        if ui_manager and ui_manager._active_widget is self:
+            ui_manager._set_active_widget(None)
 
     def remove(self, child: UIWidget) -> dict | None:
         """Removes a child from the UIManager which was directly added to it.
@@ -361,20 +437,36 @@ class UIWidget(EventDispatcher, ABC):
         """Left coordinate of the widget"""
         return self.rect.left
 
+    @left.setter
+    def left(self, value: float):
+        self.rect = LBWH(value, self.bottom, self.width, self.height)
+
     @property
     def right(self) -> float:
         """Right coordinate of the widget"""
         return self.rect.right
+
+    @right.setter
+    def right(self, value: float):
+        self.rect = LBWH(value - self.width, self.bottom, self.width, self.height)
 
     @property
     def bottom(self) -> float:
         """Bottom coordinate of the widget"""
         return self.rect.bottom
 
+    @bottom.setter
+    def bottom(self, value: float):
+        self.rect = LBWH(self.left, value, self.width, self.height)
+
     @property
     def top(self) -> float:
         """Top coordinate of the widget"""
         return self.rect.top
+
+    @top.setter
+    def top(self, value: float):
+        self.rect = LBWH(self.left, value - self.height, self.width, self.height)
 
     @property
     def position(self) -> Vec2:
@@ -395,10 +487,18 @@ class UIWidget(EventDispatcher, ABC):
         """Center x coordinate"""
         return self.rect.x
 
+    @center_x.setter
+    def center_x(self, value: float):
+        self.rect = self.rect.align_center_x(value)
+
     @property
     def center_y(self) -> float:
         """Center y coordinate"""
         return self.rect.y
+
+    @center_y.setter
+    def center_y(self, value: float):
+        self.rect = self.rect.align_center_y(value)
 
     @property
     def padding(self):
@@ -485,8 +585,8 @@ class UIWidget(EventDispatcher, ABC):
     def with_background(
         self,
         *,
-        color: None | Color = ...,  # type: ignore
-        texture: None | Texture | NinePatchTexture = ...,  # type: ignore
+        color: Color | EllipsisType | None = ...,
+        texture: Texture | NinePatchTexture | EllipsisType | None = ...,
     ) -> Self:
         """Set widgets background.
 
@@ -545,15 +645,34 @@ class UIWidget(EventDispatcher, ABC):
         """Width of the widget."""
         return self.rect.width
 
+    @width.setter
+    def width(self, value: float):
+        if value <= 0:
+            raise ValueError("Width must be positive")
+        self.rect = LBWH(self.left, self.bottom, value, self.height)
+
     @property
     def height(self) -> float:
         """Height of the widget."""
         return self.rect.height
 
+    @height.setter
+    def height(self, value: float):
+        if value <= 0:
+            raise ValueError("Height must be positive")
+        self.rect = LBWH(self.left, self.bottom, self.width, value)
+
     @property
     def size(self) -> Vec2:
         """Size of the widget."""
         return Vec2(self.width, self.height)
+
+    @size.setter
+    def size(self, value: tuple[float, float] | Vec2):
+        width, height = value
+        if width <= 0 or height <= 0:
+            raise ValueError("Width and height must be positive")
+        self.rect = LBWH(self.left, self.bottom, width, height)
 
     def center_on_screen(self: W) -> W:
         """Places this widget in the center of the current window.
@@ -629,9 +748,16 @@ class UIInteractiveWidget(UIWidget):
 
         self.interaction_buttons = interaction_buttons
 
-        bind(self, "pressed", self.trigger_render)
-        bind(self, "hovered", self.trigger_render)
-        bind(self, "disabled", self.trigger_render)
+        bind(self, "pressed", UIInteractiveWidget.trigger_render)
+        bind(self, "hovered", UIInteractiveWidget.trigger_render)
+        bind(self, "disabled", UIInteractiveWidget.trigger_render)
+        bind(self, "focused", UIInteractiveWidget._on_focus_change)
+
+    def _on_focus_change(self):
+        """If focus lost, release active state"""
+        if self.pressed and not self.focused:
+            self.pressed = False
+            self._release_active()
 
     def on_event(self, event: UIEvent) -> bool | None:
         """Handles mouse events and triggers on_click event if the widget is clicked.
@@ -641,6 +767,7 @@ class UIInteractiveWidget(UIWidget):
         if super().on_event(event):
             return EVENT_HANDLED
 
+        # mouse event handling
         if isinstance(event, UIMouseMovementEvent):
             self.hovered = self.rect.point_in_rect(event.pos)
 
@@ -650,6 +777,7 @@ class UIInteractiveWidget(UIWidget):
             and event.button in self.interaction_buttons
         ):
             self.pressed = True
+            self._grap_active()  # make this the active widget
             return EVENT_HANDLED
 
         if (
@@ -661,6 +789,7 @@ class UIInteractiveWidget(UIWidget):
             if self.rect.point_in_rect(event.pos):
                 if not self.disabled:
                     # Dispatch new on_click event, source is this widget itself
+                    self._grap_active()  # make this the active widget
                     self.dispatch_event(
                         "on_click",
                         UIOnClickEvent(
@@ -671,7 +800,44 @@ class UIInteractiveWidget(UIWidget):
                             modifiers=event.modifiers,
                         ),
                     )
-                    return EVENT_HANDLED
+                    return EVENT_HANDLED  # TODO should we return the result from on_click?
+
+        # focus related events
+        if self.focused:
+            if isinstance(event, UIKeyPressEvent) and event.symbol == arcade.key.SPACE:
+                self.pressed = True
+                self._grap_active()  # make this the active widget
+                return EVENT_HANDLED
+
+            if isinstance(event, UIControllerButtonPressEvent) and event.button in ("a",):
+                self.pressed = True
+                self._grap_active()  # make this the active widget
+                return EVENT_HANDLED
+
+            if self.pressed:
+                keyboard_interaction = (
+                    isinstance(event, UIKeyReleaseEvent) and event.symbol == arcade.key.SPACE
+                )
+                controller_interaction = isinstance(
+                    event, UIControllerButtonReleaseEvent
+                ) and event.button in ("a",)
+
+                if keyboard_interaction or controller_interaction:
+                    self.pressed = False
+                    if not self.disabled:
+                        # Dispatch new on_click event, source is this widget itself
+                        self._grap_active()
+                        self.dispatch_event(
+                            "on_click",
+                            UIOnClickEvent(  # simulate mouse click
+                                source=self,
+                                x=int(self.center_x),
+                                y=int(self.center_y),
+                                button=self.interaction_buttons[0],
+                                modifiers=0,
+                            ),
+                        )
+                        return EVENT_HANDLED  # TODO should we return the result from on_click?
 
         return EVENT_UNHANDLED
 

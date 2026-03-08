@@ -66,7 +66,7 @@ Animating Drawing Primitives
 
 .. figure:: images/thumbs/shapes.png
    :figwidth: 170px
-   :target: shapes-slow.html
+   :target: shapes.html#shapes-slow
 
    :ref:`shapes-slow`
 
@@ -228,17 +228,10 @@ Non-Player Movement
 Easing
 ^^^^^^
 
-.. figure:: images/thumbs/easing_example_1.png
-   :figwidth: 170px
-   :target: easing_example_1.html
+.. note:: Easing is a work in progress refactor.
 
-   :ref:`easing_example_1`
+          Please see :py:mod:`arcade.anim`.
 
-.. figure:: images/thumbs/easing_example_2.png
-   :figwidth: 170px
-   :target: easing_example_2.html
-
-   :ref:`easing_example_2`
 
 Calculating a Path
 ^^^^^^^^^^^^^^^^^^

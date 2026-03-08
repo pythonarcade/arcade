@@ -135,7 +135,6 @@ class MyView(UIView):
         content_anchor.add(UISpace(height=20))
 
         self.ui.execute_layout()
-        self.ui.debug()
 
 
 def main():

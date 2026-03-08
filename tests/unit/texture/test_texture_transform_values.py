@@ -8,12 +8,9 @@ from arcade.texture.transforms import (
     TransverseTransform,
     VertexOrder,
 )
+
 # Hit box points to test for transformations
-HIT_BOX_POINTS = (
-    (1.0, 1.0),
-    (2.0, 2.0),
-    (2.0, 1.0)
-)
+HIT_BOX_POINTS = ((1.0, 1.0), (2.0, 2.0), (2.0, 1.0))
 ORDER = (
     VertexOrder.UPPER_LEFT.value,
     VertexOrder.UPPER_RIGHT.value,

@@ -254,10 +254,10 @@ language.
 On Linux distros based on Debian and Ubuntu, you may need to install
 the following packages to build PDFs:
 
-``console
+```console
 sudo apt install latexmk
 sudo apt install texlive-latex-extra
-``
+```
 To reduce the large (300 MB+) install size of the second package, you
 may be able to use the `--no-install-recommends` flag.
 

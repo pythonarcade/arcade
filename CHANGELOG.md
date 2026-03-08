@@ -5,8 +5,130 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+### Breaking Change
+- Tilemap: Sprites of an object tile layer will now apply visibility of the object. 
+
+## 4.0.0.dev3
+
+### Fixes
+- Removes an unnecessary dependency on NumPy which caused breakage in web browsers.
+
+## 4.0.0.dev2
+
+### Fixes
+- Fixes to camera module handling framebuffer changes. See [2802](https://github.com/pythonarcade/arcade/pull/2802)
+- Small fixes to new easing functions. See [2810](https://github.com/pythonarcade/arcade/pull/2810)
+
+### Breaking Changes
+- Updated pyglet to 3.0.dev2
+- Small changes to the new input package between 4.0.0.dev1 and dev2. Namely `ControllerAxes` renamed/split to `ControllerSticks` and `ControllerTriggers`. There are more underlying changes which shouldn't impact the public API of InputManager. 
+
+## 4.0.0.dev1
+
+### New Features
+- Support for running with Pyodide in web browsers.
+- New `anim` module. Currently contains new easing/lerp utilities.
+
+### Breaking Changes
+- `arcade.easing` has been removed, and replaced by the new `arcade.anim.easing` module.
+- `arcade.future.input` package has been moved to the top level `arcade.input`.
+
+### GUI
+- `UIManager` did not apply size hint of (0,0). Mainly an issue with `UIBoxLayout`.
+- Allow multiple children in `UIScrollArea`.
+- Fix `UIDropdown Overlay` positioning within a `UIScrollArea`.
+
+### Misc Changes
+
+- Upgraded Pillow to 12.0.0 for Python 3.14 support.
+- Adds a new `arcade.NoAracdeWindowError` exception type. This is raised when certain window operations are performed and there is no valid Arcade window found. Previously where this error would be raised, we raised a standard `RuntimeError`, this made it harder to properly catch and act accordingly. This new exception subclasses `RuntimeError`, so you can still catch this error the same way as before. The `arcade.get_window()` function will now raise this if there is no window.
+- Along with the new exception type, is a new `arcade.windows_exists()` function which will return True or False based on if there is currently an active window.
+
+
+
+## 3.3.3
+
+- Support for Python 3.14
+- Fixes a bug with the `check_for_collision_with_lists` function. This function is intended to mimic the functionality of
+  `check_for_collision_with_list` but allow passing multiple lists and looping the same behavior. The `lists` function however
+  handled the collision method differently. Which resulted in only spatial hash being used if it was available, or GPU collision.
+  It would never fallback to the pure CPU brute force approach, which is the best option for spritelists which don't have spatial hash
+  and less than 1,500 sprites. Certain games may see a substantial performance improvement from this change. See [2762](https://github.com/pythonarcade/arcade/pull/2762)
+- Added `center_x` and `center_y` arguments to `arcade.SpriteCircle`. See [2766](https://github.com/pythonarcade/arcade/pull/2766)
+- Added a `rect` property to `arcade.Text` objects which will return an `arcade.Rect` based on the `left`, `right`, `bottom`, and `top` values of the Text object. See [2759](https://github.com/pythonarcade/arcade/pull/2759)
+
+- Camera
+  - Fixes the position flag in `Camera2D.match_window` to so (0, 0) as the bottom left, instead of matching the center. See [2646](https://github.com/pythonarcade/arcade/pull/2646)
+
+- PyInstaller
+  - Fixed an issue where imports for backends for the `arcade.gl` package could not be discovered by PyInstaller.
+    Since 3.3.0 users have needed to add these hidden imports via the pyinstaller CLI in order for Arcade to work. 
+    See [2764](https://github.com/pythonarcade/arcade/pull/2764)
+
+- GUI
+  - Fix a bug, where the caret of UIInputText was misplaced after resizing the widget
+  - Use incremental layout for UIScrollArea to improve performance of changing text
+  - Refactored and improved focus handling
+  - UIBoxLayout ignores widgets with `visible=None`
+
+## 3.3.2
+
+- GUI
+  - Fix UIScrollBar creation
+  - Fix memory leak: widgets were not garbage collected
+
+## 3.3.1
+
+- Fixed an issue causing NinePatch to not render correctly
+- TextureAtlas now as a `version` attribute that is incremented when the
+  atlas is resized or rebuilt. This way it's easy to track when texture coordinates
+  has changed.
+- Added `Text.visible` (bool) property to control the visibility of text objects.
+- Fixed an issue causing points and lines to draw random primitives when
+  passing in an empty list.
+- GUI
+  - Fix caret did not deactivate because of consumed mouse events. [2725](https://github.com/pythonarcade/arcade/issues/2725)
+  - Property listener can now receive:
+      - no args
+      - instance
+      - instance, value
+      - instance, value, old value
+    >   Listener accepting `*args` receive `instance, value` like in previous versions.
+
+## 3.3.0
+
 - Fixed an issue causing a crash when closing the window
-- Added `Window.close` (bool) attribute indicating if the window is closed
+- Added `Window.closed` (bool) attribute indicating if the window is closed
+- Fixed an issue where `on_draw` could be dispatched after the window was closed
+- Added `PymunkPhysicsEngine.update_sprite` for manually updating a sprite's shape
+  to synchronize sprite hit boxes with the physics engine
+- Fixed an issue causing `on_mouse_leave` to be called from disabled `Section`s
+- Various documentation fixes and improvements
+- Scene
+  - `Scene.add_sprite` now returns the added sprite
+  - `Scene.add_sprite_list` now returns the added sprite list
+  - `Scene.add_sprite_before` now returns the added sprite list
+  - `Scene.move_sprite_list_before` now returns the moved sprite list
+  - `Scene.remove_sprite_list_by_index` now returns the removed sprite list
+  - `Scene.remove_sprite_list_by_name` now returns the removed sprite list
+- GUI
+  - Fix `UILabel` with enabled multiline sometimes cut off text
+  - Improved `UIWidget` usability for resizing and positioning:
+    - Added property setters for `width`, `height`, and `size` that ensure positive values
+    - Added property setters for `center_x` and `center_y`
+    - Added property setters for `left`, `right`, `top`, and `bottom`
+    - Users can now set widget position and size more intuitively without needing to access the `rect` property
+
+- Rendering:
+  - The `arcade.gl` package was restructured to be more modular in preparation for
+    other backends such as WebGL and WebGPU
+  - Rewrote many shader programs to not use geometry shaders, which are not supported in WebGL
+    and some other rendering backends
+  - Fixed a few instances og exceptions not being raised properly in edge cases
+  - **BREAKING CHANGE**: `SpriteList` now has multiple rendering systems supporting both WebGL and Desktop GL.
+    If you have customized spritelist rendering you now need to modify the `SpriteListData` instance
+    on the spritelist accessed through `SpriteList.data`. This instance holds all the GPU-related
+    resources for the spritelist such as buffers, textures, geometry and shader program.
 
 ## Version 3.2
 

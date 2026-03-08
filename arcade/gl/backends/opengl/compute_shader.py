@@ -14,7 +14,8 @@ from ctypes import (
 )
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics import core
+from pyglet.graphics.api import gl
 
 from arcade.gl.compute_shader import ComputeShader
 
@@ -188,7 +189,7 @@ class OpenGLComputeShader(ComputeShader):
         """
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
-        if gl.current_context is None:
+        if core.current_context is None:
             return
 
         gl.glDeleteProgram(prog_id)

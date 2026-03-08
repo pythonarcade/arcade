@@ -47,10 +47,10 @@ def test_copy_dunder_stubs_raise_notimplementederror():
     import copy
 
     with pytest.raises(NotImplementedError):
-       _ = copy.copy(spritelist)
+        _ = copy.copy(spritelist)
 
     with pytest.raises(NotImplementedError):
-       _ = copy.deepcopy(spritelist)
+        _ = copy.deepcopy(spritelist)
 
 
 def test_it_can_extend_a_spritelist_from_a_list():
@@ -93,7 +93,7 @@ def test_it_can_extend_a_spritelist_from_a_generator_function():
                     height=32,
                     color=arcade.color.RED,
                     center_x=col * cell_size,
-                    center_y=row * cell_size
+                    center_y=row * cell_size,
                 )
 
     sprite_list.extend(sprite_grid_generator(3, 5, 1.0))
@@ -183,7 +183,9 @@ def test_can_shuffle(ctx):
         spritelist.draw()
         # Ensure the index buffer is referring to the correct slots
         # Raw buffer from OpenGL
-        index_data = struct.unpack(f"{num_sprites}i", spritelist._sprite_index_buf.read()[:num_sprites * 4])
+        index_data = struct.unpack(
+            f"{num_sprites}i", spritelist.data.storage_index.read()[: num_sprites * 4]
+        )
         for i, sprite in enumerate(spritelist):
             # Check if slots are updated
             slot = spritelist.sprite_slot[sprite]
@@ -219,14 +221,14 @@ def test_sort(ctx):
     assert spritelist._sprite_index_data[0:3] == array("f", [0, 1, 2])
 
 
-@pytest.mark.parametrize('capacity', (128, 512, 1024))
+@pytest.mark.parametrize("capacity", (256, 512, 1024))
 def test_clear(ctx, capacity):
     sp = arcade.SpriteList(capacity=capacity)
     sp.clear(capacity=None)
     assert len(sp._sprite_index_data) == capacity
-    assert len(sp._sprite_pos_data) == capacity * 3
-    assert sp._sprite_index_buf.size == capacity * 4
-    assert sp._sprite_pos_buf.size == capacity * 4 * 3
+    assert len(sp._sprite_pos_angle_data) == capacity * 4
+    assert len(sp.data.storage_index.read()) == capacity * 4
+    assert len(sp.data.storage_positions_angle.read()) == capacity * 4 * 4
 
     sp.extend(make_named_sprites(capacity))
     sp.clear(capacity=capacity)
@@ -235,9 +237,9 @@ def test_clear(ctx, capacity):
     assert sp._sprite_buffer_slots == 0
     assert sp.atlas is not None
     assert len(sp._sprite_index_data) == capacity
-    assert len(sp._sprite_pos_data) == capacity * 3
-    assert sp._sprite_index_buf.size == capacity * 4
-    assert sp._sprite_pos_buf.size == capacity * 4 * 3
+    assert len(sp._sprite_pos_angle_data) == capacity * 4
+    assert len(sp.data.storage_index.read()) == capacity * 4
+    assert len(sp.data.storage_positions_angle.read()) == capacity * 4 * 4
 
 
 def test_color():
@@ -259,7 +261,7 @@ def test_color():
     # Alpha
     sp.alpha = 172
     assert sp.alpha == 172
-    assert sp.alpha_normalized == pytest.approx(172/255, rel=0.01)
+    assert sp.alpha_normalized == pytest.approx(172 / 255, rel=0.01)
 
     # Setting float RGBA works
     sp.color_normalized = 0.1, 0.2, 0.3, 0.4
@@ -295,7 +297,7 @@ def test_swap(window):
 
     sprites = [
         arcade.SpriteSolidColor(10, 10, color=arcade.color.RED),
-        arcade.SpriteSolidColor(10, 10, color=arcade.color.GREEN)
+        arcade.SpriteSolidColor(10, 10, color=arcade.color.GREEN),
     ]
     sl = arcade.SpriteList()
     sl.extend(sprites)

@@ -3,6 +3,7 @@ from pathlib import Path
 # .. literalinclude:: ../../arcade/examples/array_backed_grid_buffered.py
 # :ref:`platformer_tutorial`
 import re
+
 literal_include_pattern = re.compile(r"literalinclude:: .*/(.*\.py)$")
 ref_pattern = re.compile(":ref:`(.*)`")
 
@@ -30,7 +31,6 @@ class Processor:
 
     def check_rst_file(self, cur_node: Path):
         if cur_node.name.endswith(".rst"):
-
             i = 0
             try:
                 for i, line in enumerate(open(cur_node, encoding="utf-8")):
@@ -42,7 +42,6 @@ class Processor:
 
     def check_for_rst_ref(self, cur_node: Path):
         if cur_node.name.endswith(".rst"):
-
             i = 0
             try:
                 for i, line in enumerate(open(cur_node, encoding="utf-8")):

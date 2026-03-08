@@ -1,17 +1,28 @@
 #version 330
 
-in vec2 in_vert;
-in float in_radius;
-in float in_attenuation;
-in vec3 in_color;
+uniform WindowBlock {
+    mat4 projection;
+    mat4 view;
+} window;
 
-out float vs_radius;
-out float vs_attenuation;
-out vec3 vs_color;
+uniform vec2 offset;
+
+in vec2 in_vert;
+in vec2 in_uv;
+
+in vec2 in_instance_position;
+in float in_instance_radius;
+in float in_instance_attenuation;
+in vec3 in_instance_color;
+
+out float attenuation;
+out vec3 color;
+out vec2 uv;
 
 void main() {
-    gl_Position = vec4(in_vert, 0.0, 1.0);
-    vs_radius = in_radius;
-    vs_attenuation = in_attenuation;
-    vs_color = in_color / 255.0;
+    vec2 position = (in_vert * in_instance_radius) + in_instance_position + offset;
+    gl_Position = window.projection * window.view * vec4(position, 0.0, 1.0);
+    uv = in_uv;
+    attenuation = in_instance_attenuation;
+    color = in_instance_color / 255.0;
 }

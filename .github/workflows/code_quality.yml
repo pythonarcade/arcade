@@ -1,0 +1,81 @@
+# This does code inspection and checks to make sure building of docs works
+
+name: Code Quality
+
+on:
+  push:
+    branches: [development, maintenance]
+  pull_request:
+    branches: [development, maintenance]
+  workflow_dispatch:
+
+jobs:
+
+  lints:
+    name: Code Inspections
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Sync UV project
+        run: uv sync
+
+      - name: Formatting (Ruff)
+        if: success()
+        continue-on-error: true
+        run: uv run make.py format --check
+
+      - name: Linting (Ruff)
+        if: success()
+        continue-on-error: true
+        run: uv run make.py ruff-check
+
+      - name: Type Checking (MyPy)
+        if: success()
+        continue-on-error: true
+        run: uv run make.py mypy
+
+      - name: Type Checking (Pyright)
+        if: success()
+        continue-on-error: true
+        run: uv run make.py pyright
+      
+      - name: Build Docs
+        continue-on-error: true
+        run: uv run make.py docs-full
+
+  # This is a second job instead of an extra step because it takes the longest
+  # So having it as a second job lets it run in parallel to the other checks.
+  docs:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Sync UV Project
+        run: uv sync
+
+      - name: build-docs
+        run: uv run make.py docs-full

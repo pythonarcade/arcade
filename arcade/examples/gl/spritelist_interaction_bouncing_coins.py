@@ -15,9 +15,10 @@ python -m arcade.examples.gl.spritelist_interaction_bouncing_coins
 
 from array import array
 from random import randint, uniform
+from typing import cast
 
 import arcade
-from arcade.gl.types import BufferDescription
+from arcade.gl import BufferDescription, Buffer
 from arcade import hitbox
 
 WINDOW_WIDTH = 1280
@@ -32,7 +33,7 @@ class GPUBouncingCoins(arcade.Window):
         super().__init__(WINDOW_WIDTH, WINDOW_HEIGHT, resizable=True)
 
         # Generate lots of coins in random positions
-        self.coins = arcade.SpriteList(use_spatial_hash=None)
+        self.coins = arcade.SpriteList(use_spatial_hash=False)
         texture = arcade.load_texture(
             ":resources:images/items/coinGold.png",
             hit_box_algorithm=hitbox.algo_bounding_box,
@@ -59,14 +60,14 @@ class GPUBouncingCoins(arcade.Window):
             uniform float delta_time;
             uniform vec2 size;
 
-            in vec3 in_pos;
+            in vec4 in_pos_angle;
             in vec2 in_vel;
 
-            out vec3 out_pos;
+            out vec4 out_pos_angle;
             out vec2 out_vel;
 
             void main() {
-                vec2 pos = in_pos.xy + in_vel * 100.0 * delta_time;
+                vec2 pos = in_pos_angle.xy + in_vel * 100.0 * delta_time;
                 vec2 vel = in_vel;
                 if (pos.x > size.x) {
                     pos.x = size.x;
@@ -84,7 +85,7 @@ class GPUBouncingCoins(arcade.Window):
                     pos.y = 0.0;
                     vel.y *= -1.0;
                 }
-                out_pos = vec3(pos, in_pos.z);
+                out_pos_angle = vec4(pos, in_pos_angle.zw);
                 out_vel = vel;
             }
             """,
@@ -103,19 +104,20 @@ class GPUBouncingCoins(arcade.Window):
         self.buffer_velocity_2 = self.ctx.buffer(reserve=self.buffer_velocity_1.size)
         # Create a buffer with the same size as the position buffer in  the spritelist.
         # It's important that these match because we're copying that buffer into this one.
-        self.buffer_pos_copy = self.ctx.buffer(reserve=self.coins.buffer_positions.size)
+        self.buffer_pos_angle = cast(Buffer, self.coins.data.storage_positions_angle)
+        self.buffer_pos_angle_copy = self.ctx.buffer(reserve=self.buffer_pos_angle.size)
 
         # Geometry input: Copied positions and first velocity buffer
         self.geometry_1 = self.ctx.geometry(
             [
-                BufferDescription(self.buffer_pos_copy, "3f", ["in_pos"]),
+                BufferDescription(self.buffer_pos_angle_copy, "4f", ["in_pos_angle"]),
                 BufferDescription(self.buffer_velocity_1, "2f", ["in_vel"]),
             ]
         )
         # Geometry input: Copied positions and second velocity buffer
         self.geometry_2 = self.ctx.geometry(
             [
-                BufferDescription(self.buffer_pos_copy, "3f", ["in_pos"]),
+                BufferDescription(self.buffer_pos_angle_copy, "4f", ["in_pos_angle"]),
                 BufferDescription(self.buffer_velocity_2, "2f", ["in_vel"]),
             ]
         )
@@ -124,13 +126,13 @@ class GPUBouncingCoins(arcade.Window):
         self.clear()
 
         # Copy the position buffer. This happens on the gpu side.
-        self.buffer_pos_copy.copy_from_buffer(self.coins.buffer_positions)
+        self.buffer_pos_angle_copy.copy_from_buffer(self.buffer_pos_angle)
 
         # Run the transform writing new positions and velocities
         self.geometry_1.transform(
             self.program,
             [
-                self.coins.buffer_positions,
+                self.buffer_pos_angle,
                 self.buffer_velocity_2,
             ],
         )

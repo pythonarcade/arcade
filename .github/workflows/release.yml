@@ -1,0 +1,58 @@
+on:
+  push:
+    tags:
+      - '*'
+
+name: Create a Release
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+        
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Build Project
+        run: uv build
+
+      - name: Publish to PyPi
+        run: uv publish
+
+      - name: Generate Release Notes
+        run: |
+          current_tag=${{ github.ref_name }}
+          previous_tag=$(git describe --abbrev=0 --match "*" --tags $current_tag^)
+          echo "current_tag=$current_tag"
+          echo "previous_tag=$previous_tag"
+          echo "commit_history"
+          echo "=============="
+          while read -r;
+          do
+            echo "- $REPLY" | tee -a body.md 
+          done < <(git log --pretty=oneline --abbrev-commit --decorate-refs-exclude=refs/tags $current_tag...$previous_tag)
+          echo "=============="
+
+      - name: Publish GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          bodyFile: "body.md"
+          tag: ${{ github.ref_name }}
+
+
+      
+
+    

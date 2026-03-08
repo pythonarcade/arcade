@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        async function main() {
+            let pyodide = await loadPyodide();
+            await pyodide.loadPackage("micropip");
+            const micropip = pyodide.pyimport("micropip");
+            await pyodide.loadPackage("pillow"); // Arcade needs Pillow
+            await micropip.install("http://localhost:8000/static/{{pyglet_wheel}}");
+            await micropip.install("http://localhost:8000/static/{{arcade_wheel}}");
+
+            let response = await fetch("./package.zip");
+            let buffer = await response.arrayBuffer();
+            await pyodide.unpackArchive(buffer, "zip", "package");
+            pkg = pyodide.pyimport("package");
+            pkg.main();
+        }
+        main();
+    </script>
+</body>
+
+</html>

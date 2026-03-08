@@ -1,6 +1,7 @@
 """
 Test syncing atlas textures back into PIL images.
 """
+
 from PIL import Image, ImageDraw
 import arcade
 

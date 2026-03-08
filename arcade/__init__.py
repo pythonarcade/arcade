@@ -59,7 +59,7 @@ import pyglet
 
 # Enable HiDPI support using stretch mode
 if os.environ.get("ARCADE_TEST"):
-    pyglet.options.dpi_scaling = "real"
+    pyglet.options.dpi_scaling = "platform"
 else:
     pyglet.options.dpi_scaling = "stretch"
 
@@ -67,13 +67,6 @@ else:
 headless: Final[bool] = bool(os.environ.get("ARCADE_HEADLESS"))
 if headless:
     pyglet.options.headless = headless
-
-
-# from arcade import utils
-# Disable shadow window on macs and in headless mode.
-# if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_raspberry_pi():
-# NOTE: We always disable shadow window now to have consistent behavior across platforms.
-pyglet.options.shadow_window = False
 
 # Imports from modules that don't do anything circular
 
@@ -90,6 +83,7 @@ from .window_commands import set_window
 from .window_commands import start_render
 from .window_commands import unschedule
 from .window_commands import schedule_once
+from .window_commands import window_exists
 
 from .sections import Section, SectionManager
 
@@ -151,6 +145,17 @@ if not headless:
     from .controller import ControllerManager
     from .controller import get_controllers
 
+from .input import ActionState
+from .input import ControllerButtons
+from .input import ControllerSticks
+from .input import ControllerTriggers
+from .input import InputManager
+from .input import Keys
+from .input import MouseAxes
+from .input import MouseButtons
+from .input import PSControllerButtons
+from .input import XBoxControllerButtons
+
 from .sound import Sound
 from .sound import load_sound
 from .sound import play_sound
@@ -198,9 +203,12 @@ from .physics_engines import PhysicsEngineSimple
 from .tilemap import load_tilemap
 from .tilemap import TileMap
 
-from .pymunk_physics_engine import PymunkPhysicsEngine
-from .pymunk_physics_engine import PymunkPhysicsObject
-from .pymunk_physics_engine import PymunkException
+try:
+    from .pymunk_physics_engine import PymunkPhysicsEngine
+    from .pymunk_physics_engine import PymunkPhysicsObject
+    from .pymunk_physics_engine import PymunkException
+except ImportError:
+    pass
 
 from .version import VERSION
 
@@ -237,6 +245,7 @@ from arcade import types as types
 from arcade import math as math
 from arcade import shape_list as shape_list
 from arcade import hitbox as hitbox
+from arcade import input as input
 from arcade import experimental as experimental
 from arcade.types import rect
 
@@ -251,6 +260,16 @@ from .text import (
 )
 
 __all__ = [
+    "ActionState",
+    "ControllerButtons",
+    "ControllerSticks",
+    "ControllerTriggers",
+    "InputManager",
+    "Keys",
+    "MouseAxes",
+    "MouseButtons",
+    "PSControllerButtons",
+    "XBoxControllerButtons",
     "AStarBarrierList",
     "AnimatedWalkingSprite",
     "TextureAnimationSprite",
@@ -359,6 +378,7 @@ __all__ = [
     "create_text_sprite",
     "clear_timings",
     "get_window",
+    "window_exists",
     "get_fps",
     "has_line_of_sight",
     "load_animated_gif",
@@ -386,6 +406,7 @@ __all__ = [
     "get_default_texture",
     "get_default_image",
     "hitbox",
+    "input",
     "experimental",
     "rect",
     "color",

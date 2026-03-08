@@ -4,13 +4,21 @@ from arcade.types import Point2List
 
 from .base import HitBox, HitBoxAlgorithm, RotatableHitBox
 from .bounding_box import BoundingHitBoxAlgorithm
-from .pymunk import PymunkHitBoxAlgorithm
+
 from .simple import SimpleHitBoxAlgorithm
 
 #: The simple hit box algorithm.
 algo_simple = SimpleHitBoxAlgorithm()
-#: The detailed hit box algorithm.
-algo_detailed = PymunkHitBoxAlgorithm()
+
+#: The detailed hit box algorithm. This depends on pymunk and will fallback to the simple algorithm.
+try:
+    from .pymunk import PymunkHitBoxAlgorithm
+    algo_detailed = PymunkHitBoxAlgorithm()
+except ImportError:
+    print("WARNING: Running without PyMunk. The detailed hitbox algorithm will fallback to simple")
+    algo_detailed = SimpleHitBoxAlgorithm()
+
+
 #: The bounding box hit box algorithm.
 algo_bounding_box = BoundingHitBoxAlgorithm()
 #: The default hit box algorithm.

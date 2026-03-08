@@ -42,6 +42,7 @@ Keep the following in mind:
    4. Our customizations to be tested with all of the above
 
 """
+
 import shutil
 import sys
 import logging
@@ -76,23 +77,13 @@ force_copy_on_change: dict[Path, Path] = {  # pending: sphinx >= 8.1.4
     # You can add per-dir config the lazy way:
     # 1. copy & paste this block
     # 2. modifying it with filtering
-    **{
-        source_file: BUILD_CSS_DIR / source_file.name
-        for source_file in SOURCE_CSS_DIR.glob("*.*")
-    },
-    **{
-        source_file: BUILD_JS_DIR / source_file.name
-        for source_file in SOURCE_JS_DIR.glob("*.*")
-    },
+    **{source_file: BUILD_CSS_DIR / source_file.name for source_file in SOURCE_CSS_DIR.glob("*.*")},
+    **{source_file: BUILD_JS_DIR / source_file.name for source_file in SOURCE_JS_DIR.glob("*.*")},
 }
 
 
 # pending: some clever use of util/doc_helpers/vfs.py
-def force_sync(
-    src: Path,
-    dest: Path,
-    dry: bool = False
-) -> None:
+def force_sync(src: Path, dest: Path, dry: bool = False) -> None:
     """Sync a single file from ``src`` to ``dest``.
 
     Caveats:
@@ -120,7 +111,9 @@ def main():
     skip_reason = None
 
     if not ENABLE_DEVMACHINE_SPHINX_STATIC_FIX.exists():
-        skip_reason = f"SKIP: Force sync not enabled by a {ENABLE_DEVMACHINE_SPHINX_STATIC_FIX} file!"
+        skip_reason = (
+            f"SKIP: Force sync not enabled by a {ENABLE_DEVMACHINE_SPHINX_STATIC_FIX} file!"
+        )
     elif not BUILD_HTML_DIR.exists():
         skip_reason = f"SKIP: {BUILD_HTML_DIR} does not exist yet."
 
@@ -129,11 +122,13 @@ def main():
     else:
         # indented so we can grep for Done force-syncing in the logs
         from sphinx import __version__ as sphinx_version
+
         log.info(f" SYNC: Force-sync enable file found and build-dir exists")
-        if sphinx_version >= '8.1.4':
+        if sphinx_version >= "8.1.4":
             log.warning(
-                ' Sphinx >= 8.1.4 may patch broken _static copy\n'
-                '  (see https://github.com/sphinx-doc/sphinx/issues/1810)')
+                " Sphinx >= 8.1.4 may patch broken _static copy\n"
+                "  (see https://github.com/sphinx-doc/sphinx/issues/1810)"
+            )
 
         for src, dest in force_copy_on_change.items():
             force_sync(src, dest)

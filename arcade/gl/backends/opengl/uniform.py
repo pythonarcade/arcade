@@ -2,7 +2,7 @@ import struct
 from ctypes import POINTER, c_double, c_float, c_int, c_uint, cast
 from typing import Callable
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.gl.exceptions import ShaderException
 

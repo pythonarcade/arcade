@@ -7,8 +7,7 @@ from arcade.hitbox import PymunkHitBoxAlgorithm
 
 
 def test_pymunk():
-    physics_engine = arcade.PymunkPhysicsEngine(damping=1.0,
-                                                gravity=(0, -100))
+    physics_engine = arcade.PymunkPhysicsEngine(damping=1.0, gravity=(0, -100))
 
     my_sprite = arcade.SpriteSolidColor(50, 50, color=arcade.color.WHITE)
 
@@ -18,20 +17,20 @@ def test_pymunk():
     physics_engine.add_sprite(my_sprite)
 
     physics_engine.step(1.0)
-    assert(my_sprite.center_y == 0)
+    assert my_sprite.center_y == 0
 
     physics_engine.step(1.0)
-    assert(my_sprite.center_y == -100.0)
+    assert my_sprite.center_y == -100.0
 
     physics_engine.step(1.0)
-    assert(my_sprite.center_y == -300.0)
+    assert my_sprite.center_y == -300.0
 
 
 # Temp fix for https://github.com/pythonarcade/arcade/issues/2074
 def test_pymunk_engine_nocopy():
     import copy
-    physics_engine = arcade.PymunkPhysicsEngine(
-        damping=1.0, gravity=(0, -100))
+
+    physics_engine = arcade.PymunkPhysicsEngine(damping=1.0, gravity=(0, -100))
 
     with pytest.raises(NotImplementedError):
         _ = copy.copy(physics_engine)
@@ -39,15 +38,12 @@ def test_pymunk_engine_nocopy():
         _ = copy.deepcopy(physics_engine)
 
 
-@pytest.mark.parametrize("moment_of_inertia_arg_name",
-                         (
-                             "moment_of_inertia",
-                         ))
+@pytest.mark.parametrize("moment_of_inertia_arg_name", ("moment_of_inertia",))
 def test_pymunk_add_sprite_moment_backwards_compatibility(moment_of_inertia_arg_name):
     """
     Ensure that all supported kwarg aliases for moment of inertia work
     """
-    physics_engine = arcade.PymunkPhysicsEngine(damping=1.0, gravity=(0,0))
+    physics_engine = arcade.PymunkPhysicsEngine(damping=1.0, gravity=(0, 0))
 
     sprite = arcade.SpriteSolidColor(32, 32, color=arcade.color.RED)
 
@@ -71,10 +67,13 @@ def test_pymunk_hitbox_algorithm_trace_image_only_takes_rgba():
     """
 
     algo = PymunkHitBoxAlgorithm()
+
     def mode(m: str) -> Image.Image:
         return Image.new(
-            m, # type: ignore
-            (10, 10), 0)
+            m,  # type: ignore
+            (10, 10),
+            0,
+        )
 
     with pytest.raises(ValueError):
         algo.trace_image(mode("1"))
@@ -91,6 +90,4 @@ def test_pymunk_hitbox_algorithm_trace_image_only_takes_rgba():
     with pytest.raises(ValueError):
         algo.trace_image(mode("HSV"))
 
-    assert isinstance(
-        algo.trace_image(mode("RGBA")), pymunk.autogeometry.PolylineSet)
-
+    assert isinstance(algo.trace_image(mode("RGBA")), pymunk.autogeometry.PolylineSet)

@@ -121,7 +121,7 @@ help improve Arcade.
    :caption: Manual
 
    programming_guide/sprites/index
-   programming_guide/keyboard
+   programming_guide/input/index
    programming_guide/sound
    programming_guide/textures
    programming_guide/event_loop

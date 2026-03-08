@@ -256,6 +256,8 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
 
 
 def is_pyodide() -> bool:
+    if sys.platform == "emscripten":
+        return True
     return False
 
 

@@ -120,7 +120,7 @@ applies:
 SBC Purchasing Rules of Thumb
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: These rules help **non-experts** steer toward Arcade-copatible devices.
+.. note:: These rules help **non-experts** steer toward Arcade-compatible devices.
 
           You can find more in-depth descriptions of the required OpenGL ES versions
           and more under the :ref:`sbc_requirements` heading.

@@ -1,6 +1,7 @@
 """
 Low level tests for OpenGL 3.3 wrappers.
 """
+
 import pytest
 from pyglet.math import Mat4
 
@@ -38,6 +39,7 @@ def test_view_matrix(window):
 
     with pytest.raises(ValueError):
         window.ctx.view_matrix = "moo"
+
 
 def test_projection_matrix(window):
     """Test setting projection matrix directly"""
@@ -81,7 +83,7 @@ def test_enable_disable(ctx):
 
 
 def test_enabled(ctx):
-    """Enabled only context manager"""    
+    """Enabled only context manager"""
     assert ctx.is_enabled(ctx.BLEND)
     assert not ctx.is_enabled(ctx.DEPTH_TEST)
 
@@ -94,7 +96,7 @@ def test_enabled(ctx):
 
 
 def test_enabled_only(ctx):
-    """Enabled only context manager"""    
+    """Enabled only context manager"""
     assert ctx.is_enabled(ctx.BLEND)
 
     with ctx.enabled_only(ctx.DEPTH_TEST):
@@ -107,12 +109,16 @@ def test_enabled_only(ctx):
 
 def test_load_texture(ctx):
     # Default flipped and read value of corner pixel
-    texture = ctx.load_texture(":resources:images/test_textures/test_texture.png", build_mipmaps=True)
-    assert texture.read()[:4] == b'\x00\x00\xff\xff'  # Blue
+    texture = ctx.load_texture(
+        ":resources:images/test_textures/test_texture.png", build_mipmaps=True
+    )
+    assert texture.read()[:4] == b"\x00\x00\xff\xff"  # Blue
 
     # Don't flip the texture
-    texture = ctx.load_texture(":resources:images/test_textures/test_texture.png", flip=False, build_mipmaps=True)
-    assert texture.read()[:4] == b'\xff\x00\x00\xff'  # Red
+    texture = ctx.load_texture(
+        ":resources:images/test_textures/test_texture.png", flip=False, build_mipmaps=True
+    )
+    assert texture.read()[:4] == b"\xff\x00\x00\xff"  # Red
 
 
 def test_shader_include(ctx):

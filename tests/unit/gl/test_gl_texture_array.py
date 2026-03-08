@@ -46,7 +46,7 @@ def test_create_individual_layers(ctx: arcade.ArcadeContext):
 
     assert ta.read() == layers.tobytes()
 
+
 def test_repr(ctx: arcade.ArcadeContext):
     ta = ctx.texture_array((2, 4, 6), components=1, dtype="f1")
     assert repr(ta).startswith("<TextureArray")
-

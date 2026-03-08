@@ -11,11 +11,11 @@ in vec4 gs_color;
 out vec4 f_color;
 
 void main() {
-    vec4 basecolor = texture(sprite_texture, gs_uv);
-    basecolor *= gs_color * spritelist_color;
+    vec4 base_color = texture(sprite_texture, gs_uv);
+    base_color *= gs_color * spritelist_color;
     // Alpha test
-    if (basecolor.a == 0.0) {
+    if (base_color.a == 0.0) {
         discard;
     }
-    f_color = basecolor;
+    f_color = base_color;
 }

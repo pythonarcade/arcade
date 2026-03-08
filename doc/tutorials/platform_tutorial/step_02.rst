@@ -134,4 +134,4 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/02_draw_sprites.py
     :caption: 02_draw_sprites - Draw and Position Sprites
     :linenos:
-    :emphasize-lines: 24-30, 44-45
+    :emphasize-lines: 24-32, 46-47

@@ -4,7 +4,8 @@ import weakref
 from ctypes import byref, string_at
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics import core
+from pyglet.graphics.api import gl
 
 from arcade.gl.texture import Texture2D
 from arcade.gl.types import (
@@ -658,7 +659,7 @@ class OpenGLTexture2D(Texture2D):
             glo: The OpenGL texture id
         """
         # If we have no context, then we are shutting down, so skip this
-        if gl.current_context is None:
+        if core.current_context is None:
             return
 
         if glo.value != 0:

@@ -1,6 +1,7 @@
 """
 Find and run all tutorials in the doc/tutorials directory
 """
+
 import io
 import os
 import contextlib
@@ -11,7 +12,7 @@ import sys
 import pytest
 import arcade
 
-TUTORIAL_DIR = Path(arcade.__file__).parent.parent / "doc" /"tutorials"
+TUTORIAL_DIR = Path(arcade.__file__).parent.parent / "doc" / "tutorials"
 ALLOW_STDOUT = {}
 
 

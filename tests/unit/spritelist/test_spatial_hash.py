@@ -10,13 +10,16 @@ def test_create():
     assert sh.buckets_for_sprite == {}
     assert sh.count == 0
 
+
 def test_incorrect_str_input():
     with pytest.raises(TypeError):
         sh = SpatialHash(cell_size="10")
-    
+
+
 def test_incorrect_inf_input():
     with pytest.raises(TypeError):
         sh = SpatialHash(cell_size=float("inf"))
+
 
 def test_reset():
     sh = SpatialHash(cell_size=10)
@@ -85,16 +88,12 @@ def get_nearby_sprites():
     sh.add(sprite_1)
     sh.add(sprite_2)
 
-    nearby_sprites = sh.get_sprites_near_sprite(
-        arcade.SpriteSolidColor(10, 10, center_x=-5)
-    )
+    nearby_sprites = sh.get_sprites_near_sprite(arcade.SpriteSolidColor(10, 10, center_x=-5))
     assert isinstance(nearby_sprites, set)
     assert len(nearby_sprites) == 1
     assert nearby_sprites[0] == sprite_1
 
-    nearby_sprites = sh.get_sprites_near_sprite(
-        arcade.SpriteSolidColor(10, 10, center_x=0)
-    )
+    nearby_sprites = sh.get_sprites_near_sprite(arcade.SpriteSolidColor(10, 10, center_x=0))
     assert isinstance(nearby_sprites, set)
     assert len(nearby_sprites) == 2
     assert nearby_sprites == set([sprite_1, sprite_2])

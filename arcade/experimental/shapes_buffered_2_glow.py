@@ -9,7 +9,7 @@ python -m arcade.examples.shapes_buffered
 
 import random
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 import arcade
 from arcade.experimental import postprocessing

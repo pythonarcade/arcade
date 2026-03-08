@@ -4,7 +4,8 @@ import weakref
 from ctypes import byref, c_void_p
 from typing import TYPE_CHECKING, Sequence
 
-from pyglet import gl
+from pyglet.graphics import core
+from pyglet.graphics.api import gl
 
 from arcade.gl.types import BufferDescription, GLenumLike, GLuintLike, gl_name
 from arcade.gl.vertex_array import Geometry, VertexArray
@@ -97,7 +98,7 @@ class OpenGLVertexArray(VertexArray):
         This is automatically called when this object is garbage collected.
         """
         # If we have no context, then we are shutting down, so skip this
-        if gl.current_context is None:
+        if core.current_context is None:
             return
 
         if glo.value != 0:
@@ -107,7 +108,10 @@ class OpenGLVertexArray(VertexArray):
         ctx.stats.decr("vertex_array")
 
     def _build(
-        self, program: Program, content: Sequence[BufferDescription], index_buffer: Buffer | None
+        self,
+        program: Program,
+        content: Sequence[BufferDescription],
+        index_buffer: Buffer | None,
     ) -> None:
         """
         Build a vertex array compatible with the program passed in.

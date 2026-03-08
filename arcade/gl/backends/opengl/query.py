@@ -3,7 +3,8 @@ from __future__ import annotations
 import weakref
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics import core
+from pyglet.graphics.api import gl
 
 from arcade.gl.query import Query
 
@@ -118,7 +119,7 @@ class OpenGLQuery(Query):
 
         This is automatically called when the object is garbage collected.
         """
-        if gl.current_context is None:
+        if core.current_context is None:
             return
 
         for glo in glos:

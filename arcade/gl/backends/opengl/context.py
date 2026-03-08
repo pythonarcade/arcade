@@ -2,7 +2,7 @@ from ctypes import c_char_p, c_float, c_int, cast
 from typing import Dict, Iterable, List, Sequence, Tuple
 
 import pyglet
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.context import ArcadeContext
 from arcade.gl import enums
@@ -29,7 +29,10 @@ class OpenGLContext(Context):
     _valid_apis = ("opengl", "opengles")
 
     def __init__(
-        self, window: pyglet.window.Window, gc_mode: str = "context_gc", gl_api: str = "opengl"
+        self,
+        window: pyglet.window.Window,
+        gc_mode: str = "context_gc",
+        gl_api: str = "opengl",
     ):
         super().__init__(window, gc_mode)
 
@@ -44,6 +47,12 @@ class OpenGLContext(Context):
 
         self._gl_version = (self._info.MAJOR_VERSION, self._info.MINOR_VERSION)
 
+        # This can't be set in the abstract context because not all backends
+        # support primitive restart, and the getter in those backends will raise
+        # a NotImplementedError. So we need to do this specifically on the
+        # backends that support it
+        self.primitive_restart_index = self._primitive_restart_index
+
         # Hardcoded states
         # This should always be enabled
         # gl.glEnable(gl.GL_TEXTURE_CUBE_MAP_SEAMLESS)
@@ -57,7 +66,9 @@ class OpenGLContext(Context):
         # Assumed to be supported in gles
         self._ext_separate_shader_objects_enabled = True
         if self.gl_api == "opengl":
-            have_ext = gl.gl_info.have_extension("GL_ARB_separate_shader_objects")
+            have_ext = self.window.context.get_info().have_extension(
+                "GL_ARB_separate_shader_objects"
+            )  # type: ignore This is guaranteed to be an OpenGLSurfaceContext
             self._ext_separate_shader_objects_enabled = self.gl_version >= (4, 1) or have_ext
 
         # We enable scissor testing by default.
@@ -78,7 +89,7 @@ class OpenGLContext(Context):
 
     @Context.extensions.getter
     def extensions(self) -> set[str]:
-        return gl.gl_info.get_extensions()
+        return self.window.context.get_info().extensions  # type: ignore
 
     @property
     def error(self) -> str | None:
@@ -143,7 +154,7 @@ class OpenGLContext(Context):
         elif len(value) == 4:
             gl.glBlendFuncSeparate(*value)
         else:
-            ValueError("blend_func takes a tuple of 2 or 4 values")
+            raise ValueError(f"blend_func takes a tuple of 2 or 4 values, got {len(value)}")
 
     @property
     def front_face(self) -> str:
@@ -213,7 +224,11 @@ class OpenGLContext(Context):
         return OpenGLDefaultFrameBuffer(self)
 
     def buffer(
-        self, *, data: BufferProtocol | None = None, reserve: int = 0, usage: str = "static"
+        self,
+        *,
+        data: BufferProtocol | None = None,
+        reserve: int = 0,
+        usage: str = "static",
     ) -> OpenGLBuffer:
         return OpenGLBuffer(self, data, reserve=reserve, usage=usage)
 
@@ -264,10 +279,10 @@ class OpenGLContext(Context):
         return OpenGLProgram(
             self,
             vertex_shader=source_vs.get_source(defines=defines),
-            fragment_shader=source_fs.get_source(defines=defines) if source_fs else None,
-            geometry_shader=source_geo.get_source(defines=defines) if source_geo else None,
-            tess_control_shader=source_tc.get_source(defines=defines) if source_tc else None,
-            tess_evaluation_shader=source_te.get_source(defines=defines) if source_te else None,
+            fragment_shader=(source_fs.get_source(defines=defines) if source_fs else None),
+            geometry_shader=(source_geo.get_source(defines=defines) if source_geo else None),
+            tess_control_shader=(source_tc.get_source(defines=defines) if source_tc else None),
+            tess_evaluation_shader=(source_te.get_source(defines=defines) if source_te else None),
             varyings=out_attributes,
             varyings_capture_mode=varyings_capture_mode,
         )
@@ -288,7 +303,7 @@ class OpenGLContext(Context):
         )
 
     def compute_shader(self, *, source: str, common: Iterable[str] = ()) -> OpenGLComputeShader:
-        src = ShaderSource(self, source, common, pyglet.gl.GL_COMPUTE_SHADER)
+        src = ShaderSource(self, source, common, gl.GL_COMPUTE_SHADER)
         return OpenGLComputeShader(self, src.get_source())
 
     def texture(
@@ -337,7 +352,9 @@ class OpenGLContext(Context):
         depth_attachment: OpenGLTexture2D | None = None,
     ) -> OpenGLFramebuffer:
         return OpenGLFramebuffer(
-            self, color_attachments=color_attachments or [], depth_attachment=depth_attachment
+            self,
+            color_attachments=color_attachments or [],
+            depth_attachment=depth_attachment,
         )
 
     def copy_framebuffer(
@@ -416,6 +433,15 @@ class OpenGLArcadeContext(ArcadeContext, OpenGLContext):
         OpenGLContext.__init__(self, *args, **kwargs)
         ArcadeContext.__init__(self, *args, **kwargs)
 
+    def bind_window_block(self):
+        gl.glBindBufferRange(
+            gl.GL_UNIFORM_BUFFER,
+            0,
+            self._window_block.buffer.id,
+            0,  # type: ignore
+            128,  # 32 x 32bit floats (two mat4) # type: ignore
+        )
+
 
 class OpenGLInfo(Info):
     """OpenGL info and capabilities"""
@@ -428,6 +454,8 @@ class OpenGLInfo(Info):
 
         self.MAJOR_VERSION = self.get(gl.GL_MAJOR_VERSION)
         """Major version number of the OpenGL API supported by the current context."""
+
+        self.CTX_INFO = f"opengl {self.MAJOR_VERSION}.{self.MINOR_VERSION}"
 
         self.MAX_COLOR_TEXTURE_SAMPLES = self.get(gl.GL_MAX_COLOR_TEXTURE_SAMPLES)
         """Maximum number of samples in a color multisample texture"""
@@ -491,7 +519,7 @@ class OpenGLInfo(Info):
             values = (c_int * length)()
             gl.glGetIntegerv(enum, values)
             return tuple(values)
-        except pyglet.gl.lib.GLException:
+        except gl.lib.GLException:
             return tuple([0] * length)
 
     def get(self, enum, default=0) -> int:
@@ -521,7 +549,7 @@ class OpenGLInfo(Info):
             value = c_float()
             gl.glGetFloatv(enum, value)
             return value.value
-        except pyglet.gl.lib.GLException:
+        except gl.GLException:
             return default
 
     def get_str(self, enum) -> str:
@@ -533,5 +561,5 @@ class OpenGLInfo(Info):
         """
         try:
             return cast(gl.glGetString(enum), c_char_p).value.decode()  # type: ignore
-        except pyglet.gl.lib.GLException:
+        except gl.GLException:
             return "Unknown"

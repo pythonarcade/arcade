@@ -33,7 +33,7 @@ def test_physics_engine(window):
         center_x=64,
         center_y=256,
     )
-    platform.boundary_left = 0 # 0 in particular was problematic, see #2658
+    platform.boundary_left = 0  # 0 in particular was problematic, see #2658
     platform.boundary_right = 128
     platform.change_x = 8
     platform_list.append(platform)
@@ -65,7 +65,7 @@ def test_physics_engine(window):
     window.test(frames=7)
 
     assert physics_engine.can_jump() is True
-    assert platform.center_x == 80 # it bounced against the boundary_right
+    assert platform.center_x == 80  # it bounced against the boundary_right
     assert platform.change_x == -8
     character_sprite.change_y = 15
     physics_engine.increment_jump_counter()
@@ -73,11 +73,11 @@ def test_physics_engine(window):
     window.test(frames=6)
 
     assert physics_engine.can_jump() is False
-    assert platform.center_x == 32 # right at the boundary
-    assert platform.change_x == -8 # still going left
+    assert platform.center_x == 32  # right at the boundary
+    assert platform.change_x == -8  # still going left
     physics_engine.disable_multi_jump()
 
     window.test(frames=3)
 
-    assert platform.center_x == 32 + 24 # it bounced against the boundary_left
+    assert platform.center_x == 32 + 24  # it bounced against the boundary_left
     assert platform.change_x == +8

@@ -64,6 +64,7 @@ class TextureAtlasBase(abc.ABC):
         self._ctx = ctx or arcade.get_window().ctx
         self._size: tuple[int, int] = 0, 0
         self._layers: int = 1
+        self._version = 0
 
     @property
     def ctx(self) -> ArcadeContext:
@@ -84,6 +85,17 @@ class TextureAtlasBase(abc.ABC):
     def texture(self) -> Texture2D:
         """The OpenGL texture for this atlas."""
         return self._texture
+
+    @property
+    def version(self) -> int:
+        """
+        The version of the atlas.
+
+        This is incremented every time the atlas is rebuilt or resized.
+        It can be used to check if the atlas has changed since last
+        time it was used.
+        """
+        return self._version
 
     @property
     def width(self) -> int:

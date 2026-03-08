@@ -1,6 +1,5 @@
 from unittest.mock import Mock
 
-import pytest
 from pyglet.math import Vec2
 
 from arcade.gui import UILabel
@@ -80,9 +79,10 @@ def test_change_text_triggers_full_render_without_background(window):
     should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
     Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
     """
+    mock = Mock()
 
     label = UILabel(text="First Text")
-    label.parent = Mock()
+    label.parent = mock
 
     label.text = "Second Text"
     label.parent.trigger_render.assert_called_once()
@@ -94,9 +94,10 @@ def test_change_text_triggers_render_with_background(window):
     should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
     Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
     """
+    mock = Mock()
 
     label = UILabel(text="First Text").with_background(color=Color(255, 255, 255, 255))
-    label.parent = Mock()
+    label.parent = mock
 
     label.text = "Second Text"
     label.parent.trigger_render.assert_not_called()
@@ -192,7 +193,7 @@ def test_integration_with_layout_fit_to_content(ui):
     ui.execute_layout()
 
     # auto size should fit the text
-    assert label.rect.width == 44
+    assert label.rect.width == 45
     assert label.rect.height == 12
 
     # even when text changed
@@ -221,7 +222,7 @@ def test_fit_content_overrides_width(ui):
 
     label.fit_content()
 
-    assert label.rect.width == 44
+    assert label.rect.width == 45
     assert label.rect.height == 12
 
 

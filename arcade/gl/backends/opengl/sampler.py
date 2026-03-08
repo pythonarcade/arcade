@@ -4,7 +4,7 @@ import weakref
 from ctypes import byref, c_uint32
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 from arcade.gl.sampler import Sampler
 from arcade.gl.types import PyGLuint, compare_funcs

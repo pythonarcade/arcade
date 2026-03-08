@@ -2,12 +2,13 @@
 Helpers for dealing with the real-world file system.
 
 """
+
 import shutil
 from pathlib import Path
 from typing import Generator, TypeVar, Hashable, Iterable, Mapping, Sequence, Callable
 import logging
 
-H = TypeVar('H', bound=Hashable)
+H = TypeVar("H", bound=Hashable)
 
 FILE = Path(__file__)
 REPO_ROOT = Path(__file__).parent.parent.resolve()
@@ -28,9 +29,7 @@ def dest_older(src: Path | str, dest: Path | str) -> bool:
 
 
 def multi_glob(
-        p: str | Path,
-        *globs: str,
-        predicate: Callable[[Path], bool] | None = None
+    p: str | Path, *globs: str, predicate: Callable[[Path], bool] | None = None
 ) -> Generator[Path, None, None]:
     """Chain multiple :py:class:`pathlib.Path.glob` results into one.
 
@@ -84,17 +83,18 @@ def sync_dir(src_dir: Path, dest_dir: Path, *globs: str, done: set | None = None
 
         if not dest_file.exists() or dest_older(src_file, dest_file):
             dest_file.parent.mkdir(parents=True, exist_ok=True)
-            log.info(f' Copying media file {src_file} to {dest_file}')
+            log.info(f" Copying media file {src_file} to {dest_file}")
 
             shutil.copyfile(src_file, dest_file)
         else:
             log.info(f" Skipping media file {src_file} to {dest_file}")
 
+
 def copy_media(
-        src_root: Path | str,
-        dest_root: Path | str,
-        items: Mapping[str | Path, Sequence[str]],
-        done: set | None = None
+    src_root: Path | str,
+    dest_root: Path | str,
+    items: Mapping[str | Path, Sequence[str]],
+    done: set | None = None,
 ) -> None:
     """A more configurable version of the file syncing scripts we use.
 

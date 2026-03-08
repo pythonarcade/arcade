@@ -139,12 +139,24 @@ class SpriteCircle(Sprite):
         soft:
             If ``True``, the circle will fade from an opaque
             center to transparent edges.
+        center_x:
+            Initial x position of the sprite
+        center_y:
+            Initial y position of the sprite
     """
 
     # Local weak cache for textures to avoid creating multiple instances with the same configuration
     _texture_cache: WeakValueDictionary[tuple[int, RGBA255, bool], Texture] = WeakValueDictionary()
 
-    def __init__(self, radius: int, color: RGBA255, soft: bool = False, **kwargs):
+    def __init__(
+        self,
+        radius: int,
+        color: RGBA255,
+        soft: bool = False,
+        center_x: float = 0,
+        center_y: float = 0,
+        **kwargs,
+    ):
         radius = int(radius)
         diameter = radius * 2
 
@@ -168,5 +180,5 @@ class SpriteCircle(Sprite):
             self.__class__._texture_cache[cache_key] = texture
 
         # apply results to the new sprite
-        super().__init__(texture)
+        super().__init__(texture, center_x=center_x, center_y=center_y)
         self.color = Color.from_iterable(color)

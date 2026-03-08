@@ -97,7 +97,6 @@ def test_kwargtangle_missing_args():
 
 
 def test_kwargtangle_none_args():
-
     # LRBT
     with pytest.raises(ValueError):
         _ = Rect.from_kwargs(left=0, right=0, bottom=0, top=None)
@@ -109,7 +108,7 @@ def test_kwargtangle_none_args():
         _ = Rect.from_kwargs(left=0, right=None, top=0, bottom=0)
 
     with pytest.raises(ValueError):
-        _ = Rect.from_kwargs(left = None, right=0, top=0, bottom=0)
+        _ = Rect.from_kwargs(left=None, right=0, top=0, bottom=0)
 
     # LBWH
     with pytest.raises(ValueError):

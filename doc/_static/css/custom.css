@@ -293,6 +293,10 @@ table.resource-table td > .resource-thumb.file-icon {
     /* Not clear why this doesn't work for the .caption-text */
     font-size: 1em !important;
 }
+.resource-handle > .literal {
+    /* Removes the verticle scroll when you zoom out more than 100% */
+    overflow-y: hidden;
+}
 
 
 /* Imitate sphinx-copybutton style */

@@ -23,11 +23,12 @@ def test_one():
     sprite_1 = tile_list[0]
     assert sprite_1 is not None
     #
-    # Test width, height and angle
+    # Test width, height, angle and visibility
     #
     assert sprite_1.width == 400
     assert sprite_1.height == 1000
     assert sprite_1.angle == -45
+    assert sprite_1.visible == False
 
     #
     # Test type and name properties
@@ -39,7 +40,12 @@ def test_one():
     rectangle = tile_map.object_lists["Shapes"][0]
     assert isclose(rectangle.shape[2][0] - rectangle.shape[0][0], 573.60, abs_tol=0.02)
     assert isclose(rectangle.shape[0][1] - rectangle.shape[2][1], 469.04, abs_tol=0.02)
-    assert isclose(tile_map.tiled_map.map_size.height * tile_map.tiled_map.tile_size[1] - rectangle.shape[0][1], 630.37, abs_tol=0.02)
+    assert isclose(
+        tile_map.tiled_map.map_size.height * tile_map.tiled_map.tile_size[1]
+        - rectangle.shape[0][1],
+        630.37,
+        abs_tol=0.02,
+    )
 
     # #
     # # Test getting layer in group

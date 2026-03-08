@@ -412,8 +412,8 @@ class MyView(UIView, ControllerView):
 
 if __name__ == "__main__":
     # pixelate the font
-    pyglet.font.base.Font.texture_min_filter = GL_NEAREST
-    pyglet.font.base.Font.texture_mag_filter = GL_NEAREST
+    pyglet.font.base.Font.texture_min_filter = GL_NEAREST  # type: ignore
+    pyglet.font.base.Font.texture_mag_filter = GL_NEAREST  # type: ignore
 
     load_kenney_fonts()
 

@@ -14,6 +14,7 @@ Content:
 from datetime import datetime
 
 import arcade
+import arcade.gui
 from arcade.gui import UIAnchorLayout, UIImage, UITextArea
 
 arcade.resources.load_kenney_fonts()
@@ -186,5 +187,5 @@ def main():
     window.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

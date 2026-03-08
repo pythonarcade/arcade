@@ -82,8 +82,8 @@ class UITextureToggle(UIInteractiveWidget):
         self.value = value
         self.register_event_type("on_change")
 
-        bind(self, "value", self.trigger_render)
-        bind(self, "value", self._dispatch_on_change_event)
+        bind(self, "value", UITextureToggle.trigger_render)
+        bind(self, "value", UITextureToggle._dispatch_on_change_event)
 
         super().__init__(
             x=x,

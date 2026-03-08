@@ -3,8 +3,8 @@ name: Status Embed
 on:
   workflow_run:
     workflows:
-      - GitHub Ubuntu test
-      - Windows self-hosted test
+      - PyTest
+      - Code Quality
     types:
       - completed
 

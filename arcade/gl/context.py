@@ -207,6 +207,7 @@ class Context(ABC):
         gc_mode: str = "context_gc",
         gl_api: str = "gl",  # This is ignored here, but used in implementation classes
     ):
+        self._gl_api = gl_api
         self._window_ref = weakref.ref(window)
         self._info = get_provider().create_info(self)
 
@@ -220,11 +221,10 @@ class Context(ABC):
         # Tracking active program
         self.active_program: Program | ComputeShader | None = None
         # Tracking active framebuffer. On context creation the window is the default render target
-        self.active_framebuffer: Framebuffer = self._screen
+        self._active_framebuffer: Framebuffer = self._screen
         self._stats: ContextStats = ContextStats(warn_threshold=1000)
 
         self._primitive_restart_index = -1
-        self.primitive_restart_index = self._primitive_restart_index
 
         # States
         self._blend_func: Tuple[int, int] | Tuple[int, int, int, int] = self.BLEND_DEFAULT
@@ -327,7 +327,18 @@ class Context(ABC):
         """
         Get the currently active framebuffer (read only).
         """
-        return self.active_framebuffer
+        return self._active_framebuffer
+
+    @property
+    def active_framebuffer(self) -> Framebuffer:
+        """
+        Get the currently active framebuffer.
+        """
+        return self._active_framebuffer
+
+    @active_framebuffer.setter
+    def active_framebuffer(self, framebuffer: Framebuffer) -> None:
+        self._active_framebuffer = framebuffer
 
     def gc(self) -> int:
         """

@@ -717,16 +717,16 @@ class Rect(NamedTuple):
            checking. See :py:class:`typing.TypedDict` to learn more.
 
         """
-        return {
-            "left": self.left,
-            "right": self.right,
-            "bottom": self.bottom,
-            "top": self.top,
-            "x": self.x,
-            "y": self.y,
-            "width": self.width,
-            "height": self.height,
-        }
+        return RectKwargs(
+            left=self.left,
+            right=self.right,
+            bottom=self.bottom,
+            top=self.top,
+            x=self.x,
+            y=self.y,
+            width=self.width,
+            height=self.height,
+        )
 
     # Since __repr__ is handled automatically by NamedTuple, we focus on
     # human-readable spot-check values for __str__ instead.

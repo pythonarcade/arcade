@@ -1,9 +1,5 @@
-import struct
 from collections.abc import Iterable
 
-from arcade import (
-    get_window,
-)
 from arcade.geometry import (
     are_polygons_intersecting,
     is_point_in_polygon,
@@ -12,6 +8,7 @@ from arcade.math import get_distance
 from arcade.sprite import BasicSprite, SpriteType
 from arcade.types import Point
 from arcade.types.rect import Rect
+from arcade.window_commands import get_window
 
 from .sprite_list import SpriteSequence
 
@@ -134,50 +131,7 @@ def _get_nearby_sprites(
     sprite_count = len(sprite_list)
     if sprite_count == 0:
         return []
-
-    # Update the position and size to check
-    ctx = get_window().ctx
-    sprite_list._write_sprite_buffers_to_gpu()
-
-    ctx.collision_detection_program["check_pos"] = sprite.position
-    ctx.collision_detection_program["check_size"] = sprite.width, sprite.height
-
-    # Ensure the result buffer can fit all the sprites (worst case)
-    buffer = ctx.collision_buffer
-    if buffer.size < sprite_count * 4:
-        buffer.orphan(size=sprite_count * 4)
-
-    # Run the transform shader emitting sprites close to the configured position and size.
-    # This runs in a query so we can measure the number of sprites emitted.
-    with ctx.collision_query:
-        sprite_list.geometry.transform(  # type: ignore
-            ctx.collision_detection_program,
-            buffer,
-            vertices=sprite_count,
-        )
-
-    # Store the number of sprites emitted
-    emit_count = ctx.collision_query.primitives_generated
-    # print(
-    #     emit_count,
-    #     ctx.collision_query.time_elapsed,
-    #     ctx.collision_query.time_elapsed / 1_000_000_000,
-    # )
-
-    # If no sprites emitted we can just return an empty list
-    if emit_count == 0:
-        return []
-
-    # # Debug block for transform data to keep around
-    # print("emit_count", emit_count)
-    # data = buffer.read(size=emit_count * 4)
-    # print("bytes", data)
-    # print("data", struct.unpack(f'{emit_count}i', data))
-
-    # .. otherwise build and return a list of the sprites selected by the transform
-    return [
-        sprite_list[i] for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))
-    ]
+    return sprite_list.get_nearby_sprites_gpu(sprite.position, sprite.size)
 
 
 def check_for_collision_with_list(
@@ -221,10 +175,14 @@ def check_for_collision_with_list(
     # Spatial
     if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
         sprites_to_check = sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
-    elif method == 3 or (method == 0 and len(sprite_list) <= 1500):
+    elif (
+        method == 3
+        or (method == 0 and len(sprite_list) <= 1500)
+        or get_window().ctx._gl_api == "webgl"
+    ):
         sprites_to_check = sprite_list
     else:
-        # GPU transform
+        # GPU transform - Not on WebGL
         sprites_to_check = _get_nearby_sprites(sprite, sprite_list)
 
     return [
@@ -243,7 +201,7 @@ def check_for_collision_with_list(
 def check_for_collision_with_lists(
     sprite: BasicSprite,
     sprite_lists: Iterable[SpriteSequence[SpriteType]],
-    method=1,
+    method=0,
 ) -> list[SpriteType]:
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
@@ -254,8 +212,16 @@ def check_for_collision_with_lists(
         sprite_lists:
             SpriteLists to check against
         method:
-            Collision check method. 1 is Spatial Hashing if available,
-            2 is GPU based, 3 is slow CPU-bound check-everything. Defaults to 1.
+            Collision check method. Defaults to 0.
+
+            - 0: auto-select. (spatial if available, GPU if 1500+ sprites, else simple)
+            - 1: Spatial Hashing if available,
+            - 2: GPU based
+            - 3: Simple check-everything.
+
+            Note that while the GPU method is very fast when you cannot use spatial hashing,
+            it's also very slow if you are calling this function many times per frame.
+            What method is the most appropriate depends entirely on your use case.
 
     Returns:
         List of sprites colliding, or an empty list.
@@ -271,12 +237,17 @@ def check_for_collision_with_lists(
     sprites_to_check: Iterable[SpriteType]
 
     for sprite_list in sprite_lists:
-        if sprite_list.spatial_hash is not None and method == 1:
+        # Spatial
+        if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
             sprites_to_check = sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
-        elif method == 3:
+        elif (
+            method == 3
+            or (method == 0 and len(sprite_list) <= 1500)
+            or get_window().ctx._gl_api == "webgl"
+        ):
             sprites_to_check = sprite_list
         else:
-            # GPU transform
+            # GPU transform - Not on WebGL
             sprites_to_check = _get_nearby_sprites(sprite, sprite_list)
 
         for sprite2 in sprites_to_check:

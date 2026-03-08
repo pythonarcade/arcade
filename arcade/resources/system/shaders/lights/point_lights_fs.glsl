@@ -1,7 +1,7 @@
 #version 330
 
-
 out vec4 f_color;
+
 in vec2 uv;
 in float attenuation;
 in vec3 color;

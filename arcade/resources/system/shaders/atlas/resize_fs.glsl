@@ -1,6 +1,7 @@
 #version 330
 
-// The old atlas texture.
+// The old atlas texture. We copy sections to the new atlas texture
+// by render into an fbo with the target texture as the color attachment.
 uniform sampler2D atlas_old;
 
 out vec4 fragColor;
