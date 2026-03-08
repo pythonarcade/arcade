@@ -75,8 +75,12 @@ class Layout(NamedTuple):
 # TODO: should this be cached/memoized?
 # TODO: benchmark
 @dataclass(frozen=True)
-class Hex:
-    """A hexagon in cube coordinates."""
+class HexTile:
+    """A hexagonal tile in cube coordinates.
+
+    For an introduction to hexagonal grids and cube coordinates, see:
+    https://www.redblobgames.com/grids/hexagons/
+    """
 
     q: float
     r: float
@@ -93,23 +97,23 @@ class Hex:
         assert isinstance(result, bool)
         return result
 
-    def __add__(self, other: "Hex") -> "Hex":
+    def __add__(self, other: "HexTile") -> "HexTile":
         """Add two hexagons."""
-        return Hex(self.q + other.q, self.r + other.r, self.s + other.s)
+        return HexTile(self.q + other.q, self.r + other.r, self.s + other.s)
 
-    def __sub__(self, other: "Hex") -> "Hex":
+    def __sub__(self, other: "HexTile") -> "HexTile":
         """Subtract two hexagons."""
-        return Hex(self.q - other.q, self.r - other.r, self.s - other.s)
+        return HexTile(self.q - other.q, self.r - other.r, self.s - other.s)
 
-    def __mul__(self, k: int) -> "Hex":
+    def __mul__(self, k: int) -> "HexTile":
         """Multiply a hexagon by a scalar."""
-        return Hex(self.q * k, self.r * k, self.s * k)
+        return HexTile(self.q * k, self.r * k, self.s * k)
 
-    def __neg__(self) -> "Hex":
+    def __neg__(self) -> "HexTile":
         """Negate a hexagon."""
-        return Hex(-self.q, -self.r, -self.s)
+        return HexTile(-self.q, -self.r, -self.s)
 
-    def __round__(self) -> "Hex":
+    def __round__(self) -> "HexTile":
         """Round a hexagon."""
         qi = round(self.q)
         ri = round(self.r)
@@ -123,46 +127,46 @@ class Hex:
             ri = -qi - si
         else:
             si = -qi - ri
-        return Hex(qi, ri, si)
+        return HexTile(qi, ri, si)
 
-    def rotate_left(self) -> "Hex":
+    def rotate_left(self) -> "HexTile":
         """Rotate a hexagon to the left."""
-        return Hex(-self.s, -self.q, -self.r)
+        return HexTile(-self.s, -self.q, -self.r)
 
-    def rotate_right(self) -> "Hex":
+    def rotate_right(self) -> "HexTile":
         """Rotate a hexagon to the right."""
-        return Hex(-self.r, -self.s, -self.q)
+        return HexTile(-self.r, -self.s, -self.q)
 
     @staticmethod
-    def direction(direction: int) -> "Hex":
+    def direction(direction: int) -> "HexTile":
         """Return a relative hexagon in a given direction."""
         hex_directions = [
-            Hex(1, 0, -1),
-            Hex(1, -1, 0),
-            Hex(0, -1, 1),
-            Hex(-1, 0, 1),
-            Hex(-1, 1, 0),
-            Hex(0, 1, -1),
+            HexTile(1, 0, -1),
+            HexTile(1, -1, 0),
+            HexTile(0, -1, 1),
+            HexTile(-1, 0, 1),
+            HexTile(-1, 1, 0),
+            HexTile(0, 1, -1),
         ]
         return hex_directions[direction]
 
-    def neighbor(self, direction: int) -> "Hex":
+    def neighbor(self, direction: int) -> "HexTile":
         """Return the neighbor in a given direction."""
         return self + self.direction(direction)
 
-    def neighbors(self) -> list["Hex"]:
+    def neighbors(self) -> list["HexTile"]:
         """Return the neighbors of a hexagon."""
         return [self.neighbor(i) for i in range(6)]
 
-    def diagonal_neighbor(self, direction: int) -> "Hex":
+    def diagonal_neighbor(self, direction: int) -> "HexTile":
         """Return the diagonal neighbor in a given direction."""
         hex_diagonals = [
-            Hex(2, -1, -1),
-            Hex(1, -2, 1),
-            Hex(-1, -1, 2),
-            Hex(-2, 1, 1),
-            Hex(-1, 2, -1),
-            Hex(1, 1, -2),
+            HexTile(2, -1, -1),
+            HexTile(1, -2, 1),
+            HexTile(-1, -1, 2),
+            HexTile(-2, 1, 1),
+            HexTile(-1, 2, -1),
+            HexTile(1, 1, -2),
         ]
         return self + hex_diagonals[direction]
 
@@ -170,21 +174,21 @@ class Hex:
         """Return the length of a hexagon."""
         return int((abs(self.q) + abs(self.r) + abs(self.s)) // 2)
 
-    def distance_to(self, other: "Hex") -> float:
-        """Return the distance between self and another Hex."""
+    def distance_to(self, other: "HexTile") -> float:
+        """Return the distance between self and another HexTile."""
         return (self - other).length()
 
-    def line_to(self, other: "Hex") -> list["Hex"]:
-        """Return a list of hexagons between self and another Hex."""
+    def line_to(self, other: "HexTile") -> list["HexTile"]:
+        """Return a list of hexagons between self and another HexTile."""
         return line(self, other)
 
-    def lerp_between(self, other: "Hex", t: float) -> "Hex":
-        """Perform a linear interpolation between self and another Hex."""
+    def lerp_between(self, other: "HexTile", t: float) -> "HexTile":
+        """Perform a linear interpolation between self and another HexTile."""
         return lerp(self, other, t)
 
     def to_pixel(self, layout: Layout) -> Vec2:
         """Convert a hexagon to pixel coordinates."""
-        return hex_to_pixel(self, layout)
+        return hextile_to_pixel(self, layout)
 
     def to_offset(self, system: offset_system) -> "OffsetCoord":
         """Convert a hexagon to offset coordinates."""
@@ -201,31 +205,31 @@ class Hex:
         raise ValueError(msg)
 
 
-def lerp(a: Hex, b: Hex, t: float) -> Hex:
+def lerp(a: HexTile, b: HexTile, t: float) -> HexTile:
     """Perform a linear interpolation between two hexagons."""
-    return Hex(
+    return HexTile(
         a.q * (1.0 - t) + b.q * t,
         a.r * (1.0 - t) + b.r * t,
         a.s * (1.0 - t) + b.s * t,
     )
 
 
-def distance(a: Hex, b: Hex) -> int:
+def distance(a: HexTile, b: HexTile) -> int:
     """Return the distance between two hexagons."""
     return (a - b).length()
 
 
-def line(a: Hex, b: Hex) -> list[Hex]:
+def line(a: HexTile, b: HexTile) -> list[HexTile]:
     """Return a list of hexagons between two hexagons."""
     n = distance(a, b)
     # epsilon to nudge points by to falling on an edge
-    a_nudge = Hex(a.q + 1e-06, a.r + 1e-06, a.s - 2e-06)
-    b_nudge = Hex(b.q + 1e-06, b.r + 1e-06, b.s - 2e-06)
+    a_nudge = HexTile(a.q + 1e-06, a.r + 1e-06, a.s - 2e-06)
+    b_nudge = HexTile(b.q + 1e-06, b.r + 1e-06, b.s - 2e-06)
     step = 1.0 / max(n, 1)
     return [round(lerp(a_nudge, b_nudge, step * i)) for i in range(n + 1)]
 
 
-def hex_to_pixel(h: Hex, layout: Layout) -> Vec2:
+def hextile_to_pixel(h: HexTile, layout: Layout) -> Vec2:
     """Convert axial hexagon coordinates to pixel coordinates."""
     M = layout.orientation  # noqa: N806
     size = layout.size
@@ -235,10 +239,10 @@ def hex_to_pixel(h: Hex, layout: Layout) -> Vec2:
     return Vec2(x + origin.x, y + origin.y)
 
 
-def pixel_to_hex(
+def pixel_to_hextile(
     p: Vec2,
     layout: Layout,
-) -> Hex:
+) -> HexTile:
     """Convert pixel coordinates to cubic hexagon coordinates."""
     M = layout.orientation  # noqa: N806
     size = layout.size
@@ -246,10 +250,10 @@ def pixel_to_hex(
     pt = Vec2((p.x - origin.x) / size.x, (p.y - origin.y) / size.y)
     q = M.b0 * pt.x + M.b1 * pt.y
     r = M.b2 * pt.x + M.b3 * pt.y
-    return Hex(q, r, -q - r)
+    return HexTile(q, r, -q - r)
 
 
-def hex_corner_offset(corner: int, layout: Layout) -> Vec2:
+def hextile_corner_offset(corner: int, layout: Layout) -> Vec2:
     """Return the offset of a hexagon corner."""
     # Hexagons have 6 corners
     assert 0 <= corner < 6  # noqa: PLR2004
@@ -259,20 +263,20 @@ def hex_corner_offset(corner: int, layout: Layout) -> Vec2:
     return Vec2(size.x * math.cos(angle), size.y * math.sin(angle))
 
 
-hex_corners = tuple[Vec2, Vec2, Vec2, Vec2, Vec2, Vec2]
+hextile_corners = tuple[Vec2, Vec2, Vec2, Vec2, Vec2, Vec2]
 
 
-def polygon_corners(h: Hex, layout: Layout) -> hex_corners:
+def polygon_corners(h: HexTile, layout: Layout) -> hextile_corners:
     """Return the corners of a hexagon in a list of pixels."""
     corners = []
-    center = hex_to_pixel(h, layout)
+    center = hextile_to_pixel(h, layout)
     for i in range(6):
-        offset = hex_corner_offset(i, layout)
+        offset = hextile_corner_offset(i, layout)
         corners.append(Vec2(center.x + offset.x, center.y + offset.y))
     result = tuple(corners)
     # Hexagons have 6 corners
     assert len(result) == 6  # noqa: PLR2004
-    return cast("hex_corners", result)
+    return cast("hextile_corners", result)
 
 
 @dataclass(frozen=True)
@@ -282,7 +286,7 @@ class OffsetCoord:
     col: float
     row: float
 
-    def to_cube(self, system: offset_system) -> Hex:
+    def to_cube(self, system: offset_system) -> HexTile:
         """Convert offset coordinates to cube coordinates."""
         if system == "odd-r":
             return roffset_to_cube(self, _ODD)
@@ -297,7 +301,7 @@ class OffsetCoord:
         raise ValueError(msg)
 
 
-def qoffset_from_cube(h: Hex, offset: Literal[-1, 1]) -> OffsetCoord:
+def qoffset_from_cube(h: HexTile, offset: Literal[-1, 1]) -> OffsetCoord:
     """Convert a hexagon in cube coordinates to q offset coordinates."""
     if offset not in (_EVEN, _ODD):
         msg = "offset must be EVEN (+1) or ODD (-1)"
@@ -308,7 +312,7 @@ def qoffset_from_cube(h: Hex, offset: Literal[-1, 1]) -> OffsetCoord:
     return OffsetCoord(col, row)
 
 
-def qoffset_to_cube(h: OffsetCoord, offset: Literal[-1, 1]) -> Hex:
+def qoffset_to_cube(h: OffsetCoord, offset: Literal[-1, 1]) -> HexTile:
     """Convert a hexagon in q offset coordinates to cube coordinates."""
     if offset not in (_EVEN, _ODD):
         msg = "offset must be EVEN (+1) or ODD (-1)"
@@ -317,10 +321,10 @@ def qoffset_to_cube(h: OffsetCoord, offset: Literal[-1, 1]) -> Hex:
     q = h.col
     r = h.row - (h.col + offset * (h.col & 1)) // 2  # type: ignore[operator]
     s = -q - r
-    return Hex(q, r, s)
+    return HexTile(q, r, s)
 
 
-def roffset_from_cube(h: Hex, offset: Literal[-1, 1]) -> OffsetCoord:
+def roffset_from_cube(h: HexTile, offset: Literal[-1, 1]) -> OffsetCoord:
     """Convert a hexagon in cube coordinates to r offset coordinates."""
     if offset not in (_EVEN, _ODD):
         msg = "offset must be EVEN (+1) or ODD (-1)"
@@ -331,7 +335,7 @@ def roffset_from_cube(h: Hex, offset: Literal[-1, 1]) -> OffsetCoord:
     return OffsetCoord(col, row)
 
 
-def roffset_to_cube(h: OffsetCoord, offset: Literal[-1, 1]) -> Hex:
+def roffset_to_cube(h: OffsetCoord, offset: Literal[-1, 1]) -> HexTile:
     """Convert a hexagon in r offset coordinates to cube coordinates."""
     if offset not in (_EVEN, _ODD):
         msg = "offset must be EVEN (+1) or ODD (-1)"
@@ -340,4 +344,4 @@ def roffset_to_cube(h: OffsetCoord, offset: Literal[-1, 1]) -> Hex:
     q = h.col - (h.row + offset * (h.row & 1)) // 2  # type: ignore[operator]
     r = h.row
     s = -q - r
-    return Hex(q, r, s)
+    return HexTile(q, r, s)
