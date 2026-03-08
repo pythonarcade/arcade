@@ -18,4 +18,5 @@ Various tutorials of varying difficulty and complexity.
    compiling_with_nuitka/index
    shader_tutorials
    menu/index
+   hex_map/index
    framebuffer/index
