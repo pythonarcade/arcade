@@ -26,7 +26,9 @@ class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
 
     def __init__(self, max_height: float = 200):
         # Horizontal layout: [scroll_area | scroll_bar]
-        super().__init__(vertical=False, align="top", size_hint=(0, 0))
+        # size_hint=None prevents UIManager from overriding the rect
+        # that UIDropdown.do_layout explicitly sets.
+        super().__init__(vertical=False, align="top", size_hint=None)
         self._max_height = max_height
 
         self._options_layout = UIBoxLayout(size_hint=(1, 0))
