@@ -295,6 +295,11 @@ Adding it to the widget layout.
     :caption: Adding dropdown to the layout
     :lines: 242
 
+If a dropdown has many options, it will automatically scroll when the list
+exceeds the ``max_height`` (default 200px). You can also enable a visible
+scroll bar with ``show_scroll_bar=True``, control the scroll direction with
+``invert_scroll``, and adjust the scroll speed with ``scroll_speed``.
+
 Adding a Slider
 ~~~~~~~~~~~~~~~
 

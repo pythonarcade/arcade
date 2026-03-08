@@ -5,8 +5,11 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+### New Features
+- GUI: `UIDropdown` now supports scrolling when options exceed the menu height. New parameters: `max_height`, `invert_scroll`, `scroll_speed`, and `show_scroll_bar`.
+
 ### Breaking Change
-- Tilemap: Sprites of an object tile layer will now apply visibility of the object. 
+- Tilemap: Sprites of an object tile layer will now apply visibility of the object.
 
 ## 4.0.0.dev3
 

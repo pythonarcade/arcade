@@ -119,7 +119,20 @@ class MenuView(arcade.View):
                 "Volume Menu",
                 "How do you like your volume?",
                 "Enable Sound",
-                ["Play: Rock", "Play: Punk", "Play: Pop"],
+                [
+                    "Play: Rock",
+                    "Play: Punk",
+                    "Play: Pop",
+                    "Play: Jazz",
+                    "Play: Blues",
+                    "Play: Classical",
+                    "Play: Country",
+                    "Play: Electronic",
+                    "Play: Hip Hop",
+                    "Play: Metal",
+                    "Play: R&B",
+                    "Play: Reggae",
+                ],
                 "Adjust Volume",
             )
             self.manager.add(volume_menu, layer=1)
@@ -130,7 +143,20 @@ class MenuView(arcade.View):
                 "Funny Menu",
                 "Too much fun here",
                 "Fun?",
-                ["Make Fun", "Enjoy Fun", "Like Fun"],
+                [
+                    "Make Fun",
+                    "Enjoy Fun",
+                    "Like Fun",
+                    "Share Fun",
+                    "Spread Fun",
+                    "Find Fun",
+                    "Create Fun",
+                    "Discover Fun",
+                    "Embrace Fun",
+                    "Celebrate Fun",
+                    "Inspire Fun",
+                    "Maximize Fun",
+                ],
                 "Adjust Fun",
             )
             self.manager.add(options_menu, layer=1)
@@ -216,8 +242,13 @@ class SubMenu(arcade.gui.UIMouseFilterMixin, arcade.gui.UIAnchorLayout):
         toggle_group.add(toggle_label)
 
         # Create dropdown with a specified default.
+        # When many options are provided, the dropdown automatically scrolls.
         dropdown = arcade.gui.UIDropdown(
-            default=dropdown_options[0], options=dropdown_options, height=20, width=250
+            default=dropdown_options[0],
+            options=dropdown_options,
+            height=20,
+            width=250,
+            show_scroll_bar=True,
         )
 
         slider_label = arcade.gui.UILabel(text=slider_label)

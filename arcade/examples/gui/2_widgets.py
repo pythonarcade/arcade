@@ -395,7 +395,8 @@ class GalleryView(UIView):
         dropdown_row.add(
             UIDropdown(
                 default="Option 1",
-                options=["Option 1", "Option 2", "Option 3"],
+                options=[f"Option {i}" for i in range(1, 16)],
+                show_scroll_bar=True,
             )
         )
 

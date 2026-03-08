@@ -24,12 +24,19 @@ class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
 
     SCROLL_BAR_WIDTH = 15
 
-    def __init__(self, max_height: float = 200):
+    def __init__(
+        self,
+        max_height: float = 200,
+        invert_scroll: bool = False,
+        scroll_speed: float = 15.0,
+        show_scroll_bar: bool = False,
+    ):
         # Horizontal layout: [scroll_area | scroll_bar]
         # size_hint=None prevents UIManager from overriding the rect
         # that UIDropdown.do_layout explicitly sets.
         super().__init__(vertical=False, align="top", size_hint=None)
         self._max_height = max_height
+        self._show_scroll_bar = show_scroll_bar
 
         self._options_layout = UIBoxLayout(size_hint=(1, 0))
         self._scroll_area = UIScrollArea(
@@ -38,14 +45,17 @@ class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
             canvas_size=(100, 100),
             size_hint=(1, 1),
         )
+        self._scroll_area.invert_scroll = invert_scroll
+        self._scroll_area.scroll_speed = scroll_speed
         self._scroll_area.add(self._options_layout)
 
-        self._scroll_bar = UIScrollBar(self._scroll_area, vertical=True)
-        self._scroll_bar.size_hint = (None, 1)
-        self._scroll_bar.rect = self._scroll_bar.rect.resize(width=self.SCROLL_BAR_WIDTH)
-
         super().add(self._scroll_area)
-        super().add(self._scroll_bar)
+
+        if show_scroll_bar:
+            self._scroll_bar = UIScrollBar(self._scroll_area, vertical=True)
+            self._scroll_bar.size_hint = (None, 1)
+            self._scroll_bar.rect = self._scroll_bar.rect.resize(width=self.SCROLL_BAR_WIDTH)
+            super().add(self._scroll_bar)
 
     def add_option(self, widget: UIWidget) -> UIWidget:
         """Add an option widget to the options layout."""
@@ -102,6 +112,9 @@ class UIDropdown(UILayout):
         default: The default value shown.
         options: The options displayed when the layout is clicked.
         max_height: Maximum height of the dropdown menu before scrolling is enabled.
+        invert_scroll: Invert the scroll direction of the dropdown menu.
+        scroll_speed: Speed of scrolling in the dropdown menu.
+        show_scroll_bar: Show a scroll bar in the dropdown menu.
         primary_style: The style of the primary button.
         dropdown_style: The style of the buttons in the dropdown.
         active_style: The style of the dropdown button, which represents the active option.
@@ -156,6 +169,9 @@ class UIDropdown(UILayout):
         default: str | None = None,
         options: list[str | None] | None = None,
         max_height: float = 200,
+        invert_scroll: bool = False,
+        scroll_speed: float = 15.0,
+        show_scroll_bar: bool = False,
         primary_style=None,
         dropdown_style=None,
         active_style=None,
@@ -186,7 +202,12 @@ class UIDropdown(UILayout):
         )
         self._default_button.on_click = self._on_button_click  # type: ignore
 
-        self._overlay = _UIDropdownOverlay(max_height=max_height)
+        self._overlay = _UIDropdownOverlay(
+            max_height=max_height,
+            invert_scroll=invert_scroll,
+            scroll_speed=scroll_speed,
+            show_scroll_bar=show_scroll_bar,
+        )
         self._update_options()
 
         # add children after super class setup
@@ -269,7 +290,8 @@ class UIDropdown(UILayout):
         # Cap at max_height
         overlay = self._overlay
         visible_h = min(total_h, overlay._max_height) if total_h > 0 else self.height
-        overlay_w = self.width + _UIDropdownOverlay.SCROLL_BAR_WIDTH
+        scroll_bar_w = _UIDropdownOverlay.SCROLL_BAR_WIDTH if overlay._show_scroll_bar else 0
+        overlay_w = self.width + scroll_bar_w
 
         overlay.rect = (
             overlay.rect
