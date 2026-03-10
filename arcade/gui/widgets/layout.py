@@ -4,6 +4,7 @@ import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Literal, TypeVar
+from types import EllipsisType
 
 from typing_extensions import override
 
@@ -13,47 +14,6 @@ from arcade.gui.widgets import UILayout, UIWidget, _ChildEntry
 __all__ = ["UILayout", "UIAnchorLayout", "UIBoxLayout", "UIGridLayout"]
 
 W = TypeVar("W", bound="UIWidget")
-
-_NO_EXPLICIT_SIZE = ...
-"""Sentinel value to detect when width/height was not explicitly provided by the user."""
-
-
-def _warn_if_size_hint_overrides_fixed_size(
-    class_name: str,
-    width,
-    height,
-    size_hint,
-) -> None:
-    """Warn when a fixed width/height is given but the size_hint will override it.
-
-    Layouts have non-None size_hint by default, which causes the parent layout to
-    resize them, overriding any fixed width/height given by the developer.
-
-    Args:
-        class_name: Name of the layout class, used in the warning message.
-        width: The width argument passed to __init__, or ``...`` if
-            width was not explicitly provided.
-        height: The height argument passed to __init__, or ``...`` if
-            height was not explicitly provided.
-        size_hint: The size_hint argument passed to __init__.
-    """
-    sh_w = size_hint[0] if size_hint is not None else None
-    sh_h = size_hint[1] if size_hint is not None else None
-
-    if width is not _NO_EXPLICIT_SIZE and sh_w is not None:
-        warnings.warn(
-            f"{class_name} was given a fixed width, but size_hint_x is {sh_w!r}. "
-            f"The size_hint will override the fixed width. "
-            f"Set size_hint=(None, ...) to use a fixed width.",
-            stacklevel=3,
-        )
-    if height is not _NO_EXPLICIT_SIZE and sh_h is not None:
-        warnings.warn(
-            f"{class_name} was given a fixed height, but size_hint_y is {sh_h!r}. "
-            f"The size_hint will override the fixed height. "
-            f"Set size_hint=(..., None) to use a fixed height.",
-            stacklevel=3,
-        )
 
 
 class UIAnchorLayout(UILayout):
@@ -114,22 +74,20 @@ class UIAnchorLayout(UILayout):
         *,
         x: float = 0,
         y: float = 0,
-        width: float | type(...) = _NO_EXPLICIT_SIZE,
-        height: float | type(...) = _NO_EXPLICIT_SIZE,
+        width: float | EllipsisType = ...,
+        height: float | EllipsisType = ...,
         children: Iterable[UIWidget] = tuple(),
         size_hint=(1, 1),
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
     ):
-        _warn_if_size_hint_overrides_fixed_size(
-            type(self).__name__, width, height, size_hint
-        )
+        self._warn_if_size_hint_overrides_fixed_size(width, height, size_hint)
         super().__init__(
             x=x,
             y=y,
-            width=1 if width is _NO_EXPLICIT_SIZE else width,
-            height=1 if height is _NO_EXPLICIT_SIZE else height,
+            width=1 if width is ... else width,
+            height=1 if height is ... else height,
             children=children,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
@@ -283,10 +241,10 @@ class UIBoxLayout(UILayout):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
-        width=_NO_EXPLICIT_SIZE,
-        height=_NO_EXPLICIT_SIZE,
+        x: float = 0,
+        y: float = 0,
+        width: float | EllipsisType = ...,
+        height: float | EllipsisType = ...,
         vertical=True,
         align="center",
         children: Iterable[UIWidget] = tuple(),
@@ -296,14 +254,12 @@ class UIBoxLayout(UILayout):
         style=None,
         **kwargs,
     ):
-        _warn_if_size_hint_overrides_fixed_size(
-            type(self).__name__, width, height, size_hint
-        )
+        self._warn_if_size_hint_overrides_fixed_size(width, height, size_hint)
         super().__init__(
             x=x,
             y=y,
-            width=1 if width is _NO_EXPLICIT_SIZE else width,
-            height=1 if height is _NO_EXPLICIT_SIZE else height,
+            width=1 if width is ... else width,
+            height=1 if height is ... else height,
             children=children,
             size_hint=size_hint,
             size_hint_max=size_hint_max,
@@ -532,10 +488,10 @@ class UIGridLayout(UILayout):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
-        width=_NO_EXPLICIT_SIZE,
-        height=_NO_EXPLICIT_SIZE,
+        x: float = 0,
+        y: float = 0,
+        width: float | EllipsisType = ...,
+        height: float | EllipsisType = ...,
         align_horizontal="center",
         align_vertical="center",
         children: Iterable[UIWidget] = tuple(),
@@ -547,14 +503,12 @@ class UIGridLayout(UILayout):
         row_count: int = 1,
         **kwargs,
     ):
-        _warn_if_size_hint_overrides_fixed_size(
-            type(self).__name__, width, height, size_hint
-        )
+        self._warn_if_size_hint_overrides_fixed_size(width, height, size_hint)
         super().__init__(
             x=x,
             y=y,
-            width=1 if width is _NO_EXPLICIT_SIZE else width,
-            height=1 if height is _NO_EXPLICIT_SIZE else height,
+            width=1 if width is ... else width,
+            height=1 if height is ... else height,
             children=children,
             size_hint=size_hint,
             size_hint_max=size_hint_max,

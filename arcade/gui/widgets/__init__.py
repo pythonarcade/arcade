@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 import weakref
 from abc import ABC
 from collections.abc import Iterable
@@ -1025,6 +1026,38 @@ class UILayout(UIWidget):
         Use :meth:`UIWidget.trigger_render` to trigger a rendering before the next
         frame, this will happen automatically if the position or size of this widget changed.
         """
+
+    def _warn_if_size_hint_overrides_fixed_size(self, width, height, size_hint) -> None:
+        """Warn when a fixed width/height is given but the size_hint will override it.
+
+        Layouts have non-None size_hint by default, which causes the parent layout to
+        resize them, overriding any fixed width/height given by the developer.
+
+        Args:
+            width: The width argument passed to __init__, or ``...`` if
+                width was not explicitly provided.
+            height: The height argument passed to __init__, or ``...`` if
+                height was not explicitly provided.
+            size_hint: The size_hint argument passed to __init__.
+        """
+        class_name = type(self).__name__
+        sh_w = size_hint[0] if size_hint is not None else None
+        sh_h = size_hint[1] if size_hint is not None else None
+
+        if width is not ... and sh_w is not None:
+            warnings.warn(
+                f"{class_name} was given a fixed width, but size_hint_x is {sh_w!r}. "
+                f"The size_hint will override the fixed width. "
+                f"Set size_hint=(None, ...) to use a fixed width.",
+                stacklevel=3,
+            )
+        if height is not ... and sh_h is not None:
+            warnings.warn(
+                f"{class_name} was given a fixed height, but size_hint_y is {sh_h!r}. "
+                f"The size_hint will override the fixed height. "
+                f"Set size_hint=(..., None) to use a fixed height.",
+                stacklevel=3,
+            )
 
 
 class UISpace(UIWidget):
