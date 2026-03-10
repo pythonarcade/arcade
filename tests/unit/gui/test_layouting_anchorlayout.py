@@ -8,7 +8,7 @@ from arcade.types import LBWH
 def test_place_widget(window):
     dummy = UIDummy(width=100, height=200)
 
-    subject = UIAnchorLayout(x=0, y=0, width=500, height=500)
+    subject = UIAnchorLayout(x=0, y=0, width=500, height=500, size_hint=None)
 
     subject.add(
         dummy,
@@ -30,7 +30,7 @@ def test_place_widget_relative_to_own_content_rect(window):
     dummy = UIDummy(width=100, height=200)
 
     subject = (
-        UIAnchorLayout(x=0, y=0, width=500, height=500)
+        UIAnchorLayout(x=0, y=0, width=500, height=500, size_hint=None)
         .with_border(width=2)
         .with_padding(left=50, top=100)
     )
@@ -68,7 +68,7 @@ def test_place_box_layout(window, ui):
 
 
 def test_grow_child_half(window):
-    subject = UIAnchorLayout(width=400, height=400)
+    subject = UIAnchorLayout(width=400, height=400, size_hint=None)
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(0.5, 0.5)))
 
     subject._do_layout()
@@ -78,7 +78,7 @@ def test_grow_child_half(window):
 
 
 def test_grow_child_full_width(window):
-    subject = UIAnchorLayout(width=400, height=400)
+    subject = UIAnchorLayout(width=400, height=400, size_hint=None)
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(1, 0.5)))
 
     subject._do_layout()
@@ -88,7 +88,7 @@ def test_grow_child_full_width(window):
 
 
 def test_grow_child_full_height(window):
-    subject = UIAnchorLayout(width=400, height=400)
+    subject = UIAnchorLayout(width=400, height=400, size_hint=None)
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(0.5, 1)))
 
     subject._do_layout()
@@ -98,7 +98,7 @@ def test_grow_child_full_height(window):
 
 
 def test_grow_child_to_max_size(window):
-    subject = UIAnchorLayout(width=400, height=400)
+    subject = UIAnchorLayout(width=400, height=400, size_hint=None)
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(1, 1), size_hint_max=(200, 150)))
 
     subject._do_layout()
@@ -108,7 +108,7 @@ def test_grow_child_to_max_size(window):
 
 
 def test_shrink_child_to_min_size(window):
-    subject = UIAnchorLayout(width=400, height=400)
+    subject = UIAnchorLayout(width=400, height=400, size_hint=None)
     dummy = subject.add(
         UIDummy(width=100, height=100, size_hint=(0.1, 0.1), size_hint_min=(200, 150))
     )
@@ -121,7 +121,7 @@ def test_shrink_child_to_min_size(window):
 
 def test_children_can_grow_out_of_bounce(window):
     """This tests behavior, which is used for scrolling."""
-    subject = UIAnchorLayout(width=400, height=400)
+    subject = UIAnchorLayout(width=400, height=400, size_hint=None)
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(2, 2)))
 
     subject._do_layout()
@@ -132,7 +132,7 @@ def test_children_can_grow_out_of_bounce(window):
 
 def test_children_limited_to_layout_size_when_enforced(window):
     """This tests behavior, which is used for scrolling."""
-    subject = UIAnchorLayout(width=400, height=400)
+    subject = UIAnchorLayout(width=400, height=400, size_hint=None)
     subject._restrict_child_size = True
     dummy = subject.add(UIDummy(width=100, height=100, size_hint=(2, 2)))
 
@@ -143,7 +143,7 @@ def test_children_limited_to_layout_size_when_enforced(window):
 
 
 def test_only_adjust_size_if_size_hint_is_given_for_dimension(window):
-    subject = UIAnchorLayout(width=400, height=400)
+    subject = UIAnchorLayout(width=400, height=400, size_hint=None)
     dummy = subject.add(
         UIDummy(width=100, height=100, size_hint=(2, None), size_hint_min=(None, 200))
     )
