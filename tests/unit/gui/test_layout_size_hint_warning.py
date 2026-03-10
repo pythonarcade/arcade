@@ -1,4 +1,6 @@
 """Tests that layouts warn when explicit width/height conflicts with active size_hint."""
+import warnings
+
 import pytest
 
 from arcade.gui import UIBoxLayout
@@ -19,14 +21,16 @@ def test_anchor_layout_warns_when_height_given_with_default_size_hint(window):
 
 def test_anchor_layout_no_warning_when_size_hint_none(window):
     """UIAnchorLayout should not warn when size_hint=None is explicitly set."""
-    # No warning expected
-    UIAnchorLayout(width=500, height=500, size_hint=None)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        UIAnchorLayout(width=500, height=500, size_hint=None)
 
 
 def test_anchor_layout_no_warning_when_no_explicit_size(window):
     """UIAnchorLayout should not warn when width/height are not explicitly given."""
-    # No warning expected
-    UIAnchorLayout(size_hint=(1, 1))
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        UIAnchorLayout(size_hint=(1, 1))
 
 
 def test_anchor_layout_no_warning_when_size_hint_x_none(window):
@@ -57,14 +61,16 @@ def test_box_layout_warns_when_height_given_with_default_size_hint(window):
 
 def test_box_layout_no_warning_when_size_hint_none(window):
     """UIBoxLayout should not warn when size_hint=None is explicitly set."""
-    # No warning expected
-    UIBoxLayout(width=200, height=200, size_hint=None)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        UIBoxLayout(width=200, height=200, size_hint=None)
 
 
 def test_box_layout_no_warning_when_no_explicit_size(window):
     """UIBoxLayout should not warn when width/height are not explicitly given."""
-    # No warning expected
-    UIBoxLayout(size_hint=(0, 0))
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        UIBoxLayout(size_hint=(0, 0))
 
 
 def test_grid_layout_warns_when_width_given_with_default_size_hint(window):
@@ -81,14 +87,16 @@ def test_grid_layout_warns_when_height_given_with_default_size_hint(window):
 
 def test_grid_layout_no_warning_when_size_hint_none(window):
     """UIGridLayout should not warn when size_hint=None is explicitly set."""
-    # No warning expected
-    UIGridLayout(width=200, height=200, size_hint=None)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        UIGridLayout(width=200, height=200, size_hint=None)
 
 
 def test_grid_layout_no_warning_when_no_explicit_size(window):
     """UIGridLayout should not warn when width/height are not explicitly given."""
-    # No warning expected
-    UIGridLayout(size_hint=(0, 0))
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        UIGridLayout(size_hint=(0, 0))
 
 
 def test_warning_message_includes_class_name(window):

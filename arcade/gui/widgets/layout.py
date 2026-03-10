@@ -14,7 +14,7 @@ __all__ = ["UILayout", "UIAnchorLayout", "UIBoxLayout", "UIGridLayout"]
 
 W = TypeVar("W", bound="UIWidget")
 
-_NO_EXPLICIT_SIZE = object()
+_NO_EXPLICIT_SIZE = ...
 """Sentinel value to detect when width/height was not explicitly provided by the user."""
 
 
@@ -31,9 +31,9 @@ def _warn_if_size_hint_overrides_fixed_size(
 
     Args:
         class_name: Name of the layout class, used in the warning message.
-        width: The width argument passed to __init__, or ``_NO_EXPLICIT_SIZE`` if
+        width: The width argument passed to __init__, or ``...`` if
             width was not explicitly provided.
-        height: The height argument passed to __init__, or ``_NO_EXPLICIT_SIZE`` if
+        height: The height argument passed to __init__, or ``...`` if
             height was not explicitly provided.
         size_hint: The size_hint argument passed to __init__.
     """
@@ -114,8 +114,8 @@ class UIAnchorLayout(UILayout):
         *,
         x: float = 0,
         y: float = 0,
-        width: float = _NO_EXPLICIT_SIZE,
-        height: float = _NO_EXPLICIT_SIZE,
+        width: float | type(...) = _NO_EXPLICIT_SIZE,
+        height: float | type(...) = _NO_EXPLICIT_SIZE,
         children: Iterable[UIWidget] = tuple(),
         size_hint=(1, 1),
         size_hint_min=None,
