@@ -4,14 +4,21 @@ import gzip
 import json
 from math import cos, radians, sin
 from pathlib import Path
-from typing import Any
+from typing import Any, TypedDict
 
 from PIL.Image import Image
 from typing_extensions import Self
 
 from arcade.types import EMPTY_POINT_LIST, Point2, Point2List
 
-__all__ = ["HitBoxAlgorithm", "HitBox"]
+__all__ = ["HitBoxAlgorithm", "HitBox", "RawHitBox"]
+
+
+class RawHitBox(TypedDict):
+    """Typed dictionary representing the serialized form of a :py:class:`HitBox`."""
+
+    version: int
+    regions: dict[str, Point2List]
 
 
 class HitBoxAlgorithm:
@@ -134,14 +141,21 @@ class HitBox:
 
         loaded = HitBox.load("hitbox.json")
 
-        # Dict round-trip
+        # Dict round-trip (see RawHitBox for the schema)
         data = box.to_dict()
         copy = HitBox.from_dict(data)
+
+    .. note::
+
+        All points are normalized to tuples of tuples on construction.
+        Any sequence type is accepted as input, but regions will always
+        store tuples internally.
 
     Args:
         points:
             Either a single ``Point2List`` (creates a ``"default"`` region)
             or a ``dict[str, Point2List]`` mapping region names to point lists.
+            Points are normalized to tuples on storage.
         position:
             The center around which the points will be offset.
         scale:
@@ -160,9 +174,11 @@ class HitBox:
         angle: float = 0.0,
     ):
         if isinstance(points, dict):
-            self._regions: dict[str, Point2List] = dict(points)
+            self._regions: dict[str, Point2List] = {
+                name: tuple(tuple(p) for p in pts) for name, pts in points.items()
+            }
         else:
-            self._regions = {self.DEFAULT_REGION: points}
+            self._regions = {self.DEFAULT_REGION: tuple(tuple(p) for p in points)}
 
         self._position = position
         self._scale = scale
@@ -205,7 +221,7 @@ class HitBox:
             name: The name for the new region.
             points: The polygon points for the region.
         """
-        self._regions[name] = points
+        self._regions[name] = tuple(tuple(p) for p in points)
         self._is_single_region = len(self._regions) == 1
         self._adjusted_cache_dirty = True
 
@@ -324,7 +340,7 @@ class HitBox:
             return (x + position_x, y + position_y)
 
         self._adjusted_regions = {
-            name: [_adjust_point(p) for p in pts] for name, pts in self._regions.items()
+            name: tuple(_adjust_point(p) for p in pts) for name, pts in self._regions.items()
         }
         self._adjusted_cache_dirty = False
 
@@ -352,39 +368,36 @@ class HitBox:
 
     # --- Serialization ---
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> RawHitBox:
         """
-        Serialize the hitbox shape to a dictionary.
+        Serialize the hitbox shape to a :py:class:`RawHitBox` dictionary.
 
         Only the region definitions (point data) are serialized.
         Position, scale, and angle are runtime state and are not included.
         """
         return {
             "version": 1,
-            "regions": {name: [list(p) for p in pts] for name, pts in self._regions.items()},
+            "regions": {name: pts for name, pts in self._regions.items()},
         }
 
     @classmethod
     def from_dict(
         cls,
-        data: dict,
+        data: RawHitBox,
         position: Point2 = (0.0, 0.0),
         scale: Point2 = (1.0, 1.0),
         angle: float = 0.0,
     ) -> HitBox:
         """
-        Create a HitBox from a serialized dictionary.
+        Create a HitBox from a :py:class:`RawHitBox` dictionary.
 
         Args:
-            data: The dictionary to deserialize from.
+            data: A :py:class:`RawHitBox` dictionary to deserialize from.
             position: The center offset.
             scale: The scaling factors.
             angle: The rotation angle in degrees.
         """
-        regions: dict[str, Point2List] = {
-            name: tuple(tuple(p) for p in pts) for name, pts in data["regions"].items()
-        }
-        return cls(points=regions, position=position, scale=scale, angle=angle)
+        return cls(points=data["regions"], position=position, scale=scale, angle=angle)
 
     def save(self, path: str | Path) -> None:
         """

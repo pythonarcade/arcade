@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 from arcade import hitbox
 
-points = [(0.0, 0.0), (0.0, 10.0), (10.0, 10.0), (10.0, 0.0)]
-rot_90 = [(0.0, 0.0), (10.0, 0), (10.0, -10.0), (0.0, -10.0)]
+points = ((0.0, 0.0), (0.0, 10.0), (10.0, 10.0), (10.0, 0.0))
+rot_90 = ((0.0, 0.0), (10.0, 0), (10.0, -10.0), (0.0, -10.0))
 
 
 def test_module():
@@ -34,14 +34,14 @@ def test_scale():
     hb = hitbox.HitBox(points)
     hb.scale = (2.0, 2.0)
     assert hb.scale == (2.0, 2.0)
-    assert hb.get_adjusted_points() == [(0.0, 0.0), (0.0, 20.0), (20.0, 20.0), (20.0, 0.0)]
+    assert hb.get_adjusted_points() == ((0.0, 0.0), (0.0, 20.0), (20.0, 20.0), (20.0, 0.0))
 
 
 def test_position():
     hb = hitbox.HitBox(points)
     hb.position = (10.0, 10.0)
     assert hb.position == (10.0, 10.0)
-    assert hb.get_adjusted_points() == [(10.0, 10.0), (10.0, 20.0), (20.0, 20.0), (20.0, 10.0)]
+    assert hb.get_adjusted_points() == ((10.0, 10.0), (10.0, 20.0), (20.0, 20.0), (20.0, 10.0))
 
 
 def test_rotation():
@@ -74,8 +74,8 @@ def test_multi_region_create():
     assert hb.has_region("body")
     assert hb.has_region("head")
     assert not hb.has_region("default")
-    assert hb.regions["body"] == body_pts
-    assert hb.regions["head"] == head_pts
+    assert hb.regions["body"] == tuple(tuple(p) for p in body_pts)
+    assert hb.regions["head"] == tuple(tuple(p) for p in head_pts)
 
 
 def test_multi_region_adjusted():
@@ -84,8 +84,8 @@ def test_multi_region_adjusted():
     hb = hitbox.HitBox({"body": body_pts, "head": head_pts}, position=(5.0, 5.0))
     body_adj = hb.get_adjusted_points("body")
     head_adj = hb.get_adjusted_points("head")
-    assert body_adj == [(5.0, 5.0), (5.0, 15.0), (15.0, 15.0), (15.0, 5.0)]
-    assert head_adj == [(7.0, 15.0), (7.0, 20.0), (13.0, 20.0), (13.0, 15.0)]
+    assert body_adj == ((5.0, 5.0), (5.0, 15.0), (15.0, 15.0), (15.0, 5.0))
+    assert head_adj == ((7.0, 15.0), (7.0, 20.0), (13.0, 20.0), (13.0, 15.0))
 
 
 def test_multi_region_boundaries():
@@ -134,7 +134,7 @@ def test_single_region_fast_path():
     hb = hitbox.HitBox(points)
     polys = hb.get_all_adjusted_polygons()
     assert len(polys) == 1
-    assert polys[0] == list(points)
+    assert polys[0] == points
 
 
 # --- Serialization tests ---
@@ -167,7 +167,7 @@ def test_from_dict():
     }
     hb = hitbox.HitBox.from_dict(d)
     assert hb.points == ((0.0, 0.0), (0.0, 10.0), (10.0, 10.0), (10.0, 0.0))
-    assert hb.get_adjusted_points() == [(0.0, 0.0), (0.0, 10.0), (10.0, 10.0), (10.0, 0.0)]
+    assert hb.get_adjusted_points() == ((0.0, 0.0), (0.0, 10.0), (10.0, 10.0), (10.0, 0.0))
 
 
 def test_roundtrip_dict():

@@ -2,7 +2,7 @@ from PIL.Image import Image
 
 from arcade.types import Point2List
 
-from .base import HitBox, HitBoxAlgorithm
+from .base import HitBox, HitBoxAlgorithm, RawHitBox
 from .bounding_box import BoundingHitBoxAlgorithm
 
 from .simple import SimpleHitBoxAlgorithm
@@ -59,6 +59,7 @@ def calculate_hit_box_points_detailed(
 __all__ = [
     "HitBoxAlgorithm",
     "HitBox",
+    "RawHitBox",
     "SimpleHitBoxAlgorithm",
     "PymunkHitBoxAlgorithm",
     "BoundingHitBoxAlgorithm",
