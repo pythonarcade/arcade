@@ -22,9 +22,17 @@ LOG = logging.getLogger(__name__)
 class PymunkPhysicsObject:
     """Object that holds pymunk body/shape for a sprite."""
 
-    def __init__(self, body: pymunk.Body | None = None, shape: pymunk.Shape | None = None):
+    def __init__(
+        self,
+        body: pymunk.Body | None = None,
+        shape: pymunk.Shape | None = None,
+        shapes: list[pymunk.Shape] | None = None,
+    ):
         self.body: pymunk.Body | None = body
         self.shape: pymunk.Shape | None = shape
+        self.shapes: list[pymunk.Shape] = (
+            shapes if shapes is not None else ([shape] if shape is not None else [])
+        )
 
 
 class PymunkException(Exception):
@@ -318,30 +326,33 @@ class PymunkPhysicsEngine:
         if body_type == self.DYNAMIC:
             body.velocity_func = velocity_callback
 
-        # Set the physics shape to the sprite's hitbox
-        poly = sprite.hit_box.points
-        scaled_poly = [[x * sprite.scale_x for x in z] for z in poly]
-        shape = pymunk.Poly(body, scaled_poly, radius=radius)  # type: ignore
+        # Set the physics shapes to the sprite's hitbox regions
+        shapes: list[pymunk.Shape] = []
+        for region_points in sprite.hit_box.regions.values():
+            scaled_poly = [[x * sprite.scale_x for x in z] for z in region_points]
+            shape = pymunk.Poly(body, scaled_poly, radius=radius)  # type: ignore
 
-        # Set collision type, used in collision callbacks
-        if collision_type:
-            shape.collision_type = collision_type_id
+            # Set collision type, used in collision callbacks
+            if collision_type:
+                shape.collision_type = collision_type_id
 
-        # How bouncy is the shape?
-        if elasticity is not None:
-            shape.elasticity = elasticity
+            # How bouncy is the shape?
+            if elasticity is not None:
+                shape.elasticity = elasticity
 
-        # Set shapes friction
-        shape.friction = friction
+            # Set shapes friction
+            shape.friction = friction
+
+            shapes.append(shape)
 
         # Create physics object and add to list
-        physics_object = PymunkPhysicsObject(body, shape)
+        physics_object = PymunkPhysicsObject(body, shape=shapes[0], shapes=shapes)
         self.sprites[sprite] = physics_object
         if body_type != self.STATIC:
             self.non_static_sprite_list.append(sprite)
 
-        # Add body and shape to pymunk engine
-        self.space.add(body, shape)
+        # Add body and shapes to pymunk engine
+        self.space.add(body, *shapes)
 
         # Register physics engine with sprite, so we can remove from physics engine
         # if we tell the sprite to go away.
@@ -431,7 +442,8 @@ class PymunkPhysicsEngine:
         """Remove a sprite from the physics engine."""
         physics_object = self.sprites[sprite]
         self.space.remove(physics_object.body)  # type: ignore
-        self.space.remove(physics_object.shape)  # type: ignore
+        for s in physics_object.shapes:
+            self.space.remove(s)
         self.sprites.pop(sprite)
         if sprite in self.non_static_sprite_list:
             self.non_static_sprite_list.remove(sprite)
@@ -454,7 +466,7 @@ class PymunkPhysicsEngine:
             A sprite for the ``shape``; ``None`` if no sprite is known.
         """
         for sprite in self.sprites:
-            if self.sprites[sprite].shape is shape:
+            if shape in self.sprites[sprite].shapes:
                 return sprite
         return None
 
@@ -601,23 +613,35 @@ class PymunkPhysicsEngine:
             sprite: The Sprite to update
         """
         physics_object = self.sprites[sprite]
-        old_shape = physics_object.shape
-        assert old_shape is not None, """
-        Tried to update the shape for a Sprite which does not currently have a shape
+        old_shapes = physics_object.shapes
+        assert old_shapes, """
+        Tried to update the shape for a Sprite which does not currently have shapes
         """
 
-        # Set the physics shape to the sprite's hitbox
-        poly = sprite.hit_box.points
-        scaled_poly = [[x * sprite.scale_x for x in z] for z in poly]
-        shape = pymunk.Poly(physics_object.body, scaled_poly, radius=old_shape.radius)  # type: ignore
+        # Preserve properties from the first old shape
+        old_shape = old_shapes[0]
+        collision_type = old_shape.collision_type
+        elasticity = old_shape.elasticity
+        friction = old_shape.friction
+        radius = old_shape.radius
 
-        shape.collision_type = old_shape.collision_type
-        shape.elasticity = old_shape.elasticity
-        shape.friction = old_shape.friction
+        # Remove all old shapes
+        for s in old_shapes:
+            self.space.remove(s)
 
-        self.space.remove(old_shape)
-        self.space.add(shape)
-        physics_object.shape = shape
+        # Create new shapes from all hitbox regions
+        new_shapes: list[pymunk.Shape] = []
+        for region_points in sprite.hit_box.regions.values():
+            scaled_poly = [[x * sprite.scale_x for x in z] for z in region_points]
+            shape = pymunk.Poly(physics_object.body, scaled_poly, radius=radius)  # type: ignore
+            shape.collision_type = collision_type
+            shape.elasticity = elasticity
+            shape.friction = friction
+            new_shapes.append(shape)
+
+        self.space.add(*new_shapes)
+        physics_object.shape = new_shapes[0]
+        physics_object.shapes = new_shapes
 
     def resync_sprites(self) -> None:
         """

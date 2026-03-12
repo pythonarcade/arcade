@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import gzip
+import json
 from math import cos, radians, sin
+from pathlib import Path
 from typing import Any
 
 from PIL.Image import Image
@@ -8,7 +11,7 @@ from typing_extensions import Self
 
 from arcade.types import EMPTY_POINT_LIST, Point2, Point2List
 
-__all__ = ["HitBoxAlgorithm", "HitBox", "RotatableHitBox"]
+__all__ = ["HitBoxAlgorithm", "HitBox"]
 
 
 class HitBoxAlgorithm:
@@ -92,52 +95,134 @@ class HitBoxAlgorithm:
 
 class HitBox:
     """
-    A basic hit box class supporting scaling.
+    A hit box with support for multiple named regions, scaling, and rotation.
 
-    It includes support for rescaling as well as shorthand properties
-    for boundary values along the X and Y axes. For rotation support,
-    use :py:meth:`.create_rotatable` to create an instance of
-    :py:class:`RotatableHitBox`.
+    Each region is a named polygon (sequence of points). A hitbox with a
+    single region can be constructed by passing a ``Point2List`` directly,
+    which creates a region named ``"default"``. For multiple regions, pass
+    a ``dict[str, Point2List]``.
+
+    **Single-region construction** (backward compatible)::
+
+        box = HitBox(
+            [(-10, -10), (10, -10), (10, 10), (-10, 10)]
+        )
+
+    **Multi-region construction** with a dict::
+
+        box = HitBox({
+            "body": [(-10, -10), (10, -10), (10, 10), (-10, 10)],
+            "head": [(-5, 10), (5, 10), (5, 20), (-5, 20)],
+        })
+
+    **Rotation** (replaces the former ``RotatableHitBox`` class)::
+
+        box = HitBox(points, angle=45.0)
+        # Angle can be updated later:
+        box.angle = 90.0
+
+    **Region management**::
+
+        box.add_region("shield", shield_points)
+        box.has_region("shield")   # True
+        box.remove_region("shield")
+
+    **Serialization** to and from JSON files::
+
+        box.save("hitbox.json")       # plain JSON
+        box.save("hitbox.json.gz")    # gzip-compressed
+
+        loaded = HitBox.load("hitbox.json")
+
+        # Dict round-trip
+        data = box.to_dict()
+        copy = HitBox.from_dict(data)
 
     Args:
         points:
-            The unmodified points bounding the hit box
+            Either a single ``Point2List`` (creates a ``"default"`` region)
+            or a ``dict[str, Point2List]`` mapping region names to point lists.
         position:
-            The center around which the points will be offset
+            The center around which the points will be offset.
         scale:
-            The X and Y scaling factors to use when offsetting the points
+            The X and Y scaling factors.
+        angle:
+            The rotation angle in degrees (clockwise).
     """
+
+    DEFAULT_REGION = "default"
 
     def __init__(
         self,
-        points: Point2List,
+        points: Point2List | dict[str, Point2List],
         position: Point2 = (0.0, 0.0),
         scale: Point2 = (1.0, 1.0),
+        angle: float = 0.0,
     ):
-        self._points = points
+        if isinstance(points, dict):
+            self._regions: dict[str, Point2List] = dict(points)
+        else:
+            self._regions = {self.DEFAULT_REGION: points}
+
         self._position = position
         self._scale = scale
+        self._angle: float = angle
+        self._is_single_region: bool = len(self._regions) == 1
 
-        # This empty tuple will be replaced the first time
-        # get_adjusted_points is called
-        self._adjusted_points: Point2List = EMPTY_POINT_LIST
+        # Cached adjusted points per region
+        self._adjusted_regions: dict[str, Point2List] = {}
         self._adjusted_cache_dirty = True
 
     @property
     def points(self) -> Point2List:
         """
-        The raw, unadjusted points of this hit box.
+        The raw, unadjusted points of the default region.
 
-        These are the points as originally passed before offsetting, scaling,
-        and any operations subclasses may perform, such as rotation.
+        This is provided for backward compatibility. For multi-region
+        hitboxes, use :py:attr:`regions` instead.
         """
-        return self._points
+        return self._regions.get(self.DEFAULT_REGION, EMPTY_POINT_LIST)
+
+    @property
+    def regions(self) -> dict[str, Point2List]:
+        """All raw, unadjusted regions as a dict mapping names to point lists."""
+        return self._regions
+
+    @property
+    def region_names(self) -> tuple[str, ...]:
+        """The names of all regions in this hit box."""
+        return tuple(self._regions.keys())
+
+    def has_region(self, name: str) -> bool:
+        """Check if a region with the given name exists."""
+        return name in self._regions
+
+    def add_region(self, name: str, points: Point2List) -> None:
+        """
+        Add a named region to this hit box.
+
+        Args:
+            name: The name for the new region.
+            points: The polygon points for the region.
+        """
+        self._regions[name] = points
+        self._is_single_region = len(self._regions) == 1
+        self._adjusted_cache_dirty = True
+
+    def remove_region(self, name: str) -> None:
+        """
+        Remove a named region from this hit box.
+
+        Args:
+            name: The name of the region to remove.
+        """
+        del self._regions[name]
+        self._is_single_region = len(self._regions) == 1
+        self._adjusted_cache_dirty = True
 
     @property
     def position(self) -> Point2:
-        """
-        The center point used to offset the final adjusted positions.
-        """
+        """The center point used to offset the final adjusted positions."""
         return self._position
 
     @position.setter
@@ -145,45 +230,59 @@ class HitBox:
         self._position = position
         self._adjusted_cache_dirty = True
 
-    # Per Clepto's testing as of around May 2023, these are better
-    # left uncached because caching them is somehow slower than what
-    # we currently do. Any readers should feel free to retest /
-    # investigate further.
+    @property
+    def angle(self) -> float:
+        """The angle to rotate the raw points by in degrees."""
+        return self._angle
+
+    @angle.setter
+    def angle(self, angle: float):
+        self._angle = angle
+        self._adjusted_cache_dirty = True
+
     @property
     def left(self) -> float:
-        """
-        Calculates the leftmost adjusted x position of this hit box
-        """
-        points = self.get_adjusted_points()
-        x_points = [point[0] for point in points]
-        return min(x_points)
+        """Calculates the leftmost adjusted x position across all regions."""
+        self._recalculate_if_dirty()
+        min_x = float("inf")
+        for points in self._adjusted_regions.values():
+            for point in points:
+                if point[0] < min_x:
+                    min_x = point[0]
+        return min_x
 
     @property
     def right(self) -> float:
-        """
-        Calculates the rightmost adjusted x position of this hit box
-        """
-        points = self.get_adjusted_points()
-        x_points = [point[0] for point in points]
-        return max(x_points)
+        """Calculates the rightmost adjusted x position across all regions."""
+        self._recalculate_if_dirty()
+        max_x = float("-inf")
+        for points in self._adjusted_regions.values():
+            for point in points:
+                if point[0] > max_x:
+                    max_x = point[0]
+        return max_x
 
     @property
     def top(self) -> float:
-        """
-        Calculates the topmost adjusted y position of this hit box
-        """
-        points = self.get_adjusted_points()
-        y_points = [point[1] for point in points]
-        return max(y_points)
+        """Calculates the topmost adjusted y position across all regions."""
+        self._recalculate_if_dirty()
+        max_y = float("-inf")
+        for points in self._adjusted_regions.values():
+            for point in points:
+                if point[1] > max_y:
+                    max_y = point[1]
+        return max_y
 
     @property
     def bottom(self) -> float:
-        """
-        Calculates the bottommost adjusted y position of this hit box
-        """
-        points = self.get_adjusted_points()
-        y_points = [point[1] for point in points]
-        return min(y_points)
+        """Calculates the bottommost adjusted y position across all regions."""
+        self._recalculate_if_dirty()
+        min_y = float("inf")
+        for points in self._adjusted_regions.values():
+            for point in points:
+                if point[1] < min_y:
+                    min_y = point[1]
+        return min_y
 
     @property
     def scale(self) -> tuple[float, float]:
@@ -199,127 +298,138 @@ class HitBox:
         self._scale = scale
         self._adjusted_cache_dirty = True
 
-    def create_rotatable(
-        self,
-        angle: float = 0.0,
-    ) -> RotatableHitBox:
-        """
-        Create a rotatable instance of this hit box.
-
-        The internal ``PointList`` is transferred directly instead of
-        deep copied, so care should be taken if using a mutable internal
-        representation.
-
-        Args:
-            angle: The angle to rotate points by (0 by default)
-        """
-        return RotatableHitBox(
-            self._points, position=self._position, scale=self._scale, angle=angle
-        )
-
-    def get_adjusted_points(self) -> Point2List:
-        """
-        Return the positions of points, scaled and offset from the center.
-
-        Unlike the boundary helper properties (left, etc), this method will
-        only recalculate the values when necessary:
-
-        * The first time this method is called
-        * After properties affecting adjusted position were changed
-        """
+    def _recalculate_if_dirty(self) -> None:
+        """Recalculate all adjusted regions if the cache is dirty."""
         if not self._adjusted_cache_dirty:
-            return self._adjusted_points  # type: ignore
-
-        position_x, position_y = self._position
-        scale_x, scale_y = self._scale
-
-        def _adjust_point(point) -> Point2:
-            x, y = point
-
-            x *= scale_x
-            y *= scale_y
-
-            return (x + position_x, y + position_y)
-
-        self._adjusted_points = [_adjust_point(point) for point in self._points]
-        self._adjusted_cache_dirty = False
-        return self._adjusted_points
-
-
-class RotatableHitBox(HitBox):
-    """
-    A hit box with support for rotation.
-
-    Rotation is separated from the basic hitbox because it is much
-    slower than offsetting and scaling.
-
-    Args:
-        points:
-            The unmodified points bounding the hit box
-        position:
-            The translation to apply to the points
-        angle:
-            The angle to rotate the points by
-        scale:
-            The X and Y scaling factors
-    """
-
-    def __init__(
-        self,
-        points: Point2List,
-        *,
-        position: tuple[float, float] = (0.0, 0.0),
-        angle: float = 0.0,
-        scale: Point2 = (1.0, 1.0),
-    ):
-        super().__init__(points, position=position, scale=scale)
-        self._angle: float = angle
-
-    @property
-    def angle(self) -> float:
-        """
-        The angle to rotate the raw points by in degrees
-        """
-        return self._angle
-
-    @angle.setter
-    def angle(self, angle: float):
-        self._angle = angle
-        self._adjusted_cache_dirty = True
-
-    def get_adjusted_points(self) -> Point2List:
-        """
-        Return the offset, scaled, & rotated points of this hitbox.
-
-        As with :py:meth:`.HitBox.get_adjusted_points`, this method only
-        recalculates the adjusted values when necessary.
-        """
-        if not self._adjusted_cache_dirty:
-            return self._adjusted_points
+            return
 
         rad = radians(-self._angle)
         scale_x, scale_y = self._scale
         position_x, position_y = self._position
         rad_cos = cos(rad)
         rad_sin = sin(rad)
+        do_rotate = bool(rad)
 
-        def _adjust_point(point) -> Point2:
+        def _adjust_point(point: Point2) -> Point2:
             x, y = point
-
             x *= scale_x
             y *= scale_y
 
-            if rad:
+            if do_rotate:
                 rot_x = x * rad_cos - y * rad_sin
                 rot_y = x * rad_sin + y * rad_cos
                 x = rot_x
                 y = rot_y
 
-            return (
-                x + position_x,
-                y + position_y,
-            )
+            return (x + position_x, y + position_y)
 
-        self._adjusted_points = [_adjust_point(point) for point in self._points]
+        self._adjusted_regions = {
+            name: [_adjust_point(p) for p in pts] for name, pts in self._regions.items()
+        }
         self._adjusted_cache_dirty = False
-        return self._adjusted_points
+
+    def get_adjusted_points(self, region: str | None = None) -> Point2List:
+        """
+        Return the positions of points, scaled, rotated, and offset.
+
+        Args:
+            region:
+                The name of the region to get points for. If ``None``,
+                returns the default region's points (backward compatible).
+        """
+        self._recalculate_if_dirty()
+        name = region if region is not None else self.DEFAULT_REGION
+        return self._adjusted_regions.get(name, EMPTY_POINT_LIST)
+
+    def get_all_adjusted_polygons(self) -> list[Point2List]:
+        """
+        Return adjusted points for all regions as a list of polygons.
+
+        This is used by collision detection to check all regions.
+        """
+        self._recalculate_if_dirty()
+        return list(self._adjusted_regions.values())
+
+    # --- Serialization ---
+
+    def to_dict(self) -> dict:
+        """
+        Serialize the hitbox shape to a dictionary.
+
+        Only the region definitions (point data) are serialized.
+        Position, scale, and angle are runtime state and are not included.
+        """
+        return {
+            "version": 1,
+            "regions": {name: [list(p) for p in pts] for name, pts in self._regions.items()},
+        }
+
+    @classmethod
+    def from_dict(
+        cls,
+        data: dict,
+        position: Point2 = (0.0, 0.0),
+        scale: Point2 = (1.0, 1.0),
+        angle: float = 0.0,
+    ) -> HitBox:
+        """
+        Create a HitBox from a serialized dictionary.
+
+        Args:
+            data: The dictionary to deserialize from.
+            position: The center offset.
+            scale: The scaling factors.
+            angle: The rotation angle in degrees.
+        """
+        regions: dict[str, Point2List] = {
+            name: tuple(tuple(p) for p in pts) for name, pts in data["regions"].items()
+        }
+        return cls(points=regions, position=position, scale=scale, angle=angle)
+
+    def save(self, path: str | Path) -> None:
+        """
+        Save the hitbox shape definition to a JSON file.
+
+        If the path ends with ``.gz``, the file will be gzip-compressed.
+
+        Args:
+            path: The file path to save to.
+        """
+        path = Path(path)
+        data_str = json.dumps(self.to_dict())
+        data_bytes = data_str.encode("utf-8")
+
+        if path.suffix == ".gz":
+            data_bytes = gzip.compress(data_bytes)
+
+        with open(path, mode="wb") as fd:
+            fd.write(data_bytes)
+
+    @classmethod
+    def load(
+        cls,
+        path: str | Path,
+        position: Point2 = (0.0, 0.0),
+        scale: Point2 = (1.0, 1.0),
+        angle: float = 0.0,
+    ) -> HitBox:
+        """
+        Load a hitbox shape definition from a JSON file.
+
+        If the path ends with ``.gz``, the file is assumed to be gzip-compressed.
+
+        Args:
+            path: The file path to load from.
+            position: The center offset.
+            scale: The scaling factors.
+            angle: The rotation angle in degrees.
+        """
+        path = Path(path)
+        if path.suffix == ".gz":
+            with gzip.open(path, mode="rb") as fd:
+                data = json.loads(fd.read())
+        else:
+            with open(path) as fd:
+                data = json.loads(fd.read())
+
+        return cls.from_dict(data, position=position, scale=scale, angle=angle)

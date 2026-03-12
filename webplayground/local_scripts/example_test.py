@@ -24,7 +24,7 @@ class MyWindow(arcade.Window):
             arcade.color.WHITE,
             font_size=30,
             anchor_x="center",
-            anchor_y="center"
+            anchor_y="center",
         )
         arcade.draw_text(
             "Edit this file and refresh to see changes",
@@ -33,11 +33,10 @@ class MyWindow(arcade.Window):
             arcade.color.WHITE,
             font_size=16,
             anchor_x="center",
-            anchor_y="center"
+            anchor_y="center",
         )
 
 
 if __name__ == "__main__":
     window = MyWindow()
     arcade.run()
-

@@ -8,7 +8,7 @@ from arcade.color import BLACK, WHITE
 from arcade.exceptions import ReplacementWarning, warning
 from arcade.hitbox import HitBox
 from arcade.texture import Texture
-from arcade.types import LRBT, AsFloat, Color, Point, Point2, Point2List, Rect, RGBOrA255
+from arcade.types import LRBT, AsFloat, Color, Point, Point2, Rect, RGBOrA255
 from arcade.utils import copy_dunders_unimplemented
 
 if TYPE_CHECKING:
@@ -787,10 +787,10 @@ class BasicSprite:
                 How thick the box should be
         """
         converted_color = Color.from_iterable(color)
-        points: Point2List = self.hit_box.get_adjusted_points()
-        # NOTE: This is a COPY operation. We don't want to modify the points.
-        points = tuple(points) + tuple(points[:-1])
-        arcade.draw_line_strip(points, color=converted_color, line_width=line_thickness)
+        for polygon in self.hit_box.get_all_adjusted_polygons():
+            # NOTE: This is a COPY operation. We don't want to modify the points.
+            points = tuple(polygon) + tuple(polygon[:-1])
+            arcade.draw_line_strip(points, color=converted_color, line_width=line_thickness)
 
     # ---- Shortcut Methods ----
 
@@ -812,7 +812,10 @@ class BasicSprite:
         from arcade.geometry import is_point_in_polygon
 
         x, y = point
-        return is_point_in_polygon(x, y, self.hit_box.get_adjusted_points())
+        return any(
+            is_point_in_polygon(x, y, polygon)
+            for polygon in self.hit_box.get_all_adjusted_polygons()
+        )
 
     def collides_with_sprite(self, other: BasicSprite) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.

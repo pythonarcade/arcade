@@ -4,7 +4,7 @@ from typing import Any
 
 import arcade
 from arcade import Texture
-from arcade.hitbox import HitBox, RotatableHitBox
+from arcade.hitbox import HitBox
 from arcade.texture import get_default_texture
 from arcade.types import PathOrTexture, Point2
 
@@ -141,7 +141,12 @@ class Sprite(BasicSprite, PymunkMixin):
         self.guid: str | None = None
         """A unique id for debugging purposes."""
 
-        self._hit_box: RotatableHitBox = self._hit_box.create_rotatable(angle=self._angle)
+        self._hit_box = HitBox(
+            self._texture.hit_box_points,
+            self._position,
+            self._scale,
+            angle=self._angle,
+        )
 
         self._width = self._texture.width * self._scale[0]
         self._height = self._texture.height * self._scale[1]
@@ -225,13 +230,8 @@ class Sprite(BasicSprite, PymunkMixin):
         return self._hit_box
 
     @hit_box.setter
-    def hit_box(self, hit_box: HitBox | RotatableHitBox) -> None:
-        if type(hit_box) is HitBox:
-            self._hit_box = hit_box.create_rotatable(self.angle)
-        else:
-            # Mypy doesn't seem to understand the type check above
-            # It still thinks hit_box can be a union here
-            self._hit_box = hit_box  # type: ignore
+    def hit_box(self, hit_box: HitBox) -> None:
+        self._hit_box = hit_box
 
     @property
     def texture(self) -> Texture:
@@ -251,11 +251,11 @@ class Sprite(BasicSprite, PymunkMixin):
 
         # If sprite is using default texture, update the hit box
         if self._texture is get_default_texture():
-            self.hit_box = RotatableHitBox(
+            self.hit_box = HitBox(
                 texture.hit_box_points,
                 position=self._position,
-                angle=self.angle,
                 scale=self._scale,
+                angle=self.angle,
             )
 
         self._texture = texture
@@ -425,9 +425,9 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         Update the sprite's hit box to match the current texture's hit box.
         """
-        self.hit_box = RotatableHitBox(
+        self.hit_box = HitBox(
             self.texture.hit_box_points,
             position=self._position,
-            angle=self.angle,
             scale=self._scale,
+            angle=self.angle,
         )

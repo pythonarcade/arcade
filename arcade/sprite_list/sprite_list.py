@@ -989,12 +989,12 @@ class SpriteList(SpriteSequence[SpriteType]):
         # TODO: Make this faster in the future
         # NOTE: This will be easier when/if we change to triangles
         for sprite in self.sprite_list:
-            adjusted_points = sprite.hit_box.get_adjusted_points()
-            for i in range(len(adjusted_points) - 1):
-                points.append(adjusted_points[i])
-                points.append(adjusted_points[i + 1])
-            points.append(adjusted_points[-1])
-            points.append(adjusted_points[0])
+            for adjusted_points in sprite.hit_box.get_all_adjusted_polygons():
+                for i in range(len(adjusted_points) - 1):
+                    points.append(adjusted_points[i])
+                    points.append(adjusted_points[i + 1])
+                points.append(adjusted_points[-1])
+                points.append(adjusted_points[0])
 
         arcade.draw_lines(points, color=converted_color, line_width=line_thickness)
 

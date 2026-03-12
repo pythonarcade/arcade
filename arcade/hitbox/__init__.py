@@ -2,7 +2,7 @@ from PIL.Image import Image
 
 from arcade.types import Point2List
 
-from .base import HitBox, HitBoxAlgorithm, RotatableHitBox
+from .base import HitBox, HitBoxAlgorithm
 from .bounding_box import BoundingHitBoxAlgorithm
 
 from .simple import SimpleHitBoxAlgorithm
@@ -13,7 +13,8 @@ algo_simple = SimpleHitBoxAlgorithm()
 #: The detailed hit box algorithm. This depends on pymunk and will fallback to the simple algorithm.
 try:
     from .pymunk import PymunkHitBoxAlgorithm
-    algo_detailed = PymunkHitBoxAlgorithm()
+
+    algo_detailed: HitBoxAlgorithm = PymunkHitBoxAlgorithm()
 except ImportError:
     print("WARNING: Running without PyMunk. The detailed hitbox algorithm will fallback to simple")
     algo_detailed = SimpleHitBoxAlgorithm()
@@ -58,7 +59,6 @@ def calculate_hit_box_points_detailed(
 __all__ = [
     "HitBoxAlgorithm",
     "HitBox",
-    "RotatableHitBox",
     "SimpleHitBoxAlgorithm",
     "PymunkHitBoxAlgorithm",
     "BoundingHitBoxAlgorithm",

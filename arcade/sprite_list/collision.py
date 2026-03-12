@@ -120,9 +120,9 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     if distance > radius_sum_sq:
         return False
 
-    return are_polygons_intersecting(
-        sprite1.hit_box.get_adjusted_points(), sprite2.hit_box.get_adjusted_points()
-    )
+    polys1 = sprite1.hit_box.get_all_adjusted_polygons()
+    polys2 = sprite2.hit_box.get_all_adjusted_polygons()
+    return any(are_polygons_intersecting(p1, p2) for p1 in polys1 for p2 in polys2)
 
 
 def _get_nearby_sprites(
@@ -283,7 +283,10 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteSequence[SpriteType]) 
     return [
         s
         for s in sprites_to_check
-        if is_point_in_polygon(point[0], point[1], s.hit_box.get_adjusted_points())
+        if any(
+            is_point_in_polygon(point[0], point[1], polygon)
+            for polygon in s.hit_box.get_all_adjusted_polygons()
+        )
     ]
 
 
@@ -346,5 +349,8 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteSequence[SpriteType]) -> 
     return [
         s
         for s in sprites_to_check
-        if are_polygons_intersecting(rect_points, s.hit_box.get_adjusted_points())
+        if any(
+            are_polygons_intersecting(rect_points, polygon)
+            for polygon in s.hit_box.get_all_adjusted_polygons()
+        )
     ]

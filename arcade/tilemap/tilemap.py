@@ -31,7 +31,7 @@ from arcade import (
     get_window,
     hexagon,
 )
-from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
+from arcade.hitbox import HitBox, HitBoxAlgorithm
 from arcade.types import RGBA255
 from arcade.types import Color as ArcadeColor
 
@@ -617,11 +617,11 @@ class TileMap:
                 if tile.flipped_diagonally:
                     points = [(point[1], point[0]) for point in points]
 
-                my_sprite.hit_box = RotatableHitBox(
+                my_sprite.hit_box = HitBox(
                     cast(list[Point2], points),
                     position=my_sprite.position,
-                    angle=my_sprite.angle,
                     scale=my_sprite.scale,
+                    angle=my_sprite.angle,
                 )
 
         if tile.animation:

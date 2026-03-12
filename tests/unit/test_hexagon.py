@@ -92,7 +92,9 @@ def test_hex_round():
     a = HexTile(0.0, 0.0, 0.0)
     b = HexTile(1.0, -1.0, 0.0)
     c = HexTile(0.0, -1.0, 1.0)
-    assert HexTile(5, -10, 5) == round(HexTile(0.0, 0.0, 0.0).lerp_between(HexTile(10.0, -20.0, 10.0), 0.5))
+    assert HexTile(5, -10, 5) == round(
+        HexTile(0.0, 0.0, 0.0).lerp_between(HexTile(10.0, -20.0, 10.0), 0.5)
+    )
     assert round(a) == round(a.lerp_between(b, 0.499))
     assert round(b) == round(a.lerp_between(b, 0.501))
 

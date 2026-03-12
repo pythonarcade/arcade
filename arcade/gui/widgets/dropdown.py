@@ -294,8 +294,7 @@ class UIDropdown(UILayout):
         overlay_w = self.width + scroll_bar_w
 
         overlay.rect = (
-            overlay.rect
-            .resize(overlay_w, visible_h)
+            overlay.rect.resize(overlay_w, visible_h)
             .align_top(self.bottom - 2)
             .align_left(self._default_button.left)
         )
