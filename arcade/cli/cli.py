@@ -54,4 +54,8 @@ class CLI:
 def run_arcade_cli():
     cli = CLI()
     cli.register_command(InfoCommand)
+
+    from arcade.hitbox_editor.commands import HitBoxEditorCommand
+    cli.register_command(HitBoxEditorCommand)
+
     return cli.run()
