@@ -702,6 +702,40 @@ class PymunkPhysicsEngine:
             )
         physics_object.body.apply_force_at_local_point(force, (0, 0))
 
+    def apply_torque(self, sprite: Sprite, torque: float):
+        """
+        Apply torque to a Sprite.
+
+        Args:
+            sprite:
+                The sprite to apply the force to.
+            torque:
+                The torque to apply to the sprite.
+        """
+        physics_object = self.sprites[sprite]
+        if physics_object.body is None:
+            raise PymunkException(
+                "Tried to apply a torque, but this physics object has no 'body' set."
+            )
+        physics_object.body.torque = torque
+
+    def set_angular_velocity(self, sprite: Sprite, velocity: float):
+        """
+        Set velocity to a Sprite.
+
+        Args:
+            sprite:
+                The sprite to set the angular velocity of.
+            velocity:
+                The velocity to set.
+        """
+        physics_object = self.sprites[sprite]
+        if physics_object.body is None:
+            raise PymunkException(
+                "Tried to set velocity, but this physics object has no 'body' set."
+            )
+        physics_object.body.angular_velocity = velocity
+
     def set_horizontal_velocity(self, sprite: Sprite, velocity: float) -> None:
         """
         Set a sprite's velocity.
