@@ -266,7 +266,7 @@ class PymunkPhysicsEngine:
 
         # Set the body's position
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
-        body.angle = math.radians(sprite.angle)
+        body.angle = math.radians(-sprite.angle)
 
         # Callback used if we need custom gravity, damping, velocity, etc.
         def velocity_callback(
@@ -514,7 +514,7 @@ class PymunkPhysicsEngine:
             raise PymunkException(
                 "Tried to set a rotation, but this physics object has no 'body' set."
             )
-        physics_object.body.angle = math.radians(rotation)
+        physics_object.body.angle = math.radians(-rotation)
 
     def set_velocity(self, sprite: Sprite, velocity: tuple[float, float]) -> None:
         """Directly set the velocity of a sprite known to the engine.
