@@ -68,8 +68,6 @@ class DefaultProjector:
 
     @viewport.setter
     def viewport(self, viewport: tuple[int, int, int, int] | None) -> None:
-        if viewport == self._viewport:
-            return
         self._viewport = viewport
         self._matrix = Mat4.orthogonal_projection(
             0, self.width, 0, self.height, DEFAULT_NEAR_ORTHO, DEFAULT_FAR

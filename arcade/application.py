@@ -144,6 +144,11 @@ class Window(pyglet.window.Window):
         file_drops:
             Should the window listen for file drops? If True, the window will dispatch
             ``on_file_drop`` events when files are dropped onto the window.
+        pixel_perfect:
+            If True, ignore OS DPI scaling and use a 1:1 pixel ratio.
+            The window and framebuffer will be created at exactly the
+            requested size. The window may appear smaller on HiDPI
+            displays, but rendering will be pixel-perfect.
         **kwargs:
             Further keyword arguments are passed to the pyglet window constructor.
             This can be used to set advanced options that aren't explicitly handled by Arcade.
