@@ -209,19 +209,12 @@ class Window(pyglet.window.Window):
         config = None
         # Attempt to make window with antialiasing
         if gl_api == "opengl" or gl_api == "opengles":
-            from pyglet.enums import GraphicsAPI
-            _api_map = {
-                "opengl": GraphicsAPI.OPENGL,
-                "opengles": GraphicsAPI.OPENGL_ES_3,
-            }
-            _graphics_api = _api_map.get(gl_api, GraphicsAPI.OPENGL)
-
             if antialiasing:
                 try:
-                    config = pyglet.config.OpenGLUserConfig(
+                    config = pyglet.config.OpenGLConfig(
                         major_version=gl_version[0],
                         minor_version=gl_version[1],
-                        api=_graphics_api,
+                        opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
                         double_buffer=True,
                         sample_buffers=1,
                         samples=samples,
@@ -238,10 +231,10 @@ class Window(pyglet.window.Window):
                     antialiasing = False
             # If we still don't have a config
             if not config:
-                config = pyglet.config.OpenGLUserConfig(
+                config = pyglet.config.OpenGLConfig(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
-                    api=_graphics_api,
+                    opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
                     double_buffer=True,
                     depth_size=24,
                     stencil_size=8,
