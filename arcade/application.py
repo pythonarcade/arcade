@@ -175,12 +175,16 @@ class Window(pyglet.window.Window):
         fixed_rate: float = 1.0 / 60.0,
         fixed_frame_cap: int | None = None,
         file_drops: bool = False,
+        pixel_perfect: bool = False,
         **kwargs,
     ) -> None:
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
         if os.environ.get("REPL_ID"):
             antialiasing = False
+
+        if pixel_perfect:
+            pyglet.options.dpi_scaling = "platform"
 
         desired_gl_provider = "opengl"
         if is_pyodide():
@@ -199,16 +203,25 @@ class Window(pyglet.window.Window):
         """Indicates if the window was closed"""
         self.headless: bool = arcade.headless
         """If True, the window is running in headless mode."""
+        self._pixel_perfect: bool = pixel_perfect
+        """If True, ignore OS DPI scaling and use a 1:1 pixel ratio."""
 
         config = None
         # Attempt to make window with antialiasing
         if gl_api == "opengl" or gl_api == "opengles":
+            from pyglet.enums import GraphicsAPI
+            _api_map = {
+                "opengl": GraphicsAPI.OPENGL,
+                "opengles": GraphicsAPI.OPENGL_ES_3,
+            }
+            _graphics_api = _api_map.get(gl_api, GraphicsAPI.OPENGL)
+
             if antialiasing:
                 try:
-                    config = pyglet.config.OpenGLConfig(
+                    config = pyglet.config.OpenGLUserConfig(
                         major_version=gl_version[0],
                         minor_version=gl_version[1],
-                        opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
+                        api=_graphics_api,
                         double_buffer=True,
                         sample_buffers=1,
                         samples=samples,
@@ -225,10 +238,10 @@ class Window(pyglet.window.Window):
                     antialiasing = False
             # If we still don't have a config
             if not config:
-                config = pyglet.config.OpenGLConfig(
+                config = pyglet.config.OpenGLUserConfig(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
-                    opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
+                    api=_graphics_api,
                     double_buffer=True,
                     depth_size=24,
                     stencil_size=8,
@@ -890,6 +903,16 @@ class Window(pyglet.window.Window):
             return True
 
         return EVENT_UNHANDLED
+
+    def get_pixel_ratio(self) -> float:
+        """Return the framebuffer/window size ratio.
+
+        When ``pixel_perfect=True``, this always returns ``1.0`` so that
+        arcade treats the framebuffer as unscaled.
+        """
+        if self._pixel_perfect:
+            return 1.0
+        return super().get_pixel_ratio()
 
     def _on_resize(self, width: int, height: int) -> EVENT_HANDLE_STATE:
         """
