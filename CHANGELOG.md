@@ -5,11 +5,27 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
-### New Features
-- GUI: `UIDropdown` now supports scrolling when options exceed the menu height. New parameters: `max_height`, `invert_scroll`, `scroll_speed`, and `show_scroll_bar`.
+## 4.0.0.dev4
 
-### Breaking Change
-- Tilemap: Sprites of an object tile layer will now apply visibility of the object.
+### New Features
+- Added `pixel_perfect` option for 1:1 pixel ratio rendering, ignoring OS DPI scaling. See [#2841](https://github.com/pythonarcade/arcade/pull/2841)
+- Added `apply_torque` and `set_angular_velocity` wrappers for the Pymunk physics engine. See [#2838](https://github.com/pythonarcade/arcade/pull/2838)
+- Added file drop support in application window via `file_drops` parameter. See [#2825](https://github.com/pythonarcade/arcade/pull/2825)
+- New hexagon utilities module. See [#2695](https://github.com/pythonarcade/arcade/pull/2695)
+- New CLI infrastructure. See [#2828](https://github.com/pythonarcade/arcade/pull/2828)
+- GUI: `UIDropdown` now supports scrolling when options exceed the menu height. New parameters: `max_height`, `invert_scroll`, `scroll_speed`, and `show_scroll_bar`. See [#2833](https://github.com/pythonarcade/arcade/pull/2833)
+- GUI: Warning when layout width/height is given but size_hint will override it. See [#2834](https://github.com/pythonarcade/arcade/pull/2834)
+
+### Fixes
+- Fixed angle negation for Pymunk physics engine to ensure correct sprite rotation. See [#2840](https://github.com/pythonarcade/arcade/pull/2840)
+
+### Breaking Changes
+- Updated pyglet to 3.0.dev3. See [#2842](https://github.com/pythonarcade/arcade/pull/2842)
+- Tilemap: Sprites of an object tile layer will now apply visibility of the object. See [#2829](https://github.com/pythonarcade/arcade/pull/2829)
+
+### Documentation
+- Split doc dependencies into separate group and upgraded Sphinx to 9.1.0. See [#2843](https://github.com/pythonarcade/arcade/pull/2843)
+- Added note about including `arcade.experimental` when compiling with Nuitka. See [#2831](https://github.com/pythonarcade/arcade/pull/2831)
 
 ## 4.0.0.dev3
 
