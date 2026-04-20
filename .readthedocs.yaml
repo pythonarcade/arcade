@@ -15,6 +15,7 @@ python:
     - method: uv
       command: sync
       groups:
+        - dev
         - docs
 
 # Build PDF & ePub
