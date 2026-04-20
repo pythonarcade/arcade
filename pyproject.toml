@@ -40,8 +40,8 @@ extras = [
 ]
 # Used for dev work
 dev = [
-    "sphinx==9.1.0",               # April 2026
-    "sphinx_rtd_theme==3.1.0",     # April 2026
+    "sphinx==8.1.3",               # April 2024 | Updated 2024-07-15, 7.4+ is broken with sphinx-autobuild
+    "sphinx_rtd_theme==3.0.2",     # Nov 2024
     "sphinx-rtd-dark-mode==1.3.0",
     "sphinx-autobuild==2024.10.3", # April 2024 | Due to this, Python 3.10+ is required to serve docs
     "sphinx-copybutton==0.5.2",    # April 2023
