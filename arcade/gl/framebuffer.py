@@ -128,7 +128,7 @@ class Framebuffer(ABC):
             # Disable scissoring
             ctx.scissor = None
 
-        :type: tuple (x, y, width, height)
+        The value is a tuple of ``(x, y, width, height)`` or ``None`` to disable.
 
         """
         return self._scissor
