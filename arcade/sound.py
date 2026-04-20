@@ -73,7 +73,7 @@ class Sound:
             raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
-        self.source: Source = media.load(self.file_name, streaming=streaming)
+        self.source: Source = media.load_audio(self.file_name, streaming=streaming)
         """
         The :py:class:`pyglet.media.Source` object that holds the audio data.
         """

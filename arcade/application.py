@@ -20,6 +20,7 @@ if is_pyodide():
 
 import pyglet.config
 import pyglet.window.mouse
+from pyglet.config import GraphicsAPI
 from pyglet.display.base import Screen, ScreenMode
 from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor
@@ -211,15 +212,21 @@ class Window(pyglet.window.Window):
         self._pixel_perfect: bool = pixel_perfect
         """If True, ignore OS DPI scaling and use a 1:1 pixel ratio."""
 
+        _GL_API_MAP = {
+            "opengl": GraphicsAPI.OPENGL,
+            "opengles": GraphicsAPI.OPENGL_ES_3,
+        }
+
         config = None
         # Attempt to make window with antialiasing
         if gl_api == "opengl" or gl_api == "opengles":
+            graphics_api = _GL_API_MAP[gl_api]
             if antialiasing:
                 try:
-                    config = pyglet.config.OpenGLConfig(
+                    config = pyglet.config.OpenGLUserConfig(
                         major_version=gl_version[0],
                         minor_version=gl_version[1],
-                        opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
+                        api=graphics_api,
                         double_buffer=True,
                         sample_buffers=1,
                         samples=samples,
@@ -236,10 +243,10 @@ class Window(pyglet.window.Window):
                     antialiasing = False
             # If we still don't have a config
             if not config:
-                config = pyglet.config.OpenGLConfig(
+                config = pyglet.config.OpenGLUserConfig(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
-                    opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
+                    api=graphics_api,
                     double_buffer=True,
                     depth_size=24,
                     stencil_size=8,

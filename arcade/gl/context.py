@@ -597,7 +597,7 @@ class Context(ABC):
 
         These enums can be accessed in the ``arcade.gl``
         module or simply as attributes of the context object.
-        The raw enums from ``pyglet.gl`` can also be used.
+        The raw enums from ``pyglet.graphics.api.gl`` can also be used.
 
         Example::
 

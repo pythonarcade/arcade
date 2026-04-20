@@ -534,7 +534,7 @@ class OpenGLInfo(Info):
             value = c_int()
             gl.glGetIntegerv(enum, value)
             return value.value
-        except pyglet.gl.lib.GLException:
+        except gl.lib.GLException:
             return default
 
     def get_float(self, enum, default=0.0) -> float:

@@ -22,7 +22,7 @@ classifiers = [
 dependencies = [
     "pillow>=11.3.0",
     "pytiled-parser~=2.2.9",
-    "pyglet==3.0.dev2",
+    "pyglet==3.0.dev3",
 ]
 dynamic = ["version"]
 

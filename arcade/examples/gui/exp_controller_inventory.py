@@ -18,7 +18,7 @@ python -m arcade.examples.gui.exp_controller_inventory
 
 import pyglet.font
 from pyglet.event import EVENT_HANDLED
-from pyglet.gl import GL_NEAREST
+from pyglet.graphics.api.gl import GL_NEAREST
 from pyglet.input import Controller
 
 import arcade
