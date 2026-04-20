@@ -52,6 +52,13 @@ from util.doc_helpers.real_filesystem import copy_media
 # 2. The commit: https://github.com/pyglet/pyglet/commit/97076c3a33a7d368cc9c9e44ca67769b6a16a905
 sys.is_pyglet_doc_run = True
 
+# pyglet 3.0.dev3 LibraryMock lacks __iter__/__bool__, causing crashes
+# when ffmpeg codec init calls get_input_extensions() during doc builds.
+# Patch before any pyglet imports trigger media codec loading.
+import pyglet.lib  # noqa: E402
+pyglet.lib.LibraryMock.__bool__ = lambda self: False
+pyglet.lib.LibraryMock.__iter__ = lambda self: iter([])
+
 # --- Pre-processing Tasks
 
 # Report our diagnostic info
