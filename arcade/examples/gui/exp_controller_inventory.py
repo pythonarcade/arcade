@@ -18,10 +18,10 @@ python -m arcade.examples.gui.exp_controller_inventory
 
 import pyglet.font
 from pyglet.event import EVENT_HANDLED
-from pyglet.graphics.api.gl import GL_NEAREST
 from pyglet.input import Controller
 
 import arcade
+from arcade.gl.enums import NEAREST
 from arcade import Rect
 from arcade.examples.gui.exp_controller_support_grid import (
     ControllerIndicator,
@@ -412,8 +412,8 @@ class MyView(UIView, ControllerView):
 
 if __name__ == "__main__":
     # pixelate the font
-    pyglet.font.base.Font.texture_min_filter = GL_NEAREST  # type: ignore
-    pyglet.font.base.Font.texture_mag_filter = GL_NEAREST  # type: ignore
+    pyglet.font.base.Font.texture_min_filter = NEAREST  # type: ignore
+    pyglet.font.base.Font.texture_mag_filter = NEAREST  # type: ignore
 
     load_kenney_fonts()
 
