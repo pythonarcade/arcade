@@ -38,7 +38,7 @@ jobs:
           enable-cache: true
 
       - name: Sync UV project
-        run: uv sync
+        run: uv sync --no-group docs
 
       - name: Run tests
         env:
