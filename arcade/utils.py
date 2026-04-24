@@ -31,6 +31,8 @@ __all__ = [
 _T = TypeVar("_T")
 _TType = TypeVar("_TType", bound=type)
 
+is_pyodide = True if sys.platform == "emscripten" else False
+
 
 class Chain(Generic[_T]):
     """A reusable OOP version of :py:class:`itertools.chain`.
@@ -253,12 +255,6 @@ def copy_dunders_unimplemented(decorated_type: _TType) -> _TType:
     decorated_type.__deepcopy__ = __deepcopy__  # type: ignore
 
     return decorated_type
-
-
-def is_pyodide() -> bool:
-    if sys.platform == "emscripten":
-        return True
-    return False
 
 
 def is_raspberry_pi() -> bool:

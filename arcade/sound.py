@@ -13,7 +13,7 @@ from arcade.utils import is_pyodide
 
 if os.environ.get("ARCADE_SOUND_BACKENDS"):
     pyglet.options.audio = tuple(v.strip() for v in os.environ["ARCADE_SOUND_BACKENDS"].split(","))
-elif is_pyodide():
+elif is_pyodide:
     # Pyglet will also detect Pyodide and auto select the driver for it
     # but the driver tuple needs to be empty for that to happen
     pyglet.options.audio = ()

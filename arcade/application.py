@@ -15,7 +15,7 @@ import pyglet
 
 from arcade.utils import is_pyodide
 
-if is_pyodide():
+if is_pyodide:
     pyglet.options.backend = "webgl"
 
 import pyglet.config
@@ -193,7 +193,7 @@ class Window(pyglet.window.Window):
             pyglet.options.dpi_scaling = "platform"
 
         desired_gl_provider = "opengl"
-        if is_pyodide():
+        if is_pyodide:
             gl_api = "webgl"
 
         if gl_api == "webgl":
@@ -304,8 +304,9 @@ class Window(pyglet.window.Window):
         assert update_rate <= draw_rate, (
             "An arcade window's draw rate cannot be faster than its update rate"
         )
-        self._draw_rate = max(update_rate, draw_rate)
+        self._draw_rate = min(update_rate, draw_rate)
         self._accumulated_draw_time: float = 0.0
+        self._accumulated_update_time: float = 0.0
 
         # Fixed rate cannot be changed post initialization as this throws off physics sims.
         # If more time resolution is needed in fixed updates, devs can do 'sub-stepping'.
@@ -578,10 +579,22 @@ class Window(pyglet.window.Window):
         The modulus on the accumulated draw time means that when the update rate is greater
         than the draw rate no time is lost.
 
+        This method is entirely skipped when running in pyodide, this is because the event loop
+        is driven by requestAnimationFrame in the browser, which adds some unique limitations and
+        considerations around Arcade's event loop handling. In pyglet, the draw() function of the
+        window is called directly during the requestAnimationFrame loop, so Arcade handles special
+        control of the update/draw timing directly in that function. Arcade's version of this function
+        is never called on desktop, because this function is called instead, and this calls directly
+        to the superclass's implementation.
+
         Args:
             delta_time: The amount of time since the last update.
         """
+        if is_pyodide:
+            return
+
         self._dispatch_updates(delta_time)
+
         self._accumulated_draw_time += delta_time
 
         if self._draw_rate <= self._accumulated_draw_time:
@@ -592,7 +605,7 @@ class Window(pyglet.window.Window):
 
             # In case the window close in on_update, on_fixed_update or input callbacks
             if not self.closed:
-                self.draw(self._accumulated_draw_time)
+                super().draw(self._accumulated_draw_time)
             self._accumulated_draw_time %= self._draw_rate
 
     def _dispatch_updates(self, delta_time: float) -> None:
@@ -616,6 +629,44 @@ class Window(pyglet.window.Window):
             self.dispatch_event("on_fixed_update", self._fixed_rate)
             fixed_count += 1
         self.dispatch_event("on_update", GLOBAL_CLOCK.delta_time)
+
+    def draw(self, dt: float) -> None:
+        """
+        Render a frame.
+
+        On desktop this is driven by arcade's clock-scheduled
+        :meth:`_dispatch_frame`, which calls the super version of this method direclty.
+        This implementation is only called when using Pyglet's pyodide backend as part of it's
+        requestAnimationFrame loop.
+
+        The loop rate in a browser is tied inherently to the requestAnimationFrame speed, which
+        is tied to the monitor's refresh rate, so basically the Arcade loop can never be called
+        faster than the monitor refresh rate in a browser. This method does some special handling
+        of the update rate to make the updates happen multiple times per loop to achieve the target
+        update rate if it is higher than the refresh rate.
+
+        It does not bypass the refresh rate for draw rate, because the framebuffer will never drawn
+        faster to the canvas than that anyways, so us running it faster than that is pointless.
+        """
+        self._accumulated_update_time += dt
+        while self._accumulated_update_time >= self._update_rate:
+            GLOBAL_CLOCK.tick(self._update_rate)
+            fixed_count = 0
+            while GLOBAL_FIXED_CLOCK.accumulated >= self._fixed_rate and (
+                self._fixed_frame_cap is None or fixed_count <= self._fixed_frame_cap
+            ):
+                GLOBAL_FIXED_CLOCK.tick(self._fixed_rate)
+                self.dispatch_event("on_fixed_update", self._fixed_rate)
+                fixed_count += 1
+
+            self.dispatch_event("on_update", GLOBAL_CLOCK.delta_time)
+            self._accumulated_update_time -= self._update_rate
+
+        self._accumulated_draw_time += dt
+        if self._accumulated_draw_time < self._draw_rate:
+            return
+        self._accumulated_draw_time %= self._draw_rate
+        super().draw(dt)
 
     def flip(self) -> None:
         """
