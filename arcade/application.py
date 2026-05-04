@@ -968,6 +968,16 @@ class Window(pyglet.window.Window):
         """
         if self._pixel_perfect:
             return 1.0
+        if is_pyodide:
+            # Pyglet's emscripten window caches devicePixelRatio at init, but the
+            # actual canvas drawing buffer is sized via getBoundingClientRect()
+            # which can be sub-pixel less than logical_size * devicePixelRatio.
+            # Returning fb_size / logical_size matches the canvas exactly, so
+            # full-canvas viewport round-trips through Camera2D don't leave a
+            # 1-2 pixel gap on the top/right edges.
+            log_w = self._width
+            if log_w:
+                return self.get_framebuffer_size()[0] / log_w
         return super().get_pixel_ratio()
 
     def _on_resize(self, width: int, height: int) -> EVENT_HANDLE_STATE:
@@ -1038,6 +1048,14 @@ class Window(pyglet.window.Window):
 
     def get_size(self) -> tuple[int, int]:
         """Get the size of the window."""
+        if is_pyodide:
+            # Pyglet's emscripten window returns the canvas drawing-buffer
+            # size (physical, DPI-scaled pixels) from get_size(); desktop
+            # pyglet returns logical pixels. Return logical pixels here so
+            # viewport math in show_view/_on_resize stays consistent across
+            # backends and Camera2D doesn't render into a sub-region of the
+            # canvas on HiDPI displays.
+            return self._width, self._height
         return super().get_size()
 
     def get_location(self) -> tuple[int, int]:

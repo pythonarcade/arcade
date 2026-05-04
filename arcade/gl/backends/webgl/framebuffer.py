@@ -256,15 +256,20 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ig
 
     @DefaultFrameBuffer.viewport.setter
     def viewport(self, value: tuple[int, int, int, int]):
-        # This is very similar to the OpenGL backend setter
-        # WebGL backend doesn't need to handle pixel scaling for the
-        # default framebuffer like desktop does, the browser does that
-        # for us. However we need a separate implementation for the
-        # function because of ABC
+        # Pyglet sizes the canvas drawing buffer at physical pixels
+        # (canvas.width = logical_width * devicePixelRatio), so we apply
+        # the same pixel-ratio multiply as the OpenGL backend to keep the
+        # default framebuffer's get/set symmetric in logical pixels.
         if not isinstance(value, tuple) or len(value) != 4:
-            raise ValueError("viewport shouldbe a 4-component tuple")
+            raise ValueError("viewport should be a 4-component tuple")
 
-        self._viewport = value
+        ratio = self.ctx.window.get_pixel_ratio()
+        self._viewport = (
+            int(value[0] * ratio),
+            int(value[1] * ratio),
+            int(value[2] * ratio),
+            int(value[3] * ratio),
+        )
 
         if self._ctx.active_framebuffer == self:
             self._ctx._gl.viewport(*self._viewport)
@@ -280,6 +285,12 @@ class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ig
             if self._ctx.active_framebuffer == self:
                 self._ctx._gl.scissor(*self._viewport)
         else:
-            self._scissor = value
+            ratio = self.ctx.window.get_pixel_ratio()
+            self._scissor = (
+                int(value[0] * ratio),
+                int(value[1] * ratio),
+                int(value[2] * ratio),
+                int(value[3] * ratio),
+            )
             if self._ctx.active_framebuffer == self:
                 self._ctx._gl.scissor(*self._scissor)
