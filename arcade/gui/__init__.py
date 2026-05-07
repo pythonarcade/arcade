@@ -32,6 +32,7 @@ from arcade.gui.widgets import UISpace
 from arcade.gui.view import UIView
 from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets import UISpriteWidget
+from arcade.gui.widgets import UIInteractiveSpriteWidget
 from arcade.gui.widgets import UIWidget
 from arcade.gui.widgets.buttons import (
     UITextureButton,
@@ -63,6 +64,7 @@ __all__ = [
     "UIFlatButton",
     "UIImage",
     "UIInteractiveWidget",
+    "UIInteractiveSpriteWidget",
     "UIInputText",
     "UILayout",
     "UILabel",

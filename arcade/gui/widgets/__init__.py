@@ -963,6 +963,73 @@ class UISpriteWidget(UIWidget):
             surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 
+class UIInteractiveSpriteWidget(UIInteractiveWidget, UISpriteWidget):
+    """A sprite embedded in the UI tree that responds to click and hover events.
+
+    Wraps an existing :py:class:`~arcade.Sprite`, rendering it as a UI
+    widget with full interactive behavior: hover detection, press
+    tracking, click events, and optional visual state changes.
+
+    Combines :py:class:`UIInteractiveWidget` (mouse/keyboard
+    interaction, ``hovered`` / ``pressed`` / ``disabled`` states,
+    ``on_click`` event) with :py:class:`UISpriteWidget` (sprite
+    rendering and animation updates).
+
+    Example::
+
+        sprite = arcade.Sprite("card.png")
+        widget = UIInteractiveSpriteWidget(sprite=sprite)
+
+        @widget.event("on_click")
+        def on_click(event):
+            print(f"Card clicked at {event.x}, {event.y}")
+
+        ui_manager.add(widget)
+
+    For hover feedback, bind to the ``hovered`` property::
+
+        from arcade.gui.property import bind
+
+        def on_hover_change(widget):
+            if widget.hovered:
+                widget._sprite.color = (220, 220, 255)
+            else:
+                widget._sprite.color = (255, 255, 255)
+
+        bind(widget, "hovered", on_hover_change)
+
+    Args:
+        sprite: The sprite to display and make interactive.
+        width: Widget width in pixels. Defaults to the sprite's
+            texture width if not provided.
+        height: Widget height in pixels. Defaults to the sprite's
+            texture height if not provided.
+        **kwargs: Additional :py:class:`UIWidget` keyword arguments
+            (``size_hint``, ``size_hint_min``, ``size_hint_max``,
+            ``interaction_buttons``, etc.).
+    """
+
+    def __init__(
+        self,
+        *,
+        sprite: Sprite,
+        width: float | None = None,
+        height: float | None = None,
+        **kwargs,
+    ):
+        if width is None:
+            width = sprite.texture.width
+        if height is None:
+            height = sprite.texture.height
+
+        super().__init__(
+            sprite=sprite,
+            width=width,
+            height=height,
+            **kwargs,
+        )
+
+
 class UILayout(UIWidget):
     """Base class for widgets, which position themselves or their children.
 
