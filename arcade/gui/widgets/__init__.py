@@ -257,6 +257,47 @@ class UIWidget(EventDispatcher, ABC):
                 return c.data
         return None
 
+    def get_child_data(self, child: UIWidget) -> dict | None:
+        """Get the layout data for a child widget.
+
+        Returns the kwargs dict that was passed when the child was
+        added (e.g., ``anchor_x``, ``align_x`` for
+        :py:class:`UIAnchorLayout` children).
+
+        The returned dict is the *live* internal data. Modifying it
+        will affect the child's layout on the next
+        :py:meth:`do_layout` call.
+
+        Args:
+            child: The child widget to look up.
+
+        Returns:
+            The layout data dict, or ``None`` if *child* is not a
+            direct child of this widget.
+        """
+        for entry in self._children:
+            if entry.child == child:
+                return entry.data
+        return None
+
+    def get_child_entry(self, index: int) -> tuple[UIWidget, dict]:
+        """Get the child widget and its layout data by index.
+
+        Supports negative indices (e.g., ``-1`` for the last child),
+        following standard Python sequence semantics.
+
+        Args:
+            index: Position of the child (0-based, in add order).
+
+        Returns:
+            A ``(child_widget, layout_data_dict)`` tuple.
+
+        Raises:
+            IndexError: If *index* is out of range.
+        """
+        entry = self._children[index]
+        return entry.child, entry.data
+
     def clear(self):
         """Removes all children"""
         for child in self.children:
