@@ -643,6 +643,12 @@ Graphical User Interface
 
    :ref:`gui_own_layout`
 
+.. figure:: images/thumbs/interactive_sprite_widget.png
+   :figwidth: 170px
+   :target: interactive_sprite_widget.html
+
+   :ref:`interactive_sprite_widget`
+
 .. note::
 
     Not all existing examples made it into this section. You can find more under `Arcade GUI Examples <https://github.com/pythonarcade/arcade/tree/development/arcade/examples/gui>`_
