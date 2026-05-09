@@ -228,9 +228,17 @@ Non-Player Movement
 Easing
 ^^^^^^
 
-.. note:: Easing is a work in progress refactor.
+.. figure:: images/thumbs/easing_example_1.png
+   :figwidth: 170px
+   :target: easing_example_1.html
 
-          Please see :py:mod:`arcade.anim`.
+   :ref:`easing_example_1`
+
+.. figure:: images/thumbs/easing_example_2.png
+   :figwidth: 170px
+   :target: easing_example_2.html
+
+   :ref:`easing_example_2`
 
 
 Calculating a Path
