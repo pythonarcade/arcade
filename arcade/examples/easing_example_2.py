@@ -26,7 +26,7 @@ EASE_DURATION = 1.0
 
 # Mode descriptions shown in the HUD.
 MODE_DESCRIPTIONS = {
-    1: "Instant angle",
+    1: "Instant (teleport + face mouse)",
     2: "Angle ease: LINEAR",
     3: "Angle ease: QUAD_IN",
     4: "Angle ease: QUAD_OUT",
@@ -126,10 +126,14 @@ class GameView(arcade.View):
         )
 
     def _target_angle(self) -> float:
-        """Compute the angle from the ship to the target in degrees."""
+        """Compute the angle from the ship to the target in degrees.
+
+        Arcade uses clockwise-positive angles and the ship sprite
+        points up at angle 0, so we negate atan2 and add 90.
+        """
         diff_x = self.target_x - self.ship_sprite.center_x
         diff_y = self.target_y - self.ship_sprite.center_y
-        return math.degrees(math.atan2(diff_y, diff_x)) - 90
+        return -math.degrees(math.atan2(diff_y, diff_x)) + 90
 
     def _start_angle_ease(self):
         """Record the current angle as the start and set up the ease."""
@@ -193,7 +197,10 @@ class GameView(arcade.View):
         self.target_x = x
         self.target_y = y
 
-        if 2 <= self.mode <= 5:
+        if self.mode == 1:
+            self.ship_sprite.center_x = x
+            self.ship_sprite.center_y = y
+        elif 2 <= self.mode <= 5:
             self._start_angle_ease()
         elif 6 <= self.mode <= 9:
             self._start_position_ease()
