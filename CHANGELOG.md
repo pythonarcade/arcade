@@ -5,6 +5,9 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+### New Features
+- GUI: Added `UIInteractiveSpriteWidget` — a widget combining `UIInteractiveWidget` and `UISpriteWidget` to make sprites clickable and hoverable in the UI tree. Supports `hovered`, `pressed`, and `disabled` states, `on_click` event dispatch, and defaults its size to the sprite's texture dimensions. See [#2847](https://github.com/pythonarcade/arcade/pull/2847)
+
 ## 4.0.0.dev4
 
 ### New Features
