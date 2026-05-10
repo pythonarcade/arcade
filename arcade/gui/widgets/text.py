@@ -584,7 +584,7 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
     def _on_focus_change(self):
         if self.focused:
             self.activate()
-        elif self.active:
+        elif self._active:
             self.deactivate()
 
     def _on_active_changed(self):
