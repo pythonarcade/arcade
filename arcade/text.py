@@ -19,7 +19,7 @@ from arcade.texture_atlas import TextureAtlasBase
 from arcade.types import Color, Point, RGBOrA255
 from arcade.types.rect import LRBT, Rect
 
-__all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
+__all__ = ["load_font", "Text", "TextPool", "create_text_sprite", "draw_text"]
 
 
 def load_font(path: str | Path) -> None:
@@ -708,6 +708,141 @@ class Text:
         1em is defined as ``font_size`` pt.
         """
         return px / (4 / 3) / self.font_size
+
+
+class TextPool:
+    """A keyed cache of reusable Text objects.
+
+    Avoids the cost of creating new :py:class:`arcade.Text` objects every
+    frame for dynamic text that changes position, content, or color
+    frequently.
+
+    Any keyword arguments passed to the constructor become defaults for
+    every ``Text`` created by this pool. Per-call keyword arguments
+    override these defaults.
+
+    Example::
+
+        pool = arcade.TextPool(font_name="Arial")
+
+        def on_draw(self):
+            pool.draw("score", f"Score: {self.score}", 10, 580,
+                       color=arcade.color.WHITE, font_size=16)
+            pool.draw("fps", f"FPS: {arcade.get_fps():.0f}", 10, 560,
+                       color=arcade.color.GRAY, font_size=12)
+
+    Args:
+        font_name: Default font for all text created by this pool.
+        **defaults: Default keyword arguments passed to
+            :py:class:`arcade.Text` on creation (e.g. ``bold``,
+            ``anchor_x``).
+    """
+
+    def __init__(self, font_name: FontNameOrNames = ("calibri", "arial"), **defaults):
+        self._font_name = font_name
+        self._defaults = defaults
+        self._cache: dict[str, Text] = {}
+
+    def draw(
+        self,
+        key: str,
+        text: str,
+        x: float,
+        y: float,
+        color: RGBOrA255 = arcade.color.WHITE,
+        font_size: float = 12,
+        **kwargs,
+    ) -> Text:
+        """Get or create a cached Text object, update it, and draw it.
+
+        The first call with a given *key* creates the
+        :py:class:`arcade.Text` object.  Subsequent calls update the
+        existing object's properties and draw it, avoiding
+        reconstruction costs.
+
+        Args:
+            key: Unique string identifier for this text slot.
+            text: The string to display.
+            x: X position in pixels.
+            y: Y position in pixels.
+            color: Text color (any format accepted by arcade).
+            font_size: Font size in points.
+            **kwargs: Additional :py:class:`arcade.Text` properties
+                such as ``bold``, ``anchor_x``, ``rotation``, etc.
+
+        Returns:
+            The :py:class:`arcade.Text` object, useful for measuring
+            ``content_width`` / ``content_height`` after drawing.
+        """
+        cached_text = self.get(key, text, x, y, color, font_size, **kwargs)
+        cached_text.draw()
+        return cached_text
+
+    def get(
+        self,
+        key: str,
+        text: str,
+        x: float,
+        y: float,
+        color: RGBOrA255 = arcade.color.WHITE,
+        font_size: float = 12,
+        **kwargs,
+    ) -> Text:
+        """Get or create a cached Text object and update its properties.
+
+        Like :py:meth:`draw` but does **not** draw the text.  Useful
+        when you need to measure the text (e.g. ``content_width``) or
+        draw it later as part of a batch.
+
+        Args:
+            key: Unique string identifier for this text slot.
+            text: The string to display.
+            x: X position in pixels.
+            y: Y position in pixels.
+            color: Text color (any format accepted by arcade).
+            font_size: Font size in points.
+            **kwargs: Additional :py:class:`arcade.Text` properties
+                such as ``bold``, ``anchor_x``, ``rotation``, etc.
+
+        Returns:
+            The :py:class:`arcade.Text` object.
+        """
+        if key in self._cache:
+            cached_text = self._cache[key]
+            with cached_text:
+                cached_text.text = text
+                cached_text.x = x
+                cached_text.y = y
+                cached_text.color = color
+                cached_text.font_size = font_size
+                for attr_name, attr_value in kwargs.items():
+                    setattr(cached_text, attr_name, attr_value)
+            return cached_text
+
+        merged_kwargs = {**self._defaults, **kwargs}
+        new_text = Text(
+            text, x, y, color,
+            font_size=font_size,
+            font_name=self._font_name,
+            **merged_kwargs,
+        )
+        self._cache[key] = new_text
+        return new_text
+
+    def clear(self) -> None:
+        """Remove all cached Text objects from the pool."""
+        self._cache.clear()
+
+    def remove(self, key: str) -> None:
+        """Remove a specific cached Text object by key.
+
+        Args:
+            key: The identifier of the text slot to remove.
+
+        Raises:
+            KeyError: If *key* is not in the pool.
+        """
+        del self._cache[key]
 
 
 def create_text_sprite(

@@ -257,6 +257,7 @@ from .text import (
     load_font,
     create_text_sprite,
     Text,
+    TextPool,
 )
 
 __all__ = [
@@ -311,6 +312,7 @@ __all__ = [
     "SpriteSequence",
     "SpriteSolidColor",
     "Text",
+    "TextPool",
     "Texture",
     "TextureCacheManager",
     "SpriteSheet",
