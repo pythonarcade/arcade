@@ -584,13 +584,17 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
     def _on_focus_change(self):
         if self.focused:
             self.activate()
-        elif self.active:
+        elif self._active:
             self.deactivate()
 
     def _on_active_changed(self):
         """Handle the active state change of the input
         text field to care about loosing active state."""
-        if not self._active:
+        if self._active:
+            self.trigger_full_render()
+            self.caret.on_activate()
+            self.caret.position = len(self.doc.text)
+        else:
             self.deactivate()
 
     def _apply_style(self):
