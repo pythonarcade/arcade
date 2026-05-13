@@ -1,3 +1,10 @@
+"""
+Example showing how to use the TransitionChain and TransitionAttr classes.
+
+If Arcade and Python are properly installed, you can run this example with:
+python -m arcade.examples.gui.transitions
+"""
+
 import arcade
 from arcade.anim import Easing
 from arcade.gui import UIManager, TransitionChain, TransitionAttr, TransitionAttrIncr
