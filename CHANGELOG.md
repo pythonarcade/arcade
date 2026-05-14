@@ -9,7 +9,13 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - GUI: Added `UIInteractiveSpriteWidget` — combines `UIInteractiveWidget` and `UISpriteWidget` to make sprites clickable and hoverable in the UI tree. See [#2847](https://github.com/pythonarcade/arcade/pull/2847)
   - Supports `hovered`, `pressed`, and `disabled` states with `on_click` event dispatch.
   - Widget size defaults to the sprite's texture dimensions, overridable with explicit `width`/`height`.
+- Added `TextPool` - provides a mechanism for caching Text objects for re-use
 
+### Fixes
+
+- Fixed an issue where pixel scaling for high-dpi displays did not work correctly in web browsers via Pyodide. See [#2846](https://github.com/pythonarcade/arcade/pull/2846)
+- Fixed issues with update/draw rate handling that changes with Pyglet 3, rates are now handled properly between desktop and browser. See [#2845](https://github.com/pythonarcade/arcade/pull/2845)
+- Fixed caret behavior not responding appropriately when activating an input field. See [#2850](https://github.com/pythonarcade/arcade/pull/2850)
 ## 4.0.0.dev4
 
 ### New Features
