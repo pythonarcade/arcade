@@ -450,6 +450,11 @@ Cameras
 
    :ref:`camera_platform`
 
+.. figure:: images/thumbs/camera2d_splitscreen.png
+   :figwidth: 170px
+   :target: camera2d_splitscreen.html
+
+   :ref:`camera2d_splitscreen`
 
 .. _view_examples:
 
