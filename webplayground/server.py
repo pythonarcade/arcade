@@ -19,8 +19,12 @@ bottle.debug(True)
 
 here = Path(__file__).parent.resolve()
 
-path_arcade = Path("../")
-arcade_wheel_filename = "arcade-4.0.0.dev4-py3-none-any.whl"
+path_arcade = here.parent
+version_file_path = path_arcade / "arcade" / "VERSION"
+VERSION = "unknown"
+with open(version_file_path, "r") as version_file:
+    VERSION = version_file.read().rstrip()
+arcade_wheel_filename = f"arcade-{VERSION}-py3-none-any.whl"
 path_arcade_wheel = path_arcade / "dist" / arcade_wheel_filename
 
 # Directory for local test scripts
