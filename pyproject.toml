@@ -66,6 +66,7 @@ dev = [
     "wheel",
     "bottle",            # Used for web testing playground
     {include-group = "extras"},
+    {include-group = "docs"},
 ]
 
 # Testing only
