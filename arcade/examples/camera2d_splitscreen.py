@@ -228,8 +228,8 @@ class Game(arcade.Window):
         # Calling equalise will equalise/equalize the Camera's projection
         # to match the viewport. If we don't call equalise, proportions
         # of our sprites can appear off.
-        player_one_camera.equalise()
-        player_two_camera.equalise()
+        player_one_camera.equalize()
+        player_two_camera.equalize()
 
         # Save a list of our cameras for later use
         self.cameras.append(player_one_camera)
@@ -310,8 +310,8 @@ class Game(arcade.Window):
 
         self.cameras[PLAYER_ONE].viewport = arcade.LBWH(0, 0, half_width, height)
         self.cameras[PLAYER_TWO].viewport = arcade.LBWH(half_width, 0, half_width, height)
-        self.cameras[PLAYER_ONE].equalise()
-        self.cameras[PLAYER_TWO].equalise()
+        self.cameras[PLAYER_ONE].equalize()
+        self.cameras[PLAYER_TWO].equalize()
 
         # Our divider sprite location will need to be adjusted as
         # we used the screen's width and height to set it's location 
