@@ -29,7 +29,7 @@ jobs:
           enable-cache: true
 
       - name: Sync UV project
-        run: uv sync --group docs
+        run: uv sync
 
       - name: Formatting (Ruff)
         if: success()
@@ -50,10 +50,6 @@ jobs:
         if: success()
         continue-on-error: true
         run: uv run make.py pyright
-      
-      - name: Build Docs
-        continue-on-error: true
-        run: uv run make.py docs-full
 
   # This is a second job instead of an extra step because it takes the longest
   # So having it as a second job lets it run in parallel to the other checks.
@@ -75,7 +71,7 @@ jobs:
           enable-cache: true
 
       - name: Sync UV Project
-        run: uv sync --group docs
+        run: uv sync
 
       - name: build-docs
         run: uv run make.py docs-full
