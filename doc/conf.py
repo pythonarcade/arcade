@@ -264,6 +264,7 @@ pygments_style = "default"  # will use "sphinx" or the theme's default
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = "sphinx_rtd_theme"
+html_show_sourcelink = False # pending: better solution to #2859
 
 # See sphinx-rtd-theme docs for details on each option:
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html
