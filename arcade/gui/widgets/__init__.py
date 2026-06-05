@@ -186,7 +186,7 @@ class UIWidget(EventDispatcher, ABC):
             self.add(child)
 
         self._transitions: list[TransitionBase] = []
-        self.event("on_update")(self._update_transitions)
+        self.event("on_update")(self._update_transitions) # todo: this causes a memory leak
 
         bind(self, "rect", UIWidget.trigger_full_render)
         bind(self, "focused", UIWidget.trigger_full_render)
