@@ -50,10 +50,17 @@ class Surface:
             *self.ctx.BLEND_DEFAULT,
             *self.ctx.BLEND_ADDITIVE,
         )
-        #: Blend mode for when we're drawing the surface
+        #: Blend mode for when we're drawing the surface.
+        #: Content rendered into the surface over transparent black ends up
+        #: with premultiplied color channels, so the composite has to use
+        #: premultiplied-alpha blending. Straight alpha would multiply the
+        #: color by alpha a second time (dark fringes on anti-aliased edges)
+        #: and erode the destination alpha under semi-transparent texels.
         self.blend_func_render = (
-            *self.ctx.BLEND_DEFAULT,
-            *self.ctx.BLEND_DEFAULT,
+            self.ctx.ONE,
+            self.ctx.ONE_MINUS_SRC_ALPHA,
+            self.ctx.ONE,
+            self.ctx.ONE_MINUS_SRC_ALPHA,
         )
 
         # 5 floats per vertex (pos 3f, tex 2f) with 4 vertices
@@ -249,7 +256,14 @@ class Surface:
             self.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
         self.texture.use(0)
-        self._geometry.render(self._program)
+        # Blending must be enforced here: pyglet toggles GL_BLEND directly
+        # (e.g. text layouts disable it after drawing), bypassing arcade's
+        # context flag cache. ctx.enabled() always issues the real enable
+        # call, so it resyncs the driver state; without it the composite can
+        # silently run in replace mode and overwrite the destination with
+        # the surface's transparent texels.
+        with self.ctx.enabled(self.ctx.BLEND):
+            self._geometry.render(self._program)
 
         # Restore blend function
         self.ctx.blend_func = blend_func

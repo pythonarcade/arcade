@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from collections.abc import Iterable
 from typing import TypeVar
 
@@ -9,6 +10,7 @@ import arcade
 from arcade import XYWH
 from arcade.gui.events import (
     UIEvent,
+    UIKeyPressEvent,
     UIMouseDragEvent,
     UIMouseEvent,
     UIMouseMovementEvent,
@@ -175,7 +177,26 @@ class UIScrollBar(UIWidget):
 class UIScrollArea(UILayout):
     """A widget that can scroll its children.
 
-    This widget is highly experimental and only provides a proof of concept.
+    Children are laid out on an internal canvas, which resizes itself to fit
+    all children (at least the size of the scroll area itself). The visible
+    part of the canvas is controlled by :py:attr:`scroll_x` and
+    :py:attr:`scroll_y` (both range from ``0`` at the start of the content
+    to a negative value at the end).
+
+    For a typical scrollable list, add a container with ``size_hint=(1, 0)``
+    (fill the width of the scroll area, grow to the natural content height)
+    like ``UIBoxLayout``.
+
+    Scrolling is supported via mouse wheel, :class:`UIScrollBar` and, while
+    the mouse hovers the widget, the keyboard
+    (arrow keys, PageUp/PageDown, Home/End).
+
+    .. note::
+        Content containing labels may finish sizing only during the first
+        layout pass and render on the following frame. Single-frame capture
+        pipelines (e.g. CI screenshots) should draw two frames.
+
+    This widget is experimental, the API might change.
 
     Args:
         x: x position of the widget
@@ -186,17 +207,19 @@ class UIScrollArea(UILayout):
         size_hint: size hint of the widget
         size_hint_min: minimum size hint of the widget
         size_hint_max: maximum size hint of the widget
-        canvas_size: size of the canvas, which is scrollable
+        canvas_size: deprecated, the canvas is sized automatically to fit
+            all children
         overscroll_x: allow over scrolling in x direction (scroll past the end)
         overscroll_y: allow over scrolling in y direction (scroll past the end)
+        scroll_speed: speed of scrolling in pixels per scroll event,
+            defaults to :py:attr:`scroll_speed`
+        invert_scroll: invert the scroll direction,
+            defaults to :py:attr:`invert_scroll`
         **kwargs: passed to UIWidget
     """
 
     scroll_x = Property[float](default=0.0)
     scroll_y = Property[float](default=0.0)
-
-    scroll_speed = 1.8
-    invert_scroll = False
 
     def __init__(
         self,
@@ -209,11 +232,37 @@ class UIScrollArea(UILayout):
         size_hint=None,
         size_hint_min=None,
         size_hint_max=None,
-        canvas_size=(300, 300),
+        canvas_size=None,
         overscroll_x=False,
         overscroll_y=False,
+        scroll_speed: float = 15.0,
+        invert_scroll: bool = False,
         **kwargs,
     ):
+        self.default_anchor_x = "left"
+        self.default_anchor_y = "bottom"
+        self.overscroll_x = overscroll_x
+        self.overscroll_y = overscroll_y
+        self.scroll_speed = scroll_speed
+        self.invert_scroll = invert_scroll
+        self._hovering = False
+
+        if canvas_size is not None:
+            warnings.warn(
+                "canvas_size is deprecated, the canvas is sized automatically to fit all children",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        else:
+            canvas_size = (max(int(width), 1), max(int(height), 1))
+
+        # The canvas has to match the window's pixel ratio,
+        # otherwise content renders at reduced resolution on hi-DPI displays.
+        self.surface = Surface(
+            size=canvas_size,
+            pixel_ratio=arcade.get_window().get_pixel_ratio(),
+        )
+
         super().__init__(
             x=x,
             y=y,
@@ -224,14 +273,6 @@ class UIScrollArea(UILayout):
             size_hint_min=size_hint_min,
             size_hint_max=size_hint_max,
             **kwargs,
-        )
-        self.default_anchor_x = "left"
-        self.default_anchor_y = "bottom"
-        self.overscroll_x = overscroll_x
-        self.overscroll_y = overscroll_y
-
-        self.surface = Surface(
-            size=canvas_size,
         )
 
         bind(self, "scroll_x", UIScrollArea.trigger_full_render)
@@ -285,16 +326,20 @@ class UIScrollArea(UILayout):
             if new_rect != child.rect:
                 child.rect = new_rect
 
-        total_min_x = round(total_min_x)
-        total_min_y = round(total_min_y)
+        # the canvas covers at least the visible area, so children which do not
+        # fill the scroll area never leave the viewport partially uncovered
+        # and scroll ranges never become negative
+        total_min_x = max(round(total_min_x), round(self.content_width), 1)
+        total_min_y = max(round(total_min_y), round(self.content_height), 1)
 
         # resize surface to fit all children
         if self.surface.size != (total_min_x, total_min_y):
             self.surface.resize(
                 size=(total_min_x, total_min_y), pixel_ratio=self.surface.pixel_ratio
             )
-            self.scroll_x = 0
-            self.scroll_y = 0
+            # preserve the scroll position when content changes,
+            # only clamp it into the new scroll range
+            self._clamp_scroll()
 
     def _do_render(self, surface: Surface, force=False) -> bool:
         if not self.visible:
@@ -336,8 +381,58 @@ class UIScrollArea(UILayout):
 
         return self.scroll_x, -normal_pos_y - self.scroll_y
 
+    def _clamp_scroll(self):
+        """Clamp the scroll position into the valid scroll range.
+
+        Axes with overscroll enabled are not clamped.
+        """
+        if not self.overscroll_x:
+            # clip scroll_x between 0 and -(self.surface.width - self.width)
+            scroll_range = int(self.content_width - self.surface.width)
+            scroll_range = min(0, scroll_range)  # clip to 0 if content is smaller than surface
+            self.scroll_x = max(scroll_range, min(0.0, self.scroll_x))
+
+        if not self.overscroll_y:
+            # clip scroll_y between 0 and -(self.surface.height - self.height)
+            scroll_range = int(self.content_height - self.surface.height)
+            scroll_range = min(0, scroll_range)  # clip to 0 if content is smaller than surface
+            self.scroll_y = max(scroll_range, min(0.0, self.scroll_y))
+
+    def _scroll_by_key(self, symbol: int) -> bool:
+        """Scroll on arrow keys, PageUp/PageDown, Home and End.
+
+        Returns True if the key was handled.
+        """
+        v_scrollable = self.surface.height > self.content_height
+        h_scrollable = self.surface.width > self.content_width
+
+        if symbol == arcade.key.UP and v_scrollable:
+            self.scroll_y += self.scroll_speed
+        elif symbol == arcade.key.DOWN and v_scrollable:
+            self.scroll_y -= self.scroll_speed
+        elif symbol == arcade.key.LEFT and h_scrollable:
+            self.scroll_x += self.scroll_speed
+        elif symbol == arcade.key.RIGHT and h_scrollable:
+            self.scroll_x -= self.scroll_speed
+        elif symbol == arcade.key.PAGEUP and v_scrollable:
+            self.scroll_y += self.content_height
+        elif symbol == arcade.key.PAGEDOWN and v_scrollable:
+            self.scroll_y -= self.content_height
+        elif symbol == arcade.key.HOME and v_scrollable:
+            self.scroll_y = 0.0
+        elif symbol == arcade.key.END and v_scrollable:
+            self.scroll_y = float(min(0, int(self.content_height - self.surface.height)))
+        else:
+            return False
+
+        self._clamp_scroll()
+        return True
+
     def on_event(self, event: UIEvent) -> bool | None:
         """Handle scrolling of the widget."""
+        if isinstance(event, UIMouseMovementEvent):
+            self._hovering = self.rect.point_in_rect(event.pos)
+
         if isinstance(event, UIMouseDragEvent) and not self.rect.point_in_rect(event.pos):
             return EVENT_UNHANDLED
 
@@ -347,22 +442,12 @@ class UIScrollArea(UILayout):
             self.scroll_x -= -event.scroll_x * self.scroll_speed * invert
             self.scroll_y -= event.scroll_y * self.scroll_speed * invert
 
-            # clip scrolling to canvas size
-            if not self.overscroll_x:
-                # clip scroll_x between 0 and -(self.surface.width - self.width)
-                scroll_range = int(self.content_width - self.surface.width)
-                scroll_range = min(0, scroll_range)  # clip to 0 if content is smaller than surface
-                self.scroll_x = min(0, self.scroll_x)
-                self.scroll_x = max(self.scroll_x, scroll_range)
-
-            if not self.overscroll_y:
-                # clip scroll_y between 0 and -(self.surface.height - self.height)
-                scroll_range = int(self.content_height - self.surface.height)
-                scroll_range = min(0, scroll_range)  # clip to 0 if content is smaller than surface
-                self.scroll_y = min(0, self.scroll_y)
-                self.scroll_y = max(self.scroll_y, scroll_range)
-
+            self._clamp_scroll()
             return True
+
+        if isinstance(event, UIKeyPressEvent) and self._hovering:
+            if self._scroll_by_key(event.symbol):
+                return True
 
         child_event = event
         if isinstance(event, UIMouseEvent):

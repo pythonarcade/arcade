@@ -162,6 +162,23 @@ def test_size_hint_min_adapts_to_smaller_font(window):
     assert label.size_hint_min[1] < shm_h
 
 
+def test_update_font_with_unchanged_font_does_not_trigger_render(window):
+    """The label resolves a font fallback tuple to a concrete loaded font.
+
+    Re-applying the same requested tuple (button styles do this on every
+    render) must not be reported as a change, otherwise every render
+    triggers a full render of the whole UI, which repeats itself every frame.
+    """
+    # first entry does not exist, so the label falls back to a later font
+    font_names = ("NonExistentFont", "arial", "calibri")
+    label = UILabel(text="Example", font_name=font_names, text_color=Color(255, 255, 255))
+    label._requires_render = False
+
+    label.update_font(font_name=font_names, font_size=12, font_color=Color(255, 255, 255))
+
+    assert label._requires_render is False
+
+
 def test_multiline_enabled_size_hint_min_adapts_to_new_text(window):
     """Tests multiline with auto size. It should adapt to new text.
 

@@ -16,6 +16,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed an issue where pixel scaling for high-dpi displays did not work correctly in web browsers via Pyodide. See [#2846](https://github.com/pythonarcade/arcade/pull/2846)
 - Fixed issues with update/draw rate handling that changes with Pyglet 3, rates are now handled properly between desktop and browser. See [#2845](https://github.com/pythonarcade/arcade/pull/2845)
 - Fixed caret behavior not responding appropriately when activating an input field. See [#2850](https://github.com/pythonarcade/arcade/pull/2850)
+- GUI: Fixed `UILabel.update_font` always reporting a font change when the requested font was a fallback tuple (e.g. `UIFlatButton`'s default styles), which caused a full UI re-render every frame. This made widget-heavy UIs, such as the `exp_scroll_area` example, run at a few FPS.
 ## 4.0.0.dev4
 
 ### New Features

@@ -42,11 +42,10 @@ class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
         self._scroll_area = UIScrollArea(
             width=100,
             height=100,
-            canvas_size=(100, 100),
             size_hint=(1, 1),
+            scroll_speed=scroll_speed,
+            invert_scroll=invert_scroll,
         )
-        self._scroll_area.invert_scroll = invert_scroll
-        self._scroll_area.scroll_speed = scroll_speed
         self._scroll_area.add(self._options_layout)
 
         super().add(self._scroll_area)
@@ -294,8 +293,7 @@ class UIDropdown(UILayout):
         overlay_w = self.width + scroll_bar_w
 
         overlay.rect = (
-            overlay.rect
-            .resize(overlay_w, visible_h)
+            overlay.rect.resize(overlay_w, visible_h)
             .align_top(self.bottom - 2)
             .align_left(self._default_button.left)
         )
