@@ -1,5 +1,11 @@
 """
-Example showing how to use the TransitionChain and TransitionAttr classes.
+Example showing how to animate a widget with UIAnimatedGroup.animate().
+
+A click sends the wrapped button on a round trip: right, up, and back to
+where it started, while it is disabled. The group's ``offset_x``/``offset_y``
+translate the cached subtree visually, without affecting layouting. Each
+``then()`` step runs after the previous one finished; ``rel()`` marks targets
+relative to the current value.
 
 If Arcade and Python are properly installed, you can run this example with:
 python -m arcade.examples.gui.transitions
@@ -7,8 +13,8 @@ python -m arcade.examples.gui.transitions
 
 import arcade
 from arcade.anim import Easing
-from arcade.gui import UIManager, TransitionChain, TransitionAttr, TransitionAttrIncr
-from arcade.gui.transition import TransitionAttrSet
+from arcade.gui import UIManager
+from arcade.gui.experimental import UIAnimatedGroup, rel
 from arcade.gui.widgets.buttons import UIFlatButton
 
 
@@ -33,39 +39,26 @@ class DemoWindow(arcade.Window):
         self.manager = UIManager()
         self.manager.enable()
 
-        button = self.manager.add(AutoSizeButton(text="Click me I can move!"))
-        button.center_on_screen()
+        button = AutoSizeButton(text="Click me I can move!")
+        group = self.manager.add(UIAnimatedGroup(child=button))
+        group.center_on_screen()
 
         @button.event
         def on_click(event):
-            # button.disabled = True
+            if button.disabled:
+                return
+            button.disabled = True
 
-            start_x, start_y = button.center
-            chain = TransitionChain()
+            def enable():
+                button.disabled = False
 
-            chain.add(TransitionAttrSet(attribute="disabled", value=True, duration=0))
-
-            chain.add(TransitionAttrIncr(attribute="center_x", increment=100, duration=1.0))
-            chain.add(
-                TransitionAttrIncr(
-                    attribute="center_y", increment=100, duration=1, ease_function=Easing.LINEAR
-                )
+            (
+                group.animate(offset_x=rel(100), duration=1)
+                .then(offset_y=rel(100), duration=1)
+                .then(offset_x=0, duration=1, ease=Easing.SINE)
+                .then(offset_y=0, duration=1, ease=Easing.SINE)
+                .on_finish(enable)
             )
-
-            # Go back
-            chain.add(
-                TransitionAttr(
-                    attribute="center_x", end=start_x, duration=1, ease_function=Easing.LINEAR
-                )
-            )
-            chain.add(
-                TransitionAttr(
-                    attribute="center_y", end=start_y, duration=1, ease_function=Easing.LINEAR
-                )
-            )
-            chain.add(TransitionAttrSet(attribute="disabled", value=False, duration=0))
-
-            button.add_transition(chain)
 
     def on_draw(self):
         self.clear()
