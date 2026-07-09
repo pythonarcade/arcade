@@ -256,50 +256,36 @@ Available:
 - :py:class:`arcade.gui.UIButtonRow` - A row of buttons.
 
 
-Transitions
-===========
+Animations
+==========
 
-To animate a UIWidget, use :meth:`UIWidget.add_transition` and add a :class:`Transition`.
-A :class:`Transition` can be used to manipulate a value over time.
-Arcade provides a few easing functions listed below.
+Widgets can be animated with the experimental
+:py:class:`~arcade.gui.experimental.UIAnimatedGroup`, which wraps a widget
+subtree and tweens its transform properties over time:
 
-.. code-block::
+.. code-block:: python
 
-    widget = UIWidget()
-    # move a widgets center_x from 0 to 100 within 2 seconds
-    widget.add_transition(Transition(attribute="center_x", start=0, end=100, duration=2))
+    from arcade.gui.experimental import UIAnimatedGroup
 
-Transactions can also be chained to be executed sequentially using the `+` operator
-or combined for parallel execution with the `|` operator.
+    group = UIAnimatedGroup(child=UIFlatButton(text="Play"))
 
-Arcade provides following transitions:
+    # pop and fade in with easing, then wiggle once
+    group.animate(scale=1.0, alpha=255, duration=0.5, ease=Easing.BACK_OUT)
+    group.animate(angle=3, duration=0.06).then(angle=-3, duration=0.12).then(angle=0, duration=0.06)
 
-- :class:`TransitionAttr` - Change value over time (start til end)
-- :class:`TransitionAttrIncr` - Increment value over time
-- :class:`TransitionAttrSet` - Set value after time
-- :class:`TransitionParallel` - Execute multiple transactions parallel
-- :class:`TransitionChain` - Execute multiple transactions sequentially
-- :class:`TransitionDelay` - Used to pause :class:`TransitionChain`
+Animations support sequencing (``then()``), repetition (``repeat``,
+``yoyo``), relative targets (:py:func:`~arcade.gui.experimental.rel`),
+completion callbacks (``on_finish()``) and are resolved per property:
+starting a new animation takes over its properties from running ones.
 
-> Be aware, that transitions may interfere with :class:`UILayout` positioning.
+The group renders its subtree into a cached surface and provides transform
+properties (``scale``, ``angle``, ``alpha``, ``offset_x``, ``offset_y``,
+``tint``) which do not affect layouting. For the non-interactive caching
+primitive without hover/click states, use
+:py:class:`~arcade.gui.experimental.UIRenderGroup`.
 
-Easing functions
-................
-
-You can check out all of these functions using `python -m arcade.examples.easing_example_1`
-
-- :meth:`arcade.linear`
-- :meth:`arcade.smoothstep`
-- :meth:`arcade.ease_in`
-- :meth:`arcade.ease_out`
-- :meth:`arcade.ease_in_out`
-- :meth:`arcade.ease_out_elastic`
-- :meth:`arcade.ease_out_bounce`
-- :meth:`arcade.ease_in_back`
-- :meth:`arcade.ease_out_back`
-- :meth:`arcade.ease_in_sin`
-- :meth:`arcade.ease_out_sin`
-- :meth:`arcade.ease_in_out_sin`
+See :ref:`gui_animations` for a full guide, including the low level
+transition classes.
 
 Available Elements
 ==================

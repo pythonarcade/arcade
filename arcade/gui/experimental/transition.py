@@ -233,7 +233,7 @@ class TransitionChain(TransitionBase):
             if transition.finished:
                 self._transitions.pop(0)
 
-        return min(0.0, dt)
+        return max(0.0, dt)
 
     @property
     def finished(self) -> bool:

@@ -540,3 +540,137 @@ class ListProperty(Property[list[P]], Generic[P]):
         """Set value for owner instance, wraps the list into an observable list."""
         value = _ObservableList(self, instance, value)
         super().set(instance, value)
+
+
+ChildGetter = Callable[[Any], Any]
+
+
+class AliasProperty(Property[P]):
+    """A property that transparently delegates reads, writes, and listener
+    registration to a named :class:`Property` on a child object.
+
+    This lets a parent widget expose a child's property as its own, so callers
+    can use :func:`bind` / :func:`unbind` on the parent without knowing about
+    the child:
+
+    .. code-block:: python
+
+        class UITextButton(UIWidget):
+            _label: UILabel
+
+            # Expose the label's "text" Property directly on the button.
+            text = AliasProperty(lambda self: self._label, "text")
+
+        btn = UITextButton(text="Click me")
+        bind(btn, "text", lambda inst, val: print("new text:", val))
+        btn.text = "Updated"  # triggers the listener with inst=btn
+
+    Args:
+        child_getter: A callable ``(parent_instance) -> child_instance`` that
+            returns the child object owning the real property.  A plain
+            attribute-name string (e.g. ``"_label"``) is also accepted as a
+            convenience shorthand for ``lambda self: getattr(self, "_label")``.
+        child_prop_name: The attribute name of the :class:`Property` on the
+            child class to delegate to.
+    """
+
+    __slots__ = ("child_getter", "child_prop_name", "_forwarders")
+
+    def __init__(self, child_getter: ChildGetter | str, child_prop_name: str):
+        # No default — value always lives on the child.
+        super().__init__()
+        if isinstance(child_getter, str):
+            attr = child_getter
+            self.child_getter: ChildGetter = lambda instance: getattr(instance, attr)
+        else:
+            self.child_getter = child_getter
+        self.child_prop_name = child_prop_name
+        # Maps parent_instance -> {original_callback: forwarder_callback}
+        # WeakKeyDictionary so entries are released when the parent is GC'd.
+        self._forwarders: WeakKeyDictionary[Any, dict[AnyListener, AnyListener]] = (
+            WeakKeyDictionary()
+        )
+
+    # ------------------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------------------
+
+    def _child(self, instance: Any) -> Any:
+        return self.child_getter(instance)
+
+    def _child_prop(self, instance: Any) -> "Property[P]":
+        child = self._child(instance)
+        prop = getattr(type(child), self.child_prop_name)
+        if not isinstance(prop, Property):
+            raise ValueError(
+                f"{type(child).__name__}.{self.child_prop_name} is not an arcade.gui.Property"
+            )
+        return prop  # type: ignore[return-value]
+
+    # ------------------------------------------------------------------
+    # Property protocol
+    # ------------------------------------------------------------------
+
+    @override
+    def get(self, instance: Any) -> P:
+        """Return the child's property value."""
+        return getattr(self._child(instance), self.child_prop_name)
+
+    @override
+    def set(self, instance: Any, value: P) -> None:
+        """Write *value* to the child's property (triggers child's own dispatch)."""
+        setattr(self._child(instance), self.child_prop_name, value)
+
+    @override
+    def dispatch(self, instance: Any, value: Any, old_value: Any) -> None:
+        """No-op: listeners live on the child, not on an ``_Obs`` here."""
+
+    @override
+    def bind(self, instance: Any, callback: AnyListener) -> None:
+        """Register *callback* on the child's property.
+
+        Calls to *callback* will receive the **parent** instance as their
+        first argument, not the child, so the public API is consistent.
+        """
+        child = self._child(instance)
+        child_prop = self._child_prop(instance)
+
+        listener_type = _ListenerType.detect_callback_type(callback)
+        parent_ref: ref[Any] = ref(instance)
+
+        def _forwarder(child_inst: Any, new_value: Any, old_value: Any) -> None:
+            parent = parent_ref()
+            if parent is None:
+                return
+            try:
+                if listener_type == _ListenerType.NO_ARG:
+                    callback()  # type: ignore[call-arg]
+                elif listener_type == _ListenerType.INSTANCE:
+                    callback(parent)  # type: ignore[call-arg]
+                elif listener_type == _ListenerType.INSTANCE_VALUE:
+                    callback(parent, new_value)  # type: ignore[call-arg]
+                elif listener_type == _ListenerType.INSTANCE_NEW_OLD:
+                    callback(parent, new_value, old_value)  # type: ignore[call-arg]
+            except Exception:
+                print(
+                    f"Change listener for {parent}.{self.name} = {new_value} "
+                    "raised an exception!",
+                    file=sys.stderr,
+                )
+                traceback.print_exc()
+
+        self._forwarders.setdefault(instance, {})[callback] = _forwarder
+        child_prop.bind(child, _forwarder)
+
+    @override
+    def unbind(self, instance: Any, callback: AnyListener) -> None:
+        """Remove a previously bound *callback* from the child's property."""
+        forwarders = self._forwarders.get(instance)
+        if forwarders is None:
+            return
+        forwarder = forwarders.pop(callback, None)
+        if forwarder is None:
+            return
+        child_prop = self._child_prop(instance)
+        child_prop.unbind(self._child(instance), forwarder)
+

@@ -33,14 +33,12 @@ from arcade.gui.property import ListProperty, Property, bind
 from arcade.gui.surface import Surface
 from arcade.types import AnchorPoint, AsFloat, Color
 from arcade.utils import copy_dunders_unimplemented
-from arcade.gui.transition import TransitionBase
 
 if TYPE_CHECKING:
     from arcade.gui.ui_manager import UIManager
 
 W = TypeVar("W", bound="UIWidget")
 P = TypeVar("P")
-T = TypeVar("T", bound="TransitionBase")
 
 
 class FocusMode(IntEnum):
@@ -185,9 +183,6 @@ class UIWidget(EventDispatcher, ABC):
         for child in children:
             self.add(child)
 
-        self._transitions: list[TransitionBase] = []
-        self.event("on_update")(self._update_transitions) # todo: this causes a memory leak
-
         bind(self, "rect", UIWidget.trigger_full_render)
         bind(self, "focused", UIWidget.trigger_full_render)
         bind(
@@ -285,10 +280,20 @@ class UIWidget(EventDispatcher, ABC):
         if self.visible:
             # pass event to children
             for child in reversed(self.children):
-                if child.dispatch_event("on_event", event):
+                if self._dispatch_event_to_child(child, event):
                     return EVENT_HANDLED
 
         return EVENT_UNHANDLED
+
+    def _dispatch_event_to_child(self, child: UIWidget, event: UIEvent) -> bool | None:
+        """Dispatch an event to a single child.
+
+        Subclasses can override this to transform the event before it reaches
+        the child, without affecting how the widget handles the event itself.
+        :class:`~arcade.gui.experimental.group.UIRenderGroup` uses this to map
+        mouse coordinates into the child's local space.
+        """
+        return child.dispatch_event("on_event", event)
 
     def _walk_parents(self) -> Iterable[UIWidget | UIManager]:
         parent = self.parent
@@ -328,17 +333,20 @@ class UIWidget(EventDispatcher, ABC):
             # rect changes in children will trigger_full_render
             child._do_layout()
 
-    def _do_render(self, surface: Surface, force=False) -> bool:
+    def _do_render(self, surface: Surface, force: bool = False) -> bool:
         """Helper function to trigger :meth:`UIWidget.do_render` through the widget tree,
         should only be used by UIManager!
 
         Returns:
             if this widget or a child was rendered
         """
+        if not self.visible:
+            return False
+
         rendered = False
 
         should_render = force or self._requires_render
-        if should_render and self.visible:
+        if should_render:
             rendered = True
             self.do_render_base(surface)
             self.do_render(surface)
@@ -346,10 +354,9 @@ class UIWidget(EventDispatcher, ABC):
                 self.do_render_focus(surface)
             self._requires_render = False
 
-        # only render children if self is visible
-        if self.visible:
-            for child in self.children:
-                rendered |= child._do_render(surface, should_render)
+        # pass render call to children
+        for child in self.children:
+            rendered |= child._do_render(surface, should_render)
 
         return rendered
 
@@ -406,27 +413,6 @@ class UIWidget(EventDispatcher, ABC):
     def dispatch_ui_event(self, event: UIEvent):
         """Dispatch a :class:`UIEvent` using pyglet event dispatch mechanism"""
         return self.dispatch_event("on_event", event)
-
-    def _update_transitions(self, dt):
-        # Update transitions
-        for transaction in self._transitions[:]:
-            transaction.tick(self, dt)
-
-            if transaction.finished:
-                self._transitions.remove(transaction)
-
-    def add_transition(self, transition: T) -> T:
-        """
-        Add a transition, which will be updated using on_update time.
-        """
-        self._transitions.append(transition)
-        return transition
-
-    def clear_transitions(self):
-        """
-        Remove all transitions from this widget. Finished Transitions are removed automatically.
-        """
-        self._transitions.clear()
 
     def move(self, dx=0, dy=0):
         """Move the widget by dx and dy.

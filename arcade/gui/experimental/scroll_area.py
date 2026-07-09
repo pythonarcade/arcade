@@ -221,6 +221,11 @@ class UIScrollArea(UILayout):
     scroll_x = Property[float](default=0.0)
     scroll_y = Property[float](default=0.0)
 
+    scroll_speed: float = 15.0
+    """Default scroll speed in pixels per scroll event."""
+    invert_scroll: bool = False
+    """Default for inverting the scroll direction."""
+
     def __init__(
         self,
         *,
@@ -235,16 +240,19 @@ class UIScrollArea(UILayout):
         canvas_size=None,
         overscroll_x=False,
         overscroll_y=False,
-        scroll_speed: float = 15.0,
-        invert_scroll: bool = False,
+        scroll_speed: float | None = None,
+        invert_scroll: bool | None = None,
         **kwargs,
     ):
         self.default_anchor_x = "left"
         self.default_anchor_y = "bottom"
         self.overscroll_x = overscroll_x
         self.overscroll_y = overscroll_y
-        self.scroll_speed = scroll_speed
-        self.invert_scroll = invert_scroll
+        # None falls back to the class attribute defaults
+        if scroll_speed is not None:
+            self.scroll_speed = scroll_speed
+        if invert_scroll is not None:
+            self.invert_scroll = invert_scroll
         self._hovering = False
 
         if canvas_size is not None:

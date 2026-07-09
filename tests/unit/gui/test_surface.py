@@ -2,6 +2,7 @@ import pytest
 
 import arcade
 from arcade import LBWH, load_texture
+from arcade.color import WHITE
 from arcade.gui import Surface, NinePatchTexture
 
 
@@ -37,6 +38,54 @@ def test_limit_surface(window):
 
     surface.limit(None)
     assert surface._cam.viewport == LBWH(0, 0, 100, 100)
+
+
+def _draw_surface_to_window(window, **draw_kwargs):
+    """Fill a surface with solid white, draw it on a black window, return the image."""
+    surface = Surface(size=(100, 100))
+    with surface.activate():
+        surface.clear(WHITE)
+
+    # Clear to opaque black so a faded (alpha < 255) white surface blends
+    # toward black, lowering the resulting RGB brightness.
+    window.clear(color=(0, 0, 0, 255))
+    surface.draw(**draw_kwargs)
+    return window.ctx.get_framebuffer_image(window.ctx.screen)
+
+
+def test_surface_draw_supports_transform_and_color_kwargs(window):
+    # Smoke test: all new transform/color kwargs are accepted and render.
+    surface = Surface(size=(100, 100))
+    with surface.activate():
+        surface.clear(WHITE)
+
+    window.clear()
+    surface.draw(
+        position=(5.0, 5.0),
+        angle=45.0,
+        scale=(2.0, 0.5),
+        anchor=(50.0, 50.0),
+        color=WHITE,
+        alpha=128,
+    )
+
+
+def test_surface_draw_alpha_fades_output(window):
+    # The surface quad sits at the window origin (bottom-left). get_framebuffer_image
+    # returns rows top-to-bottom, so sample near the bottom of the image.
+    px = (50, window.height - 50)
+
+    # Full opacity: white surface over black -> bright (white) center pixel.
+    opaque = _draw_surface_to_window(window)
+    assert opaque.getpixel(px)[0] == 255
+
+    # Half alpha: white blends with black background -> mid-gray center pixel.
+    faded = _draw_surface_to_window(window, alpha=128)
+    assert 0 < faded.getpixel(px)[0] < 255
+
+    # Fully transparent: only the black background remains.
+    invisible = _draw_surface_to_window(window, alpha=0)
+    assert invisible.getpixel(px)[0] == 0
 
 
 @pytest.mark.backendgl

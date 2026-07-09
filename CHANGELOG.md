@@ -10,6 +10,12 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - Supports `hovered`, `pressed`, and `disabled` states with `on_click` event dispatch.
   - Widget size defaults to the sprite's texture dimensions, overridable with explicit `width`/`height`.
 - Added `TextPool` - provides a mechanism for caching Text objects for re-use
+- GUI: Added an experimental animation API in `arcade.gui.experimental` — `UIAnimatedGroup` wraps a widget subtree and tweens its transform properties over time via `animate()`.
+  - `UIAnimatedGroup` caches its subtree into a surface and exposes non-layouting transform properties (`scale`, `angle`, `alpha`, `offset_x`, `offset_y`, `tint`); it is interactive, hit-testing `hovered`/`pressed`/`on_click` against its untransformed rect. `UIRenderGroup` is the non-interactive caching primitive.
+  - `animate()` supports multiple properties per call, sequencing via `then()`, repetition (`repeat`, `yoyo`), relative targets (`rel()`), easing, delays and `on_finish` callbacks.
+  - Animations are resolved per property: starting a new animation takes over its properties from running ones, other properties keep animating.
+  - Interpolates numbers, tuples, `Color` and vector types; non-interpolatable values snap at the end.
+  - The low level `Transition*` classes remain available for custom behavior.
 
 ### Fixes
 

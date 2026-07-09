@@ -228,13 +228,12 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "use_declarations_in": ["arcade.gui.property"],
     },
     "gui_style.rst": {"title": "GUI Style", "use_declarations_in": ["arcade.gui.style"]},
-    "gui_transition.rst": {
-        "title": "GUI Transition",
-        "use_declarations_in": ["arcade.gui.transition"],
-    },
     "gui_experimental.rst": {
         "title": "GUI Experimental Features",
         "use_declarations_in": [
+            "arcade.gui.experimental.animate",
+            "arcade.gui.experimental.transition",
+            "arcade.gui.experimental.group",
             "arcade.gui.experimental.password_input",
             "arcade.gui.experimental.scroll_area",
             "arcade.gui.experimental.typed_text_input",
