@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Callable, Any, Optional, List, TypeVar
+from typing import Any, Callable, List, Optional, TypeVar
 
 from pyglet.event import EventDispatcher
 

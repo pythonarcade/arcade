@@ -821,7 +821,10 @@ class TextPool:
 
         merged_kwargs = {**self._defaults, **kwargs}
         new_text = Text(
-            text, x, y, color,
+            text,
+            x,
+            y,
+            color,
             font_size=font_size,
             font_name=self._font_name,
             **merged_kwargs,

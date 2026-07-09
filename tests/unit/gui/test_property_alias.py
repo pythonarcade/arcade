@@ -319,7 +319,3 @@ def test_alias_property_rebind_after_child_replacement():
     parent.text = "second"
     assert observer.count == 2
     assert observer.call_args[1] == "second"
-
-
-
-

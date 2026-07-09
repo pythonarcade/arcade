@@ -653,8 +653,7 @@ class AliasProperty(Property[P]):
                     callback(parent, new_value, old_value)  # type: ignore[call-arg]
             except Exception:
                 print(
-                    f"Change listener for {parent}.{self.name} = {new_value} "
-                    "raised an exception!",
+                    f"Change listener for {parent}.{self.name} = {new_value} raised an exception!",
                     file=sys.stderr,
                 )
                 traceback.print_exc()
@@ -673,4 +672,3 @@ class AliasProperty(Property[P]):
             return
         child_prop = self._child_prop(instance)
         child_prop.unbind(self._child(instance), forwarder)
-
