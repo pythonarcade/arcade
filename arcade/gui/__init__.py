@@ -21,7 +21,7 @@ from arcade.gui.mixins import UIDraggableMixin
 from arcade.gui.mixins import UIMouseFilterMixin
 from arcade.gui.mixins import UIWindowLikeMixin
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.gui.property import ListProperty, DictProperty, Property, bind, unbind
+from arcade.gui.property import AliasProperty, ListProperty, DictProperty, Property, bind, unbind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.ui_manager import UIManager
@@ -100,6 +100,7 @@ __all__ = [
     "Surface",
     "NinePatchTexture",
     # Property classes
+    "AliasProperty",
     "ListProperty",
     "DictProperty",
     "Property",

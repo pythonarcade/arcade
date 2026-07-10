@@ -3,8 +3,8 @@ from __future__ import annotations
 import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Literal, TypeVar
 from types import EllipsisType
+from typing import Literal, TypeVar
 
 from typing_extensions import override
 

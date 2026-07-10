@@ -102,8 +102,12 @@ def test_properties_update_on_reuse(window):
     pool = arcade.TextPool()
     pool.get("item", "Old", 0, 0, color=arcade.color.WHITE, font_size=12)
     updated = pool.get(
-        "item", "New", 100, 200,
-        color=arcade.color.RED, font_size=24,
+        "item",
+        "New",
+        100,
+        200,
+        color=arcade.color.RED,
+        font_size=24,
     )
     assert updated.text == "New"
     assert updated.x == 100

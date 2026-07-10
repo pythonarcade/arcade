@@ -164,7 +164,9 @@ def test_dropdown_value_setter_updates_button_text(ui):
 
 
 def test_dropdown_few_options_no_scrolling(ui):
-    dropdown = UIDropdown(options=["Apple", "Banana", "Cherry"], width=200, height=30, max_height=200)
+    dropdown = UIDropdown(
+        options=["Apple", "Banana", "Cherry"], width=200, height=30, max_height=200
+    )
     anchor = ui.add(UIAnchorLayout())
     anchor.add(dropdown, anchor_x="center", anchor_y="center")
     ui.execute_layout()

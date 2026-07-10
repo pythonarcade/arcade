@@ -10,12 +10,19 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - Supports `hovered`, `pressed`, and `disabled` states with `on_click` event dispatch.
   - Widget size defaults to the sprite's texture dimensions, overridable with explicit `width`/`height`.
 - Added `TextPool` - provides a mechanism for caching Text objects for re-use
+- GUI: Added an experimental animation API in `arcade.gui.experimental` — `UIAnimatedGroup` wraps a widget subtree and tweens its transform properties over time via `animate()`.
+  - `UIAnimatedGroup` caches its subtree into a surface and exposes non-layouting transform properties (`scale`, `angle`, `alpha`, `offset_x`, `offset_y`, `tint`); it is interactive, hit-testing `hovered`/`pressed`/`on_click` against its untransformed rect. `UIRenderGroup` is the non-interactive caching primitive.
+  - `animate()` supports multiple properties per call, sequencing via `then()`, repetition (`repeat`, `yoyo`), relative targets (`rel()`), easing, delays and `on_finish` callbacks.
+  - Animations are resolved per property: starting a new animation takes over its properties from running ones, other properties keep animating.
+  - Interpolates numbers, tuples, `Color` and vector types; non-interpolatable values snap at the end.
+  - The low level `Transition*` classes remain available for custom behavior.
 
 ### Fixes
 
 - Fixed an issue where pixel scaling for high-dpi displays did not work correctly in web browsers via Pyodide. See [#2846](https://github.com/pythonarcade/arcade/pull/2846)
 - Fixed issues with update/draw rate handling that changes with Pyglet 3, rates are now handled properly between desktop and browser. See [#2845](https://github.com/pythonarcade/arcade/pull/2845)
 - Fixed caret behavior not responding appropriately when activating an input field. See [#2850](https://github.com/pythonarcade/arcade/pull/2850)
+- GUI: Fixed `UILabel.update_font` always reporting a font change when the requested font was a fallback tuple (e.g. `UIFlatButton`'s default styles), which caused a full UI re-render every frame. This made widget-heavy UIs, such as the `exp_scroll_area` example, run at a few FPS.
 ## 4.0.0.dev4
 
 ### New Features

@@ -280,10 +280,20 @@ class UIWidget(EventDispatcher, ABC):
         if self.visible:
             # pass event to children
             for child in reversed(self.children):
-                if child.dispatch_event("on_event", event):
+                if self._dispatch_event_to_child(child, event):
                     return EVENT_HANDLED
 
         return EVENT_UNHANDLED
+
+    def _dispatch_event_to_child(self, child: UIWidget, event: UIEvent) -> bool | None:
+        """Dispatch an event to a single child.
+
+        Subclasses can override this to transform the event before it reaches
+        the child, without affecting how the widget handles the event itself.
+        :class:`~arcade.gui.experimental.group.UIRenderGroup` uses this to map
+        mouse coordinates into the child's local space.
+        """
+        return child.dispatch_event("on_event", event)
 
     def _walk_parents(self) -> Iterable[UIWidget | UIManager]:
         parent = self.parent
@@ -323,17 +333,20 @@ class UIWidget(EventDispatcher, ABC):
             # rect changes in children will trigger_full_render
             child._do_layout()
 
-    def _do_render(self, surface: Surface, force=False) -> bool:
+    def _do_render(self, surface: Surface, force: bool = False) -> bool:
         """Helper function to trigger :meth:`UIWidget.do_render` through the widget tree,
         should only be used by UIManager!
 
         Returns:
             if this widget or a child was rendered
         """
+        if not self.visible:
+            return False
+
         rendered = False
 
         should_render = force or self._requires_render
-        if should_render and self.visible:
+        if should_render:
             rendered = True
             self.do_render_base(surface)
             self.do_render(surface)
@@ -341,10 +354,9 @@ class UIWidget(EventDispatcher, ABC):
                 self.do_render_focus(surface)
             self._requires_render = False
 
-        # only render children if self is visible
-        if self.visible:
-            for child in self.children:
-                rendered |= child._do_render(surface, should_render)
+        # pass render call to children
+        for child in self.children:
+            rendered |= child._do_render(surface, should_render)
 
         return rendered
 

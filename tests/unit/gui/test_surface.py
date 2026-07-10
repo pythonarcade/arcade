@@ -1,6 +1,8 @@
 import pytest
 
+import arcade
 from arcade import LBWH, load_texture
+from arcade.color import WHITE
 from arcade.gui import Surface, NinePatchTexture
 
 
@@ -36,3 +38,98 @@ def test_limit_surface(window):
 
     surface.limit(None)
     assert surface._cam.viewport == LBWH(0, 0, 100, 100)
+
+
+def _draw_surface_to_window(window, **draw_kwargs):
+    """Fill a surface with solid white, draw it on a black window, return the image."""
+    surface = Surface(size=(100, 100))
+    with surface.activate():
+        surface.clear(WHITE)
+
+    # Clear to opaque black so a faded (alpha < 255) white surface blends
+    # toward black, lowering the resulting RGB brightness.
+    window.clear(color=(0, 0, 0, 255))
+    surface.draw(**draw_kwargs)
+    return window.ctx.get_framebuffer_image(window.ctx.screen)
+
+
+def test_surface_draw_supports_transform_and_color_kwargs(window):
+    # Smoke test: all new transform/color kwargs are accepted and render.
+    surface = Surface(size=(100, 100))
+    with surface.activate():
+        surface.clear(WHITE)
+
+    window.clear()
+    surface.draw(
+        position=(5.0, 5.0),
+        angle=45.0,
+        scale=(2.0, 0.5),
+        anchor=(50.0, 50.0),
+        color=WHITE,
+        alpha=128,
+    )
+
+
+def test_surface_draw_alpha_fades_output(window):
+    # The surface quad sits at the window origin (bottom-left). get_framebuffer_image
+    # returns rows top-to-bottom, so sample near the bottom of the image.
+    px = (50, window.height - 50)
+
+    # Full opacity: white surface over black -> bright (white) center pixel.
+    opaque = _draw_surface_to_window(window)
+    assert opaque.getpixel(px)[0] == 255
+
+    # Half alpha: white blends with black background -> mid-gray center pixel.
+    faded = _draw_surface_to_window(window, alpha=128)
+    assert 0 < faded.getpixel(px)[0] < 255
+
+    # Fully transparent: only the black background remains.
+    invisible = _draw_surface_to_window(window, alpha=0)
+    assert invisible.getpixel(px)[0] == 0
+
+
+@pytest.mark.backendgl
+def test_draw_enforces_blending(window):
+    """Surface.draw() has to enforce GL blending.
+
+    pyglet toggles GL_BLEND directly (e.g. text layouts disable it after
+    drawing), bypassing arcade's context flag cache. Without a forced enable
+    the composite runs in replace mode: the surface's transparent texels
+    overwrite the destination, punching an alpha hole through the UI.
+    """
+    from pyglet.graphics.api import gl
+
+    parent = Surface(size=(50, 50))
+    child = Surface(size=(50, 50))  # stays fully transparent
+
+    with parent.activate():
+        parent.clear((255, 255, 255, 255))
+
+        # simulate pyglet disabling blending behind arcade's state cache
+        window.ctx.enable(window.ctx.BLEND)
+        gl.glDisable(gl.GL_BLEND)
+
+        child.draw()
+
+    center = parent.to_image().getpixel((25, 25))
+    assert center == (255, 255, 255, 255)
+
+
+def test_draw_composites_premultiplied(window):
+    """Content rendered into a surface over transparent black is
+    premultiplied; a straight-alpha composite would darken the content and
+    erode the destination alpha."""
+    parent = Surface(size=(50, 50))
+    child = Surface(size=(50, 50))
+
+    with child.activate():
+        # 50% red over transparent black -> premultiplied (128, 0, 0, 128)
+        arcade.draw_rect_filled(LBWH(0, 0, 50, 50), (255, 0, 0, 128))
+
+    with parent.activate():
+        parent.clear((255, 255, 255, 255))
+        child.draw()
+
+    r, g, b, a = parent.to_image().getpixel((25, 25))
+    # 50% red over opaque white keeps full alpha
+    assert (r, g, b, a) == pytest.approx((255, 127, 127, 255), abs=2)

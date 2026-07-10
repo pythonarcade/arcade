@@ -1,4 +1,5 @@
 """Tests that layouts warn when explicit width/height conflicts with active size_hint."""
+
 import warnings
 
 import pytest

@@ -1,6 +1,7 @@
 from array import array
 from collections.abc import Generator
 from contextlib import contextmanager
+from math import radians
 
 from PIL import Image
 from pyglet.math import Vec2, Vec4
@@ -9,10 +10,10 @@ from typing_extensions import Self
 import arcade
 from arcade import Texture
 from arcade.camera import CameraData, OrthographicProjectionData, OrthographicProjector
-from arcade.color import TRANSPARENT_BLACK
+from arcade.color import TRANSPARENT_BLACK, WHITE
 from arcade.gl import BufferDescription, Framebuffer
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.types import LBWH, RGBA255, Point, Rect
+from arcade.types import LBWH, RGBA255, Color, Point, Rect
 
 
 class Surface:
@@ -50,16 +51,29 @@ class Surface:
             *self.ctx.BLEND_DEFAULT,
             *self.ctx.BLEND_ADDITIVE,
         )
-        #: Blend mode for when we're drawing the surface
+        #: Blend mode for when we're drawing the surface.
+        #: Content rendered into the surface over transparent black ends up
+        #: with premultiplied color channels, so the composite has to use
+        #: premultiplied-alpha blending. Straight alpha would multiply the
+        #: color by alpha a second time (dark fringes on anti-aliased edges)
+        #: and erode the destination alpha under semi-transparent texels.
         self.blend_func_render = (
-            *self.ctx.BLEND_DEFAULT,
-            *self.ctx.BLEND_DEFAULT,
+            self.ctx.ONE,
+            self.ctx.ONE_MINUS_SRC_ALPHA,
+            self.ctx.ONE,
+            self.ctx.ONE_MINUS_SRC_ALPHA,
         )
 
-        # 5 floats per vertex (pos 3f, tex 2f) with 4 vertices
-        self._buffer = self.ctx.buffer(reserve=4 * 5 * 4)
+        # 9 floats per vertex (pos 3f, tex 2f, color 4f) with 4 vertices
+        self._buffer = self.ctx.buffer(reserve=4 * 9 * 4)
         self._geometry = self.ctx.geometry(
-            content=[BufferDescription(self._buffer, "3f 2f", ["in_pos", "in_uv"])],
+            content=[
+                BufferDescription(
+                    self._buffer,
+                    "3f 2f 4f",
+                    ["in_pos", "in_uv", "in_color"],
+                )
+            ],
             mode=self.ctx.TRIANGLE_STRIP,
         )
         self._program = self.ctx.load_program(
@@ -226,17 +240,56 @@ class Surface:
     def draw(
         self,
         area: Rect | None = None,
+        *,
+        position: Point = (0.0, 0.0),
+        angle: float = 0.0,
+        scale: float | tuple[float, float] = 1.0,
+        anchor: Point | None = None,
+        color: RGBA255 = WHITE,
+        alpha: int | None = None,
     ) -> None:
         """Draws the contents of the surface.
 
         The surface will be rendered at the configured ``position``
         and limited by the given ``area``. The area can be out of bounds.
 
+        The whole surface geometry can additionally be transformed, which
+        allows animating the surface as a whole (translation, rotation,
+        scaling and fading), similar to how sprites are transformed.
+
         Args:
             area: Limit the area in the surface we're drawing
                 (l, b, w, h)
+            position: Additional translation offset (in surface coordinates)
+                applied to the whole surface.
+            angle: Rotation in degrees applied around ``anchor``.
+            scale: Scale factor applied around ``anchor``. Either a single
+                value applied to both axes or a ``(x, y)`` tuple.
+            anchor: The point (in surface coordinates) to rotate and scale
+                around. Defaults to the center of the surface.
+            color: Global color multiplier used to tint the surface.
+            alpha: Convenience override for the alpha channel (0-255). When
+                set it replaces the alpha component of ``color``, which makes
+                fading the whole surface easy.
         """
         self._update_geometry(area=area)
+
+        # Resolve transform values
+        if anchor is None:
+            anchor = (self.width / 2.0, self.height / 2.0)
+        if isinstance(scale, (int, float)):
+            scale = (float(scale), float(scale))
+
+        col = Color.from_iterable(color)
+        if alpha is not None:
+            col = col.replace(a=alpha)
+
+        # Set transform/color uniforms
+        self._program.set_uniform_safe("pos", (float(position[0]), float(position[1])))
+        self._program.set_uniform_safe("angle", radians(angle))
+        self._program.set_uniform_safe("scale", (scale[0], scale[1]))
+        self._program.set_uniform_safe("center", (float(anchor[0]), float(anchor[1])))
+        self._program.set_uniform_safe("color", col.normalized)
 
         # Set blend function
         blend_func = self.ctx.blend_func
@@ -248,8 +301,10 @@ class Surface:
         else:
             self.texture.filter = self.ctx.LINEAR, self.ctx.LINEAR
 
-        self.texture.use(0)
-        self._geometry.render(self._program)
+        with self.ctx.enabled(self.ctx.BLEND):
+            # Ensure the right blend state
+            self.texture.use(0)
+            self._geometry.render(self._program)
 
         # Restore blend function
         self.ctx.blend_func = blend_func
@@ -316,10 +371,11 @@ class Surface:
 
         # fmt: off
         vertices = array("f", (
-            p_ll.x, p_ll.y, 0.0, left, bottom,
-            p_lr.x, p_lr.y, 0.0, right, bottom,
-            p_ul.x, p_ul.y, 0.0, left, top,
-            p_ur.x, p_ur.y, 0.0, right, top,
+            # pos (3f),         uv (2f),       color (4f)
+            p_ll.x, p_ll.y, 0.0, left, bottom,  1.0, 1.0, 1.0, 1.0,
+            p_lr.x, p_lr.y, 0.0, right, bottom, 1.0, 1.0, 1.0, 1.0,
+            p_ul.x, p_ul.y, 0.0, left, top,     1.0, 1.0, 1.0, 1.0,
+            p_ur.x, p_ur.y, 0.0, right, top,    1.0, 1.0, 1.0, 1.0,
         ))
         # fmt: on
         self._buffer.write(vertices)

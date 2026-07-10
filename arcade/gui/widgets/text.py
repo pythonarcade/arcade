@@ -109,6 +109,11 @@ class UILabel(UIWidget):
             width = self.ADAPTIVE_MULTILINE_WIDTH
             adaptive_multiline = True
 
+        # arcade.Text resolves the requested font name(s) to the concrete
+        # loaded font, so the requested value has to be kept separately for
+        # change detection in update_font
+        self._requested_font_name = font_name
+
         # Use Arcade Text wrapper of pyglet.Label for text rendering
         self._label = arcade.Text(
             x=0,
@@ -274,7 +279,7 @@ class UILabel(UIWidget):
                 (converts to ``"regular"``).
             italic: If enabled, the label's text will be in an *italic*
         """
-        font_name = font_name or self._label.font_name
+        font_name = font_name or self._requested_font_name
         font_size = font_size or self._label.font_size
         font_color = font_color or self._label.color
         font_bold = bold if bold is not None else self._label.bold
@@ -283,8 +288,12 @@ class UILabel(UIWidget):
         # ensure type of font_color, label will allways be a color
         font_color = Color.from_iterable(font_color)
 
-        # Check if values actually changed, if then update and trigger render
-        font_name_changed = self._label.font_name != font_name
+        # Check if values actually changed, if then update and trigger render.
+        # The label holds the resolved font name (e.g. "arial" for
+        # ("Kenney Future", "arial")), so the requested name has to be
+        # compared against the previously requested one, otherwise this
+        # would report a change on every call.
+        font_name_changed = self._requested_font_name != font_name
         font_size_changed = self._label.font_size != font_size
         font_color_changed = self._label.color != font_color
         font_bold_changed = self._label.bold != font_bold
@@ -296,6 +305,7 @@ class UILabel(UIWidget):
             or font_bold_changed
             or font_italic_changed
         ):
+            self._requested_font_name = font_name
             with self._label:
                 self._label.font_name = font_name
                 self._label.font_size = font_size
