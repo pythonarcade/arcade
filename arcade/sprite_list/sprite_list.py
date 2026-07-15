@@ -756,6 +756,10 @@ class SpriteList(SpriteSequence[SpriteType]):
         if self.spatial_hash is not None:
             self.spatial_hash.add(sprite)
 
+        if self._initialized:
+            if sprite.texture is None:
+                raise ValueError("Sprite must have a texture when added to a SpriteList")
+
     def reverse(self) -> None:
         """Reverses the current list in-place"""
         # Reverse the sprites and index buffer
