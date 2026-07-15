@@ -751,6 +751,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._grow_index_buffer()
         self._sprite_index_data.insert(index, slot)
         self._sprite_index_data.pop()
+        self._sprite_index_changed = True
 
         if self.spatial_hash is not None:
             self.spatial_hash.add(sprite)

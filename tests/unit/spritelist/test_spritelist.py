@@ -116,6 +116,9 @@ def test_it_can_insert_in_a_spritelist():
     assert [spritelist.sprite_slot[s] for s in spritelist] == [0, 2, 1]
     # Index buffer should refer to the slots in the same order
     assert list(spritelist._sprite_index_data[:3]) == [0, 2, 1]
+    # insert() must flag the index buffer as changed so the sprite is
+    # actually uploaded to the GPU and rendered on the next draw (#2863)
+    assert spritelist._sprite_index_changed is True
 
 
 def test_it_can_reverse_a_spritelist():
