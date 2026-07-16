@@ -147,6 +147,60 @@ class DefaultProjector:
             self._ctx.view_matrix = previous_view
             self._ctx.current_camera = previous_projector
 
+    # --- pyglet dev6 batch-draw compatibility shim ---
+    #
+    # pyglet's own Batch.draw() (used e.g. by pyglet.text.Label.draw(), which
+    # arcade.Text delegates to) falls back to `window.default_camera` when no
+    # explicit camera is given. Since Arcade overrides `default_camera` to
+    # return this class instead of pyglet's own Camera2D, pyglet's batch
+    # pipeline needs DefaultProjector to satisfy its internal
+    # CameraScopeProtocol (`.view.scissor`, `.begin()`,
+    # `.get_group_scissor_area()`) or it raises AttributeError. The
+    # correct behavior for all three is a no-op / "nothing extra": pyglet
+    # should draw using whatever camera state Arcade already has bound,
+    # which is exactly this class's job description.
+    @property
+    def view(self) -> Self:
+        return self
+
+    def begin(self, *, draw_context, commit: bool = True) -> None:
+        pass
+
+    def get_group_scissor_area(self):
+        return None
+
+    # pyglet's base Window.projection/.view properties (dev6+) delegate to
+    # `self.default_camera.projection` / `.view_matrix` respectively
+    # (`pyglet/window/__init__.py`). Any code that reads/writes
+    # `window.projection`/`window.view` — pyglet's own internals, test
+    # infrastructure, or downstream user code — routes through here once
+    # Arcade's `default_camera` override is in the MRO, so these need to
+    # exist and behave sensibly rather than raise AttributeError.
+    @property
+    def projection(self) -> Mat4:
+        if self._matrix is None:
+            self._matrix = Mat4.orthogonal_projection(
+                0, self.width, 0, self.height, DEFAULT_NEAR_ORTHO, DEFAULT_FAR
+            )
+        return self._matrix
+
+    @projection.setter
+    def projection(self, value: Mat4) -> None:
+        self._matrix = value
+        if self._ctx.current_camera is self:
+            self._ctx.projection_matrix = value
+
+    @property
+    def view_matrix(self) -> Mat4:
+        # DefaultProjector always uses an identity view (see .use()) — this
+        # mirrors that rather than tracking a separate, never-applied state.
+        return Mat4()
+
+    @view_matrix.setter
+    def view_matrix(self, value: Mat4) -> None:
+        if self._ctx.current_camera is self:
+            self._ctx.view_matrix = value
+
     def project(self, world_coordinate: Point) -> Vec2:
         """
         Take a Vec2 or Vec3 of coordinates and return the related screen coordinate
