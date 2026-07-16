@@ -17,7 +17,7 @@ independent of pyglet's `Camera2D` ring buffer.
 
 | Field | Type | Notes |
 |---|---|---|
-| `buffer` | `arcade.gl.Buffer` (or backend-native buffer) | Fixed-size GL buffer object, 128 bytes (two `Mat4`s: view + projection), allocated once per `ArcadeContext` |
+| `buffer` | `arcade.gl.Buffer` (or backend-native buffer) | Fixed-size GL buffer object, 128 bytes (two `Mat4`s: view + projection), allocated once per `ArcadeContext` with `usage="stream"` (`GL_STREAM_DRAW`) — matches the actual write pattern (rewritten on every camera activation, read briefly after), not the default `usage="static"` |
 | `binding_point` | `int` | Always `0` — matches existing Arcade shader `WindowBlock` layout; rebinding is done via raw `glBindBufferRange`, not through pyglet's `UniformBlock.set_binding()` (which forbids binding 0) |
 | lifecycle | — | Created once in `ArcadeContext.__init__`; updated in place (no per-frame reallocation, no ring buffer, no growth) whenever view/projection change; destroyed with the context |
 

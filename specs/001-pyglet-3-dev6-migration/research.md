@@ -405,6 +405,42 @@ concluding anything.
 `dev6` migration. All pre-existing failures are Windows/DPI/test-isolation
 gaps that predate this work and are out of scope to fix here.
 
+## 11. Post-review refinement: buffer usage hint
+
+**Raised post-implementation**: is Arcade's new window-block UBO (§1-3, §7)
+vulnerable to the same GPU-stall problem pyglet's ring-buffer rewrite was
+built to solve? pyglet's own source is explicit about the motivation
+(`pyglet/graphics/buffer.py`: *"Do not make the CPU-side data dirty after
+binding/committing during the same frame ... or GPU stalls may occur"*) —
+rewriting a GPU buffer the driver may still be using for an in-flight draw
+forces either a CPU-side stall or an internal reallocation.
+
+**Finding**: legitimate, and it applied to this migration's own new buffer.
+`ArcadeContext.__init__` allocated the window-block UBO via
+`self.buffer(reserve=128)` — using the default `usage="static"`
+(`GL_STATIC_DRAW`), which signals "set once, never touched again" to the
+driver, while the actual pattern is "rewritten on every camera activation."
+Mismatched usage hints don't cause *incorrect* rendering, but can discourage
+drivers from taking the efficient internal-renaming path they'd normally use
+for a small, frequently-updated buffer.
+
+**Resolution**: changed to `usage="stream"` (`GL_STREAM_DRAW`), which matches
+the actual pattern (write, read briefly, write again) — a one-line change
+with no architectural impact. Re-ran `tests/unit/camera`, `tests/unit/window`,
+`tests/unit/rendering`, and `tests/integration/test_ubo_stress.py` (131
+tests) to confirm no behavioral change.
+
+**Scoped down, not pursued**: replicating pyglet's full N-buffered ring
+(2-3 rotating copies) was considered and explicitly not done here. Arcade's
+window-block UBO is 128 bytes, updated a handful of times per frame at most
+(once per camera activation, not per-object/per-draw-call) — a much smaller
+and less frequent workload than what pyglet's general-purpose ring buffer
+serves. Without a measured stall, adding rotation logic would be speculative
+complexity, and re-introduces exactly the "frames in flight" bookkeeping
+this migration's core fix (§2) removed Arcade's dependency on. Revisit only
+if profiling on a real workload (e.g. many camera switches per frame — split
+screen, multiple render targets) shows an actual stall.
+
 ## Outcome
 
 All NEEDS CLARIFICATION items from the Technical Context are resolved above.

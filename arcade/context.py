@@ -59,7 +59,12 @@ class ArcadeContext(Context):
         # Arcade fully owns this UBO, independent of pyglet's own
         # default_camera-managed ring buffer, so its size stays bounded
         # regardless of pyglet's per-frame resource lifecycle (spec FR-005).
-        self._window_block: Buffer = self.buffer(reserve=128)
+        # usage="stream" matches the actual write pattern (rewritten on every
+        # camera activation, read briefly after) rather than the default
+        # "static" (set once, never touched again) — see pyglet's own
+        # ring-buffer rationale for why a stale usage hint on a
+        # frequently-rewritten buffer risks GPU stalls.
+        self._window_block: Buffer = self.buffer(reserve=128, usage="stream")
         self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
             0, window.width, 0, window.height, -100, 100
         )
