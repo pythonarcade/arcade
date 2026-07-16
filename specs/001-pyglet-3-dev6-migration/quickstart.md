@@ -132,6 +132,17 @@ Python 3.10–3.14) still runs and passes unchanged — this migration does not
 modify that workflow (Clarifications session 2026-07-16, environment
 correction).
 
+**Known open risk, deliberately left unverified until this push**: the new
+`tests/unit/rendering/test_dev6_reference_images.py` (step 5) compares
+against baseline PNGs captured on real Windows GPU hardware. CI renders on
+`xvfb`'s software rasterizer (llvmpipe/mesa), which can legitimately differ
+from hardware output by a pixel or two at edges/anti-aliasing even when
+nothing is wrong. The SC-003 tolerance was tuned to absorb migration-related
+differences, not necessarily cross-rasterizer differences — if this test is
+red on CI for that reason (not a real regression), tighten/loosen the
+tolerance in `tests/unit/rendering/image_compare.py` based on what xvfb
+actually produces, rather than guessing in advance.
+
 ## Done criteria
 
 All of SC-001 through SC-005 pass locally on Windows, the existing CI run is

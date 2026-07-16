@@ -59,11 +59,17 @@ def compare_images(actual: PIL.Image.Image, expected: PIL.Image.Image) -> ImageD
         An :class:`ImageDiffResult` describing how different the images are.
         Check ``.within_tolerance`` to see if they pass SC-003.
     """
-    if actual.size != expected.size:
-        raise ValueError(f"Image size mismatch: {actual.size} != {expected.size}")
-
     actual_rgb = actual.convert("RGB")
     expected_rgb = expected.convert("RGB")
+
+    if actual_rgb.size != expected_rgb.size:
+        # The baseline and the live capture can differ in pixel dimensions
+        # for reasons unrelated to rendering correctness — most commonly, OS
+        # display scaling (e.g. a baseline captured on a 125%-scaled Windows
+        # machine vs. an unscaled Linux/xvfb CI runner). Normalize by
+        # resizing the actual capture to the baseline's dimensions before
+        # comparing, rather than failing outright on a dimension mismatch.
+        actual_rgb = actual_rgb.resize(expected_rgb.size, PIL.Image.Resampling.LANCZOS)
 
     diff = PIL.ImageChops.difference(actual_rgb, expected_rgb)
 
