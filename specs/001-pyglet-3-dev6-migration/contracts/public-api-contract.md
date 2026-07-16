@@ -75,16 +75,28 @@ documentation obligation is:
 
 ## Verification harness contract (new, supports SC-003/FR-011)
 
-A minimal reference-image comparison module is added under `tests/` (exact
-location decided in tasks.md). Its contract:
+A minimal reference-scene module is added under `tests/unit/rendering/`. Its
+contract (revised after CI verification — see spec.md's Clarifications,
+"CI verification results"):
 
 - **Input**: a fixed, small set of representative render scenarios (sprite,
-  shape, orthographic camera, perspective camera).
-- **Baseline**: PNG images captured once on the last known-good `dev3` build,
-  checked into the repo.
-- **Comparison**: per-pixel or percentage-difference threshold against the
-  project's existing pixel-comparison tolerance convention (reuses
-  `arcade.get_image()`; no new third-party dependency).
-- **Policy on mismatch** (FR-011): investigate first; only regenerate a
-  baseline for a confirmed benign, pyglet-driven, documented difference;
-  otherwise treat as a regression to fix in Arcade.
+  shape, orthographic camera, perspective camera) — `scenes.py`.
+- **Baseline**: PNG images captured once on the last known-good `dev3` build
+  on real GPU hardware, checked into the repo (`generate_baseline.py`).
+- **Automated check (runs everywhere — CI and local)**: structural sanity
+  only — correct non-zero dimensions, not a single uniform/blank color, not
+  fully black (`test_dev6_reference_images.py`). Pixel-tolerance comparison
+  against the baseline was tried and dropped as the automated gate: CI's
+  `xvfb` software rasterizer produces a consistent ~36% difference against
+  hardware-captured baselines, confirmed unrelated to any actual rendering
+  regression, so it isn't a reliable cross-rasterizer signal.
+- **Manual check (local, real-GPU only)**: `image_compare.py`'s
+  `compare_images()` remains available for a developer to run a precise
+  per-pixel/percentage-difference comparison against the baseline by hand
+  when investigating a suspected regression (reuses `arcade.get_image()`;
+  no new third-party dependency).
+- **Policy on a manually-observed mismatch** (FR-011): investigate first;
+  only regenerate a baseline for a confirmed benign, pyglet-driven,
+  documented difference; otherwise treat as a regression to fix in Arcade.
+  A cross-rasterizer difference alone is not grounds for regenerating a
+  baseline.

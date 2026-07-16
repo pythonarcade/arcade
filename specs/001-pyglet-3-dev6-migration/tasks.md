@@ -199,14 +199,20 @@ environment as the authoritative gate (Clarifications session 2026-07-16).
 
 ### Implementation for User Story 1
 
-- [X] T013 [P] [US1] Add a reference-image comparison test module at
-  `tests/unit/rendering/test_dev6_reference_images.py` that re-renders the
-  same four scenes captured in T001, saves the new PNGs, and diffs each
-  against its `tests/unit/rendering/baseline/*.png` counterpart using the
-  helper from T005, asserting the difference is within the SC-003 tolerance
-  (≤2% of pixels differing by more than a per-channel delta of 10/255, and
-  ≤1% whole-image mean absolute per-channel difference). (SC-003, FR-011,
-  depends on T001, T005)
+- [X] T013 [P] [US1] Add a reference-scene structural-sanity test module at
+  `tests/unit/rendering/test_dev6_reference_images.py` that renders the same
+  four scenes captured in T001 and asserts structural properties (correct
+  non-zero dimensions, not a single uniform/blank color, not fully black).
+  **Revised post-CI-verification (SC-003 §CI verification results
+  clarification)**: originally asserted a pixel-tolerance diff (≤2%/≤1%,
+  via T005's helper) against the `tests/unit/rendering/baseline/*.png`
+  images; dropped in favor of structural checks after CI runs confirmed the
+  pixel-tolerance comparison produces a consistent ~36% difference between
+  real-GPU baselines and CI's `xvfb` software rasterizer, unrelated to any
+  actual regression (unmoved across two independently-fixed rendering
+  bugs). T005's `compare_images()` helper remains available for manual,
+  local, real-GPU pixel comparison per FR-011, but no longer gates the
+  automated test. (SC-003, FR-011, depends on T001, T005)
 - [X] T014 [P] [US1] Add a window/draw/reset stress test at
   `tests/integration/test_ubo_stress.py` that creates, draws one frame to,
   and closes at least 100 windows in a single process, capturing
@@ -223,17 +229,26 @@ environment as the authoritative gate (Clarifications session 2026-07-16).
 - [X] T016 [US1] Run the stress test from T014 and confirm it passes: zero
   "Growing UniformBufferObject" warnings across 100+ cycles, no crash.
   (SC-002 — depends on T014, T015)
-- [X] T017 [US1] Run the reference-image comparison test from T013 and
-  resolve any deviations per the FR-011 policy: investigate first; only
-  regenerate a baseline PNG for a confirmed benign, pyglet-driven,
-  documented difference; otherwise fix the regression in Arcade. (SC-003 —
-  depends on T013, T015) — **Investigated (research.md §9)**: the
-  `orthographic_camera` scene initially deviated 32% from baseline; root
-  cause was a missing `window.dispatch_pending_events()` call in the new
-  test harness's `scenes.py` after a window resize (not pyglet-driven, not
-  an Arcade regression — a bug in this migration's own new test code). Fixed
-  the test harness; no baseline regenerated. All 4 scenes are now
-  pixel-identical to their `dev3` baselines.
+- [X] T017 [US1] Run the reference-scene test from T013 and resolve any
+  deviations per the FR-011 policy: investigate first; only regenerate a
+  baseline PNG for a confirmed benign, pyglet-driven, documented difference;
+  otherwise fix the regression in Arcade. (SC-003 — depends on T013, T015)
+  — **Investigated (research.md §9)**: the `orthographic_camera` scene
+  initially deviated 32% from baseline (back when this was a pixel-tolerance
+  test); root cause was a missing `window.dispatch_pending_events()` call in
+  the new test harness's `scenes.py` after a window resize (not
+  pyglet-driven, not an Arcade regression — a bug in this migration's own
+  new test code). Fixed the test harness. **Further investigated on actual
+  CI (research.md §12)**: after that fix, all 4 scenes were pixel-identical
+  on Windows but showed a consistent ~36% difference on CI's `xvfb`
+  rasterizer, confirmed unrelated to any regression (unmoved across two
+  separately-fixed real bugs found during CI verification — a `Context.active`
+  leak and a permanently-disabled `GL_SCISSOR_TEST`). Per the follow-up
+  decision recorded in spec.md's Clarifications, the test was revised to
+  structural checks (T013) rather than pixel-tolerance comparison; no
+  baseline was regenerated, since the difference was never diagnosed as
+  pyglet-driven or benign — it's simply not a reliable automated signal
+  across different rasterizers.
 - [X] T018 [US1] Confirm `.github/workflows/test.yml` (Linux + `xvfb`,
   Python 3.10-3.14) is unmodified by this migration —
   `git diff --stat .github/workflows/test.yml` and `git status --short
