@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from pyglet.math import Mat4, Vec2, Vec3
+from pyglet.window.camera import CameraScissor
 from typing_extensions import Self
 
 from arcade.camera.data_types import DEFAULT_FAR, DEFAULT_NEAR_ORTHO
@@ -155,10 +156,7 @@ class DefaultProjector:
     # return this class instead of pyglet's own Camera2D, pyglet's batch
     # pipeline needs DefaultProjector to satisfy its internal
     # CameraScopeProtocol (`.view.scissor`, `.begin()`,
-    # `.get_group_scissor_area()`) or it raises AttributeError. The
-    # correct behavior for all three is a no-op / "nothing extra": pyglet
-    # should draw using whatever camera state Arcade already has bound,
-    # which is exactly this class's job description.
+    # `.get_group_scissor_area()`) or it raises AttributeError.
     @property
     def view(self) -> Self:
         return self
@@ -166,8 +164,23 @@ class DefaultProjector:
     def begin(self, *, draw_context, commit: bool = True) -> None:
         pass
 
-    def get_group_scissor_area(self):
-        return None
+    def get_group_scissor_area(self) -> CameraScissor:
+        # MUST NOT return None here. pyglet's GL renderer treats a scissor
+        # of None as "disable scissor testing entirely"
+        # (pyglet/graphics/api/gl/renderer.py: `set_scissor(None)` calls
+        # `glDisable(GL_SCISSOR_TEST)`) — but Arcade enables scissor testing
+        # once at context creation and never revisits it (it's not one of
+        # the flags `Context.enable`/`disable` manage), relying on the
+        # scissor *rectangle* alone to control the visible area. Returning
+        # None here let any pyglet-native draw with no camera set (e.g. any
+        # `arcade.Text`/`draw_text()` call, since those go through
+        # `pyglet.text.Label.draw()`) permanently disable scissor testing
+        # for the rest of the process — breaking any later viewport-scoped
+        # clear (`Framebuffer.clear(viewport=...)`) anywhere in the
+        # session. Returning a real scissor rectangle matching the current
+        # viewport keeps scissor testing enabled without restricting
+        # anything beyond what's already visible.
+        return CameraScissor(*(self._scissor or self.get_current_viewport()))
 
     # pyglet's base Window.projection/.view properties (dev6+) delegate to
     # `self.default_camera.projection` / `.view_matrix` respectively
