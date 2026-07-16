@@ -90,7 +90,7 @@ testing-libraries = [
 [package.metadata]
 requires-dist = [
     { name = "pillow", specifier = ">=11.3.0" },
-    { name = "pyglet", specifier = "==3.0.dev3" },
+    { name = "pyglet", specifier = "==3.0.dev6" },
     { name = "pytiled-parser", specifier = "~=2.2.9" },
 ]
 
@@ -1011,11 +1011,11 @@ wheels = [
 
 [[package]]
 name = "pyglet"
-version = "3.0.dev3"
+version = "3.0.dev6"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a4/18/b7bca811bc8c16ce4073b006dd06762c59589f81a65e8dd461cffba8e214/pyglet-3.0.dev3.tar.gz", hash = "sha256:b0121bf0d3a98743d17ed6f53001f7be17aaf4b0245c0b22105a4a4e77005822", size = 7128311, upload-time = "2026-04-18T10:55:28.599Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/37/85/ba7fcce5ade73293770c885a7462851f7bd3fc3ab8f953c5ebcf5df97e00/pyglet-3.0.dev6.tar.gz", hash = "sha256:e57c8e8355b0ecd1e1f91a64dae8ae95ccb7c19743f823f4443a97df7b448036", size = 6904595, upload-time = "2026-06-30T01:58:13.587Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a9/b0/8c6402b68b14f1e8151c46f096dff7875050bd30c69f31cf814efa83aba6/pyglet-3.0.dev3-py3-none-any.whl", hash = "sha256:56ceb7a7420b43e6f8805d4b9a2bea9e45f9938d0d91650a472e4c0997b96368", size = 1505495, upload-time = "2026-04-18T10:55:23.312Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/4c/a5f18bfe715fccd87e5308c4cfeb3bb36595768eee0c82ac98192705fc2e/pyglet-3.0.dev6-py3-none-any.whl", hash = "sha256:56b3bd49395465150967b4ca5c10cdb6772b3c79664e9eb3ba331b63f0392546", size = 1528266, upload-time = "2026-06-30T01:57:41.517Z" },
 ]
 
 [[package]]
