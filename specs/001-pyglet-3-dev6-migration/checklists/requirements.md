@@ -42,5 +42,25 @@
   fully owns its own matrix UBO independent of pyglet's ring buffer (see
   Clarifications session 2026-07-16). Detailed implementation design remains for
   the planning phase.
+- The spec originally assumed a WSL dev environment with limited graphics
+  capability, deferring the authoritative test run to a separate GPU-capable
+  environment. This was corrected (Clarifications session 2026-07-16,
+  environment correction): development is on native Windows with full
+  OpenGL/GPU capability, so the full test suite, stress/multi-window runs, and
+  image-comparison acceptance runs are executed and gated locally on Windows.
+- Clarified that local Windows verification is additive to, not a replacement
+  for, the project's existing Linux+xvfb CI (`.github/workflows/test.yml`),
+  which continues to run unchanged on every push/PR (Clarifications session
+  2026-07-16, environment correction).
+- `/speckit-analyze` (run after `/speckit-tasks`) found FR-002 directly
+  contradicted FR-005 (FR-002 said "read UBO from pyglet's location," FR-005
+  said "own an independent UBO" — only FR-005's design was ever implemented
+  in plan.md/tasks.md). Also found SC-003/FR-011 referenced a nonexistent
+  "existing" image-comparison tolerance. Both were corrected editorially
+  (Editorial correction 2026-07-16, post-/speckit-analyze): FR-002 and the
+  "Matrix UBO" Key Entity bullet now match the FR-005 design, and SC-003/
+  FR-011 now state a concrete numeric tolerance instead of an implied
+  pre-existing one. No new decisions were made — these corrections propagate
+  decisions already resolved during clarification/planning back into spec.md.
 - Items marked incomplete require spec updates before `/speckit-clarify` or
   `/speckit-plan`. All items currently pass.

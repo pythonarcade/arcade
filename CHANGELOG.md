@@ -23,6 +23,10 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed issues with update/draw rate handling that changes with Pyglet 3, rates are now handled properly between desktop and browser. See [#2845](https://github.com/pythonarcade/arcade/pull/2845)
 - Fixed caret behavior not responding appropriately when activating an input field. See [#2850](https://github.com/pythonarcade/arcade/pull/2850)
 - GUI: Fixed `UILabel.update_font` always reporting a font change when the requested font was a fallback tuple (e.g. `UIFlatButton`'s default styles), which caused a full UI re-render every frame. This made widget-heavy UIs, such as the `exp_scroll_area` example, run at a few FPS.
+
+### Breaking Changes
+- Updated pyglet to 3.0.dev6 (from 3.0.dev3). Between `dev4` and `dev5`, pyglet removed `window._matrices` and moved window view/projection/viewport onto its own `default_camera`, backed by a per-frame ring-buffer UBO. Arcade now fully owns its own window matrix UBO, independent of pyglet's `default_camera`/ring buffer, so rendering behavior for cameras, sprites, and shapes is unchanged. Advanced users who mix raw pyglet camera/window code with Arcade should note: `window._matrices` no longer exists, and `window.default_camera` is now pyglet's own concept (a `Camera2D`), distinct from `arcade.Window.default_camera` (Arcade's own `DefaultProjector`) — both exist simultaneously and serve different roles.
+
 ## 4.0.0.dev4
 
 ### New Features

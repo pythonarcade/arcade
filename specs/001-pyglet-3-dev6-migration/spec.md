@@ -18,6 +18,16 @@
 - Q: Given the hard-cut to dev6, what is dev4's role in this effort? → A: Drop dev4 entirely; migrate straight from dev3 to dev6 with no dev4 checkpoint.
 - Q: Policy when dev6 output differs from reference images beyond existing pixel tolerance? → A: Investigate first; regenerate reference images only for confirmed benign pyglet-driven changes (documented), otherwise treat as a regression to fix in Arcade.
 
+### Session 2026-07-16 (environment correction)
+
+- Q: The prior clarification assumed a WSL dev environment with limited graphics capability, requiring the authoritative test run to happen in a separate GPU-capable environment. Development actually happens on native Windows. Does this change the verification approach? → A: Yes. Native Windows has full OpenGL/GPU capability, so the full rendering test suite, stress/multi-window runs, and image-comparison acceptance runs execute directly in the local Windows development environment. No separate GPU-capable environment is required; the local environment is now the authoritative gate.
+- Q: The project's existing CI (`.github/workflows/test.yml`) already runs the full pytest suite on `ubuntu-latest` with `xvfb` (headless software rendering) on every push/PR. How does local Windows verification relate to that existing CI gate? → A: Local Windows execution is the developer's authoritative full-fidelity check for this migration (replacing the prior WSL limitation); the existing Linux+xvfb CI continues unchanged as the standard automated gate for every PR/push. Both must pass; CI is not replaced or reworked by this migration.
+
+### Editorial correction 2026-07-16 (post-/speckit-analyze)
+
+- FR-002 and the "Matrix UBO" Key Entity bullet originally described Arcade reading its window matrix UBO *from* pyglet's `default_camera` location — a design superseded by the Clarifications session's FR-005 decision (Arcade fully owns an independent UBO) but never updated to match, leaving the two requirements in direct contradiction. FR-002 and the Key Entity bullet below are corrected to reflect the FR-005 design that plan.md/data-model.md/tasks.md already implement; no new decision was made, this only propagates the existing one.
+- SC-003/FR-011 originally referred to "the project's existing image-comparison tolerance," but no such tolerance or harness existed prior to this migration (research.md §5). SC-003/FR-011 are corrected to state a concrete tolerance established by this migration's new reference-image harness instead of an implied pre-existing one.
+
 ## Overview
 
 Arcade currently pins `pyglet==3.0.dev3`. pyglet has since published `3.0.dev4`,
@@ -49,8 +59,9 @@ frames and across multiple window/draw/reset cycles.
 **Independent Test**: Pin pyglet to `3.0.dev6`, run the full existing rendering
 test suite (camera, sprite, projection tests) including sequences that create,
 draw to, and reset multiple windows. All tests pass with correct pixel output
-and no crashes or unbounded resource growth. This authoritative run executes in
-a separate GPU-capable environment (not the local WSL dev environment).
+and no crashes or unbounded resource growth. This authoritative run executes
+directly in the local Windows development environment, which has full
+OpenGL/GPU capability.
 
 **Acceptance Scenarios**:
 
@@ -121,9 +132,13 @@ collision.
   (`pyglet==3.0.dev6`) as its sole supported pyglet version once migration is
   complete. Support for `3.0.dev3`/`3.0.dev4` is dropped, and no
   conditional/dual code paths across the `dev4→dev5` API break are introduced.
-- **FR-002**: Arcade MUST read the window matrix UBO from pyglet's current
-  location (the default camera's view storage) rather than the removed
-  `window._matrices.ubo`.
+- **FR-002**: Arcade MUST NOT depend on pyglet's `window._matrices.ubo`
+  (removed in `dev5`+) or on any other pyglet-internal storage location for
+  its window matrix UBO. Instead, per FR-005, Arcade MUST allocate and own
+  its own window matrix UBO directly, independent of pyglet's
+  `default_camera`-managed ring buffer, while still producing
+  view/projection/viewport values equivalent to what pyglet's own
+  `default_camera` would produce for the same camera state.
 - **FR-003**: Arcade MUST preserve its own default projector behavior even though
   pyglet now delegates `view`/`projection`/`viewport` through its
   `default_camera`, without name-collision failures during window/context
@@ -144,26 +159,33 @@ collision.
   `dev6`.
 - **FR-008**: Arcade MUST document any changed public/behavioral expectations
   arising from pyglet's matrix/camera API change so downstream users can adapt.
-- **FR-011**: When `dev6` rendered output deviates from existing reference images
-  beyond the current pixel tolerance, the deviation MUST be investigated before
-  any re-baselining. Reference images MUST be regenerated only for deviations
+- **FR-011**: When `dev6` rendered output deviates from the reference images
+  beyond the tolerance defined in SC-003, the deviation MUST be investigated
+  before any re-baselining. Reference images MUST be regenerated only for deviations
   confirmed as intended/benign pyglet-driven changes, and such regenerations MUST
   be documented; all other deviations MUST be treated as regressions to fix in
   Arcade.
 - **FR-009**: The migration MUST leave the working tree buildable and installable
   (dependency resolution succeeds) at pyglet `3.0.dev6`.
-- **FR-010**: Verification MUST distinguish between local development checks and
-  authoritative acceptance checks. Local (WSL) verification is limited to a small
-  targeted subset of tests (e.g. specific camera/projector unit tests). The full
-  rendering test suite, stress/multi-window runs, and image-comparison acceptance
-  runs (SC-001 through SC-003) MUST be executed in a separate GPU-capable
-  environment, which is the authoritative gate for the migration.
+- **FR-010**: Verification MUST be executable in the local Windows development
+  environment, which has full OpenGL/GPU capability. The full rendering test
+  suite, stress/multi-window runs, and image-comparison acceptance runs
+  (SC-001 through SC-003) MUST be executed and pass locally on Windows as the
+  developer's authoritative full-fidelity check; no separate GPU-capable
+  environment is required beyond this. This is in addition to, not a
+  replacement for, the project's existing Linux+xvfb CI pipeline, which
+  continues to run the automated test suite unchanged on every push/PR. Both
+  the local Windows run and the existing CI run MUST pass.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Matrix UBO (Uniform Buffer Object)**: GPU buffer holding view/projection
-  matrices. In pyglet `dev5`+ it lives on the default camera's view storage and
-  is managed via a rotating ring buffer with a per-frame resource lifecycle.
+  matrices. pyglet `dev5`+ moved its own internal window matrix UBO onto the
+  default camera's view storage, managed via a rotating ring buffer with a
+  per-frame resource lifecycle — this is pyglet's own mechanism, separate
+  from Arcade's. Arcade instead allocates and owns a distinct, fixed-size
+  matrix UBO independent of pyglet's ring buffer (see FR-005); this is the
+  buffer Arcade's own shaders/rendering pipeline actually read from.
 - **Default Camera / Default Projector**: pyglet's `default_camera` now owns
   view/projection/viewport. Arcade overrides `default_camera` with its own
   `DefaultProjector`; these two must coexist.
@@ -184,16 +206,24 @@ collision.
   produces zero "Growing UniformBufferObject" warnings and no crash, and matrix
   UBO memory usage stabilizes rather than doubling per bind.
 - **SC-003**: Rendered output for the standard camera, sprite, and shape test
-  scenarios matches the pre-migration reference output within the project's
-  existing image-comparison tolerance. Any deviation beyond tolerance is
-  investigated and either fixed as a regression or, only if confirmed benign and
-  pyglet-driven, resolved by a documented reference-image regeneration.
+  scenarios matches the pre-migration reference output within a defined
+  tolerance — no more than 2% of pixels may differ from the baseline by more
+  than a per-channel delta of 10 (out of 255), and the whole-image mean
+  absolute per-channel difference must be 1% or less. This tolerance is
+  established by this migration's new reference-image harness (no such
+  harness or tolerance existed prior to this migration). Any deviation beyond
+  tolerance is investigated and either fixed as a regression or, only if
+  confirmed benign and pyglet-driven, resolved by a documented reference-image
+  regeneration.
 - **SC-004**: A clean environment install resolves and installs Arcade with
   pyglet `3.0.dev6` successfully.
 - **SC-005**: SC-001 through SC-003 (full suite, stress/multi-window, and
-  image-comparison outcomes) are demonstrated in a separate GPU-capable
-  environment; the local WSL environment is used only for a small targeted subset
-  of tests and is not treated as the acceptance gate.
+  image-comparison outcomes) are demonstrated directly in the local Windows
+  development environment, which serves as the developer's authoritative
+  full-fidelity acceptance gate; no separate GPU-capable environment is
+  required. The project's existing Linux+xvfb CI pipeline continues to run the
+  automated test suite unchanged on every push/PR as an additional,
+  independent gate.
 
 ## Assumptions
 
@@ -205,11 +235,15 @@ collision.
   pyglet dev release needs to be supported by this effort.
 - Correct rendering is validated against the project's existing image-comparison
   test infrastructure and reference images.
-- The local development environment is WSL with limited graphics capability, so
-  it is used only for a small targeted subset of tests. The full suite,
-  stress/multi-window runs, and image-comparison acceptance runs are executed in a
-  separate GPU-capable environment which serves as the authoritative acceptance
-  gate.
+- The local development environment is native Windows with full OpenGL/GPU
+  capability, so the full test suite, stress/multi-window runs, and
+  image-comparison acceptance runs can be executed and serve as the
+  developer's authoritative full-fidelity acceptance gate directly in the
+  local environment. No separate GPU-capable environment is required.
+- The project's existing Linux+xvfb CI pipeline (`.github/workflows/test.yml`)
+  is out of scope for this migration to change; it continues to run the
+  automated test suite unchanged on every push/PR alongside (not instead of)
+  local Windows verification.
 - Arcade migrates directly from pyglet `3.0.dev3` to `3.0.dev6` with no `dev4`
   intermediate checkpoint or release.
 - The project constitution template is unpopulated, so no additional
