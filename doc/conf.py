@@ -71,7 +71,7 @@ print()
 for k, v in ENV.items():
     log.info(f"Env variable {k:{col_width}} : {v!r}")
 
-# _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
+# _temp_version = (REPO_LOCAL_ROOT / "arcade" / "_VERSION").read_text().replace("-",'')
 
 # Don't change to
 # from arcade.version import VERSION

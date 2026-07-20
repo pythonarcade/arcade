@@ -19,6 +19,9 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ### Fixes
 
+- Fixed PyInstaller builds on case-insensitive file systems by preventing the bundled
+  version data file from colliding with the `arcade.version` module. See
+  [#2837](https://github.com/pythonarcade/arcade/issues/2837)
 - Fixed an issue where pixel scaling for high-dpi displays did not work correctly in web browsers via Pyodide. See [#2846](https://github.com/pythonarcade/arcade/pull/2846)
 - Fixed issues with update/draw rate handling that changes with Pyglet 3, rates are now handled properly between desktop and browser. See [#2845](https://github.com/pythonarcade/arcade/pull/2845)
 - Fixed caret behavior not responding appropriately when activating an input field. See [#2850](https://github.com/pythonarcade/arcade/pull/2850)
