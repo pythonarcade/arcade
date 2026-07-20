@@ -8,7 +8,7 @@
 6. Run `tests/test_examples/run_all_examples.py`
 7. Make sure `arcade/examples/asteroid_smasher.py` is playable.
 8. Make sure `arcade/examples/platform_tutorial/17_views.py` is playable.
-9. Update version number in `arcade/version.py`
+9. Update version number in `arcade/_VERSION`
 10. Update :ref:`release_notes` with release dates and any additional
    info needed.
 11. Make sure last check-in ran clean on GitHub actions, viewable on Discord
