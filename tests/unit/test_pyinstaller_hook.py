@@ -11,9 +11,11 @@ import arcade
 def test_version_data_is_bundled_at_package_root(monkeypatch: pytest.MonkeyPatch):
     pyinstaller = ModuleType("PyInstaller")
     compat = ModuleType("PyInstaller.compat")
-    compat.is_darwin = False
-    compat.is_unix = True
-    compat.is_win = False
+    setattr(pyinstaller, "__path__", [])
+    setattr(pyinstaller, "compat", compat)
+    setattr(compat, "is_darwin", False)
+    setattr(compat, "is_unix", True)
+    setattr(compat, "is_win", False)
     monkeypatch.setitem(sys.modules, "PyInstaller", pyinstaller)
     monkeypatch.setitem(sys.modules, "PyInstaller.compat", compat)
 

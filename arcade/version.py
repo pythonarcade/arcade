@@ -104,7 +104,7 @@ def _parse_python_friendly_version(
 def _parse_py_version_from_file(
     version_path: str | Path = _HERE / "_VERSION", write_errors_to=sys.stderr
 ) -> str:
-    """Read & validate the _VERSION file as from a limited subset.
+    """Read and validate the _VERSION file using a limited version syntax.
 
     On failure, it will:
 
