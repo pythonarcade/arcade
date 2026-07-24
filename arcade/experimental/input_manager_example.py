@@ -3,7 +3,7 @@
 Example for handling input using the Arcade InputManager
 
 If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.input_manager
+python -m arcade.experimental.input_manager_example
 """
 
 import random
@@ -13,7 +13,7 @@ import pyglet
 from pyglet.input import Controller
 
 import arcade
-from arcade.input import ActionState, ControllerAxes, ControllerButtons, InputManager, Keys
+from arcade.input import ActionState, ControllerSticks, ControllerButtons, InputManager, Keys
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -112,7 +112,7 @@ class Game(arcade.Window):
         self.INPUT_TEMPLATE.new_axis("Move")
         self.INPUT_TEMPLATE.add_axis_input("Move", Keys.A, -1.0)
         self.INPUT_TEMPLATE.add_axis_input("Move", Keys.D, 1.0)
-        self.INPUT_TEMPLATE.add_axis_input("Move", ControllerAxes.LEFT_STICK_X)
+        self.INPUT_TEMPLATE.add_axis_input("Move", ControllerSticks.LEFT_STICK_X)
 
         # This is an example of how to dump an InputManager to a file. The serialize function
         # returns a dictionary, so anything such as toml, yaml, or json could be used to save
