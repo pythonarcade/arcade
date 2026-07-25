@@ -87,3 +87,16 @@ def test_rand_vec_spread_deg():
 def test_rand_vec_magnitude():
     """Smoke test"""
     rand_vec_magnitude(30.5, 3.3, 4.4)
+
+
+def test_rotate_around_point():
+    """The result is offset from the rotation center, not from the target."""
+    from arcade.math import rotate_around_point
+
+    x, y = rotate_around_point((3.0, 0.0), (5.0, 0.0), 90.0)
+    assert x == approx(3.0)
+    assert y == approx(2.0)
+
+    # A full turn and a zero-length radius both leave the target where it is.
+    assert rotate_around_point((3.0, 0.0), (5.0, 0.0), 360.0) == (5.0, 0.0)
+    assert rotate_around_point((3.0, 0.0), (3.0, 0.0), 90.0) == (3.0, 0.0)
