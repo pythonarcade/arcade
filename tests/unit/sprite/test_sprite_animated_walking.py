@@ -5,6 +5,23 @@ COIN_SCALE = 0.5
 frame_count = 0
 
 
+def test_update_animation_preserves_scale_y():
+    # update_animation must size height from scale_y, not scale_x, so a
+    # non-uniform scale is preserved (regression: scale_y was clobbered).
+    texture = arcade.Texture.create_empty("test-scale", (10, 20))
+    sprite = arcade.AnimatedWalkingSprite(scale=(2.0, 3.0))
+    sprite.stand_right_textures = [texture]
+    sprite.texture = texture
+    sprite.change_x = 0
+    sprite.change_y = 0
+
+    sprite.update_animation()
+
+    assert tuple(sprite.scale) == (2.0, 3.0)
+    assert sprite.width == 20.0
+    assert sprite.height == 60.0
+
+
 def test_sprite_animated_old(window: arcade.Window):
     global frame_count
     frame_count = 0

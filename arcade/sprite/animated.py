@@ -357,4 +357,4 @@ class AnimatedWalkingSprite(Sprite):
             logger.warning("Error, no texture set")
         else:
             self.width = self._texture.width * self.scale_x
-            self.height = self._texture.height * self.scale_x
+            self.height = self._texture.height * self.scale_y
