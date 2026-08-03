@@ -421,7 +421,7 @@ def rotate_around_point(source: Point2, target: Point2, angle: float):
     dx = diff_x * c - diff_y * s
     dy = diff_x * s + diff_y * c
 
-    return target[0] + dx, target[1] + dy
+    return source[0] + dx, source[1] + dy
 
 
 def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
