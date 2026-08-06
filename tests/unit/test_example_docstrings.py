@@ -35,7 +35,7 @@ def check_single_example_docstring(path: Path, name: str) -> None:
     """
 
     # Read the file & extract the docstring
-    code = ast.parse(path.read_text())
+    code = ast.parse(path.read_text(encoding="utf-8"))
     docstring = ast.get_docstring(code)
 
     # print(f"Checking if example {name} has a run instruction..")
