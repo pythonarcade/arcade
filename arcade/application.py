@@ -1092,6 +1092,19 @@ class Window(pyglet.window.Window):
         return self._ctx._default_camera
 
     @property
+    def camera(self) -> DefaultProjector:
+        """
+        Alias for :py:attr:`default_camera`.
+
+        pyglet looks up ``Window.camera`` (rather than ``default_camera``)
+        as the fallback camera for batch draws with no camera explicitly
+        set, so this needs to resolve to the same :py:class:`DefaultProjector`
+        to keep pyglet's internal drawing (e.g. :py:class:`~pyglet.text.Label`)
+        going through arcade's projection/scissor handling.
+        """
+        return self._ctx._default_camera
+
+    @property
     def current_camera(self) -> Projector:
         """
         Get or set the current camera.
