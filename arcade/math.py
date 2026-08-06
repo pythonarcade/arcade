@@ -27,6 +27,7 @@ __all__ = [
     "rand_vec_magnitude",
     "get_distance",
     "rotate_point",
+    "rotate_around_point",
     "get_angle_degrees",
     "get_angle_radians",
     "quaternion_rotation",

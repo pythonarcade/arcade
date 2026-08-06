@@ -148,14 +148,14 @@ class DefaultProjector:
             self._ctx.view_matrix = previous_view
             self._ctx.current_camera = previous_projector
 
-    # --- pyglet dev6 batch-draw compatibility shim ---
+    # --- pyglet batch-draw compatibility shim ---
     #
     # pyglet's own Batch.draw() (used e.g. by pyglet.text.Label.draw(), which
-    # arcade.Text delegates to) falls back to `window.default_camera` when no
-    # explicit camera is given. Since Arcade overrides `default_camera` to
-    # return this class instead of pyglet's own Camera2D, pyglet's batch
-    # pipeline needs DefaultProjector to satisfy its internal
-    # CameraScopeProtocol (`.view.scissor`, `.begin()`,
+    # arcade.Text delegates to) falls back to `window.camera` (`.default_camera`
+    # pre-dev7) when no explicit camera is given. Since Arcade overrides
+    # `camera`/`default_camera` to return this class instead of pyglet's own
+    # Camera2D, pyglet's batch pipeline needs DefaultProjector to satisfy its
+    # internal CameraScopeProtocol (`.view.scissor`, `.begin()`,
     # `.get_group_scissor_area()`) or it raises AttributeError.
     @property
     def view(self) -> Self:
@@ -182,13 +182,13 @@ class DefaultProjector:
         # anything beyond what's already visible.
         return CameraScissor(*(self._scissor or self.get_current_viewport()))
 
-    # pyglet's base Window.projection/.view properties (dev6+) delegate to
-    # `self.default_camera.projection` / `.view_matrix` respectively
-    # (`pyglet/window/__init__.py`). Any code that reads/writes
+    # pyglet's base Window.projection/.view properties delegate to
+    # `self.camera.projection` / `.view_matrix` respectively (`.default_camera`
+    # pre-dev7; see `pyglet/window/__init__.py`). Any code that reads/writes
     # `window.projection`/`window.view` — pyglet's own internals, test
     # infrastructure, or downstream user code — routes through here once
-    # Arcade's `default_camera` override is in the MRO, so these need to
-    # exist and behave sensibly rather than raise AttributeError.
+    # Arcade's `camera`/`default_camera` override is in the MRO, so these need
+    # to exist and behave sensibly rather than raise AttributeError.
     @property
     def projection(self) -> Mat4:
         if self._matrix is None:

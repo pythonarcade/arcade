@@ -20,6 +20,15 @@ wheels = [
 ]
 
 [[package]]
+name = "annotated-doc"
+version = "0.0.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/8e/38aa427ed5402449e226975b649c5dc73ccadfefeb95e6aecb8f8ea4b6b6/annotated_doc-0.0.5.tar.gz", hash = "sha256:c7e58ce09192557605d8bbd92836d7e1d520ac9580096042c0bfd197efacf1bb", size = 10758, upload-time = "2026-07-28T13:50:58.129Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3e/30/e900b21425a860e195f32e37657aa1f7c7f2b1bfb26f03ca209b90933c06/annotated_doc-0.0.5-py3-none-any.whl", hash = "sha256:117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101", size = 5302, upload-time = "2026-07-28T13:50:57.239Z" },
+]
+
+[[package]]
 name = "anyio"
 version = "4.14.1"
 source = { registry = "https://pypi.org/simple" }
@@ -44,7 +53,6 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "bottle" },
-    { name = "click" },
     { name = "coverage" },
     { name = "coveralls" },
     { name = "docutils", marker = "python_full_version >= '3.12'" },
@@ -90,14 +98,13 @@ testing-libraries = [
 [package.metadata]
 requires-dist = [
     { name = "pillow", specifier = ">=11.3.0" },
-    { name = "pyglet", specifier = "==3.0.dev6" },
+    { name = "pyglet", specifier = "==3.0.dev7" },
     { name = "pytiled-parser", specifier = "~=2.2.9" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "bottle" },
-    { name = "click", specifier = "==8.1.7" },
     { name = "coverage" },
     { name = "coveralls" },
     { name = "docutils", marker = "python_full_version >= '3.12'", specifier = "==0.22.4" },
@@ -116,7 +123,7 @@ dev = [
     { name = "sphinx-rtd-theme", marker = "python_full_version >= '3.12'", specifier = "==3.1.0" },
     { name = "sphinx-sitemap", marker = "python_full_version >= '3.12'", specifier = "==2.9.0" },
     { name = "sphinx-togglebutton", marker = "python_full_version >= '3.12'", specifier = "==0.4.5" },
-    { name = "typer", specifier = "==0.12.5" },
+    { name = "typer", specifier = "==0.27.1" },
     { name = "wheel" },
 ]
 docs = [
@@ -404,14 +411,14 @@ wheels = [
 
 [[package]]
 name = "click"
-version = "8.1.7"
+version = "8.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/96/d3/f04c7bfcf5c1862a2a5b845c6b2b360488cf47af55dfa79c98f6a6bf98b5/click-8.1.7.tar.gz", hash = "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de", size = 336121, upload-time = "2023-08-17T17:29:11.868Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/76/d4/81420972a676e8ffea40450d8c8c92943e7218a78fe9b64359836cc9876b/click-8.4.2.tar.gz", hash = "sha256:9a6cea6e60b17ebe0a44c5cc636d94f09bd66142c1cd7d8b4cd731c4917a15f6", size = 338000, upload-time = "2026-06-24T17:45:15.148Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/2e/d53fa4befbf2cfa713304affc7ca780ce4fc1fd8710527771b58311a3229/click-8.1.7-py3-none-any.whl", hash = "sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28", size = 97941, upload-time = "2023-08-17T17:29:10.08Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/e2/79c688af8b210d232694e31e59da9f6ec747bae31c3f5946e4e9b98860d5/click-8.4.2-py3-none-any.whl", hash = "sha256:e6f9f66136c816745b9d65817da91d61d957fb16e02e4dcd0552553c5a197b76", size = 119243, upload-time = "2026-06-24T17:45:13.73Z" },
 ]
 
 [[package]]
@@ -1011,11 +1018,11 @@ wheels = [
 
 [[package]]
 name = "pyglet"
-version = "3.0.dev6"
+version = "3.0.dev7"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/37/85/ba7fcce5ade73293770c885a7462851f7bd3fc3ab8f953c5ebcf5df97e00/pyglet-3.0.dev6.tar.gz", hash = "sha256:e57c8e8355b0ecd1e1f91a64dae8ae95ccb7c19743f823f4443a97df7b448036", size = 6904595, upload-time = "2026-06-30T01:58:13.587Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/21/95/4eae4ee312841b6ba0c3f8e1c2ba0b6d0997915d6c2588b90f34a02990b4/pyglet-3.0.dev7.tar.gz", hash = "sha256:4b77166153d557a7f8d3e0d1da92a45eb75904f87189495ee1273036c3a4abda", size = 6949681, upload-time = "2026-08-02T06:56:48.153Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c7/4c/a5f18bfe715fccd87e5308c4cfeb3bb36595768eee0c82ac98192705fc2e/pyglet-3.0.dev6-py3-none-any.whl", hash = "sha256:56b3bd49395465150967b4ca5c10cdb6772b3c79664e9eb3ba331b63f0392546", size = 1528266, upload-time = "2026-06-30T01:57:41.517Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/73/38a7d046d6041a89c17e6886136a072cee32518539f1e92bf43726330cca/pyglet-3.0.dev7-py3-none-any.whl", hash = "sha256:434cc9aaa17d7eb0d52bd9d8fca54ffca3ca04e20f7dfa9f9abe5df4c306bff6", size = 1548873, upload-time = "2026-08-02T06:56:39.006Z" },
 ]
 
 [[package]]
@@ -1250,11 +1257,11 @@ wheels = [
 
 [[package]]
 name = "setuptools"
-version = "82.0.1"
+version = "83.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/4f/db/cfac1baf10650ab4d1c111714410d2fbb77ac5a616db26775db562c8fab2/setuptools-82.0.1.tar.gz", hash = "sha256:7d872682c5d01cfde07da7bccc7b65469d3dca203318515ada1de5eda35efbf9", size = 1152316, upload-time = "2026-03-09T12:47:17.221Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/26/f5d29e25ffdb535afef2d35cdb55b325298f96debd670da4c325e08d70f4/setuptools-83.0.0.tar.gz", hash = "sha256:025bccbbf0fa05b6192bc64ae1e7b16e001fd6d6d4d5de03c97b1c1ade523bef", size = 1154254, upload-time = "2026-07-04T15:31:22.699Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/76/f789f7a86709c6b087c5a2f52f911838cad707cc613162401badc665acfe/setuptools-82.0.1-py3-none-any.whl", hash = "sha256:a59e362652f08dcd477c78bb6e7bd9d80a7995bc73ce773050228a348ce2e5bb", size = 1006223, upload-time = "2026-03-09T12:47:15.026Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/40/e1e72872c6354b306daef1703549e8e83b4d43cfea356311bf722a043752/setuptools-83.0.0-py3-none-any.whl", hash = "sha256:29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3", size = 1008090, upload-time = "2026-07-04T15:31:20.885Z" },
 ]
 
 [[package]]
@@ -1532,17 +1539,17 @@ wheels = [
 
 [[package]]
 name = "typer"
-version = "0.12.5"
+version = "0.27.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click" },
+    { name = "annotated-doc" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "rich" },
     { name = "shellingham" },
-    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c5/58/a79003b91ac2c6890fc5d90145c662fd5771c6f11447f116b63300436bc9/typer-0.12.5.tar.gz", hash = "sha256:f592f089bedcc8ec1b974125d64851029c3b1af145f04aca64d69410f0c9b722", size = 98953, upload-time = "2024-08-24T21:17:57.346Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ae/40/4a3db7990d1f62a53182aa96eaef57aeb2886a27f90a195bc66713565d31/typer-0.27.1.tar.gz", hash = "sha256:a79bef8469a79c45498e7b814ecf8d603cc7644e9acbd9e19cac0334240b18df", size = 203994, upload-time = "2026-08-03T14:41:03.438Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/2b/886d13e742e514f704c33c4caa7df0f3b89e5a25ef8db02aa9ca3d9535d5/typer-0.12.5-py3-none-any.whl", hash = "sha256:62fe4e471711b147e3365034133904df3e235698399bc4de2b36c8579298d52b", size = 47288, upload-time = "2024-08-24T21:17:55.451Z" },
+    { url = "https://files.pythonhosted.org/packages/43/89/9518bc0c3929bee36b3a4a8e3daddd6e03f92f9961c66d4983b837160543/typer-0.27.1-py3-none-any.whl", hash = "sha256:53150287edd11baeb4e4722c8e394fcdf8181c0ae89485cba8d25c778d5edd56", size = 122874, upload-time = "2026-08-03T14:41:04.391Z" },
 ]
 
 [[package]]

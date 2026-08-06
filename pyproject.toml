@@ -22,7 +22,7 @@ classifiers = [
 dependencies = [
     "pillow>=11.3.0",
     "pytiled-parser~=2.2.9",
-    "pyglet==3.0.dev6",
+    "pyglet==3.0.dev7",
 ]
 dynamic = ["version"]
 
@@ -61,8 +61,7 @@ dev = [
     "ruff",
     "mypy",
     "pyright==1.1.387",
-    "click==8.1.7",     # Temp fix until we bump typer
-    "typer==0.12.5",    # Needed for make.py
+    "typer==0.27.1",    # Needed for make.py; older typer incompatible with security-patched click
     "wheel",
     "bottle",            # Used for web testing playground
     {include-group = "extras"},
