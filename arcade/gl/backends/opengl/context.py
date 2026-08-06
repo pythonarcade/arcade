@@ -434,13 +434,10 @@ class OpenGLArcadeContext(ArcadeContext, OpenGLContext):
         ArcadeContext.__init__(self, *args, **kwargs)
 
     def bind_window_block(self):
-        gl.glBindBufferRange(
-            gl.GL_UNIFORM_BUFFER,
-            0,
-            self._window_block.buffer.id,
-            0,  # type: ignore
-            128,  # 32 x 32bit floats (two mat4) # type: ignore
-        )
+        # self._window_block is an arcade.gl.Buffer that Arcade owns directly
+        # (see ArcadeContext.__init__) — not sourced from pyglet's own
+        # default_camera-managed ring buffer.
+        self._window_block.bind_to_uniform_block(binding=0, offset=0, size=128)
 
 
 class OpenGLInfo(Info):

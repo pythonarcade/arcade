@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from pyglet.math import Mat4, Vec2, Vec3
+from pyglet.window.camera import CameraScissor
 from typing_extensions import Self
 
 from arcade.camera.data_types import DEFAULT_FAR, DEFAULT_NEAR_ORTHO
@@ -146,6 +147,72 @@ class DefaultProjector:
             self._ctx.projection_matrix = previous_projection
             self._ctx.view_matrix = previous_view
             self._ctx.current_camera = previous_projector
+
+    # --- pyglet dev6 batch-draw compatibility shim ---
+    #
+    # pyglet's own Batch.draw() (used e.g. by pyglet.text.Label.draw(), which
+    # arcade.Text delegates to) falls back to `window.default_camera` when no
+    # explicit camera is given. Since Arcade overrides `default_camera` to
+    # return this class instead of pyglet's own Camera2D, pyglet's batch
+    # pipeline needs DefaultProjector to satisfy its internal
+    # CameraScopeProtocol (`.view.scissor`, `.begin()`,
+    # `.get_group_scissor_area()`) or it raises AttributeError.
+    @property
+    def view(self) -> Self:
+        return self
+
+    def begin(self, *, draw_context, commit: bool = True) -> None:
+        pass
+
+    def get_group_scissor_area(self) -> CameraScissor:
+        # MUST NOT return None here. pyglet's GL renderer treats a scissor
+        # of None as "disable scissor testing entirely"
+        # (pyglet/graphics/api/gl/renderer.py: `set_scissor(None)` calls
+        # `glDisable(GL_SCISSOR_TEST)`) — but Arcade enables scissor testing
+        # once at context creation and never revisits it (it's not one of
+        # the flags `Context.enable`/`disable` manage), relying on the
+        # scissor *rectangle* alone to control the visible area. Returning
+        # None here let any pyglet-native draw with no camera set (e.g. any
+        # `arcade.Text`/`draw_text()` call, since those go through
+        # `pyglet.text.Label.draw()`) permanently disable scissor testing
+        # for the rest of the process — breaking any later viewport-scoped
+        # clear (`Framebuffer.clear(viewport=...)`) anywhere in the
+        # session. Returning a real scissor rectangle matching the current
+        # viewport keeps scissor testing enabled without restricting
+        # anything beyond what's already visible.
+        return CameraScissor(*(self._scissor or self.get_current_viewport()))
+
+    # pyglet's base Window.projection/.view properties (dev6+) delegate to
+    # `self.default_camera.projection` / `.view_matrix` respectively
+    # (`pyglet/window/__init__.py`). Any code that reads/writes
+    # `window.projection`/`window.view` — pyglet's own internals, test
+    # infrastructure, or downstream user code — routes through here once
+    # Arcade's `default_camera` override is in the MRO, so these need to
+    # exist and behave sensibly rather than raise AttributeError.
+    @property
+    def projection(self) -> Mat4:
+        if self._matrix is None:
+            self._matrix = Mat4.orthogonal_projection(
+                0, self.width, 0, self.height, DEFAULT_NEAR_ORTHO, DEFAULT_FAR
+            )
+        return self._matrix
+
+    @projection.setter
+    def projection(self, value: Mat4) -> None:
+        self._matrix = value
+        if self._ctx.current_camera is self:
+            self._ctx.projection_matrix = value
+
+    @property
+    def view_matrix(self) -> Mat4:
+        # DefaultProjector always uses an identity view (see .use()) — this
+        # mirrors that rather than tracking a separate, never-applied state.
+        return Mat4()
+
+    @view_matrix.setter
+    def view_matrix(self, value: Mat4) -> None:
+        if self._ctx.current_camera is self:
+            self._ctx.view_matrix = value
 
     def project(self, world_coordinate: Point) -> Vec2:
         """

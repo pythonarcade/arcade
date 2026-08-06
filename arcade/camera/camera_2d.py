@@ -296,8 +296,8 @@ class Camera2D:
 
         self._window.ctx.viewport = self._viewport.lbwh_int
         self._window.ctx.scissor = None if not self.scissor else self.scissor.lbwh_int
-        self._window.projection = _projection
-        self._window.view = _view
+        self._window.ctx.projection_matrix = _projection
+        self._window.ctx.view_matrix = _view
 
     @contextmanager
     def activate(self) -> Generator[Self, None, None]:

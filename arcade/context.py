@@ -56,10 +56,20 @@ class ArcadeContext(Context):
         gc_mode: str = "context_gc",
         gl_api: str = "gl",
     ) -> None:
-        # Set up a default orthogonal projection for sprites and shapes
-        # Mypy can't figure out the dynamic creation of the matrices in Pyglet
-        # They are created based on the active backend.
-        self._window_block = window._matrices.ubo  # type: ignore
+        # Arcade fully owns this UBO, independent of pyglet's own
+        # default_camera-managed ring buffer, so its size stays bounded
+        # regardless of pyglet's per-frame resource lifecycle (spec FR-005).
+        # usage="stream" matches the actual write pattern (rewritten on every
+        # camera activation, read briefly after) rather than the default
+        # "static" (set once, never touched again) — see pyglet's own
+        # ring-buffer rationale for why a stale usage hint on a
+        # frequently-rewritten buffer risks GPU stalls.
+        self._window_block: Buffer = self.buffer(reserve=128, usage="stream")
+        self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
+            0, window.width, 0, window.height, -100, 100
+        )
+        self._view_matrix: Mat4 = Mat4()
+        self._write_window_block()
         self.bind_window_block()
 
         self.blend_func = self.BLEND_DEFAULT
@@ -351,6 +361,15 @@ class ArcadeContext(Context):
             "The currently selected GL backend does not implement ArcadeContext.bind_window_block"
         )
 
+    def _write_window_block(self) -> None:
+        """
+        Write the current projection/view matrices into Arcade's own
+        window-block UBO, matching the ``WindowBlock { mat4 projection;
+        mat4 view; }`` layout Arcade's shaders declare.
+        """
+        self._window_block.write(array("f", self._projection_matrix), offset=0)
+        self._window_block.write(array("f", self._view_matrix), offset=64)
+
     @property
     def default_atlas(self) -> TextureAtlasBase:
         """
@@ -414,16 +433,19 @@ class ArcadeContext(Context):
         This 4x4 float32 matrix is usually calculated by a cameras but
         can be modified directly if you know what you are doing.
 
-        This property simply gets and sets pyglet's projection matrix.
+        This property gets and sets Arcade's own window-block UBO
+        directly. It is independent of pyglet's own window matrix
+        storage (spec FR-002/FR-005).
         """
-        return self.window.projection
+        return self._projection_matrix
 
     @projection_matrix.setter
     def projection_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
             raise ValueError("projection_matrix must be a Mat4 object")
 
-        self.window.projection = value
+        self._projection_matrix = value
+        self._window_block.write(array("f", value), offset=0)
 
     @property
     def view_matrix(self) -> Mat4:
@@ -433,16 +455,19 @@ class ArcadeContext(Context):
         This 4x4 float32 matrix is usually calculated by a cameras but
         can be modified directly if you know what you are doing.
 
-        This property simply gets and sets pyglet's view matrix.
+        This property gets and sets Arcade's own window-block UBO
+        directly. It is independent of pyglet's own window matrix
+        storage (spec FR-002/FR-005).
         """
-        return self.window.view
+        return self._view_matrix
 
     @view_matrix.setter
     def view_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
             raise ValueError("view_matrix must be a Mat4 object")
 
-        self.window.view = value
+        self._view_matrix = value
+        self._window_block.write(array("f", value), offset=64)
 
     def load_program(
         self,
