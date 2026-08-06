@@ -5,6 +5,8 @@ Can run these tests individually with:
 python -m pytest tests/unit/test_utils.py
 """
 
+import math
+
 import arcade
 from pytest import approx
 from arcade.math import *
@@ -87,3 +89,22 @@ def test_rand_vec_spread_deg():
 def test_rand_vec_magnitude():
     """Smoke test"""
     rand_vec_magnitude(30.5, 3.3, 4.4)
+
+
+def test_rotate_around_point_preserves_distance_from_source():
+    """The rotated point must keep its distance from the center of rotation (source)."""
+    source = (2.0, 3.0)
+    target = (5.0, 7.0)  # distance 5 from source
+    for angle in (30.0, 90.0, 170.0, 250.0):
+        rx, ry = rotate_around_point(source, target, angle)
+        dist = math.hypot(rx - source[0], ry - source[1])
+        assert dist == approx(5.0)
+
+
+def test_rotate_around_point_180_reflects_through_source():
+    """A 180 degree rotation reflects the target through the source (direction-independent)."""
+    source = (2.0, 3.0)
+    target = (5.0, 3.0)
+    rx, ry = rotate_around_point(source, target, 180.0)
+    assert rx == approx(2.0 * source[0] - target[0])
+    assert ry == approx(2.0 * source[1] - target[1])
