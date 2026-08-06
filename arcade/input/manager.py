@@ -135,10 +135,12 @@ class InputManager:
 
         self.controller = None
         self.controller_deadzone = controller_deadzone
+        self._dpad_state = pyglet.math.Vec2()
         if controller:
             self.controller = controller
             if not self.controller.device.is_open:
                 self.controller.open()
+            self._dpad_state = self.controller.dpad
 
             self.controller.push_handlers(
                 self.on_button_press,
@@ -276,6 +278,7 @@ class InputManager:
 
         self.controller = controller
         self.controller.open()
+        self._dpad_state = controller.dpad
         self.controller.push_handlers(
             self.on_button_press,
             self.on_button_release,
@@ -305,6 +308,7 @@ class InputManager:
         )
         self.controller.close()
         self.controller = None
+        self._dpad_state = pyglet.math.Vec2()
 
         if self._allow_keyboard:
             self.active_device = InputDevice.KEYBOARD
@@ -657,6 +661,24 @@ class InputManager:
 
     def on_dpad_motion(self, controller: Controller, motion: pyglet.math.Vec2):
         self.active_device = InputDevice.CONTROLLER
+
+        previous = self._dpad_state
+        direction_states = {
+            inputs.ControllerButtons.DPAD_LEFT.value: (previous.x < 0, motion.x < 0),
+            inputs.ControllerButtons.DPAD_RIGHT.value: (previous.x > 0, motion.x > 0),
+            inputs.ControllerButtons.DPAD_UP.value: (previous.y > 0, motion.y > 0),
+            inputs.ControllerButtons.DPAD_DOWN.value: (previous.y < 0, motion.y < 0),
+        }
+
+        for button_name, (was_pressed, is_pressed) in direction_states.items():
+            if was_pressed == is_pressed:
+                continue
+
+            state = ActionState.PRESSED if is_pressed else ActionState.RELEASED
+            for action_name in tuple(self.controller_buttons_to_actions.get(button_name, set())):
+                self.dispatch_action(action_name, state)
+
+        self._dpad_state = motion
 
     def handle_trigger_motion(self, trigger_name: str, value: float):
         self.active_device = InputDevice.CONTROLLER
