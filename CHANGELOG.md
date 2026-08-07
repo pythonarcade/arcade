@@ -3,13 +3,9 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
-## Unreleased
+## 4.0.0.dev6
 
 ### New Features
-- GUI: Added `UIInteractiveSpriteWidget` — combines `UIInteractiveWidget` and `UISpriteWidget` to make sprites clickable and hoverable in the UI tree. See [#2847](https://github.com/pythonarcade/arcade/pull/2847)
-  - Supports `hovered`, `pressed`, and `disabled` states with `on_click` event dispatch.
-  - Widget size defaults to the sprite's texture dimensions, overridable with explicit `width`/`height`.
-- Added `TextPool` - provides a mechanism for caching Text objects for re-use
 - GUI: Added an experimental animation API in `arcade.gui.experimental` — `UIAnimatedGroup` wraps a widget subtree and tweens its transform properties over time via `animate()`.
   - `UIAnimatedGroup` caches its subtree into a surface and exposes non-layouting transform properties (`scale`, `angle`, `alpha`, `offset_x`, `offset_y`, `tint`); it is interactive, hit-testing `hovered`/`pressed`/`on_click` against its untransformed rect. `UIRenderGroup` is the non-interactive caching primitive.
   - `animate()` supports multiple properties per call, sequencing via `then()`, repetition (`repeat`, `yoyo`), relative targets (`rel()`), easing, delays and `on_finish` callbacks.
@@ -19,13 +15,31 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ### Fixes
 
+- GUI: Fixed `UILabel.update_font` always reporting a font change when the requested font was a fallback tuple (e.g. `UIFlatButton`'s default styles), which caused a full UI re-render every frame. This made widget-heavy UIs, such as the `exp_scroll_area` example, run at a few FPS.
+- Fixed `rotate_around_point` missing from `arcade.math.__all__`, which made it unavailable via `from arcade.math import *`.
+
+### Breaking Changes
+- Updated pyglet to 3.0.dev7 (from 3.0.dev3).
+  - Between `dev4` and `dev5`, pyglet removed `window._matrices` and moved window view/projection/viewport onto its own camera (`default_camera` in dev5/dev6, renamed to `camera` in dev7), backed by a per-frame ring-buffer UBO. Arcade now fully owns its own window matrix UBO, independent of pyglet's camera/ring buffer, so rendering behavior for cameras, sprites, and shapes is unchanged.
+  - Advanced users who mix raw pyglet camera/window code with Arcade should note: `window._matrices` no longer exists, and `window.camera` (pyglet's `default_camera` prior to dev7) is pyglet's own concept (a `Camera2D`), distinct from `arcade.Window.default_camera` (Arcade's own `DefaultProjector`) — both exist simultaneously and serve different roles. `arcade.Window` now also exposes a `camera` property as an alias for `default_camera`, matching pyglet's dev7 rename.
+  - Fixed `BackgroundTexture` scale and offset producing incorrect visual transforms — Arcade's code was inadvertently relying on bugs in pyglet's pre-dev7 `Mat3.scale`/`Mat3.translate` that have since been fixed upstream. Visual output for `BackgroundTexture` users with non-default `scale`/`offset` values will change to be correct.
+
+### Misc Changes
+- Resolved security vulnerabilities in the `setuptools`, `click`, and `typer` dependencies (`typer` bumped to 0.27.1) via `uv audit`/`uv lock`.
+
+## 4.0.0.dev5
+
+### New Features
+- GUI: Added `UIInteractiveSpriteWidget` — combines `UIInteractiveWidget` and `UISpriteWidget` to make sprites clickable and hoverable in the UI tree. See [#2847](https://github.com/pythonarcade/arcade/pull/2847)
+  - Supports `hovered`, `pressed`, and `disabled` states with `on_click` event dispatch.
+  - Widget size defaults to the sprite's texture dimensions, overridable with explicit `width`/`height`.
+- Added `TextPool` - provides a mechanism for caching Text objects for re-use
+
+### Fixes
+
 - Fixed an issue where pixel scaling for high-dpi displays did not work correctly in web browsers via Pyodide. See [#2846](https://github.com/pythonarcade/arcade/pull/2846)
 - Fixed issues with update/draw rate handling that changes with Pyglet 3, rates are now handled properly between desktop and browser. See [#2845](https://github.com/pythonarcade/arcade/pull/2845)
 - Fixed caret behavior not responding appropriately when activating an input field. See [#2850](https://github.com/pythonarcade/arcade/pull/2850)
-- GUI: Fixed `UILabel.update_font` always reporting a font change when the requested font was a fallback tuple (e.g. `UIFlatButton`'s default styles), which caused a full UI re-render every frame. This made widget-heavy UIs, such as the `exp_scroll_area` example, run at a few FPS.
-
-### Breaking Changes
-- Updated pyglet to 3.0.dev6 (from 3.0.dev3). Between `dev4` and `dev5`, pyglet removed `window._matrices` and moved window view/projection/viewport onto its own `default_camera`, backed by a per-frame ring-buffer UBO. Arcade now fully owns its own window matrix UBO, independent of pyglet's `default_camera`/ring buffer, so rendering behavior for cameras, sprites, and shapes is unchanged. Advanced users who mix raw pyglet camera/window code with Arcade should note: `window._matrices` no longer exists, and `window.default_camera` is now pyglet's own concept (a `Camera2D`), distinct from `arcade.Window.default_camera` (Arcade's own `DefaultProjector`) — both exist simultaneously and serve different roles.
 
 ## 4.0.0.dev4
 
