@@ -40,8 +40,8 @@ datas.extend(
             "./arcade/resources/system",
         ),
         (
-            arcade_path / "VERSION",
-            "./arcade/VERSION",
+            arcade_path / "_VERSION",
+            "./arcade",
         ),
     ]
 )

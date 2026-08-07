@@ -102,9 +102,9 @@ def _parse_python_friendly_version(
 
 
 def _parse_py_version_from_file(
-    version_path: str | Path = _HERE / "VERSION", write_errors_to=sys.stderr
+    version_path: str | Path = _HERE / "_VERSION", write_errors_to=sys.stderr
 ) -> str:
-    """Read & validate the VERSION file as from a limited subset.
+    """Read and validate the _VERSION file using a limited version syntax.
 
     On failure, it will:
 
@@ -114,7 +114,7 @@ def _parse_py_version_from_file(
 
     Args:
         version_path:
-            The VERSION file's path, defaulting to the same directory as
+            The _VERSION file's path, defaulting to the same directory as
             this file.
         write_errors_to:
             Makes CI simpler by allowing a stream mock to be passed easily.
@@ -137,6 +137,6 @@ def _parse_py_version_from_file(
 VERSION: Final[str] = _parse_py_version_from_file()
 """A Python-friendly version string.
 
-This value is converted from the GitHub-style ``VERSION`` file at the
+This value is converted from the GitHub-style ``_VERSION`` file at the
 top-level of the arcade module.
 """
