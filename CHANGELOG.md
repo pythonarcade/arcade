@@ -3,6 +3,13 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## 4.0.0.dev7
+
+### Breaking Changes
+- Updated pyglet to 3.0.dev8 (from 3.0.dev7).
+  - `dev8` adds a `Window.camera` setter (assign any `BaseCamera` to change the window's default draw camera). Arcade's `Window.camera`/`default_camera` remain read-only aliases for Arcade's own `DefaultProjector` and are unaffected by this change.
+  - `dev8` adds built-in text effects: `pyglet.text.Stroke`, `pyglet.text.DropShadow`, and `pyglet.text.LinearGradient`, usable via `stroke`/`shadow`/`color` on `pyglet.text.Label`. `arcade.Text` passes `stroke=`/`shadow=` through to pyglet already, but `color=LinearGradient(...)` currently raises inside `arcade.Text`/`Color.from_iterable`, which assumes a plain RGBA tuple — Arcade does not yet support gradient fills. Advanced users who want a gradient fill today can create a `pyglet.text.Label` directly instead of `arcade.Text`.
+
 ## 4.0.0.dev6
 
 ### New Features
