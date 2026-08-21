@@ -36,7 +36,7 @@ Book = "https://learn.arcade.academy"
 
 [dependency-groups]
 extras = [
-    "pymunk~=7.2.0"
+    "pymunk~=7.3.0"
 ]
 # Doc building (requires Python >=3.12 due to Sphinx 9.x)
 docs = [
