@@ -47,7 +47,7 @@ docs = [
     "sphinx-copybutton==0.5.2; python_version >= '3.12'",
     "sphinx-sitemap==2.9.0; python_version >= '3.12'",
     "sphinx-togglebutton==0.4.5; python_version >= '3.12'",
-    "pygments==2.20.0; python_version >= '3.12'",
+    "pygments==2.21.0; python_version >= '3.12'",
     "docutils==0.22.4; python_version >= '3.12'",
 ]
 # Used for dev work
@@ -60,7 +60,7 @@ dev = [
     "coveralls",        # Do we really need this?
     "ruff",
     "mypy",
-    "pyright==1.1.387",
+    "pyright==1.1.411",
     "typer==0.27.1",    # Needed for make.py; older typer incompatible with security-patched click
     "wheel",
     "bottle",            # Used for web testing playground
@@ -69,7 +69,7 @@ dev = [
 ]
 
 # Testing only
-testing_libraries = ["pytest", "pytest-mock", "pytest-cov", "pyyaml==6.0.1"]
+testing_libraries = ["pytest", "pytest-mock", "pytest-cov", "pyyaml==6.0.3"]
 
 [project.scripts]
 arcade = "arcade.cli:run_arcade_cli"
