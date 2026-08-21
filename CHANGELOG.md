@@ -3,6 +3,11 @@
 You can grab pre-release versions from PyPi. See the available versions from the
 Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
+## Unreleased
+
+### Misc Changes
+- Updated the optional `pymunk` extra to 7.3.0 (from 7.2.0). Packaging-only release (free-threaded CPython and pyodide wheels, improved type hints) with no breaking changes or deprecations.
+
 ## 4.0.0.dev7
 
 ### Breaking Changes
