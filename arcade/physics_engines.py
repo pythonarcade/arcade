@@ -4,6 +4,7 @@ Physics engines for top-down or platformers.
 
 import math
 from collections.abc import Iterable
+import time
 
 from arcade import (
     BasicSprite,
@@ -518,6 +519,12 @@ class PhysicsEnginePlatformer:
         * :py:meth:`disable_multi_jump`
         """
 
+        self.jump_cooldown: float = 0.2
+        """Minimum time in seconds between jumps."""
+
+        self.last_jump_time: float = 0.0
+        """Time in seconds when the player last jumped."""
+
     # The property object for ladders. This allows us setter/getter/deleter
     # capabilities in safe manner
     # TODO: figure out what do do with 15_ladders_moving_platforms.py
@@ -683,24 +690,28 @@ class PhysicsEnginePlatformer:
              ``True`` if the player can jump.
 
         """
-
+        current_time = time.time()
+        
         # Temporarily move the player down to collide floor-like sprites
         self.player_sprite.center_y -= y_distance
         hit_list = check_for_collision_with_lists(self.player_sprite, self._all_obstacles)
         self.player_sprite.center_y += y_distance
 
-        # Reset the number jumps if the player touched a floor-like sprite
-        if len(hit_list) > 0:
-            self.jumps_since_ground = 0
+        #Checks is the player is on a ladder, and if so, allow them to jump regardless of cooldown or jump count
+        on_ladder = self.is_on_ladder()
 
-        if (
-            len(hit_list) > 0
-            or self.allow_multi_jump
-            and self.jumps_since_ground < self.allowed_jumps
-        ):
+        # If we are on solid ground or a ladder, reset the counter
+        if len(hit_list) > 0 or on_ladder:
+            self.jumps_since_ground = 0
             return True
-        else:
-            return False
+
+        # Must have multi-jump enabled, have jumps remaining, and be past cooldown
+        if self.allow_multi_jump:
+            if self.jumps_since_ground < self.allowed_jumps:
+                if current_time - self.last_jump_time >= self.jump_cooldown:
+                    return True
+                    
+        return False
 
     def enable_multi_jump(self, allowed_jumps: int) -> None:
         """Enable multi-jump.
@@ -749,6 +760,7 @@ class PhysicsEnginePlatformer:
                 A positive value to set the player's y velocity to.
         """
         self.player_sprite.change_y = velocity
+        self.last_jump_time = time.time()
         self.increment_jump_counter()
 
     def increment_jump_counter(self) -> None:
@@ -758,8 +770,8 @@ class PhysicsEnginePlatformer:
         ``1`` to :py:attr:`jumps_since_ground`. Otherwise, it does
         nothing.
         """
-        if self.allow_multi_jump:
-            self.jumps_since_ground += 1
+        #This always increments because we the logic is handled in can_jump
+        self.jumps_since_ground += 1
 
     def update(self) -> list[BasicSprite]:
         """Move the player and platforms, then return colliding sprites.
