@@ -61,7 +61,7 @@ dev = [
     "ruff",
     "mypy",
     "pyright==1.1.387",
-    "typer==0.27.1",    # Needed for make.py; older typer incompatible with security-patched click
+    "typer==0.27.2",    # Needed for make.py; older typer incompatible with security-patched click
     "wheel",
     "bottle",            # Used for web testing playground
     {include-group = "extras"},
