@@ -174,6 +174,29 @@ def test_check_for_collision(window):
     assert arcade.check_for_collision(a, b) is False
 
 
+@pytest.mark.parametrize(
+    "scale_a, scale_b",
+    [
+        ((-1, -1), (1, 1)),
+        ((1, 1), (-1, -1)),
+        ((-1, -1), (-1, -1)),
+        ((-1, 1), (1, -1)),
+        ((-2, -2), (0.5, 0.5)),
+    ],
+)
+def test_check_for_collision_negative_scale(window, scale_a, scale_b):
+    """Flipping a sprite with a negative scale must not affect collisions."""
+    a = arcade.SpriteSolidColor(64, 64, color=arcade.csscolor.RED)
+    b = arcade.SpriteSolidColor(64, 64, center_x=20, color=arcade.csscolor.RED)
+    a.scale = scale_a
+    b.scale = scale_b
+    assert arcade.check_for_collision(a, b) is True
+    assert arcade.check_for_collision(b, a) is True
+
+    b.position = 500, 0
+    assert arcade.check_for_collision(a, b) is False
+
+
 def test_check_for_collision_with_list(window):
     # TODO: Check that the right collision function is called internally
     a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
