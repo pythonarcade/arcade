@@ -1,3 +1,5 @@
+import random
+
 import pytest
 
 import arcade
@@ -344,3 +346,46 @@ def test_cpu_collision_with_lazy_list(window):
     spritelist = arcade.SpriteList(lazy=True)
     spritelist.append(arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED))
     arcade.check_for_collision_with_list(sprite, spritelist, method=2)
+
+
+def _reference_check_for_collision(sprite1, sprite2):
+    """Collision check using the original separating axis test on every edge."""
+    poly_a = sprite1.hit_box.get_adjusted_points()
+    poly_b = sprite2.hit_box.get_adjusted_points()
+    for polygon in (poly_a, poly_b):
+        for i in range(len(polygon)):
+            p1, p2 = polygon[i], polygon[(i + 1) % len(polygon)]
+            normal = (p2[1] - p1[1], p1[0] - p2[0])
+            projected_a = [normal[0] * p[0] + normal[1] * p[1] for p in poly_a]
+            projected_b = [normal[0] * p[0] + normal[1] * p[1] for p in poly_b]
+            if max(projected_a) <= min(projected_b) or max(projected_b) <= min(projected_a):
+                return False
+    return True
+
+
+def test_check_for_collision_matches_reference():
+    """Compare against a full polygon test for many random sprite pairs."""
+    rng = random.Random(4321)
+    textures = [
+        arcade.load_texture(":resources:images/tiles/grassMid.png"),  # 4 point box
+        arcade.load_texture(":resources:images/items/coinGold.png"),  # 8 point octagon
+        arcade.load_texture(":resources:images/space_shooter/laserBlue01.png"),  # long & thin
+    ]
+
+    def random_sprite():
+        sprite = arcade.Sprite(rng.choice(textures))
+        sprite.scale = (rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1]),
+                        rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1]))  # fmt: skip
+        sprite.angle = rng.choice([0, 0, 90, 180, 30, rng.uniform(0, 360)])
+        # Integer positions so exact touches happen
+        sprite.position = rng.randint(-80, 80), rng.randint(-80, 80)
+        return sprite
+
+    results = {True: 0, False: 0}
+    for _ in range(5000):
+        a, b = random_sprite(), random_sprite()
+        expected = _reference_check_for_collision(a, b)
+        assert arcade.check_for_collision(a, b) is expected
+        assert arcade.check_for_collision(b, a) is expected
+        results[expected] += 1
+    assert min(results.values()) > 500

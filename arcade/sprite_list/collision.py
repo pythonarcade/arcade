@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 
 from arcade.geometry import (
+    _are_polygons_intersecting_sat,
     are_polygons_intersecting,
     is_point_in_polygon,
 )
@@ -121,9 +122,21 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     if distance > radius_sum_sq:
         return False
 
-    return are_polygons_intersecting(
-        sprite1.hit_box.get_adjusted_points(), sprite2.hit_box.get_adjusted_points()
-    )
+    hit_box1 = sprite1.hit_box
+    hit_box2 = sprite2.hit_box
+    points1 = hit_box1.get_adjusted_points()
+    points2 = hit_box2.get_adjusted_points()
+    if not points1 or not points2:
+        return False
+
+    # Bounding box check with cached bounds. It's much cheaper than the
+    # polygon test and lets that test skip the x and y axes.
+    left1, right1, bottom1, top1 = hit_box1.get_adjusted_bounds()
+    left2, right2, bottom2, top2 = hit_box2.get_adjusted_bounds()
+    if right1 <= left2 or right2 <= left1 or top1 <= bottom2 or top2 <= bottom1:
+        return False
+
+    return _are_polygons_intersecting_sat(points1, points2)
 
 
 def _get_nearby_sprites(
