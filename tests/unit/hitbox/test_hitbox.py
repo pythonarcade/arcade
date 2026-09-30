@@ -148,10 +148,17 @@ def test_axes_follow_scale_and_angle():
     rot.scale = (2.0, 1.0)
     assert _axis_directions(rot._get_axes()) == {(0.447214, 0.894427), (0.447214, -0.894427)}
 
-    # 45 degrees turns the diagonals into axis-aligned edges and vice versa
+    # 45 degrees turns the axis-aligned edges into diagonals
     rot.scale = (1.0, 1.0)
     rot.angle = 45.0
-    assert _axis_directions(rot._get_axes()) == {(0.707107, 0.707107), (0.707107, -0.707107)}
+    diagonals = {(0.707107, 0.707107), (0.707107, -0.707107)}
+    directions = _axis_directions(rot._get_axes())
+    assert diagonals <= directions
+    # and the diagonals into axis-aligned edges. Whether those are skipped
+    # depends on the platform's sin() and cos(): sin(pi / 4) is
+    # 0.7071067811865476 on Windows but 0.7071067811865475 on Linux, so the
+    # rotated normals may be off axis by ~1e-16 and still get tested.
+    assert directions - diagonals <= {(1.0, 0.0), (0.0, 1.0), (0.0, -1.0)}
 
     rot.angle = 30.0
     assert len(rot._get_axes()) == 4
