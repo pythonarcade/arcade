@@ -349,9 +349,15 @@ def test_cpu_collision_with_lazy_list(window):
 
 
 def _reference_check_for_collision(sprite1, sprite2):
-    """Collision check using the original separating axis test on every edge."""
+    """Collision check using a separating axis test on every edge."""
     poly_a = sprite1.hit_box.get_adjusted_points()
     poly_b = sprite2.hit_box.get_adjusted_points()
+    # Also test the x and y axes. Testing only edge normals can miss a
+    # separation when a hit box is concave, which detailed ones can be.
+    x_a, y_a = zip(*poly_a)
+    x_b, y_b = zip(*poly_b)
+    if max(x_a) <= min(x_b) or max(x_b) <= min(x_a) or max(y_a) <= min(y_b) or max(y_b) <= min(y_a):
+        return False
     for polygon in (poly_a, poly_b):
         for i in range(len(polygon)):
             p1, p2 = polygon[i], polygon[(i + 1) % len(polygon)]
@@ -370,20 +376,30 @@ def test_check_for_collision_matches_reference():
         arcade.load_texture(":resources:images/tiles/grassMid.png"),  # 4 point box
         arcade.load_texture(":resources:images/items/coinGold.png"),  # 8 point octagon
         arcade.load_texture(":resources:images/space_shooter/laserBlue01.png"),  # long & thin
+        # Detailed hit box, with more points and possibly concave
+        arcade.load_texture(
+            ":resources:images/space_shooter/meteorGrey_big1.png",
+            hit_box_algorithm=arcade.hitbox.algo_detailed,
+        ),
     ]
 
-    def random_sprite():
+    def random_sprite(shared_angle):
         sprite = arcade.Sprite(rng.choice(textures))
-        sprite.scale = (rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1]),
-                        rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1]))  # fmt: skip
-        sprite.angle = rng.choice([0, 0, 90, 180, 30, rng.uniform(0, 360)])
-        # Integer positions so exact touches happen
-        sprite.position = rng.randint(-80, 80), rng.randint(-80, 80)
+        sprite.scale = (rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1, 1.5]),
+                        rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1, 1.5]))  # fmt: skip
+        # Often share an angle, so both hit boxes have parallel edges
+        if rng.random() < 0.5:
+            sprite.angle = shared_angle
+        else:
+            sprite.angle = rng.choice([0, 0, 90, 180, 30, rng.uniform(0, 360)])
+        # Positions on a grid so exact touches happen
+        sprite.position = rng.randint(-160, 160) / 2, rng.randint(-160, 160) / 2
         return sprite
 
     results = {True: 0, False: 0}
     for _ in range(5000):
-        a, b = random_sprite(), random_sprite()
+        shared_angle = rng.choice([0, 90, 180, 270, -90, 45, 30, rng.uniform(-720, 720)])
+        a, b = random_sprite(shared_angle), random_sprite(shared_angle)
         expected = _reference_check_for_collision(a, b)
         assert arcade.check_for_collision(a, b) is expected
         assert arcade.check_for_collision(b, a) is expected

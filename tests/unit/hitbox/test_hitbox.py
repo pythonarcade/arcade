@@ -94,3 +94,76 @@ def test_adjusted_bounds_subclass_override():
     assert hb.get_adjusted_bounds() == (0.0, 10.0, 0.0, 10.0)
     hb.offset = 100.0
     assert hb.get_adjusted_bounds() == (100.0, 110.0, 0.0, 10.0)
+
+
+@pytest.mark.parametrize(
+    "angle, expected",
+    [
+        (90.0, [(0.0, 0.0), (10.0, 0.0), (10.0, -10.0), (0.0, -10.0)]),
+        (180.0, [(0.0, 0.0), (0.0, -10.0), (-10.0, -10.0), (-10.0, 0.0)]),
+        (270.0, [(0.0, 0.0), (-10.0, 0.0), (-10.0, 10.0), (0.0, 10.0)]),
+        (-90.0, [(0.0, 0.0), (-10.0, 0.0), (-10.0, 10.0), (0.0, 10.0)]),
+        (450.0, [(0.0, 0.0), (10.0, 0.0), (10.0, -10.0), (0.0, -10.0)]),
+    ],
+)
+def test_right_angle_rotation_is_exact(angle, expected):
+    """Right angles must not add floating point error to the points"""
+    rot = hitbox.HitBox(points).create_rotatable(angle=angle)
+    assert rot.get_adjusted_points() == expected
+
+
+octagon = [(-4.0, -2.0), (-2.0, -4.0), (2.0, -4.0), (4.0, -2.0),
+           (4.0, 2.0), (2.0, 4.0), (-2.0, 4.0), (-4.0, 2.0)]  # fmt: skip
+
+
+def _axis_directions(axes):
+    """Unit vectors of the axes, rounded and pointing right, for comparing"""
+    result = set()
+    for x, y in axes.values():
+        length = (x * x + y * y) ** 0.5
+        if x < 0:
+            x, y = -x, -y
+        result.add((round(x / length, 6), round(y / length, 6)))
+    return result
+
+
+def test_axes_skip_axis_aligned_and_duplicate_edges():
+    # Every edge of a box is axis-aligned
+    assert hitbox.HitBox(points)._get_axes() == {}
+    # An octagon's 8 edges only have 2 non axis-aligned directions
+    axes = hitbox.HitBox(octagon)._get_axes()
+    assert len(axes) == 2
+    assert _axis_directions(axes) == {(0.707107, 0.707107), (0.707107, -0.707107)}
+
+
+def test_axes_follow_scale_and_angle():
+    rot = hitbox.HitBox(octagon).create_rotatable()
+    axes = rot._get_axes()
+
+    # Moving doesn't change the directions, so the cache is kept
+    rot.position = (100.0, 50.0)
+    assert rot._get_axes() is axes
+
+    # Non-uniform scale changes the diagonal directions
+    rot.scale = (2.0, 1.0)
+    assert _axis_directions(rot._get_axes()) == {(0.447214, 0.894427), (0.447214, -0.894427)}
+
+    # 45 degrees turns the diagonals into axis-aligned edges and vice versa
+    rot.scale = (1.0, 1.0)
+    rot.angle = 45.0
+    assert _axis_directions(rot._get_axes()) == {(0.707107, 0.707107), (0.707107, -0.707107)}
+
+    rot.angle = 30.0
+    assert len(rot._get_axes()) == 4
+
+
+def test_axes_subclass_override():
+    """Axes come from get_adjusted_points() if a subclass overrides it."""
+
+    class SkewedHitBox(hitbox.HitBox):
+        def get_adjusted_points(self):
+            return [(x + y, y) for x, y in self.points]
+
+    # The skew turns the box's vertical edges into diagonals
+    axes = SkewedHitBox(points)._get_axes()
+    assert _axis_directions(axes) == {(0.707107, -0.707107)}
