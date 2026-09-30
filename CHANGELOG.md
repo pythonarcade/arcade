@@ -7,8 +7,13 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ### Fixes
 - Fixed `check_for_collision` (and the list-based collision functions) missing collisions when a sprite was flipped with a negative scale. The negative width/height cancelled out in the broad-phase distance check, so flipped sprites could pass through each other.
+- Fixed `are_polygons_intersecting` (and sprite collision checks) always returning `False` when a polygon had a repeated point, such as a closed polygon whose first point is repeated at the end.
+
+### New Features
+- Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.
 
 ### Misc Changes
+- Sped up sprite collision checks. Sprites that pass the quick distance check are now compared by cached hit box bounds before the polygon test, and the polygon test skips horizontal and vertical edges, which the bounds check already covers. Checks that reach the polygon test are about 2-4x faster, e.g. 8.0 to 2.3 µs for two box hit boxes and 21.6 to 10.2 µs for two default octagon hit boxes. `are_polygons_intersecting` is also faster (7.3 to 1.6 µs for two rectangles).
 - Updated the optional `pymunk` extra to 7.3.0 (from 7.2.0). Packaging-only release (free-threaded CPython and pyodide wheels, improved type hints) with no breaking changes or deprecations.
 
 ## 4.0.0.dev7
