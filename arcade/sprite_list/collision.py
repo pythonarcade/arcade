@@ -91,12 +91,13 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     """
 
     # NOTE: for speed because attribute look ups are slow.
+    # Width and height are negative when the sprite is flipped with a negative scale.
     sprite1_position = sprite1._position
-    sprite1_width = sprite1._width
-    sprite1_height = sprite1._height
+    sprite1_width = abs(sprite1._width)
+    sprite1_height = abs(sprite1._height)
     sprite2_position = sprite2._position
-    sprite2_width = sprite2._width
-    sprite2_height = sprite2._height
+    sprite2_width = abs(sprite2._width)
+    sprite2_height = abs(sprite2._height)
 
     radius_sum = (sprite1_width if sprite1_width > sprite1_height else sprite1_height) + (
         sprite2_width if sprite2_width > sprite2_height else sprite2_height
