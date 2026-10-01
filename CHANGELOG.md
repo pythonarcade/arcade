@@ -20,6 +20,9 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Rotated hit boxes at right angles (90, 180, 270 degrees, etc.) now have exact point coordinates. Before, values like `sin(radians(180))` being about 1.2e-16 instead of 0 left tiny errors that could make exactly touching sprites count as colliding, or not, differently from unrotated ones.
 - Fixed sprite collision checks missing collisions when a sprite's hit box is bigger than its texture, such as a custom hit box used as a melee reach area. The quick distance check estimated each sprite's size from its texture; it now uses the actual hit box, cached until the scale changes. This also makes the check tighter for most sprites, so brute-force list checks are about 20-40% faster.
 - Fixed `Sprite.rescale_relative_to_point()` (and `SpriteList.rescale()`, which uses it) not rescaling the sprite's hit box. The sprite was drawn at its new size but collided, and was placed in spatial hashes, at its old size.
+- `check_for_collision_with_lists` no longer returns the same sprite more than once when it's in more than one of the lists.
+- `CollisionMethod.SPATIAL` (`method=1`) on a sprite list without a spatial hash now chooses the same way as `AUTO`, checking every sprite in lists of 1500 or fewer. Before, it always used the GPU, which is slow when called many times per frame and needed an open window.
+- Documented that sprites whose hit boxes only touch don't count as colliding, while a point exactly on a hit box's edge does count for `get_sprites_at_point` and `collides_with_point`. Corrected `get_sprites_in_rect`'s docs, which said touching sprites were included.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.
