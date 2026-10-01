@@ -8,7 +8,7 @@ from arcade import (
     BasicSprite,
     Sprite,
     SpriteSequence,
-    check_for_collision_with_list,
+    has_collision_with_list,
     get_sprites_at_point,
 )
 from arcade.math import get_distance, lerp_2d
@@ -33,9 +33,9 @@ def _spot_is_blocked(
     """
     original_pos = moving_sprite.position
     moving_sprite.position = position
-    hit_list = check_for_collision_with_list(moving_sprite, blocking_sprites)
+    hit = has_collision_with_list(moving_sprite, blocking_sprites)
     moving_sprite.position = original_pos
-    return len(hit_list) > 0
+    return hit
 
 
 def _heuristic(start: Point2, goal: Point2) -> float:
@@ -319,10 +319,7 @@ class AStarBarrierList:
 
                 # See if we'll have a collision if our sprite is at this location
                 self.moving_sprite.position = pos
-                if (
-                    len(check_for_collision_with_list(self.moving_sprite, self.blocking_sprites))
-                    > 0
-                ):
+                if has_collision_with_list(self.moving_sprite, self.blocking_sprites):
                     self.barrier_list.add(cpos)
 
         # Restore original location
