@@ -15,6 +15,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.
+- Added `arcade.CollisionMethod`, an enum for the `method` argument of `check_for_collision_with_list` and `check_for_collision_with_lists`: `AUTO`, `SPATIAL`, `GPU`, and `SIMPLE`. It's an `IntEnum`, so the numbers `0` to `3` still work.
 
 ### Misc Changes
 - Sped up sprite collision checks. Sprites that pass the quick distance check are now compared by cached hit box bounds before the polygon test, and the polygon test skips horizontal and vertical edges, which the bounds check already covers. Checks that reach the polygon test are about 2-4x faster, e.g. 8.0 to 2.3 µs for two box hit boxes and 21.6 to 10.2 µs for two default octagon hit boxes. `are_polygons_intersecting` is also faster (7.3 to 1.6 µs for two rectangles).
