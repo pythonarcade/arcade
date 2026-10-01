@@ -9,12 +9,14 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed `check_for_collision` (and the list-based collision functions) missing collisions when a sprite was flipped with a negative scale. The negative width/height cancelled out in the broad-phase distance check, so flipped sprites could pass through each other.
 - Fixed `SpatialHash` queries (`get_sprites_near_sprite`, `get_sprites_near_point`, `get_sprites_near_rect`, and the collision functions that use them) adding an empty bucket for every grid cell they looked at. Memory use grew as sprites moved around large maps. Queries and adding sprites to a spatial hash are also faster, since the hit box points are now scanned once instead of four times.
 - Fixed `are_polygons_intersecting` (and sprite collision checks) always returning `False` when a polygon had a repeated point, such as a closed polygon whose first point is repeated at the end.
+- Rotated hit boxes at right angles (90, 180, 270 degrees, etc.) now have exact point coordinates. Before, values like `sin(radians(180))` being about 1.2e-16 instead of 0 left tiny errors that could make exactly touching sprites count as colliding, or not, differently from unrotated ones.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.
 
 ### Misc Changes
 - Sped up sprite collision checks. Sprites that pass the quick distance check are now compared by cached hit box bounds before the polygon test, and the polygon test skips horizontal and vertical edges, which the bounds check already covers. Checks that reach the polygon test are about 2-4x faster, e.g. 8.0 to 2.3 µs for two box hit boxes and 21.6 to 10.2 µs for two default octagon hit boxes. `are_polygons_intersecting` is also faster (7.3 to 1.6 µs for two rectangles).
+- Sped up collision checks further by caching each hit box's distinct edge directions. Parallel edges (such as opposite sides of the default octagon hit boxes, or matching edges on two sprites with the same angle) are only tested once, and the cache is kept when a sprite moves. Two unrotated octagon hit boxes go from 12.0 to 4.6 µs, and two rotated 30° from 20.8 to 6.9 µs.
 - Updated the optional `pymunk` extra to 7.3.0 (from 7.2.0). Packaging-only release (free-threaded CPython and pyodide wheels, improved type hints) with no breaking changes or deprecations.
 
 ## 4.0.0.dev7

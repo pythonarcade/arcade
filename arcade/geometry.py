@@ -6,6 +6,7 @@ These are the pure python versions of the functions.
 Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
 """
 
+from collections.abc import Iterable
 from sys import maxsize as sys_int_maxsize
 
 from arcade.types import Point2, Point2List
@@ -69,6 +70,33 @@ def _are_polygons_intersecting_sat(poly_a: Point2List, poly_b: Point2List) -> bo
 
             if max(projected_a) <= min(projected_b) or max(projected_b) <= min(projected_a):
                 return False
+
+    return True
+
+
+def _are_polygons_overlapping_on_axes(
+    poly_a: Point2List, poly_b: Point2List, axes: Iterable[Point2]
+) -> bool:
+    """
+    Separating axis test for two polygons using a given set of axes.
+
+    Like :py:func:`_are_polygons_intersecting_sat`, but the caller provides
+    the axes to test, so they can be cached and duplicates removed.
+
+    Args:
+        poly_a: List of points that define the first polygon.
+        poly_b: List of points that define the second polygon.
+        axes: The axes to project onto. They don't need to be unit vectors.
+
+    Returns:
+        ``True`` if the polygons overlap on every axis, ``False`` otherwise
+    """
+    for normal_x, normal_y in axes:
+        projected_a = [normal_x * px + normal_y * py for px, py in poly_a]
+        projected_b = [normal_x * px + normal_y * py for px, py in poly_b]
+
+        if max(projected_a) <= min(projected_b) or max(projected_b) <= min(projected_a):
+            return False
 
     return True
 
