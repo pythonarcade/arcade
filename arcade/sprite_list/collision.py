@@ -92,20 +92,20 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     """
 
     # NOTE: for speed because attribute look ups are slow.
-    # Width and height are negative when the sprite is flipped with a negative scale.
     sprite1_position = sprite1._position
-    sprite1_width = abs(sprite1._width)
-    sprite1_height = abs(sprite1._height)
     sprite2_position = sprite2._position
-    sprite2_width = abs(sprite2._width)
-    sprite2_height = abs(sprite2._height)
+    hit_box1 = sprite1._hit_box
+    hit_box2 = sprite2._hit_box
 
-    radius_sum = (sprite1_width if sprite1_width > sprite1_height else sprite1_height) + (
-        sprite2_width if sprite2_width > sprite2_height else sprite2_height
-    )
-
-    # Multiply by half of the theoretical max diagonal length for an estimation of distance
-    radius_sum *= 0.71  # 1.42 / 2
+    # Quick check with circles around each hit box. The radius is cached on
+    # the hit box until its scale changes.
+    radius1 = hit_box1._radius
+    if radius1 is None:
+        radius1 = hit_box1._get_radius()
+    radius2 = hit_box2._radius
+    if radius2 is None:
+        radius2 = hit_box2._get_radius()
+    radius_sum = radius1 + radius2
     radius_sum_sq = radius_sum * radius_sum
 
     diff_x = sprite1_position[0] - sprite2_position[0]
@@ -122,8 +122,6 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     if distance > radius_sum_sq:
         return False
 
-    hit_box1 = sprite1.hit_box
-    hit_box2 = sprite2.hit_box
     points1 = hit_box1.get_adjusted_points()
     points2 = hit_box2.get_adjusted_points()
     if not points1 or not points2:

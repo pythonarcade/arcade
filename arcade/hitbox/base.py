@@ -17,6 +17,11 @@ Axes = dict[tuple[float, float], tuple[float, float]]
 # whether two edges are parallel.
 _AXIS_DECIMALS = 9
 
+# Hit box radii are padded by this relative and absolute amount, so rounding
+# in the adjusted points can never put a point outside the radius.
+_RADIUS_PADDING_RELATIVE = 1e-6
+_RADIUS_PADDING_ABSOLUTE = 1e-6
+
 # Cosine and sine for 0, 90, 180 and 270 degrees clockwise
 _RIGHT_ANGLE_ROTATIONS = ((1.0, 0.0), (0.0, -1.0), (-1.0, 0.0), (0.0, 1.0))
 
@@ -213,6 +218,9 @@ class HitBox:
         self._axes: Axes = {}
         self._axes_key: tuple[Any, ...] | None = None
 
+        # Cached by _get_radius() until the scale changes
+        self._radius: float | None = None
+
     @property
     def points(self) -> Point2List:
         """
@@ -300,6 +308,36 @@ class HitBox:
             self._adjusted_bounds_points = points
         return self._adjusted_bounds
 
+    def _get_radius(self) -> float:
+        """
+        Get the distance from the position to the farthest adjusted point.
+
+        Rotating or moving the hit box doesn't change this, so it's cached
+        until the scale changes. The result is padded very slightly so
+        rounding can't put an adjusted point outside it.
+        """
+        if type(self).get_adjusted_points not in (
+            HitBox.get_adjusted_points,
+            RotatableHitBox.get_adjusted_points,
+        ):
+            # A subclass may transform the points differently, so measure
+            # the adjusted points. Not cached, since they may change at any time.
+            position_x, position_y = self._position
+            radius = max(
+                (hypot(x - position_x, y - position_y) for x, y in self.get_adjusted_points()),
+                default=0.0,
+            )
+            return radius + radius * _RADIUS_PADDING_RELATIVE + _RADIUS_PADDING_ABSOLUTE
+
+        cached = self._radius
+        if cached is not None:
+            return cached
+        scale_x, scale_y = self._scale
+        radius = max((hypot(x * scale_x, y * scale_y) for x, y in self._points), default=0.0)
+        radius += radius * _RADIUS_PADDING_RELATIVE + _RADIUS_PADDING_ABSOLUTE
+        self._radius = radius
+        return radius
+
     def _get_axes(self) -> Axes:
         """
         Get the separating axes to test this hit box against another.
@@ -374,6 +412,7 @@ class HitBox:
     @scale.setter
     def scale(self, scale: tuple[float, float]):
         self._scale = scale
+        self._radius = None
         self._adjusted_cache_dirty = True
 
     def create_rotatable(

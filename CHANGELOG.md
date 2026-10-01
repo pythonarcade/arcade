@@ -10,6 +10,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed `SpatialHash` queries (`get_sprites_near_sprite`, `get_sprites_near_point`, `get_sprites_near_rect`, and the collision functions that use them) adding an empty bucket for every grid cell they looked at. Memory use grew as sprites moved around large maps. Queries and adding sprites to a spatial hash are also faster, since the hit box points are now scanned once instead of four times.
 - Fixed `are_polygons_intersecting` (and sprite collision checks) always returning `False` when a polygon had a repeated point, such as a closed polygon whose first point is repeated at the end.
 - Rotated hit boxes at right angles (90, 180, 270 degrees, etc.) now have exact point coordinates. Before, values like `sin(radians(180))` being about 1.2e-16 instead of 0 left tiny errors that could make exactly touching sprites count as colliding, or not, differently from unrotated ones.
+- Fixed sprite collision checks missing collisions when a sprite's hit box is bigger than its texture, such as a custom hit box used as a melee reach area. The quick distance check estimated each sprite's size from its texture; it now uses the actual hit box, cached until the scale changes. This also makes the check tighter for most sprites, so brute-force list checks are about 20-40% faster.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.

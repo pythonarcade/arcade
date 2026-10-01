@@ -199,6 +199,35 @@ def test_check_for_collision_negative_scale(window, scale_a, scale_b):
     assert arcade.check_for_collision(a, b) is False
 
 
+def test_check_for_collision_hit_box_bigger_than_texture(window):
+    """A custom hit box bigger than the texture must still collide."""
+    a = arcade.SpriteSolidColor(32, 32, color=arcade.csscolor.RED)
+    # Like a melee reach area around the sprite
+    a.hit_box = arcade.hitbox.HitBox([(-50, -50), (50, -50), (50, 50), (-50, 50)])
+    # Overlaps the hit box, but is too far away to touch the texture
+    b = arcade.SpriteSolidColor(32, 32, center_x=60, color=arcade.csscolor.RED)
+    assert arcade.check_for_collision(a, b) is True
+    assert arcade.check_for_collision(b, a) is True
+
+    sprite_list = arcade.SpriteList()
+    sprite_list.append(b)
+    assert arcade.check_for_collision_with_list(a, sprite_list, method=3) == [b]
+    sprite_list.enable_spatial_hashing()
+    assert arcade.check_for_collision_with_list(a, sprite_list, method=1) == [b]
+
+    # Still found when rotated, scaled, or flipped
+    a.angle = 45
+    b.position = 70, 0
+    assert arcade.check_for_collision(a, b) is True
+    a.scale = (-1.5, 1.5)
+    b.position = 90, 0
+    assert arcade.check_for_collision(a, b) is True
+
+    # And not when it really is out of reach
+    b.position = 200, 0
+    assert arcade.check_for_collision(a, b) is False
+
+
 def test_check_for_collision_with_list(window):
     # TODO: Check that the right collision function is called internally
     a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
@@ -385,7 +414,11 @@ def test_check_for_collision_matches_reference():
 
     def random_sprite(shared_angle):
         sprite = arcade.Sprite(rng.choice(textures))
-        sprite.scale = (rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1, 1.5]),
+        # Sometimes use a custom hit box bigger than the texture
+        if rng.random() < 0.2:
+            points = [(x * 2.5, y * 2.5) for x, y in sprite.texture.hit_box_points]
+            sprite.hit_box = arcade.hitbox.HitBox(points)
+        sprite.scale =(rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1, 1.5]),
                         rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1, 1.5]))  # fmt: skip
         # Often share an angle, so both hit boxes have parallel edges
         if rng.random() < 0.5:
