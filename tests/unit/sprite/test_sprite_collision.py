@@ -499,6 +499,41 @@ def test_check_for_collision_between_lists_type_errors(window):
         arcade.check_for_collision_between_lists(arcade.SpriteList(), "moo")
 
 
+@pytest.mark.parametrize(
+    "wall_scale, bullet_scale",
+    [
+        ((1, 1), (1, 1)),
+        ((-1, 1), (1, 1)),
+        ((1, -1), (1, 1)),
+        ((-1, -1), (1, 1)),
+        ((1, 1), (-1, -1)),
+        ((-1, -1), (-1, -1)),
+    ],
+)
+def test_gpu_collision_flipped_sprites(window, wall_scale, bullet_scale):
+    """The GPU path finds sprites flipped with a negative scale"""
+    if window.ctx._gl_api == "webgl":
+        pytest.skip("GPU collision isn't supported on WebGL")
+
+    # A long wall and a small bullet near its end, so only the wall's own
+    # size can bring them close enough
+    wall = arcade.SpriteSolidColor(200, 20)
+    wall.scale = wall_scale
+    walls = arcade.SpriteList()
+    walls.append(wall)
+    bullet = arcade.SpriteSolidColor(4, 4, center_x=80)
+    bullet.scale = bullet_scale
+
+    assert walls.get_nearby_sprites_gpu(bullet.position, bullet.size) == [wall]
+    gpu = arcade.CollisionMethod.GPU
+    assert arcade.check_for_collision_with_list(bullet, walls, method=gpu) == [wall]
+
+    # And still not when it's far away
+    bullet.position = 400, 0
+    assert walls.get_nearby_sprites_gpu(bullet.position, bullet.size) == []
+    assert arcade.check_for_collision_with_list(bullet, walls, method=gpu) == []
+
+
 def test_check_for_collision_with_list(window):
     # TODO: Check that the right collision function is called internally
     a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)

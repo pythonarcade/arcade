@@ -19,7 +19,8 @@ void main() {
 
     // Get the maximum x and y size
     // max() works per component
-    vec2 size = max(size[0], check_size);
+    // Sizes are negative for sprites flipped with a negative scale
+    vec2 size = max(abs(size[0]), abs(check_size));
 
     // Destroy the sprite if too far away
     if (dist < max(size.x, size.y) * 1.42) {
