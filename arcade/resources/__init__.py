@@ -303,3 +303,29 @@ def load_liberation_fonts() -> None:
     load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Bold.ttf")
     load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Italic.ttf")
     load_font(":system:fonts/ttf/Liberation/Liberation_Serif_Regular.ttf")
+
+def load_josefin_sans() -> None:
+    """Loads all styles for Josefin Sans, our brand font.
+
+    .. tip:: This function is best for prototyping and experimenting!
+
+             For best performance, you may want to switch to
+             :py:class:`arcade.load_font` before release.
+
+    """
+    from arcade.text import load_font
+
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_BoldItalic.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_Bold.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_Italic.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_Regular.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_Medium.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_MediumItalic.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_Thin.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_ThinItalic.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_Light.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_LightItalic.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_Semibold.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_SemiboldItalic.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_ExtraLight.ttf")
+    load_font(":system:fonts/ttf/Josefin/Josefin_Sans_ExtraLightItalic.ttf")
