@@ -1,3 +1,6 @@
+import math
+import random
+
 import pytest
 from arcade import hitbox
 
@@ -174,3 +177,69 @@ def test_axes_subclass_override():
     # The skew turns the box's vertical edges into diagonals
     axes = SkewedHitBox(points)._get_axes()
     assert _axis_directions(axes) == {(0.707107, -0.707107)}
+
+
+def test_radius():
+    """The radius is the distance from the position to the farthest point"""
+    hb = hitbox.HitBox(points)  # (0, 0) to (10, 10), so (10, 10) is farthest
+    assert hb._get_radius() == pytest.approx(200**0.5, rel=1e-5)
+    # Never smaller than the true distance, so rounding can't cause misses
+    assert hb._get_radius() >= 200**0.5
+
+    # Cached, and not changed by moving
+    radius = hb._get_radius()
+    assert hb._radius == radius
+    hb.position = (100.0, -50.0)
+    assert hb._get_radius() == radius
+
+    # Recalculated when the scale changes, including negative scales
+    hb.scale = (2.0, -0.5)
+    assert hb._radius is None
+    assert hb._get_radius() == pytest.approx((20**2 + 5**2) ** 0.5, rel=1e-5)
+
+
+def test_radius_rotatable():
+    """Rotation doesn't change the radius"""
+    rot = hitbox.HitBox(octagon).create_rotatable()
+    radius = rot._get_radius()
+    assert radius == pytest.approx(20**0.5, rel=1e-5)
+    for angle in (30.0, 45.0, 90.0, 217.0):
+        rot.angle = angle
+        assert rot._get_radius() == radius
+        farthest = max(
+            ((x - rot.position[0]) ** 2 + (y - rot.position[1]) ** 2) ** 0.5
+            for x, y in rot.get_adjusted_points()
+        )
+        assert farthest <= radius
+
+
+def test_radius_empty():
+    assert hitbox.HitBox([])._get_radius() == pytest.approx(0.0, abs=1e-5)
+
+
+def test_radius_subclass_override():
+    """The radius comes from get_adjusted_points() if a subclass overrides it."""
+
+    class StretchedHitBox(hitbox.HitBox):
+        def get_adjusted_points(self):
+            px, py = self.position
+            return [(x * 3 + px, y + py) for x, y in self.points]
+
+    hb = StretchedHitBox(points, position=(5.0, 5.0))
+    assert hb._get_radius() == pytest.approx((30**2 + 10**2) ** 0.5, rel=1e-5)
+
+
+def test_radius_covers_rounding():
+    """Rounding in the adjusted points must never put a point outside the radius"""
+    rng = random.Random(0)
+    for _ in range(2000):
+        pts = [(rng.uniform(-60, 60), rng.uniform(-60, 60)) for _ in range(rng.randint(3, 8))]
+        rot = hitbox.HitBox(pts).create_rotatable(angle=rng.uniform(0, 360))
+        rot.scale = (rng.uniform(-3, 3), rng.uniform(-3, 3))
+        far = rng.choice([1.0, 1e3, 1e5, 1e7])
+        rot.position = (rng.uniform(-far, far), rng.uniform(-far, far))
+
+        radius = rot._get_radius()
+        px, py = rot.position
+        for x, y in rot.get_adjusted_points():
+            assert math.hypot(x - px, y - py) <= radius
