@@ -1,6 +1,9 @@
 from collections.abc import Iterable
 from enum import IntEnum
-from typing import TypeVar
+from math import hypot
+from typing import NamedTuple, TypeVar
+
+from pyglet.math import Vec2
 
 from arcade.geometry import (
     _are_polygons_overlapping_on_axes,
@@ -56,6 +59,31 @@ class CollisionMethod(IntEnum):
     SIMPLE = 3
     """
     Check every sprite in the list.
+    """
+
+
+class CollisionInfo(NamedTuple):
+    """
+    How two colliding sprites overlap. Returned by :py:func:`get_collision_info`.
+
+    Moving the first sprite by ``normal * depth`` is the smallest move that
+    separates the two sprites, leaving their hit boxes just touching::
+
+        info = arcade.get_collision_info(player, wall)
+        if info:
+            player.position += info.normal * info.depth
+    """
+
+    normal: Vec2
+    """
+    A unit vector pointing the way to move the first sprite to separate it
+    from the second. Swapping the sprites flips its direction.
+    """
+
+    depth: float
+    """
+    How far, in pixels, to move the first sprite along :py:attr:`normal` to
+    separate the sprites. Always greater than zero.
     """
 
 
@@ -133,6 +161,120 @@ def check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
             raise TypeError("Parameter 2 is not an instance of a Sprite class.")
 
     return _check_for_collision(sprite1, sprite2)
+
+
+def get_collision_info(sprite1: BasicSprite, sprite2: BasicSprite) -> CollisionInfo | None:
+    """
+    Check for a collision between two sprites, and find how to separate them.
+
+    This works like :py:func:`check_for_collision`, but instead of ``True``
+    it returns a :py:class:`CollisionInfo` with the smallest move that
+    separates the sprites: the direction to move ``sprite1`` and how far.
+    This is useful for pushing a sprite out of a wall, or bouncing::
+
+        info = arcade.get_collision_info(player, wall)
+        if info:
+            player.position += info.normal * info.depth
+
+    As with :py:func:`check_for_collision`, sprites that only touch don't
+    count as colliding.
+
+    .. note:: After moving by exactly ``normal * depth`` the hit boxes touch,
+              but floating point rounding can leave them overlapping by a
+              tiny amount. Add a small extra distance if they must not
+              overlap at all.
+
+    .. warning:: The result is only correct for convex hit boxes. The
+                 detailed hit box algorithm can create concave ones.
+
+    When more than one move is equally small, the y axis is preferred, then
+    the x axis, then other directions, and moving up or right over moving
+    down or left. So two identical sprites in the same place are separated
+    by moving ``sprite1`` up.
+
+    Args:
+        sprite1: The sprite to separate
+        sprite2: The sprite to separate it from
+
+    Returns:
+        A :py:class:`CollisionInfo` if the sprites collide, otherwise ``None``.
+    """
+    if __debug__:
+        if not isinstance(sprite1, BasicSprite):
+            raise TypeError("Parameter 1 is not an instance of a Sprite class.")
+        if isinstance(sprite2, SpriteSequence):
+            raise TypeError(
+                "Parameter 2 is a instance of the SpriteList instead of a required "
+                "Sprite. A list isn't supported here; check each sprite in it instead."
+            )
+        elif not isinstance(sprite2, BasicSprite):
+            raise TypeError("Parameter 2 is not an instance of a Sprite class.")
+
+    hit_box1 = sprite1._hit_box
+    hit_box2 = sprite2._hit_box
+
+    # Quick check with circles around each hit box, as in _check_for_collision
+    radius1 = hit_box1._radius
+    if radius1 is None:
+        radius1 = hit_box1._get_radius()
+    radius2 = hit_box2._radius
+    if radius2 is None:
+        radius2 = hit_box2._get_radius()
+    radius_sum = radius1 + radius2
+    diff_x = sprite1._position[0] - sprite2._position[0]
+    diff_y = sprite1._position[1] - sprite2._position[1]
+    if diff_x * diff_x + diff_y * diff_y > radius_sum * radius_sum:
+        return None
+
+    points1 = hit_box1.get_adjusted_points()
+    points2 = hit_box2.get_adjusted_points()
+    if not points1 or not points2:
+        return None
+
+    left1, right1, bottom1, top1 = hit_box1.get_adjusted_bounds()
+    left2, right2, bottom2, top2 = hit_box2.get_adjusted_bounds()
+    if right1 <= left2 or right2 <= left1 or top1 <= bottom2 or top2 <= bottom1:
+        return None
+
+    # Find the smallest overlap. The y and x axes come from the bounds, then
+    # the hit boxes' other edge directions. For each axis there are two
+    # ways to move: in the positive direction (sprite1 past the top of
+    # sprite2's range) or the negative one. Ties keep the earlier choice.
+    up = top2 - bottom1
+    down = top1 - bottom2
+    if up <= down:
+        best_depth, best_x, best_y = up, 0.0, 1.0
+    else:
+        best_depth, best_x, best_y = down, 0.0, -1.0
+
+    right = right2 - left1
+    left = right1 - left2
+    if right < best_depth and right <= left:
+        best_depth, best_x, best_y = right, 1.0, 0.0
+    elif left < best_depth and left < right:
+        best_depth, best_x, best_y = left, -1.0, 0.0
+
+    axes = hit_box1._get_axes() | hit_box2._get_axes()
+    for normal_x, normal_y in axes.values():
+        projected_1 = [normal_x * px + normal_y * py for px, py in points1]
+        projected_2 = [normal_x * px + normal_y * py for px, py in points2]
+        min_1 = min(projected_1)
+        max_1 = max(projected_1)
+        min_2 = min(projected_2)
+        max_2 = max(projected_2)
+        if max_1 <= min_2 or max_2 <= min_1:
+            return None
+
+        # The normals aren't unit length, so convert the overlaps to pixels
+        length = hypot(normal_x, normal_y)
+        positive = (max_2 - min_1) / length
+        negative = (max_1 - min_2) / length
+        if positive < best_depth and positive <= negative:
+            best_depth, best_x, best_y = positive, normal_x / length, normal_y / length
+        elif negative < best_depth and negative < positive:
+            best_depth, best_x, best_y = negative, -normal_x / length, -normal_y / length
+
+    return CollisionInfo(Vec2(best_x, best_y), best_depth)
 
 
 def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
