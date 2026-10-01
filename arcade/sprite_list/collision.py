@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from enum import IntEnum
 
 from arcade.geometry import (
     _are_polygons_overlapping_on_axes,
@@ -12,6 +13,51 @@ from arcade.types.rect import Rect
 from arcade.window_commands import get_window
 
 from .sprite_list import SpriteSequence
+
+
+class CollisionMethod(IntEnum):
+    """
+    How :py:func:`check_for_collision_with_list` and
+    :py:func:`check_for_collision_with_lists` find the sprites to check.
+
+    This is an :py:class:`~enum.IntEnum`, so the numbers ``0`` to ``3``
+    used before it was added still work.
+
+    While the GPU method is very fast when you can't use spatial hashing,
+    it's also very slow if you call it many times per frame. Which method
+    is best depends entirely on your use case.
+
+    The GPU isn't used on WebGL: wherever a method would use it, every
+    sprite is checked instead.
+    """
+
+    AUTO = 0
+    """
+    Use the sprite list's spatial hash if it has one. Otherwise check every
+    sprite if there are 1500 or fewer, or use the GPU if there are more.
+    """
+
+    SPATIAL = 1
+    """
+    Use the sprite list's spatial hash. If it doesn't have one, use the GPU.
+    """
+
+    GPU = 2
+    """
+    Use the GPU to find sprites near the sprite being checked, then check
+    those.
+    """
+
+    SIMPLE = 3
+    """
+    Check every sprite in the list.
+    """
+
+
+# Module-level aliases, so the hot path doesn't look up enum members every call
+_AUTO = CollisionMethod.AUTO
+_SPATIAL = CollisionMethod.SPATIAL
+_SIMPLE = CollisionMethod.SIMPLE
 
 
 def get_distance_between_sprites(sprite1: SpriteType, sprite2: SpriteType) -> float:
@@ -149,10 +195,28 @@ def _get_nearby_sprites(
     return sprite_list.get_nearby_sprites_gpu(sprite.position, sprite.size)
 
 
+def _get_sprites_to_check(
+    sprite: BasicSprite,
+    sprite_list: SpriteSequence[SpriteType],
+    method: CollisionMethod | int,
+) -> Iterable[SpriteType]:
+    """Get the sprites in a list to check for collisions, using ``method``."""
+    if sprite_list.spatial_hash is not None and (method == _AUTO or method == _SPATIAL):
+        return sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
+    if (
+        method == _SIMPLE
+        or (method == _AUTO and len(sprite_list) <= 1500)
+        or get_window().ctx._gl_api == "webgl"
+    ):
+        return sprite_list
+    # GPU transform - Not on WebGL
+    return _get_nearby_sprites(sprite, sprite_list)
+
+
 def check_for_collision_with_list(
     sprite: BasicSprite,
     sprite_list: SpriteSequence[SpriteType],
-    method: int = 0,
+    method: CollisionMethod | int = CollisionMethod.AUTO,
 ) -> list[SpriteType]:
     """
     Check for a collision between a sprite, and a list of sprites.
@@ -163,16 +227,8 @@ def check_for_collision_with_list(
         sprite_list:
             SpriteList to check against
         method:
-            Collision check method. Defaults to 0.
-
-            - 0: auto-select. (spatial if available, GPU if 1500+ sprites, else simple)
-            - 1: Spatial Hashing if available,
-            - 2: GPU based
-            - 3: Simple check-everything.
-
-            Note that while the GPU method is very fast when you cannot use spatial hashing,
-            it's also very slow if you are calling this function many times per frame.
-            What method is the most appropriate depends entirely on your use case.
+            How to find the sprites to check. See :py:class:`CollisionMethod`.
+            Defaults to :py:attr:`CollisionMethod.AUTO`.
 
     Returns:
         List of sprites colliding, or an empty list.
@@ -186,23 +242,9 @@ def check_for_collision_with_list(
         if not isinstance(sprite_list, SpriteSequence):
             raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
 
-    sprites_to_check: Iterable[SpriteType]
-    # Spatial
-    if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
-        sprites_to_check = sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
-    elif (
-        method == 3
-        or (method == 0 and len(sprite_list) <= 1500)
-        or get_window().ctx._gl_api == "webgl"
-    ):
-        sprites_to_check = sprite_list
-    else:
-        # GPU transform - Not on WebGL
-        sprites_to_check = _get_nearby_sprites(sprite, sprite_list)
-
     return [
         sprite2
-        for sprite2 in sprites_to_check
+        for sprite2 in _get_sprites_to_check(sprite, sprite_list, method)
         if sprite is not sprite2 and _check_for_collision(sprite, sprite2)
     ]
 
@@ -216,7 +258,7 @@ def check_for_collision_with_list(
 def check_for_collision_with_lists(
     sprite: BasicSprite,
     sprite_lists: Iterable[SpriteSequence[SpriteType]],
-    method=0,
+    method: CollisionMethod | int = CollisionMethod.AUTO,
 ) -> list[SpriteType]:
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
@@ -227,16 +269,8 @@ def check_for_collision_with_lists(
         sprite_lists:
             SpriteLists to check against
         method:
-            Collision check method. Defaults to 0.
-
-            - 0: auto-select. (spatial if available, GPU if 1500+ sprites, else simple)
-            - 1: Spatial Hashing if available,
-            - 2: GPU based
-            - 3: Simple check-everything.
-
-            Note that while the GPU method is very fast when you cannot use spatial hashing,
-            it's also very slow if you are calling this function many times per frame.
-            What method is the most appropriate depends entirely on your use case.
+            How to find the sprites to check. See :py:class:`CollisionMethod`.
+            Defaults to :py:attr:`CollisionMethod.AUTO`.
 
     Returns:
         List of sprites colliding, or an empty list.
@@ -249,23 +283,9 @@ def check_for_collision_with_lists(
             )
 
     sprites: list[SpriteType] = []
-    sprites_to_check: Iterable[SpriteType]
 
     for sprite_list in sprite_lists:
-        # Spatial
-        if sprite_list.spatial_hash is not None and (method == 1 or method == 0):
-            sprites_to_check = sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
-        elif (
-            method == 3
-            or (method == 0 and len(sprite_list) <= 1500)
-            or get_window().ctx._gl_api == "webgl"
-        ):
-            sprites_to_check = sprite_list
-        else:
-            # GPU transform - Not on WebGL
-            sprites_to_check = _get_nearby_sprites(sprite, sprite_list)
-
-        for sprite2 in sprites_to_check:
+        for sprite2 in _get_sprites_to_check(sprite, sprite_list, method):
             if sprite is not sprite2 and _check_for_collision(sprite, sprite2):
                 sprites.append(sprite2)
 

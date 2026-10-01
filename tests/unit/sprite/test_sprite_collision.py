@@ -228,6 +228,74 @@ def test_check_for_collision_hit_box_bigger_than_texture(window):
     assert arcade.check_for_collision(a, b) is False
 
 
+def test_collision_method_values():
+    """CollisionMethod is an IntEnum, so the old numbers still work"""
+    assert arcade.CollisionMethod.AUTO == 0
+    assert arcade.CollisionMethod.SPATIAL == 1
+    assert arcade.CollisionMethod.GPU == 2
+    assert arcade.CollisionMethod.SIMPLE == 3
+    assert arcade.CollisionMethod(2) is arcade.CollisionMethod.GPU
+
+
+# (method, spatial hash, sprite count, webgl, expected path)
+COLLISION_METHOD_PATHS = [
+    (arcade.CollisionMethod.AUTO, True, 10, False, "spatial"),
+    (arcade.CollisionMethod.AUTO, False, 10, False, "simple"),
+    (arcade.CollisionMethod.AUTO, False, 1501, False, "gpu"),
+    (arcade.CollisionMethod.SPATIAL, True, 10, False, "spatial"),
+    (arcade.CollisionMethod.SPATIAL, False, 10, False, "gpu"),
+    (arcade.CollisionMethod.GPU, True, 10, False, "gpu"),
+    (arcade.CollisionMethod.GPU, False, 10, False, "gpu"),
+    (arcade.CollisionMethod.SIMPLE, True, 10, False, "simple"),
+    (arcade.CollisionMethod.SIMPLE, False, 1501, False, "simple"),
+    (arcade.CollisionMethod.GPU, False, 10, True, "simple"),
+    (arcade.CollisionMethod.AUTO, False, 1501, True, "simple"),
+    (arcade.CollisionMethod.AUTO, True, 1501, True, "spatial"),
+]
+
+
+@pytest.mark.parametrize("use_int", [False, True], ids=["enum", "int"])
+@pytest.mark.parametrize("method, spatial, count, webgl, expected", COLLISION_METHOD_PATHS)
+def test_collision_method_paths(
+    window, monkeypatch, use_int, method, spatial, count, webgl, expected
+):
+    """Each method finds the sprites to check the expected way"""
+    from arcade.sprite_list import collision
+
+    sprite = arcade.SpriteSolidColor(10, 10)
+    sprite_list = arcade.SpriteList(use_spatial_hash=spatial)
+    for i in range(count):
+        sprite_list.append(arcade.SpriteSolidColor(10, 10, center_x=i * 20))
+
+    calls = []
+    monkeypatch.setattr(collision, "_get_nearby_sprites", lambda *args: calls.append("gpu") or [])
+    if spatial:
+        near = sprite_list.spatial_hash.get_sprites_near_sprite
+        monkeypatch.setattr(
+            sprite_list.spatial_hash,
+            "get_sprites_near_sprite",
+            lambda s: calls.append("spatial") or near(s),
+        )
+    if webgl:
+
+        class FakeWindow:
+            class ctx:
+                _gl_api = "webgl"
+
+        monkeypatch.setattr(collision, "get_window", lambda: FakeWindow)
+
+    m = int(method) if use_int else method
+    hits = arcade.check_for_collision_with_list(sprite, sprite_list, method=m)
+    assert calls == ([] if expected == "simple" else [expected])
+    if expected != "gpu":
+        # The sprite at the origin overlaps the first sprite in the list
+        assert hits == [sprite_list[0]]
+
+    calls.clear()
+    arcade.check_for_collision_with_lists(sprite, [sprite_list], method=m)
+    assert calls == ([] if expected == "simple" else [expected])
+
+
 def test_check_for_collision_with_list(window):
     # TODO: Check that the right collision function is called internally
     a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)

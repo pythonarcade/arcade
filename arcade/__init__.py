@@ -183,6 +183,7 @@ from .sprite import SpriteSolidColor
 
 from .sprite_list import SpriteList
 from .sprite_list import SpriteSequence
+from .sprite_list import CollisionMethod
 from .sprite_list import check_for_collision
 from .sprite_list import check_for_collision_with_list
 from .sprite_list import check_for_collision_with_lists
@@ -310,6 +311,7 @@ __all__ = [
     "SpriteCircle",
     "SpriteList",
     "SpriteSequence",
+    "CollisionMethod",
     "SpriteSolidColor",
     "Text",
     "TextPool",

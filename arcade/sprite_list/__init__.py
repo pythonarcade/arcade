@@ -1,6 +1,7 @@
 from .sprite_list import SpriteList, SpriteSequence
 from .spatial_hash import SpatialHash
 from .collision import (
+    CollisionMethod,
     get_distance_between_sprites,
     get_closest_sprite,
     check_for_collision,
@@ -16,6 +17,7 @@ __all__ = [
     "SpriteList",
     "SpriteSequence",
     "SpatialHash",
+    "CollisionMethod",
     "get_distance_between_sprites",
     "get_closest_sprite",
     "check_for_collision",
