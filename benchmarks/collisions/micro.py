@@ -13,7 +13,7 @@ import random
 import timeit
 
 import arcade
-from arcade import check_for_collision, check_for_collision_with_list
+from arcade import check_for_collision, check_for_collision_with_list, get_collision_info
 from arcade.geometry import are_polygons_intersecting
 
 R = ":resources:images/"
@@ -62,6 +62,10 @@ def bench_pairs():
     bench(
         "are_polygons_intersecting box/box", lambda: are_polygons_intersecting(square_a, square_b)
     )
+
+    print("--- get_collision_info, same pairs")
+    for label, (a, b) in cases.items():
+        bench(label, lambda a=a, b=b: get_collision_info(a, b))
 
 
 def bench_changing_pairs():

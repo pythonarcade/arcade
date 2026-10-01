@@ -183,8 +183,10 @@ from .sprite import SpriteSolidColor
 
 from .sprite_list import SpriteList
 from .sprite_list import SpriteSequence
+from .sprite_list import CollisionInfo
 from .sprite_list import CollisionMethod
 from .sprite_list import check_for_collision
+from .sprite_list import get_collision_info
 from .sprite_list import check_for_collision_with_list
 from .sprite_list import check_for_collision_with_lists
 from .sprite_list import check_for_collision_between_lists
@@ -314,6 +316,7 @@ __all__ = [
     "SpriteCircle",
     "SpriteList",
     "SpriteSequence",
+    "CollisionInfo",
     "CollisionMethod",
     "SpriteSolidColor",
     "Text",
@@ -331,6 +334,7 @@ __all__ = [
     "Window",
     "astar_calculate_path",
     "check_for_collision",
+    "get_collision_info",
     "check_for_collision_with_list",
     "check_for_collision_with_lists",
     "check_for_collision_between_lists",

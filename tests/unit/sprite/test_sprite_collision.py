@@ -3,6 +3,7 @@ import random
 import pytest
 
 import arcade
+from pyglet.math import Vec2
 
 
 def test_sprites_at_point():
@@ -532,6 +533,145 @@ def test_gpu_collision_flipped_sprites(window, wall_scale, bullet_scale):
     bullet.position = 400, 0
     assert walls.get_nearby_sprites_gpu(bullet.position, bullet.size) == []
     assert arcade.check_for_collision_with_list(bullet, walls, method=gpu) == []
+
+
+def _reference_min_overlap(sprite1, sprite2):
+    """Smallest overlap over the x and y axes and every edge normal, in pixels"""
+    poly_a = sprite1.hit_box.get_adjusted_points()
+    poly_b = sprite2.hit_box.get_adjusted_points()
+    axes = [(1.0, 0.0), (0.0, 1.0)]
+    for polygon in (poly_a, poly_b):
+        for i in range(len(polygon)):
+            (x1, y1), (x2, y2) = polygon[i], polygon[(i + 1) % len(polygon)]
+            length = ((y2 - y1) ** 2 + (x1 - x2) ** 2) ** 0.5
+            if length:
+                axes.append(((y2 - y1) / length, (x1 - x2) / length))
+    best = None
+    for nx, ny in axes:
+        projected_a = [nx * x + ny * y for x, y in poly_a]
+        projected_b = [nx * x + ny * y for x, y in poly_b]
+        overlap = min(max(projected_a) - min(projected_b), max(projected_b) - min(projected_a))
+        best = overlap if best is None else min(best, overlap)
+    return best
+
+
+def _random_convex_sprite(rng, textures, shared_angle):
+    sprite = arcade.Sprite(rng.choice(textures))
+    sprite.scale = (rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1, 1.5]),
+                    rng.choice([-1, 1]) * rng.choice([0.25, 0.5, 1, 1.5]))  # fmt: skip
+    if rng.random() < 0.5:
+        sprite.angle = shared_angle
+    else:
+        sprite.angle = rng.choice([0, 0, 90, 180, 30, rng.uniform(0, 360)])
+    sprite.position = rng.randint(-160, 160) / 2, rng.randint(-160, 160) / 2
+    return sprite
+
+
+def test_get_collision_info_basics(window):
+    a = arcade.SpriteSolidColor(10, 10)
+    b = arcade.SpriteSolidColor(10, 10, center_x=8, center_y=1)
+    # The smallest overlap is 2 pixels in x, so move a left
+    assert arcade.get_collision_info(a, b) == (Vec2(-1.0, 0.0), 2.0)
+    # Swapping the sprites flips the normal
+    assert arcade.get_collision_info(b, a) == (Vec2(1.0, 0.0), 2.0)
+
+    # Sinking into the floor: pushed straight up by exactly the overlap
+    player = arcade.SpriteSolidColor(10, 10, center_x=20, center_y=3)
+    floor = arcade.SpriteSolidColor(100, 10)
+    info = arcade.get_collision_info(player, floor)
+    assert info.normal == Vec2(0.0, 1.0)
+    assert info.depth == 7.0
+    player.position += info.normal * info.depth
+    assert player.position == (20, 10)
+    assert arcade.check_for_collision(player, floor) is False
+
+    # Identical sprites in the same place: moved up
+    assert arcade.get_collision_info(a, arcade.SpriteSolidColor(10, 10)) == (Vec2(0.0, 1.0), 10.0)
+
+    # Touching or apart: no collision
+    assert arcade.get_collision_info(a, arcade.SpriteSolidColor(10, 10, center_x=10)) is None
+    assert arcade.get_collision_info(a, arcade.SpriteSolidColor(10, 10, center_x=50)) is None
+
+
+def test_get_collision_info_diagonal(window):
+    """A diagonal edge gives a diagonal normal"""
+    box = arcade.SpriteSolidColor(20, 20)
+    box.angle = 45
+    other = arcade.SpriteSolidColor(20, 20, center_x=12, center_y=12)
+    info = arcade.get_collision_info(other, box)
+    assert info.normal.x == pytest.approx(2**-0.5)
+    assert info.normal.y == pytest.approx(2**-0.5)
+    assert info.depth == pytest.approx(_reference_min_overlap(other, box))
+
+
+def test_get_collision_info_type_errors(window):
+    a = arcade.SpriteSolidColor(10, 10)
+    with pytest.raises(TypeError):
+        arcade.get_collision_info("moo", a)
+    with pytest.raises(TypeError):
+        arcade.get_collision_info(a, "moo")
+    with pytest.raises(TypeError):
+        arcade.get_collision_info(a, arcade.SpriteList())
+
+
+def test_get_collision_info_matches_check_for_collision(window):
+    """It finds a collision exactly when check_for_collision does, for any hit box"""
+    rng = random.Random(77)
+    textures = [
+        arcade.load_texture(":resources:images/tiles/grassMid.png"),
+        arcade.load_texture(":resources:images/items/coinGold.png"),
+        arcade.load_texture(":resources:images/space_shooter/laserBlue01.png"),
+        arcade.load_texture(
+            ":resources:images/space_shooter/meteorGrey_big1.png",
+            hit_box_algorithm=arcade.hitbox.algo_detailed,
+        ),
+    ]
+    results = {True: 0, False: 0}
+    for _ in range(3000):
+        shared_angle = rng.choice([0, 90, 180, 45, 30, rng.uniform(0, 360)])
+        a = _random_convex_sprite(rng, textures, shared_angle)
+        b = _random_convex_sprite(rng, textures, shared_angle)
+        expected = arcade.check_for_collision(a, b)
+        assert (arcade.get_collision_info(a, b) is not None) is expected
+        assert (arcade.get_collision_info(b, a) is not None) is expected
+        results[expected] += 1
+    assert min(results.values()) > 300
+
+
+def test_get_collision_info_separates(window):
+    """For convex hit boxes, moving by normal * depth is the smallest move that separates them"""
+    rng = random.Random(78)
+    textures = [
+        arcade.load_texture(":resources:images/tiles/grassMid.png"),
+        arcade.load_texture(":resources:images/items/coinGold.png"),
+        arcade.load_texture(":resources:images/space_shooter/laserBlue01.png"),
+        arcade.load_texture(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png"
+        ),
+    ]
+    checked = 0
+    for _ in range(3000):
+        shared_angle = rng.choice([0, 90, 180, 45, 30, rng.uniform(0, 360)])
+        a = _random_convex_sprite(rng, textures, shared_angle)
+        b = _random_convex_sprite(rng, textures, shared_angle)
+        info = arcade.get_collision_info(a, b)
+        if info is None:
+            continue
+        checked += 1
+        assert info.depth > 0
+        assert info.normal.length() == pytest.approx(1.0)
+        assert info.depth == pytest.approx(_reference_min_overlap(a, b), abs=1e-6)
+
+        start = a.position
+        # A little further than depth separates them
+        a.position = start + info.normal * (info.depth + 1e-6)
+        assert arcade.check_for_collision(a, b) is False
+        # A little less doesn't
+        if info.depth > 1e-5:
+            a.position = start + info.normal * (info.depth - 1e-6)
+            assert arcade.check_for_collision(a, b) is True
+        a.position = start
+    assert checked > 300
 
 
 def test_check_for_collision_with_list(window):
