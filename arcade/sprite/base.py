@@ -806,6 +806,10 @@ class BasicSprite:
         """
         Check if point is within the current sprite.
 
+        A point exactly on the edge of the hit box counts. Note this is
+        different from :py:meth:`collides_with_sprite`, where sprites that
+        only touch don't count as colliding.
+
         Args:
             point: Point to check.
         Returns:
@@ -818,6 +822,9 @@ class BasicSprite:
 
     def collides_with_sprite(self, other: BasicSprite) -> bool:
         """Will check if a sprite is overlapping (colliding) another Sprite.
+
+        Sprites whose hit boxes only touch, sharing an edge or a corner,
+        don't count as overlapping.
 
         Args:
             other: the other sprite to check against.

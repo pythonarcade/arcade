@@ -243,7 +243,10 @@ COLLISION_METHOD_PATHS = [
     (arcade.CollisionMethod.AUTO, False, 10, False, "simple"),
     (arcade.CollisionMethod.AUTO, False, 1501, False, "gpu"),
     (arcade.CollisionMethod.SPATIAL, True, 10, False, "spatial"),
-    (arcade.CollisionMethod.SPATIAL, False, 10, False, "gpu"),
+    # Without a spatial hash, SPATIAL chooses the same way as AUTO
+    (arcade.CollisionMethod.SPATIAL, False, 10, False, "simple"),
+    (arcade.CollisionMethod.SPATIAL, False, 1501, False, "gpu"),
+    (arcade.CollisionMethod.SPATIAL, False, 1501, True, "simple"),
     (arcade.CollisionMethod.GPU, True, 10, False, "gpu"),
     (arcade.CollisionMethod.GPU, False, 10, False, "gpu"),
     (arcade.CollisionMethod.SIMPLE, True, 10, False, "simple"),
@@ -294,6 +297,63 @@ def test_collision_method_paths(
     calls.clear()
     arcade.check_for_collision_with_lists(sprite, [sprite_list], method=m)
     assert calls == ([] if expected == "simple" else [expected])
+
+
+def test_check_for_collision_with_lists_no_duplicates(window):
+    """A sprite in more than one of the lists is only returned once"""
+    sprite = arcade.SpriteSolidColor(10, 10)
+    shared = arcade.SpriteSolidColor(10, 10, center_x=5)
+    only_a = arcade.SpriteSolidColor(10, 10, center_x=-5)
+    only_b = arcade.SpriteSolidColor(10, 10, center_y=5)
+    list_a = arcade.SpriteList()
+    list_a.extend([only_a, shared])
+    list_b = arcade.SpriteList()
+    list_b.extend([shared, only_b])
+
+    # In the order first found
+    assert arcade.check_for_collision_with_lists(sprite, [list_a, list_b]) == [
+        only_a,
+        shared,
+        only_b,
+    ]
+    assert arcade.check_for_collision_with_lists(sprite, [list_b, list_a]) == [
+        shared,
+        only_b,
+        only_a,
+    ]
+    # The same list twice, and lists from a generator
+    assert arcade.check_for_collision_with_lists(sprite, [list_a, list_a]) == [only_a, shared]
+    assert arcade.check_for_collision_with_lists(sprite, (sl for sl in [list_a, list_b])) == [
+        only_a,
+        shared,
+        only_b,
+    ]
+
+    # With a spatial hash. It finds sprites in no particular order.
+    hashed_b = arcade.SpriteList(use_spatial_hash=True)
+    hashed_b.extend([shared, only_b])
+    hits = arcade.check_for_collision_with_lists(sprite, [list_a, hashed_b])
+    assert len(hits) == 3
+    assert set(hits) == {only_a, shared, only_b}
+
+
+def test_touching_edges(window):
+    """Touching hit boxes don't collide, but a point on an edge counts"""
+    a = arcade.SpriteSolidColor(10, 10)
+    b = arcade.SpriteSolidColor(10, 10, center_x=10)  # Shares a's right edge
+    c = arcade.SpriteSolidColor(10, 10, center_x=10, center_y=10)  # Shares a corner
+    sprite_list = arcade.SpriteList()
+    sprite_list.append(a)
+
+    assert arcade.check_for_collision(a, b) is False
+    assert arcade.check_for_collision(a, c) is False
+    assert a.collides_with_sprite(b) is False
+    assert arcade.check_for_collision_with_list(b, sprite_list) == []
+    assert arcade.get_sprites_in_rect(arcade.LRBT(5, 8, -2, 2), sprite_list) == []
+
+    assert a.collides_with_point((5, 0)) is True
+    assert a.collides_with_point((5, 5)) is True
+    assert arcade.get_sprites_at_point((5, 0), sprite_list) == [a]
 
 
 def test_check_for_collision_with_list(window):

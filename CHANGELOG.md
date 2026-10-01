@@ -5,6 +5,14 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+### Breaking Changes
+- Updated pyglet to 3.0.dev11 (from 3.0.dev8). Arcade's library code needed no changes (only its docs build configuration did); these mostly affect code that uses pyglet directly.
+  - `pyglet.graphics.ShaderProgram` now requires a `vertex_layout` keyword argument (a `pyglet.graphics.VertexLayout`, or `None` to infer it from the shader). `create_vertex_layout()` and `set_instance_attributes()` are replaced by `VertexLayout` and `get_vertex_view()`. Arcade's own shaders use `arcade.gl` and are unaffected.
+  - pyglet graphics resources (textures, buffers, shaders, framebuffers, ...) now have a backend `handle` and a stable `key`. The `.id` attribute is deprecated; use `.handle` for backend calls and `.key` for equality and caching. `MouseCursor.gl_drawable` was renamed to `MouseCursor.api_drawable`.
+  - `pyglet.gui` was rewritten around a new `UIManager`. This doesn't affect `arcade.gui`.
+  - Pressing Ctrl+C now stops `arcade.run()` cleanly through `pyglet.app.exit` instead of raising `KeyboardInterrupt` (except in headless mode, which uses its own loop).
+  - On macOS 14 and later, pyglet can now drive window redraws from the display (`pyglet.options.osx_displaylink`). Arcade schedules its own frames, so its update and draw rates are unaffected.
+
 ### Fixes
 - Fixed `check_for_collision` (and the list-based collision functions) missing collisions when a sprite was flipped with a negative scale. The negative width/height cancelled out in the broad-phase distance check, so flipped sprites could pass through each other.
 - Fixed `SpatialHash` queries (`get_sprites_near_sprite`, `get_sprites_near_point`, `get_sprites_near_rect`, and the collision functions that use them) adding an empty bucket for every grid cell they looked at. Memory use grew as sprites moved around large maps. Queries and adding sprites to a spatial hash are also faster, since the hit box points are now scanned once instead of four times.
@@ -12,6 +20,9 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Rotated hit boxes at right angles (90, 180, 270 degrees, etc.) now have exact point coordinates. Before, values like `sin(radians(180))` being about 1.2e-16 instead of 0 left tiny errors that could make exactly touching sprites count as colliding, or not, differently from unrotated ones.
 - Fixed sprite collision checks missing collisions when a sprite's hit box is bigger than its texture, such as a custom hit box used as a melee reach area. The quick distance check estimated each sprite's size from its texture; it now uses the actual hit box, cached until the scale changes. This also makes the check tighter for most sprites, so brute-force list checks are about 20-40% faster.
 - Fixed `Sprite.rescale_relative_to_point()` (and `SpriteList.rescale()`, which uses it) not rescaling the sprite's hit box. The sprite was drawn at its new size but collided, and was placed in spatial hashes, at its old size.
+- `check_for_collision_with_lists` no longer returns the same sprite more than once when it's in more than one of the lists.
+- `CollisionMethod.SPATIAL` (`method=1`) on a sprite list without a spatial hash now chooses the same way as `AUTO`, checking every sprite in lists of 1500 or fewer. Before, it always used the GPU, which is slow when called many times per frame and needed an open window.
+- Documented that sprites whose hit boxes only touch don't count as colliding, while a point exactly on a hit box's edge does count for `get_sprites_at_point` and `collides_with_point`. Corrected `get_sprites_in_rect`'s docs, which said touching sprites were included.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.
