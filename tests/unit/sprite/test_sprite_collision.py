@@ -674,6 +674,54 @@ def test_get_collision_info_separates(window):
     assert checked > 300
 
 
+@pytest.mark.parametrize("method", list(arcade.CollisionMethod))
+@pytest.mark.parametrize("spatial", [False, True])
+def test_get_collision_info_with_list(window, method, spatial):
+    player = arcade.SpriteSolidColor(10, 10)
+    walls = arcade.SpriteList(use_spatial_hash=spatial)
+    shallow = arcade.SpriteSolidColor(10, 10, center_x=9)  # 1 pixel overlap
+    deep = arcade.SpriteSolidColor(10, 10, center_y=-6)  # 4 pixel overlap
+    touching = arcade.SpriteSolidColor(10, 10, center_x=-10)
+    far = arcade.SpriteSolidColor(10, 10, center_x=100)
+    walls.extend([shallow, deep, touching, far])
+    # A sprite never collides with itself
+    walls.append(player)
+
+    results = arcade.get_collision_info_with_list(player, walls, method=method)
+    # Deepest first, each matching get_collision_info
+    assert [wall for wall, _ in results] == [deep, shallow]
+    for wall, info in results:
+        assert info == arcade.get_collision_info(player, wall)
+    assert results[0][1] == (Vec2(0.0, 1.0), 4.0)
+    assert results[1][1] == (Vec2(-1.0, 0.0), 1.0)
+
+    # Same sprites as check_for_collision_with_list finds
+    hits = arcade.check_for_collision_with_list(player, walls, method=method)
+    assert {wall for wall, _ in results} == set(hits)
+
+    assert arcade.get_collision_info_with_list(player, arcade.SpriteList(), method=method) == []
+
+
+def test_get_collision_info_with_list_equal_depths(window):
+    """Equal depths keep the order the sprites were found in"""
+    player = arcade.SpriteSolidColor(10, 10)
+    walls = arcade.SpriteList()
+    left = arcade.SpriteSolidColor(10, 10, center_x=-8)
+    right = arcade.SpriteSolidColor(10, 10, center_x=8)
+    walls.extend([left, right])
+    results = arcade.get_collision_info_with_list(player, walls)
+    assert [wall for wall, _ in results] == [left, right]
+    assert [info.depth for _, info in results] == [2.0, 2.0]
+
+
+def test_get_collision_info_with_list_type_errors(window):
+    sprite = arcade.SpriteSolidColor(10, 10)
+    with pytest.raises(TypeError):
+        arcade.get_collision_info_with_list("moo", arcade.SpriteList())
+    with pytest.raises(TypeError):
+        arcade.get_collision_info_with_list(sprite, "moo")
+
+
 def test_check_for_collision_with_list(window):
     # TODO: Check that the right collision function is called internally
     a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
