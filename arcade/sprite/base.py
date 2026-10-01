@@ -684,6 +684,8 @@ class BasicSprite:
         old_scale_x, old_scale_y = self._scale
         new_scale_x = old_scale_x * factor_x
         new_scale_y = old_scale_y * factor_y
+        # Apply scale to hitbox first to raise any exceptions quickly
+        self._hit_box.scale = new_scale_x, new_scale_y
         self._scale = new_scale_x, new_scale_y
 
         tex_width, tex_height = self._texture.size
