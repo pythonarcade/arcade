@@ -421,3 +421,99 @@ def test_index_buffer_type(ctx):
     assert spritelist._sprite_index_data.typecode == "I"
     spritelist.clear()
     assert spritelist._sprite_index_data.typecode == "I"
+
+
+@pytest.mark.parametrize(
+    "index_1, index_2", [(0, 1), (0, 4), (1, 3), (-1, -2), (-1, 0), (2, -1), (-5, -1), (3, 3)]
+)
+def test_swap_draw_order(ctx, index_1, index_2):
+    """swap() keeps the GPU draw order in sync, including with negative indexes"""
+    spritelist = make_named_sprites(5)
+    expected = list(spritelist)
+    spritelist.draw()
+
+    spritelist.swap(index_1, index_2)
+    expected[index_1], expected[index_2] = expected[index_2], expected[index_1]
+    assert list(spritelist) == expected
+    assert _drawn_sprites(spritelist) == expected
+
+
+@pytest.mark.parametrize("index_1, index_2", [(0, 5), (-6, 0), (100, 1)])
+def test_swap_out_of_range(ctx, index_1, index_2):
+    spritelist = make_named_sprites(5)
+    sprites = list(spritelist)
+    with pytest.raises(IndexError):
+        spritelist.swap(index_1, index_2)
+    assert list(spritelist) == sprites
+    assert _drawn_sprites(spritelist) == sprites
+
+
+def test_setitem_negative_index(ctx):
+    spritelist = make_named_sprites(3)
+    sprites = list(spritelist)
+    # Setting a sprite to the position it's already at does nothing
+    spritelist[-1] = sprites[2]
+    assert list(spritelist) == sprites
+    # A sprite already elsewhere in the list can't be added again
+    with pytest.raises(Exception):
+        spritelist[-1] = sprites[0]
+    with pytest.raises(IndexError):
+        spritelist[3] = arcade.SpriteSolidColor(16, 16)
+
+    new_sprite = arcade.SpriteSolidColor(16, 16)
+    spritelist[-2] = new_sprite
+    assert list(spritelist) == [sprites[0], new_sprite, sprites[2]]
+    assert _drawn_sprites(spritelist) == [sprites[0], new_sprite, sprites[2]]
+
+
+def test_insert_already_in_list(ctx):
+    spritelist = make_named_sprites(3)
+    with pytest.raises(ValueError):
+        spritelist.insert(0, spritelist[2])
+    assert len(spritelist) == 3
+
+
+def _gpu_floats(buffer, count):
+    return list(struct.unpack(f"{count}f", buffer.read()[: count * 4]))
+
+
+def test_gpu_buffers_match_after_changes(ctx):
+    """Only the slots in use are uploaded, so check the GPU data still matches"""
+    import random
+
+    rng = random.Random(5)
+    # Start small so the buffers have to grow
+    spritelist = arcade.SpriteList(capacity=256)
+    for i in range(300):
+        spritelist.append(arcade.SpriteSolidColor(8, 8, center_x=i, center_y=-i))
+
+    for step in range(200):
+        action = rng.random()
+        if action < 0.3 and len(spritelist) > 1:
+            spritelist.pop(rng.randrange(-len(spritelist), len(spritelist)))
+        elif action < 0.5:
+            # Reuses a freed slot if there is one
+            spritelist.append(arcade.SpriteSolidColor(8, 8, center_x=rng.uniform(0, 500)))
+        elif action < 0.6:
+            spritelist.insert(rng.randrange(len(spritelist)), arcade.SpriteSolidColor(4, 4))
+        elif action < 0.7:
+            spritelist.swap(rng.randrange(len(spritelist)), -rng.randrange(1, len(spritelist)))
+        else:
+            sprite = spritelist[rng.randrange(len(spritelist))]
+            sprite.position = rng.uniform(-100, 100), rng.uniform(-100, 100)
+            sprite.angle = rng.uniform(0, 360)
+            sprite.width = rng.uniform(1, 50)
+        if step % 10 == 0:
+            spritelist.draw()
+
+    assert _drawn_sprites(spritelist) == list(spritelist)
+    data = spritelist.data
+    slot_count = spritelist._sprite_buffer_slots
+    pos = _gpu_floats(data.storage_positions_angle, slot_count * 4)
+    size = _gpu_floats(data.storage_size, slot_count * 2)
+    for sprite in spritelist:
+        slot = spritelist.sprite_slot[sprite]
+        assert pos[slot * 4 : slot * 4 + 4] == pytest.approx(
+            [sprite.center_x, sprite.center_y, sprite.depth, sprite.angle]
+        )
+        assert size[slot * 2 : slot * 2 + 2] == pytest.approx([sprite.width, sprite.height])

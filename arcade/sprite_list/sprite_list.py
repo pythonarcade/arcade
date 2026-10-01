@@ -367,15 +367,13 @@ class SpriteList(SpriteSequence[SpriteType]):
 
     def __setitem__(self, index: int, sprite: SpriteType) -> None:
         """Replace a sprite at a specific index"""
-        try:
-            existing_index = self.sprite_list.index(sprite)  # raise ValueError
-            if existing_index == index:
+        sprite_to_be_removed = self.sprite_list[index]  # Raises IndexError
+        if sprite in self.sprite_slot:
+            if sprite is sprite_to_be_removed:
                 return
+            existing_index = self.sprite_list.index(sprite)
             raise Exception(f"Sprite is already in the list (index {existing_index})")
-        except ValueError:
-            pass
 
-        sprite_to_be_removed = self.sprite_list[index]
         sprite_to_be_removed._unregister_sprite_list(self)
         self.sprite_list[index] = sprite  # Replace sprite
         sprite.register_sprite_list(self)
@@ -680,13 +678,16 @@ class SpriteList(SpriteSequence[SpriteType]):
         self.sprite_list[index_1] = sprite_2
         self.sprite_list[index_2] = sprite_1
 
-        # Swap order in index buffer to change rendering order
-        slot_1 = self.sprite_slot[sprite_1]
-        slot_2 = self.sprite_slot[sprite_2]
-        i1 = self._sprite_index_data.index(slot_1)
-        i2 = self._sprite_index_data.index(slot_2)
-        self._sprite_index_data[i1] = slot_2
-        self._sprite_index_data[i2] = slot_1
+        # Swap order in index buffer to change rendering order. It's in the
+        # same order as the sprite list, but longer (it has spare capacity at
+        # the end), so negative indexes must be made positive first.
+        sprite_count = len(self.sprite_list)
+        if index_1 < 0:
+            index_1 += sprite_count
+        if index_2 < 0:
+            index_2 += sprite_count
+        index_data = self._sprite_index_data
+        index_data[index_1], index_data[index_2] = index_data[index_2], index_data[index_1]
 
         self._sprite_index_changed = True
 
@@ -739,7 +740,7 @@ class SpriteList(SpriteSequence[SpriteType]):
             index: The index at which to insert
             sprite: The sprite to insert
         """
-        if sprite in self.sprite_list:
+        if sprite in self.sprite_slot:
             raise ValueError("Sprite is already in list")
 
         index = max(min(len(self.sprite_list), index), 0)
@@ -953,6 +954,9 @@ class SpriteList(SpriteSequence[SpriteType]):
             self._sprite_color_changed,
             self._sprite_texture_changed,
             self._sprite_index_changed,
+            # Only the slots in use need writing, not the spare capacity
+            slot_count=self._sprite_buffer_slots,
+            index_count=self._sprite_index_slots,
         )
         self._sprite_pos_angle_changed = False
         self._sprite_size_changed = False
@@ -1353,6 +1357,8 @@ class SpriteListData:
         sprite_color_changed: bool = True,
         sprite_texture_changed: bool = True,
         sprite_index_changed: bool = True,
+        slot_count: int | None = None,
+        index_count: int | None = None,
     ) -> None:
         """
         Write the sprite buffers to the GPU.
@@ -1368,6 +1374,10 @@ class SpriteListData:
             sprite_color_changed: Whether the color data has changed.
             sprite_texture_changed: Whether the texture data has changed.
             sprite_index_changed: Whether the index data has changed.
+            slot_count: How many sprite buffer slots are in use. Only these
+                are written if given, instead of the whole arrays.
+            index_count: How many entries of the index data are in use. Only
+                these are written if given, instead of the whole array.
         """
         raise NotImplementedError("This method should be implemented in subclasses.")
 
@@ -1567,6 +1577,8 @@ class SpriteListBufferData(SpriteListData):
         sprite_color_changed: bool = True,
         sprite_texture_changed: bool = True,
         sprite_index_changed: bool = True,
+        slot_count: int | None = None,
+        index_count: int | None = None,
     ) -> None:
         """
         Write the sprite buffers to the GPU.
@@ -1581,7 +1593,21 @@ class SpriteListBufferData(SpriteListData):
             sprite_color_changed: Whether the color data has changed.
             sprite_texture_changed: Whether the texture data has changed.
             sprite_index_changed: Whether the index data has changed.
+            slot_count: How many sprite buffer slots are in use. Only these
+                are written if given, instead of the whole arrays.
+            index_count: How many entries of the index data are in use. Only
+                these are written if given, instead of the whole array.
         """
+        # Orphaning leaves the rest of each buffer undefined, which is fine:
+        # the index buffer only refers to slots below slot_count.
+        if slot_count is not None:
+            sprite_pos_angle_data = memoryview(sprite_pos_angle_data)[: slot_count * 4]
+            sprite_size_data = memoryview(sprite_size_data)[: slot_count * 2]
+            sprite_color_data = memoryview(sprite_color_data)[: slot_count * 4]
+            sprite_texture_data = memoryview(sprite_texture_data)[:slot_count]
+        if index_count is not None:
+            sprite_index_data = memoryview(sprite_index_data)[:index_count]
+
         if sprite_pos_angle_changed:
             self._storage_pos_angle.orphan()
             self._storage_pos_angle.write(sprite_pos_angle_data)
@@ -1777,6 +1803,8 @@ class SpriteListTextureData(SpriteListData):
         sprite_color_changed: bool = True,
         sprite_texture_changed: bool = True,
         sprite_index_changed: bool = True,
+        slot_count: int | None = None,
+        index_count: int | None = None,
     ) -> None:
         """
         Write the sprite buffers to the GPU.
@@ -1792,6 +1820,10 @@ class SpriteListTextureData(SpriteListData):
             sprite_color_changed: Whether the color data has changed.
             sprite_texture_changed: Whether the texture data has changed.
             sprite_index_changed: Whether the index data has changed.
+            slot_count: How many sprite buffer slots are in use. Only these
+                are written if given, instead of the whole arrays.
+            index_count: How many entries of the index data are in use. Only
+                these are written if given, instead of the whole array.
         """
         if sprite_pos_angle_changed:
             self._storage_pos_angle.write(sprite_pos_angle_data)

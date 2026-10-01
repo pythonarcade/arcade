@@ -27,6 +27,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed `SpriteList.rescale()` moving the list's center while rescaling, so sprites after the first were scaled around the wrong point.
 - Fixed `SpriteList.preload_textures()` raising `AttributeError` on a lazy sprite list that hadn't been drawn yet. It now preloads into the atlas the list will use.
 - Fixed GPU collision checks (`CollisionMethod.GPU`, also used automatically for sprite lists over 1500 sprites without a spatial hash) missing sprites flipped with a negative scale, whose negative width or height made them look smaller than they are.
+- Fixed `SpriteList.__setitem__` raising when setting a negative index to the sprite already there, such as `sprite_list[-1] = sprite_list[-1]`.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.
@@ -35,6 +36,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Added `arcade.check_for_collision_between_lists(list_a, list_b)`, which returns every colliding `(sprite_a, sprite_b)` pair between two lists, such as bullets and enemies. Passing the same list twice returns each pair once.
 
 ### Misc Changes
+- Sped up several `SpriteList` operations: `swap()` no longer searches the draw order (about 1000x faster at the end of a 10,000 sprite list), `insert()` and item assignment check membership with a dictionary instead of scanning the list, and drawing uploads only the buffer slots in use instead of the whole capacity (moving one sprite and drawing is 1.6-2.3x faster).
 - The platformer and simple physics engines and `AStarBarrierList` now use `has_collision_with_list(s)` where they only need to know whether there's a collision. Building an `AStarBarrierList` is about 7-9% faster.
 - Sped up sprite collision checks. Sprites that pass the quick distance check are now compared by cached hit box bounds before the polygon test, and the polygon test skips horizontal and vertical edges, which the bounds check already covers. Checks that reach the polygon test are about 2-4x faster, e.g. 8.0 to 2.3 µs for two box hit boxes and 21.6 to 10.2 µs for two default octagon hit boxes. `are_polygons_intersecting` is also faster (7.3 to 1.6 µs for two rectangles).
 - Sped up collision checks further by caching each hit box's distinct edge directions. Parallel edges (such as opposite sides of the default octagon hit boxes, or matching edges on two sprites with the same angle) are only tested once, and the cache is kept when a sprite moves. Two unrotated octagon hit boxes go from 12.0 to 4.6 µs, and two rotated 30° from 20.8 to 6.9 µs.
