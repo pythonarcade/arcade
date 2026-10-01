@@ -210,6 +210,11 @@ def get_collision_info(sprite1: BasicSprite, sprite2: BasicSprite) -> CollisionI
         elif not isinstance(sprite2, BasicSprite):
             raise TypeError("Parameter 2 is not an instance of a Sprite class.")
 
+    return _get_collision_info(sprite1, sprite2)
+
+
+def _get_collision_info(sprite1: BasicSprite, sprite2: BasicSprite) -> CollisionInfo | None:
+    """:py:func:`get_collision_info` without the argument type checks."""
     hit_box1 = sprite1._hit_box
     hit_box2 = sprite2._hit_box
 
@@ -547,6 +552,64 @@ def check_for_collision_between_lists(
             if sprite_a is not sprite_b and _check_for_collision(sprite_a, sprite_b):
                 pairs.append((sprite_a, sprite_b))
     return pairs
+
+
+def get_collision_info_with_list(
+    sprite: BasicSprite,
+    sprite_list: SpriteSequence[SpriteType],
+    method: CollisionMethod | int = CollisionMethod.AUTO,
+) -> list[tuple[SpriteType, CollisionInfo]]:
+    """
+    Find the sprites in a list that a sprite collides with, and how to separate them.
+
+    This works like :py:func:`check_for_collision_with_list`, but also
+    returns a :py:class:`CollisionInfo` for each colliding sprite, as from
+    :py:func:`get_collision_info`. The results are sorted deepest overlap
+    first, which is usually the one to resolve first::
+
+        for wall, info in arcade.get_collision_info_with_list(player, walls):
+            # Each move changes the remaining overlaps, so check again
+            info = arcade.get_collision_info(player, wall)
+            if info:
+                player.position += info.normal * info.depth
+
+    Each :py:class:`CollisionInfo` is how to separate ``sprite`` from that
+    one sprite. Moving ``sprite`` to resolve one overlap changes the others,
+    so they don't add up to a move that resolves them all.
+
+    Args:
+        sprite:
+            The sprite to separate
+        sprite_list:
+            SpriteList to check against
+        method:
+            How to find the sprites to check. See :py:class:`CollisionMethod`.
+            Defaults to :py:attr:`CollisionMethod.AUTO`.
+
+    Returns:
+        A list of ``(colliding_sprite, CollisionInfo)`` tuples, deepest first,
+        or an empty list.
+    """
+    if __debug__:
+        if not isinstance(sprite, BasicSprite):
+            raise TypeError(
+                f"Parameter 1 is not an instance of the Sprite class, "
+                f"it is an instance of {type(sprite)}."
+            )
+        if not isinstance(sprite_list, SpriteSequence):
+            raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+
+    results: list[tuple[SpriteType, CollisionInfo]] = []
+    for sprite2 in _get_sprites_to_check(sprite, sprite_list, method):
+        if sprite is not sprite2:
+            info = _get_collision_info(sprite, sprite2)
+            if info is not None:
+                results.append((sprite2, info))
+
+    # Deepest first. The sort is stable, so equal depths keep the order found.
+    if len(results) > 1:
+        results.sort(key=lambda result: result[1].depth, reverse=True)
+    return results
 
 
 def check_for_collision_with_lists(
