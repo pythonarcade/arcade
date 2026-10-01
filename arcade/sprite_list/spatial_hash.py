@@ -110,11 +110,10 @@ class SpatialHash(ReadOnlySpatialHash[SpriteType]):
 
     def _get_cell_bounds(self, sprite: BasicSprite) -> tuple[IPoint, IPoint]:
         """Get the min and max cells covered by a sprite's hit box."""
-        # One pass over the points instead of using left/right/bottom/top,
-        # which each fetch and scan the hit box points separately.
-        x_points, y_points = zip(*sprite.hit_box.get_adjusted_points())
-        min_point = self.hash((trunc(min(x_points)), trunc(min(y_points))))
-        max_point = self.hash((trunc(max(x_points)), trunc(max(y_points))))
+        # The hit box caches its bounds, so collision checks can reuse them
+        left, right, bottom, top = sprite.hit_box.get_adjusted_bounds()
+        min_point = self.hash((trunc(left), trunc(bottom)))
+        max_point = self.hash((trunc(right), trunc(top)))
         return min_point, max_point
 
     def add(self, sprite: SpriteType) -> None:
