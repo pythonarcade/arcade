@@ -39,7 +39,8 @@ class CollisionMethod(IntEnum):
 
     SPATIAL = 1
     """
-    Use the sprite list's spatial hash. If it doesn't have one, use the GPU.
+    Use the sprite list's spatial hash. If it doesn't have one, choose the
+    same way as :py:attr:`AUTO`.
     """
 
     GPU = 2
@@ -103,6 +104,10 @@ def get_closest_sprite(
 def check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     """
     Check for a collision between two sprites.
+
+    Sprites whose hit boxes only touch, sharing an edge or a corner, don't
+    count as colliding. This lets the physics engines rest a sprite against
+    a wall or on the ground.
 
     Args:
         sprite1: First sprite
@@ -201,13 +206,12 @@ def _get_sprites_to_check(
     method: CollisionMethod | int,
 ) -> Iterable[SpriteType]:
     """Get the sprites in a list to check for collisions, using ``method``."""
-    if sprite_list.spatial_hash is not None and (method == _AUTO or method == _SPATIAL):
-        return sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
-    if (
-        method == _SIMPLE
-        or (method == _AUTO and len(sprite_list) <= 1500)
-        or get_window().ctx._gl_api == "webgl"
-    ):
+    if method == _AUTO or method == _SPATIAL:
+        if sprite_list.spatial_hash is not None:
+            return sprite_list.spatial_hash.get_sprites_near_sprite(sprite)
+        if len(sprite_list) <= 1500:
+            return sprite_list
+    if method == _SIMPLE or get_window().ctx._gl_api == "webgl":
         return sprite_list
     # GPU transform - Not on WebGL
     return _get_nearby_sprites(sprite, sprite_list)
@@ -263,6 +267,9 @@ def check_for_collision_with_lists(
     """
     Check for a collision between a Sprite, and a list of SpriteLists.
 
+    Each colliding sprite is returned once, even if it's in more than one of
+    the lists.
+
     Args:
         sprite:
             Sprite to check
@@ -283,12 +290,17 @@ def check_for_collision_with_lists(
             )
 
     sprites: list[SpriteType] = []
+    list_count = 0
 
     for sprite_list in sprite_lists:
+        list_count += 1
         for sprite2 in _get_sprites_to_check(sprite, sprite_list, method):
             if sprite is not sprite2 and _check_for_collision(sprite, sprite2):
                 sprites.append(sprite2)
 
+    # A sprite can be in more than one of the lists, but is only returned once
+    if list_count > 1 and len(sprites) > 1:
+        return list(dict.fromkeys(sprites))
     return sprites
 
 
@@ -297,6 +309,10 @@ def get_sprites_at_point(point: Point, sprite_list: SpriteSequence[SpriteType]) 
     Get a list of sprites at a particular point. This function sees if any sprite overlaps
     the specified point. If a sprite has a different center_x/center_y but touches the point,
     this will return that sprite.
+
+    A point exactly on the edge of a sprite's hit box counts. Note this is
+    different from :py:func:`check_for_collision`, where sprites that only
+    touch don't count as colliding.
 
     Args:
         point: Point to check
@@ -355,9 +371,10 @@ def get_sprites_in_rect(rect: Rect, sprite_list: SpriteSequence[SpriteType]) -> 
     """
     Get a list of sprites in a particular rectangle. This function sees if any
     sprite overlaps the specified rectangle. If a sprite has a different
-    center_x/center_y but touches the rectangle, this will return that sprite.
+    center_x/center_y but overlaps the rectangle, this will return that sprite.
 
-    The rectangle is specified as a tuple of (left, right, bottom, top).
+    As with :py:func:`check_for_collision`, a sprite whose hit box only
+    touches the rectangle, sharing an edge or a corner, isn't included.
 
     Args:
         rect: Rectangle to check
