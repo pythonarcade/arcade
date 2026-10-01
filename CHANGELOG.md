@@ -5,6 +5,14 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+### Breaking Changes
+- Updated pyglet to 3.0.dev11 (from 3.0.dev8). Arcade's library code needed no changes (only its docs build configuration did); these mostly affect code that uses pyglet directly.
+  - `pyglet.graphics.ShaderProgram` now requires a `vertex_layout` keyword argument (a `pyglet.graphics.VertexLayout`, or `None` to infer it from the shader). `create_vertex_layout()` and `set_instance_attributes()` are replaced by `VertexLayout` and `get_vertex_view()`. Arcade's own shaders use `arcade.gl` and are unaffected.
+  - pyglet graphics resources (textures, buffers, shaders, framebuffers, ...) now have a backend `handle` and a stable `key`. The `.id` attribute is deprecated; use `.handle` for backend calls and `.key` for equality and caching. `MouseCursor.gl_drawable` was renamed to `MouseCursor.api_drawable`.
+  - `pyglet.gui` was rewritten around a new `UIManager`. This doesn't affect `arcade.gui`.
+  - Pressing Ctrl+C now stops `arcade.run()` cleanly through `pyglet.app.exit` instead of raising `KeyboardInterrupt` (except in headless mode, which uses its own loop).
+  - On macOS 14 and later, pyglet can now drive window redraws from the display (`pyglet.options.osx_displaylink`). Arcade schedules its own frames, so its update and draw rates are unaffected.
+
 ### Fixes
 - Fixed `check_for_collision` (and the list-based collision functions) missing collisions when a sprite was flipped with a negative scale. The negative width/height cancelled out in the broad-phase distance check, so flipped sprites could pass through each other.
 - Fixed `SpatialHash` queries (`get_sprites_near_sprite`, `get_sprites_near_point`, `get_sprites_near_rect`, and the collision functions that use them) adding an empty bucket for every grid cell they looked at. Memory use grew as sprites moved around large maps. Queries and adding sprites to a spatial hash are also faster, since the hit box points are now scanned once instead of four times.
