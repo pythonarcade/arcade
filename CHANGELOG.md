@@ -23,6 +23,9 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - `check_for_collision_with_lists` no longer returns the same sprite more than once when it's in more than one of the lists.
 - `CollisionMethod.SPATIAL` (`method=1`) on a sprite list without a spatial hash now chooses the same way as `AUTO`, checking every sprite in lists of 1500 or fewer. Before, it always used the GPU, which is slow when called many times per frame and needed an open window.
 - Documented that sprites whose hit boxes only touch don't count as colliding, while a point exactly on a hit box's edge does count for `get_sprites_at_point` and `collides_with_point`. Corrected `get_sprites_in_rect`'s docs, which said touching sprites were included.
+- Fixed `SpriteList.pop()` with a negative index other than `-1` (such as `pop(-2)`) drawing the wrong sprites: the removed sprite stayed on screen and another sprite disappeared.
+- Fixed `SpriteList.rescale()` moving the list's center while rescaling, so sprites after the first were scaled around the wrong point.
+- Fixed `SpriteList.preload_textures()` raising `AttributeError` on a lazy sprite list that hadn't been drawn yet. It now preloads into the atlas the list will use.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.

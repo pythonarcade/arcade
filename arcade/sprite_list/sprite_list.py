@@ -219,7 +219,7 @@ class SpriteList(SpriteSequence[SpriteType]):
     #:     # Set global default to nearest filtering (pixelated)
     #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
     #:     # Set global default to linear filtering (smooth). This is the default.
-    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.LINEAR, gl.LINEAR
     DEFAULT_TEXTURE_FILTER: ClassVar[tuple[int, int]] = gl.LINEAR, gl.LINEAR
 
     # Declare `special_hash` as an attribute that implements the abstract
@@ -279,7 +279,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
         self._sprite_texture_data = array("f", [0] * self._buf_capacity)
         # Index buffer
-        self._sprite_index_data = array("i", [0] * self._idx_capacity)
+        self._sprite_index_data = array("I", [0] * self._idx_capacity)
 
         self._data: SpriteListData | None = None
 
@@ -604,8 +604,15 @@ class SpriteList(SpriteSequence[SpriteType]):
             index:
                 Index of sprite to remove (defaults to ``-1`` for the last item)
         """
-        if len(self.sprite_list) == 0:
+        sprite_count = len(self.sprite_list)
+        if sprite_count == 0:
             raise IndexError("pop from empty list")
+        if not -sprite_count <= index < sprite_count:
+            raise IndexError("pop index out of range")
+        # The index buffer is longer than the list (it has spare capacity at
+        # the end), so a negative index must be made positive before using it.
+        if index < 0:
+            index += sprite_count
 
         sprite = self.sprite_list.pop(index)
         try:
@@ -872,8 +879,12 @@ class SpriteList(SpriteSequence[SpriteType]):
 
     def rescale(self, factor: float) -> None:
         """Rescale all sprites in the list relative to the spritelists center."""
+        if not self.sprite_list:
+            return
+        # Find the center before any sprite moves
+        center = self.center
         for sprite in self.sprite_list:
-            sprite.rescale_relative_to_point(self.center, factor)
+            sprite.rescale_relative_to_point(center, factor)
 
     def move(self, change_x: float, change_y: float) -> None:
         """
@@ -897,12 +908,17 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             texture_list: List of textures.
         """
-        if not self.ctx:
-            raise ValueError("Cannot preload textures before the window is created")
+        atlas = self._atlas
+        if atlas is None:
+            # Not initialized yet (a lazy list, or no window when it was
+            # created). Use the atlas the list will get when it initializes.
+            try:
+                atlas = get_window().ctx.default_atlas
+            except RuntimeError:
+                raise ValueError("Cannot preload textures before the window is created")
 
         for texture in texture_list:
-            # Ugly spacing is a fast workaround for None type checking issues
-            self._atlas.add(texture)  # type: ignore
+            atlas.add(texture)
 
     def write_sprite_buffers_to_gpu(self) -> None:
         """
