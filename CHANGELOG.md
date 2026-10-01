@@ -33,6 +33,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Sped up collision checks further by caching each hit box's distinct edge directions. Parallel edges (such as opposite sides of the default octagon hit boxes, or matching edges on two sprites with the same angle) are only tested once, and the cache is kept when a sprite moves. Two unrotated octagon hit boxes go from 12.0 to 4.6 µs, and two rotated 30° from 20.8 to 6.9 µs.
 - `SpatialHash` now uses the hit box's cached bounds to find a sprite's grid cells, so they're shared with collision checks. Adding, removing, and querying for sprites that haven't moved is about 33-40% faster.
 - Added collision benchmark scripts in `benchmarks/collisions/` (`micro.py`, `hit_box.py`, and `compare_reference.py`, which checks collision results against a simple reference on random sprite pairs) and `benchmarks/spatial_hash/queries.py`.
+- Removed the unfinished `arcade.texture_atlas.atlas_array` and `atlas_bindless` modules. They were empty placeholders marked "do not use", weren't exported, and had failed to import on Python 3.10-3.13 since 4.0's move off Python 3.9.
 - Updated the optional `pymunk` extra to 7.3.0 (from 7.2.0). Packaging-only release (free-threaded CPython and pyodide wheels, improved type hints) with no breaking changes or deprecations.
 
 ## 4.0.0.dev7
