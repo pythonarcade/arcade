@@ -1,5 +1,6 @@
 from collections.abc import Iterable
 from enum import IntEnum
+from typing import TypeVar
 
 from arcade.geometry import (
     _are_polygons_overlapping_on_axes,
@@ -13,6 +14,9 @@ from arcade.types.rect import Rect
 from arcade.window_commands import get_window
 
 from .sprite_list import SpriteSequence
+
+# The sprite type of the second list in check_for_collision_between_lists
+_SpriteType2 = TypeVar("_SpriteType2", bound=BasicSprite)
 
 
 class CollisionMethod(IntEnum):
@@ -257,6 +261,150 @@ def check_for_collision_with_list(
     #     if sprite1 is not sprite2 and sprite2 not in collision_list:
     #         if _check_for_collision(sprite1, sprite2):
     #             collision_list.append(sprite2)
+
+
+def has_collision_with_list(
+    sprite: BasicSprite,
+    sprite_list: SpriteSequence[BasicSprite],
+    method: CollisionMethod | int = CollisionMethod.AUTO,
+) -> bool:
+    """
+    Check if a sprite collides with any sprite in a list.
+
+    This is faster than checking whether :py:func:`check_for_collision_with_list`
+    returns an empty list, since it stops at the first collision it finds.
+
+    Args:
+        sprite:
+            Sprite to check
+        sprite_list:
+            SpriteList to check against
+        method:
+            How to find the sprites to check. See :py:class:`CollisionMethod`.
+            Defaults to :py:attr:`CollisionMethod.AUTO`.
+
+    Returns:
+        ``True`` if the sprite collides with at least one sprite in the list.
+    """
+    if __debug__:
+        if not isinstance(sprite, BasicSprite):
+            raise TypeError(
+                f"Parameter 1 is not an instance of the Sprite class, "
+                f"it is an instance of {type(sprite)}."
+            )
+        if not isinstance(sprite_list, SpriteSequence):
+            raise TypeError(f"Parameter 2 is a {type(sprite_list)} instead of expected SpriteList.")
+
+    for sprite2 in _get_sprites_to_check(sprite, sprite_list, method):
+        if sprite is not sprite2 and _check_for_collision(sprite, sprite2):
+            return True
+    return False
+
+
+def has_collision_with_lists(
+    sprite: BasicSprite,
+    sprite_lists: Iterable[SpriteSequence[BasicSprite]],
+    method: CollisionMethod | int = CollisionMethod.AUTO,
+) -> bool:
+    """
+    Check if a sprite collides with any sprite in any of several lists.
+
+    This is faster than checking whether :py:func:`check_for_collision_with_lists`
+    returns an empty list, since it stops at the first collision it finds.
+
+    Args:
+        sprite:
+            Sprite to check
+        sprite_lists:
+            SpriteLists to check against
+        method:
+            How to find the sprites to check. See :py:class:`CollisionMethod`.
+            Defaults to :py:attr:`CollisionMethod.AUTO`.
+
+    Returns:
+        ``True`` if the sprite collides with at least one sprite in the lists.
+    """
+    if __debug__:
+        if not isinstance(sprite, BasicSprite):
+            raise TypeError(
+                f"Parameter 1 is not an instance of the BasicSprite class, "
+                f"it is an instance of {type(sprite)}."
+            )
+
+    for sprite_list in sprite_lists:
+        for sprite2 in _get_sprites_to_check(sprite, sprite_list, method):
+            if sprite is not sprite2 and _check_for_collision(sprite, sprite2):
+                return True
+    return False
+
+
+def check_for_collision_between_lists(
+    sprite_list_a: SpriteSequence[SpriteType],
+    sprite_list_b: SpriteSequence[_SpriteType2],
+    method: CollisionMethod | int = CollisionMethod.AUTO,
+) -> list[tuple[SpriteType, _SpriteType2]]:
+    """
+    Find every pair of colliding sprites between two lists.
+
+    For example, to remove bullets and the enemies they hit::
+
+        for bullet, enemy in arcade.check_for_collision_between_lists(bullets, enemies):
+            bullet.remove_from_sprite_lists()
+            enemy.remove_from_sprite_lists()
+
+    A sprite can be in more than one pair, such as a bullet hitting two
+    enemies at once.
+
+    For each sprite in ``sprite_list_a``, ``method`` chooses how to find the
+    sprites in ``sprite_list_b`` to check, the same way as in
+    :py:func:`check_for_collision_with_list`. For the best speed, enable
+    spatial hashing on ``sprite_list_b``, and make it the list whose sprites
+    move less.
+
+    If both arguments are the same list, each colliding pair is returned
+    once, and sprites are never paired with themselves.
+
+    Args:
+        sprite_list_a:
+            The first list of sprites
+        sprite_list_b:
+            The second list of sprites
+        method:
+            How to find the sprites in ``sprite_list_b`` to check. See
+            :py:class:`CollisionMethod`. Defaults to :py:attr:`CollisionMethod.AUTO`.
+
+    Returns:
+        A list of ``(sprite_a, sprite_b)`` tuples, or an empty list.
+    """
+    if __debug__:
+        if not isinstance(sprite_list_a, SpriteSequence):
+            raise TypeError(
+                f"Parameter 1 is a {type(sprite_list_a)} instead of expected SpriteList."
+            )
+        if not isinstance(sprite_list_b, SpriteSequence):
+            raise TypeError(
+                f"Parameter 2 is a {type(sprite_list_b)} instead of expected SpriteList."
+            )
+
+    pairs: list[tuple[SpriteType, _SpriteType2]] = []
+    if not sprite_list_a or not sprite_list_b:
+        return pairs
+
+    if sprite_list_a is sprite_list_b:
+        # Only report each pair once, by skipping sprites already checked
+        checked: set[BasicSprite] = set()
+        for sprite_a in sprite_list_a:
+            checked.add(sprite_a)
+            for sprite_b in _get_sprites_to_check(sprite_a, sprite_list_b, method):
+                if sprite_b not in checked and _check_for_collision(sprite_a, sprite_b):
+                    pairs.append((sprite_a, sprite_b))
+        return pairs
+
+    for sprite_a in sprite_list_a:
+        for sprite_b in _get_sprites_to_check(sprite_a, sprite_list_b, method):
+            if sprite_a is not sprite_b and _check_for_collision(sprite_a, sprite_b):
+                pairs.append((sprite_a, sprite_b))
+    return pairs
 
 
 def check_for_collision_with_lists(

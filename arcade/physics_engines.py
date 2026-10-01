@@ -12,6 +12,7 @@ from arcade import (
     SpriteType,
     check_for_collision,
     check_for_collision_with_lists,
+    has_collision_with_lists,
 )
 from arcade.math import get_distance
 
@@ -71,10 +72,7 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteSequence[BasicSp
         for strided_index in range(0, 16, 2):
             x, y = try_list[strided_index:strided_index + 2]
             colliding.position = x, y
-            check_hit_list = check_for_collision_with_lists(colliding, walls)
-            # print(f"Vary {vary} ({trapped.center_x} {trapped.center_y}) "
-            #       f"= {len(check_hit_list)}")
-            if len(check_hit_list) == 0:
+            if not has_collision_with_lists(colliding, walls):
                 return
         wiggle_distance *= 2
 
@@ -104,7 +102,7 @@ def _move_sprite(
         collided with.
     """
     # See if we are starting this turn with a sprite already colliding with us.
-    if len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
+    if has_collision_with_lists(moving_sprite, can_collide):
         _wiggle_until_free(moving_sprite, can_collide)
 
     original_x, original_y = moving_sprite.position
@@ -143,7 +141,7 @@ def _move_sprite(
     # If we hit a wall, move so the edges are at the same point
     if len(hit_list_x) > 0:
         if moving_sprite.change_y > 0:
-            while len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
+            while has_collision_with_lists(moving_sprite, can_collide):
                 moving_sprite.center_y -= 1
             # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})"
             #       f" {self.player_sprite.change_y}")
@@ -645,9 +643,7 @@ class PhysicsEnginePlatformer:
             :py:attr:`ladders`.
         """
         if self.ladders:
-            hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
-            if len(hit_list) > 0:
-                return True
+            return has_collision_with_lists(self.player_sprite, self.ladders)
         return False
 
     def can_jump(self, y_distance: float = 5) -> bool:
@@ -686,18 +682,14 @@ class PhysicsEnginePlatformer:
 
         # Temporarily move the player down to collide floor-like sprites
         self.player_sprite.center_y -= y_distance
-        hit_list = check_for_collision_with_lists(self.player_sprite, self._all_obstacles)
+        on_ground = has_collision_with_lists(self.player_sprite, self._all_obstacles)
         self.player_sprite.center_y += y_distance
 
         # Reset the number jumps if the player touched a floor-like sprite
-        if len(hit_list) > 0:
+        if on_ground:
             self.jumps_since_ground = 0
 
-        if (
-            len(hit_list) > 0
-            or self.allow_multi_jump
-            and self.jumps_since_ground < self.allowed_jumps
-        ):
+        if on_ground or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
             return True
         else:
             return False

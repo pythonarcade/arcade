@@ -187,6 +187,9 @@ from .sprite_list import CollisionMethod
 from .sprite_list import check_for_collision
 from .sprite_list import check_for_collision_with_list
 from .sprite_list import check_for_collision_with_lists
+from .sprite_list import check_for_collision_between_lists
+from .sprite_list import has_collision_with_list
+from .sprite_list import has_collision_with_lists
 from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
@@ -330,6 +333,9 @@ __all__ = [
     "check_for_collision",
     "check_for_collision_with_list",
     "check_for_collision_with_lists",
+    "check_for_collision_between_lists",
+    "has_collision_with_list",
+    "has_collision_with_lists",
     "close_window",
     "disable_timings",
     "draw_arc_filled",

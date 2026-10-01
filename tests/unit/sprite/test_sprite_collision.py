@@ -356,6 +356,149 @@ def test_touching_edges(window):
     assert arcade.get_sprites_at_point((5, 0), sprite_list) == [a]
 
 
+@pytest.mark.parametrize("method", list(arcade.CollisionMethod))
+@pytest.mark.parametrize("spatial", [False, True])
+def test_has_collision_with_list(window, method, spatial):
+    """has_collision_with_list matches whether check_for_collision_with_list finds anything"""
+    sprite = arcade.SpriteSolidColor(10, 10)
+    sprite_list = arcade.SpriteList(use_spatial_hash=spatial)
+    for x in (100, 200):
+        sprite_list.append(arcade.SpriteSolidColor(10, 10, center_x=x))
+    # A sprite never collides with itself
+    sprite_list.append(sprite)
+
+    assert arcade.has_collision_with_list(sprite, sprite_list, method=method) is False
+    assert arcade.check_for_collision_with_list(sprite, sprite_list, method=method) == []
+
+    sprite.center_x = 195
+    assert arcade.has_collision_with_list(sprite, sprite_list, method=method) is True
+    assert arcade.check_for_collision_with_list(sprite, sprite_list, method=method) != []
+
+    # Touching edges don't count, the same as check_for_collision
+    sprite.center_x = 190
+    assert arcade.has_collision_with_list(sprite, sprite_list, method=method) is False
+
+    assert arcade.has_collision_with_list(sprite, arcade.SpriteList(), method=method) is False
+
+
+def test_has_collision_with_list_stops_at_first_hit(window, monkeypatch):
+    """has_collision_with_list checks no more sprites than it needs to"""
+    from arcade.sprite_list import collision
+
+    sprite = arcade.SpriteSolidColor(10, 10)
+    sprite_list = arcade.SpriteList()
+    for _ in range(10):
+        sprite_list.append(arcade.SpriteSolidColor(10, 10))
+
+    checked = []
+    original = collision._check_for_collision
+
+    def counting(sprite1, sprite2):
+        checked.append(sprite2)
+        return original(sprite1, sprite2)
+
+    monkeypatch.setattr(collision, "_check_for_collision", counting)
+    assert arcade.has_collision_with_list(sprite, sprite_list) is True
+    assert checked == [sprite_list[0]]
+
+    checked.clear()
+    assert arcade.has_collision_with_lists(sprite, [arcade.SpriteList(), sprite_list]) is True
+    assert checked == [sprite_list[0]]
+
+
+def test_has_collision_with_lists(window):
+    sprite = arcade.SpriteSolidColor(10, 10)
+    near = arcade.SpriteSolidColor(10, 10, center_x=5)
+    far = arcade.SpriteList()
+    far.append(arcade.SpriteSolidColor(10, 10, center_x=100))
+    hit = arcade.SpriteList(use_spatial_hash=True)
+    hit.append(near)
+
+    assert arcade.has_collision_with_lists(sprite, []) is False
+    assert arcade.has_collision_with_lists(sprite, [far]) is False
+    assert arcade.has_collision_with_lists(sprite, [far, hit]) is True
+    assert arcade.has_collision_with_lists(sprite, (sl for sl in [far, hit])) is True
+
+    with pytest.raises(TypeError):
+        arcade.has_collision_with_lists("moo", [far])
+
+
+def test_has_collision_with_list_type_errors(window):
+    sprite = arcade.SpriteSolidColor(10, 10)
+    with pytest.raises(TypeError):
+        arcade.has_collision_with_list("moo", arcade.SpriteList())
+    with pytest.raises(TypeError):
+        arcade.has_collision_with_list(sprite, "moo")
+
+
+@pytest.mark.parametrize("spatial", [False, True])
+def test_check_for_collision_between_lists(window, spatial):
+    bullets = arcade.SpriteList()
+    for x in (0, 100, 300):
+        bullets.append(arcade.SpriteSolidColor(4, 4, center_x=x))
+    enemies = arcade.SpriteList(use_spatial_hash=spatial)
+    for x in (2, 98, 104, 500):
+        enemies.append(arcade.SpriteSolidColor(10, 10, center_x=x))
+
+    pairs = arcade.check_for_collision_between_lists(bullets, enemies)
+    expected = [
+        (bullets[0], enemies[0]),
+        (bullets[1], enemies[1]),
+        (bullets[1], enemies[2]),  # One bullet can hit two enemies
+    ]
+    # A spatial hash returns sprites in no particular order
+    assert len(pairs) == len(expected)
+    assert set(pairs) == set(expected)
+
+    # Each pair matches check_for_collision
+    for a, b in pairs:
+        assert arcade.check_for_collision(a, b)
+
+    # Swapping the lists swaps the pairs
+    swapped = arcade.check_for_collision_between_lists(enemies, bullets)
+    assert len(swapped) == len(expected)
+    assert set(swapped) == {(b, a) for a, b in expected}
+
+    # Empty lists
+    assert arcade.check_for_collision_between_lists(bullets, arcade.SpriteList()) == []
+    assert arcade.check_for_collision_between_lists(arcade.SpriteList(), enemies) == []
+
+
+@pytest.mark.parametrize("spatial", [False, True])
+def test_check_for_collision_between_lists_same_list(window, spatial):
+    """With the same list twice, each pair is returned once and never a sprite with itself"""
+    sprites = arcade.SpriteList(use_spatial_hash=spatial)
+    for x in (0, 5, 8, 100):
+        sprites.append(arcade.SpriteSolidColor(10, 10, center_x=x))
+    a, b, c, far = sprites
+
+    pairs = arcade.check_for_collision_between_lists(sprites, sprites)
+    assert len(pairs) == 3
+    assert {frozenset(pair) for pair in pairs} == {
+        frozenset((a, b)),
+        frozenset((a, c)),
+        frozenset((b, c)),
+    }
+
+
+def test_check_for_collision_between_lists_shared_sprite(window):
+    """A sprite in both lists isn't paired with itself"""
+    shared = arcade.SpriteSolidColor(10, 10)
+    other = arcade.SpriteSolidColor(10, 10, center_x=5)
+    list_a = arcade.SpriteList()
+    list_a.append(shared)
+    list_b = arcade.SpriteList()
+    list_b.extend([shared, other])
+    assert arcade.check_for_collision_between_lists(list_a, list_b) == [(shared, other)]
+
+
+def test_check_for_collision_between_lists_type_errors(window):
+    with pytest.raises(TypeError):
+        arcade.check_for_collision_between_lists("moo", arcade.SpriteList())
+    with pytest.raises(TypeError):
+        arcade.check_for_collision_between_lists(arcade.SpriteList(), "moo")
+
+
 def test_check_for_collision_with_list(window):
     # TODO: Check that the right collision function is called internally
     a = arcade.SpriteSolidColor(50, 50, color=arcade.csscolor.RED)
