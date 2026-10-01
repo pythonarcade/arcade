@@ -26,6 +26,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed `SpriteList.pop()` with a negative index other than `-1` (such as `pop(-2)`) drawing the wrong sprites: the removed sprite stayed on screen and another sprite disappeared.
 - Fixed `SpriteList.rescale()` moving the list's center while rescaling, so sprites after the first were scaled around the wrong point.
 - Fixed `SpriteList.preload_textures()` raising `AttributeError` on a lazy sprite list that hadn't been drawn yet. It now preloads into the atlas the list will use.
+- Fixed GPU collision checks (`CollisionMethod.GPU`, also used automatically for sprite lists over 1500 sprites without a spatial hash) missing sprites flipped with a negative scale, whose negative width or height made them look smaller than they are.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.
