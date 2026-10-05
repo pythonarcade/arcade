@@ -2,8 +2,10 @@
 Drawing text with pyglet label
 """
 
+import math
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 import pyglet
 from pyglet.enums import Style, Weight
@@ -913,12 +915,23 @@ def create_text_sprite(
         multiline=multiline,
     )
 
+    # Where the text is with its anchor at (0, 0), as a Text object would be
+    left = text_object.left
+    bottom = text_object.bottom
+    # At least 1 pixel, so an empty string still makes a (transparent) texture
     size = (
-        int(text_object.right - text_object.left),
-        int(text_object.top - text_object.bottom),
+        max(1, math.ceil(text_object.right - left)),
+        max(1, math.ceil(text_object.top - bottom)),
     )
-    text_object.y = -text_object.bottom
-    texture = arcade.Texture.create_empty(text, size)
+
+    # Draw it into the texture with its bottom left corner at (0, 0)
+    text_object.x = -left
+    text_object.y = -bottom
+
+    # Each sprite needs its own image in the atlas. A name based on the text
+    # would make sprites with the same text, but different colors or sizes,
+    # share one.
+    texture = arcade.Texture.create_empty(f"create_text_sprite_{uuid4().hex}", size)
 
     if not texture_atlas:
         texture_atlas = arcade.get_window().ctx.default_atlas
@@ -927,10 +940,11 @@ def create_text_sprite(
         fbo.clear(color=background_color or arcade.color.TRANSPARENT_BLACK)
         text_object.draw()
 
+    # Place the sprite where the Text object was drawn
     return arcade.Sprite(
         texture,
-        center_x=text_object.right - (size[0] / 2),
-        center_y=text_object.top,
+        center_x=left + size[0] / 2,
+        center_y=bottom + size[1] / 2,
     )
 
 

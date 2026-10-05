@@ -5,7 +5,12 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
-- No unreleased changes yet
+### Fixes
+- Fixed several `arcade.create_text_sprite()` bugs:
+  - Sprites with the same text shared one image in the texture atlas, so creating a second one (for example in another color or size) changed the first one and drew the second stretched. Each sprite now gets its own image.
+  - `anchor_x="center"` cut off the left half of the text, and `anchor_x="right"` made an empty sprite.
+  - The sprite was placed too high. It now covers the same area as an `arcade.Text` with the same arguments at the same position.
+  - An empty string raised `ValueError`. It now makes a transparent sprite, as documented.
 
 ## 4.0.0.dev8
 
