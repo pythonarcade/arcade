@@ -1,3 +1,4 @@
+import math
 import random
 
 import pytest
@@ -720,6 +721,177 @@ def test_get_collision_info_with_list_type_errors(window):
         arcade.get_collision_info_with_list("moo", arcade.SpriteList())
     with pytest.raises(TypeError):
         arcade.get_collision_info_with_list(sprite, "moo")
+
+
+def _walls(*sprites, spatial=False):
+    sprite_list = arcade.SpriteList(use_spatial_hash=spatial)
+    sprite_list.extend(sprites)
+    return sprite_list
+
+
+@pytest.mark.parametrize("spatial", [False, True])
+def test_sweep_sprite_thin_wall(window, spatial):
+    """A fast sprite hits a thin wall it would otherwise pass through"""
+    wall = arcade.SpriteSolidColor(6, 100, center_x=30)  # Left edge at x=27
+    walls = _walls(wall, spatial=spatial)
+    sprite = arcade.SpriteSolidColor(10, 10)  # Right edge at x=5
+
+    # The plain check at the end position misses it
+    sprite.center_x = 50
+    assert not arcade.check_for_collision(sprite, wall)
+    sprite.center_x = 0
+
+    hit = arcade.sweep_sprite(sprite, 50, 0, walls)
+    assert hit == (wall, 22 / 50, 22.0, Vec2(-1.0, 0.0))
+    # It doesn't move the sprite
+    assert sprite.position == (0, 0)
+    # Moving to the hit leaves them touching
+    sprite.position += Vec2(50, 0) * hit.fraction
+    assert sprite.right == pytest.approx(wall.left)
+
+
+def test_sweep_sprite_misses(window):
+    wall = arcade.SpriteSolidColor(6, 100, center_x=30)
+    walls = _walls(wall)
+    sprite = arcade.SpriteSolidColor(10, 10)
+    assert arcade.sweep_sprite(sprite, -50, 0, walls) is None  # Moving away
+    assert arcade.sweep_sprite(sprite, 21, 0, walls) is None  # Stops short
+    assert arcade.sweep_sprite(sprite, 22, 0, walls) is None  # Ends exactly touching
+    assert arcade.sweep_sprite(sprite, 0, 0, walls) is None  # Not moving
+    sprite.center_y = 55  # Passes just above the wall's top edge
+    assert arcade.sweep_sprite(sprite, 50, 0, walls) is None
+    assert arcade.sweep_sprite(sprite, 50, 0, arcade.SpriteList()) is None
+
+
+def test_sweep_sprite_ends_touching_slanted_edge(window):
+    """Ending exactly touching along a slanted edge isn't a hit, but going further is"""
+    # Diamonds with integer corners, so the touching point is exact
+    sprite = arcade.SpriteSolidColor(10, 10)
+    sprite.hit_box = arcade.hitbox.HitBox([(5, 0), (0, 5), (-5, 0), (0, -5)])
+    wall = arcade.SpriteSolidColor(20, 20)
+    wall.hit_box = arcade.hitbox.HitBox([(10, 0), (0, 10), (-10, 0), (0, -10)])
+    # Set after the hit box, which is created at (0, 0)
+    wall.position = 30, 10
+    walls = _walls(wall)
+    # After moving 25, the sprite's upper right edge lies along the wall's
+    # lower left edge. The bounding boxes overlap well before that.
+    assert arcade.sweep_sprite(sprite, 25, 0, walls) is None
+    hit = arcade.sweep_sprite(sprite, 26, 0, walls)
+    assert hit.fraction == pytest.approx(25 / 26)
+    assert hit.normal.x == pytest.approx(-(2**-0.5))
+    assert hit.normal.y == pytest.approx(-(2**-0.5))
+
+
+def test_sweep_sprite_touching(window):
+    """Touching isn't a hit, unless the sprite moves into the other one"""
+    wall = arcade.SpriteSolidColor(6, 100, center_x=30)
+    walls = _walls(wall)
+    sprite = arcade.SpriteSolidColor(10, 10, center_x=22)  # Right edge touches the wall
+    assert arcade.sweep_sprite(sprite, -5, 0, walls) is None  # Away
+    assert arcade.sweep_sprite(sprite, 0, 30, walls) is None  # Sliding along it
+    assert arcade.sweep_sprite(sprite, 5, 3, walls) == (wall, 0.0, 0.0, Vec2(-1.0, 0.0))
+
+
+def test_sweep_sprite_starts_overlapping(window):
+    """Starting inside a sprite is an immediate hit, with the push-out direction"""
+    near = arcade.SpriteSolidColor(10, 10, center_x=9)  # Overlaps by 1
+    deep = arcade.SpriteSolidColor(10, 10, center_y=-6)  # Overlaps by 4
+    ahead = arcade.SpriteSolidColor(10, 10, center_x=-30)
+    sprite = arcade.SpriteSolidColor(10, 10)
+    walls = _walls(ahead, near, deep)
+
+    hit = arcade.sweep_sprite(sprite, -100, 0, walls)
+    # The deepest overlap, even though another sprite is in the way
+    assert hit.sprite is deep
+    assert hit.fraction == 0.0
+    assert hit.distance == 0.0
+    assert hit.normal == arcade.get_collision_info(sprite, deep).normal
+    # Also when not moving
+    assert arcade.sweep_sprite(sprite, 0, 0, walls).sprite is deep
+
+
+@pytest.mark.parametrize("spatial", [False, True])
+def test_sweep_sprite_first_hit(window, spatial):
+    """The closest sprite along the path is returned, not the first in the list"""
+    far = arcade.SpriteSolidColor(10, 10, center_x=100)
+    near = arcade.SpriteSolidColor(10, 10, center_x=50)
+    behind = arcade.SpriteSolidColor(10, 10, center_x=-50)
+    sprite = arcade.SpriteSolidColor(10, 10)
+    walls = _walls(far, behind, near, sprite, spatial=spatial)  # It skips itself
+
+    hit = arcade.sweep_sprite(sprite, 200, 0, walls)
+    assert hit.sprite is near
+    assert hit.fraction == pytest.approx(40 / 200)
+    assert arcade.sweep_sprite(sprite, -200, 0, walls).sprite is behind
+
+
+def test_sweep_sprite_diagonal(window):
+    """Hitting a rotated wall gives the wall's surface normal"""
+    wall = arcade.SpriteSolidColor(20, 200, center_x=60)
+    wall.angle = 45
+    walls = _walls(wall)
+    sprite = arcade.SpriteSolidColor(10, 10)
+    hit = arcade.sweep_sprite(sprite, 100, 0, walls)
+    assert hit.sprite is wall
+    assert hit.normal.x == pytest.approx(-(2**-0.5))
+    assert abs(hit.normal.y) == pytest.approx(2**-0.5)
+    assert hit.distance == pytest.approx(hit.fraction * 100)
+
+
+def test_sweep_sprite_type_errors(window):
+    sprite = arcade.SpriteSolidColor(10, 10)
+    with pytest.raises(TypeError):
+        arcade.sweep_sprite("moo", 1, 0, arcade.SpriteList())
+    with pytest.raises(TypeError):
+        arcade.sweep_sprite(sprite, 1, 0, "moo")
+
+
+def test_sweep_sprite_matches_stepping(window):
+    """Compare with moving in small steps, for random sprites and moves"""
+    rng = random.Random(79)
+    textures = [
+        arcade.load_texture(":resources:images/tiles/grassMid.png"),
+        arcade.load_texture(":resources:images/items/coinGold.png"),
+        arcade.load_texture(":resources:images/space_shooter/laserBlue01.png"),
+        arcade.load_texture(
+            ":resources:images/animated_characters/female_person/femalePerson_idle.png"
+        ),
+    ]
+
+    def collides_at(sprite, other, start, dx, dy, fraction):
+        sprite.position = start[0] + dx * fraction, start[1] + dy * fraction
+        result = arcade.check_for_collision(sprite, other)
+        sprite.position = start
+        return result
+
+    hits = 0
+    for _ in range(2000):
+        shared_angle = rng.choice([0, 90, 45, 30, rng.uniform(0, 360)])
+        sprite = _random_convex_sprite(rng, textures, shared_angle)
+        other = _random_convex_sprite(rng, textures, shared_angle)
+        if arcade.check_for_collision(sprite, other):
+            continue
+        angle = rng.uniform(0, 2 * math.pi)
+        speed = rng.choice([1, 10, 50, 200])
+        dx, dy = round(math.cos(angle) * speed, 3), round(math.sin(angle) * speed, 3)
+        start = sprite.position
+        hit = arcade.sweep_sprite(sprite, dx, dy, _walls(other))
+        samples = [i / 200 for i in range(200)]
+        if hit is None:
+            assert not any(collides_at(sprite, other, start, dx, dy, t) for t in samples)
+            continue
+        hits += 1
+        fraction = hit.fraction
+        assert 0 <= fraction < 1
+        assert hit.normal.length() == pytest.approx(1.0)
+        # The normal points back against the move
+        assert hit.normal.x * dx + hit.normal.y * dy < 0
+        # Nothing before the hit, and overlapping just after it
+        before = [t for t in samples if t < fraction - 1e-7] + [max(0.0, fraction - 1e-7)]
+        assert not any(collides_at(sprite, other, start, dx, dy, t) for t in before)
+        after = [fraction + e for e in (1e-9, 1e-7, 1e-6, 1e-5) if fraction + e < 1]
+        assert any(collides_at(sprite, other, start, dx, dy, t) for t in after)
+    assert hits > 100
 
 
 def test_check_for_collision_with_list(window):

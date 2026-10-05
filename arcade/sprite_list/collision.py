@@ -13,7 +13,7 @@ from arcade.geometry import (
 from arcade.math import get_distance
 from arcade.sprite import BasicSprite, SpriteType
 from arcade.types import Point
-from arcade.types.rect import Rect
+from arcade.types.rect import LRBT, Rect
 from arcade.window_commands import get_window
 
 from .sprite_list import SpriteSequence
@@ -84,6 +84,38 @@ class CollisionInfo(NamedTuple):
     """
     How far, in pixels, to move the first sprite along :py:attr:`normal` to
     separate the sprites. Always greater than zero.
+    """
+
+
+class SweepInfo(NamedTuple):
+    """
+    The first sprite hit by a moving sprite. Returned by :py:func:`sweep_sprite`.
+
+    To move the sprite up to the point where it hits::
+
+        hit = arcade.sweep_sprite(bullet, dx, dy, walls)
+        if hit:
+            bullet.position += Vec2(dx, dy) * hit.fraction
+    """
+
+    sprite: BasicSprite
+    """The sprite that was hit."""
+
+    fraction: float
+    """
+    How far along the move the hit happens, from 0.0 (at the start) to just
+    under 1.0. It's 0.0 if the moving sprite already overlaps :py:attr:`sprite`.
+    """
+
+    distance: float
+    """How far the moving sprite travels before the hit, in pixels."""
+
+    normal: Vec2
+    """
+    A unit vector pointing out of the hit sprite's surface, back toward the
+    moving sprite. Useful for bouncing. If the moving sprite started inside
+    the hit sprite, this is the way to push it out, as from
+    :py:func:`get_collision_info`.
     """
 
 
@@ -672,6 +704,231 @@ def get_collision_info_with_list(
     if len(results) > 1:
         results.sort(key=lambda result: result[1].depth, reverse=True)
     return results
+
+
+def _sweep_axis(
+    min_1: float, max_1: float, min_2: float, max_2: float, speed: float
+) -> tuple[float, float] | None:
+    """
+    When two projections on an axis overlap, if one moves at ``speed``.
+
+    Returns the ``(start, end)`` of the overlap as fractions of the move.
+    Touching doesn't count as overlapping. If ``speed`` is 0, returns
+    ``(-inf, inf)`` if they overlap, otherwise ``None``.
+    """
+    if speed == 0:
+        if max_1 <= min_2 or max_2 <= min_1:
+            return None
+        return float("-inf"), float("inf")
+    t1 = (min_2 - max_1) / speed
+    t2 = (max_2 - min_1) / speed
+    if t1 > t2:
+        return t2, t1
+    return t1, t2
+
+
+def _sweep_against(
+    sprite: BasicSprite, other: BasicSprite, dx: float, dy: float, best_fraction: float
+) -> tuple[float, float, float] | None:
+    """
+    When ``sprite``, moving by ``(dx, dy)``, first overlaps ``other``.
+
+    Returns ``(fraction, normal_x, normal_y)`` if they overlap at some point
+    during the move, strictly before ``best_fraction``. A negative fraction means
+    they already overlap at the start. The normal is a unit vector out of
+    ``other``. Exact for convex hit boxes that don't rotate during the move.
+    """
+    hit_box1 = sprite._hit_box
+    hit_box2 = other._hit_box
+    points1 = hit_box1.get_adjusted_points()
+    points2 = hit_box2.get_adjusted_points()
+    if not points1 or not points2:
+        return None
+
+    # For each axis, find when the projections overlap during the move. The
+    # sprites overlap while they overlap on every axis, so they first
+    # overlap at the latest of the start times, if that's before the
+    # earliest of the end times.
+    enter = float("-inf")
+    leave = float("inf")
+    normal_x = 0.0
+    normal_y = 0.0
+
+    # The y axis first, then x, then the other edges, so ties prefer them
+    left1, right1, bottom1, top1 = hit_box1.get_adjusted_bounds()
+    left2, right2, bottom2, top2 = hit_box2.get_adjusted_bounds()
+    for min_1, max_1, min_2, max_2, speed, axis_x, axis_y in (
+        (bottom1, top1, bottom2, top2, dy, 0.0, 1.0),
+        (left1, right1, left2, right2, dx, 1.0, 0.0),
+    ):
+        overlap = _sweep_axis(min_1, max_1, min_2, max_2, speed)
+        if overlap is None:
+            return None
+        start, end = overlap
+        if start > enter:
+            enter = start
+            if speed > 0:
+                # 0.0 - x avoids -0.0 for the zero component
+                normal_x, normal_y = 0.0 - axis_x, 0.0 - axis_y
+            else:
+                normal_x, normal_y = axis_x, axis_y
+        leave = min(leave, end)
+        if enter >= leave or enter >= best_fraction or leave <= 0:
+            return None
+
+    axes = hit_box1._get_axes() | hit_box2._get_axes()
+    for axis_x, axis_y in axes.values():
+        projected_1 = [axis_x * px + axis_y * py for px, py in points1]
+        projected_2 = [axis_x * px + axis_y * py for px, py in points2]
+        speed = dx * axis_x + dy * axis_y
+        overlap = _sweep_axis(
+            min(projected_1), max(projected_1), min(projected_2), max(projected_2), speed
+        )
+        if overlap is None:
+            return None
+        start, end = overlap
+        if start > enter:
+            enter = start
+            length = hypot(axis_x, axis_y)
+            if speed > 0:
+                normal_x, normal_y = -axis_x / length, -axis_y / length
+            else:
+                normal_x, normal_y = axis_x / length, axis_y / length
+        leave = min(leave, end)
+        if enter >= leave or enter >= best_fraction or leave <= 0:
+            return None
+
+    return enter, normal_x, normal_y
+
+
+def sweep_sprite(
+    sprite: BasicSprite,
+    dx: float,
+    dy: float,
+    sprite_list: SpriteSequence[SpriteType],
+) -> SweepInfo | None:
+    """
+    Find the first sprite in a list that a sprite would hit while moving.
+
+    :py:func:`check_for_collision` only checks where a sprite is, so a fast
+    sprite can move past a thin wall between two frames without ever
+    overlapping it. This checks the whole path instead: it imagines
+    ``sprite`` moving in a straight line by ``(dx, dy)`` and returns the
+    first sprite it would hit, and where. It doesn't move ``sprite``::
+
+        hit = arcade.sweep_sprite(bullet, bullet.change_x, bullet.change_y, walls)
+        if hit:
+            # Move up to the wall, then remove the bullet
+            bullet.position += Vec2(bullet.change_x, bullet.change_y) * hit.fraction
+            bullet.remove_from_sprite_lists()
+        else:
+            bullet.position += Vec2(bullet.change_x, bullet.change_y)
+
+    If ``sprite`` already overlaps a sprite in the list, that is an immediate
+    hit, with a :py:attr:`~SweepInfo.fraction` of 0.0. If it overlaps
+    several, the deepest overlap is returned.
+
+    As with :py:func:`check_for_collision`, sprites that only touch don't
+    count: a sprite can slide along a wall, or move away from one it's
+    touching, without hitting it. A move that ends exactly touching a
+    sprite doesn't hit it either.
+
+    .. note:: ``sprite`` is assumed to keep the same angle during the move.
+              The result is only exact for convex hit boxes.
+
+    If the list has a spatial hash, only sprites near the path are checked.
+    Otherwise every sprite in the list is. If two sprites are hit at the
+    same moment, either may be returned.
+
+    Args:
+        sprite:
+            The moving sprite
+        dx:
+            How far it moves along x
+        dy:
+            How far it moves along y
+        sprite_list:
+            The sprites it may hit
+
+    Returns:
+        A :py:class:`SweepInfo` for the first sprite hit, or ``None``.
+    """
+    if __debug__:
+        if not isinstance(sprite, BasicSprite):
+            raise TypeError(
+                f"Parameter 1 is not an instance of the Sprite class, "
+                f"it is an instance of {type(sprite)}."
+            )
+        if not isinstance(sprite_list, SpriteSequence):
+            raise TypeError(f"Parameter 4 is a {type(sprite_list)} instead of expected SpriteList.")
+
+    # Everything the sprite passes over is inside this box
+    left, right, bottom, top = sprite._hit_box.get_adjusted_bounds()
+    path_left = left + min(dx, 0.0)
+    path_right = right + max(dx, 0.0)
+    path_bottom = bottom + min(dy, 0.0)
+    path_top = top + max(dy, 0.0)
+
+    candidates: Iterable[SpriteType]
+    if sprite_list.spatial_hash is not None:
+        candidates = sprite_list.spatial_hash.get_sprites_near_rect(
+            LRBT(path_left, path_right, path_bottom, path_top)
+        )
+    else:
+        candidates = sprite_list
+
+    # Hits must be strictly before this, so a move that ends exactly
+    # touching a sprite doesn't hit it
+    best_fraction = 1.0
+    best: tuple[SpriteType, float, float, float] | None = None
+    deepest_start: tuple[SpriteType, CollisionInfo] | None = None
+    for other in candidates:
+        if other is sprite:
+            continue
+        # Quick check with a circle around the other sprite's hit box, then
+        # its bounding box. The radius is cached until its scale changes.
+        other_hit_box = other._hit_box
+        radius = other_hit_box._radius
+        if radius is None:
+            radius = other_hit_box._get_radius()
+        other_x, other_y = other._position
+        if (
+            other_x + radius <= path_left
+            or other_x - radius >= path_right
+            or other_y + radius <= path_bottom
+            or other_y - radius >= path_top
+        ):
+            continue
+        other_left, other_right, other_bottom, other_top = other_hit_box.get_adjusted_bounds()
+        if (
+            path_right <= other_left
+            or other_right <= path_left
+            or path_top <= other_bottom
+            or other_top <= path_bottom
+        ):
+            continue
+
+        # Once something overlaps at the start, only other overlaps matter
+        limit = 0.0 if deepest_start is not None else best_fraction
+        result = _sweep_against(sprite, other, dx, dy, limit)
+        if result is None:
+            continue
+        fraction, normal_x, normal_y = result
+        if fraction < 0:
+            # Already overlapping at the start. Keep the deepest.
+            info = _get_collision_info(sprite, other)
+            if info is not None and (deepest_start is None or info.depth > deepest_start[1].depth):
+                deepest_start = (other, info)
+        elif deepest_start is None:
+            best_fraction = fraction
+            best = (other, fraction, normal_x, normal_y)
+
+    if deepest_start is not None:
+        return SweepInfo(deepest_start[0], 0.0, 0.0, deepest_start[1].normal)
+    if best is None:
+        return None
+    hit_sprite, fraction, normal_x, normal_y = best
+    return SweepInfo(hit_sprite, fraction, fraction * hypot(dx, dy), Vec2(normal_x, normal_y))
 
 
 def check_for_collision_with_lists(
