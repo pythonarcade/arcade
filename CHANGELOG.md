@@ -11,9 +11,13 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - `anchor_x="center"` cut off the left half of the text, and `anchor_x="right"` made an empty sprite.
   - The sprite was placed too high. It now covers the same area as an `arcade.Text` with the same arguments at the same position.
   - An empty string raised `ValueError`. It now makes a transparent sprite, as documented.
+- Fixed `arcade.draw_text()` cache problems: a multiline call and an otherwise equal single-line call shared one label and drew wrong, and animating `rotation` or `font_size` added a cached label every frame, forever. The cache now holds at most 256 labels, forgetting the least recently used.
 
 ### New Features
 - Added `arcade.sweep_sprite(sprite, dx, dy, sprite_list)`, which checks the whole path of a moving sprite and returns a `SweepInfo` for the first sprite it would hit (the `sprite`, how far along the move as a `fraction` and `distance`, and the surface `normal`), or `None`. Fast sprites can't pass through thin walls this way. A sprite that already overlaps one is an immediate hit. Added the `sprite_bullets_sweep` example comparing it with a plain collision check.
+
+### Misc Changes
+- Sped up `arcade.draw_text()`. It no longer flushes OpenGL after every call (an unchanged call went from 76 to 15 µs), and several lines drawn in the same style each keep their own cached label instead of re-laying out one label every call (5 static lines went from 1.24 ms to 0.08 ms per frame).
 
 ## 4.0.0.dev8
 
