@@ -91,7 +91,7 @@ def test_explicit_size_overrides_sprite(window):
 
 def test_works_in_box_layout(ui):
     """Widget should be usable inside a UIBoxLayout."""
-    layout = UIBoxLayout(vertical=False, space_between=10, size_hint=None)
+    layout = UIBoxLayout(vertical=False, space_between=10, width=500, height=500, size_hint=None)
     widget_a = _make_widget()
     widget_b = _make_widget()
     layout.add(widget_a)

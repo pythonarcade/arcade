@@ -77,6 +77,9 @@ class OpenGLVertexArray(VertexArray):
         return f"<VertexArray {self.glo.value}>"
 
     def __del__(self) -> None:
+        # Creating the object can fail before the OpenGL object exists
+        if not hasattr(self, "glo"):
+            return
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and self.glo.value > 0:
             self._ctx.objects.append(self)

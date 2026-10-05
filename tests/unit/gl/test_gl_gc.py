@@ -1,4 +1,8 @@
 import gc
+import sys
+
+import pytest
+
 import arcade
 from arcade.gl import geometry
 
@@ -70,6 +74,29 @@ def test_auto_gc(ctx):
     ctx.gc()
     ctx.gc_mode = "auto"
     create_resources(ctx)
+
+
+def test_failed_creation_collected_quietly(ctx):
+    """Objects whose creation failed don't raise errors when garbage collected"""
+    errors = []
+    old_hook = sys.unraisablehook
+    old_gc_mode = ctx.gc_mode
+    sys.unraisablehook = errors.append
+    try:
+        for gc_mode in ("auto", "context_gc"):
+            ctx.gc_mode = gc_mode
+            with pytest.raises(ValueError):
+                ctx.texture((10, 10), components=5)
+            with pytest.raises(ValueError):
+                ctx.framebuffer()
+            with pytest.raises(ValueError):
+                ctx.framebuffer(color_attachments=[ctx.texture((10, 10)), ctx.texture((10, 11))])
+            gc.collect()
+            ctx.gc()
+    finally:
+        sys.unraisablehook = old_hook
+        ctx.gc_mode = old_gc_mode
+    assert [f"{error.exc_type.__name__}: {error.exc_value}" for error in errors] == []
 
 
 def create_resources(ctx: arcade.ArcadeContext):
