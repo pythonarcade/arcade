@@ -367,6 +367,12 @@ Shooting with Sprites
 
    :ref:`sprite_explosion_particles`
 
+.. figure:: images/thumbs/sprite_bullets_sweep.png
+   :figwidth: 170px
+   :target: sprite_bullets_sweep.html
+
+   :ref:`sprite_bullets_sweep`
+
 Audio
 -----
 
