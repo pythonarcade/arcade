@@ -5,6 +5,13 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+### Fixes
+- Fixed several `arcade.create_text_sprite()` bugs:
+  - Sprites with the same text shared one image in the texture atlas, so creating a second one (for example in another color or size) changed the first one and drew the second stretched. Each sprite now gets its own image.
+  - `anchor_x="center"` cut off the left half of the text, and `anchor_x="right"` made an empty sprite.
+  - The sprite was placed too high. It now covers the same area as an `arcade.Text` with the same arguments at the same position.
+  - An empty string raised `ValueError`. It now makes a transparent sprite, as documented.
+
 ### New Features
 - Added `arcade.sweep_sprite(sprite, dx, dy, sprite_list)`, which checks the whole path of a moving sprite and returns a `SweepInfo` for the first sprite it would hit (the `sprite`, how far along the move as a `fraction` and `distance`, and the surface `normal`), or `None`. Fast sprites can't pass through thin walls this way. A sprite that already overlaps one is an immediate hit. Added the `sprite_bullets_sweep` example comparing it with a plain collision check.
 
