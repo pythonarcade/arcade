@@ -187,6 +187,7 @@ from .sprite_list import CollisionInfo
 from .sprite_list import CollisionMethod
 from .sprite_list import check_for_collision
 from .sprite_list import get_collision_info
+from .sprite_list import get_collision_info_with_list
 from .sprite_list import check_for_collision_with_list
 from .sprite_list import check_for_collision_with_lists
 from .sprite_list import check_for_collision_between_lists
@@ -335,6 +336,7 @@ __all__ = [
     "astar_calculate_path",
     "check_for_collision",
     "get_collision_info",
+    "get_collision_info_with_list",
     "check_for_collision_with_list",
     "check_for_collision_with_lists",
     "check_for_collision_between_lists",

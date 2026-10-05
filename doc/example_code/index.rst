@@ -182,6 +182,12 @@ Player Movement
 
    :ref:`sprite_rotate_around_tank`
 
+.. figure:: images/thumbs/sprite_push_out.png
+   :figwidth: 170px
+   :target: sprite_push_out.html
+
+   :ref:`sprite_push_out`
+
 
 
 
