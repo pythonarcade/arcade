@@ -5,6 +5,10 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ## Unreleased
 
+- No unreleased changes yet
+
+## 4.0.0.dev8
+
 ### Breaking Changes
 - Updated pyglet to 3.0.dev11 (from 3.0.dev8). Arcade's library code needed no changes (only its docs build configuration did); these mostly affect code that uses pyglet directly.
   - `pyglet.graphics.ShaderProgram` now requires a `vertex_layout` keyword argument (a `pyglet.graphics.VertexLayout`, or `None` to infer it from the shader). `create_vertex_layout()` and `set_instance_attributes()` are replaced by `VertexLayout` and `get_vertex_view()`. Arcade's own shaders use `arcade.gl` and are unaffected.
