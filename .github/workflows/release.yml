@@ -12,7 +12,7 @@ jobs:
       name: release
     permissions:
       id-token: write
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v5
         with:
