@@ -1,12 +1,24 @@
 """Physics engine tests."""
 
 import copy
+import math
 
 import pytest
 
 import arcade
 
 OUT_OF_THE_WAY = (250, 250)
+
+# How far a 10x10 sprite rotated by 1 or 45 degrees sticks out past its
+# unrotated edge. Rotating next to a wall moves the sprite exactly this far.
+ROTATED_1_OVERHANG = 5 * (math.cos(math.radians(1)) + math.sin(math.radians(1))) - 5
+ROTATED_45_OVERHANG = 5 * math.sqrt(2) - 5
+
+
+def check_rotated_out_of_wall(moving_sprite, wall_list, expected_position):
+    """Rotating moved the sprite exactly out of the wall"""
+    assert moving_sprite.position == pytest.approx(expected_position, abs=1e-6)
+    assert not arcade.check_for_collision_with_list(moving_sprite, wall_list)
 
 
 def check_spritelists_prop_clears_instead_of_overwrites(engine, prop_name: str):
@@ -132,7 +144,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     collisions = physics_engine.update()
     assert len(collisions) == 1
     assert collisions[0] == wall_sprite_1
-    assert moving_sprite.position == (-1, 0)
+    check_rotated_out_of_wall(moving_sprite, wall_list, (-ROTATED_1_OVERHANG, 0))
 
     # Check rotation 45 degrees
     wall_sprite_1.position = (10, 0)
@@ -144,7 +156,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     collisions = physics_engine.update()
     assert len(collisions) == 1
     assert collisions[0] == wall_sprite_1
-    assert moving_sprite.position == (-4, 0)
+    check_rotated_out_of_wall(moving_sprite, wall_list, (-ROTATED_45_OVERHANG, 0))
 
     # - Rotate, with block to the left
     # Check rotation one degree
@@ -157,7 +169,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     collisions = physics_engine.update()
     assert len(collisions) == 1
     assert collisions[0] == wall_sprite_1
-    assert moving_sprite.position == (1, 0)
+    check_rotated_out_of_wall(moving_sprite, wall_list, (ROTATED_1_OVERHANG, 0))
 
     # Check rotation 45 degrees
     wall_sprite_1.position = (-10, 0)
@@ -169,7 +181,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     collisions = physics_engine.update()
     assert len(collisions) == 1
     assert collisions[0] == wall_sprite_1
-    assert moving_sprite.position == (4, 0)
+    check_rotated_out_of_wall(moving_sprite, wall_list, (ROTATED_45_OVERHANG, 0))
 
     # - Rotate, with block above
     # Check rotation one degree
@@ -182,7 +194,9 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     collisions = physics_engine.update()
     assert len(collisions) == 1
     assert collisions[0] == wall_sprite_1
-    assert moving_sprite.position == (0, -1)
+    # The engines round y to 2 decimal places, unless that would move the
+    # sprite back into the wall
+    check_rotated_out_of_wall(moving_sprite, wall_list, (0, round(-ROTATED_1_OVERHANG, 2)))
 
     # Check rotation 45 degrees
     wall_sprite_1.position = (0, 10)
@@ -194,7 +208,7 @@ def basic_tests(moving_sprite, wall_list, physics_engine):
     collisions = physics_engine.update()
     assert len(collisions) == 1
     assert collisions[0] == wall_sprite_1
-    assert moving_sprite.position == (0, -4)
+    check_rotated_out_of_wall(moving_sprite, wall_list, (0, -ROTATED_45_OVERHANG))
 
     # - Rotate, between two blocks
     # Check rotation one degree

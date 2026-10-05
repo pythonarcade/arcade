@@ -28,6 +28,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed `SpriteList.preload_textures()` raising `AttributeError` on a lazy sprite list that hadn't been drawn yet. It now preloads into the atlas the list will use.
 - Fixed GPU collision checks (`CollisionMethod.GPU`, also used automatically for sprite lists over 1500 sprites without a spatial hash) missing sprites flipped with a negative scale, whose negative width or height made them look smaller than they are.
 - Fixed `SpriteList.__setitem__` raising when setting a negative index to the sprite already there, such as `sprite_list[-1] = sprite_list[-1]`.
+- Fixed `PhysicsEngineSimple` and `PhysicsEnginePlatformer` leaving a sprite overlapping a wall after it rotated against the wall while moving sideways. The sideways move was measured from where the sprite was before rotating, undoing the move out of the wall.
 
 ### New Features
 - Added `HitBox.get_adjusted_bounds()`, which returns the cached `(left, right, bottom, top)` bounds of the adjusted hit box points.
@@ -38,6 +39,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Added `arcade.get_collision_info_with_list(sprite, sprite_list)`, which returns a `(sprite, CollisionInfo)` pair for each sprite in the list that `sprite` collides with, deepest overlap first. Added the `sprite_push_out` example, which uses it to push a player out of walls, sliding along rotated ones.
 
 ### Misc Changes
+- `PhysicsEngineSimple` and `PhysicsEnginePlatformer` now move sprites out of walls exactly, instead of in steps: landing on a floor or ramp and hitting a ceiling stop the sprite exactly at the surface (before, it could stop up to 0.25 px above a floor or 1 px below a ceiling), and rotating into a wall moves the sprite the smallest distance out of it (before, a whole number of pixels). The older searches are kept as a fallback, for example for concave hit boxes. Collisions are also faster: a hard landing went from about 230 to 42 µs, and a ceiling bump from about 104 to 36 µs.
 - Sped up several `SpriteList` operations: `swap()` no longer searches the draw order (about 1000x faster at the end of a 10,000 sprite list), `insert()` and item assignment check membership with a dictionary instead of scanning the list, and drawing uploads only the buffer slots in use instead of the whole capacity (moving one sprite and drawing is 1.6-2.3x faster).
 - The platformer and simple physics engines and `AStarBarrierList` now use `has_collision_with_list(s)` where they only need to know whether there's a collision. Building an `AStarBarrierList` is about 7-9% faster.
 - Sped up sprite collision checks. Sprites that pass the quick distance check are now compared by cached hit box bounds before the polygon test, and the polygon test skips horizontal and vertical edges, which the bounds check already covers. Checks that reach the polygon test are about 2-4x faster, e.g. 8.0 to 2.3 µs for two box hit boxes and 21.6 to 10.2 µs for two default octagon hit boxes. `are_polygons_intersecting` is also faster (7.3 to 1.6 µs for two rectangles).
