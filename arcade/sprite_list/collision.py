@@ -282,6 +282,68 @@ def _get_collision_info(sprite1: BasicSprite, sprite2: BasicSprite) -> Collision
     return CollisionInfo(Vec2(best_x, best_y), best_depth)
 
 
+def _get_separation_distance(
+    sprite1: BasicSprite, sprite2: BasicSprite, direction_x: float, direction_y: float
+) -> float:
+    """
+    How far ``sprite1`` must move along a direction to stop colliding with ``sprite2``.
+
+    Unlike :py:func:`get_collision_info`, the direction is fixed, for
+    example straight up to land on a slope. Returns ``0.0`` if the sprites
+    don't collide. Like the other separating axis functions, this is only
+    exact for convex hit boxes; callers should check the result.
+
+    Args:
+        sprite1: The sprite to move
+        sprite2: The sprite to move it away from
+        direction_x: X component of the unit direction to move ``sprite1``
+        direction_y: Y component of the unit direction to move ``sprite1``
+    """
+    hit_box1 = sprite1._hit_box
+    hit_box2 = sprite2._hit_box
+    points1 = hit_box1.get_adjusted_points()
+    points2 = hit_box2.get_adjusted_points()
+    if not points1 or not points2:
+        return 0.0
+
+    left1, right1, bottom1, top1 = hit_box1.get_adjusted_bounds()
+    left2, right2, bottom2, top2 = hit_box2.get_adjusted_bounds()
+    if right1 <= left2 or right2 <= left1 or top1 <= bottom2 or top2 <= bottom1:
+        return 0.0
+
+    # Moving a distance t along the direction shifts sprite1's projection on
+    # an axis by t * (direction . axis). The sprites are separated once they
+    # are on any one axis, so the answer is the smallest distance that
+    # separates them on some axis.
+    best = float("inf")
+    if direction_x > 0:
+        best = min(best, (right2 - left1) / direction_x)
+    elif direction_x < 0:
+        best = min(best, (right1 - left2) / -direction_x)
+    if direction_y > 0:
+        best = min(best, (top2 - bottom1) / direction_y)
+    elif direction_y < 0:
+        best = min(best, (top1 - bottom2) / -direction_y)
+
+    axes = hit_box1._get_axes() | hit_box2._get_axes()
+    for normal_x, normal_y in axes.values():
+        projected_1 = [normal_x * px + normal_y * py for px, py in points1]
+        projected_2 = [normal_x * px + normal_y * py for px, py in points2]
+        min_1 = min(projected_1)
+        max_1 = max(projected_1)
+        min_2 = min(projected_2)
+        max_2 = max(projected_2)
+        if max_1 <= min_2 or max_2 <= min_1:
+            return 0.0
+        speed = direction_x * normal_x + direction_y * normal_y
+        if speed > 0:
+            best = min(best, (max_2 - min_1) / speed)
+        elif speed < 0:
+            best = min(best, (max_1 - min_2) / -speed)
+
+    return best
+
+
 def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     """
     Check for collision between two sprites.
