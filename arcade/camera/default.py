@@ -53,10 +53,8 @@ class DefaultProjector:
         if self._ctx.current_camera != self:
             return
 
-        if (
-            self._ctx.viewport[2] != self._ctx.fbo.width
-            or self._ctx.viewport[3] != self._ctx.fbo.height
-        ):
+        width, height = self._framebuffer_size()
+        if self._ctx.viewport[2] != width or self._ctx.viewport[3] != height:
             self.viewport = self._ctx.viewport
         else:
             self.viewport = None
@@ -65,7 +63,17 @@ class DefaultProjector:
 
     @property
     def viewport(self) -> tuple[int, int, int, int] | None:
-        return self._viewport
+        """
+        The viewport of the active framebuffer, in framebuffer pixels.
+
+        pyglet sets this viewport before drawing anything of its own, such
+        as text, since this is the window's camera as far as pyglet knows.
+        So it's the viewport Arcade already set, whichever camera set it,
+        in pixels rather than window units: on a scaled display, a viewport
+        in window units would draw pyglet's content too small, and leave the
+        smaller viewport set for everything drawn after it.
+        """
+        return self._ctx.active_framebuffer._viewport
 
     @viewport.setter
     def viewport(self, viewport: tuple[int, int, int, int] | None) -> None:
@@ -90,22 +98,35 @@ class DefaultProjector:
     def scissor(self) -> None:
         self._scissor = None
 
+    def _framebuffer_size(self) -> tuple[int, int]:
+        """
+        The size of the active framebuffer in the units of ``ctx.viewport``.
+
+        For the window, that's window units, which on a scaled display
+        are fewer than its pixels.
+        """
+        fbo = self._ctx.fbo
+        if fbo is self._ctx.screen:
+            ratio = self._ctx.window.get_pixel_ratio()
+            return round(fbo.width / ratio), round(fbo.height / ratio)
+        return fbo.width, fbo.height
+
     @property
     def width(self) -> int:
         if self._viewport is not None:
             return int(self._viewport[2])
-        return self._ctx.fbo.width
+        return self._framebuffer_size()[0]
 
     @property
     def height(self) -> int:
         if self._viewport is not None:
             return int(self._viewport[3])
-        return self._ctx.fbo.height
+        return self._framebuffer_size()[1]
 
     def get_current_viewport(self) -> tuple[int, int, int, int]:
         if self._viewport is not None:
             return self._viewport
-        return (0, 0, self._ctx.fbo.width, self._ctx.fbo.height)
+        return (0, 0, *self._framebuffer_size())
 
     def use(self) -> None:
         """
@@ -180,7 +201,9 @@ class DefaultProjector:
         # session. Returning a real scissor rectangle matching the current
         # viewport keeps scissor testing enabled without restricting
         # anything beyond what's already visible.
-        return CameraScissor(*(self._scissor or self.get_current_viewport()))
+        # In framebuffer pixels, like the viewport above
+        fbo = self._ctx.active_framebuffer
+        return CameraScissor(*(fbo._scissor or fbo._viewport))
 
     # pyglet's base Window.projection/.view properties delegate to
     # `self.camera.projection` / `.view_matrix` respectively (`.default_camera`

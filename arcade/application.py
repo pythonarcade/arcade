@@ -978,6 +978,14 @@ class Window(pyglet.window.Window):
             log_w = self._width
             if log_w:
                 return self.get_framebuffer_size()[0] / log_w
+        else:
+            # pyglet's get_pixel_ratio() returns the display scale (DPI / 96),
+            # which isn't always the framebuffer/window size ratio: on Windows
+            # in "platform" DPI mode, a 125% display gives 1.25 even though the
+            # framebuffer is the same size as the window. Measure it instead.
+            width = self.get_size()[0]
+            if width:
+                return self.get_framebuffer_size()[0] / width
         return super().get_pixel_ratio()
 
     def _on_resize(self, width: int, height: int) -> EVENT_HANDLE_STATE:
