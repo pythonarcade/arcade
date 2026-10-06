@@ -42,61 +42,111 @@ def load_font(path: str | Path) -> None:
         # Load a font using a custom resource handle
         arcade.load_font(":font:Custom.ttf")
 
+    You can also pass the path to a font file as ``font_name``,
+    which loads the file the first time it's used.
+
     Args:
         path: Path to the font file
     Raises:
         FileNotFoundError: if the font specified wasn't found
     """
-    file_path = resolve(path)
-    pyglet.font.add_file(str(file_path))
+    _load_font_file(resolve(path))
 
 
 FontNameOrNames = str | tuple[str, ...]
 
+# Family names of the font files loaded so far, so each file is only
+# loaded once, and a path can be used as a font name
+_font_file_families: dict[Path, str | None] = {}
+
+
+def _load_font_file(path: Path) -> str | None:
+    """
+    Load a font file, if it isn't loaded yet, and return its family name.
+
+    Returns ``None`` if the family name couldn't be found.
+    """
+    if path in _font_file_families:
+        return _font_file_families[path]
+
+    # pyglet reports the families it added with the name the platform
+    # uses for them, which is the name to load the font with
+    families: list[str] = []
+
+    def on_font_loaded(family_name, weight, style, stretch):
+        families.append(family_name)
+
+    pyglet.font.manager.push_handlers(on_font_loaded=on_font_loaded)
+    try:
+        pyglet.font.add_file(str(path))
+    finally:
+        pyglet.font.manager.remove_handlers(on_font_loaded=on_font_loaded)
+
+    family: str | None = families[0] if families else None
+    if family is None:
+        # The file was already loaded some other way, for example with
+        # pyglet.font.add_file(), so read the name from the file itself
+        from pyglet.font.ttf import TruetypeInfo
+
+        try:
+            info = TruetypeInfo(str(path))
+        except Exception:
+            pass
+        else:
+            try:
+                family = info.get_name("family")
+            finally:
+                info.close()
+
+    _font_file_families[path] = family
+    return family
+
+
+def _font_file_family(font_name: str) -> str | None:
+    """
+    If a font name is the path to a font file, load it and return its
+    family name. Otherwise, return ``None``.
+    """
+    try:
+        path = resolve(font_name)
+    except FileNotFoundError:
+        # Not a file, or a resource that doesn't exist
+        return None
+    except OSError:
+        # Some font names aren't valid paths at all, but a resource
+        # handle should still report what's wrong with it
+        if font_name.strip().startswith(":"):
+            raise
+        return None
+    if not path.is_file():
+        return None
+    return _load_font_file(path)
+
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
-    """Attempt to resolve a font name.
+    """Resolve a font name, path, or list of them to the name of one font.
 
-    Preserves the original logic of this section, even though it
-    doesn't seem to make sense entirely. Comments are an attempt
-    to make sense of the original code.
-
-    If it can't resolve a definite path, it will return the original
-    argument for pyglet to attempt to resolve. This is consistent with
-    the original behavior of this code before it was encapsulated.
+    Paths to font files are loaded and replaced by the font's family
+    name. The first name pyglet finds is returned, or pyglet's default
+    font if it finds none.
 
     Args:
-        font_name: A font name, path to a font file, or list of names
+        font_name: A font name, path to a font file, or a tuple or list
+            of them.
     """
-    if font_name:
-        # ensure
-        if isinstance(font_name, str):
-            font_list: tuple[str, ...] = (font_name,)
-        elif isinstance(font_name, tuple):
-            font_list = font_name
-        else:
-            raise TypeError(
-                "font_name parameter must be a string, "
-                "or a tuple of strings that specify a font name."
-            )
+    if isinstance(font_name, str):
+        font_list: tuple[str, ...] = (font_name,)
+    elif isinstance(font_name, (tuple, list)):
+        font_list = tuple(font_name)
+    else:
+        raise TypeError(
+            "font_name parameter must be a string, or a tuple of strings that specify a font name."
+        )
+    if not font_list or not all(font_list):
+        raise ValueError(f"Couldn't find a font for {font_name!r}")
 
-        for font in font_list:
-            try:
-                path = resolve(font)
-                # print(f"Font path: {path=}")
-
-                # found a font successfully!
-                return path.name
-
-            except FileNotFoundError:
-                pass
-
-        # failed to find it ourselves, hope pyglet can make sense of it
-        # Note this is the best approximation of what I understand the old
-        # behavior to have been.
-        return pyglet.font.load(font_list).name
-
-    raise ValueError(f"Couldn't find a font for {font_name!r}")
+    names = [_font_file_family(font) or font for font in font_list]
+    return pyglet.font.load(names).name
 
 
 def _draw_pyglet_label(label: pyglet.text.Label) -> None:
@@ -502,10 +552,7 @@ class Text:
         if font_name == self._requested_font_name and label.font_name == self._resolved_font_name:
             return
         label = self._layout_label()
-        if isinstance(font_name, str):
-            label.font_name = font_name
-        else:
-            label.font_name = list(font_name)
+        label.font_name = _attempt_font_name_resolution(font_name)
         self._requested_font_name = font_name
         self._resolved_font_name = label.font_name
 
