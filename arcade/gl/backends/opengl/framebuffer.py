@@ -103,6 +103,9 @@ class OpenGLFramebuffer(Framebuffer):
             weakref.finalize(self, OpenGLFramebuffer.delete_glo, ctx, fbo_id)
 
     def __del__(self):
+        # Creating the object can fail before the OpenGL object exists
+        if not hasattr(self, "_glo"):
+            return
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and not self.is_default and self._glo.value > 0:
             self._ctx.objects.append(self)

@@ -5,7 +5,7 @@ Find and run all tutorials in the doc/tutorials directory
 import io
 import os
 import contextlib
-from importlib.machinery import SourceFileLoader
+import runpy
 from pathlib import Path
 import sys
 
@@ -23,9 +23,11 @@ def find_tutorials():
         yield path, path.stem in ALLOW_STDOUT
 
 
+# Some tutorial steps use draw_text, which warns that it's slow
+@pytest.mark.filterwarnings("ignore::arcade.exceptions.PerformanceWarning")
 @pytest.mark.parametrize(
     "file_path, allow_stdout",
-    find_tutorials(),
+    list(find_tutorials()),
 )
 def test_tutorials(window_proxy, file_path, allow_stdout):
     """Run all tutorials"""
@@ -35,10 +37,9 @@ def test_tutorials(window_proxy, file_path, allow_stdout):
     os.environ["ARCADE_TEST"] = "TRUE"
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
-        # Manually load the module as __main__ so it runs on import
+        # Run the tutorial as __main__, as `python -m` would
         os.chdir(file_path.parent)
-        loader = SourceFileLoader("__main__", str(file_path))
-        loader.exec_module(loader.load_module())
+        runpy.run_path(str(file_path), run_name="__main__")
 
     if not allow_stdout:
         output = stdout.getvalue()

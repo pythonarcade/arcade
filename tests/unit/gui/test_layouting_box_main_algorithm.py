@@ -1,3 +1,4 @@
+import pytest
 from pytest import approx
 
 from arcade.gui import UIWidget
@@ -40,7 +41,8 @@ def test_container_size_zero(window):
     ]
 
     # WHEN
-    sizes = _box_axis_algorithm(entries, 0)
+    with pytest.warns(UserWarning, match="Container size is 0"):
+        sizes = _box_axis_algorithm(entries, 0)
 
     # THEN
     assert sizes == [50, 50, 50]

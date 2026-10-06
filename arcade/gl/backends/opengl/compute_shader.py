@@ -165,6 +165,9 @@ class OpenGLComputeShader(ComputeShader):
         uniform.setter(value)
 
     def __del__(self):
+        # Creating the object can fail before the OpenGL object exists
+        if not hasattr(self, "_glo"):
+            return
         if self._ctx.gc_mode == "context_gc" and self._glo > 0:
             self._ctx.objects.append(self)
 
