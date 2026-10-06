@@ -76,6 +76,19 @@ def test_same_text_different_style(window):
     assert red[1] > 200 and blue[1] == 0
 
 
+def test_survives_atlas_rebuild(window):
+    """The text is kept when the atlas rebuilds itself from the textures' images"""
+    atlas = window.ctx.default_atlas
+    sprite = arcade.create_text_sprite("Hello World", color=arcade.color.RED, font_size=20)
+    image = atlas.read_texture_image_from_atlas(sprite.texture)
+    assert _ink(image) > 0
+    # The texture's own image has the text too
+    assert sprite.texture.image.tobytes() == image.tobytes()
+
+    atlas.rebuild()
+    assert atlas.read_texture_image_from_atlas(sprite.texture).tobytes() == image.tobytes()
+
+
 def test_empty_text(window):
     """An empty string makes a transparent sprite instead of failing"""
     sprite = arcade.create_text_sprite("")
