@@ -6,6 +6,7 @@ from typing import Literal
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text.caret import Caret
+from pyglet.text import LinearGradient
 from pyglet.text.document import AbstractDocument
 from typing_extensions import override
 
@@ -30,7 +31,7 @@ from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIInteractiveWidget, UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.text import FontNameOrNames
+from arcade.text import FontNameOrNames, _to_text_color
 from arcade.types import LBWH, RGBA255, Color, RGBOrA255
 
 
@@ -216,7 +217,7 @@ class UILabel(UIWidget):
         return self._label.font_size
 
     @property
-    def font_color(self) -> Color:
+    def font_color(self) -> Color | LinearGradient:
         """Font color of the label. Use :py:meth:`~arcade.gui.UILabel.update_font` to change."""
         return self._label.color
 
@@ -262,9 +263,9 @@ class UILabel(UIWidget):
         self,
         font_name: FontNameOrNames | None = None,
         font_size: float | None = None,
-        font_color: Color | None = None,
+        font_color: RGBOrA255 | LinearGradient | None = None,
         bold: bool | str | None = None,
-        italic: bool | None = None,
+        italic: bool | str | None = None,
     ):
         """Update font of the label.
 
@@ -273,20 +274,23 @@ class UILabel(UIWidget):
                 beginning of the tuple and keep trying to load fonts until
                 success.
             font_size: Font size of font.
-            font_color: Color of the text.
-            bold: May be any value in :py:obj:`pyglet.text.Weight`,
+            font_color: Color of the text, or a
+                :py:class:`pyglet.text.LinearGradient`.
+            bold: May be any value in :py:class:`pyglet.enums.Weight`,
                 ``True`` (converts to ``"bold"``), or ``False``
-                (converts to ``"regular"``).
+                (converts to ``"normal"``).
             italic: If enabled, the label's text will be in an *italic*
+                style. May also be ``"oblique"``.
         """
         font_name = font_name or self._requested_font_name
         font_size = font_size or self._label.font_size
-        font_color = font_color or self._label.color
+        if font_color is None:
+            font_color = self._label.color
         font_bold = bold if bold is not None else self._label.bold
         font_italic = italic if italic is not None else self._label.italic
 
-        # ensure type of font_color, label will allways be a color
-        font_color = Color.from_iterable(font_color)
+        # The label holds a Color or a gradient, so compare with the same type
+        font_color = _to_text_color(font_color)
 
         # Check if values actually changed, if then update and trigger render.
         # The label holds the resolved font name (e.g. "arial" for
