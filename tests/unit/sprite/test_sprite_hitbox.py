@@ -107,3 +107,67 @@ def test_2():
         (-8.0, -32.0),
         (-28.0, -17.0),
     ]
+
+
+SQUARE = ((-10, -10), (-10, 10), (10, 10), (10, -10))
+
+
+def _rounded(points):
+    return [(round(x, 6), round(y, 6)) for x, y in points]
+
+
+def test_set_hit_box_matches_sprite():
+    """A new hit box takes the sprite's position, scale and angle right away"""
+    sprite = arcade.SpriteSolidColor(20, 20, center_x=100, center_y=50)
+    sprite.scale = 2
+    sprite.angle = 90
+    sprite.hit_box = hitbox.HitBox(SQUARE)
+
+    assert sprite.hit_box.position == (100, 50)
+    assert sprite.hit_box.scale == (2, 2)
+    assert sprite.hit_box.angle == 90
+    # Clockwise rotation by 90 degrees, then scaled by 2 and moved
+    assert _rounded(sprite.hit_box.get_adjusted_points()) == [
+        (80, 70), (120, 70), (120, 30), (80, 30)
+    ]  # fmt: skip
+
+
+def test_set_rotatable_hit_box_matches_sprite():
+    """A RotatableHitBox's own position, scale and angle are replaced too"""
+    sprite = arcade.SpriteSolidColor(20, 20, center_x=100, center_y=50)
+    sprite.scale = 0.5
+    sprite.hit_box = hitbox.RotatableHitBox(SQUARE, position=(7, 7), angle=30, scale=(3, 3))
+    assert sprite.hit_box.position == (100, 50)
+    assert sprite.hit_box.scale == (0.5, 0.5)
+    assert sprite.hit_box.angle == 0
+    assert _rounded(sprite.hit_box.get_adjusted_points()) == [
+        (95, 45), (95, 55), (105, 55), (105, 45)
+    ]  # fmt: skip
+
+
+def test_set_hit_box_follows_sprite_afterwards():
+    sprite = arcade.SpriteSolidColor(20, 20, center_x=100, center_y=50)
+    sprite.hit_box = hitbox.HitBox(SQUARE)
+    sprite.position = 10, 20
+    sprite.scale = 3
+    assert _rounded(sprite.hit_box.get_adjusted_points()) == [
+        (-20, -10), (-20, 50), (40, 50), (40, -10)
+    ]  # fmt: skip
+
+
+def test_set_hit_box_collides_right_away():
+    """The hit box used to stay at (0, 0) until the sprite moved, so it hit nothing"""
+    sprite = arcade.SpriteSolidColor(20, 20, center_x=100, center_y=100)
+    sprite.hit_box = hitbox.HitBox(SQUARE)
+    other = arcade.SpriteSolidColor(20, 20, center_x=110, center_y=100)
+    assert arcade.check_for_collision(sprite, other)
+
+
+def test_set_hit_box_updates_spatial_hash():
+    """A bigger hit box is found by a spatial hash without moving the sprite"""
+    sprite_list = arcade.SpriteList(use_spatial_hash=True)
+    sprite = arcade.SpriteSolidColor(20, 20, center_x=100, center_y=100)
+    sprite_list.append(sprite)
+    sprite.hit_box = hitbox.HitBox([(-200, -200), (200, -200), (200, 200), (-200, 200)])
+    far_away = arcade.SpriteSolidColor(10, 10, center_x=250, center_y=250)
+    assert arcade.check_for_collision_with_list(far_away, sprite_list) == [sprite]
