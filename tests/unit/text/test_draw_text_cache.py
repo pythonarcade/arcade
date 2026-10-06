@@ -4,6 +4,7 @@ import pytest
 
 import arcade
 from arcade import text as text_module
+from arcade.clock import GLOBAL_CLOCK
 
 # These tests call draw_text on purpose, which warns that it's slow
 pytestmark = pytest.mark.filterwarnings("ignore::arcade.exceptions.PerformanceWarning")
@@ -70,20 +71,83 @@ def _draw_hud(changing_text):
         arcade.draw_text(line, 10, 10 + i * 24, arcade.color.WHITE, 16)
 
 
+def _next_frame():
+    """The event loop ticks the clock once per frame"""
+    GLOBAL_CLOCK.tick(1 / 60)
+
+
+def _label_for(label_cache, text):
+    return next(label for key, label in label_cache.items() if key[1] == text)
+
+
 def test_same_style_lines_keep_their_labels(window, label_cache):
     """Several lines in the same style each keep a label, even if one keeps changing"""
     _draw_hud("Time: 0")
-    static_labels = {key[1]: label for key, label in label_cache.items()}
+    labels = {key[1]: label for key, label in label_cache.items()}
     for frame in range(1, 30):
+        _next_frame()
         _draw_hud(f"Time: {frame}")
 
     # The unchanging lines still use their original labels
-    for text, label in static_labels.items():
+    for text, label in labels.items():
         if not text.startswith("Time"):
-            assert label_cache[next(key for key in label_cache if key[1] == text)] is label
-    # The changing line doesn't add a label every frame
-    assert len(label_cache) <= text_module._DRAW_TEXT_LABELS_PER_STYLE
-    assert any(key[1] == "Time: 29" for key in label_cache)
+            assert _label_for(label_cache, text) is label
+    # The changing line keeps reusing its own label
+    assert len(label_cache) == 5
+    assert _label_for(label_cache, "Time: 29") is labels["Time: 0"]
+
+
+@pytest.mark.parametrize("line_count", [9, 30])
+def test_many_same_style_lines_keep_their_labels(window, label_cache, line_count):
+    """There's no limit on lines per style: more than 8 used to take each other's labels"""
+
+    def draw_lines():
+        for i in range(line_count):
+            arcade.draw_text(f"Line {i}", 10, 10 + i * 18)
+
+    draw_lines()
+    labels = dict(label_cache)
+    for _ in range(5):
+        _next_frame()
+        draw_lines()
+    assert len(label_cache) == line_count
+    for key, label in labels.items():
+        assert label_cache[key] is label
+
+
+def test_line_that_stops_frees_its_label(window, label_cache):
+    """A label not drawn in a frame is reused for a new line in the same style"""
+    for text in ("Apple", "Banana", "Cherry"):
+        arcade.draw_text(text, 10, 10)
+    cherry = _label_for(label_cache, "Cherry")
+
+    _next_frame()
+    for text in ("Apple", "Banana", "Date"):
+        arcade.draw_text(text, 10, 10)
+    assert len(label_cache) == 3
+    assert _label_for(label_cache, "Date") is cherry
+
+
+def test_new_line_in_same_frame_gets_new_label(window, label_cache):
+    """A label already drawn this frame isn't taken by another line"""
+    arcade.draw_text("First", 10, 10)
+    arcade.draw_text("Second", 10, 30)
+    assert len(label_cache) == 2
+    first, second = label_cache.values()
+    assert first is not second
+    assert first.text == "First"
+
+
+def test_changing_text_without_frames_is_limited(window, label_cache, monkeypatch):
+    """
+    Without the event loop ticking the clock, every label looks in use, so
+    changing text makes new labels, but the cache size still limits them
+    """
+    monkeypatch.setattr(text_module, "_DRAW_TEXT_CACHE_SIZE", 5)
+    for i in range(20):
+        arcade.draw_text(f"Count {i}", 10, 10)
+    assert len(label_cache) == 5
+    assert _label_for(label_cache, "Count 19").text == "Count 19"
 
 
 def test_reused_label_draws_correctly(window, label_cache):
