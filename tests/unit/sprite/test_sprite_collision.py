@@ -770,7 +770,7 @@ def test_sweep_sprite_ends_touching_slanted_edge(window):
     sprite.hit_box = arcade.hitbox.HitBox([(5, 0), (0, 5), (-5, 0), (0, -5)])
     wall = arcade.SpriteSolidColor(20, 20)
     wall.hit_box = arcade.hitbox.HitBox([(10, 0), (0, 10), (-10, 0), (0, -10)])
-    # Set after the hit box, which is created at (0, 0)
+    # Moved after setting the hit box
     wall.position = 30, 10
     walls = _walls(wall)
     # After moving 25, the sprite's upper right edge lies along the wall's
