@@ -1211,8 +1211,8 @@ def _get_draw_text_label(label_cache, style: tuple, text: str) -> "Text | None":
 
 @warning(
     message=(
-        "draw_text is an extremely slow function for displaying text. "
-        "Consider using Text objects instead."
+        "draw_text is much slower than drawing arcade.Text objects, especially "
+        "for many lines or changing text. Consider using Text objects instead."
     ),
     warning_type=PerformanceWarning,
 )
@@ -1238,10 +1238,11 @@ def draw_text(
 
     .. warning:: Use :py:class:`arcade.Text` objects instead.
 
-        This method of drawing text is very slow
-        and might be removed in the near future.
-        Text objects can be 10-100 times faster
-        depending on the use case.
+        This method of drawing text is slower than ``Text`` objects
+        and might be removed in the near future. Each call has some
+        overhead, text that changes is laid out again on every call,
+        and many ``Text`` objects can be drawn at once in a batch.
+        See :ref:`text_guide`.
 
     .. warning:: Cameras affect text drawing!
 

@@ -303,15 +303,27 @@ They also lack many of the features you may be used to in Arcade.
 Text drawing performance
 ------------------------
 
-The slowest thing aside from disk access is :meth:`arcade.draw_text`.
+Laying out text is slow, so the fastest text is text that isn't laid out
+again every frame.
 
 To improve performance:
 
-#. Use :py:class:`arcade.Text` instead
-#. (Optional) Pass a pyglet :py:class:`~pyglet.graphics.Batch` object at creation
+#. Use :py:class:`arcade.Text` objects instead of :py:func:`arcade.draw_text`.
+   Create them once, and only change their text when it changes.
+#. Change position, color, and rotation freely. They don't lay out the
+   text again, but changing the text, font, size, or style does.
+#. To change several layout properties at once, do it in a
+   ``with text:`` block, so the text is laid out once.
+#. Add many ``Text`` objects to a pyglet :py:class:`~pyglet.graphics.Batch`
+   and draw them with one call.
+#. If you prefer ``draw_text`` style code, use :py:class:`arcade.TextPool`.
+#. For text that doesn't change but moves, rotates, or scales, use
+   :py:func:`arcade.create_text_sprite` and draw it in a
+   :py:class:`~arcade.SpriteList`.
 
 See the following to learn more:
 
+* :ref:`text_guide`
 * :ref:`drawing_text_objects`
 * :ref:`drawing_text_objects_batch`
 
