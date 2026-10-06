@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+import PIL.Image
+import PIL.ImageChops
 import pyglet
 from pyglet.enums import Style, Weight
 
@@ -20,7 +22,7 @@ import arcade
 from arcade.exceptions import NoArcadeWindowError, PerformanceWarning, warning
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
-from arcade.types import Color, Point, RGBOrA255
+from arcade.types import RGBA255, Color, Point, RGBOrA255
 from arcade.types.rect import LRBT, Rect
 
 __all__ = ["load_font", "Text", "TextPool", "create_text_sprite", "draw_text"]
@@ -1066,7 +1068,8 @@ def create_text_sprite(
 
     Internally this creates a Text object and an empty texture. It then uses either the
     provided texture atlas, or gets the default one, and draws the Text object into the
-    texture atlas.
+    texture atlas. The texture has the same colors and transparency as the text, so the
+    sprite looks the same as the text drawn directly.
 
     It then creates a sprite referencing the newly created texture, and positions it
     accordingly, and that is final result that is returned from the function.
@@ -1134,13 +1137,32 @@ def create_text_sprite(
     if not texture_atlas:
         texture_atlas = arcade.get_window().ctx.default_atlas
     texture_atlas.add(texture)
-    with texture_atlas.render_into(texture) as fbo:
-        fbo.clear(color=background_color or arcade.color.TRANSPARENT_BLACK)
-        text_object.draw()
-    # Keep a copy of the pixels in the texture's image. The atlas redraws
+
+    # Drawing text over a transparent background would multiply the color
+    # by the text's alpha and square the alpha, since pyglet blends alpha
+    # like color, so the sprite would be drawn too faint. Instead, draw it
+    # over black and over white: over black each pixel is the color times
+    # the alpha, and over white it's lighter by (1 - alpha).
+    def draw_over(background: RGBA255) -> PIL.Image.Image:
+        with texture_atlas.render_into(texture) as fbo:
+            fbo.clear(color=background)
+            text_object.draw()
+        return texture_atlas.read_texture_image_from_atlas(texture).convert("RGB")
+
+    over_black = draw_over(arcade.color.BLACK)
+    over_white = draw_over(arcade.color.WHITE)
+    alpha = PIL.ImageChops.invert(PIL.ImageChops.subtract(over_white, over_black).convert("L"))
+    # "RGBa" is premultiplied RGBA, so converting it divides out the alpha
+    image = PIL.Image.merge("RGBa", (*over_black.split(), alpha)).convert("RGBA")
+    if background_color:
+        background = PIL.Image.new("RGBA", size, Color.from_iterable(background_color))
+        image = PIL.Image.alpha_composite(background, image)
+
+    # Store the result in the texture's image too. The atlas redraws
     # textures from their images when it rebuilds itself, which would
     # otherwise leave the sprite blank.
-    texture_atlas.update_texture_image_from_atlas(texture)
+    texture.image_data.image = image
+    texture_atlas.update_texture_image(texture)
 
     # Place the sprite where the Text object was drawn
     return arcade.Sprite(
