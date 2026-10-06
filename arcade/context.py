@@ -4,7 +4,8 @@ Contains pre-loaded programs
 """
 
 from array import array
-from collections.abc import Iterable, Sequence
+from collections import OrderedDict
+from collections.abc import Hashable, Iterable, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -323,9 +324,9 @@ class ArcadeContext(Context):
         self.geometry_empty: Geometry = self.geometry()
 
         self._atlas: TextureAtlasBase | None = None
-        # Global labels we modify in `arcade.draw_text`.
-        # These multiple labels with different configurations are stored
-        self.label_cache: dict[str, arcade.Text] = {}
+        # Labels reused by `arcade.draw_text`, keyed by the settings that are
+        # expensive to change and the text, least recently used first
+        self.label_cache: OrderedDict[Hashable, arcade.Text] = OrderedDict()
 
         # self.active_program = None
         if gl_api != "webgl":

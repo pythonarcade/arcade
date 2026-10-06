@@ -13,9 +13,13 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - An empty string raised `ValueError`. It now makes a transparent sprite, as documented.
   - Text sprites went blank when the texture atlas rebuilt itself, which happens when it fills up after some textures were freed. The atlas redraws textures from their images, and a text sprite's image was empty. `sprite.texture.image` now also contains the text.
 - Fixed an `AttributeError` being printed as "Exception ignored in `__del__`" when creating an OpenGL texture, framebuffer, buffer, program, compute shader, texture array, or vertex array failed, for example with an invalid number of texture components.
+- Fixed `arcade.draw_text()` cache problems: a multiline call and an otherwise equal single-line call shared one label and drew wrong, and animating `rotation` or `font_size` added a cached label every frame, forever. The cache now holds at most 256 labels, forgetting the least recently used.
 
 ### New Features
 - Added `arcade.sweep_sprite(sprite, dx, dy, sprite_list)`, which checks the whole path of a moving sprite and returns a `SweepInfo` for the first sprite it would hit (the `sprite`, how far along the move as a `fraction` and `distance`, and the surface `normal`), or `None`. Fast sprites can't pass through thin walls this way. A sprite that already overlaps one is an immediate hit. Added the `sprite_bullets_sweep` example comparing it with a plain collision check.
+
+### Misc Changes
+- Sped up `arcade.draw_text()`. It no longer flushes OpenGL after every call (an unchanged call went from 76 to 15 µs), and several lines drawn in the same style each keep their own cached label instead of re-laying out one label every call (5 static lines went from 1.24 ms to 0.08 ms per frame).
 
 ## 4.0.0.dev8
 

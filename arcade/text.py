@@ -952,6 +952,43 @@ def create_text_sprite(
     )
 
 
+# How many labels draw_text keeps for reuse, in total and per style
+_DRAW_TEXT_CACHE_SIZE = 256
+_DRAW_TEXT_LABELS_PER_STYLE = 8
+
+
+def _get_draw_text_label(label_cache, style: tuple, text: str) -> "Text | None":
+    """
+    Find a label in draw_text's cache for drawing ``text`` in a style.
+
+    Returns the label already showing this text, or the style's least
+    recently used label (changed to show this text) if the style already
+    has the most labels it may. Returns None if a new label should be made.
+    Labels used every frame stay recent, so a line whose text keeps
+    changing reuses its own previous label rather than another line's.
+    """
+    key = (style, text)
+    label = label_cache.get(key)
+    if label is not None:
+        label_cache.move_to_end(key)
+        return label
+
+    count = 0
+    oldest = None
+    for cached_style, cached_text in label_cache:
+        if cached_style == style:
+            if oldest is None:
+                oldest = (cached_style, cached_text)
+            count += 1
+    if oldest is None or count < _DRAW_TEXT_LABELS_PER_STYLE:
+        return None
+
+    label = label_cache.pop(oldest)
+    label.text = text
+    label_cache[key] = label
+    return label
+
+
 @warning(
     message=(
         "draw_text is an extremely slow function for displaying text. "
@@ -1139,12 +1176,6 @@ def draw_text(
     """
     # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
 
-    color = Color.from_iterable(color)
-    # Cache the states that are expensive to change
-    key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
-    ctx = arcade.get_window().ctx
-    label = ctx.label_cache.get(key)
-
     if align not in ("left", "center", "right"):
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
@@ -1154,11 +1185,30 @@ def draw_text(
             f"but got {width!r}."
         )
 
-    if not label:
+    color = Color.from_iterable(color)
+    text = str(text)
+    # Reuse labels, keyed by the settings that are expensive to change and
+    # the text. Position, color, and rotation are cheap to update.
+    style = (
+        font_size,
+        tuple(font_name) if isinstance(font_name, list) else font_name,
+        bold,
+        italic,
+        anchor_x,
+        anchor_y,
+        align,
+        width,
+        multiline,
+    )
+    ctx = arcade.get_window().ctx
+    label_cache = ctx.label_cache
+    label = _get_draw_text_label(label_cache, style, text)
+
+    if label is None:
         adjusted_font = _attempt_font_name_resolution(font_name)
 
         label = arcade.Text(
-            text=str(text),
+            text=text,
             x=x,
             y=y,
             z=z,
@@ -1174,11 +1224,12 @@ def draw_text(
             multiline=multiline,
             rotation=rotation,
         )
-        ctx.label_cache[key] = label
+        label_cache[style, text] = label
+        # Forget the least recently used label, so the cache can't grow
+        # forever, for example when animating font_size or the text
+        if len(label_cache) > _DRAW_TEXT_CACHE_SIZE:
+            label_cache.popitem(last=False)
 
-    # These updates are quite expensive
-    if label.text != text:
-        label.text = str(text)
     if label.x != x or label.y != y or label.z != z:
         label.position = x, y, z  # type: ignore
     if label.color != color:
@@ -1187,7 +1238,3 @@ def draw_text(
         label.rotation = rotation
 
     label.draw()
-    # This is absolutely necessary to prevent the vertex buffers
-    # to be altered while another one is drawing. If the same cached
-    # label is used multiple times in a single frame it's a disaster.
-    ctx.flush()
