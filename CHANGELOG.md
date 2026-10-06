@@ -14,6 +14,11 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - Text sprites went blank when the texture atlas rebuilt itself, which happens when it fills up after some textures were freed. The atlas redraws textures from their images, and a text sprite's image was empty. `sprite.texture.image` now also contains the text.
 - Fixed an `AttributeError` being printed as "Exception ignored in `__del__`" when creating an OpenGL texture, framebuffer, buffer, program, compute shader, texture array, or vertex array failed, for example with an invalid number of texture components.
 - Fixed `arcade.draw_text()` cache problems: a multiline call and an otherwise equal single-line call shared one label and drew wrong, and animating `rotation` or `font_size` added a cached label every frame, forever. The cache now holds at most 256 labels, forgetting the least recently used.
+- Fixed `arcade.Text` style properties:
+  - Setting `italic` after creating the text had no visible effect. `"oblique"` is now also accepted.
+  - `bold` strings such as `"light"` or `"semibold"` were all treated as bold, including `"normal"`. They now set that font weight, and the `bold` property returns the weight name for weights other than bold and normal.
+  - A `pyglet.text.LinearGradient` color raised `TypeError` in `Text`, `draw_text()`, `create_text_sprite()`, and `UILabel.update_font()`. Gradients now work, and the `color` property returns the gradient.
+  - The `Text` constructor ignored every error while creating the label, so bad arguments such as an unknown keyword or an invalid `font_name` only raised later, the first time the text was used. Only the "no window yet" case is deferred now.
 
 ### New Features
 - Added `arcade.sweep_sprite(sprite, dx, dy, sprite_list)`, which checks the whole path of a moving sprite and returns a `SweepInfo` for the first sprite it would hit (the `sprite`, how far along the move as a `fraction` and `distance`, and the surface `normal`), or `None`. Fast sprites can't pass through thin walls this way. A sprite that already overlaps one is an immediate hit. Added the `sprite_bullets_sweep` example comparing it with a plain collision check.

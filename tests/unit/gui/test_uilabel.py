@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 
 from pyglet.math import Vec2
+from pyglet.text import LinearGradient
 
 from arcade.gui import UILabel
 from arcade.types import Color, LBWH
@@ -259,3 +260,26 @@ def test_fit_content_uses_adaptive_multiline_width(ui):
     # check size_hint_min updated
     assert label.size_hint_min[0] > shm_w
     assert label.size_hint_min[1] < shm_h
+
+
+def test_update_font_italic_bold_and_gradient(window):
+    label = UILabel(text="Example", font_name="Liberation Sans")
+    gradient = LinearGradient((255, 0, 0, 255), (0, 0, 255, 255))
+
+    label.update_font(italic=True, bold="light", font_color=gradient)
+
+    assert label.italic is True
+    assert label.bold == "light"
+    assert label.font_color == gradient
+    assert label._label.label.document.get_style("style") == "italic"
+
+    # Re-applying the same values is not a change
+    label._requires_render = False
+    label.update_font(italic=True, bold="light", font_color=gradient)
+    assert label._requires_render is False
+
+    # Plain colors still become a Color
+    label.update_font(italic=False, bold=False, font_color=(0, 255, 0))
+    assert label.italic is False
+    assert label.bold is False
+    assert label.font_color == Color(0, 255, 0, 255)

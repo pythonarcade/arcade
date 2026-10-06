@@ -3,6 +3,7 @@ Drawing text with pyglet label
 """
 
 import math
+from enum import Enum
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -13,9 +14,10 @@ from pyglet.enums import Style, Weight
 # Pyright can't figure out the dynamic backend imports in pyglet.graphics
 # right now. Maybe can fix in future Pyglet version
 from pyglet.graphics import Batch, Group  # type: ignore
+from pyglet.text import LinearGradient
 
 import arcade
-from arcade.exceptions import PerformanceWarning, warning
+from arcade.exceptions import NoArcadeWindowError, PerformanceWarning, warning
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
 from arcade.types import Color, Point, RGBOrA255
@@ -108,6 +110,49 @@ def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     label.draw()
 
 
+def _to_text_color(color: RGBOrA255 | LinearGradient) -> Color | LinearGradient:
+    """Convert a text color to a Color, passing gradients through unchanged."""
+    if isinstance(color, LinearGradient):
+        return color
+    return Color.from_iterable(color)
+
+
+def _to_weight(bold: bool | str) -> str:
+    """Convert a ``bold`` value to a pyglet font weight name."""
+    if isinstance(bold, Enum):
+        return bold.value
+    if isinstance(bold, str) and bold:
+        return bold
+    return (Weight.BOLD if bold else Weight.NORMAL).value
+
+
+def _from_weight(weight: Any) -> bool | str:
+    """Convert a pyglet font weight back to a ``bold`` value."""
+    if weight == Weight.BOLD.value:
+        return True
+    if weight is None or weight == Weight.NORMAL.value:
+        return False
+    return str(weight)
+
+
+def _to_style(italic: bool | str) -> str:
+    """Convert an ``italic`` value to a pyglet font style name."""
+    if isinstance(italic, Enum):
+        return italic.value
+    if isinstance(italic, str) and italic:
+        return italic
+    return (Style.ITALIC if italic else Style.NORMAL).value
+
+
+def _from_style(style: Any) -> bool | str:
+    """Convert a pyglet font style back to an ``italic`` value."""
+    if style == Style.ITALIC.value:
+        return True
+    if style is None or style == Style.NORMAL.value:
+        return False
+    return str(style)
+
+
 class Text:
     """
     An object-oriented way to draw text to the screen.
@@ -155,7 +200,8 @@ class Text:
         y: y position to align the text's anchor point with
         z: z position to align the text's anchor point with
         color: Color of the text as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`~arcade.types.Color` instance, or a
+            :py:class:`pyglet.text.LinearGradient` for a left-to-right gradient.
         font_size: Size of the text in points
         width: A width limit in pixels
         align: Horizontal alignment; values other than "left" require width to be set.
@@ -211,13 +257,13 @@ class Text:
         text: str,
         x: float,
         y: float,
-        color: RGBOrA255 = arcade.color.WHITE,
+        color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
         font_size: float = 12,
         width: int | None = None,
         align: str = "left",
         font_name: FontNameOrNames = ("calibri", "arial"),
         bold: bool | str = False,
-        italic: bool = False,
+        italic: bool | str = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
         multiline: bool = False,
@@ -231,13 +277,13 @@ class Text:
             text=text,
             x=x,
             y=y,
-            color=Color.from_iterable(color),
+            color=_to_text_color(color),
             font_size=font_size,
             width=width,
             align=align,
             font_name=font_name,
-            weight=Weight.BOLD if bold else Weight.NORMAL,
-            style=Style.ITALIC if italic else Style.NORMAL,
+            weight=_to_weight(bold),
+            style=_to_style(italic),
             anchor_x=anchor_x,
             anchor_y=anchor_y,
             multiline=multiline,
@@ -260,7 +306,8 @@ class Text:
         self._initialized = False
         try:
             self._init_deferred()
-        except Exception:
+        except NoArcadeWindowError:
+            # No window yet, so create the label when it's first used
             pass
 
     @property
@@ -456,13 +503,21 @@ class Text:
         self.label.rotation = rotation
 
     @property
-    def color(self) -> Color:
-        """Get or set the text color for the label."""
-        return Color.from_iterable(self.label.color)
+    def color(self) -> Color | LinearGradient:
+        """
+        Get or set the text color for the label.
+
+        This is a :py:class:`~arcade.types.Color`, or a
+        :py:class:`pyglet.text.LinearGradient` if one was set.
+        """
+        color = self.label.color
+        if isinstance(color, LinearGradient):
+            return color
+        return Color.from_iterable(color)
 
     @color.setter
-    def color(self, color: RGBOrA255):
-        self.label.color = Color.from_iterable(color)
+    def color(self, color: RGBOrA255 | LinearGradient):
+        self.label.color = _to_text_color(color)
 
     @property
     def width(self) -> int | None:
@@ -563,29 +618,41 @@ class Text:
         """
         Get or set bold state of the label.
 
-        The supported values include:
+        ``True`` is the same as ``"bold"``, and ``False`` the same as
+        ``"normal"``. Other values are font weight names from
+        :py:class:`pyglet.enums.Weight`, such as ``"thin"``,
+        ``"light"``, ``"medium"``, ``"semibold"``, ``"extrabold"``
+        or ``"black"``. Not every font has every weight.
 
-        * ``"black"``
-        * ``"bold" (same as ``True``)
-        * ``"semibold"``
-        * ``"semilight"``
-        * ``"light"``
-
+        Returns ``True`` for bold, ``False`` for normal, and the weight
+        name for any other weight.
         """
-        return self.label.weight == Weight.BOLD
+        return _from_weight(self.label.weight)
 
     @bold.setter
     def bold(self, bold: bool | str):
-        self.label.weight = Weight.BOLD if bold else Weight.NORMAL
+        self.label.weight = _to_weight(bold)
 
     @property
     def italic(self) -> bool | str:
-        """Get or set the italic state of the label."""
-        return self.label.italic
+        """
+        Get or set the italic state of the label.
+
+        ``True`` is the same as ``"italic"``, and ``False`` the same as
+        ``"normal"``. ``"oblique"`` is also accepted.
+
+        Returns ``True`` for italic, ``False`` for normal, and the style
+        name for any other style.
+        """
+        return _from_style(self.label.document.get_style("style"))
 
     @italic.setter
     def italic(self, italic: bool | str):
-        self.label.italic = italic
+        # Set the "style" document style, which pyglet uses to pick the
+        # font. pyglet's own Label.italic sets an "italic" style, which
+        # doesn't change the font.
+        label = self.label
+        label.document.set_style(0, len(label.document.text), {"style": _to_style(italic)})
 
     @property
     def multiline(self) -> bool:
@@ -751,7 +818,7 @@ class TextPool:
         text: str,
         x: float,
         y: float,
-        color: RGBOrA255 = arcade.color.WHITE,
+        color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
         font_size: float = 12,
         **kwargs,
     ) -> Text:
@@ -786,7 +853,7 @@ class TextPool:
         text: str,
         x: float,
         y: float,
-        color: RGBOrA255 = arcade.color.WHITE,
+        color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
         font_size: float = 12,
         **kwargs,
     ) -> Text:
@@ -852,7 +919,7 @@ class TextPool:
 
 def create_text_sprite(
     text: str,
-    color: RGBOrA255 = arcade.color.WHITE,
+    color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
     font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
@@ -882,7 +949,8 @@ def create_text_sprite(
     Args:
         text: Initial text to display. Can be an empty string
         color: Color of the text as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`~arcade.types.Color` instance, or a
+            :py:class:`pyglet.text.LinearGradient` for a left-to-right gradient.
         font_size: Size of the text in points
         width: A width limit in pixels
         align: Horizontal alignment; values other than "left" require width to be set.
@@ -1000,7 +1068,7 @@ def draw_text(
     text: Any,
     x: float,
     y: float,
-    color: RGBOrA255 = arcade.color.WHITE,
+    color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
     font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
@@ -1041,7 +1109,8 @@ def draw_text(
         y: y position to align the text's anchor point with
         z: z position to align the text's anchor point with
         color: Color of the text as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`~arcade.types.Color` instance, or a
+            :py:class:`pyglet.text.LinearGradient` for a left-to-right gradient.
         font_size: Size of the text in points
         width: A width limit in pixels
         align: Horizontal alignment; values other than "left" require width to be set.
@@ -1185,7 +1254,7 @@ def draw_text(
             f"but got {width!r}."
         )
 
-    color = Color.from_iterable(color)
+    color = _to_text_color(color)
     text = str(text)
     # Reuse labels, keyed by the settings that are expensive to change and
     # the text. Position, color, and rotation are cheap to update.
