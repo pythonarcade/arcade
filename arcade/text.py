@@ -117,6 +117,13 @@ def _to_text_color(color: RGBOrA255 | LinearGradient) -> Color | LinearGradient:
     return Color.from_iterable(color)
 
 
+def _normalize_font_name(font_name: FontNameOrNames) -> FontNameOrNames:
+    """Make font names comparable, since a list and a tuple are never equal."""
+    if isinstance(font_name, str):
+        return font_name
+    return tuple(font_name)
+
+
 def _to_weight(bold: bool | str) -> str:
     """Convert a ``bold`` value to a pyglet font weight name."""
     if isinstance(bold, Enum):
@@ -303,6 +310,15 @@ class Text:
                 f"but got {width!r}."
             )
 
+        # Nesting depth of ``with text:`` blocks, and whether a pyglet
+        # update was begun for a change inside them
+        self._update_depth = 0
+        self._update_begun = False
+        # The font name as last requested, since the label holds the
+        # resolved name (e.g. "arial" for ("calibri", "arial"))
+        self._requested_font_name = _normalize_font_name(font_name)
+        self._resolved_font_name: str | None = None
+
         self._initialized = False
         try:
             self._init_deferred()
@@ -337,17 +353,41 @@ class Text:
 
         self._arguments["font_name"] = _attempt_font_name_resolution(self._arguments["font_name"])  # type: ignore
         self._label = pyglet.text.Label(**self._arguments)  # type: ignore
+        self._resolved_font_name = self._label.font_name
         self._initialized = True
 
     def __enter__(self):
         """
-        Update multiple attributes of this text,
-        using efficient update mechanism of the underlying ``pyglet.Label``
+        Update multiple attributes of this text, laying out the text
+        only once at the end of the block.
+
+        Changes that need a new layout, such as the text, font, or
+        width, are laid out together when the block ends. Changes that
+        don't, such as the position, color, or rotation, apply right
+        away. If nothing that needs a new layout changes, the block
+        costs nothing.
         """
-        self.label.begin_update()
+        self._update_depth += 1
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.label.end_update()
+        self._update_depth -= 1
+        if self._update_depth == 0 and self._update_begun:
+            self._update_begun = False
+            self.label.end_update()
+
+    def _layout_label(self) -> pyglet.text.Label:
+        """
+        Get the label, to make a change that needs a new layout.
+
+        Inside ``with text:``, the first such change begins a pyglet
+        update, so all of them are laid out once when the block ends.
+        """
+        label = self.label
+        if self._update_depth and not self._update_begun:
+            label.begin_update()
+            self._update_begun = True
+        return label
 
     @property
     def batch(self) -> Batch | None:
@@ -374,7 +414,9 @@ class Text:
 
     @group.setter
     def group(self, group: Group):
-        self.label.group = group
+        if self.label.group is group:
+            return
+        self._layout_label().group = group
 
     @property
     def value(self) -> str:
@@ -390,7 +432,7 @@ class Text:
         value = str(value)
         if self.label.text == value:
             return
-        self.label.text = value
+        self._layout_label().text = value
 
     @property
     def text(self) -> str:
@@ -408,7 +450,7 @@ class Text:
         value = str(value)
         if self.label.text == value:
             return
-        self.label.text = value
+        self._layout_label().text = value
 
     @property
     def x(self) -> float:
@@ -453,10 +495,19 @@ class Text:
 
     @font_name.setter
     def font_name(self, font_name: FontNameOrNames) -> None:
+        font_name = _normalize_font_name(font_name)
+        label = self.label
+        # Compare with the requested name, since the label holds the
+        # resolved one, and check the label wasn't changed directly
+        if font_name == self._requested_font_name and label.font_name == self._resolved_font_name:
+            return
+        label = self._layout_label()
         if isinstance(font_name, str):
-            self.label.font_name = font_name
+            label.font_name = font_name
         else:
-            self.label.font_name = list(font_name)
+            label.font_name = list(font_name)
+        self._requested_font_name = font_name
+        self._resolved_font_name = label.font_name
 
     @property
     def font_size(self) -> float:
@@ -465,7 +516,9 @@ class Text:
 
     @font_size.setter
     def font_size(self, font_size: float):
-        self.label.font_size = font_size
+        if self.label.font_size == font_size:
+            return
+        self._layout_label().font_size = font_size
 
     @property
     def anchor_x(self) -> str:
@@ -478,6 +531,8 @@ class Text:
 
     @anchor_x.setter
     def anchor_x(self, anchor_x: str):
+        if self.label.anchor_x == anchor_x:
+            return
         self.label.anchor_x = anchor_x  # type: ignore
 
     @property
@@ -491,6 +546,8 @@ class Text:
 
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
+        if self.label.anchor_y == anchor_y:
+            return
         self.label.anchor_y = anchor_y  # type: ignore
 
     @property
@@ -500,6 +557,8 @@ class Text:
 
     @rotation.setter
     def rotation(self, rotation: float):
+        if self.label.rotation == rotation:
+            return
         self.label.rotation = rotation
 
     @property
@@ -517,7 +576,15 @@ class Text:
 
     @color.setter
     def color(self, color: RGBOrA255 | LinearGradient):
-        self.label.color = _to_text_color(color)
+        color = _to_text_color(color)
+        label = self.label
+        old_color = label.color
+        if old_color == color:
+            return
+        # Solid colors are updated in place, but gradients need a new layout
+        if isinstance(color, LinearGradient) or isinstance(old_color, LinearGradient):
+            label = self._layout_label()
+        label.color = color
 
     @property
     def width(self) -> int | None:
@@ -532,7 +599,9 @@ class Text:
 
     @width.setter
     def width(self, width: int):
-        self.label.width = width
+        if self.label.width == width:
+            return
+        self._layout_label().width = width
 
     @property
     def height(self) -> int | None:
@@ -547,7 +616,9 @@ class Text:
 
     @height.setter
     def height(self, value: int):
-        self.label.height = value
+        if self.label.height == value:
+            return
+        self._layout_label().height = value
 
     @property
     def size(self):
@@ -611,7 +682,9 @@ class Text:
 
     @align.setter
     def align(self, align: str):
-        self.label.set_style("align", align)
+        if self.label.get_style("align") == align:
+            return
+        self._layout_label().set_style("align", align)
 
     @property
     def bold(self) -> bool | str:
@@ -631,7 +704,10 @@ class Text:
 
     @bold.setter
     def bold(self, bold: bool | str):
-        self.label.weight = _to_weight(bold)
+        weight = _to_weight(bold)
+        if self.label.weight == weight:
+            return
+        self._layout_label().weight = weight
 
     @property
     def italic(self) -> bool | str:
@@ -650,9 +726,12 @@ class Text:
     def italic(self, italic: bool | str):
         # Set the "style" document style, which pyglet uses to pick the
         # font. pyglet's own Label.italic sets an "italic" style, which
-        # doesn't change the font.
-        label = self.label
-        label.document.set_style(0, len(label.document.text), {"style": _to_style(italic)})
+        # doesn't change the font: https://github.com/pyglet/pyglet/issues/1508
+        style = _to_style(italic)
+        if self.label.document.get_style("style") == style:
+            return
+        label = self._layout_label()
+        label.document.set_style(0, len(label.document.text), {"style": style})
 
     @property
     def multiline(self) -> bool:
@@ -661,7 +740,9 @@ class Text:
 
     @multiline.setter
     def multiline(self, multiline: bool):
-        self.label.multiline = multiline
+        if self.label.multiline == multiline:
+            return
+        self._layout_label().multiline = multiline
 
     @property
     def visible(self) -> bool:
@@ -739,11 +820,11 @@ class Text:
     def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
         x, y, *z = point
-
-        if z:
-            self.label.position = x, y, z[0]
-        else:
-            self.label.position = x, y, self.label.z
+        label = self.label
+        position = (x, y, z[0] if z else label.z)
+        if label.position == position:
+            return
+        label.position = position
 
     @property
     def tracking(self) -> float | None:
@@ -762,7 +843,9 @@ class Text:
 
     @tracking.setter
     def tracking(self, value: float):
-        self.label.set_style("kerning", value)
+        if self.label.get_style("kerning") == value:
+            return
+        self._layout_label().set_style("kerning", value)
 
     def em_to_px(self, em: float) -> float:
         """Convert from an em value to a pixel amount.
