@@ -1,6 +1,10 @@
+import pytest
+
 import arcade
 
 
+# Uses draw_text, which warns that it's slow
+@pytest.mark.filterwarnings("ignore::arcade.exceptions.PerformanceWarning")
 def test_draw_primitives(window):
     """
     Render the screen.

@@ -11,6 +11,8 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
   - `anchor_x="center"` cut off the left half of the text, and `anchor_x="right"` made an empty sprite.
   - The sprite was placed too high. It now covers the same area as an `arcade.Text` with the same arguments at the same position.
   - An empty string raised `ValueError`. It now makes a transparent sprite, as documented.
+  - Text sprites went blank when the texture atlas rebuilt itself, which happens when it fills up after some textures were freed. The atlas redraws textures from their images, and a text sprite's image was empty. `sprite.texture.image` now also contains the text.
+- Fixed an `AttributeError` being printed as "Exception ignored in `__del__`" when creating an OpenGL texture, framebuffer, buffer, program, compute shader, texture array, or vertex array failed, for example with an invalid number of texture components.
 - Fixed `arcade.draw_text()` cache problems: a multiline call and an otherwise equal single-line call shared one label and drew wrong, and animating `rotation` or `font_size` added a cached label every frame, forever. The cache now holds at most 256 labels, forgetting the least recently used.
 
 ### New Features

@@ -21,6 +21,8 @@ def test_text_instance_raise_multiline_error(window):
     )
 
 
+# Tests draw_text, which warns that it's slow
+@pytest.mark.filterwarnings("ignore::arcade.exceptions.PerformanceWarning")
 def test_text_function_raise_multiline_error(window):
     with pytest.raises(ValueError) as e:
         _ = arcade.draw_text("Initial text", 0, 0, width=0, multiline=True)
