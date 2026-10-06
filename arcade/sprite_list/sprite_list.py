@@ -11,6 +11,7 @@ import random
 import struct
 from abc import abstractmethod
 from array import array
+from itertools import filterfalse
 from collections import deque
 from collections.abc import Callable, Collection, Iterable, Iterator, Sized
 from typing import (
@@ -31,6 +32,11 @@ from arcade.utils import copy_dunders_unimplemented
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.texture_atlas import TextureAtlasBase
+
+
+# With this many sprites or more removed from a SpriteList at once, one pass
+# over the list is faster than finding each sprite in it
+_REMOVE_IN_ONE_PASS = 8
 
 
 def _align_capacity(capacity: int) -> int:
@@ -265,8 +271,12 @@ class SpriteList(SpriteSequence[SpriteType]):
         # List of free slots in the sprite buffers. These are filled when sprites are removed.
         self._sprite_buffer_free_slots: deque[int] = deque()
 
-        # List of sprites in the sprite list
-        self.sprite_list: list[SpriteType] = []
+        # List of sprites in the sprite list. Read it through the sprite_list
+        # property, which applies pending removals first.
+        self._sprite_list: list[SpriteType] = []
+        # Sprites removed but still in _sprite_list and the index buffer,
+        # with their buffer slots. See remove().
+        self._pending_removals: dict[SpriteType, int] = {}
         # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
         self.sprite_slot: dict[SpriteType, int] = dict()
@@ -307,6 +317,55 @@ class SpriteList(SpriteSequence[SpriteType]):
                 self._init_deferred()
         except RuntimeError:
             pass
+
+    @property
+    def sprite_list(self) -> list[SpriteType]:
+        """The sprites in the list, in drawing order."""
+        if self._pending_removals:
+            self._apply_removals()
+        return self._sprite_list
+
+    @sprite_list.setter
+    def sprite_list(self, sprites: list[SpriteType]) -> None:
+        if self._pending_removals:
+            self._apply_removals()
+        self._sprite_list = sprites
+
+    def _apply_removals(self) -> None:
+        """
+        Take the sprites removed with remove() out of the sprite list and
+        the index buffer, keeping the order of the rest.
+
+        Finding a sprite in the list is ``O(N)``, so removing many sprites
+        one at a time costs ``O(N)`` each. A few are removed that way, but
+        more are removed with a single pass over the list.
+        """
+        pending = self._pending_removals
+        self._pending_removals = {}
+        sprites = self._sprite_list
+        index_data = self._sprite_index_data
+
+        if len(pending) < _REMOVE_IN_ONE_PASS:
+            for sprite in pending:
+                index = sprites.index(sprite)
+                sprites.pop(index)
+                index_data.pop(index)
+                index_data.append(0)
+        else:
+            # The removed sprites' buffer slots aren't reused until below, so
+            # they still mark where the sprites are in the index buffer
+            removed_slots = set(pending.values())
+            count = len(sprites)
+            self._sprite_list = list(filterfalse(pending.__contains__, sprites))
+            index_data = array("I", filterfalse(removed_slots.__contains__, index_data[:count]))
+            index_data.extend([0] * (self._idx_capacity - len(index_data)))
+            self._sprite_index_data = index_data
+
+        # Only now can the buffer slots be reused, since the index buffer
+        # pointed at them until now
+        self._sprite_buffer_free_slots.extend(pending.values())
+        self._sprite_index_slots -= len(pending)
+        self._sprite_index_changed = True
 
     def _init_deferred(self) -> None:
         """
@@ -641,6 +700,8 @@ class SpriteList(SpriteSequence[SpriteType]):
         """
         if sprite in self.sprite_slot:
             raise ValueError("Sprite already in SpriteList")
+        if self._pending_removals:
+            self._apply_removals()
 
         slot = self._next_slot()
         self.sprite_slot[sprite] = slot
@@ -695,9 +756,10 @@ class SpriteList(SpriteSequence[SpriteType]):
         """
         Remove a specific sprite from the list.
 
-        Note that this method is ``O(N)`` in complexity and will have
-        and increased cost the more sprites you have in the list.
-        A faster option is to use :py:meth:`pop` or :py:meth:`swap`.
+        The sprite is removed right away, but taking it out of the list's
+        internal storage waits until the list is next used, so many
+        sprites removed together, such as every bullet that hit something
+        this frame, are taken out in one pass instead of one at a time.
 
         Args:
             sprite: Item to remove from the list
@@ -707,17 +769,9 @@ class SpriteList(SpriteSequence[SpriteType]):
         except KeyError:
             raise ValueError("Sprite is not in the SpriteList")
 
-        index = self.sprite_list.index(sprite)
-        self.sprite_list.pop(index)
         sprite._unregister_sprite_list(self)
         del self.sprite_slot[sprite]
-
-        self._sprite_buffer_free_slots.append(slot)
-
-        self._sprite_index_data.pop(index)
-        self._sprite_index_data.append(0)
-        self._sprite_index_slots -= 1
-        self._sprite_index_changed = True
+        self._pending_removals[sprite] = slot
 
         if self.spatial_hash is not None:
             self.spatial_hash.remove(sprite)
@@ -940,6 +994,8 @@ class SpriteList(SpriteSequence[SpriteType]):
     def _write_sprite_buffers_to_gpu(self) -> None:
         if not self._initialized:
             self._init_deferred()
+        if self._pending_removals:
+            self._apply_removals()
 
         self.data.write_sprite_buffers_to_gpu(
             # Buffer data
