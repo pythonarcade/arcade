@@ -13,10 +13,12 @@ import copy
 import math
 import os
 from collections import OrderedDict
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
+import PIL.Image
+import PIL.ImageChops
 import pytiled_parser
 import pytiled_parser.tiled_object
 from pytiled_parser import Color
@@ -32,7 +34,6 @@ from arcade import (
     hexagon,
 )
 from arcade.hitbox import HitBoxAlgorithm, RotatableHitBox
-from arcade.types import RGBA255
 from arcade.types import Color as ArcadeColor
 
 if TYPE_CHECKING:
@@ -108,6 +109,21 @@ def _get_image_source(
 
     print(f"Warning, can't find image {image_file} for tile {tile.id}")
     return None
+
+
+def _make_color_transparent(image: PIL.Image.Image, color: Color) -> None:
+    """
+    Make the pixels of an RGBA image that have a color transparent, in place.
+
+    Pixels whose red, green and blue match the color become transparent
+    white. Their alpha doesn't matter, as in Tiled's ``transparentcolor``.
+    """
+    # Pixels that match the color in each band, combined into one mask
+    mask = None
+    for band, value in zip(image.split()[:3], color[:3]):
+        matches = band.point(lambda pixel, value=value: 255 if pixel == value else 0, mode="1")
+        mask = matches if mask is None else PIL.ImageChops.logical_and(mask, matches)
+    image.paste((255, 255, 255, 0), mask=mask)
 
 
 def _may_be_flip(tile: pytiled_parser.Tile, texture: Texture) -> Texture:
@@ -708,20 +724,7 @@ class TileMap:
         )
 
         if layer.transparent_color:
-            # The pillow source doesn't annotate a return type for this method, but:
-            # 1. The docstring does specify the returned object is sequence-like
-            # 2. We convert to RGBA mode implicitly in load_or_get_texture above
-            data: Sequence[RGBA255] = my_texture.image.getdata()  # type:ignore
-
-            target = layer.transparent_color
-            new_data = []
-            for item in data:
-                if item[0] == target[0] and item[1] == target[1] and item[2] == target[2]:
-                    new_data.append((255, 255, 255, 0))
-                else:
-                    new_data.append(item)
-
-            my_texture.image.putdata(new_data)
+            _make_color_transparent(my_texture.image, layer.transparent_color)
 
         if not custom_class:
             custom_class = Sprite
