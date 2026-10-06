@@ -19,6 +19,7 @@ from pyglet.graphics import Batch, Group  # type: ignore
 from pyglet.text import LinearGradient
 
 import arcade
+from arcade.clock import GLOBAL_CLOCK
 from arcade.exceptions import NoArcadeWindowError, PerformanceWarning, warning
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
@@ -370,6 +371,8 @@ class Text:
         # resolved name (e.g. "arial" for ("calibri", "arial"))
         self._requested_font_name = _normalize_font_name(font_name)
         self._resolved_font_name: str | None = None
+        # The clock tick this text was last drawn by draw_text, if it was
+        self._draw_text_tick = -1
 
         self._initialized = False
         try:
@@ -1172,20 +1175,22 @@ def create_text_sprite(
     )
 
 
-# How many labels draw_text keeps for reuse, in total and per style
+# How many labels draw_text keeps for reuse
 _DRAW_TEXT_CACHE_SIZE = 256
-_DRAW_TEXT_LABELS_PER_STYLE = 8
 
 
 def _get_draw_text_label(label_cache, style: tuple, text: str) -> "Text | None":
     """
     Find a label in draw_text's cache for drawing ``text`` in a style.
 
-    Returns the label already showing this text, or the style's least
-    recently used label (changed to show this text) if the style already
-    has the most labels it may. Returns None if a new label should be made.
-    Labels used every frame stay recent, so a line whose text keeps
-    changing reuses its own previous label rather than another line's.
+    Returns the label already showing this text. Otherwise, returns the
+    style's least recently used label, changed to show this text, if it
+    wasn't drawn yet this frame: it belonged to a line whose text changed,
+    or that isn't drawn anymore. Returns None if a new label should be made.
+
+    Lines are usually drawn in the same order every frame, so a line whose
+    text keeps changing reuses its own label from the previous frame, and
+    lines that don't change keep theirs, however many there are.
     """
     key = (style, text)
     label = label_cache.get(key)
@@ -1193,14 +1198,12 @@ def _get_draw_text_label(label_cache, style: tuple, text: str) -> "Text | None":
         label_cache.move_to_end(key)
         return label
 
-    count = 0
-    oldest = None
-    for cached_style, cached_text in label_cache:
-        if cached_style == style:
-            if oldest is None:
-                oldest = (cached_style, cached_text)
-            count += 1
-    if oldest is None or count < _DRAW_TEXT_LABELS_PER_STYLE:
+    oldest = next((cached for cached in label_cache if cached[0] == style), None)
+    if oldest is None:
+        return None
+    # Frames are counted by the clock's ticks. If the style's least recently
+    # used label was drawn this frame, they all were, so this is a new line.
+    if label_cache[oldest]._draw_text_tick == GLOBAL_CLOCK.ticks:
         return None
 
     label = label_cache.pop(oldest)
@@ -1451,6 +1454,7 @@ def draw_text(
         # forever, for example when animating font_size or the text
         if len(label_cache) > _DRAW_TEXT_CACHE_SIZE:
             label_cache.popitem(last=False)
+    label._draw_text_tick = GLOBAL_CLOCK.ticks
 
     if label.x != x or label.y != y or label.z != z:
         label.position = x, y, z  # type: ignore
