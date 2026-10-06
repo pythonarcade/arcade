@@ -939,6 +939,10 @@ def create_text_sprite(
     with texture_atlas.render_into(texture) as fbo:
         fbo.clear(color=background_color or arcade.color.TRANSPARENT_BLACK)
         text_object.draw()
+    # Keep a copy of the pixels in the texture's image. The atlas redraws
+    # textures from their images when it rebuilds itself, which would
+    # otherwise leave the sprite blank.
+    texture_atlas.update_texture_image_from_atlas(texture)
 
     # Place the sprite where the Text object was drawn
     return arcade.Sprite(
