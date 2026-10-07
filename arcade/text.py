@@ -1143,9 +1143,11 @@ def create_text_sprite(
 
     # Drawing text over a transparent background would multiply the color
     # by the text's alpha and square the alpha, since pyglet blends alpha
-    # like color, so the sprite would be drawn too faint. Instead, draw it
-    # over black and over white: over black each pixel is the color times
-    # the alpha, and over white it's lighter by (1 - alpha).
+    # like color (https://github.com/pyglet/pyglet/issues/1509), so the
+    # sprite would be drawn too faint. Instead, draw it over black and over
+    # white: over black each pixel is the color times the alpha, and over
+    # white it's lighter by (1 - alpha). Once pyglet blends alpha separately,
+    # one pass over transparent black would do, with the alpha divided out.
     def draw_over(background: RGBA255) -> PIL.Image.Image:
         with texture_atlas.render_into(texture) as fbo:
             fbo.clear(color=background)
