@@ -36,6 +36,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Added a "Drawing Text" page to the programming guide: choosing between `draw_text`, `Text`, `TextPool`, and `create_text_sprite`, what's slow and fast to change, batches, fonts (names, font files, and the bundled Kenney and Liberation fonts), and styles. Updated the text section of the performance tips, and the `draw_text` warning and docstring, which overstated how slow it is.
 - Tile maps no longer use Pillow's `Image.getdata()`, which is deprecated and will be removed in Pillow 14, to apply an image layer's transparent color. It's done with Pillow operations instead, which is also faster (a 1024x600 image went from 76 ms to 4 ms).
 - Sped up removing many sprites from a large `SpriteList`, such as every bullet that hit something this frame. `SpriteList.remove()`, and so `Sprite.remove_from_sprite_lists()` and `kill()`, used to search the whole list for each sprite. Removals now wait until the list is next used, and many are applied in one pass: removing 100 sprites from 41,000 went from 19 ms to 3.3 ms, and 500 from 166,000 went from 630 ms to 17 ms. Drawing order is kept, and a few removals cost the same as before.
+- Documented choosing a spatial hash cell size (`spatial_hash_cell_size`) in the performance tips and the `SpriteList` docs: about the size of the sprites in the list. With 4 pixel sprites, collision checks were 16 times faster with 8 pixel cells than with the default of 128.
 
 ## 4.0.0.dev8
 
