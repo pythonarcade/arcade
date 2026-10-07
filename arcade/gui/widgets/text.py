@@ -5,8 +5,8 @@ from typing import Literal
 
 import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
-from pyglet.text.caret import Caret
 from pyglet.text import LinearGradient
+from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
 from typing_extensions import override
 

@@ -3,7 +3,8 @@ import tempfile
 from unittest import mock
 
 import pytest
-from arcade.version import _parse_python_friendly_version, _parse_py_version_from_file
+
+from arcade.version import _parse_py_version_from_file, _parse_python_friendly_version
 
 
 @pytest.mark.parametrize(

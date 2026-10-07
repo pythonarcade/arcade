@@ -1,9 +1,9 @@
 import ast
 import importlib
-from pathlib import Path
 import pkgutil
-import arcade.examples
+from pathlib import Path
 
+import arcade.examples
 
 EXAMPLE_ROOT = "arcade.examples"
 

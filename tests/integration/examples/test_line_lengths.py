@@ -7,6 +7,7 @@ Adapted from util/check_example_line_length.py
 
 import re
 from pathlib import Path
+
 import arcade
 
 EXAMPLE_ROOT = Path(arcade.__file__).resolve().parent / "examples"

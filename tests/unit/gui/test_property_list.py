@@ -1,7 +1,8 @@
 import gc
 from typing import List
 
-from arcade.gui.property import bind, ListProperty, _ObservableList
+from arcade.gui.property import ListProperty, _ObservableList, bind
+
 from .test_property import Observer
 
 

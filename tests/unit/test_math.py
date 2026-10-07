@@ -8,6 +8,7 @@ python -m pytest tests/unit/test_utils.py
 import math
 
 from pytest import approx
+
 from arcade.math import (
     lerp,
     lerp_2d,

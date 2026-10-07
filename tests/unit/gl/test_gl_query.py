@@ -1,4 +1,5 @@
 import sys
+
 import arcade
 from arcade.gl import geometry
 

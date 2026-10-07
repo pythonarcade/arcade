@@ -13,7 +13,7 @@ import pyglet
 from pyglet.input import Controller
 
 import arcade
-from arcade.input import ActionState, ControllerSticks, ControllerButtons, InputManager, Keys
+from arcade.input import ActionState, ControllerButtons, ControllerSticks, InputManager, Keys
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720

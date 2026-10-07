@@ -3,17 +3,17 @@ from unittest.mock import Mock
 import pytest
 
 from arcade.gui import UIDummy, UIWidget
+from arcade.gui.events import UIOnUpdateEvent
 from arcade.gui.experimental import (
-    TransitionAttr,
-    TransitionChain,
     EventTransitionBase,
-    TransitionParallel,
-    TransitionDelay,
+    TransitionAttr,
     TransitionAttrIncr,
     TransitionAttrSet,
+    TransitionChain,
+    TransitionDelay,
+    TransitionParallel,
     UIAnimatedGroup,
 )
-from arcade.gui.events import UIOnUpdateEvent
 
 
 def update(widget: UIWidget, dt: float):

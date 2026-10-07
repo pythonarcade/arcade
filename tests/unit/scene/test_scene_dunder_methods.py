@@ -1,5 +1,6 @@
-import arcade
 import pytest
+
+import arcade
 
 
 def test_len():

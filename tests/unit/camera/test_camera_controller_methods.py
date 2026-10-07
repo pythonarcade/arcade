@@ -1,7 +1,7 @@
 import pytest as pytest
 
-from arcade import camera, Window
 import arcade.camera.grips as grips
+from arcade import Window, camera
 
 
 def test_strafe():

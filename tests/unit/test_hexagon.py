@@ -1,3 +1,5 @@
+from pyglet.math import Vec2
+
 from arcade.hexagon import (
     HexTile,
     Layout,
@@ -8,7 +10,6 @@ from arcade.hexagon import (
     pixel_to_hextile,
     pointy_orientation,
 )
-from pyglet.math import Vec2
 
 # TODO: grab the rest of the tests from my main machine
 

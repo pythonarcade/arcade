@@ -94,7 +94,6 @@ output-format = "full"
 lint.exclude = [
     "venv",
     ".venv*",
-    "tests",
     "build",
     "doc",
     "util",
@@ -122,6 +121,11 @@ lint.select = [
 [tool.ruff.format]
 docstring-code-format = false
 exclude = ["arcade/examples/*", "benchmarks/*", "doc/*"]
+
+[tool.ruff.lint.isort]
+# A pyglet checkout next to arcade would otherwise make ruff treat pyglet as
+# first party, and sort its imports differently than in CI
+known-third-party = ["pyglet"]
 
 # This ignores __init__.py files and examples for import sorting
 [tool.ruff.lint.per-file-ignores]

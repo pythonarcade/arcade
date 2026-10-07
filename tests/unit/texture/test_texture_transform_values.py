@@ -1,9 +1,9 @@
 from arcade.texture.transforms import (
+    FlipLeftRightTransform,
+    FlipTopBottomTransform,
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
-    FlipLeftRightTransform,
-    FlipTopBottomTransform,
     TransposeTransform,
     TransverseTransform,
     VertexOrder,

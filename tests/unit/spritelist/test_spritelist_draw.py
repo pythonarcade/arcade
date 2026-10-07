@@ -1,4 +1,5 @@
 import pytest
+
 import arcade
 from arcade.gl import Geometry
 

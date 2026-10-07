@@ -9,14 +9,13 @@ if os.environ.get("ARCADE_PYTEST_USE_RUST"):
 
     arcade_accelerate.bootstrap()
 
-import pytest
 import PIL.Image
+import pytest
 from pyglet.math import Mat4
 
 import arcade
+from arcade import LBWH, Rect, gl
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK
-from arcade import Rect, LBWH
-from arcade import gl
 
 # from arcade.texture import default_texture_cache
 # NOTE: Load liberation fonts in unit tests

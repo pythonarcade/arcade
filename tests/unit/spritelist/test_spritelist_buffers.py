@@ -4,6 +4,7 @@ Incorrectly sized buffers can lead to segfaults.
 """
 
 import struct
+
 import arcade
 
 

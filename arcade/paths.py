@@ -8,8 +8,8 @@ from arcade import (
     BasicSprite,
     Sprite,
     SpriteSequence,
-    has_collision_with_list,
     get_sprites_at_point,
+    has_collision_with_list,
 )
 from arcade.math import get_distance, lerp_2d
 from arcade.types import Point2

@@ -579,13 +579,13 @@ class Window(pyglet.window.Window):
         The modulus on the accumulated draw time means that when the update rate is greater
         than the draw rate no time is lost.
 
-        This method is entirely skipped when running in pyodide, this is because the event loop
-        is driven by requestAnimationFrame in the browser, which adds some unique limitations and
+        This method is entirely skipped when running in pyodide, this is because the event loop is
+        driven by requestAnimationFrame in the browser, which adds some unique limitations and
         considerations around Arcade's event loop handling. In pyglet, the draw() function of the
         window is called directly during the requestAnimationFrame loop, so Arcade handles special
-        control of the update/draw timing directly in that function. Arcade's version of this function
-        is never called on desktop, because this function is called instead, and this calls directly
-        to the superclass's implementation.
+        control of the update/draw timing directly in that function. Arcade's version of this
+        function is never called on desktop, because this function is called instead, and this calls
+        directly to the superclass's implementation.
 
         Args:
             delta_time: The amount of time since the last update.

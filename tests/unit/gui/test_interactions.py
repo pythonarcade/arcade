@@ -2,8 +2,9 @@ from typing import List
 from unittest.mock import Mock
 
 import arcade
-from arcade.gui.events import UIEvent, UIOnClickEvent, UIMousePressEvent, UIMouseReleaseEvent
+from arcade.gui.events import UIEvent, UIMousePressEvent, UIMouseReleaseEvent, UIOnClickEvent
 from arcade.gui.widgets import UIDummy
+
 from . import record_ui_events
 
 

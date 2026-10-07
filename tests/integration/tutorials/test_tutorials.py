@@ -2,14 +2,15 @@
 Find and run all tutorials in the doc/tutorials directory
 """
 
+import contextlib
 import io
 import os
-import contextlib
 import runpy
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
+
 import arcade
 
 TUTORIAL_DIR = Path(arcade.__file__).parent.parent / "doc" / "tutorials"

@@ -11,10 +11,10 @@ import random
 import struct
 from abc import abstractmethod
 from array import array
-from itertools import filterfalse
-from math import hypot
 from collections import deque
 from collections.abc import Callable, Collection, Iterable, Iterator, Sized
+from itertools import filterfalse
+from math import hypot
 from typing import (
     TYPE_CHECKING,
     Any,

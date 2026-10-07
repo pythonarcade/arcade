@@ -1,4 +1,5 @@
 from array import array
+
 import pytest
 
 

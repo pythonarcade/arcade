@@ -1,5 +1,5 @@
 import arcade
-from arcade.gui import UIManager, UIFlatButton
+from arcade.gui import UIFlatButton, UIManager
 
 
 def test_event_order_from_window(window: arcade.Window):

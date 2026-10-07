@@ -1,9 +1,8 @@
 import pytest as pytest
+from pyglet.math import Vec2, Vec3
 
-from pyglet.math import Vec3, Vec2
-
-from arcade import camera, Window
-from arcade.types import Point, LBWH, Rect
+from arcade import Window, camera
+from arcade.types import LBWH, Point, Rect
 
 
 @pytest.mark.parametrize("wrld_pos", [Vec2(100, 150), Vec2(1280, 720), Vec3(500, 500, -10)])

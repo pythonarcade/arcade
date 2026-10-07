@@ -1,6 +1,6 @@
 from pyglet.math import Vec2
 
-from arcade.gui import UIDummy, UIBoxLayout
+from arcade.gui import UIBoxLayout, UIDummy
 from arcade.gui.widgets.layout import UIAnchorLayout
 from arcade.types import LBWH
 

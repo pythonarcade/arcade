@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 import arcade
-from arcade.types import Color
 from arcade.gui.style import UIStyleBase
+from arcade.types import Color
 
 
 @dataclass

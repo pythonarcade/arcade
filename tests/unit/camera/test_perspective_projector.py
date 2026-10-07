@@ -1,8 +1,8 @@
-from math import tan, radians
+from math import radians, tan
 
 import pytest as pytest
 
-from arcade import camera, Window
+from arcade import Window, camera
 
 
 def test_perspective_projector_use(window: Window):

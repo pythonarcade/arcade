@@ -1,7 +1,8 @@
 import gc
 from typing import Dict
 
-from arcade.gui.property import bind, DictProperty, _ObservableDict
+from arcade.gui.property import DictProperty, _ObservableDict, bind
+
 from .test_property import Observer
 
 

@@ -1,8 +1,8 @@
 import arcade
 from arcade.isometric import (
+    create_isometric_grid_lines,
     isometric_grid_to_screen,
     screen_to_isometric_grid,
-    create_isometric_grid_lines,
 )
 
 
