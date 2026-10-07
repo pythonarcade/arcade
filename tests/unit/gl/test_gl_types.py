@@ -28,7 +28,9 @@ def test_buffer_description(ctx):
         types.BufferDescription(ctx.buffer(reserve=16), "4f", ["in_vert", "in_normal"])
 
     # FIXME: Non-existing normalized attribute doesn't work
-    # types.BufferDescription(ctx.buffer(reserve=16), '4f', ['in_vert'], normalized=['test', 'a', 'b'])
+    # types.BufferDescription(
+    #     ctx.buffer(reserve=16), '4f', ['in_vert'], normalized=['test', 'a', 'b']
+    # )
 
     # Wrong buffer size. It doesn't align with the format
     with pytest.raises(ValueError):
@@ -36,7 +38,7 @@ def test_buffer_description(ctx):
 
 
 def test_buffer_padding(ctx):
-    descr = types.BufferDescription(
+    types.BufferDescription(
         ctx.buffer(reserve=4 * 7 * 10),
         "2f 3x4 2f",
         ("in_pos", "in_vel"),

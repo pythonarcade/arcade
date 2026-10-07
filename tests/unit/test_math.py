@@ -7,9 +7,21 @@ python -m pytest tests/unit/test_utils.py
 
 import math
 
-import arcade
 from pytest import approx
-from arcade.math import *
+from arcade.math import (
+    lerp,
+    lerp_2d,
+    lerp_angle,
+    rand_angle_360_deg,
+    rand_angle_spread_deg,
+    rand_in_circle,
+    rand_in_rect,
+    rand_on_circle,
+    rand_on_line,
+    rand_vec_magnitude,
+    rand_vec_spread_deg,
+    rotate_around_point,
+)
 from arcade.types import LBWH
 
 

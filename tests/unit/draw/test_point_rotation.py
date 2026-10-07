@@ -1,5 +1,3 @@
-import pytest
-import arcade
 from arcade.math import rotate_point
 
 

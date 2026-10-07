@@ -100,11 +100,11 @@ def test_event_consumed_by_widget(window):
             self.mng.disable()
 
     @window.event("on_mouse_press")
-    def record_window(*_):
+    def record_window_press(*_):
         events.append("Window.on_mouse_press")
 
     @window.event("on_mouse_release")
-    def record_window(*_):
+    def record_window_release(*_):
         events.append("Window.on_mouse_release")
 
     view = MyView()
@@ -113,7 +113,8 @@ def test_event_consumed_by_widget(window):
     window.dispatch_event("on_mouse_release", 100, 75, 1, 0)
     window.dispatch_pending_events()
     window.hide_view()
-    window.remove_handler("on_mouse_press", record_window)
+    window.remove_handler("on_mouse_press", record_window_press)
+    window.remove_handler("on_mouse_release", record_window_release)
 
     assert len(events) == 3, events
     assert events[0] == "UIManager.on_event(UIMousePressEvent)"

@@ -9,7 +9,8 @@ def test_text_instance_raise_multiline_error(window):
 
     assert (
         e.value.args[0]
-        == "The 'width' parameter must be set to a non-zero value when 'multiline' is True, but got 0."
+        == "The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
+        "but got 0."
     )
 
     with pytest.raises(ValueError) as e:
@@ -17,7 +18,8 @@ def test_text_instance_raise_multiline_error(window):
 
     assert (
         e.value.args[0]
-        == "The 'width' parameter must be set to a non-zero value when 'multiline' is True, but got None."
+        == "The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
+        "but got None."
     )
 
 
@@ -29,7 +31,8 @@ def test_text_function_raise_multiline_error(window):
 
     assert (
         e.value.args[0]
-        == "The 'width' parameter must be set to a non-zero value when 'multiline' is True, but got 0."
+        == "The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
+        "but got 0."
     )
 
     with pytest.raises(ValueError) as e:
@@ -37,5 +40,6 @@ def test_text_function_raise_multiline_error(window):
 
     assert (
         e.value.args[0]
-        == "The 'width' parameter must be set to a non-zero value when 'multiline' is True, but got None."
+        == "The 'width' parameter must be set to a non-zero value when 'multiline' is True, "
+        "but got None."
     )

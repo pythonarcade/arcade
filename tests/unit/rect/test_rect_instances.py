@@ -1,6 +1,5 @@
 from typing import Callable, Any
 
-import pytest
 from pyglet.math import Vec2
 from arcade.types.rect import Rect, LBWH, LRBT, XYRR, XYWH
 

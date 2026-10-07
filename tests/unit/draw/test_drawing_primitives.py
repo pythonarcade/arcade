@@ -94,8 +94,6 @@ def test_draw_primitives(window):
     # Load and draw an image to the screen
     # Image from kenney.nl asset pack #1
     arcade.draw_text("draw_bitmap", 483, 3, arcade.color.BLACK, 12)
-    texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
-    scale = 0.6
     # arcade.draw_texture_rectangle(540, 120, scale * texture.width,
     #                               scale * texture.height, texture, 0)
     # arcade.draw_texture_rectangle(540, 60, scale * texture.width,

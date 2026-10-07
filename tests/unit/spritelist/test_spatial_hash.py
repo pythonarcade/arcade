@@ -14,12 +14,12 @@ def test_create():
 
 def test_incorrect_str_input():
     with pytest.raises(TypeError):
-        sh = SpatialHash(cell_size="10")
+        SpatialHash(cell_size="10")
 
 
 def test_incorrect_inf_input():
     with pytest.raises(TypeError):
-        sh = SpatialHash(cell_size=float("inf"))
+        SpatialHash(cell_size=float("inf"))
 
 
 def test_reset():

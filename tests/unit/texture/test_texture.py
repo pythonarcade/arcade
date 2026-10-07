@@ -15,8 +15,8 @@ def test_create():
         == "7a12e561363385e9dfeeab326368731c030ed4b374e7f5897ac819159d2884c5"
     )
     assert (
-        texture.cache_name
-        == f"{texture.image_data.hash}|{texture._vertex_order}|{texture.hit_box_algorithm.cache_name}|"
+        texture.cache_name == f"{texture.image_data.hash}|{texture._vertex_order}|"
+        f"{texture.hit_box_algorithm.cache_name}|"
     )
 
     with pytest.raises(TypeError):

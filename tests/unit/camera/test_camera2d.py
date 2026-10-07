@@ -87,7 +87,7 @@ ASPECT_RATIOS = (1.0, 4.0 / 3.0, 16.0 / 9.0, 16.0 / 10.0)
 
 def test_camera2d_init_aspect_equal_0_raises_zeroprojectiondimension(window: Window):
     with pytest.raises(ZeroProjectionDimension):
-        camera = Camera2D(aspect=0.0)
+        Camera2D(aspect=0.0)
 
 
 @pytest.mark.parametrize("aspect", ASPECT_RATIOS)

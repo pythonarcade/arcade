@@ -1,4 +1,3 @@
-from arcade.gui.experimental import UIPasswordInput
 from arcade.gui.experimental.restricted_input import UIRestrictedInput, UIIntInput, UIRegexInput
 
 
