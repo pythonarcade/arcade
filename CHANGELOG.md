@@ -6,6 +6,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 ## Unreleased
 
 ### Fixes
+- Fixed drawing into a texture atlas losing new drawing when the atlas grows during `render_into()`. Nested rendering and exception exits now restore the previous camera and render region.
 - Fixed several `arcade.create_text_sprite()` bugs:
   - Sprites with the same text shared one image in the texture atlas, so creating a second one (for example in another color or size) changed the first one and drew the second stretched. Each sprite now gets its own image.
   - `anchor_x="center"` cut off the left half of the text, and `anchor_x="right"` made an empty sprite.
