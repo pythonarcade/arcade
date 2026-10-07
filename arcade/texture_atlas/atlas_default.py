@@ -140,6 +140,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # This also means we can resize the atlas in the gpu
         # by rendering the old atlas into the new one.
         self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
+        self._render_into_stack: tuple[Texture, ...] = ()
 
         # Texture coordinate data for images and textures.
         # * The image UVs are used when rebuilding the atlas
@@ -679,6 +680,13 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         # Keep a reference to the old atlas texture so we can copy it into the new one
         atlas_texture_old = self._texture
+        if self._render_into_stack:
+            # Keep the framebuffer yielded by render_into attached to the atlas.
+            # Back up its pixels before resizing the existing attachment in place.
+            atlas_texture_old = self._ctx.texture(self._size, components=4)
+            backup_fbo = self._ctx.framebuffer(color_attachments=[atlas_texture_old])
+            with backup_fbo.activate():
+                self._ctx.copy_framebuffer(self._fbo, backup_fbo)
         atlas_texture_old.filter = self._ctx.NEAREST, self._ctx.NEAREST
         self._size = size
 
@@ -688,8 +696,12 @@ class DefaultTextureAtlas(TextureAtlasBase):
         self._image_uvs = image_uvs_old.clone_with_slots()
 
         # Create new atlas texture and framebuffer
-        self._texture = self._ctx.texture(size, components=4)
-        self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
+        if self._render_into_stack:
+            self._texture.resize(size)
+            self._fbo.resize()
+        else:
+            self._texture = self._ctx.texture(size, components=4)
+            self._fbo = self._ctx.framebuffer(color_attachments=[self._texture])
 
         # Store old images and textures before clearing the atlas
         images = list(self._images.values())
@@ -727,15 +739,21 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         # Render the old atlas into the new one. This means we actually move
         # all the textures around from the old to the new position.
-        with self._fbo.activate():
-            # Ensure no context flags are enabled
-            with self._ctx.enabled_only():
-                self._ctx.geometry_empty.render(
-                    self._ctx.atlas_resize_program,
-                    mode=self._ctx.TRIANGLES,
-                    # Two triangles per texture
-                    vertices=UV_TEXTURE_WIDTH * self._capacity * 6,
-                )
+        scissor = self._fbo.scissor
+        try:
+            self._fbo.scissor = None
+            with self._fbo.activate():
+                # Ensure no context flags are enabled
+                with self._ctx.enabled_only():
+                    self._ctx.geometry_empty.render(
+                        self._ctx.atlas_resize_program,
+                        mode=self._ctx.TRIANGLES,
+                        # Two triangles per texture
+                        vertices=UV_TEXTURE_WIDTH * self._capacity * 6,
+                    )
+        finally:
+            self._fbo.scissor = scissor
+            self._update_render_into_viewport()
 
         self._version += 1
         # duration = time.perf_counter() - resize_start
@@ -790,6 +808,14 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         self._texture_uvs.texture.use(unit)
 
+    def _update_render_into_viewport(self) -> None:
+        if self._render_into_stack:
+            texture = self._render_into_stack[-1]
+            region = self._texture_regions[texture.atlas_name]
+            self._fbo.viewport = region.x, region.y, region.width, region.height
+        else:
+            self._fbo.viewport = 0, 0, *self._fbo.size
+
     @contextlib.contextmanager
     def render_into(
         self,
@@ -824,6 +850,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
         """
         region = self._texture_regions[texture.atlas_name]
         prev_camera = self.ctx.current_camera
+        prev_fbo = self.ctx.active_framebuffer
 
         # Use provided projection or default
         projection = projection or (0, region.width, 0, region.height)
@@ -837,14 +864,26 @@ class DefaultTextureAtlas(TextureAtlasBase):
             1.0,  # zoom
         )
 
-        with self._fbo.activate() as fbo:
-            try:
-                static_camera.use()
-                fbo.viewport = region.x, region.y, region.width, region.height
-                yield fbo
-            finally:
-                fbo.viewport = 0, 0, *self._fbo.size
-        prev_camera.use()
+        try:
+            # Select the projector before binding the atlas, so framebuffer
+            # activation cannot change the previous default camera's projection.
+            static_camera.use()
+            with self._fbo.activate() as fbo:
+                self._render_into_stack += (texture,)
+                try:
+                    self._update_render_into_viewport()
+                    yield fbo
+                finally:
+                    self._render_into_stack = self._render_into_stack[:-1]
+                    self._update_render_into_viewport()
+        finally:
+            # A suspended outer atlas may have moved its render region during
+            # resize. Camera.use() must not overwrite that updated viewport.
+            viewport, scissor = prev_fbo.viewport, prev_fbo.scissor
+            prev_camera.use()
+            prev_fbo.use()
+            prev_fbo.viewport = viewport
+            prev_fbo.scissor = scissor
 
     def read_texture_image_from_atlas(self, texture: Texture) -> Image.Image:
         """

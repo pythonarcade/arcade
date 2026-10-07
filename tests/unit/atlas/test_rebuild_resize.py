@@ -81,3 +81,132 @@ def test_resize(ctx, common):
 
     with pytest.raises(AllocatorException):
         atlas.add(t2)
+
+
+@pytest.mark.parametrize("atlas_size", [(32, 32), (256, 256)])
+def test_render_into_auto_resize(ctx, atlas_size):
+    atlas = DefaultTextureAtlas(atlas_size, border=0)
+    target = arcade.Texture(PIL.Image.new("RGBA", (32, 32), (0, 255, 0, 255)))
+    source = arcade.Texture(PIL.Image.new("RGBA", (64, 64), (255, 0, 0, 255)))
+    atlas.add(target)
+    previous_fbo = ctx.active_framebuffer
+    previous_camera = ctx.current_camera
+
+    with atlas.render_into(target):
+        arcade.draw_texture_rect(source, arcade.LBWH(8, 8, 16, 16), atlas=atlas)
+
+    image = atlas.read_texture_image_from_atlas(target)
+    assert image.getpixel((16, 16)) == (255, 0, 0, 255)
+    assert image.getpixel((0, 0)) == (0, 255, 0, 255)
+    assert ctx.active_framebuffer is previous_fbo
+    assert ctx.current_camera is previous_camera
+
+
+@pytest.mark.parametrize("same_atlas", [True, False])
+def test_render_into_nested_resize(ctx, same_atlas):
+    outer_atlas = DefaultTextureAtlas((64, 64), border=0)
+    inner_atlas = outer_atlas if same_atlas else DefaultTextureAtlas((32, 32), border=0)
+    outer = arcade.Texture(PIL.Image.new("RGBA", (32, 32), (0, 255, 0, 255)))
+    inner = arcade.Texture(PIL.Image.new("RGBA", (16, 16), (0, 0, 0, 255)))
+    outer_atlas.add(outer)
+    inner_atlas.add(inner)
+    previous_fbo = ctx.active_framebuffer
+    previous_camera = ctx.current_camera
+    old_region = outer_atlas.get_texture_region_info(outer.atlas_name)
+    old_position = old_region.x, old_region.y
+
+    with outer_atlas.render_into(outer) as outer_fbo:
+        outer_camera = ctx.current_camera
+        arcade.draw_rect_filled(arcade.LBWH(0, 0, 8, 8), (0, 0, 255, 255))
+        with inner_atlas.render_into(inner) as inner_fbo:
+            outer_atlas.resize((128, 128))
+            if not same_atlas:
+                inner_atlas.resize((64, 64))
+            assert ctx.active_framebuffer is inner_fbo
+            inner_fbo.clear(color=(255, 0, 0, 255))
+        assert ctx.active_framebuffer is outer_fbo
+        assert ctx.current_camera is outer_camera
+        arcade.draw_rect_filled(arcade.LBWH(8, 8, 8, 8), (255, 255, 0, 255))
+
+    if same_atlas:
+        region = outer_atlas.get_texture_region_info(outer.atlas_name)
+        assert (region.x, region.y) != old_position
+    image = outer_atlas.read_texture_image_from_atlas(outer).transpose(
+        PIL.Image.Transpose.FLIP_TOP_BOTTOM
+    )
+    assert image.getpixel((4, 4)) == (0, 0, 255, 255)
+    assert image.getpixel((12, 12)) == (255, 255, 0, 255)
+    assert image.getpixel((24, 24)) == (0, 255, 0, 255)
+    assert inner_atlas.read_texture_image_from_atlas(inner).getpixel((8, 8)) == (255, 0, 0, 255)
+    assert ctx.active_framebuffer is previous_fbo
+    assert ctx.current_camera is previous_camera
+
+
+@pytest.mark.parametrize("raise_error", [False, True])
+def test_render_into_resize_restores_state(ctx, raise_error):
+    atlas = DefaultTextureAtlas((32, 32), border=0)
+    target = arcade.Texture(PIL.Image.new("RGBA", (32, 32), (0, 255, 0, 255)))
+    atlas.add(target)
+    offscreen = ctx.framebuffer(color_attachments=[ctx.texture((64, 64), components=4)])
+    offscreen.viewport = 4, 5, 40, 42
+    previous_camera = ctx.current_camera
+
+    with offscreen.activate():
+        offscreen.scissor = 6, 7, 8, 9
+        previous_projection = ctx.projection_matrix
+        previous_view = ctx.view_matrix
+
+        def render():
+            with atlas.render_into(target) as fbo:
+                atlas.resize((64, 64))
+                atlas.resize((128, 128))
+                fbo.clear(color=(255, 0, 0, 255))
+                if raise_error:
+                    raise RuntimeError("drawing failed")
+
+        if raise_error:
+            with pytest.raises(RuntimeError, match="drawing failed"):
+                render()
+        else:
+            render()
+        assert ctx.active_framebuffer is offscreen
+        assert offscreen.viewport == (4, 5, 40, 42)
+        assert offscreen.scissor == (6, 7, 8, 9)
+        assert ctx.current_camera is previous_camera
+        assert ctx.projection_matrix == previous_projection
+        assert ctx.view_matrix == previous_view
+    assert atlas.read_texture_image_from_atlas(target).getpixel((16, 16)) == (255, 0, 0, 255)
+
+
+@pytest.mark.parametrize("atlas_size", [(32, 32), (512, 512)])
+def test_render_into_repeated_growth_projection(ctx, atlas_size):
+    atlas = DefaultTextureAtlas(atlas_size, border=0)
+    target = arcade.Texture(PIL.Image.new("RGBA", (32, 32), (0, 255, 0, 255)))
+    red = arcade.Texture(PIL.Image.new("RGBA", (64, 64), (255, 0, 0, 255)))
+    blue = arcade.Texture(PIL.Image.new("RGBA", (128, 128), (0, 0, 255, 255)))
+    atlas.add(target)
+
+    with atlas.render_into(target, projection=(0, 64, 0, 64)):
+        arcade.draw_texture_rect(red, arcade.LBWH(0, 0, 16, 16), atlas=atlas)
+        arcade.draw_texture_rect(blue, arcade.LBWH(32, 32, 16, 16), atlas=atlas)
+
+    image = atlas.read_texture_image_from_atlas(target).transpose(
+        PIL.Image.Transpose.FLIP_TOP_BOTTOM
+    )
+    assert image.getpixel((4, 4)) == (255, 0, 0, 255)
+    assert image.getpixel((20, 20)) == (0, 0, 255, 255)
+    assert image.getpixel((28, 28)) == (0, 255, 0, 255)
+
+
+def test_render_into_resize_with_scissor(ctx):
+    atlas = DefaultTextureAtlas((64, 64), border=0)
+    target = arcade.Texture(PIL.Image.new("RGBA", (32, 32), (0, 255, 0, 255)))
+    atlas.add(target)
+    with atlas.render_into(target) as fbo:
+        fbo.clear(color=(255, 0, 0, 255))
+        fbo.scissor = 0, 0, 4, 4
+        atlas.resize((128, 128))
+        assert fbo.scissor == (0, 0, 4, 4)
+        fbo.scissor = None
+    image = atlas.read_texture_image_from_atlas(target)
+    assert image.tobytes() == PIL.Image.new("RGBA", (32, 32), (255, 0, 0, 255)).tobytes()
