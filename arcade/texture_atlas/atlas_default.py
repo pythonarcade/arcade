@@ -318,15 +318,19 @@ class DefaultTextureAtlas(TextureAtlasBase):
                         f"Max size: {self._max_size}"
                     )
 
-                # If we have lost regions/images we can try to rebuild the atlas
-                removed_image_count = self._image_ref_count.get_total_decref()
-                if removed_image_count > 0:
-                    self.rebuild()
-                    return self._add(texture, create_finalizer=create_finalizer)
-
                 # Double the size of the atlas (capped by max size)
                 width = min(self.width * 2, self.max_width)
                 height = min(self.height * 2, self.max_height)
+
+                # If we have lost regions/images we can try to rebuild the atlas.
+                # While rendering into the atlas, grow instead if it can: a
+                # rebuild moves every texture, including the one being drawn into.
+                removed_image_count = self._image_ref_count.get_total_decref()
+                can_grow = self._size != (width, height)
+                if removed_image_count > 0 and not (self._render_into_stack and can_grow):
+                    self.rebuild()
+                    return self._add(texture, create_finalizer=create_finalizer)
+
                 # If the size didn't change we have a problem ..
                 if self._size == (width, height):
                     raise
@@ -771,6 +775,12 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # Hold a reference to the old textures
         textures = self.textures
 
+        # Textures being rendered into have been drawn on since their images
+        # were added, and the rebuild redraws every texture from its image.
+        # Keep what was drawn by copying it to their images first.
+        for target in self._render_into_stack:
+            self.update_texture_image_from_atlas(target)
+
         self._image_ref_count.clear()
         self._unique_texture_ref_count.clear()
 
@@ -788,6 +798,9 @@ class DefaultTextureAtlas(TextureAtlasBase):
         # Add textures back sorted by height to potentially make more room
         for texture in sorted(textures, key=lambda x: x.image.size[1]):
             self._add(texture, create_finalizer=False)
+
+        # The texture being rendered into may have moved
+        self._update_render_into_viewport()
 
         self._version += 1
 

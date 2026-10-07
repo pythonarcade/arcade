@@ -210,3 +210,120 @@ def test_render_into_resize_with_scissor(ctx):
         fbo.scissor = None
     image = atlas.read_texture_image_from_atlas(target)
     assert image.tobytes() == PIL.Image.new("RGBA", (32, 32), (255, 0, 0, 255)).tobytes()
+
+
+def _red(color):
+    return color[0] > 200 and color[1] < 60 and color[2] < 60
+
+
+def _full_atlas_with_freed_space(can_grow):
+    """
+    An atlas that's full, with some textures freed, so adding another one
+    has to rebuild or grow it. Returns the atlas, the texture to render
+    into, and the textures still in it.
+    """
+    import gc
+
+    atlas = DefaultTextureAtlas((128, 128), border=0)
+    max_size = atlas._max_size
+    # Fill it without letting it grow
+    atlas._max_size = (128, 128)
+    target = arcade.Texture(PIL.Image.new("RGBA", (32, 32), (0, 255, 0, 255)))
+    atlas.add(target)
+    kept = []
+    fillers = []
+    while True:
+        filler = arcade.Texture(PIL.Image.new("RGBA", (24, 24), (0, 0, 255 - len(fillers), 255)))
+        if len(fillers) > 40:
+            break
+        try:
+            atlas.add(filler)
+        except AllocatorException:
+            break
+        fillers.append(filler)
+    # Free every other filler
+    kept = fillers[1::2]
+    del fillers, filler
+    gc.collect()
+    if can_grow:
+        atlas._max_size = max_size
+    return atlas, target, kept
+
+
+def _draw_inside(atlas, target):
+    """Draw a corner before adding a new texture, then the new texture"""
+    big = arcade.Texture(PIL.Image.new("RGBA", (40, 40), (255, 0, 0, 255)))
+    with atlas.render_into(target):
+        arcade.draw_rect_filled(arcade.LBWH(0, 0, 8, 8), (255, 255, 0, 255))
+        arcade.draw_texture_rect(big, arcade.LBWH(16, 16, 16, 16), atlas=atlas)
+    return atlas.read_texture_image_from_atlas(target).transpose(
+        PIL.Image.Transpose.FLIP_TOP_BOTTOM
+    )
+
+
+def _check_drawing(atlas, target, kept):
+    image = _draw_inside(atlas, target)
+    # Drawn before and after making room, in the right place
+    assert image.getpixel((4, 4)) == (255, 255, 0, 255)
+    assert _red(image.getpixel((24, 24)))
+    assert image.getpixel((12, 12)) == (0, 255, 0, 255)
+    # The other textures weren't drawn on
+    for texture in kept:
+        data = atlas.read_texture_image_from_atlas(texture).tobytes()
+        assert not any(_red(data[i : i + 3]) for i in range(0, len(data), 4))
+
+
+def test_render_into_rebuild(ctx):
+    """
+    An atlas that can't grow rebuilds to make room, even while being
+    rendered into. The rebuild used to move the texture being drawn into,
+    so the drawing went to other textures, and what was drawn before it
+    was lost.
+    """
+    atlas, target, kept = _full_atlas_with_freed_space(can_grow=False)
+    rebuilds = []
+    rebuild = atlas.rebuild
+    atlas.rebuild = lambda: (rebuilds.append(1), rebuild())
+    _check_drawing(atlas, target, kept)
+    assert rebuilds
+    assert atlas.size == (128, 128)
+
+
+def test_render_into_grows_instead_of_rebuilding(ctx):
+    """While rendering into an atlas that can grow, it grows instead of rebuilding"""
+    atlas, target, kept = _full_atlas_with_freed_space(can_grow=True)
+    rebuilds = []
+    rebuild = atlas.rebuild
+    atlas.rebuild = lambda: (rebuilds.append(1), rebuild())
+    _check_drawing(atlas, target, kept)
+    assert not rebuilds
+    assert atlas.size != (128, 128)
+
+
+def test_rebuild_outside_render_into_unchanged(ctx):
+    """Outside render_into, freed space is still reused by rebuilding"""
+    atlas, target, kept = _full_atlas_with_freed_space(can_grow=True)
+    rebuilds = []
+    rebuild = atlas.rebuild
+    atlas.rebuild = lambda: (rebuilds.append(1), rebuild())
+    atlas.add(arcade.Texture(PIL.Image.new("RGBA", (40, 40), (255, 0, 0, 255))))
+    assert rebuilds
+    assert atlas.size == (128, 128)
+
+
+def test_manual_rebuild_inside_render_into(ctx):
+    atlas = DefaultTextureAtlas((128, 128), border=0)
+    other = arcade.Texture(PIL.Image.new("RGBA", (64, 64), (0, 0, 255, 255)))
+    target = arcade.Texture(PIL.Image.new("RGBA", (32, 32), (0, 255, 0, 255)))
+    atlas.add(other)
+    atlas.add(target)
+    with atlas.render_into(target):
+        arcade.draw_rect_filled(arcade.LBWH(0, 0, 8, 8), (255, 255, 0, 255))
+        atlas.rebuild()
+        arcade.draw_rect_filled(arcade.LBWH(16, 16, 8, 8), (255, 0, 0, 255))
+    image = atlas.read_texture_image_from_atlas(target).transpose(
+        PIL.Image.Transpose.FLIP_TOP_BOTTOM
+    )
+    assert image.getpixel((4, 4)) == (255, 255, 0, 255)
+    assert image.getpixel((20, 20)) == (255, 0, 0, 255)
+    assert atlas.read_texture_image_from_atlas(other).getpixel((32, 32)) == (0, 0, 255, 255)
