@@ -12,6 +12,7 @@ import struct
 from abc import abstractmethod
 from array import array
 from itertools import filterfalse
+from math import hypot
 from collections import deque
 from collections.abc import Callable, Collection, Iterable, Iterator, Sized
 from typing import (
@@ -281,6 +282,10 @@ class SpriteList(SpriteSequence[SpriteType]):
         # Sprites removed but still in _sprite_list and the index buffer,
         # with their buffer slots. See remove().
         self._pending_removals: dict[SpriteType, int] = {}
+        # How far any sprite's hit box reaches beyond its drawn size, the most
+        # for any sprite added. The GPU collision check only knows the drawn
+        # sizes, so it looks this much farther. It never shrinks, until clear().
+        self._hit_box_reach = 0.0
         # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
         self.sprite_slot: dict[SpriteType, int] = dict()
@@ -294,6 +299,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._sprite_texture_data = array("f", [0] * self._buf_capacity)
         # Index buffer
         self._sprite_index_data = array("I", [0] * self._idx_capacity)
+        self._hit_box_reach = 0.0
 
         self._data: SpriteListData | None = None
 
@@ -642,6 +648,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._sprite_texture_data = array("f", [0] * self._buf_capacity)
         # Index buffer
         self._sprite_index_data = array("I", [0] * self._idx_capacity)
+        self._hit_box_reach = 0.0
 
         if self._initialized:
             self._initialized = False
@@ -1156,6 +1163,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             sprite: Sprite to update.
         """
+        self._update_hit_box(sprite)
         slot = self.sprite_slot[sprite]
         # position
         self._sprite_pos_angle_data[slot * 4] = sprite._position[0]
@@ -1197,6 +1205,9 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             sprite: Sprite to update.
         """
+        # A new texture can change the sprite's drawn size
+        self._update_hit_box(sprite)
+
         # We cannot interact with texture atlases unless the context
         # is created. We defer all texture initialization for later
         if not self._initialized:
@@ -1292,6 +1303,24 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3] * sprite._visible)
         self._sprite_color_changed = True
 
+    def _update_hit_box(self, sprite: SpriteType) -> None:
+        """
+        Called by the Sprite class when its hit box or size changes, to keep
+        track of how far hit boxes reach beyond the sprites' drawn sizes.
+
+        Args:
+            sprite: Sprite to update.
+        """
+        hit_box = sprite._hit_box
+        texture = sprite._texture
+        # A hit box made from the texture is inside it, at any scale. A sprite
+        # without a texture can't be drawn, and adding it raises an error.
+        if texture is None or hit_box.points is texture.hit_box_points:
+            return
+        reach = hit_box._get_radius() - hypot(sprite._width, sprite._height) / 2
+        if reach > self._hit_box_reach:
+            self._hit_box_reach = reach
+
     def _update_size(self, sprite: SpriteType) -> None:
         """
         Called by the Sprite class to update the size/scale in this sprite.
@@ -1300,6 +1329,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             sprite: Sprite to update.
         """
+        self._update_hit_box(sprite)
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_data[slot * 2 + 1] = sprite._height

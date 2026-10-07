@@ -240,6 +240,8 @@ class Sprite(BasicSprite, PymunkMixin):
         hit_box.angle = self.angle
         self._hit_box = hit_box
         self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_hit_box(self)
 
     @property
     def texture(self) -> Texture:

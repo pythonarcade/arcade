@@ -436,13 +436,24 @@ def _check_for_collision(sprite1: BasicSprite, sprite2: BasicSprite) -> bool:
     return _are_polygons_overlapping_on_axes(points1, points2, axes.values())
 
 
+# Half the diagonal of a square with sides of 1, rounded down
+_HALF_DIAGONAL = 0.7071
+
+
 def _get_nearby_sprites(
     sprite: BasicSprite, sprite_list: SpriteSequence[SpriteType]
 ) -> list[SpriteType]:
     sprite_count = len(sprite_list)
     if sprite_count == 0:
         return []
-    return sprite_list.get_nearby_sprites_gpu(sprite.position, sprite.size)
+    # The GPU keeps the sprites closer than 1.42 times the larger of their
+    # drawn size and this size. Two sprites can only collide if they're closer
+    # than the sum of their hit box radii. A sprite's radius is at most 0.71
+    # times its drawn size plus the list's hit box reach, so this size keeps
+    # every sprite whose hit box could touch this one's.
+    reach = getattr(sprite_list, "_hit_box_reach", 0.0)
+    size = (sprite.hit_box._get_radius() + reach) / _HALF_DIAGONAL
+    return sprite_list.get_nearby_sprites_gpu(sprite.position, (size, size))
 
 
 def _get_sprites_to_check(
