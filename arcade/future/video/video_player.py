@@ -7,10 +7,10 @@ and you might need to tell pyglet where it's located.
 
 from pathlib import Path
 
-import arcade
-
 # import sys
 import pyglet
+
+import arcade
 
 
 class VideoPlayer:

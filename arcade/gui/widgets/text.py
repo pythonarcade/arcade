@@ -3,6 +3,7 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Literal
 
+import pyglet
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text import LinearGradient
 from pyglet.text.caret import Caret
@@ -10,7 +11,6 @@ from pyglet.text.document import AbstractDocument
 from typing_extensions import override
 
 import arcade
-import pyglet
 from arcade import uicolor
 from arcade.gui.events import (
     UIEvent,

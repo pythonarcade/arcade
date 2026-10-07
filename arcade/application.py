@@ -12,6 +12,7 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 import pyglet
+
 from arcade.utils import is_pyodide
 
 if is_pyodide:

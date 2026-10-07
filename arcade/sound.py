@@ -5,9 +5,9 @@ import math
 import os
 from pathlib import Path
 
+import pyglet
 from pyglet.media import Source
 
-import pyglet
 from arcade.resources import resolve
 from arcade.utils import is_pyodide
 

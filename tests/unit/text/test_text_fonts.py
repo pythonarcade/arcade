@@ -1,10 +1,10 @@
 """Tests for font names, paths to font files, and lists of them"""
 
+import pyglet
 import pytest
 
 import arcade
 import arcade.text
-import pyglet
 
 KENNEY = "Kenney Future"
 KENNEY_HANDLE = ":system:fonts/ttf/Kenney/Kenney_Future.ttf"

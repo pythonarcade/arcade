@@ -5,11 +5,11 @@ from collections.abc import Callable
 from enum import Enum
 from typing import Any, TypeVar
 
+import pyglet
 from pyglet.input.base import Controller
 from typing_extensions import TypedDict
 
 import arcade
-import pyglet
 from arcade.input import inputs
 from arcade.input.input_mapping import (
     Action,

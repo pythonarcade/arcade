@@ -10,6 +10,7 @@ from uuid import uuid4
 
 import PIL.Image
 import PIL.ImageChops
+import pyglet
 from pyglet.enums import Style, Weight
 
 # Pyright can't figure out the dynamic backend imports in pyglet.graphics
@@ -18,7 +19,6 @@ from pyglet.graphics import Batch, Group  # type: ignore
 from pyglet.text import LinearGradient
 
 import arcade
-import pyglet
 from arcade.clock import GLOBAL_CLOCK
 from arcade.exceptions import NoArcadeWindowError, PerformanceWarning, warning
 from arcade.resources import resolve

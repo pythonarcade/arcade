@@ -1,9 +1,9 @@
 from ctypes import c_char_p, c_float, c_int, cast
 from typing import Dict, Iterable, List, Sequence, Tuple
 
+import pyglet
 from pyglet.graphics.api import gl
 
-import pyglet
 from arcade.context import ArcadeContext
 from arcade.gl import enums
 from arcade.gl.context import Context, Info

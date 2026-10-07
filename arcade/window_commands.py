@@ -13,6 +13,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import pyglet
+
 from arcade.exceptions import NoArcadeWindowError
 from arcade.types import RGBA255, Color
 

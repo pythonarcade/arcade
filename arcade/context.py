@@ -9,11 +9,11 @@ from collections.abc import Hashable, Iterable, Sequence
 from pathlib import Path
 from typing import Any
 
+import pyglet
 from PIL import Image
 from pyglet.math import Mat4
 
 import arcade
-import pyglet
 from arcade.camera import Projector
 from arcade.camera.default import DefaultProjector
 from arcade.gl import BufferDescription, Context

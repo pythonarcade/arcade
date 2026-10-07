@@ -18,9 +18,8 @@ from typing import (
     overload,
 )
 
-from pyglet.window import Window
-
 import pyglet
+from pyglet.window import Window
 
 from ..types import BufferProtocol
 from . import enums
