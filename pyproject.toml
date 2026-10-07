@@ -94,7 +94,6 @@ output-format = "full"
 lint.exclude = [
     "venv",
     ".venv*",
-    "tests",
     "build",
     "doc",
     "util",

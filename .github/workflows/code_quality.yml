@@ -31,23 +31,23 @@ jobs:
       - name: Sync UV project
         run: uv sync
 
+      # Formatting and linting errors fail the check. The later steps still
+      # run when an earlier one fails, so every problem is reported at once.
       - name: Formatting (Ruff)
-        if: success()
-        continue-on-error: true
         run: uv run make.py format --check
 
       - name: Linting (Ruff)
-        if: success()
-        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: uv run make.py ruff-check
 
+      # Type checking doesn't fail the check yet: there are existing errors
       - name: Type Checking (MyPy)
-        if: success()
+        if: ${{ !cancelled() }}
         continue-on-error: true
         run: uv run make.py mypy
 
       - name: Type Checking (Pyright)
-        if: success()
+        if: ${{ !cancelled() }}
         continue-on-error: true
         run: uv run make.py pyright
 
