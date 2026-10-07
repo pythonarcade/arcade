@@ -2,7 +2,7 @@ from types import ModuleType
 from copy import copy
 import logging
 import arcade
-from arcade import *
+from arcade import *  # noqa: F403  This test checks what a star import gives you
 
 
 # TODO: double-check whether this is actually the right solution?

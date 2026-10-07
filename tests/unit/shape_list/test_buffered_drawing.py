@@ -5,7 +5,6 @@ import arcade
 from arcade.shape_list import (
     ShapeElementList,
     create_line,
-    create_ellipse_outline,
     create_ellipse_filled,
     create_ellipse_filled_with_colors,
     create_rectangle_filled,

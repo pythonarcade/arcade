@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import arcade
 from arcade.gui import UIInteractiveSpriteWidget, UIBoxLayout
-from arcade.gui.events import UIOnClickEvent, UIMousePressEvent, UIMouseReleaseEvent
+from arcade.gui.events import UIOnClickEvent
 from arcade.gui.widgets.layout import UIAnchorLayout
 
 from . import record_ui_events

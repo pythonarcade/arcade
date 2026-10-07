@@ -1,7 +1,6 @@
 import pytest
 from arcade import load_texture
 from arcade.cache import HitBoxCache
-from arcade import hitbox
 
 
 @pytest.fixture(scope="function")

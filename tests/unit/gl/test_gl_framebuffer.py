@@ -109,7 +109,7 @@ def test_incomplete(ctx):
 
 def test_varying_attachment_size(ctx):
     """Varying attachment sizes not supported for now"""
-    fb = create(ctx, 10, 20, components=4)
+    create(ctx, 10, 20, components=4)
     with pytest.raises(ValueError):
         ctx.framebuffer(
             color_attachments=[

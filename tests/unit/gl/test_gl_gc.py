@@ -104,7 +104,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     created, freed = ctx.stats.texture
     texture = ctx.texture((10, 10))
     assert ctx.stats.texture == (created + 1, freed)
-    texture = None
+    del texture
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -115,7 +115,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     created, freed = ctx.stats.buffer
     buf = ctx.buffer(reserve=1024)
     assert ctx.stats.buffer == (created + 1, freed)
-    buf = None
+    del buf
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -129,7 +129,7 @@ def create_resources(ctx: arcade.ArcadeContext):
         depth_attachment=ctx.depth_texture((1024, 1024)),
     )
     assert ctx.stats.framebuffer == (created + 1, freed)
-    fb = None
+    del fb
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -140,7 +140,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     created, freed = ctx.stats.program
     prog = ctx.program(vertex_shader=VERTEX_SRC, fragment_shader=FRAGMENT_SRC)
     assert ctx.stats.program == (created + 1, freed)
-    prog = None
+    del prog
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -152,7 +152,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     geo = geometry.cube()
     geo.instance(ctx.program(vertex_shader=VERTEX_SRC, fragment_shader=FRAGMENT_SRC))
     assert ctx.stats.vertex_array == (created + 1, freed)
-    geo = None
+    del geo
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -164,7 +164,7 @@ def create_resources(ctx: arcade.ArcadeContext):
         created, freed = ctx.stats.compute_shader
         compute_shader = ctx.compute_shader(source=COMPUTE_SHADER_SOURCE)
         assert ctx.stats.compute_shader == (created + 1, freed)
-        compute_shader = None
+        del compute_shader
         gc.collect()
         if ctx.gc_mode == "context_gc":
             collected = ctx.gc()
@@ -175,7 +175,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     created, freed = ctx.stats.query
     query = ctx.query()
     assert ctx.stats.query == (created + 1, freed)
-    query = None
+    del query
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
