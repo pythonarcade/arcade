@@ -1865,21 +1865,15 @@ class SpriteListTextureData(SpriteListData):
         self._geometry = self.ctx.spritelist_geometry_simple
 
         # Texture buffers for per-sprite data. These are looked up using gl_InstanceID
-        self._storage_pos_angle: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=4, dtype="f4"
-        )
-        self._storage_size: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=2, dtype="f4"
-        )
-        self._storage_color: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=4, dtype="f1"
-        )
-        self._storage_texture_id: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=1, dtype="f4"
-        )
-        self._storage_index: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=1, dtype="i4"
-        )
+        # The shader reads the data as rows of 256 sprites (see lib/sprite.glsl),
+        # and the grow methods keep that layout, so create the textures in it.
+        # A single row wider than 256 would only draw the first 256 sprites.
+        size = (256, _align_capacity(capacity) // 256)
+        self._storage_pos_angle: Texture2D = self.ctx.texture(size=size, components=4, dtype="f4")
+        self._storage_size: Texture2D = self.ctx.texture(size=size, components=2, dtype="f4")
+        self._storage_color: Texture2D = self.ctx.texture(size=size, components=4, dtype="f1")
+        self._storage_texture_id: Texture2D = self.ctx.texture(size=size, components=1, dtype="f4")
+        self._storage_index: Texture2D = self.ctx.texture(size=size, components=1, dtype="i4")
 
     def write_sprite_buffers_to_gpu(
         self,
