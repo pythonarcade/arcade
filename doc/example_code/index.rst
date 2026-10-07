@@ -962,4 +962,10 @@ Stress Tests
 
    :ref:`stress_test_collision`
 
+.. figure:: images/thumbs/sprite_pixel_demolition.png
+   :figwidth: 170px
+   :target: sprite_pixel_demolition.html
+
+   :ref:`sprite_pixel_demolition`
+
 
