@@ -189,6 +189,56 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteSequence[BasicSp
         wiggle_distance *= 2
 
 
+def _first_overlap(
+    moving_sprite: Sprite,
+    can_collide: Iterable[SpriteSequence[SpriteType]],
+    change_x: float,
+    change_y: float,
+) -> tuple[float, float]:
+    """
+    Check a move in steps shorter than the sprite, so it can't pass through
+    a thin wall, and find where it first overlaps one.
+
+    Each step moves the sprite by less than its own size, so a wall it would
+    pass through overlaps it after one of the steps. The engines resolve a
+    move by overlapping a wall and then backing out of it, so this finds a
+    move that overlaps the first wall in the way, instead of jumping past it.
+
+    Args:
+        moving_sprite: The sprite to move. It's left where it started.
+        can_collide: The sprite lists it can collide with.
+        change_x: The move in x. Only one of change_x and change_y is used.
+        change_y: The move in y.
+    Returns:
+        The distance along the move to the first step that overlaps a wall,
+        or the whole move if none do, and the distance to the step before
+        it, which doesn't overlap a wall.
+    """
+    change = change_x or change_y
+    left, right, bottom, top = moving_sprite.hit_box.get_adjusted_bounds()
+    size = (right - left) if change_x else (top - bottom)
+    longest_step = size * 0.9
+    if longest_step <= 0 or abs(change) <= longest_step:
+        return change, 0.0
+
+    steps = math.ceil(abs(change) / longest_step)
+    start = moving_sprite.position
+    distance = 0.0
+    try:
+        for step in range(1, steps):
+            previous = distance
+            distance = change * step / steps
+            moving_sprite.position = (
+                start[0] + (distance if change_x else 0.0),
+                start[1] + (0.0 if change_x else distance),
+            )
+            if has_collision_with_lists(moving_sprite, can_collide):
+                return distance, previous
+    finally:
+        moving_sprite.position = start
+    return change, distance
+
+
 def _move_sprite(
     moving_sprite: Sprite, can_collide: Iterable[SpriteSequence[SpriteType]], ramp_up: bool
 ) -> list[SpriteType]:
@@ -258,7 +308,9 @@ def _move_sprite(
             original_x, original_y = moving_sprite.position
 
     # --- Move in the y direction
-    moving_sprite.center_y += moving_sprite.change_y
+    # A fast sprite stops at the first wall in the way instead of passing it
+    move_y, _ = _first_overlap(moving_sprite, can_collide, 0.0, moving_sprite.change_y)
+    moving_sprite.center_y += move_y
 
     # Check for wall hit
     hit_list_x = check_for_collision_with_lists(moving_sprite, can_collide)
@@ -317,9 +369,13 @@ def _move_sprite(
         # Strip off sign so we only have to write one version of this for
         # both directions
         direction = math.copysign(1, moving_sprite.change_x)
-        cur_x_change = abs(moving_sprite.change_x)
+        # A fast sprite stops at the first wall in the way instead of
+        # passing it: search between the last step that's clear and the
+        # first that overlaps a wall
+        overlap_x, clear_x = _first_overlap(moving_sprite, can_collide, moving_sprite.change_x, 0.0)
+        cur_x_change = abs(overlap_x)
         upper_bound = cur_x_change
-        lower_bound: float = 0
+        lower_bound: float = abs(clear_x)
         cur_y_change: float = 0
 
         exit_loop = False
