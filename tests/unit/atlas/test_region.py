@@ -1,11 +1,11 @@
 """Test AtlasRegion class."""
 
-import pytest
 import PIL.Image
+import pytest
 
-from arcade.texture_atlas.region import AtlasRegion
 from arcade.texture.texture import ImageData
 from arcade.texture_atlas.atlas_default import DefaultTextureAtlas
+from arcade.texture_atlas.region import AtlasRegion
 
 
 def test_region_coordinates_simple(ctx):

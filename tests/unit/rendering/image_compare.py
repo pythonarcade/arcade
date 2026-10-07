@@ -76,8 +76,7 @@ def compare_images(actual: PIL.Image.Image, expected: PIL.Image.Image) -> ImageD
     mean_abs_difference_fraction = sum(PIL.ImageStat.Stat(diff).mean) / (3 * 255)
 
     per_channel_masks = [
-        channel.point(lambda v: 255 if v > MAX_PER_CHANNEL_DELTA else 0)
-        for channel in diff.split()
+        channel.point(lambda v: 255 if v > MAX_PER_CHANNEL_DELTA else 0) for channel in diff.split()
     ]
     combined_mask = per_channel_masks[0]
     for mask in per_channel_masks[1:]:

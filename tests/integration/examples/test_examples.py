@@ -3,15 +3,15 @@ Import and run all examples one frame
 """
 
 import contextlib
-import io
 import inspect
+import io
 import os
 import runpy
 from pathlib import Path
 
-import arcade
 import pytest
 
+import arcade
 import arcade.clock
 
 # File path, module path

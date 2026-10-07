@@ -2,7 +2,7 @@ from contextlib import contextmanager
 
 from pyglet.math import Vec2
 
-from arcade.gui import UIManager, UIDummy
+from arcade.gui import UIDummy, UIManager
 
 
 @contextmanager

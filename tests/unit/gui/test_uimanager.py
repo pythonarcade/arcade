@@ -1,4 +1,4 @@
-from arcade.gui import UIManager, UIDummy
+from arcade.gui import UIDummy, UIManager
 
 
 def test_walk_widgets(window):

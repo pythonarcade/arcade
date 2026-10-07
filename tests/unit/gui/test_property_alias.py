@@ -3,6 +3,7 @@ import gc
 import pytest
 
 from arcade.gui.property import AliasProperty, Property, bind, unbind
+
 from .test_property import Observer
 
 

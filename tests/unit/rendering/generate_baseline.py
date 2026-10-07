@@ -22,7 +22,6 @@ from pathlib import Path
 os.environ["ARCADE_TEST"] = "True"
 
 import arcade  # noqa: E402
-
 from tests.unit.rendering.scenes import SCENE_HEIGHT, SCENE_WIDTH, SCENES  # noqa: E402
 
 BASELINE_DIR = Path(__file__).parent / "baseline"

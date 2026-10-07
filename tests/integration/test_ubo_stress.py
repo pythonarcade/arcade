@@ -18,7 +18,7 @@ os.environ.setdefault("ARCADE_TEST", "True")
 
 import arcade  # noqa: E402
 from arcade.gl import Context  # noqa: E402
-from arcade.types import Color, LBWH  # noqa: E402
+from arcade.types import LBWH, Color  # noqa: E402
 
 WINDOW_CYCLES = 100
 
@@ -174,6 +174,5 @@ def test_window_draw_reset_cycles_do_not_grow_ubo():
         str(w.message) for w in caught if "Growing UniformBufferObject" in str(w.message)
     ]
     assert not growth_warnings, (
-        f"UBO grew unboundedly across {WINDOW_CYCLES} reset cycles:\n"
-        + "\n".join(growth_warnings)
+        f"UBO grew unboundedly across {WINDOW_CYCLES} reset cycles:\n" + "\n".join(growth_warnings)
     )

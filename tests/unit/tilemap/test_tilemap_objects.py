@@ -1,6 +1,8 @@
 from math import isclose
-import arcade
+
 from pytiled_parser.common_types import Color
+
+import arcade
 
 #
 # Test size, rotation, alpha of tiles from a Tiled object layer

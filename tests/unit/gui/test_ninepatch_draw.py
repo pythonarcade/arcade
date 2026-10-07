@@ -5,8 +5,8 @@ from PIL import Image, ImageDraw
 from pyglet.math import Mat4
 
 import arcade
-from arcade.gui import NinePatchTexture
 from arcade import LBWH
+from arcade.gui import NinePatchTexture
 
 # Various combinations of borders sizes
 PATCH_VARIANTS = list(itertools.product([1, 0], repeat=4))

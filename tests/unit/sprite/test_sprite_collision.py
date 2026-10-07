@@ -2,9 +2,9 @@ import math
 import random
 
 import pytest
+from pyglet.math import Vec2
 
 import arcade
-from pyglet.math import Vec2
 
 
 def test_sprites_at_point():

@@ -1,13 +1,12 @@
-from typing import Tuple
 from math import radians
+from typing import Tuple
 
 import pytest as pytest
-
 from pyglet.math import Vec2
 
-from arcade import Window, LRBT
+from arcade import LRBT, Window
 from arcade.camera import Camera2D
-from arcade.camera.data_types import ZeroProjectionDimension, OrthographicProjectionData
+from arcade.camera.data_types import OrthographicProjectionData, ZeroProjectionDimension
 
 
 class Camera2DSub1(Camera2D): ...

@@ -1,8 +1,7 @@
 import pytest as pytest
-
 from pyglet.math import Vec3
 
-from arcade import camera, Window
+from arcade import Window, camera
 
 
 def test_orthographic_projector_use(window: Window):

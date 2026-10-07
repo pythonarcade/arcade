@@ -1,10 +1,12 @@
 import struct
+
 import pytest
 from pyglet.graphics.api import gl
 from pyglet.math import Mat4
+
 from arcade.gl import ShaderException
-from arcade.gl.backends.opengl.uniform import UniformBlock
 from arcade.gl.backends.opengl.glsl import ShaderSource
+from arcade.gl.backends.opengl.uniform import UniformBlock
 
 pytestmark = pytest.mark.backendgl
 

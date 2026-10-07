@@ -4,10 +4,12 @@ Low level tests for OpenGL 3.3 wrappers.
 
 import array
 import struct
+
 import pytest
+
 from arcade.gl import BufferDescription
-from arcade.gl.vertex_array import VertexArray
 from arcade.gl.program import Program
+from arcade.gl.vertex_array import VertexArray
 
 
 def test_geometry(ctx):

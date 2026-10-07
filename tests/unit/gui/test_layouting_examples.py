@@ -1,6 +1,7 @@
+from pyglet.math import Vec2
+
 from arcade import LBWH
 from arcade.gui import UIBoxLayout, UIDummy
-from pyglet.math import Vec2
 
 
 def test_uiboxlayout_bars_with_size_hint(window):

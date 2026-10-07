@@ -2,8 +2,8 @@ import pytest
 
 from arcade.anim import Easing
 from arcade.gui import UIDummy, UIWidget
-from arcade.gui.experimental import Animation, TransitionAttr, UIAnimatedGroup, rel
 from arcade.gui.events import UIOnUpdateEvent
+from arcade.gui.experimental import Animation, TransitionAttr, UIAnimatedGroup, rel
 from arcade.types import Color
 
 

@@ -2,16 +2,17 @@
 Ensure we are emulating PIL's transforms correctly.
 """
 
-import arcade
 import pytest
-from pyglet.math import Mat4
 from PIL import Image, ImageDraw
+from pyglet.math import Mat4
+
+import arcade
 from arcade.texture.transforms import (
+    FlipLeftRightTransform,
+    FlipTopBottomTransform,
     Rotate90Transform,
     Rotate180Transform,
     Rotate270Transform,
-    FlipLeftRightTransform,
-    FlipTopBottomTransform,
     TransposeTransform,
     TransverseTransform,
 )

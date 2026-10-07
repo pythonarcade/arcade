@@ -1,7 +1,8 @@
-from arcade.types.rect import LBWH
 import pytest
 from PIL import Image
+
 import arcade
+from arcade.types.rect import LBWH
 
 # 32x8 grid of 8x16 sprites
 SPRITE_SHEET_RESOURCE = ":resources:images/spritesheets/codepage_437.png"

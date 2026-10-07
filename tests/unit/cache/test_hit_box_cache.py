@@ -1,4 +1,5 @@
 import pytest
+
 from arcade import load_texture
 from arcade.cache import HitBoxCache
 

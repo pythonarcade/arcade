@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
 import arcade
-from arcade.gui import UIInteractiveSpriteWidget, UIBoxLayout
+from arcade.gui import UIBoxLayout, UIInteractiveSpriteWidget
 from arcade.gui.events import UIOnClickEvent
 from arcade.gui.widgets.layout import UIAnchorLayout
 

@@ -1,6 +1,6 @@
 import pytest
 
-from arcade.types.rect import LBWH, LRBT, XYWH, XYRR, Rect
+from arcade.types.rect import LBWH, LRBT, XYRR, XYWH, Rect
 
 
 def test_make_LBWH():

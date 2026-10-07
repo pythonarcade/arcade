@@ -9,11 +9,11 @@ python -m arcade.experimental.input_manager_example
 import random
 from collections.abc import Sequence
 
-import pyglet
 from pyglet.input import Controller
 
 import arcade
-from arcade.input import ActionState, ControllerSticks, ControllerButtons, InputManager, Keys
+import pyglet
+from arcade.input import ActionState, ControllerButtons, ControllerSticks, InputManager, Keys
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720

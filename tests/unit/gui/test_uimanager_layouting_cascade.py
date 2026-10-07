@@ -1,4 +1,4 @@
-from arcade.gui import UIManager, UILayout, Surface
+from arcade.gui import Surface, UILayout, UIManager
 
 
 class MockLayout(UILayout):

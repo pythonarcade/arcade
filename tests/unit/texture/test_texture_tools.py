@@ -1,9 +1,9 @@
 from arcade.texture import (
-    Texture,
     ImageData,
-    get_default_texture,
-    get_default_image,
+    Texture,
     default_texture_cache,
+    get_default_image,
+    get_default_texture,
 )
 
 

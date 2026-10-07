@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING, Dict, Iterable, List, Sequence, Tuple
 
-import pyglet
 import pyglet.graphics.api
 
+import pyglet
 from arcade.context import ArcadeContext
 from arcade.gl import enums
 from arcade.gl.context import Context, Info

@@ -2,6 +2,7 @@ import math
 import random
 
 import pytest
+
 from arcade import hitbox
 
 points = [(0.0, 0.0), (0.0, 10.0), (10.0, 10.0), (10.0, 0.0)]

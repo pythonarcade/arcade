@@ -1,4 +1,5 @@
 import pytest
+
 import arcade
 from arcade.sprite_list.spatial_hash import SpatialHash
 from arcade.types.rect import LRBT

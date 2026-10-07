@@ -4,7 +4,7 @@ from pyglet.math import Vec2
 from pyglet.text import LinearGradient
 
 from arcade.gui import UILabel
-from arcade.types import Color, LBWH
+from arcade.types import LBWH, Color
 
 
 def test_constructor_only_text_no_size(window):

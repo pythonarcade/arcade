@@ -1,6 +1,8 @@
-from array import array
 import struct
+from array import array
+
 import pytest
+
 import arcade
 from arcade import gl
 

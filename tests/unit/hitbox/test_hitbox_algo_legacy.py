@@ -1,6 +1,7 @@
 import pytest
-from arcade import hitbox
 from PIL import Image
+
+from arcade import hitbox
 
 
 def test_calculate_hit_box_points_simple():

@@ -2,9 +2,9 @@ import argparse
 import sys
 
 import PIL
-import pyglet
 
 import arcade
+import pyglet
 
 from .base import BaseCommand
 

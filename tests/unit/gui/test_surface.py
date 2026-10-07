@@ -3,7 +3,7 @@ import pytest
 import arcade
 from arcade import LBWH, load_texture
 from arcade.color import WHITE
-from arcade.gui import Surface, NinePatchTexture
+from arcade.gui import NinePatchTexture, Surface
 
 
 def test_surface_draw_texture_raises_not_implemented_error_on_unsupported_values(window):

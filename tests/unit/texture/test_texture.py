@@ -1,7 +1,8 @@
 import pytest
+from PIL import Image, ImageDraw
+
 import arcade
 from arcade import hitbox
-from PIL import Image, ImageDraw
 
 
 def test_create():
