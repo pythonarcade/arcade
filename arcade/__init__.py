@@ -189,6 +189,7 @@ from .sprite_list import SweepInfo
 from .sprite_list import check_for_collision
 from .sprite_list import get_collision_info
 from .sprite_list import get_collision_info_with_list
+from .sprite_list import sweep_line
 from .sprite_list import sweep_sprite
 from .sprite_list import check_for_collision_with_list
 from .sprite_list import check_for_collision_with_lists
@@ -340,6 +341,7 @@ __all__ = [
     "check_for_collision",
     "get_collision_info",
     "get_collision_info_with_list",
+    "sweep_line",
     "sweep_sprite",
     "check_for_collision_with_list",
     "check_for_collision_with_lists",

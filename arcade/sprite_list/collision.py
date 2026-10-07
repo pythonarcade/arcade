@@ -1,4 +1,4 @@
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from enum import IntEnum
 from math import hypot
 from typing import NamedTuple, TypeVar
@@ -12,7 +12,7 @@ from arcade.geometry import (
 )
 from arcade.math import get_distance
 from arcade.sprite import BasicSprite, SpriteType
-from arcade.types import Point
+from arcade.types import Point, Point2
 from arcade.types.rect import LRBT, Rect
 from arcade.window_commands import get_window
 
@@ -749,9 +749,33 @@ def _sweep_against(
     they already overlap at the start. The normal is a unit vector out of
     ``other``. Exact for convex hit boxes that don't rotate during the move.
     """
-    hit_box1 = sprite._hit_box
+    hit_box = sprite._hit_box
+    return _sweep_shape(
+        hit_box.get_adjusted_points(),
+        hit_box.get_adjusted_bounds(),
+        hit_box._get_axes(),
+        other,
+        dx,
+        dy,
+        best_fraction,
+    )
+
+
+def _sweep_shape(
+    points1: Sequence[Point2],
+    bounds1: tuple[float, float, float, float],
+    axes1: dict[Point2, Point2],
+    other: BasicSprite,
+    dx: float,
+    dy: float,
+    best_fraction: float,
+) -> tuple[float, float, float] | None:
+    """
+    :py:func:`_sweep_against` for any convex shape moving by ``(dx, dy)``,
+    given its points, bounds ``(left, right, bottom, top)``, and the axes
+    of its edges. A single point has no axes, so this also sweeps a line.
+    """
     hit_box2 = other._hit_box
-    points1 = hit_box1.get_adjusted_points()
     points2 = hit_box2.get_adjusted_points()
     if not points1 or not points2:
         return None
@@ -766,7 +790,7 @@ def _sweep_against(
     normal_y = 0.0
 
     # The y axis first, then x, then the other edges, so ties prefer them
-    left1, right1, bottom1, top1 = hit_box1.get_adjusted_bounds()
+    left1, right1, bottom1, top1 = bounds1
     left2, right2, bottom2, top2 = hit_box2.get_adjusted_bounds()
     for min_1, max_1, min_2, max_2, speed, axis_x, axis_y in (
         (bottom1, top1, bottom2, top2, dy, 0.0, 1.0),
@@ -787,7 +811,7 @@ def _sweep_against(
         if enter >= leave or enter >= best_fraction or leave <= 0:
             return None
 
-    axes = hit_box1._get_axes() | hit_box2._get_axes()
+    axes = axes1 | hit_box2._get_axes()
     for axis_x, axis_y in axes.values():
         projected_1 = [axis_x * px + axis_y * py for px, py in points1]
         projected_2 = [axis_x * px + axis_y * py for px, py in points2]
@@ -936,6 +960,148 @@ def sweep_sprite(
 
     if deepest_start is not None:
         return SweepInfo(deepest_start[0], 0.0, 0.0, deepest_start[1].normal)
+    if best is None:
+        return None
+    hit_sprite, fraction, normal_x, normal_y = best
+    return SweepInfo(hit_sprite, fraction, fraction * hypot(dx, dy), Vec2(normal_x, normal_y))
+
+
+def _point_push_out(x: float, y: float, other: BasicSprite) -> tuple[float, Vec2]:
+    """
+    For a point inside a sprite's hit box, how far it is from the nearest
+    edge, and a unit vector pointing out of that edge.
+    """
+    hit_box = other._hit_box
+    points = hit_box.get_adjusted_points()
+    left, right, bottom, top = hit_box.get_adjusted_bounds()
+    # Distance to each side along x and y, then along each edge's axis
+    best = min(
+        (x - left, -1.0, 0.0),
+        (right - x, 1.0, 0.0),
+        (y - bottom, 0.0, -1.0),
+        (top - y, 0.0, 1.0),
+    )
+    for axis_x, axis_y in hit_box._get_axes().values():
+        length = hypot(axis_x, axis_y)
+        axis_x, axis_y = axis_x / length, axis_y / length
+        projected = [axis_x * px + axis_y * py for px, py in points]
+        position = axis_x * x + axis_y * y
+        best = min(
+            best,
+            (position - min(projected), -axis_x, -axis_y),
+            (max(projected) - position, axis_x, axis_y),
+        )
+    depth, normal_x, normal_y = best
+    # 0.0 + x avoids -0.0 for a zero component
+    return depth, Vec2(0.0 + normal_x, 0.0 + normal_y)
+
+
+def sweep_line(
+    start: Point2,
+    end: Point2,
+    sprite_list: SpriteSequence[SpriteType],
+) -> SweepInfo | None:
+    """
+    Find the first sprite in a list that a line from ``start`` to ``end`` hits.
+
+    This is :py:func:`sweep_sprite` for a point instead of a sprite: useful
+    for lasers, hitscan weapons, and seeing what's in the way between two
+    points. The point where the line hits is
+    ``start + (end - start) * hit.fraction``::
+
+        hit = arcade.sweep_line(gun.position, target, walls)
+        if hit:
+            start, end = Vec2(*gun.position), Vec2(*target)
+            point = start + (end - start) * hit.fraction
+            arcade.draw_line(*start, *point, arcade.color.RED, 2)
+            hit.sprite.remove_from_sprite_lists()
+
+    The :py:attr:`~SweepInfo.normal` points out of the hit sprite's surface,
+    so a laser can bounce off it: reflect the direction ``d`` with
+    ``d - 2 * d.dot(normal) * normal``.
+
+    If ``start`` is inside a sprite in the list, that is an immediate hit,
+    with a :py:attr:`~SweepInfo.fraction` of 0.0 and a normal pointing out of
+    the nearest edge. If it's inside several, the one it's deepest inside is
+    returned.
+
+    As with :py:func:`sweep_sprite`, touching doesn't count: a line along a
+    sprite's edge, or one that only touches a corner, doesn't hit it, and
+    neither does a line that ends exactly on its edge.
+
+    .. note:: The result is only exact for convex hit boxes.
+
+    If the list has a spatial hash, only sprites near the line are checked.
+    Otherwise every sprite in the list is. If the line hits two sprites at
+    the same point, either may be returned.
+
+    Args:
+        start:
+            Where the line starts
+        end:
+            Where the line ends
+        sprite_list:
+            The sprites it may hit
+
+    Returns:
+        A :py:class:`SweepInfo` for the first sprite hit, or ``None``.
+    """
+    if __debug__:
+        if not isinstance(sprite_list, SpriteSequence):
+            raise TypeError(f"Parameter 3 is a {type(sprite_list)} instead of expected SpriteList.")
+
+    start_x, start_y = start
+    end_x, end_y = end
+    dx = end_x - start_x
+    dy = end_y - start_y
+    path_left, path_right = min(start_x, end_x), max(start_x, end_x)
+    path_bottom, path_top = min(start_y, end_y), max(start_y, end_y)
+
+    candidates: Iterable[SpriteType]
+    if sprite_list.spatial_hash is not None:
+        candidates = sprite_list.spatial_hash.get_sprites_near_rect(
+            LRBT(path_left, path_right, path_bottom, path_top)
+        )
+    else:
+        candidates = sprite_list
+
+    point = ((start_x, start_y),)
+    point_bounds = (start_x, start_x, start_y, start_y)
+    no_axes: dict[Point2, Point2] = {}
+    # Hits must be strictly before this, so a line that ends exactly on a
+    # sprite's edge doesn't hit it
+    best_fraction = 1.0
+    best: tuple[SpriteType, float, float, float] | None = None
+    deepest_start: tuple[SpriteType, float, Vec2] | None = None
+    for other in candidates:
+        # Quick check with the other sprite's bounding box. Touching doesn't
+        # count, but a line along an axis has no width, so compare with <
+        # where the line is a single coordinate.
+        other_left, other_right, other_bottom, other_top = other._hit_box.get_adjusted_bounds()
+        if (
+            path_right < other_left
+            or other_right < path_left
+            or path_top < other_bottom
+            or other_top < path_bottom
+        ):
+            continue
+
+        limit = 0.0 if deepest_start is not None else best_fraction
+        result = _sweep_shape(point, point_bounds, no_axes, other, dx, dy, limit)
+        if result is None:
+            continue
+        fraction, normal_x, normal_y = result
+        if fraction < 0:
+            # The line starts inside this sprite. Keep the deepest.
+            depth, normal = _point_push_out(start_x, start_y, other)
+            if deepest_start is None or depth > deepest_start[1]:
+                deepest_start = (other, depth, normal)
+        elif deepest_start is None:
+            best_fraction = fraction
+            best = (other, fraction, normal_x, normal_y)
+
+    if deepest_start is not None:
+        return SweepInfo(deepest_start[0], 0.0, 0.0, deepest_start[2])
     if best is None:
         return None
     hit_sprite, fraction, normal_x, normal_y = best

@@ -1104,3 +1104,132 @@ def test_check_for_collision_matches_reference():
         assert arcade.check_for_collision(b, a) is expected
         results[expected] += 1
     assert min(results.values()) > 500
+
+
+# --- sweep_line
+
+
+def _line_walls(spatial=False):
+    """Two thin walls at x 90..110 and 190..210, and a diamond above them"""
+    a = arcade.SpriteSolidColor(20, 100, center_x=100, center_y=0)
+    b = arcade.SpriteSolidColor(20, 100, center_x=200, center_y=0)
+    diamond = arcade.SpriteSolidColor(40, 40, center_x=300, center_y=200)
+    diamond.angle = 45
+    return a, b, diamond, _walls(a, b, diamond, spatial=spatial)
+
+
+@pytest.mark.parametrize("spatial", [False, True])
+def test_sweep_line_first_hit(window, spatial):
+    a, b, diamond, walls = _line_walls(spatial)
+    hit = arcade.sweep_line((0, 0), (300, 0), walls)
+    assert hit.sprite is a
+    assert hit.fraction == pytest.approx(0.3)
+    assert hit.distance == pytest.approx(90)
+    assert hit.normal == Vec2(-1, 0)
+
+    hit = arcade.sweep_line((300, 10), (0, 10), walls)
+    assert hit.sprite is b
+    assert hit.distance == pytest.approx(90)
+    assert hit.normal == Vec2(1, 0)
+
+    # A vertical line enters through the bottom
+    hit = arcade.sweep_line((100, -300), (100, 300), walls)
+    assert hit.sprite is a
+    assert hit.distance == pytest.approx(250)
+    assert hit.normal == Vec2(0, -1)
+
+
+def test_sweep_line_rotated_sprite(window):
+    _, _, diamond, walls = _line_walls()
+    hit = arcade.sweep_line((300, 0), (300, 300), walls)
+    assert hit.sprite is diamond
+    # The bottom corner of a 40 pixel square turned 45 degrees
+    assert hit.distance == pytest.approx(200 - 20 * math.sqrt(2))
+
+
+def test_sweep_line_misses_and_touching(window):
+    a, _, _, walls = _line_walls()
+    assert arcade.sweep_line((0, 60), (300, 60), walls) is None
+    # Along an edge, or ending exactly on one, isn't a hit
+    assert arcade.sweep_line((0, 50), (300, 50), walls) is None
+    assert arcade.sweep_line((90, -100), (90, 100), walls) is None
+    assert arcade.sweep_line((0, 0), (90, 0), walls) is None
+    # Going a little further is
+    hit = arcade.sweep_line((0, 0), (91, 0), walls)
+    assert hit.sprite is a
+    assert hit.fraction == pytest.approx(90 / 91)
+
+
+def test_sweep_line_starts_inside(window):
+    a, b, _, walls = _line_walls()
+    # Nearest edge: the left one, 5 away
+    hit = arcade.sweep_line((95, 0), (300, 0), walls)
+    assert (hit.sprite, hit.fraction, hit.distance) == (a, 0.0, 0.0)
+    assert hit.normal == Vec2(-1, 0)
+    # Nearest edge: the top one
+    hit = arcade.sweep_line((100, 45), (300, 45), walls)
+    assert hit.sprite is a
+    assert hit.normal == Vec2(0, 1)
+    # A line with no length only hits what it starts inside
+    assert arcade.sweep_line((200, 0), (200, 0), walls).sprite is b
+    assert arcade.sweep_line((0, 0), (0, 0), walls) is None
+
+
+def test_sweep_line_starting_on_edge_going_in(window):
+    a, _, _, walls = _line_walls()
+    hit = arcade.sweep_line((90, 0), (300, 0), walls)
+    assert (hit.sprite, hit.fraction) == (a, 0.0)
+    assert hit.normal == Vec2(-1, 0)
+    # Leaving instead isn't a hit
+    assert arcade.sweep_line((90, 0), (0, 0), walls) is None
+
+
+WALK_STEPS = 1000
+
+
+def _first_hit_by_walking(start, end, sprites):
+    """Where a line first enters a hit box, found by walking along it"""
+    shapes = [
+        (sprite.hit_box.get_adjusted_bounds(), sprite.hit_box.get_adjusted_points())
+        for sprite in sprites
+    ]
+    for i in range(WALK_STEPS + 1):
+        t = i / WALK_STEPS
+        x = start[0] + (end[0] - start[0]) * t
+        y = start[1] + (end[1] - start[1]) * t
+        for (left, right, bottom, top), points in shapes:
+            if left < x < right and bottom < y < top:
+                if arcade.geometry.is_point_in_polygon(x, y, points):
+                    return t
+    return None
+
+
+@pytest.mark.parametrize("spatial", [False, True])
+def test_sweep_line_matches_walking_the_line(window, spatial):
+    """Random rotated and scaled sprites, compared with walking each line in small steps"""
+    rng = random.Random(23)
+    sprites = []
+    for _ in range(12):
+        sprite = arcade.SpriteSolidColor(
+            rng.randint(8, 60), rng.randint(8, 60),
+            center_x=rng.uniform(-200, 200), center_y=rng.uniform(-200, 200),
+        )  # fmt: skip
+        sprite.angle = rng.uniform(0, 360)
+        sprite.scale = rng.uniform(0.5, 2)
+        sprites.append(sprite)
+    walls = _walls(*sprites, spatial=spatial)
+
+    hits = 0
+    for _ in range(150):
+        start = (rng.uniform(-300, 300), rng.uniform(-300, 300))
+        end = (rng.uniform(-300, 300), rng.uniform(-300, 300))
+        walked = _first_hit_by_walking(start, end, sprites)
+        hit = arcade.sweep_line(start, end, walls)
+        if walked is None:
+            assert hit is None
+            continue
+        hits += 1
+        assert hit is not None
+        assert hit.fraction == pytest.approx(walked, abs=2 / WALK_STEPS)
+        assert hit.normal.length() == pytest.approx(1)
+    assert hits > 30

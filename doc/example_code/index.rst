@@ -373,6 +373,12 @@ Shooting with Sprites
 
    :ref:`sprite_bullets_sweep`
 
+.. figure:: images/thumbs/sprite_laser_mirrors.png
+   :figwidth: 170px
+   :target: sprite_laser_mirrors.html
+
+   :ref:`sprite_laser_mirrors`
+
 Audio
 -----
 
