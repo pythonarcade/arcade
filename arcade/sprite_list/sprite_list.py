@@ -198,7 +198,11 @@ class SpriteList(SpriteSequence[SpriteType]):
             with items in the SpriteList. Great for doing collision detection
             with static walls/platforms in large maps.
         spatial_hash_cell_size:
-            The cell size of the spatial hash (default: 128)
+            The cell size of the spatial hash, in pixels (default: 128).
+            Choose a size close to the size of the sprites in the list: much
+            bigger cells make collision checks slower, and much smaller ones
+            make adding and moving sprites slower. See
+            :ref:`collision_detection_performance_cell_size`.
         atlas:
             (Advanced) The texture atlas for this sprite list. If no
             atlas is supplied the global/default one will be used.
@@ -898,7 +902,9 @@ class SpriteList(SpriteSequence[SpriteType]):
         Turn on spatial hashing unless it is already enabled with the same cell size.
 
         Args:
-            spatial_hash_cell_size: The size of the cell in the spatial hash.
+            spatial_hash_cell_size: The size of the cell in the spatial hash,
+                in pixels. Choose a size close to the size of the sprites in
+                the list. See :ref:`collision_detection_performance_cell_size`.
         """
         if self.spatial_hash is None or self.spatial_hash.cell_size != spatial_hash_cell_size:
             from .spatial_hash import SpatialHash
