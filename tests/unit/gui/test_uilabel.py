@@ -36,8 +36,10 @@ def test_constructor_fix_width_and_multiline(window):
 def test_constructor_adaptive_width_support_for_multiline_text(window):
     """
     This test is a bit tricky. Enabling multiline without a width
-    should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
-    Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
+    should fit the size to the text. This is not natively supported
+    by either arcade.Text or pyglet.Label. Because text length varies
+    between operating systems, we can only test boundaries, which
+    indicate a proper implementation.
     """
     label = UILabel(text="Multiline\ntext\nwhich\n", multiline=True)
     assert label.width < 100
@@ -76,9 +78,8 @@ def test_internals_text_placed_at_0_0(window):
 
 def test_change_text_triggers_full_render_without_background(window):
     """
-    This test is a bit tricky. Enabling multiline without a width
-    should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
-    Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
+    Without a background, the label can't redraw itself over its old text,
+    so changing the text asks its parent to render.
     """
     mock = Mock()
 
@@ -91,9 +92,8 @@ def test_change_text_triggers_full_render_without_background(window):
 
 def test_change_text_triggers_render_with_background(window):
     """
-    This test is a bit tricky. Enabling multiline without a width
-    should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
-    Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
+    With a background, the label redraws itself over its old text, so
+    changing the text doesn't ask its parent to render.
     """
     mock = Mock()
 
