@@ -56,6 +56,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Added `arcade.sweep_line(start, end, sprite_list)`, which returns a `SweepInfo` for the first sprite a line hits (its `fraction`, `distance`, and surface `normal`), or `None`. It's `sweep_sprite` for a point: for lasers, hitscan weapons, or seeing what's in the way. Added the `sprite_laser_mirrors` example, where a laser bounces off rotating mirrors using the normal.
 
 ### Misc Changes
+- Removed the docs build's workaround for Sphinx not copying changed CSS files (`util/sphinx_static_file_temp_fix.py` and its `.ENABLE_DEVMACHINE_SPHINX_STATIC_FIX` switch). Sphinx fixed it upstream, and the pinned Sphinx 9.1.0 copies changed CSS on incremental builds and with `make.py serve` ([#2266](https://github.com/pythonarcade/arcade/issues/2266)).
 - Docs fixes:
   - The install guide, SBC guide and contributing guide said Arcade needs Python 3.9; it needs 3.10. The release checklist now lists everywhere the minimum version appears ([#1302](https://github.com/pythonarcade/arcade/issues/1302)).
   - `ShapeElementList`'s docstring links to `pyglet.shapes`, and says "batch" where it said "back" ([#2608](https://github.com/pythonarcade/arcade/issues/2608)).
