@@ -48,6 +48,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Documented choosing a spatial hash cell size (`spatial_hash_cell_size`) in the performance tips and the `SpriteList` docs: about the size of the sprites in the list. With 4 pixel sprites, collision checks were 16 times faster with 8 pixel cells than with the default of 128.
 - Type checking with mypy and pyright now fails the CI check, like formatting and linting. Their existing errors are fixed.
 - Fixed code excerpts in the docs that highlighted or showed the wrong lines, because the example code had changed since their line numbers were set. This covers 62 excerpts: 48 in the platformer, pymunk platformer, menu, card game, compute shader, raycasting and shader toy glow tutorials, and 14 on example pages. Most now highlight the same code they were written for. Where the code was rewritten, they highlight the code that does the same job now.
+- Removed `arcade/experimental/perspective_parallax.py`, an unreferenced demo of `PerspectiveProjector` that didn't show a parallax effect. The `background_parallax` example shows parallax scrolling.
 
 ## 4.0.0.dev8
 
