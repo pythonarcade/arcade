@@ -89,6 +89,15 @@ class BackgroundGroup:
         self.add(background)
 
 
+def _check_depth(depth: float) -> float:
+    """Raise a ValueError for a depth of 0, which ParallaxGroup can't divide by."""
+    if depth == 0:
+        raise ValueError(
+            "A ParallaxGroup depth can't be 0. For a layer that doesn't scroll, use float('inf')."
+        )
+    return depth
+
+
 class ParallaxGroup:
     """
     The ParallaxBackground holds a list of backgrounds and a list of depths.
@@ -96,6 +105,9 @@ class ParallaxGroup:
     each Background's offset will be set inversely proportional to its depth.
     This creates the effect of Backgrounds with greater depths appearing further away.
     The depth does not affect the positioning of layers at all.
+
+    A depth can't be 0. For a layer that doesn't scroll, such as a distant sky,
+    use ``float("inf")``.
     """
 
     def __init__(
@@ -108,6 +120,8 @@ class ParallaxGroup:
 
         if len(self._backgrounds) != len(self._depths):
             raise ValueError("The number of backgrounds does not equal the number of depth values")
+        for depth in self._depths:
+            _check_depth(depth)
 
         self._pos = (0.0, 0.0)
         self._offset = (0.0, 0.0)
@@ -136,11 +150,12 @@ class ParallaxGroup:
 
     def __setitem__(self, key: int, value: Background | float):
         if isinstance(value, float | int):
-            self._depths[key] = value
+            self._depths[key] = _check_depth(value)
         else:
             self._backgrounds[key] = value
 
     def add(self, item: Background, depth: float = 1.0):
+        _check_depth(depth)
         if item not in self._backgrounds:
             self._backgrounds.append(item)
             self._depths.append(depth)
@@ -153,7 +168,7 @@ class ParallaxGroup:
         self._depths.pop(index)
 
     def change_depth(self, item: Background, new_depth: float):
-        self._depths[self._backgrounds.index(item)] = new_depth
+        self._depths[self._backgrounds.index(item)] = _check_depth(new_depth)
 
     def extend(self, items: list[Background], depths: list[float]):
         for index, item in enumerate(items):
