@@ -6,6 +6,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 ## Unreleased
 
 ### Fixes
+- Fixed `arcade.future.background.ParallaxGroup` raising `ZeroDivisionError` the first time its offset changed after a layer was given a depth of 0. Setting a depth of 0 now raises a `ValueError` right away, which says to use `float("inf")` for a layer that doesn't scroll ([#1551](https://github.com/pythonarcade/arcade/issues/1551)).
 - GUI: Fixed a gap between `UIFlatButton`'s border and the edge of the button, half the border's width, which also showed on `UIDropdown` ([#2868](https://github.com/pythonarcade/arcade/issues/2868)).
 - GUI: Passing a single style such as `UIFlatButton.UIStyle()` as a widget's `style` raised a confusing `TypeError` about attribute names. It now raises a `TypeError` saying a dict of styles for each state is needed, and how to start from the widget's `DEFAULT_STYLE` ([#2817](https://github.com/pythonarcade/arcade/issues/2817)).
 - GUI: Fixed `UITextArea`:
