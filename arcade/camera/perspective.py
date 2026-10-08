@@ -165,8 +165,8 @@ class PerspectiveProjector(Projector):
 
         self._window.ctx.viewport = self.viewport.lbwh_int
         self._window.ctx.scissor = None if not self.scissor else self.scissor.lbwh_int
-        self._window.projection = _projection
-        self._window.view = _view
+        self._window.ctx.projection_matrix = _projection
+        self._window.ctx.view_matrix = _view
 
     def project(self, world_coordinate: Point) -> Vec2:
         """Convert world coordinates to pixel screen coordinates.

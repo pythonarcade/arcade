@@ -1,12 +1,12 @@
 import builtins
-from typing import TypeVar, Type, Generic, Any, Callable
+from typing import Any, Callable, Generic, Type, TypeVar
 
 from pyglet.math import Vec2
 
 import arcade
-from arcade import SpriteList, Sprite, SpriteSolidColor, load_texture
-from arcade.gui import UIManager, NinePatchTexture, UIInputText, UIWidget, UIBoxLayout
-from arcade.types import RGBOrA255, Color
+from arcade import Sprite, SpriteList, SpriteSolidColor, load_texture
+from arcade.gui import NinePatchTexture, UIBoxLayout, UIInputText, UIManager, UIWidget
+from arcade.types import Color, RGBOrA255
 
 GRID_REGULAR = arcade.color.GREEN.replace(a=128)
 GRID_HIGHLIGHT = arcade.color.GREEN
@@ -180,7 +180,7 @@ class MyGame(arcade.Window):
         #         self.spritelist.append(sprite)
         self.build_sprite_grid(8, 12, self.grid_tile_px, Vec2(50, 50))
         self.background_color = arcade.color.DARK_GRAY
-        self.set_mouse_visible(False)
+        self.set_mouse_cursor_visible(False)
         self.cursor = 0, 0
         self.from_mouse = True
         self.on_widget = False
@@ -206,7 +206,7 @@ class MyGame(arcade.Window):
         on_widget = bool(len(widgets))
 
         if self.on_widget != on_widget:
-            self.set_mouse_visible(on_widget)
+            self.set_mouse_cursor_visible(on_widget)
             self.on_widget = on_widget
 
     def on_draw(self):

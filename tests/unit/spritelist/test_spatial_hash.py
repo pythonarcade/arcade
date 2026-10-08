@@ -1,6 +1,8 @@
 import pytest
+
 import arcade
 from arcade.sprite_list.spatial_hash import SpatialHash
+from arcade.types.rect import LRBT
 
 
 def test_create():
@@ -13,12 +15,12 @@ def test_create():
 
 def test_incorrect_str_input():
     with pytest.raises(TypeError):
-        sh = SpatialHash(cell_size="10")
+        SpatialHash(cell_size="10")
 
 
 def test_incorrect_inf_input():
     with pytest.raises(TypeError):
-        sh = SpatialHash(cell_size=float("inf"))
+        SpatialHash(cell_size=float("inf"))
 
 
 def test_reset():
@@ -80,23 +82,65 @@ def test_remove_twice():
         sh.remove(sprite)
 
 
-def get_nearby_sprites():
+def test_get_near_sprite():
     """Test getting nearby sprites"""
     sh = SpatialHash(cell_size=10)
-    sprite_1 = arcade.SpriteSolidColor(10, 10, center_x=0)
-    sprite_2 = arcade.SpriteSolidColor(10, 10, center_x=5)
+    # Covers x from -25 to -15, cells -3 to -2
+    sprite_1 = arcade.SpriteSolidColor(10, 10, center_x=-20)
+    # Covers x from 15 to 25, cells 1 to 2
+    sprite_2 = arcade.SpriteSolidColor(10, 10, center_x=20)
     sh.add(sprite_1)
     sh.add(sprite_2)
 
-    nearby_sprites = sh.get_sprites_near_sprite(arcade.SpriteSolidColor(10, 10, center_x=-5))
+    nearby_sprites = sh.get_sprites_near_sprite(arcade.SpriteSolidColor(10, 10, center_x=-20))
     assert isinstance(nearby_sprites, set)
-    assert len(nearby_sprites) == 1
-    assert nearby_sprites[0] == sprite_1
+    assert nearby_sprites == {sprite_1}
 
-    nearby_sprites = sh.get_sprites_near_sprite(arcade.SpriteSolidColor(10, 10, center_x=0))
-    assert isinstance(nearby_sprites, set)
-    assert len(nearby_sprites) == 2
-    assert nearby_sprites == set([sprite_1, sprite_2])
+    nearby_sprites = sh.get_sprites_near_sprite(arcade.SpriteSolidColor(10, 10, center_x=20))
+    assert nearby_sprites == {sprite_2}
+
+    nearby_sprites = sh.get_sprites_near_sprite(arcade.SpriteSolidColor(60, 10, center_x=0))
+    assert nearby_sprites == {sprite_1, sprite_2}
+
+    nearby_sprites = sh.get_sprites_near_sprite(arcade.SpriteSolidColor(10, 10, center_y=100))
+    assert nearby_sprites == set()
+
+
+@pytest.mark.parametrize("angle", [0, 30, 45, 90])
+def test_cell_bounds_match_sprite_bounds(angle):
+    """Cell bounds should match those from the sprite's left/right/bottom/top."""
+    sh = SpatialHash(cell_size=10)
+    sprite = arcade.SpriteSolidColor(40, 10, center_x=3, center_y=-7)
+    sprite.angle = angle
+
+    expected_min = sh.hash((int(sprite.left), int(sprite.bottom)))
+    expected_max = sh.hash((int(sprite.right), int(sprite.top)))
+    assert sh._get_cell_bounds(sprite) == (expected_min, expected_max)
+
+
+def test_queries_do_not_add_buckets():
+    """Querying empty areas must not create new buckets."""
+    sh = SpatialHash(cell_size=10)
+    sh.add(arcade.SpriteSolidColor(10, 10))
+    bucket_count = len(sh.contents)
+
+    far_sprite = arcade.SpriteSolidColor(50, 50, center_x=1000, center_y=1000)
+    assert sh.get_sprites_near_sprite(far_sprite) == set()
+    assert sh.get_sprites_near_point((1000, 1000)) == set()
+    assert sh.get_sprites_near_rect(LRBT(1000, 1100, 1000, 1100)) == set()
+
+    assert len(sh.contents) == bucket_count
+
+
+def test_get_near_point_returns_copy():
+    """Modifying the returned set must not change the spatial hash."""
+    sh = SpatialHash(cell_size=10)
+    sprite = arcade.SpriteSolidColor(10, 10)
+    sh.add(sprite)
+
+    nearby_sprites = sh.get_sprites_near_point((0, 0))
+    nearby_sprites.clear()
+    assert sh.get_sprites_near_point((0, 0)) == {sprite}
 
 
 def test_get_near_point():

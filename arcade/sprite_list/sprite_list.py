@@ -13,6 +13,8 @@ from abc import abstractmethod
 from array import array
 from collections import deque
 from collections.abc import Callable, Collection, Iterable, Iterator, Sized
+from itertools import filterfalse
+from math import hypot
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -31,6 +33,11 @@ from arcade.utils import copy_dunders_unimplemented
 if TYPE_CHECKING:
     from arcade import ArcadeContext, Texture
     from arcade.texture_atlas import TextureAtlasBase
+
+
+# With this many sprites or more removed from a SpriteList at once, one pass
+# over the list is faster than finding each sprite in it
+_REMOVE_IN_ONE_PASS = 8
 
 
 def _align_capacity(capacity: int) -> int:
@@ -192,7 +199,11 @@ class SpriteList(SpriteSequence[SpriteType]):
             with items in the SpriteList. Great for doing collision detection
             with static walls/platforms in large maps.
         spatial_hash_cell_size:
-            The cell size of the spatial hash (default: 128)
+            The cell size of the spatial hash, in pixels (default: 128).
+            Choose a size close to the size of the sprites in the list: much
+            bigger cells make collision checks slower, and much smaller ones
+            make adding and moving sprites slower. See
+            :ref:`collision_detection_performance_cell_size`.
         atlas:
             (Advanced) The texture atlas for this sprite list. If no
             atlas is supplied the global/default one will be used.
@@ -219,7 +230,7 @@ class SpriteList(SpriteSequence[SpriteType]):
     #:     # Set global default to nearest filtering (pixelated)
     #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
     #:     # Set global default to linear filtering (smooth). This is the default.
-    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.NEAREST, gl.NEAREST
+    #:     arcade.SpriteList.DEFAULT_TEXTURE_FILTER = gl.LINEAR, gl.LINEAR
     DEFAULT_TEXTURE_FILTER: ClassVar[tuple[int, int]] = gl.LINEAR, gl.LINEAR
 
     # Declare `special_hash` as an attribute that implements the abstract
@@ -265,8 +276,16 @@ class SpriteList(SpriteSequence[SpriteType]):
         # List of free slots in the sprite buffers. These are filled when sprites are removed.
         self._sprite_buffer_free_slots: deque[int] = deque()
 
-        # List of sprites in the sprite list
-        self.sprite_list: list[SpriteType] = []
+        # List of sprites in the sprite list. Read it through the sprite_list
+        # property, which applies pending removals first.
+        self._sprite_list: list[SpriteType] = []
+        # Sprites removed but still in _sprite_list and the index buffer,
+        # with their buffer slots. See remove().
+        self._pending_removals: dict[SpriteType, int] = {}
+        # How far any sprite's hit box reaches beyond its drawn size, the most
+        # for any sprite added. The GPU collision check only knows the drawn
+        # sizes, so it looks this much farther. It never shrinks, until clear().
+        self._hit_box_reach = 0.0
         # Buffer slots for the sprites (excluding index buffer)
         # This has nothing to do with the index in the spritelist itself
         self.sprite_slot: dict[SpriteType, int] = dict()
@@ -279,7 +298,8 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._sprite_color_data = array("B", [0] * self._buf_capacity * 4)
         self._sprite_texture_data = array("f", [0] * self._buf_capacity)
         # Index buffer
-        self._sprite_index_data = array("i", [0] * self._idx_capacity)
+        self._sprite_index_data = array("I", [0] * self._idx_capacity)
+        self._hit_box_reach = 0.0
 
         self._data: SpriteListData | None = None
 
@@ -308,6 +328,55 @@ class SpriteList(SpriteSequence[SpriteType]):
         except RuntimeError:
             pass
 
+    @property
+    def sprite_list(self) -> list[SpriteType]:
+        """The sprites in the list, in drawing order."""
+        if self._pending_removals:
+            self._apply_removals()
+        return self._sprite_list
+
+    @sprite_list.setter
+    def sprite_list(self, sprites: list[SpriteType]) -> None:
+        if self._pending_removals:
+            self._apply_removals()
+        self._sprite_list = sprites
+
+    def _apply_removals(self) -> None:
+        """
+        Take the sprites removed with remove() out of the sprite list and
+        the index buffer, keeping the order of the rest.
+
+        Finding a sprite in the list is ``O(N)``, so removing many sprites
+        one at a time costs ``O(N)`` each. A few are removed that way, but
+        more are removed with a single pass over the list.
+        """
+        pending = self._pending_removals
+        self._pending_removals = {}
+        sprites = self._sprite_list
+        index_data = self._sprite_index_data
+
+        if len(pending) < _REMOVE_IN_ONE_PASS:
+            for sprite in pending:
+                index = sprites.index(sprite)
+                sprites.pop(index)
+                index_data.pop(index)
+                index_data.append(0)
+        else:
+            # The removed sprites' buffer slots aren't reused until below, so
+            # they still mark where the sprites are in the index buffer
+            removed_slots = set(pending.values())
+            count = len(sprites)
+            self._sprite_list = list(filterfalse(pending.__contains__, sprites))
+            index_data = array("I", filterfalse(removed_slots.__contains__, index_data[:count]))
+            index_data.extend([0] * (self._idx_capacity - len(index_data)))
+            self._sprite_index_data = index_data
+
+        # Only now can the buffer slots be reused, since the index buffer
+        # pointed at them until now
+        self._sprite_buffer_free_slots.extend(pending.values())
+        self._sprite_index_slots -= len(pending)
+        self._sprite_index_changed = True
+
     def _init_deferred(self) -> None:
         """
         Since spritelist can be created before the window we need to defer initialization.
@@ -321,13 +390,15 @@ class SpriteList(SpriteSequence[SpriteType]):
         if not self._atlas:
             self._atlas = self.ctx.default_atlas
 
-        # NOTE: Instantiate the appropriate spritelist data class here
-        # Desktop GL (with geo shader)
-        self._data = SpriteListBufferData(self.ctx, capacity=self._buf_capacity, atlas=self._atlas)
-        # WebGL (without geo shader)
-        # self._data = SpriteListTextureData(
-        #     self.ctx, capacity=self._buf_capacity, atlas=self._atlas
-        # )
+        if self.ctx._gl_api == "webgl":
+            self._data = SpriteListTextureData(
+                self.ctx, capacity=self._buf_capacity, atlas=self._atlas
+            )
+        else:
+            self._data = SpriteListBufferData(
+                self.ctx, capacity=self._buf_capacity, atlas=self._atlas
+            )
+
         self._initialized = True
 
         # Load all the textures and write texture coordinates into buffers.
@@ -365,15 +436,13 @@ class SpriteList(SpriteSequence[SpriteType]):
 
     def __setitem__(self, index: int, sprite: SpriteType) -> None:
         """Replace a sprite at a specific index"""
-        try:
-            existing_index = self.sprite_list.index(sprite)  # raise ValueError
-            if existing_index == index:
+        sprite_to_be_removed = self.sprite_list[index]  # Raises IndexError
+        if sprite in self.sprite_slot:
+            if sprite is sprite_to_be_removed:
                 return
+            existing_index = self.sprite_list.index(sprite)
             raise Exception(f"Sprite is already in the list (index {existing_index})")
-        except ValueError:
-            pass
 
-        sprite_to_be_removed = self.sprite_list[index]
         sprite_to_be_removed._unregister_sprite_list(self)
         self.sprite_list[index] = sprite  # Replace sprite
         sprite.register_sprite_list(self)
@@ -579,6 +648,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._sprite_texture_data = array("f", [0] * self._buf_capacity)
         # Index buffer
         self._sprite_index_data = array("I", [0] * self._idx_capacity)
+        self._hit_box_reach = 0.0
 
         if self._initialized:
             self._initialized = False
@@ -602,8 +672,15 @@ class SpriteList(SpriteSequence[SpriteType]):
             index:
                 Index of sprite to remove (defaults to ``-1`` for the last item)
         """
-        if len(self.sprite_list) == 0:
+        sprite_count = len(self.sprite_list)
+        if sprite_count == 0:
             raise IndexError("pop from empty list")
+        if not -sprite_count <= index < sprite_count:
+            raise IndexError("pop index out of range")
+        # The index buffer is longer than the list (it has spare capacity at
+        # the end), so a negative index must be made positive before using it.
+        if index < 0:
+            index += sprite_count
 
         sprite = self.sprite_list.pop(index)
         try:
@@ -634,6 +711,8 @@ class SpriteList(SpriteSequence[SpriteType]):
         """
         if sprite in self.sprite_slot:
             raise ValueError("Sprite already in SpriteList")
+        if self._pending_removals:
+            self._apply_removals()
 
         slot = self._next_slot()
         self.sprite_slot[sprite] = slot
@@ -671,13 +750,16 @@ class SpriteList(SpriteSequence[SpriteType]):
         self.sprite_list[index_1] = sprite_2
         self.sprite_list[index_2] = sprite_1
 
-        # Swap order in index buffer to change rendering order
-        slot_1 = self.sprite_slot[sprite_1]
-        slot_2 = self.sprite_slot[sprite_2]
-        i1 = self._sprite_index_data.index(slot_1)
-        i2 = self._sprite_index_data.index(slot_2)
-        self._sprite_index_data[i1] = slot_2
-        self._sprite_index_data[i2] = slot_1
+        # Swap order in index buffer to change rendering order. It's in the
+        # same order as the sprite list, but longer (it has spare capacity at
+        # the end), so negative indexes must be made positive first.
+        sprite_count = len(self.sprite_list)
+        if index_1 < 0:
+            index_1 += sprite_count
+        if index_2 < 0:
+            index_2 += sprite_count
+        index_data = self._sprite_index_data
+        index_data[index_1], index_data[index_2] = index_data[index_2], index_data[index_1]
 
         self._sprite_index_changed = True
 
@@ -685,9 +767,10 @@ class SpriteList(SpriteSequence[SpriteType]):
         """
         Remove a specific sprite from the list.
 
-        Note that this method is ``O(N)`` in complexity and will have
-        and increased cost the more sprites you have in the list.
-        A faster option is to use :py:meth:`pop` or :py:meth:`swap`.
+        The sprite is removed right away, but taking it out of the list's
+        internal storage waits until the list is next used, so many
+        sprites removed together, such as every bullet that hit something
+        this frame, are taken out in one pass instead of one at a time.
 
         Args:
             sprite: Item to remove from the list
@@ -697,17 +780,9 @@ class SpriteList(SpriteSequence[SpriteType]):
         except KeyError:
             raise ValueError("Sprite is not in the SpriteList")
 
-        index = self.sprite_list.index(sprite)
-        self.sprite_list.pop(index)
         sprite._unregister_sprite_list(self)
         del self.sprite_slot[sprite]
-
-        self._sprite_buffer_free_slots.append(slot)
-
-        self._sprite_index_data.pop(index)
-        self._sprite_index_data.append(0)
-        self._sprite_index_slots -= 1
-        self._sprite_index_changed = True
+        self._pending_removals[sprite] = slot
 
         if self.spatial_hash is not None:
             self.spatial_hash.remove(sprite)
@@ -730,7 +805,7 @@ class SpriteList(SpriteSequence[SpriteType]):
             index: The index at which to insert
             sprite: The sprite to insert
         """
-        if sprite in self.sprite_list:
+        if sprite in self.sprite_slot:
             raise ValueError("Sprite is already in list")
 
         index = max(min(len(self.sprite_list), index), 0)
@@ -749,9 +824,14 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._grow_index_buffer()
         self._sprite_index_data.insert(index, slot)
         self._sprite_index_data.pop()
+        self._sprite_index_changed = True
 
         if self.spatial_hash is not None:
             self.spatial_hash.add(sprite)
+
+        if self._initialized:
+            if sprite.texture is None:
+                raise ValueError("Sprite must have a texture when added to a SpriteList")
 
     def reverse(self) -> None:
         """Reverses the current list in-place"""
@@ -829,7 +909,9 @@ class SpriteList(SpriteSequence[SpriteType]):
         Turn on spatial hashing unless it is already enabled with the same cell size.
 
         Args:
-            spatial_hash_cell_size: The size of the cell in the spatial hash.
+            spatial_hash_cell_size: The size of the cell in the spatial hash,
+                in pixels. Choose a size close to the size of the sprites in
+                the list. See :ref:`collision_detection_performance_cell_size`.
         """
         if self.spatial_hash is None or self.spatial_hash.cell_size != spatial_hash_cell_size:
             from .spatial_hash import SpatialHash
@@ -865,8 +947,12 @@ class SpriteList(SpriteSequence[SpriteType]):
 
     def rescale(self, factor: float) -> None:
         """Rescale all sprites in the list relative to the spritelists center."""
+        if not self.sprite_list:
+            return
+        # Find the center before any sprite moves
+        center = self.center
         for sprite in self.sprite_list:
-            sprite.rescale_relative_to_point(self.center, factor)
+            sprite.rescale_relative_to_point(center, factor)
 
     def move(self, change_x: float, change_y: float) -> None:
         """
@@ -890,12 +976,17 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             texture_list: List of textures.
         """
-        if not self.ctx:
-            raise ValueError("Cannot preload textures before the window is created")
+        atlas = self._atlas
+        if atlas is None:
+            # Not initialized yet (a lazy list, or no window when it was
+            # created). Use the atlas the list will get when it initializes.
+            try:
+                atlas = get_window().ctx.default_atlas
+            except RuntimeError:
+                raise ValueError("Cannot preload textures before the window is created")
 
         for texture in texture_list:
-            # Ugly spacing is a fast workaround for None type checking issues
-            self._atlas.add(texture)  # type: ignore
+            atlas.add(texture)
 
     def write_sprite_buffers_to_gpu(self) -> None:
         """
@@ -916,6 +1007,8 @@ class SpriteList(SpriteSequence[SpriteType]):
     def _write_sprite_buffers_to_gpu(self) -> None:
         if not self._initialized:
             self._init_deferred()
+        if self._pending_removals:
+            self._apply_removals()
 
         self.data.write_sprite_buffers_to_gpu(
             # Buffer data
@@ -930,6 +1023,9 @@ class SpriteList(SpriteSequence[SpriteType]):
             self._sprite_color_changed,
             self._sprite_texture_changed,
             self._sprite_index_changed,
+            # Only the slots in use need writing, not the spare capacity
+            slot_count=self._sprite_buffer_slots,
+            index_count=self._sprite_index_slots,
         )
         self._sprite_pos_angle_changed = False
         self._sprite_size_changed = False
@@ -1067,6 +1163,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             sprite: Sprite to update.
         """
+        self._update_hit_box(sprite)
         slot = self.sprite_slot[sprite]
         # position
         self._sprite_pos_angle_data[slot * 4] = sprite._position[0]
@@ -1108,6 +1205,9 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             sprite: Sprite to update.
         """
+        # A new texture can change the sprite's drawn size
+        self._update_hit_box(sprite)
+
         # We cannot interact with texture atlases unless the context
         # is created. We defer all texture initialization for later
         if not self._initialized:
@@ -1203,6 +1303,24 @@ class SpriteList(SpriteSequence[SpriteType]):
         self._sprite_color_data[slot * 4 + 3] = int(sprite._color[3] * sprite._visible)
         self._sprite_color_changed = True
 
+    def _update_hit_box(self, sprite: SpriteType) -> None:
+        """
+        Called by the Sprite class when its hit box or size changes, to keep
+        track of how far hit boxes reach beyond the sprites' drawn sizes.
+
+        Args:
+            sprite: Sprite to update.
+        """
+        hit_box = sprite._hit_box
+        texture = sprite._texture
+        # A hit box made from the texture is inside it, at any scale. A sprite
+        # without a texture can't be drawn, and adding it raises an error.
+        if texture is None or hit_box.points is texture.hit_box_points:
+            return
+        reach = hit_box._get_radius() - hypot(sprite._width, sprite._height) / 2
+        if reach > self._hit_box_reach:
+            self._hit_box_reach = reach
+
     def _update_size(self, sprite: SpriteType) -> None:
         """
         Called by the Sprite class to update the size/scale in this sprite.
@@ -1211,6 +1329,7 @@ class SpriteList(SpriteSequence[SpriteType]):
         Args:
             sprite: Sprite to update.
         """
+        self._update_hit_box(sprite)
         slot = self.sprite_slot[sprite]
         self._sprite_size_data[slot * 2] = sprite._width
         self._sprite_size_data[slot * 2 + 1] = sprite._height
@@ -1330,6 +1449,8 @@ class SpriteListData:
         sprite_color_changed: bool = True,
         sprite_texture_changed: bool = True,
         sprite_index_changed: bool = True,
+        slot_count: int | None = None,
+        index_count: int | None = None,
     ) -> None:
         """
         Write the sprite buffers to the GPU.
@@ -1345,6 +1466,10 @@ class SpriteListData:
             sprite_color_changed: Whether the color data has changed.
             sprite_texture_changed: Whether the texture data has changed.
             sprite_index_changed: Whether the index data has changed.
+            slot_count: How many sprite buffer slots are in use. Only these
+                are written if given, instead of the whole arrays.
+            index_count: How many entries of the index data are in use. Only
+                these are written if given, instead of the whole array.
         """
         raise NotImplementedError("This method should be implemented in subclasses.")
 
@@ -1544,6 +1669,8 @@ class SpriteListBufferData(SpriteListData):
         sprite_color_changed: bool = True,
         sprite_texture_changed: bool = True,
         sprite_index_changed: bool = True,
+        slot_count: int | None = None,
+        index_count: int | None = None,
     ) -> None:
         """
         Write the sprite buffers to the GPU.
@@ -1558,7 +1685,21 @@ class SpriteListBufferData(SpriteListData):
             sprite_color_changed: Whether the color data has changed.
             sprite_texture_changed: Whether the texture data has changed.
             sprite_index_changed: Whether the index data has changed.
+            slot_count: How many sprite buffer slots are in use. Only these
+                are written if given, instead of the whole arrays.
+            index_count: How many entries of the index data are in use. Only
+                these are written if given, instead of the whole array.
         """
+        # Orphaning leaves the rest of each buffer undefined, which is fine:
+        # the index buffer only refers to slots below slot_count.
+        if slot_count is not None:
+            sprite_pos_angle_data = memoryview(sprite_pos_angle_data)[: slot_count * 4]
+            sprite_size_data = memoryview(sprite_size_data)[: slot_count * 2]
+            sprite_color_data = memoryview(sprite_color_data)[: slot_count * 4]
+            sprite_texture_data = memoryview(sprite_texture_data)[:slot_count]
+        if index_count is not None:
+            sprite_index_data = memoryview(sprite_index_data)[:index_count]
+
         if sprite_pos_angle_changed:
             self._storage_pos_angle.orphan()
             self._storage_pos_angle.write(sprite_pos_angle_data)
@@ -1683,21 +1824,30 @@ class SpriteListBufferData(SpriteListData):
             A list of indices of nearby sprites.
         """
         ctx = self.ctx
-        ctx.collision_detection_program["check_pos"] = pos
-        ctx.collision_detection_program["check_size"] = size
+        if ctx._gl_api == "webgl":
+            raise RuntimeError("GPU Collision is not supported on WebGL Backends")
+
+        # All of these type ignores are because of GPU collision not being supported on WebGL
+        # Unfortuantely the type checkers don't have a sane way of understanding that, and it's
+        # not worth run-time checking all of these things, because they are guaranteed based on
+        # active GL api of the context. Pyright actually does seem to be able to figure it out
+        # but mypy does not
+
+        ctx.collision_detection_program["check_pos"] = pos  # type: ignore
+        ctx.collision_detection_program["check_size"] = size  # type: ignore
         buffer = ctx.collision_buffer
-        with ctx.collision_query:
-            self._geometry.transform(  # type: ignore
-                ctx.collision_detection_program,
-                buffer,
+        with ctx.collision_query:  # type: ignore
+            self._geometry.transform(
+                ctx.collision_detection_program,  # type: ignore
+                buffer,  # type: ignore
                 vertices=length,
             )
 
         # Store the number of sprites emitted
-        emit_count = ctx.collision_query.primitives_generated
+        emit_count = ctx.collision_query.primitives_generated  # type: ignore
         if emit_count == 0:
             return []
-        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]
+        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]  # type: ignore
 
 
 class SpriteListTextureData(SpriteListData):
@@ -1715,21 +1865,15 @@ class SpriteListTextureData(SpriteListData):
         self._geometry = self.ctx.spritelist_geometry_simple
 
         # Texture buffers for per-sprite data. These are looked up using gl_InstanceID
-        self._storage_pos_angle: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=4, dtype="f4"
-        )
-        self._storage_size: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=2, dtype="f4"
-        )
-        self._storage_color: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=4, dtype="f1"
-        )
-        self._storage_texture_id: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=1, dtype="f4"
-        )
-        self._storage_index: Texture2D = self.ctx.texture(
-            size=(capacity, 1), components=1, dtype="i4"
-        )
+        # The shader reads the data as rows of 256 sprites (see lib/sprite.glsl),
+        # and the grow methods keep that layout, so create the textures in it.
+        # A single row wider than 256 would only draw the first 256 sprites.
+        size = (256, _align_capacity(capacity) // 256)
+        self._storage_pos_angle: Texture2D = self.ctx.texture(size=size, components=4, dtype="f4")
+        self._storage_size: Texture2D = self.ctx.texture(size=size, components=2, dtype="f4")
+        self._storage_color: Texture2D = self.ctx.texture(size=size, components=4, dtype="f1")
+        self._storage_texture_id: Texture2D = self.ctx.texture(size=size, components=1, dtype="f4")
+        self._storage_index: Texture2D = self.ctx.texture(size=size, components=1, dtype="i4")
 
     def write_sprite_buffers_to_gpu(
         self,
@@ -1745,6 +1889,8 @@ class SpriteListTextureData(SpriteListData):
         sprite_color_changed: bool = True,
         sprite_texture_changed: bool = True,
         sprite_index_changed: bool = True,
+        slot_count: int | None = None,
+        index_count: int | None = None,
     ) -> None:
         """
         Write the sprite buffers to the GPU.
@@ -1760,6 +1906,10 @@ class SpriteListTextureData(SpriteListData):
             sprite_color_changed: Whether the color data has changed.
             sprite_texture_changed: Whether the texture data has changed.
             sprite_index_changed: Whether the index data has changed.
+            slot_count: How many sprite buffer slots are in use. Only these
+                are written if given, instead of the whole arrays.
+            index_count: How many entries of the index data are in use. Only
+                these are written if given, instead of the whole array.
         """
         if sprite_pos_angle_changed:
             self._storage_pos_angle.write(sprite_pos_angle_data)
@@ -1884,23 +2034,32 @@ class SpriteListTextureData(SpriteListData):
             A list of indices of nearby sprites.
         """
         ctx = self.ctx
+        if ctx._gl_api == "webgl":
+            raise RuntimeError("GPU Collision is not supported on WebGL Backends")
+
+        # All of these type ignores are because of GPU collision not being supported on WebGL
+        # Unfortuantely the type checkers don't have a sane way of understanding that, and it's
+        # not worth run-time checking all of these things, because they are guaranteed based on
+        # active GL api of the context. Pyright actually does seem to be able to figure it out
+        # but mypy does not
+
         buffer = ctx.collision_buffer
         program = ctx.collision_detection_program_simple
-        program["check_pos"] = pos
-        program["check_size"] = size
+        program["check_pos"] = pos  # type: ignore
+        program["check_size"] = size  # type: ignore
 
         self._storage_pos_angle.use(0)
         self._storage_size.use(1)
         self._storage_index.use(2)
 
-        with ctx.collision_query:
+        with ctx.collision_query:  # type: ignore
             ctx.geometry_empty.transform(
-                program,
-                buffer,
+                program,  # type: ignore
+                buffer,  # type: ignore
                 vertices=length,
             )
-        emit_count = ctx.collision_query.primitives_generated
+        emit_count = ctx.collision_query.primitives_generated  # type: ignore
         # print(f"Collision query emitted {emit_count} sprites")
         if emit_count == 0:
             return []
-        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]
+        return [i for i in struct.unpack(f"{emit_count}i", buffer.read(size=emit_count * 4))]  # type: ignore

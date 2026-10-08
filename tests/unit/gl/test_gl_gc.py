@@ -1,4 +1,8 @@
 import gc
+import sys
+
+import pytest
+
 import arcade
 from arcade.gl import geometry
 
@@ -72,12 +76,35 @@ def test_auto_gc(ctx):
     create_resources(ctx)
 
 
+def test_failed_creation_collected_quietly(ctx):
+    """Objects whose creation failed don't raise errors when garbage collected"""
+    errors = []
+    old_hook = sys.unraisablehook
+    old_gc_mode = ctx.gc_mode
+    sys.unraisablehook = errors.append
+    try:
+        for gc_mode in ("auto", "context_gc"):
+            ctx.gc_mode = gc_mode
+            with pytest.raises(ValueError):
+                ctx.texture((10, 10), components=5)
+            with pytest.raises(ValueError):
+                ctx.framebuffer()
+            with pytest.raises(ValueError):
+                ctx.framebuffer(color_attachments=[ctx.texture((10, 10)), ctx.texture((10, 11))])
+            gc.collect()
+            ctx.gc()
+    finally:
+        sys.unraisablehook = old_hook
+        ctx.gc_mode = old_gc_mode
+    assert [f"{error.exc_type.__name__}: {error.exc_value}" for error in errors] == []
+
+
 def create_resources(ctx: arcade.ArcadeContext):
     # Texture
     created, freed = ctx.stats.texture
     texture = ctx.texture((10, 10))
     assert ctx.stats.texture == (created + 1, freed)
-    texture = None
+    del texture
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -88,7 +115,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     created, freed = ctx.stats.buffer
     buf = ctx.buffer(reserve=1024)
     assert ctx.stats.buffer == (created + 1, freed)
-    buf = None
+    del buf
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -102,7 +129,7 @@ def create_resources(ctx: arcade.ArcadeContext):
         depth_attachment=ctx.depth_texture((1024, 1024)),
     )
     assert ctx.stats.framebuffer == (created + 1, freed)
-    fb = None
+    del fb
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -113,7 +140,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     created, freed = ctx.stats.program
     prog = ctx.program(vertex_shader=VERTEX_SRC, fragment_shader=FRAGMENT_SRC)
     assert ctx.stats.program == (created + 1, freed)
-    prog = None
+    del prog
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -125,7 +152,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     geo = geometry.cube()
     geo.instance(ctx.program(vertex_shader=VERTEX_SRC, fragment_shader=FRAGMENT_SRC))
     assert ctx.stats.vertex_array == (created + 1, freed)
-    geo = None
+    del geo
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()
@@ -137,7 +164,7 @@ def create_resources(ctx: arcade.ArcadeContext):
         created, freed = ctx.stats.compute_shader
         compute_shader = ctx.compute_shader(source=COMPUTE_SHADER_SOURCE)
         assert ctx.stats.compute_shader == (created + 1, freed)
-        compute_shader = None
+        del compute_shader
         gc.collect()
         if ctx.gc_mode == "context_gc":
             collected = ctx.gc()
@@ -148,7 +175,7 @@ def create_resources(ctx: arcade.ArcadeContext):
     created, freed = ctx.stats.query
     query = ctx.query()
     assert ctx.stats.query == (created + 1, freed)
-    query = None
+    del query
     gc.collect()
     if ctx.gc_mode == "context_gc":
         collected = ctx.gc()

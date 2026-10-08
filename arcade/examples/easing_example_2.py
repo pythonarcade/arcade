@@ -1,176 +1,237 @@
 """
-Example showing how to use the easing functions for position.
-Example showing how to use easing for angles.
+Easing Example 2
 
-See:
-https://easings.net/
-...for a great guide on the theory behind how easings can work.
+Demonstrate angle and position easing on a ship sprite that turns and moves
+toward the mouse cursor.  Press number keys to switch between modes:
+
+- **1**: Instant angle (no easing)
+- **2-5**: Angle easing (LINEAR, QUAD_IN, QUAD_OUT, SINE)
+- **6-9**: Position easing (LINEAR, QUAD_IN, QUAD_OUT, SINE)
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.easing_example_2
 """
 
+import math
 import arcade
-from arcade import easing
+from arcade.anim import ease, Easing
 
-SPRITE_SCALING = 1.0
-
+# --- Constants ---
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Easing Example"
+WINDOW_TITLE = "Easing Example 2"
+
+SHIP_SPEED = 5.0
+EASE_DURATION = 1.0
+
+# Mode descriptions shown in the HUD.
+MODE_DESCRIPTIONS = {
+    1: "Instant (teleport + face mouse)",
+    2: "Angle ease: LINEAR",
+    3: "Angle ease: QUAD_IN",
+    4: "Angle ease: QUAD_OUT",
+    5: "Angle ease: SINE",
+    6: "Position ease: LINEAR",
+    7: "Position ease: QUAD_IN",
+    8: "Position ease: QUAD_OUT",
+    9: "Position ease: SINE",
+}
+
+# Mapping from mode number to easing function (modes 2-9).
+MODE_EASING = {
+    2: Easing.LINEAR,
+    3: Easing.QUAD_IN,
+    4: Easing.QUAD_OUT,
+    5: Easing.SINE,
+    6: Easing.LINEAR,
+    7: Easing.QUAD_IN,
+    8: Easing.QUAD_OUT,
+    9: Easing.SINE,
+}
 
 
-class Player(arcade.Sprite):
-    """Player class"""
+def shortest_angle_delta(from_angle: float, to_angle: float) -> float:
+    """Return the shortest signed rotation from *from_angle* to *to_angle*.
 
-    def __init__(self, image, scale):
-        """Set up the player"""
-
-        # Call the parent init
-        super().__init__(image, scale=scale)
-
-        self.easing_angle_data = None
-        self.easing_x_data = None
-        self.easing_y_data = None
-
-    def update(self, delta_time: float = 1 / 60):
-        if self.easing_angle_data is not None:
-            done, self.angle = easing.ease_angle_update(self.easing_angle_data, delta_time)
-            if done:
-                self.easing_angle_data = None
-
-        if self.easing_x_data is not None:
-            done, self.center_x = easing.ease_update(self.easing_x_data, delta_time)
-            if done:
-                self.easing_x_data = None
-
-        if self.easing_y_data is not None:
-            done, self.center_y = easing.ease_update(self.easing_y_data, delta_time)
-            if done:
-                self.easing_y_data = None
+    Both angles are in degrees.  The result is in the range (-180, 180].
+    """
+    delta = (to_angle - from_angle) % 360
+    if delta > 180:
+        delta -= 360
+    return delta
 
 
 class GameView(arcade.View):
-    """Main application class."""
+    """Main view with a ship that eases toward the mouse."""
 
     def __init__(self):
-        """Initializer"""
-
-        # Call the parent class initializer
         super().__init__()
-
-        # Set up the player info
-        self.player_list = arcade.SpriteList()
-
-        # Load the player texture. The ship points up by default. We need it to point right.
-        # That's why we rotate it 90 degrees clockwise.
-        texture = arcade.load_texture(":resources:images/space_shooter/playerShip1_orange.png")
-        texture = texture.rotate_90()
-
-        # Set up the player
-        self.player_sprite = Player(texture, SPRITE_SCALING)
-        self.player_sprite.angle = 0
-        self.player_sprite.center_x = WINDOW_WIDTH / 2
-        self.player_sprite.center_y = WINDOW_HEIGHT / 2
-        self.player_list.append(self.player_sprite)
-
-        # Set the background color
         self.background_color = arcade.color.BLACK
-        self.text = "Move the mouse and press 1-9 to apply an easing function."
+
+        self.ship_sprite = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_orange.png",
+            scale=0.5,
+        )
+        self.mode = 1
+        self.time_elapsed = 0.0
+
+        # Mouse target
+        self.target_x = WINDOW_WIDTH / 2
+        self.target_y = WINDOW_HEIGHT / 2
+
+        # Angle easing state
+        self.angle_start = 0.0
+        self.angle_end = 0.0
+        self.angle_ease_start_time = 0.0
+
+        # Position easing state
+        self.pos_start_x = WINDOW_WIDTH / 2
+        self.pos_start_y = WINDOW_HEIGHT / 2
+        self.pos_end_x = WINDOW_WIDTH / 2
+        self.pos_end_y = WINDOW_HEIGHT / 2
+        self.pos_ease_start_time = 0.0
+
+    def setup(self):
+        """Set up the game."""
+        self.ship_sprite.center_x = WINDOW_WIDTH / 2
+        self.ship_sprite.center_y = WINDOW_HEIGHT / 2
+        self.time_elapsed = 0.0
 
     def on_draw(self):
-        """Render the screen."""
-
-        # This command has to happen before we start drawing
+        """Render the scene."""
         self.clear()
 
-        # Draw all the sprites.
-        self.player_list.draw()
+        # Draw the ship
+        arcade.draw_sprite(self.ship_sprite)
 
-        arcade.draw_text(self.text, 15, 15, arcade.color.WHITE, 24)
-
-    def on_update(self, delta_time):
-        """Movement and game logic"""
-
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
-        self.player_list.update(delta_time)
-
-    def on_key_press(self, key, modifiers):
-        x = self.window.mouse["x"]
-        y = self.window.mouse["y"]
-
-        if key == arcade.key.KEY_1:
-            angle = arcade.math.get_angle_degrees(
-                x1=self.player_sprite.position[0], y1=self.player_sprite.position[1], x2=x, y2=y
-            )
-            self.player_sprite.angle = angle
-            self.text = "Instant angle change"
-        if key in [arcade.key.KEY_2, arcade.key.KEY_3, arcade.key.KEY_4, arcade.key.KEY_5]:
-            p1 = self.player_sprite.position
-            p2 = (x, y)
-            end_angle = arcade.math.get_angle_degrees(p1[0], p1[1], p2[0], p2[1])
-            start_angle = self.player_sprite.angle
-            if key == arcade.key.KEY_2:
-                ease_function = easing.linear
-                self.text = "Linear easing - angle"
-            elif key == arcade.key.KEY_3:
-                ease_function = easing.ease_in
-                self.text = "Ease in - angle"
-            elif key == arcade.key.KEY_4:
-                ease_function = easing.ease_out
-                self.text = "Ease out - angle"
-            elif key == arcade.key.KEY_5:
-                ease_function = easing.smoothstep
-                self.text = "Smoothstep - angle"
-            else:
-                raise ValueError("?")
-
-            self.player_sprite.easing_angle_data = easing.ease_angle(
-                start_angle, end_angle, rate=180, ease_function=ease_function
-            )
-
-        if key in [arcade.key.KEY_6, arcade.key.KEY_7, arcade.key.KEY_8, arcade.key.KEY_9]:
-            p1 = self.player_sprite.position
-            p2 = (x, y)
-            if key == arcade.key.KEY_6:
-                ease_function = easing.linear
-                self.text = "Linear easing - position"
-            elif key == arcade.key.KEY_7:
-                ease_function = easing.ease_in
-                self.text = "Ease in - position"
-            elif key == arcade.key.KEY_8:
-                ease_function = easing.ease_out
-                self.text = "Ease out - position"
-            elif key == arcade.key.KEY_9:
-                ease_function = easing.smoothstep
-                self.text = "Smoothstep - position"
-            else:
-                raise ValueError("?")
-
-            ex, ey = easing.ease_position(p1, p2, rate=180, ease_function=ease_function)
-            self.player_sprite.easing_x_data = ex
-            self.player_sprite.easing_y_data = ey
-
-    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        angle = arcade.math.get_angle_degrees(
-            x1=self.player_sprite.position[0], y1=self.player_sprite.position[1], x2=x, y2=y
+        # Draw a crosshair at the target
+        arcade.draw_circle_outline(
+            self.target_x, self.target_y, 10, arcade.color.RED, 2,
         )
-        self.player_sprite.angle = angle
+
+        # HUD
+        description = MODE_DESCRIPTIONS.get(self.mode, "")
+        arcade.draw_text(
+            f"Mode {self.mode}: {description}",
+            10, WINDOW_HEIGHT - 30,
+            color=arcade.color.WHITE,
+            font_size=16,
+        )
+        arcade.draw_text(
+            "Press 1-9 to change mode.  Click to set target.",
+            10, WINDOW_HEIGHT - 55,
+            color=arcade.color.GRAY,
+            font_size=12,
+        )
+
+    def _target_angle(self) -> float:
+        """Compute the angle from the ship to the target in degrees.
+
+        Arcade uses clockwise-positive angles and the ship sprite
+        points up at angle 0, so we negate atan2 and add 90.
+        """
+        diff_x = self.target_x - self.ship_sprite.center_x
+        diff_y = self.target_y - self.ship_sprite.center_y
+        return -math.degrees(math.atan2(diff_y, diff_x)) + 90
+
+    def _start_angle_ease(self):
+        """Record the current angle as the start and set up the ease."""
+        self.angle_start = self.ship_sprite.angle
+        target = self._target_angle()
+        delta = shortest_angle_delta(self.angle_start, target)
+        self.angle_end = self.angle_start + delta
+        self.angle_ease_start_time = self.time_elapsed
+
+    def _start_position_ease(self):
+        """Record the current position as the start and set up the ease."""
+        self.pos_start_x = self.ship_sprite.center_x
+        self.pos_start_y = self.ship_sprite.center_y
+        self.pos_end_x = self.target_x
+        self.pos_end_y = self.target_y
+        self.pos_ease_start_time = self.time_elapsed
+
+    def on_update(self, delta_time: float):
+        """Update ship angle and/or position based on current mode."""
+        self.time_elapsed += delta_time
+        ease_func = MODE_EASING.get(self.mode, Easing.LINEAR)
+
+        if self.mode == 1:
+            # Instant angle — always face the target directly
+            self.ship_sprite.angle = self._target_angle()
+
+        elif 2 <= self.mode <= 5:
+            # Angle easing
+            eased_angle = ease(
+                self.angle_start, self.angle_end,
+                self.angle_ease_start_time,
+                self.angle_ease_start_time + EASE_DURATION,
+                self.time_elapsed,
+                func=ease_func,
+            )
+            self.ship_sprite.angle = eased_angle
+
+        elif 6 <= self.mode <= 9:
+            # Position easing — also face the target instantly
+            self.ship_sprite.angle = self._target_angle()
+
+            eased_x = ease(
+                self.pos_start_x, self.pos_end_x,
+                self.pos_ease_start_time,
+                self.pos_ease_start_time + EASE_DURATION,
+                self.time_elapsed,
+                func=ease_func,
+            )
+            eased_y = ease(
+                self.pos_start_y, self.pos_end_y,
+                self.pos_ease_start_time,
+                self.pos_ease_start_time + EASE_DURATION,
+                self.time_elapsed,
+                func=ease_func,
+            )
+            self.ship_sprite.center_x = eased_x
+            self.ship_sprite.center_y = eased_y
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        """Set a new target and begin an easing animation."""
+        self.target_x = x
+        self.target_y = y
+
+        if self.mode == 1:
+            self.ship_sprite.center_x = x
+            self.ship_sprite.center_y = y
+        elif 2 <= self.mode <= 5:
+            self._start_angle_ease()
+        elif 6 <= self.mode <= 9:
+            self._start_position_ease()
+
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+        """Update target for instant-angle mode."""
+        if self.mode == 1:
+            self.target_x = x
+            self.target_y = y
+
+    def on_key_press(self, key: int, modifiers: int):
+        """Switch modes with number keys 1-9."""
+        key_map = {
+            arcade.key.KEY_1: 1, arcade.key.KEY_2: 2, arcade.key.KEY_3: 3,
+            arcade.key.KEY_4: 4, arcade.key.KEY_5: 5, arcade.key.KEY_6: 6,
+            arcade.key.KEY_7: 7, arcade.key.KEY_8: 8, arcade.key.KEY_9: 9,
+        }
+        new_mode = key_map.get(key)
+        if new_mode is not None:
+            self.mode = new_mode
+            if 2 <= new_mode <= 5:
+                self._start_angle_ease()
+            elif 6 <= new_mode <= 9:
+                self._start_position_ease()
 
 
 def main():
-    """ Main function """
-    # Create a window class. This is what actually shows up on screen
+    """Main function."""
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
-
-    # Create the GameView
     game = GameView()
-
-    # Show GameView on screen
+    game.setup()
     window.show_view(game)
-
-    # Start the arcade game loop
     arcade.run()
 
 

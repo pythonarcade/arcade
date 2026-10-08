@@ -33,7 +33,7 @@ class BackgroundTexture:
         self.texture = texture
 
         self._scale = scale
-        self._scale_transform = Mat3().scale(scale, scale)
+        self._scale_transform = Mat3().scale(1.0 / scale, 1.0 / scale)
 
         self._angle = angle
         self._angle_transform = Mat3().rotate(angle)
@@ -56,7 +56,7 @@ class BackgroundTexture:
     @scale.setter
     def scale(self, value: float):
         self._scale = value
-        self._scale_transform = Mat3().scale(value, value)
+        self._scale_transform = Mat3().scale(1.0 / value, 1.0 / value)
 
     @property
     def angle(self) -> float:
@@ -82,7 +82,7 @@ class BackgroundTexture:
     @offset.setter
     def offset(self, value: tuple[float, float]):
         self._offset = value
-        self._offset_transform = Mat3().translate(-value[0], value[1])
+        self._offset_transform = Mat3().translate(value[0], value[1])
 
     @property
     def wrap_x(self) -> int:

@@ -33,6 +33,7 @@ Find the required information in the following sections:
     concepts
     layouts
     style
+    animations
     own_widgets
     own_layout
     controller_support

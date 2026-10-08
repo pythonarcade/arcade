@@ -9,14 +9,13 @@ if os.environ.get("ARCADE_PYTEST_USE_RUST"):
 
     arcade_accelerate.bootstrap()
 
-import pytest
 import PIL.Image
+import pytest
 from pyglet.math import Mat4
 
 import arcade
+from arcade import LBWH, Rect, gl
 from arcade.clock import GLOBAL_CLOCK, GLOBAL_FIXED_CLOCK
-from arcade import Rect, LBWH
-from arcade import gl
 
 # from arcade.texture import default_texture_cache
 # NOTE: Load liberation fonts in unit tests
@@ -83,8 +82,9 @@ def create_window(width=1280, height=720, caption="Testing", **kwargs):
             gl_api=GL_BACKEND,
         )
         WINDOW.set_vsync(False)
-        # This value is being monkey-patched into the Window class so that tests can identify if we are using
-        # arcade-accelerate easily in case they need to disable something when it is enabled.
+        # This value is being monkey-patched into the Window class so that tests can
+        # identify if we are using arcade-accelerate easily in case they need to disable
+        # something when it is enabled.
         WINDOW.using_accelerate = os.environ.get("ARCADE_PYTEST_USE_RUST")  # pyright: ignore
     return WINDOW
 
@@ -339,8 +339,8 @@ class WindowProxy:
     def get_pixel_ratio(self):
         return self.window.get_pixel_ratio()
 
-    def set_mouse_visible(self, visible):
-        self.window.set_mouse_visible(visible)
+    def set_mouse_cursor_visible(self, visible):
+        self.window.set_mouse_cursor_visible(visible)
 
     def center_window(self):
         self.window.center_window()

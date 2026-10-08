@@ -1,9 +1,8 @@
-from typing import Callable, Any
+from typing import Any, Callable
 
-import pytest
 from pyglet.math import Vec2
-from arcade.types.rect import Rect, LBWH, LRBT, XYRR, XYWH
 
+from arcade.types.rect import LBWH, LRBT, XYRR, XYWH, Rect
 
 A_RECT = Rect(10, 20, 10, 20, 10, 10, 15, 15)
 

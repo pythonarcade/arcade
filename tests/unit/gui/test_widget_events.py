@@ -1,4 +1,4 @@
-from arcade.gui import UIWidget, Surface
+from arcade.gui import Surface, UIWidget
 from arcade.gui.events import UIOnUpdateEvent
 
 

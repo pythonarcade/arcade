@@ -21,7 +21,7 @@ Dependencies:
 
 import cv2  # type: ignore
 import numpy  # type: ignore
-import pyglet.gl as gl
+import pyglet.graphics.api.gl as gl
 
 import arcade
 

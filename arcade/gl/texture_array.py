@@ -4,10 +4,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from ..types import BufferProtocol
-from .types import (
-    BufferOrBufferProtocol,
-    pixel_formats,
-)
+from .types import BufferOrBufferProtocol, pixel_formats
 
 if TYPE_CHECKING:  # handle import cycle caused by type hinting
     from arcade.gl import Context

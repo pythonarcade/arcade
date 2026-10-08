@@ -1,9 +1,9 @@
 import ast
 import importlib
-from pathlib import Path
 import pkgutil
-import arcade.examples
+from pathlib import Path
 
+import arcade.examples
 
 EXAMPLE_ROOT = "arcade.examples"
 
@@ -35,7 +35,7 @@ def check_single_example_docstring(path: Path, name: str) -> None:
     """
 
     # Read the file & extract the docstring
-    code = ast.parse(path.read_text())
+    code = ast.parse(path.read_text(encoding="utf-8"))
     docstring = ast.get_docstring(code)
 
     # print(f"Checking if example {name} has a run instruction..")
@@ -62,6 +62,8 @@ def check_submodules(parent_module_absolute_name: str) -> None:
 
     # Check all modules nested immediately inside it on the file system
     for finder, child_module_name, is_pkg in pkgutil.iter_modules(parent_module_file_path):
+        if is_pkg:
+            continue
         child_module_file_path = Path(finder.path) / f"{child_module_name}.py"
         child_module_absolute_name = f"{parent_module_absolute_name}.{child_module_name}"
 

@@ -1,11 +1,12 @@
 import struct
+
 import pytest
-import arcade
-from pyglet import gl
-from pyglet.math import Mat4, Mat3
+from pyglet.graphics.api import gl
+from pyglet.math import Mat4
+
 from arcade.gl import ShaderException
-from arcade.gl.backends.opengl.uniform import UniformBlock
 from arcade.gl.backends.opengl.glsl import ShaderSource
+from arcade.gl.backends.opengl.uniform import UniformBlock
 
 pytestmark = pytest.mark.backendgl
 
@@ -155,7 +156,12 @@ def test_program_basic(ctx):
 
     # uniform values using byte data. struct.unpack in uniform setters will read from
     # objects supporting buffer protocol like glm and numpy types
-    mat44_bytes = b"\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?"
+    mat44_bytes = (
+        b"\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00"
+        b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?"
+    )
     program["matrix"] = mat44_bytes
     assert program["matrix"] == Mat4()
 
@@ -166,7 +172,7 @@ def test_program_basic(ctx):
 
 def test_vertex_shader(ctx):
     # Program with only vertex shader
-    program = ctx.program(
+    ctx.program(
         vertex_shader="""
         #version 330
         in vec2 in_pos;
@@ -213,7 +219,7 @@ def test_geo_shader(ctx):
 
 def test_gl_attributes(ctx):
     """Make sure built in attributes don't interfere with generic attribute detection"""
-    program = ctx.program(
+    ctx.program(
         vertex_shader="""
         #version 330
         in vec2 pos;
@@ -226,7 +232,7 @@ def test_gl_attributes(ctx):
 
 def test_compile_failed(ctx):
     with pytest.raises(ShaderException):
-        program = ctx.program(
+        ctx.program(
             vertex_shader="""
             #version 330
             in vec2 pos
@@ -239,7 +245,7 @@ def test_compile_failed(ctx):
 
 def test_link_failed(ctx):
     with pytest.raises(ShaderException):
-        program = ctx.program(
+        ctx.program(
             vertex_shader="""
             #version 330
             in vec2 in_pos;

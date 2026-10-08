@@ -20,7 +20,7 @@ The Python Arcade Library
 
 Arcade is an easy-to-learn Python library for creating 2D games and more. The
 friendly API caters to both beginners and experts alike. Do you want to craft
-craft your take on a 2D classic, or explore the full power of shaders? It's up to you.
+your take on a 2D classic, or explore the full power of shaders? It's up to you.
 
 What will you make?
 
@@ -121,9 +121,10 @@ help improve Arcade.
    :caption: Manual
 
    programming_guide/sprites/index
-   programming_guide/keyboard
+   programming_guide/input/index
    programming_guide/sound
    programming_guide/textures
+   programming_guide/text
    programming_guide/event_loop
    programming_guide/camera
    programming_guide/sections

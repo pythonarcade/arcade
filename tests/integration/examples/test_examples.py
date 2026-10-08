@@ -3,15 +3,15 @@ Import and run all examples one frame
 """
 
 import contextlib
-import io
 import inspect
+import io
 import os
-from importlib.machinery import SourceFileLoader
+import runpy
 from pathlib import Path
 
-import arcade
 import pytest
 
+import arcade
 import arcade.clock
 
 # File path, module path
@@ -38,6 +38,7 @@ IGNORE_PATTERNS = [
     "indirect",  # Indirect rendering cannot be run in unit test
     "bindless",  # Bindless textures cannot be run in unit test
     "spritelist_interaction",  # Currently only works for spritelist buffer backend. Not textures.
+    "numpy_sprite",  # Needs numpy installed as a dependency
 ]
 
 
@@ -72,9 +73,11 @@ def find_main_function(module):
     return None
 
 
+# Some examples demonstrate draw_text, which warns that it's slow
+@pytest.mark.filterwarnings("ignore::arcade.exceptions.PerformanceWarning")
 @pytest.mark.parametrize(
     "module_path, file_path, allow_stdout",
-    list_examples(),
+    list(list_examples()),
 )
 def test_examples(window_proxy, module_path, file_path, allow_stdout):
     """Run all examples"""
@@ -83,9 +86,8 @@ def test_examples(window_proxy, module_path, file_path, allow_stdout):
 
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):
-        # Manually load the module as __main__ so it runs on import
-        loader = SourceFileLoader("__main__", str(file_path))
-        loader.exec_module(loader.load_module())
+        # Run the example as __main__, as `python -m` would
+        runpy.run_path(str(file_path), run_name="__main__")
 
     # Reset the global clock's tick speed
     # is this a good argument against a global scope clock?

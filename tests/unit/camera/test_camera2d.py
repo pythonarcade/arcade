@@ -1,13 +1,12 @@
-from typing import Tuple
 from math import radians
+from typing import Tuple
 
 import pytest as pytest
-
 from pyglet.math import Vec2
 
-from arcade import Window, LRBT
+from arcade import LRBT, Window
 from arcade.camera import Camera2D
-from arcade.camera.data_types import ZeroProjectionDimension, OrthographicProjectionData
+from arcade.camera.data_types import OrthographicProjectionData, ZeroProjectionDimension
 
 
 class Camera2DSub1(Camera2D): ...
@@ -82,6 +81,20 @@ def test_camera2d_init_inheritance_safety(window: Window, camera_class):
     assert isinstance(subclassed, Camera2DSub1)
 
 
+ASPECT_RATIOS = (1.0, 4.0 / 3.0, 16.0 / 9.0, 16.0 / 10.0)
+
+
+def test_camera2d_init_aspect_equal_0_raises_zeroprojectiondimension(window: Window):
+    with pytest.raises(ZeroProjectionDimension):
+        Camera2D(aspect=0.0)
+
+
+@pytest.mark.parametrize("aspect", ASPECT_RATIOS)
+def test_camera2d_init_respects_aspect_ratio(window: Window, aspect):
+    ortho_camera = Camera2D(aspect=aspect)
+    assert ortho_camera.viewport_width / ortho_camera.viewport_height == pytest.approx(aspect)
+
+
 RENDER_TARGET_SIZES = [
     (800, 600),  # Normal window size
     (1280, 720),  # Bigger
@@ -105,6 +118,9 @@ def test_camera2d_init_uses_render_target_size(window: Window, width, height):
     assert ortho_camera.viewport_bottom == 0
     assert ortho_camera.viewport_top == height
 
+    assert ortho_camera.position.x == width / 2.0
+    assert ortho_camera.position.y == height / 2.0
+
 
 @pytest.mark.parametrize("width, height", RENDER_TARGET_SIZES)
 def test_camera2d_from_camera_data_uses_render_target_size(window: Window, width, height):
@@ -121,6 +137,9 @@ def test_camera2d_from_camera_data_uses_render_target_size(window: Window, width
     assert ortho_camera.viewport_right == width
     assert ortho_camera.viewport_bottom == 0
     assert ortho_camera.viewport_top == height
+
+    assert ortho_camera.position.x == width / 2.0
+    assert ortho_camera.position.y == height / 2.0
 
 
 def test_move_camera_and_project(window: Window):

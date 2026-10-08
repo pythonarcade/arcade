@@ -29,7 +29,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Don't show the mouse cursor
-        self.set_mouse_visible(False)
+        self.set_mouse_cursor_visible(False)
 
         self.background_color = arcade.color.AMAZON
 

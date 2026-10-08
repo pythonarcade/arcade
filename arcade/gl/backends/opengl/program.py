@@ -15,7 +15,8 @@ from ctypes import (
 )
 from typing import TYPE_CHECKING, Any, Iterable
 
-from pyglet import gl
+from pyglet.graphics import core
+from pyglet.graphics.api import gl
 
 from arcade.gl.exceptions import ShaderException
 from arcade.gl.program import Program
@@ -163,6 +164,9 @@ class OpenGLProgram(Program):
             weakref.finalize(self, OpenGLProgram.delete_glo, self._ctx, glo)
 
     def __del__(self):
+        # Creating the object can fail before the OpenGL object exists
+        if not hasattr(self, "_glo"):
+            return
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and self._glo > 0:
             self._ctx.objects.append(self)
@@ -256,7 +260,7 @@ class OpenGLProgram(Program):
         """
         # Check to see if the context was already cleaned up from program
         # shut down. If so, we don't need to delete the shaders.
-        if gl.current_context is None:
+        if core.current_context is None:
             return
 
         gl.glDeleteProgram(prog_id)

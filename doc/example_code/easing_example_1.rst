@@ -8,10 +8,8 @@ Easing Example 1
 .. image:: images/easing_example_1.png
     :width: 600px
     :align: center
-    :alt: Easing Example
+    :alt: Screen shot of Easing Example 1
 
-Source
-------
 .. literalinclude:: ../../arcade/examples/easing_example_1.py
-    :caption: easing_example.py
+    :caption: easing_example_1.py
     :linenos:

@@ -21,7 +21,7 @@ from arcade.gui.mixins import UIDraggableMixin
 from arcade.gui.mixins import UIMouseFilterMixin
 from arcade.gui.mixins import UIWindowLikeMixin
 from arcade.gui.nine_patch import NinePatchTexture
-from arcade.gui.property import ListProperty, DictProperty, Property, bind, unbind
+from arcade.gui.property import AliasProperty, ListProperty, DictProperty, Property, bind, unbind
 from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.ui_manager import UIManager
@@ -32,6 +32,7 @@ from arcade.gui.widgets import UISpace
 from arcade.gui.view import UIView
 from arcade.gui.widgets.dropdown import UIDropdown
 from arcade.gui.widgets import UISpriteWidget
+from arcade.gui.widgets import UIInteractiveSpriteWidget
 from arcade.gui.widgets import UIWidget
 from arcade.gui.widgets.buttons import (
     UITextureButton,
@@ -63,6 +64,7 @@ __all__ = [
     "UIFlatButton",
     "UIImage",
     "UIInteractiveWidget",
+    "UIInteractiveSpriteWidget",
     "UIInputText",
     "UILayout",
     "UILabel",
@@ -98,6 +100,7 @@ __all__ = [
     "Surface",
     "NinePatchTexture",
     # Property classes
+    "AliasProperty",
     "ListProperty",
     "DictProperty",
     "Property",

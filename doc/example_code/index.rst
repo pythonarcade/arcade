@@ -182,6 +182,12 @@ Player Movement
 
    :ref:`sprite_rotate_around_tank`
 
+.. figure:: images/thumbs/sprite_push_out.png
+   :figwidth: 170px
+   :target: sprite_push_out.html
+
+   :ref:`sprite_push_out`
+
 
 
 
@@ -239,6 +245,7 @@ Easing
    :target: easing_example_2.html
 
    :ref:`easing_example_2`
+
 
 Calculating a Path
 ^^^^^^^^^^^^^^^^^^
@@ -360,6 +367,18 @@ Shooting with Sprites
 
    :ref:`sprite_explosion_particles`
 
+.. figure:: images/thumbs/sprite_bullets_sweep.png
+   :figwidth: 170px
+   :target: sprite_bullets_sweep.html
+
+   :ref:`sprite_bullets_sweep`
+
+.. figure:: images/thumbs/sprite_laser_mirrors.png
+   :figwidth: 170px
+   :target: sprite_laser_mirrors.html
+
+   :ref:`sprite_laser_mirrors`
+
 Audio
 -----
 
@@ -449,6 +468,11 @@ Cameras
 
    :ref:`camera_platform`
 
+.. figure:: images/thumbs/camera2d_splitscreen.png
+   :figwidth: 170px
+   :target: camera2d_splitscreen.html
+
+   :ref:`camera2d_splitscreen`
 
 .. _view_examples:
 
@@ -649,6 +673,12 @@ Graphical User Interface
    :target: gui_own_layout.html
 
    :ref:`gui_own_layout`
+
+.. figure:: images/thumbs/interactive_sprite_widget.png
+   :figwidth: 170px
+   :target: interactive_sprite_widget.html
+
+   :ref:`interactive_sprite_widget`
 
 .. note::
 
@@ -937,5 +967,11 @@ Stress Tests
    :target: stress_test_collision.html
 
    :ref:`stress_test_collision`
+
+.. figure:: images/thumbs/sprite_pixel_demolition.png
+   :figwidth: 170px
+   :target: sprite_pixel_demolition.html
+
+   :ref:`sprite_pixel_demolition`
 
 

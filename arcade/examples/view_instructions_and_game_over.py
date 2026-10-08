@@ -97,7 +97,7 @@ class GameView(arcade.View):
         self.window.background_color = arcade.color.AMAZON
 
         # Don't show the mouse cursor
-        self.window.set_mouse_visible(False)
+        self.window.set_mouse_cursor_visible(False)
 
     def on_draw(self):
         self.clear()
@@ -134,7 +134,7 @@ class GameView(arcade.View):
         if len(self.coin_list) == 0:
             game_over_view = GameOverView()
             game_over_view.time_taken = self.time_taken
-            self.window.set_mouse_visible(True)
+            self.window.set_mouse_cursor_visible(True)
             self.window.show_view(game_over_view)
 
     def on_mouse_motion(self, x, y, _dx, _dy):

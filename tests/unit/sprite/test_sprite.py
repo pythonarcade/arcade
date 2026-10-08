@@ -5,7 +5,6 @@ Strictly unit tests for the sprite class.
 import pytest as pytest
 
 import arcade
-from pyglet.math import Vec2
 
 frame_counter = 0
 SPRITE_TEXTURE_FEMALE_PERSON_IDLE = arcade.load_texture(
@@ -482,3 +481,42 @@ def test_rescale_relative_to_point_with_vec_quants(window):
     assert sprite_7.center_y == window_center_y + 81
     assert sprite_7.width == 64
     assert sprite_7.height == 64
+
+
+def test_rescale_relative_to_point_scales_hit_box(window):
+    """The hit box must be rescaled along with the sprite"""
+    sprite = arcade.SpriteSolidColor(32, 32, center_x=100, center_y=100)
+    sprite.rescale_relative_to_point(sprite.position, (3.0, 2.0))
+    assert sprite.hit_box.scale == sprite.scale == (3.0, 2.0)
+    assert sprite.hit_box.get_adjusted_bounds() == (52.0, 148.0, 68.0, 132.0)
+    assert (sprite.left, sprite.right, sprite.bottom, sprite.top) == (52.0, 148.0, 68.0, 132.0)
+
+    # Collisions use the new size. This only touches the rescaled sprite.
+    other = arcade.SpriteSolidColor(32, 32, center_x=160, center_y=100)
+    assert arcade.check_for_collision(sprite, other) is True
+
+    # The spatial hash is updated with the new size too
+    sprite_list = arcade.SpriteList(use_spatial_hash=True)
+    sprite_list.append(sprite)
+    sprite.rescale_relative_to_point(sprite.position, 0.5)
+    assert sprite.hit_box.scale == sprite.scale == (1.5, 1.0)
+    assert arcade.get_sprites_at_point((120, 100), sprite_list) == [sprite]
+    assert arcade.get_sprites_at_point((130, 100), sprite_list) == []
+
+    # Moving away from the point while rescaling
+    sprite.rescale_relative_to_point((0, 100), 2.0)
+    assert sprite.position == (200, 100)
+    assert sprite.scale == (3.0, 2.0)
+    assert sprite.hit_box.get_adjusted_bounds() == (152.0, 248.0, 68.0, 132.0)
+
+
+def test_sprite_list_rescale_scales_hit_boxes(window):
+    """SpriteList.rescale() uses rescale_relative_to_point(), so must rescale hit boxes too"""
+    sprite_list = arcade.SpriteList()
+    for x in (0, 100):
+        sprite_list.append(arcade.SpriteSolidColor(20, 20, center_x=x, center_y=0))
+    sprite_list.rescale(2.0)
+    for sprite in sprite_list:
+        assert sprite.hit_box.scale == (2.0, 2.0)
+        left, right, bottom, top = sprite.hit_box.get_adjusted_bounds()
+        assert right - left == top - bottom == 40.0

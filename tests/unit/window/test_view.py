@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from arcade import Window, View, color, get_image
+from arcade import View, color
 
 
 def test_on_show_view_called(window):

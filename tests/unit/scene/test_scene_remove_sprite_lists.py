@@ -1,5 +1,6 @@
-import arcade
 import pytest
+
+import arcade
 
 
 def test_remove_sprite_list_by_index():

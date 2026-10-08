@@ -513,7 +513,7 @@ it over:
     :caption: Flip Up Cards
     :linenos:
     :pyobject: MyGame.on_mouse_press
-    :emphasize-lines: 15-18
+    :emphasize-lines: 17-20
 
 Test
 ~~~~

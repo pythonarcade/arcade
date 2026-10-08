@@ -74,7 +74,6 @@ def shader_math():
     This is just around to debug shader math.
     The shader needs to be simplified at some point.
     """
-    atlas_size = Vec2(8, 8)
     atlas_size_uniform = 8
     # 8 x x texture
     uv0 = Vec2(0.0625, 0.0625)  # upper_left

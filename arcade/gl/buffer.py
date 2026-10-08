@@ -3,10 +3,13 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
+from arcade.gl import enums
 from arcade.types import BufferProtocol
 
 if TYPE_CHECKING:
     from arcade.gl import Context
+
+_usages = {"static": enums.STATIC_DRAW, "dynamic": enums.DYNAMIC_DRAW, "stream": enums.STREAM_DRAW}
 
 
 class Buffer(ABC):

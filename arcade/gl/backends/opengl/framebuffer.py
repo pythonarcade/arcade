@@ -4,7 +4,8 @@ import weakref
 from ctypes import Array, c_int, c_uint, string_at
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics import core
+from pyglet.graphics.api import gl
 
 from arcade.gl.framebuffer import DefaultFrameBuffer, Framebuffer
 from arcade.gl.types import pixel_formats
@@ -102,6 +103,9 @@ class OpenGLFramebuffer(Framebuffer):
             weakref.finalize(self, OpenGLFramebuffer.delete_glo, ctx, fbo_id)
 
     def __del__(self):
+        # Creating the object can fail before the OpenGL object exists
+        if not hasattr(self, "_glo"):
+            return
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and not self.is_default and self._glo.value > 0:
             self._ctx.objects.append(self)
@@ -208,12 +212,22 @@ class OpenGLFramebuffer(Framebuffer):
                 if len(color) == 3:
                     clear_color = color[0] / 255, color[1] / 255, color[2] / 255, 1.0
                 elif len(color) == 4:
-                    clear_color = color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255
+                    clear_color = (
+                        color[0] / 255,
+                        color[1] / 255,
+                        color[2] / 255,
+                        color[3] / 255,
+                    )
                 else:
                     raise ValueError("Color should be a 3 or 4 component tuple")
             elif color_normalized is not None:
                 if len(color_normalized) == 3:
-                    clear_color = color_normalized[0], color_normalized[1], color_normalized[2], 1.0
+                    clear_color = (
+                        color_normalized[0],
+                        color_normalized[1],
+                        color_normalized[2],
+                        1.0,
+                    )
                 elif len(color_normalized) == 4:
                     clear_color = color_normalized
                 else:
@@ -304,7 +318,7 @@ class OpenGLFramebuffer(Framebuffer):
             framebuffer_id:
                 Framebuffer id destroy (glo)
         """
-        if gl.current_context is None:
+        if core.current_context is None:
             return
 
         gl.glDeleteFramebuffers(1, framebuffer_id)

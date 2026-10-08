@@ -5,6 +5,7 @@ Pymunk Physics Engine
 import logging
 import math
 from collections.abc import Callable
+from typing import Any
 
 import pymunk
 from pyglet.math import Vec2
@@ -265,7 +266,7 @@ class PymunkPhysicsEngine:
 
         # Set the body's position
         body.position = pymunk.Vec2d(sprite.center_x, sprite.center_y)
-        body.angle = math.radians(sprite.angle)
+        body.angle = math.radians(-sprite.angle)
 
         # Callback used if we need custom gravity, damping, velocity, etc.
         def velocity_callback(
@@ -513,7 +514,7 @@ class PymunkPhysicsEngine:
             raise PymunkException(
                 "Tried to set a rotation, but this physics object has no 'body' set."
             )
-        physics_object.body.angle = math.radians(rotation)
+        physics_object.body.angle = math.radians(-rotation)
 
     def set_velocity(self, sprite: Sprite, velocity: tuple[float, float]) -> None:
         """Directly set the velocity of a sprite known to the engine.
@@ -568,37 +569,29 @@ class PymunkPhysicsEngine:
             self.collision_types.append(second_type)
         second_type_id = self.collision_types.index(second_type)
 
-        def _f1(arbiter, space, data):
+        def _f1(arbiter: pymunk.Arbiter, space: pymunk.Space, data: Any) -> None:
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
             should_process_collision = False
             if sprite_a is not None and sprite_b is not None and begin_handler is not None:
                 should_process_collision = begin_handler(sprite_a, sprite_b, arbiter, space, data)
-            return should_process_collision
+            arbiter.process_collision = should_process_collision
 
-        def _f2(arbiter, space, data):
+        def _f2(arbiter: pymunk.Arbiter, space: pymunk.Space, data: Any) -> None:
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
             if sprite_a is not None and sprite_b is not None and post_handler is not None:
                 post_handler(sprite_a, sprite_b, arbiter, space, data)
 
-        def _f3(arbiter, space, data):
+        def _f3(arbiter: pymunk.Arbiter, space: pymunk.Space, data: Any) -> None:
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
-            if pre_handler is not None:
-                return pre_handler(sprite_a, sprite_b, arbiter, space, data)
+            if sprite_a is not None and sprite_b is not None and pre_handler is not None:
+                arbiter.process_collision = pre_handler(sprite_a, sprite_b, arbiter, space, data)
 
-        def _f4(arbiter, space, data):
+        def _f4(arbiter: pymunk.Arbiter, space: pymunk.Space, data: Any) -> None:
             sprite_a, sprite_b = self.get_sprites_from_arbiter(arbiter)
             if separate_handler:
                 separate_handler(sprite_a, sprite_b, arbiter, space, data)
 
-        h = self.space.add_collision_handler(first_type_id, second_type_id)
-        if begin_handler:
-            h.begin = _f1
-        if post_handler:
-            h.post_solve = _f2
-        if pre_handler:
-            h.pre_solve = _f3
-        if separate_handler:
-            h.separate = _f4
+        self.space.on_collision(first_type_id, second_type_id, _f1, _f3, _f2, _f4)
 
     def update_sprite(self, sprite: Sprite) -> None:
         """
@@ -709,6 +702,40 @@ class PymunkPhysicsEngine:
             )
         physics_object.body.apply_force_at_local_point(force, (0, 0))
 
+    def apply_torque(self, sprite: Sprite, torque: float):
+        """
+        Apply torque to a Sprite.
+
+        Args:
+            sprite:
+                The sprite to apply the force to.
+            torque:
+                The torque to apply to the sprite.
+        """
+        physics_object = self.sprites[sprite]
+        if physics_object.body is None:
+            raise PymunkException(
+                "Tried to apply a torque, but this physics object has no 'body' set."
+            )
+        physics_object.body.torque = torque
+
+    def set_angular_velocity(self, sprite: Sprite, velocity: float):
+        """
+        Set velocity to a Sprite.
+
+        Args:
+            sprite:
+                The sprite to set the angular velocity of.
+            velocity:
+                The velocity to set.
+        """
+        physics_object = self.sprites[sprite]
+        if physics_object.body is None:
+            raise PymunkException(
+                "Tried to set velocity, but this physics object has no 'body' set."
+            )
+        physics_object.body.angular_velocity = velocity
+
     def set_horizontal_velocity(self, sprite: Sprite, velocity: float) -> None:
         """
         Set a sprite's velocity.
@@ -783,7 +810,7 @@ class PymunkPhysicsEngine:
         """
         grounding = {
             "normal": pymunk.Vec2d.zero(),
-            "penetration": pymunk.Vec2d.zero(),
+            "penetration": 0.0,
             "impulse": pymunk.Vec2d.zero(),
             "position": pymunk.Vec2d.zero(),
             "body": None,
@@ -813,7 +840,9 @@ class PymunkPhysicsEngine:
             ):
                 grounding["normal"] = n
                 grounding["penetration"] = -arbiter.contact_point_set.points[0].distance
-                grounding["body"] = arbiter.shapes[1].body
+                # Mypy is making bad inferences about what this is based on the other elements
+                # and this doesn't particularly feel worth a TypedDict
+                grounding["body"] = arbiter.shapes[1].body  # type: ignore
                 grounding["impulse"] = arbiter.total_impulse
                 grounding["position"] = arbiter.contact_point_set.points[0].point_b
 

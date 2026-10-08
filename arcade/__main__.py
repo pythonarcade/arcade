@@ -1,4 +1,4 @@
-from arcade.management import show_info
+from arcade.cli import run_arcade_cli
 
 if __name__ == "__main__":
-    show_info()
+    run_arcade_cli()

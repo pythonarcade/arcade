@@ -246,8 +246,8 @@ class UIManager(EventDispatcher):
                 # actual layout
                 if child.size_hint:
                     sh_x, sh_y = child.size_hint
-                    nw = surface_width * sh_x if sh_x else None
-                    nh = surface_height * sh_y if sh_y else None
+                    nw = surface_width * sh_x if sh_x is not None else None
+                    nh = surface_height * sh_y if sh_y is not None else None
                     child.rect = child.rect.resize(nw, nh, anchor=AnchorPoint.BOTTOM_LEFT)
 
                 if child.size_hint_min:

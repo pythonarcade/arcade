@@ -6,22 +6,66 @@ import arcade
 from arcade import uicolor
 from arcade.gui import UIEvent, UIMousePressEvent
 from arcade.gui.events import UIControllerButtonPressEvent, UIOnChangeEvent, UIOnClickEvent
+from arcade.gui.experimental import UIScrollArea
 from arcade.gui.experimental.focus import UIFocusMixin
+from arcade.gui.experimental.scroll_area import UIScrollBar
 from arcade.gui.ui_manager import UIManager
-from arcade.gui.widgets import UILayout, UIWidget
+from arcade.gui.widgets import UILayout, UIWidget, W
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout
 
 
 class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
-    """Represents the dropdown options overlay.
+    """Represents the dropdown options overlay with scroll support.
 
-    Currently only handles closing the overlay when clicked outside of the options.
+    Contains a UIScrollArea with the option buttons and a UIScrollBar
+    for navigating when options exceed the maximum height.
     """
 
-    # TODO move also options logic to this class
+    SCROLL_BAR_WIDTH = 15
 
-    def show(self, manager: UIManager):
+    def __init__(
+        self,
+        max_height: float = 200,
+        invert_scroll: bool = False,
+        scroll_speed: float = 15.0,
+        show_scroll_bar: bool = False,
+    ):
+        # Horizontal layout: [scroll_area | scroll_bar]
+        # size_hint=None prevents UIManager from overriding the rect
+        # that UIDropdown.do_layout explicitly sets.
+        super().__init__(vertical=False, align="top", size_hint=None)
+        self._max_height = max_height
+        self._show_scroll_bar = show_scroll_bar
+
+        self._options_layout = UIBoxLayout(size_hint=(1, 0))
+        self._scroll_area = UIScrollArea(
+            width=100,
+            height=100,
+            size_hint=(1, 1),
+            scroll_speed=scroll_speed,
+            invert_scroll=invert_scroll,
+        )
+        self._scroll_area.add(self._options_layout)
+
+        super().add(self._scroll_area)
+
+        if show_scroll_bar:
+            self._scroll_bar = UIScrollBar(self._scroll_area, vertical=True)
+            self._scroll_bar.size_hint = (None, 1)
+            self._scroll_bar.rect = self._scroll_bar.rect.resize(width=self.SCROLL_BAR_WIDTH)
+            super().add(self._scroll_bar)
+
+    def add_option(self, widget: W) -> W:
+        """Add an option widget to the options layout."""
+        return self._options_layout.add(widget)
+
+    def clear_options(self):
+        """Clear all options and reset scroll position."""
+        self._options_layout.clear()
+        self._scroll_area.scroll_y = 0
+
+    def show(self, manager: UIManager | UIScrollArea):
         manager.add(self, layer=UIManager.OVERLAY_LAYER)
 
     def hide(self):
@@ -66,6 +110,10 @@ class UIDropdown(UILayout):
         height: Height of each of the option.
         default: The default value shown.
         options: The options displayed when the layout is clicked.
+        max_height: Maximum height of the dropdown menu before scrolling is enabled.
+        invert_scroll: Invert the scroll direction of the dropdown menu.
+        scroll_speed: Speed of scrolling in the dropdown menu.
+        show_scroll_bar: Show a scroll bar in the dropdown menu.
         primary_style: The style of the primary button.
         dropdown_style: The style of the buttons in the dropdown.
         active_style: The style of the dropdown button, which represents the active option.
@@ -119,6 +167,10 @@ class UIDropdown(UILayout):
         height: float = 30,
         default: str | None = None,
         options: list[str | None] | None = None,
+        max_height: float = 200,
+        invert_scroll: bool = False,
+        scroll_speed: float = 15.0,
+        show_scroll_bar: bool = False,
         primary_style=None,
         dropdown_style=None,
         active_style=None,
@@ -149,7 +201,12 @@ class UIDropdown(UILayout):
         )
         self._default_button.on_click = self._on_button_click  # type: ignore
 
-        self._overlay = _UIDropdownOverlay()
+        self._overlay = _UIDropdownOverlay(
+            max_height=max_height,
+            invert_scroll=invert_scroll,
+            scroll_speed=scroll_speed,
+            show_scroll_bar=show_scroll_bar,
+        )
         self._update_options()
 
         # add children after super class setup
@@ -175,16 +232,16 @@ class UIDropdown(UILayout):
 
     def _update_options(self):
         # generate options
-        self._overlay.clear()
+        self._overlay.clear_options()
 
         for option in self._options:
             if option is None:  # None = UIDropdown.DIVIDER, required by pyright
-                self._overlay.add(
+                self._overlay.add_option(
                     UIWidget(width=self.width, height=2).with_background(color=arcade.color.GRAY)
                 )
                 continue
             else:
-                button = self._overlay.add(
+                button = self._overlay.add_option(
                     UIFlatButton(
                         text=option,
                         width=self.width,
@@ -197,11 +254,19 @@ class UIDropdown(UILayout):
         self._overlay.detect_focusable_widgets()
 
     def _show_overlay(self):
-        manager = self.get_ui_manager()
-        if manager is None:
-            raise Exception("UIDropdown could not find UIManager in its parents.")
+        # traverse parents until UIManager or UIScrollArea is found
+        parent = self.parent
+        while parent is not None:
+            if isinstance(parent, UIManager):
+                break
+            if isinstance(parent, UIScrollArea):
+                break
+            parent = parent.parent
 
-        self._overlay.show(manager)
+        if parent is None:
+            raise Exception("UIDropdown could not find a valid parent for the overlay.")
+
+        self._overlay.show(parent)
 
     def _on_button_click(self, _: UIOnClickEvent):
         self._show_overlay()
@@ -216,13 +281,22 @@ class UIDropdown(UILayout):
         but is required for the dropdown."""
         self._default_button.rect = self.rect
 
-        # resize layout to contain widgets
-        overlay = self._overlay
-        rect = overlay.rect
-        if overlay.size_hint_min is not None:
-            rect = rect.resize(*overlay.size_hint_min)
+        # Calculate total options height
+        total_h = 0
+        for option in self._options:
+            total_h += 2 if option is None else self.height
 
-        self._overlay.rect = rect.align_top(self.bottom - 2).align_left(self._default_button.left)
+        # Cap at max_height
+        overlay = self._overlay
+        visible_h = min(total_h, overlay._max_height) if total_h > 0 else self.height
+        scroll_bar_w = _UIDropdownOverlay.SCROLL_BAR_WIDTH if overlay._show_scroll_bar else 0
+        overlay_w = self.width + scroll_bar_w
+
+        overlay.rect = (
+            overlay.rect.resize(overlay_w, visible_h)
+            .align_top(self.bottom - 2)
+            .align_left(self._default_button.left)
+        )
 
     def on_change(self, event: UIOnChangeEvent):
         """To be implemented by the user, triggered when the current selected value

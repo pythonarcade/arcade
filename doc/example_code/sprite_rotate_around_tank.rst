@@ -20,4 +20,4 @@ See the docstring, comments, and on screen instructions for further info.
 .. literalinclude:: ../../arcade/examples/sprite_rotate_around_tank.py
     :caption: sprite_rotation_around_tank.py
     :linenos:
-    :emphasize-lines: 58-72, 135-160
+    :emphasize-lines: 60-75, 143-167

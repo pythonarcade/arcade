@@ -36,11 +36,9 @@ def dump_obj(obj):
 
 def dump_controller(controller):
     print(f"========== {controller}")
-    print(f"Left X        {controller.leftx}")
-    print(f"Left Y        {controller.lefty}")
+    print(f"Left X,Y      {controller.leftstick[0]},{controller.leftstick[1]}")
     print(f"Left Trigger  {controller.lefttrigger}")
-    print(f"Right X       {controller.rightx}")
-    print(f"Right Y       {controller.righty}")
+    print(f"Right X,Y       {controller.rightstick[0]},{controller.rightstick[1]}")
     print(f"Right Trigger {controller.righttrigger}")
     print("========== Extra controller")
     dump_obj(controller)
@@ -58,11 +56,11 @@ def dump_controller_state(ticks, controller):
     num_fmts = ["{:5.2f}"] * 6
     fmt_str += " ".join(num_fmts)
     print(fmt_str.format(ticks,
-                         controller.leftx,
-                         controller.lefty,
+                         controller.leftstick[0],
+                         controller.leftstick[1],
                          controller.lefttrigger,
-                         controller.rightx,
-                         controller.righty,
+                         controller.rightstick[0],
+                         controller.rightstick[0],
                          controller.righttrigger,
                          ))
 
@@ -202,8 +200,10 @@ class GameView(arcade.View):
 
         if self.controller:
             # Controller input - movement
+            left_position = self.controller.leftstick
+            right_position = self.controller.rightstick
             move_x, move_y, move_angle = get_stick_position(
-                self.controller.leftx, self.controller.lefty
+                left_position[0], left_position[1]
             )
             if move_angle:
                 self.player.change_x = move_x * MOVEMENT_SPEED
@@ -215,7 +215,7 @@ class GameView(arcade.View):
 
             # Controller input - shooting
             shoot_x, shoot_y, shoot_angle = get_stick_position(
-                self.controller.rightx, self.controller.righty
+                right_position[0], right_position[1]
             )
             if shoot_angle:
                 self.spawn_bullet(shoot_angle)

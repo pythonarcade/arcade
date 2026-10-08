@@ -6,18 +6,17 @@ sphinx:
   configuration: doc/conf.py
 
 build:
-  os: ubuntu-22.04
+  os: ubuntu-24.04
   tools:
-    # If you change this, you also need to update .github/workflows/test.yml
-    # to make sure doc test builds run on the same version.
-    python: "3.10"  # July 2024 | See autobuild info in pyproject.toml's dev dependencies
+    python: "3.13"
 
 python:
   install:
-    - method: pip
-      path: .
-      extra_requirements:
+    - method: uv
+      command: sync
+      groups:
         - dev
+        - docs
 
 # Build PDF & ePub
 # formats:

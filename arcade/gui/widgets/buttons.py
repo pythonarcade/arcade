@@ -383,4 +383,10 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget[UIFlatButtonStyle], UITex
         font_name = style.get("font_name", UIFlatButton.UIStyle.font_name)
         font_size = style.get("font_size", UIFlatButton.UIStyle.font_size)
         font_color = style.get("font_color", UIFlatButton.UIStyle.font_color)
-        self.ui_label.update_font(font_name, font_size, font_color)
+
+        if (
+            font_name != self.ui_label.font_name
+            or font_size != self.ui_label.font_size
+            or font_color != self.ui_label.font_color
+        ):
+            self.ui_label.update_font(font_name, font_size, font_color)

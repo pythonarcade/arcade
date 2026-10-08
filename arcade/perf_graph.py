@@ -1,7 +1,9 @@
 import random
 
 import pyglet.clock
-from pyglet.graphics import Batch
+
+# Pyright can't figure out the dynamic import for the backends in Pyglet
+from pyglet.graphics import Batch  # type: ignore
 from pyglet.shapes import Line
 
 import arcade

@@ -74,7 +74,7 @@ class GameView(arcade.View):
         self.level = 1
 
         # Don't show the mouse cursor
-        self.window.set_mouse_visible(False)
+        self.window.set_mouse_cursor_visible(False)
 
         # Set the background color
         self.background_color = arcade.color.AMAZON

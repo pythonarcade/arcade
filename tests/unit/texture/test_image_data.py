@@ -1,5 +1,6 @@
-from arcade.texture import ImageData
 from PIL import Image
+
+from arcade.texture import ImageData
 
 
 def test_create_sha256():

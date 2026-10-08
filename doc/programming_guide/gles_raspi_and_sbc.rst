@@ -110,9 +110,7 @@ The table below lists these newer incompatible Raspberry Pi devices.
 SBC Requirements
 ----------------
 Any Single Board Computer (SBC) which meets the following
-requirements may work. If you are a parent or educator shopping for a
-compatible SBC, please see the :ref:`sbc_rule_of_thumb`.
-
+requirements may work.
 
 Standard Python
 ^^^^^^^^^^^^^^^

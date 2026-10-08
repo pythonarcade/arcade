@@ -1,7 +1,7 @@
 import math
 from copy import deepcopy
 from itertools import product
-from typing import Iterable, Callable, Tuple
+from typing import Callable, Iterable, Tuple
 from unittest.mock import Mock
 
 import pytest

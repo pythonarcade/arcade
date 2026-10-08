@@ -20,10 +20,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "pyglet~=2.1.5",
-    "pillow~=11.3.0",
-    "pymunk~=6.9.0",
+    "pillow>=11.3.0",
     "pytiled-parser~=2.2.9",
+    "pyglet==3.0.dev11",
 ]
 dynamic = ["version"]
 
@@ -35,21 +34,24 @@ Issues = "https://github.com/pythonarcade/arcade/issues"
 Source = "https://github.com/pythonarcade/arcade"
 Book = "https://learn.arcade.academy"
 
-[project.optional-dependencies]
+[dependency-groups]
+extras = [
+    "pymunk~=7.3.0"
+]
+# Doc building (requires Python >=3.12 due to Sphinx 9.x)
+docs = [
+    "sphinx==9.1.0; python_version >= '3.12'",
+    "sphinx_rtd_theme==3.1.0; python_version >= '3.12'",
+    "sphinx-rtd-dark-mode==1.3.0; python_version >= '3.12'",
+    "sphinx-autobuild==2025.8.25; python_version >= '3.12'",
+    "sphinx-copybutton==0.5.2; python_version >= '3.12'",
+    "sphinx-sitemap==2.9.0; python_version >= '3.12'",
+    "sphinx-togglebutton==0.4.5; python_version >= '3.12'",
+    "pygments==2.20.0; python_version >= '3.12'",
+    "docutils==0.22.4; python_version >= '3.12'",
+]
 # Used for dev work
 dev = [
-    "sphinx==8.1.3",               # April 2024 | Updated 2024-07-15, 7.4+ is broken with sphinx-autobuild
-    "sphinx_rtd_theme==3.0.2",     # Nov 2024
-    "sphinx-rtd-dark-mode==1.3.0",
-    "sphinx-autobuild==2024.10.3", # April 2024 | Due to this, Python 3.10+ is required to serve docs
-    "sphinx-copybutton==0.5.2",    # April 2023
-    "sphinx-sitemap==2.6.0",       # April 2024
-    "sphinx-togglebutton==0.3.2",  # May 2025
-    "pygments==2.19.1",            # 2.18 has breaking changes in lexer
-    "docutils==0.21.2",            # ?
-    # "pyyaml==6.0.1",
-    # "readthedocs-sphinx-search==0.3.2",
-    # "sphinx-autodoc-typehints==2.0.1",
     # --- tools and build
     "pytest",
     "pytest-cov",
@@ -59,15 +61,18 @@ dev = [
     "ruff",
     "mypy",
     "pyright==1.1.387",
-    "click==8.1.7",     # Temp fix until we bump typer
-    "typer==0.12.5",    # Needed for make.py
+    "typer==0.27.2",    # Needed for make.py; older typer incompatible with security-patched click
     "wheel",
+    "bottle",            # Used for web testing playground
+    {include-group = "extras"},
+    {include-group = "docs"},
 ]
+
 # Testing only
 testing_libraries = ["pytest", "pytest-mock", "pytest-cov", "pyyaml==6.0.1"]
 
 [project.scripts]
-arcade = "arcade.management:execute_from_command_line"
+arcade = "arcade.cli:run_arcade_cli"
 
 [project.entry-points.pyinstaller40]
 hook-dirs = "arcade.__pyinstaller:get_hook_dirs"
@@ -89,7 +94,6 @@ output-format = "full"
 lint.exclude = [
     "venv",
     ".venv*",
-    "tests",
     "build",
     "doc",
     "util",
@@ -117,6 +121,11 @@ lint.select = [
 [tool.ruff.format]
 docstring-code-format = false
 exclude = ["arcade/examples/*", "benchmarks/*", "doc/*"]
+
+[tool.ruff.lint.isort]
+# A pyglet checkout next to arcade would otherwise make ruff treat pyglet as
+# first party, and sort its imports differently than in CI
+known-third-party = ["pyglet"]
 
 # This ignores __init__.py files and examples for import sorting
 [tool.ruff.lint.per-file-ignores]
@@ -200,4 +209,9 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "PyInstaller.*"
+ignore_missing_imports = true
+
+# Only the numpy_sprite example uses it, and it isn't a dependency
+[[tool.mypy.overrides]]
+module = "numpy.*"
 ignore_missing_imports = true

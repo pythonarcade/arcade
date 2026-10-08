@@ -13,4 +13,4 @@ Sprite Explosions Bitmapped
 .. literalinclude:: ../../arcade/examples/sprite_explosion_bitmapped.py
     :caption: sprite_explosion_bitmapped.py
     :linenos:
-    :emphasize-lines: 26, 29-47, 62, 71-87, 99, 140, 181, 192-203
+    :emphasize-lines: 26, 29-49, 64, 82-104, 115, 145, 195, 206-217

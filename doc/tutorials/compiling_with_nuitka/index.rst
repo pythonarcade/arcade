@@ -59,6 +59,12 @@ Converting that code to a standalone executable is as easy as:
 
     python -m nuitka 17_views.py --standalone --enable-plugin=numpy
 
+.. note::
+
+    Experimental features of Arcade will not be included in the build
+    unless you explicitly include them using
+    ``--include-module=arcade.experimental``.
+
 Now sit back and relax. Might as well go and grab a cup of coffee since compilation
 takes time, sometimes maybe up to 2 hours, depending on your machine's specs.
 After the process is finished, two new folders named ``17_views.py.dist`` and

@@ -1,9 +1,10 @@
 import PIL.Image
 import pytest
-from pyglet.image.atlas import AllocatorException
+from pyglet.graphics.atlas import AllocatorException
+
 import arcade
 from arcade import DefaultTextureAtlas, load_texture
-from arcade.gl import Texture2D, Framebuffer
+from arcade.gl import Framebuffer, Texture2D
 
 
 def test_create(ctx, common):

@@ -107,7 +107,7 @@ def test_iterate_widget_children(window):
     assert list(parent) == [child1, child2]
 
 
-def test_chained_widgets_are_collected_by_gc():
+def test_chained_widgets_are_collected_by_gc(window):
     """
     Test that chained widgets are collected by garbage collector.
     This is to ensure that there are no memory leaks when widgets are

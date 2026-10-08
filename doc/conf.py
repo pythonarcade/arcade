@@ -45,12 +45,13 @@ for k, v in os.environ.items():
 from util.doc_helpers.real_filesystem import copy_media
 
 
-# As of pyglet==2.1.dev7, this is no longer set in pyglet/__init__.py
-# because Jupyter / IPython always load Sphinx into sys.modules. See
-# the following for more info:
-# 1. The ticket: https://github.com/pyglet/pyglet/issues/1215
-# 2. The commit: https://github.com/pyglet/pyglet/commit/97076c3a33a7d368cc9c9e44ca67769b6a16a905
-sys.is_pyglet_doc_run = True
+# Tell pyglet this is a documentation build, so it mocks out native
+# libraries instead of loading them. As of pyglet 3.0.dev11 this is the
+# PYGLET_DOC_BUILD environment variable, read when pyglet is first
+# imported, so it must be set before anything imports pyglet. It replaces
+# the old sys.is_pyglet_doc_run flag, and pyglet's LibraryMock now has the
+# __bool__ and __iter__ methods this file used to patch in.
+os.environ["PYGLET_DOC_BUILD"] = "1"
 
 # --- Pre-processing Tasks
 
@@ -64,7 +65,7 @@ print()
 for k, v in ENV.items():
     log.info(f"Env variable {k:{col_width}} : {v!r}")
 
-# _temp_version = (REPO_LOCAL_ROOT / "arcade" / "VERSION").read_text().replace("-",'')
+# _temp_version = (REPO_LOCAL_ROOT / "arcade" / "_VERSION").read_text().replace("-",'')
 
 # Don't change to
 # from arcade.version import VERSION
@@ -212,7 +213,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Python Arcade Library"
-copyright = "2025, Paul Vincent Craven"
+copyright = "2026, Paul Vincent Craven"
 author = "Paul Vincent Craven"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -257,6 +258,7 @@ pygments_style = "default"  # will use "sphinx" or the theme's default
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = "sphinx_rtd_theme"
+html_show_sourcelink = False # pending: better solution to #2859
 
 # See sphinx-rtd-theme docs for details on each option:
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/configuring.html

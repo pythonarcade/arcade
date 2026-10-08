@@ -36,5 +36,5 @@ Other Locations
 Arcade has a presence on the platforms below, but they're not very active as
 of Summer 2024:
 
-* `r/pythonarcadde <Reddit>`_ on Reddit
-* `@ArcadeLibrary <Twitter>`_ on x.com (formerly Twitter)
+* `r/pythonarcade <https://www.reddit.com/r/pythonarcade/>`_ on Reddit
+* `@ArcadeLibrary <https://x.com/ArcadeLibrary>`_ on x.com (formerly Twitter)

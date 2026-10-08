@@ -2,76 +2,31 @@
 Drawing text with pyglet label
 """
 
-from ctypes import c_int, c_ubyte
+import math
+from enum import Enum
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
+import PIL.Image
+import PIL.ImageChops
 import pyglet
+from pyglet.enums import Style, Weight
+
+# Pyright can't figure out the dynamic backend imports in pyglet.graphics
+# right now. Maybe can fix in future Pyglet version
+from pyglet.graphics import Batch, Group  # type: ignore
+from pyglet.text import LinearGradient
 
 import arcade
-from arcade.exceptions import PerformanceWarning, warning
+from arcade.clock import GLOBAL_CLOCK
+from arcade.exceptions import NoArcadeWindowError, PerformanceWarning, warning
 from arcade.resources import resolve
 from arcade.texture_atlas import TextureAtlasBase
-from arcade.types import Color, Point, RGBOrA255
+from arcade.types import RGBA255, Color, Point, RGBOrA255
 from arcade.types.rect import LRBT, Rect
 
-__all__ = ["load_font", "Text", "create_text_sprite", "draw_text"]
-
-
-class _ArcadeTextLayoutGroup(pyglet.text.layout.TextLayoutGroup):
-    """Create a text layout rendering group.
-
-    Overrides pyglet blending handling to allow for additive blending.
-    Furthermore, it resets the blend function to the previous state.
-    """
-
-    _prev_blend: bool
-    _prev_blend_func: tuple[int, int, int, int]
-
-    def set_state(self) -> None:
-        self.program.use()
-        self.program["scissor"] = False
-
-        pyglet.gl.glActiveTexture(pyglet.gl.GL_TEXTURE0)
-        pyglet.gl.glBindTexture(self.texture.target, self.texture.id)
-
-        blend = c_ubyte()
-        pyglet.gl.glGetBooleanv(pyglet.gl.GL_BLEND, blend)
-        self._prev_blend = bool(blend.value)
-
-        src_rgb = c_int()
-        dst_rgb = c_int()
-        src_alpha = c_int()
-        dst_alpha = c_int()
-        pyglet.gl.glGetIntegerv(pyglet.gl.GL_BLEND_SRC_RGB, src_rgb)
-        pyglet.gl.glGetIntegerv(pyglet.gl.GL_BLEND_DST_RGB, dst_rgb)
-        pyglet.gl.glGetIntegerv(pyglet.gl.GL_BLEND_SRC_ALPHA, src_alpha)
-        pyglet.gl.glGetIntegerv(pyglet.gl.GL_BLEND_DST_ALPHA, dst_alpha)
-
-        self._prev_blend_func = (src_rgb.value, dst_rgb.value, src_alpha.value, dst_alpha.value)
-
-        pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
-        pyglet.gl.glBlendFuncSeparate(
-            pyglet.gl.GL_SRC_ALPHA,
-            pyglet.gl.GL_ONE_MINUS_SRC_ALPHA,
-            pyglet.gl.GL_ONE,
-            pyglet.gl.GL_ONE,
-        )
-
-    def unset_state(self) -> None:
-        if not self._prev_blend:
-            pyglet.gl.glDisable(pyglet.gl.GL_BLEND)
-
-        pyglet.gl.glBlendFuncSeparate(
-            self._prev_blend_func[0],
-            self._prev_blend_func[1],
-            self._prev_blend_func[2],
-            self._prev_blend_func[3],
-        )
-        self.program.stop()
-
-
-pyglet.text.layout.TextLayout.group_class = _ArcadeTextLayoutGroup
+__all__ = ["load_font", "Text", "TextPool", "create_text_sprite", "draw_text"]
 
 
 def load_font(path: str | Path) -> None:
@@ -90,61 +45,111 @@ def load_font(path: str | Path) -> None:
         # Load a font using a custom resource handle
         arcade.load_font(":font:Custom.ttf")
 
+    You can also pass the path to a font file as ``font_name``,
+    which loads the file the first time it's used.
+
     Args:
         path: Path to the font file
     Raises:
         FileNotFoundError: if the font specified wasn't found
     """
-    file_path = resolve(path)
-    pyglet.font.add_file(str(file_path))
+    _load_font_file(resolve(path))
 
 
 FontNameOrNames = str | tuple[str, ...]
 
+# Family names of the font files loaded so far, so each file is only
+# loaded once, and a path can be used as a font name
+_font_file_families: dict[Path, str | None] = {}
+
+
+def _load_font_file(path: Path) -> str | None:
+    """
+    Load a font file, if it isn't loaded yet, and return its family name.
+
+    Returns ``None`` if the family name couldn't be found.
+    """
+    if path in _font_file_families:
+        return _font_file_families[path]
+
+    # pyglet reports the families it added with the name the platform
+    # uses for them, which is the name to load the font with
+    families: list[str] = []
+
+    def on_font_loaded(family_name, weight, style, stretch):
+        families.append(family_name)
+
+    pyglet.font.manager.push_handlers(on_font_loaded=on_font_loaded)
+    try:
+        pyglet.font.add_file(str(path))
+    finally:
+        pyglet.font.manager.remove_handlers(on_font_loaded=on_font_loaded)
+
+    family: str | None = families[0] if families else None
+    if family is None:
+        # The file was already loaded some other way, for example with
+        # pyglet.font.add_file(), so read the name from the file itself
+        from pyglet.font.ttf import TruetypeInfo
+
+        try:
+            info = TruetypeInfo(str(path))
+        except Exception:
+            pass
+        else:
+            try:
+                family = info.get_name("family")
+            finally:
+                info.close()
+
+    _font_file_families[path] = family
+    return family
+
+
+def _font_file_family(font_name: str) -> str | None:
+    """
+    If a font name is the path to a font file, load it and return its
+    family name. Otherwise, return ``None``.
+    """
+    try:
+        path = resolve(font_name)
+    except FileNotFoundError:
+        # Not a file, or a resource that doesn't exist
+        return None
+    except OSError:
+        # Some font names aren't valid paths at all, but a resource
+        # handle should still report what's wrong with it
+        if font_name.strip().startswith(":"):
+            raise
+        return None
+    if not path.is_file():
+        return None
+    return _load_font_file(path)
+
 
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
-    """Attempt to resolve a font name.
+    """Resolve a font name, path, or list of them to the name of one font.
 
-    Preserves the original logic of this section, even though it
-    doesn't seem to make sense entirely. Comments are an attempt
-    to make sense of the original code.
-
-    If it can't resolve a definite path, it will return the original
-    argument for pyglet to attempt to resolve. This is consistent with
-    the original behavior of this code before it was encapsulated.
+    Paths to font files are loaded and replaced by the font's family
+    name. The first name pyglet finds is returned, or pyglet's default
+    font if it finds none.
 
     Args:
-        font_name: A font name, path to a font file, or list of names
+        font_name: A font name, path to a font file, or a tuple or list
+            of them.
     """
-    if font_name:
-        # ensure
-        if isinstance(font_name, str):
-            font_list: tuple[str, ...] = (font_name,)
-        elif isinstance(font_name, tuple):
-            font_list = font_name
-        else:
-            raise TypeError(
-                "font_name parameter must be a string, "
-                "or a tuple of strings that specify a font name."
-            )
+    if isinstance(font_name, str):
+        font_list: tuple[str, ...] = (font_name,)
+    elif isinstance(font_name, (tuple, list)):
+        font_list = tuple(font_name)
+    else:
+        raise TypeError(
+            "font_name parameter must be a string, or a tuple of strings that specify a font name."
+        )
+    if not font_list or not all(font_list):
+        raise ValueError(f"Couldn't find a font for {font_name!r}")
 
-        for font in font_list:
-            try:
-                path = resolve(font)
-                # print(f"Font path: {path=}")
-
-                # found a font successfully!
-                return path.name
-
-            except FileNotFoundError:
-                pass
-
-        # failed to find it ourselves, hope pyglet can make sense of it
-        # Note this is the best approximation of what I understand the old
-        # behavior to have been.
-        return pyglet.font.load(font_list).name
-
-    raise ValueError(f"Couldn't find a font for {font_name!r}")
+    names = [_font_file_family(font) or font for font in font_list]
+    return pyglet.font.load(names).name
 
 
 def _draw_pyglet_label(label: pyglet.text.Label) -> None:
@@ -156,6 +161,56 @@ def _draw_pyglet_label(label: pyglet.text.Label) -> None:
     """
     assert isinstance(label, pyglet.text.Label)
     label.draw()
+
+
+def _to_text_color(color: RGBOrA255 | LinearGradient) -> Color | LinearGradient:
+    """Convert a text color to a Color, passing gradients through unchanged."""
+    if isinstance(color, LinearGradient):
+        return color
+    return Color.from_iterable(color)
+
+
+def _normalize_font_name(font_name: FontNameOrNames) -> FontNameOrNames:
+    """Make font names comparable, since a list and a tuple are never equal."""
+    if isinstance(font_name, str):
+        return font_name
+    return tuple(font_name)
+
+
+def _to_weight(bold: bool | str) -> str:
+    """Convert a ``bold`` value to a pyglet font weight name."""
+    if isinstance(bold, Enum):
+        return bold.value
+    if isinstance(bold, str) and bold:
+        return bold
+    return (Weight.BOLD if bold else Weight.NORMAL).value
+
+
+def _from_weight(weight: Any) -> bool | str:
+    """Convert a pyglet font weight back to a ``bold`` value."""
+    if weight == Weight.BOLD.value:
+        return True
+    if weight is None or weight == Weight.NORMAL.value:
+        return False
+    return str(weight)
+
+
+def _to_style(italic: bool | str) -> str:
+    """Convert an ``italic`` value to a pyglet font style name."""
+    if isinstance(italic, Enum):
+        return italic.value
+    if isinstance(italic, str) and italic:
+        return italic
+    return (Style.ITALIC if italic else Style.NORMAL).value
+
+
+def _from_style(style: Any) -> bool | str:
+    """Convert a pyglet font style back to an ``italic`` value."""
+    if style == Style.ITALIC.value:
+        return True
+    if style is None or style == Style.NORMAL.value:
+        return False
+    return str(style)
 
 
 class Text:
@@ -205,7 +260,8 @@ class Text:
         y: y position to align the text's anchor point with
         z: z position to align the text's anchor point with
         color: Color of the text as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`~arcade.types.Color` instance, or a
+            :py:class:`pyglet.text.LinearGradient` for a left-to-right gradient.
         font_size: Size of the text in points
         width: A width limit in pixels
         align: Horizontal alignment; values other than "left" require width to be set.
@@ -261,19 +317,19 @@ class Text:
         text: str,
         x: float,
         y: float,
-        color: RGBOrA255 = arcade.color.WHITE,
+        color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
         font_size: float = 12,
         width: int | None = None,
         align: str = "left",
         font_name: FontNameOrNames = ("calibri", "arial"),
         bold: bool | str = False,
-        italic: bool = False,
+        italic: bool | str = False,
         anchor_x: str = "left",
         anchor_y: str = "baseline",
         multiline: bool = False,
         rotation: float = 0,
-        batch: pyglet.graphics.Batch | None = None,
-        group: pyglet.graphics.Group | None = None,
+        batch: Batch | None = None,
+        group: Group | None = None,
         z: float = 0,
         **kwargs,
     ):
@@ -281,13 +337,13 @@ class Text:
             text=text,
             x=x,
             y=y,
-            color=Color.from_iterable(color),
+            color=_to_text_color(color),
             font_size=font_size,
             width=width,
             align=align,
             font_name=font_name,
-            weight=pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL,
-            italic=italic,
+            weight=_to_weight(bold),
+            style=_to_style(italic),
             anchor_x=anchor_x,
             anchor_y=anchor_y,
             multiline=multiline,
@@ -307,10 +363,22 @@ class Text:
                 f"but got {width!r}."
             )
 
+        # Nesting depth of ``with text:`` blocks, and whether a pyglet
+        # update was begun for a change inside them
+        self._update_depth = 0
+        self._update_begun = False
+        # The font name as last requested, since the label holds the
+        # resolved name (e.g. "arial" for ("calibri", "arial"))
+        self._requested_font_name = _normalize_font_name(font_name)
+        self._resolved_font_name: str | None = None
+        # The clock tick this text was last drawn by draw_text, if it was
+        self._draw_text_tick = -1
+
         self._initialized = False
         try:
             self._init_deferred()
-        except Exception:
+        except NoArcadeWindowError:
+            # No window yet, so create the label when it's first used
             pass
 
     @property
@@ -340,20 +408,44 @@ class Text:
 
         self._arguments["font_name"] = _attempt_font_name_resolution(self._arguments["font_name"])  # type: ignore
         self._label = pyglet.text.Label(**self._arguments)  # type: ignore
+        self._resolved_font_name = self._label.font_name
         self._initialized = True
 
     def __enter__(self):
         """
-        Update multiple attributes of this text,
-        using efficient update mechanism of the underlying ``pyglet.Label``
+        Update multiple attributes of this text, laying out the text
+        only once at the end of the block.
+
+        Changes that need a new layout, such as the text, font, or
+        width, are laid out together when the block ends. Changes that
+        don't, such as the position, color, or rotation, apply right
+        away. If nothing that needs a new layout changes, the block
+        costs nothing.
         """
-        self.label.begin_update()
+        self._update_depth += 1
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.label.end_update()
+        self._update_depth -= 1
+        if self._update_depth == 0 and self._update_begun:
+            self._update_begun = False
+            self.label.end_update()
+
+    def _layout_label(self) -> pyglet.text.Label:
+        """
+        Get the label, to make a change that needs a new layout.
+
+        Inside ``with text:``, the first such change begins a pyglet
+        update, so all of them are laid out once when the block ends.
+        """
+        label = self.label
+        if self._update_depth and not self._update_begun:
+            label.begin_update()
+            self._update_begun = True
+        return label
 
     @property
-    def batch(self) -> pyglet.graphics.Batch | None:
+    def batch(self) -> Batch | None:
         """The batch this text is in, if any.
 
         Can be unset by setting to ``None``.
@@ -361,11 +453,11 @@ class Text:
         return self.label.batch
 
     @batch.setter
-    def batch(self, batch: pyglet.graphics.Batch):
+    def batch(self, batch: Batch):
         self.label.batch = batch
 
     @property
-    def group(self) -> pyglet.graphics.Group | None:
+    def group(self) -> Group | None:
         """
         The specific group in a batch the text should belong to.
 
@@ -376,8 +468,10 @@ class Text:
         return self.label.group
 
     @group.setter
-    def group(self, group: pyglet.graphics.Group):
-        self.label.group = group
+    def group(self, group: Group):
+        if self.label.group is group:
+            return
+        self._layout_label().group = group
 
     @property
     def value(self) -> str:
@@ -393,7 +487,7 @@ class Text:
         value = str(value)
         if self.label.text == value:
             return
-        self.label.text = value
+        self._layout_label().text = value
 
     @property
     def text(self) -> str:
@@ -411,7 +505,7 @@ class Text:
         value = str(value)
         if self.label.text == value:
             return
-        self.label.text = value
+        self._layout_label().text = value
 
     @property
     def x(self) -> float:
@@ -456,10 +550,16 @@ class Text:
 
     @font_name.setter
     def font_name(self, font_name: FontNameOrNames) -> None:
-        if isinstance(font_name, str):
-            self.label.font_name = font_name
-        else:
-            self.label.font_name = list(font_name)
+        font_name = _normalize_font_name(font_name)
+        label = self.label
+        # Compare with the requested name, since the label holds the
+        # resolved one, and check the label wasn't changed directly
+        if font_name == self._requested_font_name and label.font_name == self._resolved_font_name:
+            return
+        label = self._layout_label()
+        label.font_name = _attempt_font_name_resolution(font_name)
+        self._requested_font_name = font_name
+        self._resolved_font_name = label.font_name
 
     @property
     def font_size(self) -> float:
@@ -468,7 +568,9 @@ class Text:
 
     @font_size.setter
     def font_size(self, font_size: float):
-        self.label.font_size = font_size
+        if self.label.font_size == font_size:
+            return
+        self._layout_label().font_size = font_size
 
     @property
     def anchor_x(self) -> str:
@@ -481,6 +583,8 @@ class Text:
 
     @anchor_x.setter
     def anchor_x(self, anchor_x: str):
+        if self.label.anchor_x == anchor_x:
+            return
         self.label.anchor_x = anchor_x  # type: ignore
 
     @property
@@ -494,6 +598,8 @@ class Text:
 
     @anchor_y.setter
     def anchor_y(self, anchor_y: str):
+        if self.label.anchor_y == anchor_y:
+            return
         self.label.anchor_y = anchor_y  # type: ignore
 
     @property
@@ -503,16 +609,34 @@ class Text:
 
     @rotation.setter
     def rotation(self, rotation: float):
+        if self.label.rotation == rotation:
+            return
         self.label.rotation = rotation
 
     @property
-    def color(self) -> Color:
-        """Get or set the text color for the label."""
-        return Color.from_iterable(self.label.color)
+    def color(self) -> Color | LinearGradient:
+        """
+        Get or set the text color for the label.
+
+        This is a :py:class:`~arcade.types.Color`, or a
+        :py:class:`pyglet.text.LinearGradient` if one was set.
+        """
+        color = self.label.color
+        if isinstance(color, LinearGradient):
+            return color
+        return Color.from_iterable(color)
 
     @color.setter
-    def color(self, color: RGBOrA255):
-        self.label.color = Color.from_iterable(color)
+    def color(self, color: RGBOrA255 | LinearGradient):
+        color = _to_text_color(color)
+        label = self.label
+        old_color = label.color
+        if old_color == color:
+            return
+        # Solid colors are updated in place, but gradients need a new layout
+        if isinstance(color, LinearGradient) or isinstance(old_color, LinearGradient):
+            label = self._layout_label()
+        label.color = color
 
     @property
     def width(self) -> int | None:
@@ -527,7 +651,9 @@ class Text:
 
     @width.setter
     def width(self, width: int):
-        self.label.width = width
+        if self.label.width == width:
+            return
+        self._layout_label().width = width
 
     @property
     def height(self) -> int | None:
@@ -542,7 +668,9 @@ class Text:
 
     @height.setter
     def height(self, value: int):
-        self.label.height = value
+        if self.label.height == value:
+            return
+        self._layout_label().height = value
 
     @property
     def size(self):
@@ -606,36 +734,56 @@ class Text:
 
     @align.setter
     def align(self, align: str):
-        self.label.set_style("align", align)
+        if self.label.get_style("align") == align:
+            return
+        self._layout_label().set_style("align", align)
 
     @property
     def bold(self) -> bool | str:
         """
         Get or set bold state of the label.
 
-        The supported values include:
+        ``True`` is the same as ``"bold"``, and ``False`` the same as
+        ``"normal"``. Other values are font weight names from
+        :py:class:`pyglet.enums.Weight`, such as ``"thin"``,
+        ``"light"``, ``"medium"``, ``"semibold"``, ``"extrabold"``
+        or ``"black"``. Not every font has every weight.
 
-        * ``"black"``
-        * ``"bold" (same as ``True``)
-        * ``"semibold"``
-        * ``"semilight"``
-        * ``"light"``
-
+        Returns ``True`` for bold, ``False`` for normal, and the weight
+        name for any other weight.
         """
-        return self.label.weight == pyglet.text.Weight.BOLD
+        return _from_weight(self.label.weight)
 
     @bold.setter
     def bold(self, bold: bool | str):
-        self.label.weight = pyglet.text.Weight.BOLD if bold else pyglet.text.Weight.NORMAL
+        weight = _to_weight(bold)
+        if self.label.weight == weight:
+            return
+        self._layout_label().weight = weight
 
     @property
     def italic(self) -> bool | str:
-        """Get or set the italic state of the label."""
-        return self.label.italic
+        """
+        Get or set the italic state of the label.
+
+        ``True`` is the same as ``"italic"``, and ``False`` the same as
+        ``"normal"``. ``"oblique"`` is also accepted.
+
+        Returns ``True`` for italic, ``False`` for normal, and the style
+        name for any other style.
+        """
+        return _from_style(self.label.document.get_style("style"))
 
     @italic.setter
     def italic(self, italic: bool | str):
-        self.label.italic = italic
+        # Set the "style" document style, which pyglet uses to pick the
+        # font. pyglet's own Label.italic sets an "italic" style, which
+        # doesn't change the font: https://github.com/pyglet/pyglet/issues/1508
+        style = _to_style(italic)
+        if self.label.document.get_style("style") == style:
+            return
+        label = self._layout_label()
+        label.document.set_style(0, len(label.document.text), {"style": style})
 
     @property
     def multiline(self) -> bool:
@@ -644,7 +792,9 @@ class Text:
 
     @multiline.setter
     def multiline(self, multiline: bool):
-        self.label.multiline = multiline
+        if self.label.multiline == multiline:
+            return
+        self._layout_label().multiline = multiline
 
     @property
     def visible(self) -> bool:
@@ -722,11 +872,11 @@ class Text:
     def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
         x, y, *z = point
-
-        if z:
-            self.label.position = x, y, z[0]
-        else:
-            self.label.position = x, y, self.label.z
+        label = self.label
+        position = (x, y, z[0] if z else label.z)
+        if label.position == position:
+            return
+        label.position = position
 
     @property
     def tracking(self) -> float | None:
@@ -745,7 +895,9 @@ class Text:
 
     @tracking.setter
     def tracking(self, value: float):
-        self.label.set_style("kerning", value)
+        if self.label.get_style("kerning") == value:
+            return
+        self._layout_label().set_style("kerning", value)
 
     def em_to_px(self, em: float) -> float:
         """Convert from an em value to a pixel amount.
@@ -762,9 +914,147 @@ class Text:
         return px / (4 / 3) / self.font_size
 
 
+class TextPool:
+    """A keyed cache of reusable Text objects.
+
+    Avoids the cost of creating new :py:class:`arcade.Text` objects every
+    frame for dynamic text that changes position, content, or color
+    frequently.
+
+    Any keyword arguments passed to the constructor become defaults for
+    every ``Text`` created by this pool. Per-call keyword arguments
+    override these defaults.
+
+    Example::
+
+        pool = arcade.TextPool(font_name="Arial")
+
+        def on_draw(self):
+            pool.draw("score", f"Score: {self.score}", 10, 580,
+                       color=arcade.color.WHITE, font_size=16)
+            pool.draw("fps", f"FPS: {arcade.get_fps():.0f}", 10, 560,
+                       color=arcade.color.GRAY, font_size=12)
+
+    Args:
+        font_name: Default font for all text created by this pool.
+        **defaults: Default keyword arguments passed to
+            :py:class:`arcade.Text` on creation (e.g. ``bold``,
+            ``anchor_x``).
+    """
+
+    def __init__(self, font_name: FontNameOrNames = ("calibri", "arial"), **defaults):
+        self._font_name = font_name
+        self._defaults = defaults
+        self._cache: dict[str, Text] = {}
+
+    def draw(
+        self,
+        key: str,
+        text: str,
+        x: float,
+        y: float,
+        color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
+        font_size: float = 12,
+        **kwargs,
+    ) -> Text:
+        """Get or create a cached Text object, update it, and draw it.
+
+        The first call with a given *key* creates the
+        :py:class:`arcade.Text` object.  Subsequent calls update the
+        existing object's properties and draw it, avoiding
+        reconstruction costs.
+
+        Args:
+            key: Unique string identifier for this text slot.
+            text: The string to display.
+            x: X position in pixels.
+            y: Y position in pixels.
+            color: Text color (any format accepted by arcade).
+            font_size: Font size in points.
+            **kwargs: Additional :py:class:`arcade.Text` properties
+                such as ``bold``, ``anchor_x``, ``rotation``, etc.
+
+        Returns:
+            The :py:class:`arcade.Text` object, useful for measuring
+            ``content_width`` / ``content_height`` after drawing.
+        """
+        cached_text = self.get(key, text, x, y, color, font_size, **kwargs)
+        cached_text.draw()
+        return cached_text
+
+    def get(
+        self,
+        key: str,
+        text: str,
+        x: float,
+        y: float,
+        color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
+        font_size: float = 12,
+        **kwargs,
+    ) -> Text:
+        """Get or create a cached Text object and update its properties.
+
+        Like :py:meth:`draw` but does **not** draw the text.  Useful
+        when you need to measure the text (e.g. ``content_width``) or
+        draw it later as part of a batch.
+
+        Args:
+            key: Unique string identifier for this text slot.
+            text: The string to display.
+            x: X position in pixels.
+            y: Y position in pixels.
+            color: Text color (any format accepted by arcade).
+            font_size: Font size in points.
+            **kwargs: Additional :py:class:`arcade.Text` properties
+                such as ``bold``, ``anchor_x``, ``rotation``, etc.
+
+        Returns:
+            The :py:class:`arcade.Text` object.
+        """
+        if key in self._cache:
+            cached_text = self._cache[key]
+            with cached_text:
+                cached_text.text = text
+                cached_text.x = x
+                cached_text.y = y
+                cached_text.color = color
+                cached_text.font_size = font_size
+                for attr_name, attr_value in kwargs.items():
+                    setattr(cached_text, attr_name, attr_value)
+            return cached_text
+
+        merged_kwargs = {**self._defaults, **kwargs}
+        new_text = Text(
+            text,
+            x,
+            y,
+            color,
+            font_size=font_size,
+            font_name=self._font_name,
+            **merged_kwargs,
+        )
+        self._cache[key] = new_text
+        return new_text
+
+    def clear(self) -> None:
+        """Remove all cached Text objects from the pool."""
+        self._cache.clear()
+
+    def remove(self, key: str) -> None:
+        """Remove a specific cached Text object by key.
+
+        Args:
+            key: The identifier of the text slot to remove.
+
+        Raises:
+            KeyError: If *key* is not in the pool.
+        """
+        del self._cache[key]
+
+
 def create_text_sprite(
     text: str,
-    color: RGBOrA255 = arcade.color.WHITE,
+    color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
     font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
@@ -781,7 +1071,8 @@ def create_text_sprite(
 
     Internally this creates a Text object and an empty texture. It then uses either the
     provided texture atlas, or gets the default one, and draws the Text object into the
-    texture atlas.
+    texture atlas. The texture has the same colors and transparency as the text, so the
+    sprite looks the same as the text drawn directly.
 
     It then creates a sprite referencing the newly created texture, and positions it
     accordingly, and that is final result that is returned from the function.
@@ -794,7 +1085,8 @@ def create_text_sprite(
     Args:
         text: Initial text to display. Can be an empty string
         color: Color of the text as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`~arcade.types.Color` instance, or a
+            :py:class:`pyglet.text.LinearGradient` for a left-to-right gradient.
         font_size: Size of the text in points
         width: A width limit in pixels
         align: Horizontal alignment; values other than "left" require width to be set.
@@ -827,31 +1119,105 @@ def create_text_sprite(
         multiline=multiline,
     )
 
+    # Where the text is with its anchor at (0, 0), as a Text object would be
+    left = text_object.left
+    bottom = text_object.bottom
+    # At least 1 pixel, so an empty string still makes a (transparent) texture
     size = (
-        int(text_object.right - text_object.left),
-        int(text_object.top - text_object.bottom),
+        max(1, math.ceil(text_object.right - left)),
+        max(1, math.ceil(text_object.top - bottom)),
     )
-    text_object.y = -text_object.bottom
-    texture = arcade.Texture.create_empty(text, size)
+
+    # Draw it into the texture with its bottom left corner at (0, 0)
+    text_object.x = -left
+    text_object.y = -bottom
+
+    # Each sprite needs its own image in the atlas. A name based on the text
+    # would make sprites with the same text, but different colors or sizes,
+    # share one.
+    texture = arcade.Texture.create_empty(f"create_text_sprite_{uuid4().hex}", size)
 
     if not texture_atlas:
         texture_atlas = arcade.get_window().ctx.default_atlas
     texture_atlas.add(texture)
-    with texture_atlas.render_into(texture) as fbo:
-        fbo.clear(color=background_color or arcade.color.TRANSPARENT_BLACK)
-        text_object.draw()
 
+    # Drawing text over a transparent background would multiply the color
+    # by the text's alpha and square the alpha, since pyglet blends alpha
+    # like color (https://github.com/pyglet/pyglet/issues/1509), so the
+    # sprite would be drawn too faint. Instead, draw it over black and over
+    # white: over black each pixel is the color times the alpha, and over
+    # white it's lighter by (1 - alpha). Once pyglet blends alpha separately,
+    # one pass over transparent black would do, with the alpha divided out.
+    def draw_over(background: RGBA255) -> PIL.Image.Image:
+        with texture_atlas.render_into(texture) as fbo:
+            fbo.clear(color=background)
+            text_object.draw()
+        return texture_atlas.read_texture_image_from_atlas(texture).convert("RGB")
+
+    over_black = draw_over(arcade.color.BLACK)
+    over_white = draw_over(arcade.color.WHITE)
+    alpha = PIL.ImageChops.invert(PIL.ImageChops.subtract(over_white, over_black).convert("L"))
+    # "RGBa" is premultiplied RGBA, so converting it divides out the alpha
+    image = PIL.Image.merge("RGBa", (*over_black.split(), alpha)).convert("RGBA")
+    if background_color:
+        background = PIL.Image.new("RGBA", size, Color.from_iterable(background_color))
+        image = PIL.Image.alpha_composite(background, image)
+
+    # Store the result in the texture's image too. The atlas redraws
+    # textures from their images when it rebuilds itself, which would
+    # otherwise leave the sprite blank.
+    texture.image_data.image = image
+    texture_atlas.update_texture_image(texture)
+
+    # Place the sprite where the Text object was drawn
     return arcade.Sprite(
         texture,
-        center_x=text_object.right - (size[0] / 2),
-        center_y=text_object.top,
+        center_x=left + size[0] / 2,
+        center_y=bottom + size[1] / 2,
     )
+
+
+# How many labels draw_text keeps for reuse
+_DRAW_TEXT_CACHE_SIZE = 256
+
+
+def _get_draw_text_label(label_cache, style: tuple, text: str) -> "Text | None":
+    """
+    Find a label in draw_text's cache for drawing ``text`` in a style.
+
+    Returns the label already showing this text. Otherwise, returns the
+    style's least recently used label, changed to show this text, if it
+    wasn't drawn yet this frame: it belonged to a line whose text changed,
+    or that isn't drawn anymore. Returns None if a new label should be made.
+
+    Lines are usually drawn in the same order every frame, so a line whose
+    text keeps changing reuses its own label from the previous frame, and
+    lines that don't change keep theirs, however many there are.
+    """
+    key = (style, text)
+    label = label_cache.get(key)
+    if label is not None:
+        label_cache.move_to_end(key)
+        return label
+
+    oldest = next((cached for cached in label_cache if cached[0] == style), None)
+    if oldest is None:
+        return None
+    # Frames are counted by the clock's ticks. If the style's least recently
+    # used label was drawn this frame, they all were, so this is a new line.
+    if label_cache[oldest]._draw_text_tick == GLOBAL_CLOCK.ticks:
+        return None
+
+    label = label_cache.pop(oldest)
+    label.text = text
+    label_cache[key] = label
+    return label
 
 
 @warning(
     message=(
-        "draw_text is an extremely slow function for displaying text. "
-        "Consider using Text objects instead."
+        "draw_text is much slower than drawing arcade.Text objects, especially "
+        "for many lines or changing text. Consider using Text objects instead."
     ),
     warning_type=PerformanceWarning,
 )
@@ -859,7 +1225,7 @@ def draw_text(
     text: Any,
     x: float,
     y: float,
-    color: RGBOrA255 = arcade.color.WHITE,
+    color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
     font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
@@ -877,10 +1243,11 @@ def draw_text(
 
     .. warning:: Use :py:class:`arcade.Text` objects instead.
 
-        This method of drawing text is very slow
-        and might be removed in the near future.
-        Text objects can be 10-100 times faster
-        depending on the use case.
+        This method of drawing text is slower than ``Text`` objects
+        and might be removed in the near future. Each call has some
+        overhead, text that changes is laid out again on every call,
+        and many ``Text`` objects can be drawn at once in a batch.
+        See :ref:`text_guide`.
 
     .. warning:: Cameras affect text drawing!
 
@@ -900,7 +1267,8 @@ def draw_text(
         y: y position to align the text's anchor point with
         z: z position to align the text's anchor point with
         color: Color of the text as an RGBA tuple or a
-            :py:class:`~arcade.types.Color` instance.
+            :py:class:`~arcade.types.Color` instance, or a
+            :py:class:`pyglet.text.LinearGradient` for a left-to-right gradient.
         font_size: Size of the text in points
         width: A width limit in pixels
         align: Horizontal alignment; values other than "left" require width to be set.
@@ -1035,12 +1403,6 @@ def draw_text(
     """
     # See : https://github.com/pyglet/pyglet/blob/ff30eadc2942553c9de96d6ce564ad1bc3128fb4/pyglet/text/__init__.py#L401
 
-    color = Color.from_iterable(color)
-    # Cache the states that are expensive to change
-    key = f"{font_size}{font_name}{bold}{italic}{anchor_x}{anchor_y}{align}{width}{rotation}"
-    ctx = arcade.get_window().ctx
-    label = ctx.label_cache.get(key)
-
     if align not in ("left", "center", "right"):
         raise ValueError("The 'align' parameter must be equal to 'left', 'right', or 'center'.")
 
@@ -1050,11 +1412,30 @@ def draw_text(
             f"but got {width!r}."
         )
 
-    if not label:
+    color = _to_text_color(color)
+    text = str(text)
+    # Reuse labels, keyed by the settings that are expensive to change and
+    # the text. Position, color, and rotation are cheap to update.
+    style = (
+        font_size,
+        tuple(font_name) if isinstance(font_name, list) else font_name,
+        bold,
+        italic,
+        anchor_x,
+        anchor_y,
+        align,
+        width,
+        multiline,
+    )
+    ctx = arcade.get_window().ctx
+    label_cache = ctx.label_cache
+    label = _get_draw_text_label(label_cache, style, text)
+
+    if label is None:
         adjusted_font = _attempt_font_name_resolution(font_name)
 
         label = arcade.Text(
-            text=str(text),
+            text=text,
             x=x,
             y=y,
             z=z,
@@ -1070,11 +1451,13 @@ def draw_text(
             multiline=multiline,
             rotation=rotation,
         )
-        ctx.label_cache[key] = label
+        label_cache[style, text] = label
+        # Forget the least recently used label, so the cache can't grow
+        # forever, for example when animating font_size or the text
+        if len(label_cache) > _DRAW_TEXT_CACHE_SIZE:
+            label_cache.popitem(last=False)
+    label._draw_text_tick = GLOBAL_CLOCK.ticks
 
-    # These updates are quite expensive
-    if label.text != text:
-        label.text = str(text)
     if label.x != x or label.y != y or label.z != z:
         label.position = x, y, z  # type: ignore
     if label.color != color:
@@ -1083,7 +1466,3 @@ def draw_text(
         label.rotation = rotation
 
     label.draw()
-    # This is absolutely necessary to prevent the vertex buffers
-    # to be altered while another one is drawing. If the same cached
-    # label is used multiple times in a single frame it's a disaster.
-    ctx.flush()

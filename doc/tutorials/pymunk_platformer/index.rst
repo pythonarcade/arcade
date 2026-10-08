@@ -100,7 +100,7 @@ Running this program should show the same window, but with a green background.
 .. literalinclude:: pymunk_demo_platformer_03.py
     :caption: Create instance variables
     :linenos:
-    :lines: 29-52
+    :lines: 30-53
     :emphasize-lines: 10-24
 
 * :ref:`pymunk_demo_platformer_03`
@@ -179,7 +179,7 @@ First, add some constants for our physics. Here we are setting:
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Constants for Physics
     :linenos:
-    :lines: 27-46
+    :lines: 28-47
 
 Second, add the following attributer in the ``__init__`` method to hold our
 physics engine:
@@ -187,7 +187,7 @@ physics engine:
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Physics Engine Attribute
     :linenos:
-    :lines: 71-72
+    :lines: 72-73
 
 Third, in the ``setup`` method we create the physics engine and add the sprites.
 The player, walls, and dynamic items all have different properties so they are
@@ -196,14 +196,14 @@ added individually.
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 102-152
+    :lines: 105-158
 
 Fourth, in the ``on_update`` method we call the physics engine's ``step`` method.
 
 .. literalinclude:: pymunk_demo_platformer_05.py
     :caption: Add Sprites to Physics Engine in 'setup' Method
     :linenos:
-    :lines: 165-167
+    :lines: 171-173
 
 If you run the program, and you have dynamic items that are up in the air, you
 should see them fall when the game starts.
@@ -316,7 +316,7 @@ animation, so that the feet appear in-sync with the ground.
 .. literalinclude:: pymunk_demo_platformer_08.py
     :caption: Add Player Animation - Constants
     :linenos:
-    :lines: 58-66
+    :lines: 57-66
 
 Next, we create a ``Player`` class that is a child to :py:class:`~arcade.Sprite`. This
 class will update the player animation.
@@ -350,7 +350,7 @@ replace the line that creates the ``player`` instance with:
 
 .. literalinclude:: pymunk_demo_platformer_08.py
     :caption: Add Player Animation - Creating the Player Class
-    :lines: 195-196
+    :lines: 196-197
 
 A really common mistake I've seen programmers make (and made myself) is to forget
 that last part. Then you can spend a lot of time looking at the player class when
@@ -361,7 +361,7 @@ in our ``__init__`` method:
 
 .. literalinclude:: pymunk_demo_platformer_08.py
     :caption: Add Player Animation - Creating the Player Class
-    :lines: 159-160
+    :lines: 160-161
 
 
 
@@ -381,7 +381,7 @@ too fast. We could set this to zero if we wanted it to not drop at all.
 .. literalinclude:: pymunk_demo_platformer_09.py
     :caption: Shoot Bullets - Constants
     :linenos:
-    :lines: 68-75
+    :lines: 69-76
 
 Next, we'll put in a mouse press handler to put in the bullet shooting code.
 
@@ -439,7 +439,7 @@ it instead of the plain :py:class:`~arcade.Sprite` class.
 .. literalinclude:: pymunk_demo_platformer_10.py
     :caption: Destroy Bullets - Bullet Sprite
     :linenos:
-    :lines: 315-320
+    :lines: 316-321
     :emphasize-lines: 1
 
 Handle Collisions
@@ -458,7 +458,7 @@ the texture depending on its health.
 .. literalinclude:: pymunk_demo_platformer_10.py
     :caption: Destroy Bullets - Collision Handlers
     :linenos:
-    :lines: 242-253
+    :lines: 243-254
 
 
 * :ref:`pymunk_demo_platformer_10`
@@ -500,13 +500,13 @@ an attribute for ``moving_sprites_list``:
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Adding the sprite list
-    :lines: 186
+    :lines: 188
 
 In the ``setup`` method, load in the sprite list from the tmx layer.
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Adding the sprite list
-    :lines: 230-231
+    :lines: 228-229
 
 Also in the ``setup`` method, we need to add these sprites to the physics engine.
 In this case we'll add the sprites as ``KINEMATIC``. Static sprites don't move.
@@ -515,7 +515,7 @@ Kinematic sprites do move, but aren't affected by other objects.
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Loading the sprites
-    :lines: 294-296
+    :lines: 296-298
 
 We need to draw the moving platform sprites. After adding this line, you should
 be able to run the program and see the sprites from this layer, even if they don't
@@ -547,7 +547,7 @@ so we'll convert.
 
 .. literalinclude:: pymunk_demo_platformer_11.py
     :caption: Moving Platforms - Moving the sprites
-    :lines: 404-428
+    :lines: 406-430
 
 * :ref:`pymunk_demo_platformer_11`
 * :ref:`pymunk_demo_platformer_11_diff`
@@ -567,7 +567,7 @@ to track some more items:
     :caption: Add Ladders - PlayerSprite class
     :linenos:
     :pyobject: PlayerSprite.__init__
-    :emphasize-lines: 2, 33-36, 51-52
+    :emphasize-lines: 2, 35-38, 53-54
 
 Next, in our ``pymunk_moved`` method we need to change physics when we are
 on a ladder, and to update our player texture.
@@ -582,7 +582,7 @@ climbing textures.
     :caption: Add Ladders - PlayerSprite class
     :linenos:
     :pyobject: PlayerSprite.pymunk_moved
-    :emphasize-lines: 12-24, 28-43
+    :emphasize-lines: 12-24, 28-42
 
 Then we just need to add a few variables to the ``__init__`` to track ladders:
 
@@ -596,14 +596,14 @@ Then load the ladder layer in ``setup``:
 
 .. literalinclude:: pymunk_demo_platformer_12.py
     :caption: Add Ladders - Game Window Setup
-    :lines: 256-260
+    :lines: 261-265
     :emphasize-lines: 4
 
 Also, pass the ladder list to the player class:
 
 .. literalinclude:: pymunk_demo_platformer_12.py
     :caption: Add Ladders - Game Window Setup
-    :lines: 262-263
+    :lines: 267-270
 
 Then change the jump button so that we don't jump if we are on a ladder. Also,
 we want to track if the up key, or down key are pressed.
@@ -612,7 +612,7 @@ we want to track if the up key, or down key are pressed.
     :caption: Add Ladders - Game Window Key Down
     :linenos:
     :pyobject: GameWindow.on_key_press
-    :emphasize-lines: 8-17
+    :emphasize-lines: 8-19
 
 Add to the key up handler tracking for which key is pressed.
 
@@ -627,8 +627,9 @@ Next, change our update with new updates for the ladder.
 .. literalinclude:: pymunk_demo_platformer_12.py
     :caption: Add Ladders - Game Window On Update
     :linenos:
-    :lines: 426-462
-    :emphasize-lines: 7, 16, 23-36
+    :pyobject: GameWindow.on_update
+    :lines: 1-41
+    :emphasize-lines: 8, 17, 24-37
 
 And, of course, don't forget to draw the ladders:
 

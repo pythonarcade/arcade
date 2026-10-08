@@ -38,4 +38,4 @@ See :ref:`perf_info_api` for more information about the performance api.
 .. literalinclude:: ../../arcade/examples/performance_statistics.py
     :caption: performance_statistics.py
     :linenos:
-    :emphasize-lines: 43-45, 114-141, 152-157, 164-166
+    :emphasize-lines: 42-44, 120-147, 158-164, 171-173

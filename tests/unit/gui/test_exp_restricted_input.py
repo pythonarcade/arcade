@@ -1,5 +1,4 @@
-from arcade.gui.experimental import UIPasswordInput
-from arcade.gui.experimental.restricted_input import UIRestrictedInput, UIIntInput, UIRegexInput
+from arcade.gui.experimental.restricted_input import UIIntInput, UIRegexInput, UIRestrictedInput
 
 
 def test_restricted_input_ignore_invalid_input(ui):

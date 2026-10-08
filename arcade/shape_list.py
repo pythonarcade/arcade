@@ -17,10 +17,8 @@ from typing import (
     cast,
 )
 
-import pyglet.gl as gl
-
 from arcade import ArcadeContext, get_points_for_thick_line, get_window
-from arcade.gl import Buffer, BufferDescription, Geometry, Program
+from arcade.gl import Buffer, BufferDescription, Geometry, Program, enums
 from arcade.math import rotate_point
 from arcade.types import RGBA255, Color, Point, PointList
 from arcade.utils import copy_dunders_unimplemented
@@ -72,7 +70,7 @@ class Shape:
         colors: Sequence[RGBA255],
         # vao: Geometry,
         # vbo: Buffer,
-        mode: int = gl.GL_TRIANGLES,
+        mode: int = enums.TRIANGLES,
         program: Program | None = None,
     ) -> None:
         self.ctx = get_window().ctx
@@ -197,7 +195,7 @@ def create_line_strip(point_list: PointList, color: RGBA255, line_width: float =
         line_width: Width of the line
     """
     if line_width == 1:
-        return create_line_generic(point_list, color, gl.GL_LINE_STRIP)
+        return create_line_generic(point_list, color, enums.LINE_STRIP)
 
     triangle_point_list: list[Point] = []
     new_color_list: list[RGBA255] = []
@@ -245,7 +243,7 @@ def create_lines(
         point_list: A list of points that make up the shape.
         color: A color such as a :py:class:`~arcade.types.Color`
     """
-    return create_line_generic(point_list, color, gl.GL_LINES)
+    return create_line_generic(point_list, color, enums.LINES)
 
 
 def create_lines_with_colors(
@@ -263,7 +261,7 @@ def create_lines_with_colors(
         line_width: Width of the line
     """
     if line_width == 1:
-        return create_line_generic_with_colors(point_list, color_list, gl.GL_LINES)
+        return create_line_generic_with_colors(point_list, color_list, enums.LINES)
 
     triangle_point_list: list[Point] = []
     new_color_list: list[RGBA255] = []
@@ -308,7 +306,7 @@ def create_polygon(point_list: PointList, color: RGBA255) -> Shape:
         itertools.zip_longest(point_list[:half], reversed(point_list[half:]))
     )
     point_list = [p for p in interleaved if p is not None]
-    return create_line_generic(point_list, color, gl.GL_TRIANGLE_STRIP)
+    return create_line_generic(point_list, color, enums.TRIANGLE_STRIP)
 
 
 def create_rectangle_filled(
@@ -511,7 +509,7 @@ def create_rectangle(
 
         border_width = 1
 
-    shape_mode = gl.GL_TRIANGLE_STRIP
+    shape_mode = enums.TRIANGLE_STRIP
     return create_line_generic(data, color, shape_mode)
 
 
@@ -531,7 +529,7 @@ def create_rectangle_filled_with_colors(point_list, color_list) -> Shape:
         point_list: List of points to create the rectangle from
         color_list: List of colors to create the rectangle from
     """
-    shape_mode = gl.GL_TRIANGLE_STRIP
+    shape_mode = enums.TRIANGLE_STRIP
     new_point_list = [point_list[0], point_list[1], point_list[3], point_list[2]]
     new_color_list = [color_list[0], color_list[1], color_list[3], color_list[2]]
     return create_line_generic_with_colors(new_point_list, new_color_list, shape_mode)
@@ -553,7 +551,7 @@ def create_rectangles_filled_with_colors(point_list, color_list: Sequence[RGBA25
         point_list: List of points to create the rectangles from
         color_list: List of colors to create the rectangles from
     """
-    shape_mode = gl.GL_TRIANGLES
+    shape_mode = enums.TRIANGLES
     new_point_list: list[Point] = []
     new_color_list: list[RGBA255] = []
     for i in range(0, len(point_list), 4):
@@ -590,7 +588,7 @@ def create_triangles_filled_with_colors(
             :py:class:`~arcade.types.Color` instance or a 4-length RGBA
             :py:class:`tuple`.
     """
-    shape_mode = gl.GL_TRIANGLES
+    shape_mode = enums.TRIANGLES
     return create_line_generic_with_colors(point_list, color_sequence, shape_mode)
 
 
@@ -618,7 +616,7 @@ def create_triangles_strip_filled_with_colors(
             :py:class:`~arcade.types.Color` instance or a 4-length RGBA
             :py:class:`tuple`.
     """
-    shape_mode = gl.GL_TRIANGLE_STRIP
+    shape_mode = enums.TRIANGLE_STRIP
     return create_line_generic_with_colors(point_list, color_sequence, shape_mode)
 
 
@@ -762,10 +760,10 @@ def create_ellipse(
             itertools.zip_longest(point_list[:half], reversed(point_list[half:]))
         )
         point_list = [p for p in interleaved if p is not None]
-        shape_mode = gl.GL_TRIANGLE_STRIP
+        shape_mode = enums.TRIANGLE_STRIP
     else:
         point_list.append(point_list[0])
-        shape_mode = gl.GL_LINE_STRIP
+        shape_mode = enums.LINE_STRIP
 
     return create_line_generic(point_list, color, shape_mode)
 
@@ -818,7 +816,7 @@ def create_ellipse_filled_with_colors(
     point_list.append(point_list[1])
 
     color_list = [inside_color] + [outside_color] * (num_segments + 1)
-    return create_line_generic_with_colors(point_list, color_list, gl.GL_TRIANGLE_FAN)
+    return create_line_generic_with_colors(point_list, color_list, enums.TRIANGLE_FAN)
 
 
 TShape = TypeVar("TShape", bound=Shape)

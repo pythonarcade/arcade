@@ -1,4 +1,5 @@
 import pytest
+
 from arcade.experimental import Shadertoy, ShadertoyBuffer
 from arcade.gl import Program, Texture2D
 

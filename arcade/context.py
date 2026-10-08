@@ -4,23 +4,24 @@ Contains pre-loaded programs
 """
 
 from array import array
-from collections.abc import Iterable, Sequence
+from collections import OrderedDict
+from collections.abc import Hashable, Iterable, Sequence
 from pathlib import Path
 from typing import Any
 
 import pyglet
 from PIL import Image
-from pyglet import gl
-from pyglet.graphics.shader import UniformBufferObject
 from pyglet.math import Mat4
 
 import arcade
 from arcade.camera import Projector
 from arcade.camera.default import DefaultProjector
 from arcade.gl import BufferDescription, Context
+from arcade.gl.buffer import Buffer
 from arcade.gl.compute_shader import ComputeShader
 from arcade.gl.framebuffer import Framebuffer
 from arcade.gl.program import Program
+from arcade.gl.query import Query
 from arcade.gl.texture import Texture2D
 from arcade.gl.vertex_array import Geometry
 from arcade.texture_atlas import DefaultTextureAtlas, TextureAtlasBase
@@ -56,10 +57,20 @@ class ArcadeContext(Context):
         gc_mode: str = "context_gc",
         gl_api: str = "gl",
     ) -> None:
-        super().__init__(window, gc_mode=gc_mode, gl_api=gl_api)
-
-        # Set up a default orthogonal projection for sprites and shapes
-        self._window_block: UniformBufferObject = window.ubo
+        # Arcade fully owns this UBO, independent of pyglet's own
+        # default_camera-managed ring buffer, so its size stays bounded
+        # regardless of pyglet's per-frame resource lifecycle (spec FR-005).
+        # usage="stream" matches the actual write pattern (rewritten on every
+        # camera activation, read briefly after) rather than the default
+        # "static" (set once, never touched again) — see pyglet's own
+        # ring-buffer rationale for why a stale usage hint on a
+        # frequently-rewritten buffer risks GPU stalls.
+        self._window_block: Buffer = self.buffer(reserve=128, usage="stream")
+        self._projection_matrix: Mat4 = Mat4.orthogonal_projection(
+            0, window.width, 0, window.height, -100, 100
+        )
+        self._view_matrix: Mat4 = Mat4()
+        self._write_window_block()
         self.bind_window_block()
 
         self.blend_func = self.BLEND_DEFAULT
@@ -84,21 +95,26 @@ class ArcadeContext(Context):
             vertex_shader=":system:shaders/shape_element_list_vs.glsl",
             fragment_shader=":system:shaders/shape_element_list_fs.glsl",
         )
-        self.sprite_list_program_no_cull: Program = self.load_program(
-            vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
-            geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
-            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
-        )
-        self.sprite_list_program_no_cull["sprite_texture"] = 0
-        self.sprite_list_program_no_cull["uv_texture"] = 1
 
-        self.sprite_list_program_cull: Program = self.load_program(
-            vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
-            geometry_shader=":system:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
-            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
-        )
-        self.sprite_list_program_cull["sprite_texture"] = 0
-        self.sprite_list_program_cull["uv_texture"] = 1
+        if gl_api != "webgl":
+            self.sprite_list_program_no_cull: Program = self.load_program(
+                vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
+                geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
+                fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+            )
+            self.sprite_list_program_no_cull["sprite_texture"] = 0
+            self.sprite_list_program_no_cull["uv_texture"] = 1
+
+            self.sprite_list_program_cull: Program = self.load_program(
+                vertex_shader=":system:shaders/sprites/sprite_list_geometry_vs.glsl",
+                geometry_shader=":system:shaders/sprites/sprite_list_geometry_cull_geo.glsl",
+                fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+            )
+            self.sprite_list_program_cull["sprite_texture"] = 0
+            self.sprite_list_program_cull["uv_texture"] = 1
+        else:
+            self.sprite_list_program_no_cull = None  # type: ignore
+            self.sprite_list_program_cull = None  # type: ignore
 
         self.sprite_list_program_no_geo = self.load_program(
             vertex_shader=":system:shaders/sprites/sprite_list_simple_vs.glsl",
@@ -114,14 +130,18 @@ class ArcadeContext(Context):
         self.sprite_list_program_no_geo["index_data"] = 6
 
         # Geo shader single sprite program
-        self.sprite_program_single = self.load_program(
-            vertex_shader=":system:shaders/sprites/sprite_single_vs.glsl",
-            geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
-            fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
-        )
-        self.sprite_program_single["sprite_texture"] = 0
-        self.sprite_program_single["uv_texture"] = 1
-        self.sprite_program_single["spritelist_color"] = 1.0, 1.0, 1.0, 1.0
+        if gl_api != "webgl":
+            self.sprite_program_single = self.load_program(
+                vertex_shader=":system:shaders/sprites/sprite_single_vs.glsl",
+                geometry_shader=":system:shaders/sprites/sprite_list_geometry_no_cull_geo.glsl",
+                fragment_shader=":system:shaders/sprites/sprite_list_geometry_fs.glsl",
+            )
+            self.sprite_program_single["sprite_texture"] = 0
+            self.sprite_program_single["uv_texture"] = 1
+            self.sprite_program_single["spritelist_color"] = 1.0, 1.0, 1.0, 1.0
+        else:
+            self.sprite_program_single = None  # type: ignore
+
         # Non-geometry shader single sprite program
         self.sprite_program_single_simple = self.load_program(
             vertex_shader=":system:shaders/sprites/sprite_single_simple_vs.glsl",
@@ -180,28 +200,34 @@ class ArcadeContext(Context):
             fragment_shader=":system:shaders/atlas/resize_simple_fs.glsl",
         )
         self.atlas_resize_program["atlas_old"] = 0  # Configure texture channels
-        self.atlas_resize_program["atlas_new"] = 1
-        self.atlas_resize_program["texcoords_old"] = 2
-        self.atlas_resize_program["texcoords_new"] = 3
+        self.atlas_resize_program["texcoords_old"] = 1
+        self.atlas_resize_program["texcoords_new"] = 2
 
-        # NOTE: These should not be created when WebGL is used
-        # SpriteList collision resources
-        # Buffer version of the collision detection program.
-        self.collision_detection_program = self.load_program(
-            vertex_shader=":system:shaders/collision/col_trans_vs.glsl",
-            geometry_shader=":system:shaders/collision/col_trans_gs.glsl",
-        )
-        # Texture version of the collision detection program.
-        self.collision_detection_program_simple = self.load_program(
-            vertex_shader=":system:shaders/collision/col_tex_trans_vs.glsl",
-            geometry_shader=":system:shaders/collision/col_tex_trans_gs.glsl",
-        )
-        self.collision_detection_program_simple["pos_angle_data"] = 0
-        self.collision_detection_program_simple["size_data"] = 1
-        self.collision_detection_program_simple["index_data"] = 2
+        if gl_api != "webgl":
+            # SpriteList collision resources
+            # Buffer version of the collision detection program.
+            self.collision_detection_program: Program | None = self.load_program(
+                vertex_shader=":system:shaders/collision/col_trans_vs.glsl",
+                geometry_shader=":system:shaders/collision/col_trans_gs.glsl",
+            )
+            # Texture version of the collision detection program.
+            self.collision_detection_program_simple: Program | None = self.load_program(
+                vertex_shader=":system:shaders/collision/col_tex_trans_vs.glsl",
+                geometry_shader=":system:shaders/collision/col_tex_trans_gs.glsl",
+            )
+            self.collision_detection_program_simple["pos_angle_data"] = 0
+            self.collision_detection_program_simple["size_data"] = 1
+            self.collision_detection_program_simple["index_data"] = 2
 
-        self.collision_buffer = self.buffer(reserve=1024 * 4)
-        self.collision_query = self.query(samples=False, time=False, primitives=True)
+            self.collision_buffer: Buffer | None = self.buffer(reserve=1024 * 4)
+            self.collision_query: Query | None = self.query(
+                samples=False, time=False, primitives=True
+            )
+        else:
+            self.collision_detection_program = None
+            self.collision_detection_program_simple = None
+            self.collision_buffer = None
+            self.collision_query = None
 
         # General Utility
 
@@ -251,7 +277,10 @@ class ArcadeContext(Context):
                     ["in_vert"],
                 ),
                 BufferDescription(
-                    self.shape_line_buffer_pos, "4f", ["in_instance_pos"], instanced=True
+                    self.shape_line_buffer_pos,
+                    "4f",
+                    ["in_instance_pos"],
+                    instanced=True,
                 ),
             ],
             mode=self.TRIANGLE_STRIP,
@@ -295,12 +324,13 @@ class ArcadeContext(Context):
         self.geometry_empty: Geometry = self.geometry()
 
         self._atlas: TextureAtlasBase | None = None
-        # Global labels we modify in `arcade.draw_text`.
-        # These multiple labels with different configurations are stored
-        self.label_cache: dict[str, arcade.Text] = {}
+        # Labels reused by `arcade.draw_text`, keyed by the settings that are
+        # expensive to change and the text, least recently used first
+        self.label_cache: OrderedDict[Hashable, arcade.Text] = OrderedDict()
 
         # self.active_program = None
-        self.point_size = 1.0
+        if gl_api != "webgl":
+            self.point_size = 1.0
 
     def reset(self) -> None:
         """
@@ -315,6 +345,8 @@ class ArcadeContext(Context):
         self.projection_matrix = Mat4.orthogonal_projection(
             0, self.window.width, 0, self.window.height, -100, 100
         )
+        self._default_camera = DefaultProjector(context=self)
+        self.current_camera = self._default_camera
         self.enable_only(self.BLEND)
         self.blend_func = self.BLEND_DEFAULT
         self.point_size = 1.0
@@ -326,13 +358,18 @@ class ArcadeContext(Context):
         This should always be bound to index 0 so all shaders
         have access to them.
         """
-        gl.glBindBufferRange(
-            gl.GL_UNIFORM_BUFFER,
-            0,
-            self._window_block.buffer.id,
-            0,  # type: ignore
-            128,  # 32 x 32bit floats (two mat4) # type: ignore
+        raise NotImplementedError(
+            "The currently selected GL backend does not implement ArcadeContext.bind_window_block"
         )
+
+    def _write_window_block(self) -> None:
+        """
+        Write the current projection/view matrices into Arcade's own
+        window-block UBO, matching the ``WindowBlock { mat4 projection;
+        mat4 view; }`` layout Arcade's shaders declare.
+        """
+        self._window_block.write(array("f", self._projection_matrix), offset=0)
+        self._window_block.write(array("f", self._view_matrix), offset=64)
 
     @property
     def default_atlas(self) -> TextureAtlasBase:
@@ -358,6 +395,15 @@ class ArcadeContext(Context):
         return self._atlas
 
     @property
+    def active_framebuffer(self):
+        return self._active_framebuffer
+
+    @active_framebuffer.setter
+    def active_framebuffer(self, framebuffer: Framebuffer):
+        self._active_framebuffer = framebuffer
+        self._default_camera.update_viewport()
+
+    @property
     def viewport(self) -> tuple[int, int, int, int]:
         """
         Get or set the viewport for the currently active framebuffer.
@@ -378,8 +424,7 @@ class ArcadeContext(Context):
     @viewport.setter
     def viewport(self, value: tuple[int, int, int, int]):
         self.active_framebuffer.viewport = value
-        if self._default_camera == self.current_camera:
-            self._default_camera.use()
+        self._default_camera.update_viewport()
 
     @property
     def projection_matrix(self) -> Mat4:
@@ -389,16 +434,19 @@ class ArcadeContext(Context):
         This 4x4 float32 matrix is usually calculated by a cameras but
         can be modified directly if you know what you are doing.
 
-        This property simply gets and sets pyglet's projection matrix.
+        This property gets and sets Arcade's own window-block UBO
+        directly. It is independent of pyglet's own window matrix
+        storage (spec FR-002/FR-005).
         """
-        return self.window.projection
+        return self._projection_matrix
 
     @projection_matrix.setter
     def projection_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
             raise ValueError("projection_matrix must be a Mat4 object")
 
-        self.window.projection = value
+        self._projection_matrix = value
+        self._window_block.write(array("f", value), offset=0)
 
     @property
     def view_matrix(self) -> Mat4:
@@ -408,16 +456,19 @@ class ArcadeContext(Context):
         This 4x4 float32 matrix is usually calculated by a cameras but
         can be modified directly if you know what you are doing.
 
-        This property simply gets and sets pyglet's view matrix.
+        This property gets and sets Arcade's own window-block UBO
+        directly. It is independent of pyglet's own window matrix
+        storage (spec FR-002/FR-005).
         """
-        return self.window.view
+        return self._view_matrix
 
     @view_matrix.setter
     def view_matrix(self, value: Mat4):
         if not isinstance(value, Mat4):
             raise ValueError("view_matrix must be a Mat4 object")
 
-        self.window.view = value
+        self._view_matrix = value
+        self._window_block.write(array("f", value), offset=64)
 
     def load_program(
         self,

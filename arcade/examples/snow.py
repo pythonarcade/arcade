@@ -60,7 +60,7 @@ class GameView(arcade.View):
         self.snowflake_list = arcade.SpriteList()
 
         # Don't show the mouse pointer
-        self.window.set_mouse_visible(False)
+        self.window.set_mouse_cursor_visible(False)
 
         # Set the background color
         self.background_color = arcade.color.BLACK

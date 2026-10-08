@@ -1,5 +1,6 @@
 import pytest
 from PIL import Image
+
 import arcade
 from arcade.cache import TextureCache
 

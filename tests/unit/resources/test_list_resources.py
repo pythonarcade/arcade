@@ -5,6 +5,7 @@ Leave +-10 margin on the count to allow minor changes.
 """
 
 import pytest
+
 import arcade
 
 

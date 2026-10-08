@@ -12,16 +12,129 @@ from arcade import (
     SpriteType,
     check_for_collision,
     check_for_collision_with_lists,
+    get_collision_info_with_list,
+    has_collision_with_lists,
 )
 from arcade.math import get_distance
+from arcade.sprite_list.collision import _get_separation_distance
 
 __all__ = ["PhysicsEngineSimple", "PhysicsEnginePlatformer"]
 
 from arcade.utils import Chain, copy_dunders_unimplemented
 
+# How many times to try moving a sprite out of overlapping walls before
+# falling back to the older, slower search
+_MAX_PUSHES = 8
+
+
+def _min_move(distance: float, position: float) -> float:
+    """Make sure a move is big enough to change ``position``.
+
+    Moving a sprite exactly out of a wall can leave it overlapping by a
+    rounding error, which still counts as a collision. A move of that size
+    may be too small to change a large coordinate at all.
+    """
+    return max(distance, 1e-9 * (1.0 + abs(position)))
+
+
+def _push_out_of_walls(colliding: Sprite, walls: Iterable[SpriteSequence[BasicSprite]]) -> bool:
+    """Move a sprite out of the walls it overlaps, using the smallest moves.
+
+    Each step moves the sprite out of the wall it overlaps most deeply, as
+    found by :py:func:`arcade.get_collision_info_with_list`. This is exact
+    for convex hit boxes, but can fail, for example when wedged between two
+    walls, or with concave hit boxes.
+
+    Args:
+        colliding:
+            A sprite to move out of the given list of SpriteLists.
+        walls:
+            The walls to move it out of.
+    Returns:
+        ``True`` if the sprite no longer overlaps any wall.
+    """
+    for _ in range(_MAX_PUSHES):
+        deepest = None
+        for wall_list in walls:
+            hits = get_collision_info_with_list(colliding, wall_list)
+            if hits and (deepest is None or hits[0][1].depth > deepest.depth):
+                deepest = hits[0][1]
+        if deepest is None:
+            return True
+        x, y = colliding.position
+        normal_x, normal_y = deepest.normal
+        distance = _min_move(deepest.depth, max(abs(x), abs(y)))
+        colliding.position = x + normal_x * distance, y + normal_y * distance
+    return not has_collision_with_lists(colliding, walls)
+
+
+def _move_out_of_sprite(
+    moving: Sprite, other: BasicSprite, direction_y: float, step: float
+) -> None:
+    """Move a sprite straight up or down until it no longer collides with another.
+
+    Args:
+        moving:
+            The sprite to move.
+        other:
+            The sprite to move it out of.
+        direction_y:
+            ``1.0`` to move up, ``-1.0`` to move down.
+        step:
+            The step size for the fallback search, if the exact move fails.
+    """
+    original_y = moving.center_y
+    for _ in range(_MAX_PUSHES):
+        distance = _get_separation_distance(moving, other, 0.0, direction_y)
+        if distance == 0.0:
+            return
+        y = moving.center_y
+        moving.center_y = y + direction_y * _min_move(distance, y)
+
+    # Fall back to stepping, as older versions did
+    moving.center_y = original_y
+    while check_for_collision(moving, other):
+        moving.center_y += direction_y * step
+
+
+def _move_out_of_walls(
+    moving: Sprite,
+    walls: Iterable[SpriteSequence[BasicSprite]],
+    direction_y: float,
+    step: float,
+) -> None:
+    """Move a sprite straight up or down until it no longer overlaps any wall.
+
+    Args:
+        moving:
+            The sprite to move.
+        walls:
+            The walls to move it out of.
+        direction_y:
+            ``1.0`` to move up, ``-1.0`` to move down.
+        step:
+            The step size for the fallback search, if the exact move fails.
+    """
+    original_y = moving.center_y
+    for _ in range(_MAX_PUSHES):
+        hits = check_for_collision_with_lists(moving, walls)
+        if not hits:
+            return
+        distance = max(_get_separation_distance(moving, hit, 0.0, direction_y) for hit in hits)
+        y = moving.center_y
+        moving.center_y = y + direction_y * _min_move(distance, y)
+
+    # Fall back to stepping, as older versions did
+    moving.center_y = original_y
+    while has_collision_with_lists(moving, walls):
+        moving.center_y += direction_y * step
+
 
 def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteSequence[BasicSprite]]) -> None:
     """Kludge to 'guess' a colliding sprite out of a collision.
+
+    This is only used as a fallback, when moving the sprite out of the walls
+    the smallest distance (see :py:func:`_push_out_of_walls`) fails.
 
     It works by iterating over increasing wiggle sizes of 8 points
     around the ``colliding`` sprite's original center position. Each
@@ -71,12 +184,59 @@ def _wiggle_until_free(colliding: Sprite, walls: Iterable[SpriteSequence[BasicSp
         for strided_index in range(0, 16, 2):
             x, y = try_list[strided_index:strided_index + 2]
             colliding.position = x, y
-            check_hit_list = check_for_collision_with_lists(colliding, walls)
-            # print(f"Vary {vary} ({trapped.center_x} {trapped.center_y}) "
-            #       f"= {len(check_hit_list)}")
-            if len(check_hit_list) == 0:
+            if not has_collision_with_lists(colliding, walls):
                 return
         wiggle_distance *= 2
+
+
+def _first_overlap(
+    moving_sprite: Sprite,
+    can_collide: Iterable[SpriteSequence[SpriteType]],
+    change_x: float,
+    change_y: float,
+) -> tuple[float, float]:
+    """
+    Check a move in steps shorter than the sprite, so it can't pass through
+    a thin wall, and find where it first overlaps one.
+
+    Each step moves the sprite by less than its own size, so a wall it would
+    pass through overlaps it after one of the steps. The engines resolve a
+    move by overlapping a wall and then backing out of it, so this finds a
+    move that overlaps the first wall in the way, instead of jumping past it.
+
+    Args:
+        moving_sprite: The sprite to move. It's left where it started.
+        can_collide: The sprite lists it can collide with.
+        change_x: The move in x. Only one of change_x and change_y is used.
+        change_y: The move in y.
+    Returns:
+        The distance along the move to the first step that overlaps a wall,
+        or the whole move if none do, and the distance to the step before
+        it, which doesn't overlap a wall.
+    """
+    change = change_x or change_y
+    left, right, bottom, top = moving_sprite.hit_box.get_adjusted_bounds()
+    size = (right - left) if change_x else (top - bottom)
+    longest_step = size * 0.9
+    if longest_step <= 0 or abs(change) <= longest_step:
+        return change, 0.0
+
+    steps = math.ceil(abs(change) / longest_step)
+    start = moving_sprite.position
+    distance = 0.0
+    try:
+        for step in range(1, steps):
+            previous = distance
+            distance = change * step / steps
+            moving_sprite.position = (
+                start[0] + (distance if change_x else 0.0),
+                start[1] + (0.0 if change_x else distance),
+            )
+            if has_collision_with_lists(moving_sprite, can_collide):
+                return distance, previous
+    finally:
+        moving_sprite.position = start
+    return change, distance
 
 
 def _move_sprite(
@@ -103,9 +263,17 @@ def _move_sprite(
         A list of other individual sprites the ``moving_sprite``
         collided with.
     """
+    # Whether a collision was resolved this update, which may leave the
+    # sprite exactly touching a wall
+    resolved = False
+
     # See if we are starting this turn with a sprite already colliding with us.
-    if len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
-        _wiggle_until_free(moving_sprite, can_collide)
+    if has_collision_with_lists(moving_sprite, can_collide):
+        resolved = True
+        start = moving_sprite.position
+        if not _push_out_of_walls(moving_sprite, can_collide):
+            moving_sprite.position = start
+            _wiggle_until_free(moving_sprite, can_collide)
 
     original_x, original_y = moving_sprite.position
     original_angle = moving_sprite.angle
@@ -120,10 +288,13 @@ def _move_sprite(
         rotating_hit_list = check_for_collision_with_lists(moving_sprite, can_collide)
 
         if len(rotating_hit_list) > 0:
+            resolved = True
             max_distance = (moving_sprite.width + moving_sprite.height) / 2
 
-            # Resolve any collisions by this weird kludge
-            _wiggle_until_free(moving_sprite, can_collide)
+            # Move out of the walls the smallest distance, or guess if that fails
+            if not _push_out_of_walls(moving_sprite, can_collide):
+                moving_sprite.position = original_x, original_y
+                _wiggle_until_free(moving_sprite, can_collide)
             if (
                 get_distance(original_x, original_y, moving_sprite.center_x, moving_sprite.center_y)
                 > max_distance
@@ -132,8 +303,14 @@ def _move_sprite(
                 moving_sprite.position = original_x, original_y
                 moving_sprite.angle = original_angle
 
+            # Measure the moves below from where rotating left the sprite,
+            # so the x move doesn't undo moving it out of a wall
+            original_x, original_y = moving_sprite.position
+
     # --- Move in the y direction
-    moving_sprite.center_y += moving_sprite.change_y
+    # A fast sprite stops at the first wall in the way instead of passing it
+    move_y, _ = _first_overlap(moving_sprite, can_collide, 0.0, moving_sprite.change_y)
+    moving_sprite.center_y += move_y
 
     # Check for wall hit
     hit_list_x = check_for_collision_with_lists(moving_sprite, can_collide)
@@ -143,8 +320,7 @@ def _move_sprite(
     # If we hit a wall, move so the edges are at the same point
     if len(hit_list_x) > 0:
         if moving_sprite.change_y > 0:
-            while len(check_for_collision_with_lists(moving_sprite, can_collide)) > 0:
-                moving_sprite.center_y -= 1
+            _move_out_of_walls(moving_sprite, can_collide, -1.0, 1)
             # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})"
             #       f" {self.player_sprite.change_y}")
         elif moving_sprite.change_y < 0:
@@ -172,9 +348,8 @@ def _move_sprite(
 
             # Nudge the player up until no longer colliding with each collided item
             for item in hit_list_x:
-                while check_for_collision(moving_sprite, item):
-                    # self.player_sprite.bottom = item.top <- Doesn't work for ramps
-                    moving_sprite.center_y += 0.25
+                # Move straight up, which also works for ramps
+                _move_out_of_sprite(moving_sprite, item, 1.0, 0.25)
 
             # Apply horizontal movement from the chosen platform (once)
             if chosen_platform is not None and getattr(chosen_platform, "change_x", 0.0) != 0:
@@ -194,7 +369,13 @@ def _move_sprite(
         moving_sprite.change_y = min(0.0, getattr(hit_list_x[0], "change_y", 0.0))
 
     # print(f"Spot D ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
-    moving_sprite.center_y = round(moving_sprite.center_y, 2)
+    exact_y = moving_sprite.center_y
+    rounded_y = round(exact_y, 2)
+    if rounded_y != exact_y:
+        moving_sprite.center_y = rounded_y
+        if (resolved or hit_list_x) and has_collision_with_lists(moving_sprite, can_collide):
+            # Rounding moved it back into a wall it was moved out of
+            moving_sprite.center_y = exact_y
     # print(f"Spot Q ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
 
     # end_time = time.time()
@@ -210,9 +391,13 @@ def _move_sprite(
         # Strip off sign so we only have to write one version of this for
         # both directions
         direction = math.copysign(1, moving_sprite.change_x)
-        cur_x_change = abs(moving_sprite.change_x)
+        # A fast sprite stops at the first wall in the way instead of
+        # passing it: search between the last step that's clear and the
+        # first that overlaps a wall
+        overlap_x, clear_x = _first_overlap(moving_sprite, can_collide, moving_sprite.change_x, 0.0)
+        cur_x_change = abs(overlap_x)
         upper_bound = cur_x_change
-        lower_bound: float = 0
+        lower_bound: float = abs(clear_x)
         cur_y_change: float = 0
 
         exit_loop = False
@@ -667,9 +852,7 @@ class PhysicsEnginePlatformer:
             :py:attr:`ladders`.
         """
         if self.ladders:
-            hit_list = check_for_collision_with_lists(self.player_sprite, self.ladders)
-            if len(hit_list) > 0:
-                return True
+            return has_collision_with_lists(self.player_sprite, self.ladders)
         return False
 
     def can_jump(self, y_distance: float = 5) -> bool:
@@ -708,18 +891,14 @@ class PhysicsEnginePlatformer:
 
         # Temporarily move the player down to collide floor-like sprites
         self.player_sprite.center_y -= y_distance
-        hit_list = check_for_collision_with_lists(self.player_sprite, self._all_obstacles)
+        on_ground = has_collision_with_lists(self.player_sprite, self._all_obstacles)
         self.player_sprite.center_y += y_distance
 
         # Reset the number jumps if the player touched a floor-like sprite
-        if len(hit_list) > 0:
+        if on_ground:
             self.jumps_since_ground = 0
 
-        if (
-            len(hit_list) > 0
-            or self.allow_multi_jump
-            and self.jumps_since_ground < self.allowed_jumps
-        ):
+        if on_ground or self.allow_multi_jump and self.jumps_since_ground < self.allowed_jumps:
             return True
         else:
             return False

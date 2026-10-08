@@ -1,7 +1,8 @@
 import pytest
 from PIL import Image
-from arcade.texture import ImageData
+
 from arcade.cache import ImageDataCache
+from arcade.texture import ImageData
 
 image_1 = ImageData(Image.new("RGBA", (10, 10), (255, 0, 0, 255)))
 image_2 = ImageData(Image.new("RGBA", (10, 10), (255, 0, 0, 255)))

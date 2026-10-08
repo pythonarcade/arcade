@@ -42,7 +42,7 @@ class GameView(arcade.View):
         self.score_display = None
 
         # Hide the mouse cursor while it's over the window
-        self.window.set_mouse_visible(False)
+        self.window.set_mouse_cursor_visible(False)
 
         self.background_color = arcade.color.AMAZON
 

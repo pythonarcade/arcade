@@ -4,21 +4,16 @@ import weakref
 from ctypes import byref, string_at
 from typing import TYPE_CHECKING
 
-from pyglet import gl
+from pyglet.graphics import core
+from pyglet.graphics.api import gl
 
-from arcade.gl.buffer import Buffer
+from arcade.gl.buffer import Buffer, _usages
 from arcade.types import BufferProtocol
 
 from .utils import data_to_ctypes
 
 if TYPE_CHECKING:
     from arcade.gl import Context
-
-_usages = {
-    "static": gl.GL_STATIC_DRAW,
-    "dynamic": gl.GL_DYNAMIC_DRAW,
-    "stream": gl.GL_STREAM_DRAW,
-}
 
 
 class OpenGLBuffer(Buffer):
@@ -88,6 +83,9 @@ class OpenGLBuffer(Buffer):
         return f"<Buffer {self._glo.value}>"
 
     def __del__(self):
+        # Creating the object can fail before the OpenGL object exists
+        if not hasattr(self, "_glo"):
+            return
         # Intercept garbage collection if we are using Context.gc()
         if self._ctx.gc_mode == "context_gc" and self._glo.value > 0:
             self._ctx.objects.append(self)
@@ -120,7 +118,7 @@ class OpenGLBuffer(Buffer):
                 The OpenGL buffer id
         """
         # If we have no context, then we are shutting down, so skip this
-        if gl.current_context is None:
+        if core.current_context is None:
             return
 
         if glo.value != 0:

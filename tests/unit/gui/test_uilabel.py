@@ -1,9 +1,10 @@
 from unittest.mock import Mock
 
 from pyglet.math import Vec2
+from pyglet.text import LinearGradient
 
 from arcade.gui import UILabel
-from arcade.types import Color, LBWH
+from arcade.types import LBWH, Color
 
 
 def test_constructor_only_text_no_size(window):
@@ -35,8 +36,10 @@ def test_constructor_fix_width_and_multiline(window):
 def test_constructor_adaptive_width_support_for_multiline_text(window):
     """
     This test is a bit tricky. Enabling multiline without a width
-    should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
-    Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
+    should fit the size to the text. This is not natively supported
+    by either arcade.Text or pyglet.Label. Because text length varies
+    between operating systems, we can only test boundaries, which
+    indicate a proper implementation.
     """
     label = UILabel(text="Multiline\ntext\nwhich\n", multiline=True)
     assert label.width < 100
@@ -75,9 +78,8 @@ def test_internals_text_placed_at_0_0(window):
 
 def test_change_text_triggers_full_render_without_background(window):
     """
-    This test is a bit tricky. Enabling multiline without a width
-    should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
-    Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
+    Without a background, the label can't redraw itself over its old text,
+    so changing the text asks its parent to render.
     """
     mock = Mock()
 
@@ -90,9 +92,8 @@ def test_change_text_triggers_full_render_without_background(window):
 
 def test_change_text_triggers_render_with_background(window):
     """
-    This test is a bit tricky. Enabling multiline without a width
-    should fit the size to the text. This is not natively supported by either arcade.Text or pyglet.Label.
-    Because text length variates between different os, we can only test boundaries, which indicate a proper implementation.
+    With a background, the label redraws itself over its old text, so
+    changing the text doesn't ask its parent to render.
     """
     mock = Mock()
 
@@ -160,6 +161,23 @@ def test_size_hint_min_adapts_to_smaller_font(window):
 
     assert label.size_hint_min[0] < shm_w
     assert label.size_hint_min[1] < shm_h
+
+
+def test_update_font_with_unchanged_font_does_not_trigger_render(window):
+    """The label resolves a font fallback tuple to a concrete loaded font.
+
+    Re-applying the same requested tuple (button styles do this on every
+    render) must not be reported as a change, otherwise every render
+    triggers a full render of the whole UI, which repeats itself every frame.
+    """
+    # first entry does not exist, so the label falls back to a later font
+    font_names = ("NonExistentFont", "arial", "calibri")
+    label = UILabel(text="Example", font_name=font_names, text_color=Color(255, 255, 255))
+    label._requires_render = False
+
+    label.update_font(font_name=font_names, font_size=12, font_color=Color(255, 255, 255))
+
+    assert label._requires_render is False
 
 
 def test_multiline_enabled_size_hint_min_adapts_to_new_text(window):
@@ -242,3 +260,26 @@ def test_fit_content_uses_adaptive_multiline_width(ui):
     # check size_hint_min updated
     assert label.size_hint_min[0] > shm_w
     assert label.size_hint_min[1] < shm_h
+
+
+def test_update_font_italic_bold_and_gradient(window):
+    label = UILabel(text="Example", font_name="Liberation Sans")
+    gradient = LinearGradient((255, 0, 0, 255), (0, 0, 255, 255))
+
+    label.update_font(italic=True, bold="light", font_color=gradient)
+
+    assert label.italic is True
+    assert label.bold == "light"
+    assert label.font_color == gradient
+    assert label._label.label.document.get_style("style") == "italic"
+
+    # Re-applying the same values is not a change
+    label._requires_render = False
+    label.update_font(italic=True, bold="light", font_color=gradient)
+    assert label._requires_render is False
+
+    # Plain colors still become a Color
+    label.update_font(italic=False, bold=False, font_color=(0, 255, 0))
+    assert label.italic is False
+    assert label.bold is False
+    assert label.font_color == Color(0, 255, 0, 255)

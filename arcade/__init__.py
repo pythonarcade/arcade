@@ -59,7 +59,7 @@ import pyglet
 
 # Enable HiDPI support using stretch mode
 if os.environ.get("ARCADE_TEST"):
-    pyglet.options.dpi_scaling = "real"
+    pyglet.options.dpi_scaling = "platform"
 else:
     pyglet.options.dpi_scaling = "stretch"
 
@@ -67,13 +67,6 @@ else:
 headless: Final[bool] = bool(os.environ.get("ARCADE_HEADLESS"))
 if headless:
     pyglet.options.headless = headless
-
-
-# from arcade import utils
-# Disable shadow window on macs and in headless mode.
-# if sys.platform == "darwin" or os.environ.get("ARCADE_HEADLESS") or utils.is_raspberry_pi():
-# NOTE: We always disable shadow window now to have consistent behavior across platforms.
-pyglet.options.shadow_window = False
 
 # Imports from modules that don't do anything circular
 
@@ -152,6 +145,17 @@ if not headless:
     from .controller import ControllerManager
     from .controller import get_controllers
 
+from .input import ActionState
+from .input import ControllerButtons
+from .input import ControllerSticks
+from .input import ControllerTriggers
+from .input import InputManager
+from .input import Keys
+from .input import MouseAxes
+from .input import MouseButtons
+from .input import PSControllerButtons
+from .input import XBoxControllerButtons
+
 from .sound import Sound
 from .sound import load_sound
 from .sound import play_sound
@@ -179,9 +183,19 @@ from .sprite import SpriteSolidColor
 
 from .sprite_list import SpriteList
 from .sprite_list import SpriteSequence
+from .sprite_list import CollisionInfo
+from .sprite_list import CollisionMethod
+from .sprite_list import SweepInfo
 from .sprite_list import check_for_collision
+from .sprite_list import get_collision_info
+from .sprite_list import get_collision_info_with_list
+from .sprite_list import sweep_line
+from .sprite_list import sweep_sprite
 from .sprite_list import check_for_collision_with_list
 from .sprite_list import check_for_collision_with_lists
+from .sprite_list import check_for_collision_between_lists
+from .sprite_list import has_collision_with_list
+from .sprite_list import has_collision_with_lists
 from .sprite_list import get_closest_sprite
 from .sprite_list import get_sprites_at_exact_point
 from .sprite_list import get_sprites_at_point
@@ -199,9 +213,12 @@ from .physics_engines import PhysicsEngineSimple
 from .tilemap import load_tilemap
 from .tilemap import TileMap
 
-from .pymunk_physics_engine import PymunkPhysicsEngine
-from .pymunk_physics_engine import PymunkPhysicsObject
-from .pymunk_physics_engine import PymunkException
+try:
+    from .pymunk_physics_engine import PymunkPhysicsEngine
+    from .pymunk_physics_engine import PymunkPhysicsObject
+    from .pymunk_physics_engine import PymunkException
+except ImportError:
+    pass
 
 from .version import VERSION
 
@@ -238,6 +255,7 @@ from arcade import types as types
 from arcade import math as math
 from arcade import shape_list as shape_list
 from arcade import hitbox as hitbox
+from arcade import input as input
 from arcade import experimental as experimental
 from arcade.types import rect
 
@@ -249,9 +267,20 @@ from .text import (
     load_font,
     create_text_sprite,
     Text,
+    TextPool,
 )
 
 __all__ = [
+    "ActionState",
+    "ControllerButtons",
+    "ControllerSticks",
+    "ControllerTriggers",
+    "InputManager",
+    "Keys",
+    "MouseAxes",
+    "MouseButtons",
+    "PSControllerButtons",
+    "XBoxControllerButtons",
     "AStarBarrierList",
     "AnimatedWalkingSprite",
     "TextureAnimationSprite",
@@ -291,8 +320,12 @@ __all__ = [
     "SpriteCircle",
     "SpriteList",
     "SpriteSequence",
+    "CollisionInfo",
+    "CollisionMethod",
+    "SweepInfo",
     "SpriteSolidColor",
     "Text",
+    "TextPool",
     "Texture",
     "TextureCacheManager",
     "SpriteSheet",
@@ -306,8 +339,15 @@ __all__ = [
     "Window",
     "astar_calculate_path",
     "check_for_collision",
+    "get_collision_info",
+    "get_collision_info_with_list",
+    "sweep_line",
+    "sweep_sprite",
     "check_for_collision_with_list",
     "check_for_collision_with_lists",
+    "check_for_collision_between_lists",
+    "has_collision_with_list",
+    "has_collision_with_lists",
     "close_window",
     "disable_timings",
     "draw_arc_filled",
@@ -388,6 +428,7 @@ __all__ = [
     "get_default_texture",
     "get_default_image",
     "hitbox",
+    "input",
     "experimental",
     "rect",
     "color",

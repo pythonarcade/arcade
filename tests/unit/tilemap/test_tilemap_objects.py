@@ -1,6 +1,8 @@
 from math import isclose
-import arcade
+
 from pytiled_parser.common_types import Color
+
+import arcade
 
 #
 # Test size, rotation, alpha of tiles from a Tiled object layer
@@ -23,11 +25,12 @@ def test_one():
     sprite_1 = tile_list[0]
     assert sprite_1 is not None
     #
-    # Test width, height and angle
+    # Test width, height, angle and visibility
     #
     assert sprite_1.width == 400
     assert sprite_1.height == 1000
     assert sprite_1.angle == -45
+    assert sprite_1.visible is False
 
     #
     # Test type and name properties

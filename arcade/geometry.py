@@ -6,6 +6,7 @@ These are the pure python versions of the functions.
 Point in polygon function from https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
 """
 
+from collections.abc import Iterable
 from sys import maxsize as sys_int_maxsize
 
 from arcade.types import Point2, Point2List
@@ -25,39 +26,77 @@ def are_polygons_intersecting(poly_a: Point2List, poly_b: Point2List) -> bool:
     # if either are [], they don't intersect
     if not poly_a or not poly_b:
         return False
+
+    # Bounding box check. This also covers the x and y axes of the
+    # separating axis test below.
+    x_a, y_a = zip(*poly_a)
+    x_b, y_b = zip(*poly_b)
+    if max(x_a) <= min(x_b) or max(x_b) <= min(x_a) or max(y_a) <= min(y_b) or max(y_b) <= min(y_a):
+        return False
+
+    return _are_polygons_intersecting_sat(poly_a, poly_b)
+
+
+def _are_polygons_intersecting_sat(poly_a: Point2List, poly_b: Point2List) -> bool:
+    """
+    Separating axis test for two polygons whose bounding boxes overlap.
+
+    The caller must already have checked that the bounding boxes overlap.
+    Horizontal and vertical edges are skipped because their axes are the
+    x and y axes, which the bounding box check has already covered. This
+    means two axis-aligned rectangles need no further work at all.
+
+    Args:
+        poly_a: List of points that define the first polygon.
+        poly_b: List of points that define the second polygon.
+
+    Returns:
+        ``True`` if polygons intersect, ``False`` otherwise
+    """
     for polygon in (poly_a, poly_b):
-        for i1 in range(len(polygon)):
-            i2 = (i1 + 1) % len(polygon)
-            projection_1 = polygon[i1]
-            projection_2 = polygon[i2]
+        prev_x, prev_y = polygon[-1]
+        for x, y in polygon:
+            normal_x = y - prev_y
+            normal_y = prev_x - x
+            prev_x = x
+            prev_y = y
 
-            normal = (
-                projection_2[1] - projection_1[1],
-                projection_1[0] - projection_2[0],
-            )
+            # Axis-aligned or zero-length edge
+            if normal_x == 0 or normal_y == 0:
+                continue
 
-            min_a, min_b = (float("inf"),) * 2
-            max_a, max_b = (-float("inf"),) * 2
+            projected_a = [normal_x * px + normal_y * py for px, py in poly_a]
+            projected_b = [normal_x * px + normal_y * py for px, py in poly_b]
 
-            for poly in poly_a:
-                projected = normal[0] * poly[0] + normal[1] * poly[1]
-
-                if projected < min_a:
-                    min_a = projected
-                if projected > max_a:
-                    max_a = projected
-
-            for poly in poly_b:
-                projected = normal[0] * poly[0] + normal[1] * poly[1]
-
-                if projected < min_b:
-                    min_b = projected
-                if projected > max_b:
-                    max_b = projected
-
-            # Avoid typing.cast() because this is a very hot path
-            if max_a <= min_b or max_b <= min_a:
+            if max(projected_a) <= min(projected_b) or max(projected_b) <= min(projected_a):
                 return False
+
+    return True
+
+
+def _are_polygons_overlapping_on_axes(
+    poly_a: Point2List, poly_b: Point2List, axes: Iterable[Point2]
+) -> bool:
+    """
+    Separating axis test for two polygons using a given set of axes.
+
+    Like :py:func:`_are_polygons_intersecting_sat`, but the caller provides
+    the axes to test, so they can be cached and duplicates removed.
+
+    Args:
+        poly_a: List of points that define the first polygon.
+        poly_b: List of points that define the second polygon.
+        axes: The axes to project onto. They don't need to be unit vectors.
+
+    Returns:
+        ``True`` if the polygons overlap on every axis, ``False`` otherwise
+    """
+    for normal_x, normal_y in axes:
+        projected_a = [normal_x * px + normal_y * py for px, py in poly_a]
+        projected_b = [normal_x * px + normal_y * py for px, py in poly_b]
+
+        if max(projected_a) <= min(projected_b) or max(projected_b) <= min(projected_a):
+            return False
 
     return True
 

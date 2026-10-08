@@ -1,4 +1,5 @@
 import pytest
+
 from arcade.gl import BufferDescription
 
 

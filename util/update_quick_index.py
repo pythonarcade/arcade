@@ -188,7 +188,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "title": "Isometric Map (incomplete)",
         "use_declarations_in": ["arcade.isometric"],
     },
-    "easing.rst": {"title": "Easing", "use_declarations_in": ["arcade.easing"]},
+    "anim.rst": {"title": "Easing", "use_declarations_in": ["arcade.anim", "arcade.anim.easing"]},
     "utility.rst": {
         "title": "Misc Utility Functions",
         "use_declarations_in": ["arcade", "arcade.__main__", "arcade.utils"],
@@ -231,6 +231,9 @@ API_FILE_TO_TITLE_AND_MODULES = {
     "gui_experimental.rst": {
         "title": "GUI Experimental Features",
         "use_declarations_in": [
+            "arcade.gui.experimental.animate",
+            "arcade.gui.experimental.transition",
+            "arcade.gui.experimental.group",
             "arcade.gui.experimental.password_input",
             "arcade.gui.experimental.scroll_area",
             "arcade.gui.experimental.typed_text_input",
@@ -269,14 +272,6 @@ API_FILE_TO_TITLE_AND_MODULES = {
     "future.rst": {
         "title": "Future Features",
         "use_declarations_in": [
-            "arcade.future.texture_render_target",
-            "arcade.future.input.inputs",
-            "arcade.future.input.manager",
-            "arcade.future.input.input_mapping",
-            "arcade.future.input.raw_dicts",
-            "arcade.future.background.background_texture",
-            "arcade.future.background.background",
-            "arcade.future.background.groups",
             "arcade.future.light.lights",
             "arcade.future.video.video_player",
         ],
@@ -401,8 +396,8 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
     api_file = vfs.open(full_api_file_name, "w")
     api_file.write(f".. _{api_file_name[:-4]}_api:\n")
     # api_file.write(f".. py:module:: arcade\n")
-    api_file.write(f".. py:currentmodule:: arcade\n")
-    api_file.write(f"\n")
+    api_file.write(".. py:currentmodule:: arcade\n")
+    api_file.write("\n")
     api_file.write(f"{title}\n")
     api_file.write(f"{underline}\n\n")
 
@@ -466,7 +461,7 @@ def generate_api_file(api_file_name: str, vfs: Vfs):
 
             # Write the entry to the file
             api_file.write(f".. autoclass:: {full_name}\n")
-            api_file.write(f"   :members:\n")
+            api_file.write("   :members:\n")
             # api_file.write(f"    :member-order: groupwise\n")
 
             # Apply special per-class addenda

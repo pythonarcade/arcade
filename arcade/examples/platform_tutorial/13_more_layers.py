@@ -43,7 +43,7 @@ class GameView(arcade.Window):
         self.scene = None
 
         # A variable to store our camera object
-        self.camera = None
+        self.world_camera = None
 
         # A variable to store our gui camera object
         self.gui_camera = None
@@ -105,7 +105,7 @@ class GameView(arcade.Window):
         )
 
         # Initialize our camera, setting a viewport the size of our window.
-        self.camera = arcade.Camera2D()
+        self.world_camera = arcade.Camera2D()
 
         # Initialize our gui camera, initial settings are the same as our world camera.
         self.gui_camera = arcade.Camera2D()
@@ -125,7 +125,7 @@ class GameView(arcade.Window):
         self.clear()
 
         # Activate our camera before drawing
-        self.camera.use()
+        self.world_camera.use()
 
         # Draw our Scene
         self.scene.draw()
@@ -162,7 +162,7 @@ class GameView(arcade.Window):
             self.setup()
 
         # Center our camera on the player
-        self.camera.position = self.player_sprite.position
+        self.world_camera.position = self.player_sprite.position
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""

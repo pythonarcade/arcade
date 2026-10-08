@@ -144,6 +144,57 @@ and storing the list inside a :py:class:`~arcade.Window` or
    self.spritelist_with_hashing = arcade.SpriteList(use_spatial_hash=True)
 
 
+.. _collision_detection_performance_cell_size:
+
+Choosing a Cell Size
+""""""""""""""""""""
+
+The ``spatial_hash_cell_size`` argument sets the size of the grid
+squares, in pixels. The default of 128 works well for typical tiles of
+64 to 128 pixels. For other sprites, choose a cell size about the size of
+the sprites in the list:
+
+* **Cells much bigger than the sprites** make each collision check look at
+  every sprite in the nearby cells. With 4 pixel sprites, 128 pixel cells
+  hold about a thousand of them each.
+* **Cells much smaller than the sprites** put each sprite in many cells, so
+  adding and moving sprites gets slower.
+
+For example, measured on one desktop computer:
+
+.. list-table::
+   :header-rows: 1
+
+   * - Sprites in the list
+     - Cell size 8
+     - Cell size 16
+     - Cell size 64
+     - Cell size 128 (default)
+   * - 4 pixels: 200 collision checks
+     - **2.1 ms**
+     - 2.8 ms
+     - 12.2 ms
+     - 33.4 ms
+   * - 64 pixels: 200 collision checks
+     - 5.7 ms
+     - 2.6 ms
+     - **2.3 ms**
+     - 3.1 ms
+   * - 64 pixels: adding 2,400 sprites
+     - 50.7 ms
+     - 22.9 ms
+     - 13.6 ms
+     - **11.6 ms**
+
+.. code-block:: python
+
+   # Lots of small sprites, such as pixels or bullets
+   self.pixels = arcade.SpriteList(use_spatial_hash=True, spatial_hash_cell_size=16)
+
+See :ref:`sprite_pixel_demolition` for an example with tens of thousands
+of 3 pixel sprites.
+
+
 Spatial Hashing and Tiled Maps
 """"""""""""""""""""""""""""""
 There is also a way to enable spatial hashing when loading Tiled maps. For
@@ -303,15 +354,27 @@ They also lack many of the features you may be used to in Arcade.
 Text drawing performance
 ------------------------
 
-The slowest thing aside from disk access is :meth:`arcade.draw_text`.
+Laying out text is slow, so the fastest text is text that isn't laid out
+again every frame.
 
 To improve performance:
 
-#. Use :py:class:`arcade.Text` instead
-#. (Optional) Pass a pyglet :py:class:`~pyglet.graphics.Batch` object at creation
+#. Use :py:class:`arcade.Text` objects instead of :py:func:`arcade.draw_text`.
+   Create them once, and only change their text when it changes.
+#. Change position, color, and rotation freely. They don't lay out the
+   text again, but changing the text, font, size, or style does.
+#. To change several layout properties at once, do it in a
+   ``with text:`` block, so the text is laid out once.
+#. Add many ``Text`` objects to a pyglet :py:class:`~pyglet.graphics.Batch`
+   and draw them with one call.
+#. If you prefer ``draw_text`` style code, use :py:class:`arcade.TextPool`.
+#. For text that doesn't change but moves, rotates, or scales, use
+   :py:func:`arcade.create_text_sprite` and draw it in a
+   :py:class:`~arcade.SpriteList`.
 
 See the following to learn more:
 
+* :ref:`text_guide`
 * :ref:`drawing_text_objects`
 * :ref:`drawing_text_objects_batch`
 

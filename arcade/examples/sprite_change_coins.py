@@ -77,7 +77,7 @@ class GameView(arcade.View):
             self.coin_list.append(coin)
 
         # Don't show the mouse cursor
-        self.window.set_mouse_visible(False)
+        self.window.set_mouse_cursor_visible(False)
 
         # Set the background color
         self.background_color = arcade.color.AMAZON

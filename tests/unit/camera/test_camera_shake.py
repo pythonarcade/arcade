@@ -1,4 +1,4 @@
-from arcade import camera, Window
+from arcade import Window, camera
 from arcade.camera.grips import ScreenShake2D
 
 

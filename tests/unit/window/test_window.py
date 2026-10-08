@@ -1,5 +1,6 @@
-import pytest
 import time
+
+import pytest
 
 import arcade
 
@@ -31,7 +32,7 @@ def test_window(window: arcade.Window):
 
     w.background_color = 255, 255, 255, 255
     assert w.background_color == (255, 255, 255, 255)
-    w.set_mouse_visible(True)
+    w.set_mouse_cursor_visible(True)
     w.set_size(width, height)
 
     v = window.ctx.viewport
@@ -94,3 +95,10 @@ def test_start_finish_render(window):
     # Only allowed to call finish_render once
     with pytest.raises(RuntimeError):
         arcade.finish_render()
+
+
+def test_camera_cannot_be_assigned(window: arcade.Window):
+    # pyglet draws with window.camera, so it has to stay the default camera
+    with pytest.raises(AttributeError, match="world_camera"):
+        window.camera = arcade.Camera2D()
+    assert window.camera is window.default_camera

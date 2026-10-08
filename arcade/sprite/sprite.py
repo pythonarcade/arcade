@@ -221,17 +221,27 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @property
     def hit_box(self) -> HitBox:
-        """Get or set the hit box for this sprite."""
+        """
+        Get or set the hit box for this sprite.
+
+        The hit box's points are relative to the sprite's center, before
+        scaling and rotation. Setting it moves, scales and rotates the hit
+        box to match the sprite, so its own position, scale and angle
+        don't matter.
+        """
         return self._hit_box
 
     @hit_box.setter
     def hit_box(self, hit_box: HitBox | RotatableHitBox) -> None:
-        if type(hit_box) is HitBox:
-            self._hit_box = hit_box.create_rotatable(self.angle)
-        else:
-            # Mypy doesn't seem to understand the type check above
-            # It still thinks hit_box can be a union here
-            self._hit_box = hit_box  # type: ignore
+        if not isinstance(hit_box, RotatableHitBox):
+            hit_box = hit_box.create_rotatable(self.angle)
+        hit_box.position = self._position
+        hit_box.scale = self._scale
+        hit_box.angle = self.angle
+        self._hit_box = hit_box
+        self.update_spatial_hash()
+        for sprite_list in self.sprite_lists:
+            sprite_list._update_hit_box(self)
 
     @property
     def texture(self) -> Texture:

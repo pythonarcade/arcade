@@ -12,9 +12,16 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
 import pyglet
-import pyglet.gl as gl
+
+from arcade.utils import is_pyodide
+
+if is_pyodide:
+    pyglet.options.backend = "webgl"
+
+import pyglet.config.gl
 import pyglet.window.mouse
 from pyglet.display.base import Screen, ScreenMode
+from pyglet.enums import GraphicsAPI
 from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor
 
@@ -24,7 +31,7 @@ from arcade.color import BLACK
 from arcade.context import ArcadeContext
 from arcade.gl.provider import get_arcade_context, set_provider
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
-from arcade.utils import is_pyodide, is_raspberry_pi
+from arcade.utils import is_raspberry_pi
 from arcade.window_commands import get_display_size, set_window
 
 if TYPE_CHECKING:
@@ -135,6 +142,17 @@ class Window(pyglet.window.Window):
         enable_polling:
             Enabled input polling capability.
             This makes the :py:attr:`keyboard` and :py:attr:`mouse` attributes available for use.
+        file_drops:
+            Should the window listen for file drops? If True, the window will dispatch
+            ``on_file_drop`` events when files are dropped onto the window.
+        pixel_perfect:
+            If True, ignore OS DPI scaling and use a 1:1 pixel ratio.
+            The window and framebuffer will be created at exactly the
+            requested size. The window may appear smaller on HiDPI
+            displays, but rendering will be pixel-perfect.
+        **kwargs:
+            Further keyword arguments are passed to the pyglet window constructor.
+            This can be used to set advanced options that aren't explicitly handled by Arcade.
 
     Raises:
         NoOpenGLException: If the system does not support OpenGL requested OpenGL version.
@@ -162,17 +180,24 @@ class Window(pyglet.window.Window):
         draw_rate: float = 1 / 60,
         fixed_rate: float = 1.0 / 60.0,
         fixed_frame_cap: int | None = None,
+        file_drops: bool = False,
+        pixel_perfect: bool = False,
+        **kwargs,
     ) -> None:
         # In certain environments we can't have antialiasing/MSAA enabled.
         # Detect replit environment
         if os.environ.get("REPL_ID"):
             antialiasing = False
 
+        if pixel_perfect:
+            pyglet.options.dpi_scaling = "platform"
+
         desired_gl_provider = "opengl"
-        if is_pyodide():
+        if is_pyodide:
             gl_api = "webgl"
 
         if gl_api == "webgl":
+            pyglet.options.backend = "webgl"
             desired_gl_provider = "webgl"
 
         # Detect Raspberry Pi and switch to OpenGL ES 3.1
@@ -184,18 +209,45 @@ class Window(pyglet.window.Window):
         """Indicates if the window was closed"""
         self.headless: bool = arcade.headless
         """If True, the window is running in headless mode."""
+        self._pixel_perfect: bool = pixel_perfect
+        """If True, ignore OS DPI scaling and use a 1:1 pixel ratio."""
+
+        _GL_API_MAP = {
+            "opengl": GraphicsAPI.OPENGL,
+            "opengles": GraphicsAPI.OPENGL_ES_3,
+        }
 
         config = None
         # Attempt to make window with antialiasing
-        if antialiasing:
-            try:
-                config = gl.Config(
+        if gl_api == "opengl" or gl_api == "opengles":
+            graphics_api = _GL_API_MAP[gl_api]
+            if antialiasing:
+                try:
+                    config = pyglet.config.gl.OpenGLUserConfig(
+                        major_version=gl_version[0],
+                        minor_version=gl_version[1],
+                        api=graphics_api,
+                        double_buffer=True,
+                        sample_buffers=1,
+                        samples=samples,
+                        depth_size=24,
+                        stencil_size=8,
+                        red_size=8,
+                        green_size=8,
+                        blue_size=8,
+                        alpha_size=8,
+                    )
+                except RuntimeError:
+                    LOG.warning("Skipping antialiasing due missing hardware/driver support")
+                    config = None
+                    antialiasing = False
+            # If we still don't have a config
+            if not config:
+                config = pyglet.config.gl.OpenGLUserConfig(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
-                    opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
+                    api=graphics_api,
                     double_buffer=True,
-                    sample_buffers=1,
-                    samples=samples,
                     depth_size=24,
                     stencil_size=8,
                     red_size=8,
@@ -203,38 +255,19 @@ class Window(pyglet.window.Window):
                     blue_size=8,
                     alpha_size=8,
                 )
-                display = pyglet.display.get_display()
-                screen = screen or display.get_default_screen()
-                if screen:
-                    config = screen.get_best_config(config)
-            except pyglet.window.NoSuchConfigException:
-                LOG.warning("Skipping antialiasing due missing hardware/driver support")
-                config = None
-                antialiasing = False
-        # If we still don't have a config
-        if not config:
-            config = gl.Config(
-                major_version=gl_version[0],
-                minor_version=gl_version[1],
-                opengl_api=gl_api.replace("open", ""),  # type: ignore  # pending: upstream fix
-                double_buffer=True,
-                depth_size=24,
-                stencil_size=8,
-                red_size=8,
-                green_size=8,
-                blue_size=8,
-                alpha_size=8,
-            )
         try:
+            # This type ignore is here because somehow Pyright thinks this is an Emscripten window
             super().__init__(
                 width=width,
                 height=height,
                 caption=title,
                 resizable=resizable,
-                config=config,
+                config=config,  # type: ignore
                 vsync=vsync,
                 visible=visible,
                 style=style,
+                file_drops=file_drops,
+                **kwargs,
             )
             # pending: weird import tricks resolved
             self.register_event_type("on_update")
@@ -245,11 +278,15 @@ class Window(pyglet.window.Window):
                 "Unable to create an OpenGL 3.3+ context. "
                 "Check to make sure your system supports OpenGL 3.3 or higher."
             )
-        if antialiasing:
-            try:
-                gl.glEnable(gl.GL_MULTISAMPLE_ARB)
-            except gl.GLException:
-                LOG.warning("Warning: Anti-aliasing not supported on this computer.")
+        if gl_api == "opengl" or gl_api == "opengles":
+            if antialiasing:
+                import pyglet.graphics.api.gl as gl
+                import pyglet.graphics.api.gl.lib as gllib
+
+                try:
+                    gl.glEnable(gl.GL_MULTISAMPLE_ARB)
+                except gllib.GLException:
+                    LOG.warning("Warning: Anti-aliasing not supported on this computer.")
 
         _setup_clock()
         _setup_fixed_clock(fixed_rate)
@@ -267,8 +304,9 @@ class Window(pyglet.window.Window):
         assert update_rate <= draw_rate, (
             "An arcade window's draw rate cannot be faster than its update rate"
         )
-        self._draw_rate = max(update_rate, draw_rate)
+        self._draw_rate = min(update_rate, draw_rate)
         self._accumulated_draw_time: float = 0.0
+        self._accumulated_update_time: float = 0.0
 
         # Fixed rate cannot be changed post initialization as this throws off physics sims.
         # If more time resolution is needed in fixed updates, devs can do 'sub-stepping'.
@@ -348,8 +386,10 @@ class Window(pyglet.window.Window):
         """
         return self._current_view
 
+    # TODO: This is overriding the ctx function from Pyglet's BaseWindow which returns the
+    # SurfaceContext class from pyglet. We should probably rename this.
     @property
-    def ctx(self) -> ArcadeContext:
+    def ctx(self) -> ArcadeContext:  # type: ignore
         """
         The OpenGL context for this window.
 
@@ -539,10 +579,22 @@ class Window(pyglet.window.Window):
         The modulus on the accumulated draw time means that when the update rate is greater
         than the draw rate no time is lost.
 
+        This method is entirely skipped when running in pyodide, this is because the event loop is
+        driven by requestAnimationFrame in the browser, which adds some unique limitations and
+        considerations around Arcade's event loop handling. In pyglet, the draw() function of the
+        window is called directly during the requestAnimationFrame loop, so Arcade handles special
+        control of the update/draw timing directly in that function. Arcade's version of this
+        function is never called on desktop, because this function is called instead, and this calls
+        directly to the superclass's implementation.
+
         Args:
             delta_time: The amount of time since the last update.
         """
+        if is_pyodide:
+            return
+
         self._dispatch_updates(delta_time)
+
         self._accumulated_draw_time += delta_time
 
         if self._draw_rate <= self._accumulated_draw_time:
@@ -553,7 +605,7 @@ class Window(pyglet.window.Window):
 
             # In case the window close in on_update, on_fixed_update or input callbacks
             if not self.closed:
-                self.draw(self._accumulated_draw_time)
+                super().draw(self._accumulated_draw_time)
             self._accumulated_draw_time %= self._draw_rate
 
     def _dispatch_updates(self, delta_time: float) -> None:
@@ -577,6 +629,44 @@ class Window(pyglet.window.Window):
             self.dispatch_event("on_fixed_update", self._fixed_rate)
             fixed_count += 1
         self.dispatch_event("on_update", GLOBAL_CLOCK.delta_time)
+
+    def draw(self, dt: float) -> None:
+        """
+        Render a frame.
+
+        On desktop this is driven by arcade's clock-scheduled
+        :meth:`_dispatch_frame`, which calls the super version of this method direclty.
+        This implementation is only called when using Pyglet's pyodide backend as part of it's
+        requestAnimationFrame loop.
+
+        The loop rate in a browser is tied inherently to the requestAnimationFrame speed, which
+        is tied to the monitor's refresh rate, so basically the Arcade loop can never be called
+        faster than the monitor refresh rate in a browser. This method does some special handling
+        of the update rate to make the updates happen multiple times per loop to achieve the target
+        update rate if it is higher than the refresh rate.
+
+        It does not bypass the refresh rate for draw rate, because the framebuffer will never drawn
+        faster to the canvas than that anyways, so us running it faster than that is pointless.
+        """
+        self._accumulated_update_time += dt
+        while self._accumulated_update_time >= self._update_rate:
+            GLOBAL_CLOCK.tick(self._update_rate)
+            fixed_count = 0
+            while GLOBAL_FIXED_CLOCK.accumulated >= self._fixed_rate and (
+                self._fixed_frame_cap is None or fixed_count <= self._fixed_frame_cap
+            ):
+                GLOBAL_FIXED_CLOCK.tick(self._fixed_rate)
+                self.dispatch_event("on_fixed_update", self._fixed_rate)
+                fixed_count += 1
+
+            self.dispatch_event("on_update", GLOBAL_CLOCK.delta_time)
+            self._accumulated_update_time -= self._update_rate
+
+        self._accumulated_draw_time += dt
+        if self._accumulated_draw_time < self._draw_rate:
+            return
+        self._accumulated_draw_time %= self._draw_rate
+        super().draw(dt)
 
     def flip(self) -> None:
         """
@@ -669,7 +759,7 @@ class Window(pyglet.window.Window):
 
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         pass
 
@@ -694,7 +784,7 @@ class Window(pyglet.window.Window):
                 Which button is pressed
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return self.on_mouse_motion(x, y, dx, dy)
 
@@ -719,7 +809,7 @@ class Window(pyglet.window.Window):
                 - ``arcade.MOUSE_BUTTON_MIDDLE``
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return EVENT_UNHANDLED
 
@@ -759,7 +849,7 @@ class Window(pyglet.window.Window):
         """
         return EVENT_UNHANDLED
 
-    def set_mouse_visible(self, visible: bool = True) -> None:
+    def set_mouse_cursor_visible(self, visible: bool = True) -> None:
         """
         Set whether to show the system's cursor while over the window
 
@@ -790,7 +880,7 @@ class Window(pyglet.window.Window):
         Args:
             visible: Whether to hide the system mouse cursor
         """
-        super().set_mouse_visible(visible)
+        super().set_mouse_cursor_visible(visible)
 
     def on_action(self, action_name: str, state) -> None:
         """
@@ -820,7 +910,7 @@ class Window(pyglet.window.Window):
                 Key that was just pushed down
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return EVENT_UNHANDLED
 
@@ -842,9 +932,15 @@ class Window(pyglet.window.Window):
             symbol (int): Key that was released
             modifiers (int): Bitwise 'and' of all modifiers (shift,
                       ctrl, num lock) active during this event.
-                      See :ref:`keyboard_modifiers`.
+                      See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return EVENT_UNHANDLED
+
+    def before_draw(self) -> None:
+        """
+        New event in base pyglet window. This is current unused in Arcade.
+        """
+        pass
 
     def on_draw(self) -> EVENT_HANDLE_STATE:
         """
@@ -863,6 +959,34 @@ class Window(pyglet.window.Window):
             return True
 
         return EVENT_UNHANDLED
+
+    def get_pixel_ratio(self) -> float:
+        """Return the framebuffer/window size ratio.
+
+        When ``pixel_perfect=True``, this always returns ``1.0`` so that
+        arcade treats the framebuffer as unscaled.
+        """
+        if self._pixel_perfect:
+            return 1.0
+        if is_pyodide:
+            # Pyglet's emscripten window caches devicePixelRatio at init, but the
+            # actual canvas drawing buffer is sized via getBoundingClientRect()
+            # which can be sub-pixel less than logical_size * devicePixelRatio.
+            # Returning fb_size / logical_size matches the canvas exactly, so
+            # full-canvas viewport round-trips through Camera2D don't leave a
+            # 1-2 pixel gap on the top/right edges.
+            log_w = self._width
+            if log_w:
+                return self.get_framebuffer_size()[0] / log_w
+        else:
+            # pyglet's get_pixel_ratio() returns the display scale (DPI / 96),
+            # which isn't always the framebuffer/window size ratio: on Windows
+            # in "platform" DPI mode, a 125% display gives 1.25 even though the
+            # framebuffer is the same size as the window. Measure it instead.
+            width = self.get_size()[0]
+            if width:
+                return self.get_framebuffer_size()[0] / width
+        return super().get_pixel_ratio()
 
     def _on_resize(self, width: int, height: int) -> EVENT_HANDLE_STATE:
         """
@@ -932,6 +1056,14 @@ class Window(pyglet.window.Window):
 
     def get_size(self) -> tuple[int, int]:
         """Get the size of the window."""
+        if is_pyodide:
+            # Pyglet's emscripten window returns the canvas drawing-buffer
+            # size (physical, DPI-scaled pixels) from get_size(); desktop
+            # pyglet returns logical pixels. Return logical pixels here so
+            # viewport math in show_view/_on_resize stays consistent across
+            # backends and Camera2D doesn't render into a sub-region of the
+            # canvas on HiDPI displays.
+            return self._width, self._height
         return super().get_size()
 
     def get_location(self) -> tuple[int, int]:
@@ -966,6 +1098,31 @@ class Window(pyglet.window.Window):
         maintaining the default projection and viewport.
         """
         return self._ctx._default_camera
+
+    # pyglet types this as one of its own cameras, but it needs to be arcade's
+    # DefaultProjector, so the override doesn't match
+    @property  # type: ignore[override]
+    def camera(self) -> DefaultProjector:
+        """
+        Alias for :py:attr:`default_camera`.
+
+        pyglet looks up ``Window.camera`` (rather than ``default_camera``)
+        as the fallback camera for batch draws with no camera explicitly
+        set, so this needs to resolve to the same :py:class:`DefaultProjector`
+        to keep pyglet's internal drawing (e.g. :py:class:`~pyglet.text.Label`)
+        going through arcade's projection/scissor handling.
+
+        It can't be assigned. To keep your own camera on a window subclass,
+        give it another name, such as ``self.world_camera``.
+        """
+        return self._ctx._default_camera
+
+    @camera.setter
+    def camera(self, value: object) -> None:
+        raise AttributeError(
+            "Window.camera is the default camera pyglet draws with, and can't be assigned. "
+            "Store your camera under another name, such as self.world_camera."
+        )
 
     @property
     def current_camera(self) -> Projector:
@@ -1129,17 +1286,17 @@ class Window(pyglet.window.Window):
         """Set if we sync our draws to the monitors vertical sync rate."""
         super().set_vsync(vsync)
 
-    def set_mouse_platform_visible(self, platform_visible=None) -> None:
+    def set_mouse_cursor_platform_visible(self, platform_visible=None) -> None:
         """
         .. warning:: You are probably looking for
-                     :meth:`~.Window.set_mouse_visible`!
+                     :meth:`~.Window.set_mouse_cursor_visible`!
 
         This is a lower level function inherited from the pyglet window.
 
         For more information on what this means, see the documentation
-        for :py:meth:`pyglet.window.Window.set_mouse_platform_visible`.
+        for :py:meth:`pyglet.window.Window.set_mouse_cursor_platform_visible`.
         """
-        super().set_mouse_platform_visible(platform_visible)
+        super().set_mouse_cursor_platform_visible(platform_visible)
 
     def set_exclusive_mouse(self, exclusive=True) -> None:
         """Capture the mouse."""
@@ -1423,7 +1580,7 @@ class View:
 
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         pass
 
@@ -1448,7 +1605,7 @@ class View:
                 Which button is pressed
             _modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         self.on_mouse_motion(x, y, dx, dy)
         return False
@@ -1475,7 +1632,7 @@ class View:
 
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock)
-                active during this event. See :ref:`keyboard_modifiers`.
+                active during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         pass
 
@@ -1530,7 +1687,7 @@ class View:
                 Key that was just pushed down
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock) active
-                during this event. See :ref:`keyboard_modifiers`.
+                during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return False
 
@@ -1553,7 +1710,7 @@ class View:
                 Key that was released
             modifiers:
                 Bitwise 'and' of all modifiers (shift, ctrl, num lock) active
-                during this event. See :ref:`keyboard_modifiers`.
+                during this event. See :ref:`pg_simple_input_keyboard_modifiers`.
         """
         return False
 

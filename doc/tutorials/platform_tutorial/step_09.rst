@@ -57,7 +57,7 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/09_sound.py
     :caption: Load the Map
     :linenos:
-    :emphasize-lines: 56-58, 146, 160
+    :emphasize-lines: 56-58, 148, 162
 
 Run This Chapter
 ~~~~~~~~~~~~~~~~

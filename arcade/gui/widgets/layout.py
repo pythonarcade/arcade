@@ -3,6 +3,7 @@ from __future__ import annotations
 import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass
+from types import EllipsisType
 from typing import Literal, TypeVar
 
 from typing_extensions import override
@@ -73,19 +74,20 @@ class UIAnchorLayout(UILayout):
         *,
         x: float = 0,
         y: float = 0,
-        width: float = 1,
-        height: float = 1,
+        width: float | EllipsisType = ...,
+        height: float | EllipsisType = ...,
         children: Iterable[UIWidget] = tuple(),
         size_hint=(1, 1),
         size_hint_min=None,
         size_hint_max=None,
         **kwargs,
     ):
+        self._warn_if_size_hint_overrides_fixed_size(width, height, size_hint)
         super().__init__(
             x=x,
             y=y,
-            width=width,
-            height=height,
+            width=1 if width is ... else width,
+            height=1 if height is ... else height,
             children=children,
             size_hint=size_hint,
             size_hint_min=size_hint_min,
@@ -239,10 +241,10 @@ class UIBoxLayout(UILayout):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
-        width=1,
-        height=1,
+        x: float = 0,
+        y: float = 0,
+        width: float | EllipsisType = ...,
+        height: float | EllipsisType = ...,
         vertical=True,
         align="center",
         children: Iterable[UIWidget] = tuple(),
@@ -252,11 +254,12 @@ class UIBoxLayout(UILayout):
         style=None,
         **kwargs,
     ):
+        self._warn_if_size_hint_overrides_fixed_size(width, height, size_hint)
         super().__init__(
             x=x,
             y=y,
-            width=width,
-            height=height,
+            width=1 if width is ... else width,
+            height=1 if height is ... else height,
             children=children,
             size_hint=size_hint,
             size_hint_max=size_hint_max,
@@ -485,10 +488,10 @@ class UIGridLayout(UILayout):
     def __init__(
         self,
         *,
-        x=0,
-        y=0,
-        width=1,
-        height=1,
+        x: float = 0,
+        y: float = 0,
+        width: float | EllipsisType = ...,
+        height: float | EllipsisType = ...,
         align_horizontal="center",
         align_vertical="center",
         children: Iterable[UIWidget] = tuple(),
@@ -500,11 +503,12 @@ class UIGridLayout(UILayout):
         row_count: int = 1,
         **kwargs,
     ):
+        self._warn_if_size_hint_overrides_fixed_size(width, height, size_hint)
         super().__init__(
             x=x,
             y=y,
-            width=width,
-            height=height,
+            width=1 if width is ... else width,
+            height=1 if height is ... else height,
             children=children,
             size_hint=size_hint,
             size_hint_max=size_hint_max,

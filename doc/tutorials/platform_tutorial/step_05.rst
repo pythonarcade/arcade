@@ -64,7 +64,7 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/05_add_gravity.py
     :caption: 05_add_gravity.py - Add Gravity
     :linenos:
-    :emphasize-lines: 18-19, 72-81, 105-123
+    :emphasize-lines: 18-19, 74-83, 107-125
 
 Run This Chapter
 ~~~~~~~~~~~~~~~~

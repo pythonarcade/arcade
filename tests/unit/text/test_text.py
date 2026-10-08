@@ -1,9 +1,12 @@
 from typing import List
 
 import pytest
+
 import arcade
 
 
+# Tests draw_text, which warns that it's slow
+@pytest.mark.filterwarnings("ignore::arcade.exceptions.PerformanceWarning")
 def test_text(window):
     window.background_color = arcade.color.AMAZON
 

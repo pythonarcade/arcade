@@ -49,7 +49,7 @@ class GameView(arcade.Window):
         self.scene = None
 
         # A variable to store our camera object
-        self.camera = None
+        self.world_camera = None
 
         # A variable to store our gui camera object
         self.gui_camera = None
@@ -120,7 +120,7 @@ class GameView(arcade.Window):
         )
 
         # Initialize our camera, setting a viewport the size of our window.
-        self.camera = arcade.Camera2D()
+        self.world_camera = arcade.Camera2D()
 
         # Initialize our gui camera, initial settings are the same as our world camera.
         self.gui_camera = arcade.Camera2D()
@@ -146,7 +146,7 @@ class GameView(arcade.Window):
         self.clear()
 
         # Activate our camera before drawing
-        self.camera.use()
+        self.world_camera.use()
 
         # Draw our Scene
         self.scene.draw()
@@ -177,7 +177,7 @@ class GameView(arcade.Window):
             self.score_text.text = f"Score: {self.score}"
 
         # Center our camera on the player
-        self.camera.position = self.player_sprite.position
+        self.world_camera.position = self.player_sprite.position
 
     def process_keychange(self):
         # First handle the case where we have moved up. This needs to be handled

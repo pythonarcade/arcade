@@ -1,9 +1,9 @@
-from types import ModuleType
-from copy import copy
 import logging
-import arcade
-from arcade import *
+from copy import copy
+from types import ModuleType
 
+import arcade
+from arcade import *  # noqa: F403  This test checks what a star import gives you
 
 # TODO: double-check whether this is actually the right solution?
 builtin_types = frozenset((bool, str, int, ModuleType))

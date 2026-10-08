@@ -48,6 +48,7 @@ def draw_texture_rect(
     # Clamp alpha to 0-255
     alpha_normalized = max(0, min(255, alpha)) / 255.0
 
+    blend_state = ctx.is_enabled(ctx.BLEND)
     if blend:
         ctx.enable(ctx.BLEND)
     else:
@@ -76,7 +77,9 @@ def draw_texture_rect(
 
     geometry.render(program, mode=gl.TRIANGLE_STRIP, vertices=4)
 
-    if blend:
+    if blend_state:
+        ctx.enable(ctx.BLEND)
+    else:
         ctx.disable(ctx.BLEND)
 
 
@@ -387,17 +390,15 @@ def draw_rect_filled(rect: Rect, color: RGBOrA255, tilt_angle: float = 0) -> Non
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
 
-    ctx.enable(ctx.BLEND)
+    # contextmanager will restore state which existed before
+    with ctx.enabled(ctx.BLEND):
+        # Pass data to the shader
+        program["color"] = color_normalized
+        program["shape"] = rect.width, rect.height, tilt_angle
+        buffer.orphan()
+        buffer.write(data=array.array("f", (rect.x, rect.y)))
 
-    # Pass data to the shader
-    program["color"] = color_normalized
-    program["shape"] = rect.width, rect.height, tilt_angle
-    buffer.orphan()
-    buffer.write(data=array.array("f", (rect.x, rect.y)))
-
-    geometry.render(program, instances=1)
-
-    ctx.disable(ctx.BLEND)
+        geometry.render(program, instances=1)
 
 
 # These might be "oddly specific" and also needs docstrings. Disabling or 3.0.0

@@ -47,7 +47,8 @@ FULL_BUILD_DIR = PROJECT_ROOT / BUILD_DIR
 RUFF = "ruff"
 RUFFOPTS = ["check"]
 RUFFOPTS_ISORT = ["check", "--select", "I"]
-RUFFOPTS_PACKAGE = "arcade"
+# Code checked by ruff check and import sorting
+RUFF_PATHS = ["arcade", "tests"]
 MYPY = "mypy"
 MYPYOPTS = ["arcade"]
 PYRIGHT = "pyright"
@@ -205,6 +206,16 @@ def serve():
     run_doc(
         [SPHINX_AUTOBUILD, *SPHINXAUTOBUILDOPTS, "-b", "html", *ALLSPHINXOPTS, f"{BUILD_DIR}/html"]
     )
+
+
+@app.command(rich_help_panel="Docs")
+def docs_full():
+    """
+    Build the documentation fully and error on warnings. This is what is checked in CI.
+    """
+    run_doc([SPHINX_BUILD, DOC_DIR, "build", "-W"])
+    print()
+    print("Build finished")
 
 
 @app.command(rich_help_panel="Docs")
@@ -450,7 +461,7 @@ def lint():
 @app.command(rich_help_panel="Code Quality - Advanced")
 def ruff_check():
     """Run ruff check for code quality"""
-    run([RUFF, *RUFFOPTS, RUFFOPTS_PACKAGE])
+    run([RUFF, *RUFFOPTS, *RUFF_PATHS])
 
 
 @app.command(rich_help_panel="Code Quality")
@@ -474,7 +485,7 @@ def ruff_isort(check: bool = False):
     """Sort imports with ruff"""
     if not check:
         RUFFOPTS_ISORT.append("--fix")
-    run([RUFF, *RUFFOPTS_ISORT, RUFFOPTS_PACKAGE])
+    run([RUFF, *RUFFOPTS_ISORT, *RUFF_PATHS])
 
 
 @app.command(rich_help_panel="Code Quality - Advanced")

@@ -63,7 +63,7 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/08_coins.py
     :caption: Collecting Coins
     :linenos:
-    :emphasize-lines: 15, 50-51, 68, 90-95, 125, 133-141
+    :emphasize-lines: 15, 50-51, 70, 92-97, 127, 135-143
 
 Run This Chapter
 ~~~~~~~~~~~~~~~~

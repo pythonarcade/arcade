@@ -1,9 +1,39 @@
 import sys
 import tempfile
+from pathlib import Path
 from unittest import mock
 
 import pytest
-from arcade.version import _parse_python_friendly_version, _parse_py_version_from_file
+
+import arcade.version as version_module
+from arcade.version import _parse_py_version_from_file, _parse_python_friendly_version
+
+
+def test_default_version_file_is_loaded():
+    version_path = Path(version_module.__file__).with_name("_VERSION")
+
+    assert version_path.is_file()
+    assert _parse_py_version_from_file(version_path) == version_module.VERSION
+
+
+def test_package_data_names_do_not_collide_with_modules_when_casefolded():
+    package_dir = Path(version_module.__file__).parent
+    importable_names = {
+        path.stem.casefold() for path in package_dir.iterdir() if path.suffix == ".py"
+    }
+    importable_names.update(
+        path.name.casefold()
+        for path in package_dir.iterdir()
+        if path.is_dir() and (path / "__init__.py").is_file()
+    )
+    data_names = {
+        path.name.casefold()
+        for path in package_dir.iterdir()
+        if path.is_file() and path.suffix != ".py"
+    }
+
+    collisions = importable_names & data_names
+    assert not collisions, f"Case-insensitive package path collisions: {sorted(collisions)}"
 
 
 @pytest.mark.parametrize(

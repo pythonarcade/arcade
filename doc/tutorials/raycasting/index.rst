@@ -420,7 +420,7 @@ screen as something for the GUI.
     :caption: MyGame.__init__
     :pyobject: MyGame.__init__
     :linenos:
-    :emphasize-lines: 17-19, 23-24
+    :emphasize-lines: 22-24, 28-29
 
 Next up, we need to draw and use the cameras. This complicates our shader as it doesn't
 care about the scrolling, so we have to pass it a position not affected by the camera position.
@@ -430,7 +430,7 @@ Therefore, we subtract it out.
     :caption: MyGame.on_draw
     :pyobject: MyGame.on_draw
     :linenos:
-    :emphasize-lines: 2-3, 21-27, 39-42
+    :emphasize-lines: 2-3, 21-28, 40-43
 
 When we update, we need to scroll the camera to where the user is:
 

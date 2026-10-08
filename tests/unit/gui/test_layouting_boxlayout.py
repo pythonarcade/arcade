@@ -324,7 +324,7 @@ def test_size_hint_contains_border_and_padding(window, ui):
 
 
 def test_vertical_resize_child_according_size_hint_full(window):
-    box = UIBoxLayout(width=200, height=200, vertical=True)
+    box = UIBoxLayout(width=200, height=200, vertical=True, size_hint=None)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(1, 1)))
 
     box._do_layout()
@@ -334,7 +334,7 @@ def test_vertical_resize_child_according_size_hint_full(window):
 
 
 def test_vertical_resize_child_according_size_hint_half(window):
-    box = UIBoxLayout(width=200, height=200, vertical=True)
+    box = UIBoxLayout(width=200, height=200, vertical=True, size_hint=None)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(0.5, 0.5)))
 
     box._do_layout()
@@ -344,7 +344,7 @@ def test_vertical_resize_child_according_size_hint_half(window):
 
 
 def test_vertical_resize_children_according_size_hint(window):
-    box = UIBoxLayout(width=300, height=400, vertical=True)
+    box = UIBoxLayout(width=300, height=400, vertical=True, size_hint=None)
     dummy_1 = box.add(UIDummy(size_hint_min=(100, 100), size_hint=(1, 1)))
     dummy_2 = box.add(UIDummy(size_hint_min=(100, 100), size_hint=(0.5, 0.5)))
 
@@ -356,7 +356,7 @@ def test_vertical_resize_children_according_size_hint(window):
 
 
 def test_vertical_ignores_size_hint_none(window):
-    box = UIBoxLayout(width=300, height=400, vertical=True)
+    box = UIBoxLayout(width=300, height=400, vertical=True, size_hint=None)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(1, None)))
     dummy_2 = box.add(UIDummy(width=100, height=100, size_hint=(None, 1)))
 
@@ -368,7 +368,7 @@ def test_vertical_ignores_size_hint_none(window):
 
 
 def test_vertical_fit_content(window):
-    box = UIBoxLayout(width=100, height=100, vertical=True)
+    box = UIBoxLayout(width=100, height=100, vertical=True, size_hint=None)
     _ = box.add(UIDummy(width=100, height=50))
     _ = box.add(UIDummy(width=20, height=100))
 
@@ -378,7 +378,7 @@ def test_vertical_fit_content(window):
 
 
 def test_horizontal_resize_child_according_size_hint_full(window):
-    box = UIBoxLayout(width=200, height=200, vertical=False)
+    box = UIBoxLayout(width=200, height=200, vertical=False, size_hint=None)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(1, 1)))
 
     box._do_layout()
@@ -388,7 +388,7 @@ def test_horizontal_resize_child_according_size_hint_full(window):
 
 
 def test_horizontal_resize_child_according_size_hint_half(window):
-    box = UIBoxLayout(width=200, height=200, vertical=False)
+    box = UIBoxLayout(width=200, height=200, vertical=False, size_hint=None)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(0.5, 0.5)))
 
     box._do_layout()
@@ -398,7 +398,7 @@ def test_horizontal_resize_child_according_size_hint_half(window):
 
 
 def test_horizontal_resize_children_according_size_hint(window):
-    box = UIBoxLayout(width=300, height=400, vertical=False)
+    box = UIBoxLayout(width=300, height=400, vertical=False, size_hint=None)
     dummy_1 = box.add(UIDummy(size_hint_min=(100, 100), size_hint=(1, 1)))
     dummy_2 = box.add(UIDummy(size_hint_min=(100, 100), size_hint=(0.5, 0.5)))
 
@@ -410,7 +410,7 @@ def test_horizontal_resize_children_according_size_hint(window):
 
 
 def test_horizontal_ignores_size_hint_none(window):
-    box = UIBoxLayout(width=300, height=400, vertical=False)
+    box = UIBoxLayout(width=300, height=400, vertical=False, size_hint=None)
     dummy_1 = box.add(UIDummy(width=100, height=100, size_hint=(1, None)))
     dummy_2 = box.add(UIDummy(width=100, height=100, size_hint=(None, 1)))
 
@@ -422,7 +422,7 @@ def test_horizontal_ignores_size_hint_none(window):
 
 
 def test_horizontal_fit_content(window):
-    box = UIBoxLayout(width=100, height=100, vertical=False)
+    box = UIBoxLayout(width=100, height=100, vertical=False, size_hint=None)
     _ = box.add(UIDummy(width=100, height=50))
     _ = box.add(UIDummy(width=20, height=100))
 

@@ -108,6 +108,14 @@ class SpatialHash(ReadOnlySpatialHash[SpriteType]):
         self.contents.clear()
         self.buckets_for_sprite.clear()
 
+    def _get_cell_bounds(self, sprite: BasicSprite) -> tuple[IPoint, IPoint]:
+        """Get the min and max cells covered by a sprite's hit box."""
+        # The hit box caches its bounds, so collision checks can reuse them
+        left, right, bottom, top = sprite.hit_box.get_adjusted_bounds()
+        min_point = self.hash((trunc(left), trunc(bottom)))
+        max_point = self.hash((trunc(right), trunc(top)))
+        return min_point, max_point
+
     def add(self, sprite: SpriteType) -> None:
         """
         Add a sprite to the spatial hash.
@@ -115,11 +123,7 @@ class SpatialHash(ReadOnlySpatialHash[SpriteType]):
         Args:
             sprite: The sprite to add
         """
-        min_point = trunc(sprite.left), trunc(sprite.bottom)
-        max_point = trunc(sprite.right), trunc(sprite.top)
-
-        # hash the minimum and maximum points
-        min_point, max_point = self.hash(min_point), self.hash(max_point)
+        min_point, max_point = self._get_cell_bounds(sprite)
         buckets: list[set[SpriteType]] = []
 
         # Iterate over the rectangular region adding the sprite to each cell
@@ -158,26 +162,28 @@ class SpatialHash(ReadOnlySpatialHash[SpriteType]):
         # Delete the sprite from the bucket tracker
         del self.buckets_for_sprite[sprite]
 
-    def get_sprites_near_sprite(self, sprite: BasicSprite) -> set[SpriteType]:
-        min_point = trunc(sprite.left), trunc(sprite.bottom)
-        max_point = trunc(sprite.right), trunc(sprite.top)
+    # NOTE: The query methods below use contents.get() rather than
+    # setdefault() so that looking at an empty cell doesn't create a bucket
+    # for it. Otherwise the dict grows with every cell ever queried.
 
-        # hash the minimum and maximum points
-        min_point, max_point = self.hash(min_point), self.hash(max_point)
+    def get_sprites_near_sprite(self, sprite: BasicSprite) -> set[SpriteType]:
+        min_point, max_point = self._get_cell_bounds(sprite)
         close_by_sprites: set[SpriteType] = set()
+        contents = self.contents
 
         # Iterate over the all the covered cells and collect the sprites
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
-                bucket = self.contents.setdefault((i, j), set())
-                close_by_sprites.update(bucket)
+                bucket = contents.get((i, j))
+                if bucket:
+                    close_by_sprites.update(bucket)
 
         return close_by_sprites
 
     def get_sprites_near_point(self, point: Point) -> set[SpriteType]:
         hash_point = self.hash((trunc(point[0]), trunc(point[1])))
         # Return a copy of the set.
-        return set(self.contents.setdefault(hash_point, set()))
+        return set(self.contents.get(hash_point, ()))
 
     def get_sprites_near_rect(self, rect: Rect) -> set[SpriteType]:
         left, right, bottom, top = rect.lrbt
@@ -187,12 +193,14 @@ class SpatialHash(ReadOnlySpatialHash[SpriteType]):
         # hash the minimum and maximum points
         min_point, max_point = self.hash(min_point), self.hash(max_point)
         close_by_sprites: set[SpriteType] = set()
+        contents = self.contents
 
         # Iterate over the all the covered cells and collect the sprites
         for i in range(min_point[0], max_point[0] + 1):
             for j in range(min_point[1], max_point[1] + 1):
-                bucket = self.contents.setdefault((i, j), set())
-                close_by_sprites.update(bucket)
+                bucket = contents.get((i, j))
+                if bucket:
+                    close_by_sprites.update(bucket)
 
         return close_by_sprites
 

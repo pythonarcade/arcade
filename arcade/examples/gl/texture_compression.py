@@ -12,7 +12,7 @@ python -m arcade.examples.gl.texture_compression
 import PIL.Image
 import arcade
 import arcade.gl
-from pyglet import gl
+from pyglet.graphics.api import gl
 
 
 class CompressedTextures(arcade.Window):

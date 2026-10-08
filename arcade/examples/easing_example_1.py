@@ -1,207 +1,142 @@
 """
-Example showing how to use the easing functions for position.
+Easing Example 1
 
-See:
-https://easings.net/
-...for a great guide on the theory behind how easings can work.
-
-See example 2 for how to use easings for angles.
+Demonstrate the different easing functions available in :py:mod:`arcade.anim`.
+Each ball uses a different easing curve to travel from left to right, making it
+easy to compare the visual character of each curve.
 
 If Python and Arcade are installed, this example can be run from the command line with:
 python -m arcade.examples.easing_example_1
 """
 
 import arcade
-from arcade import easing
-from arcade.types import Color
+from arcade.anim import ease, Easing
+from arcade.anim.easing import EasingFunction
 
-SPRITE_SCALING = 0.5
-
+# --- Constants ---
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Easing Example"
+WINDOW_TITLE = "Easing Example 1"
 
-BACKGROUND_COLOR = "#F5D167"
-TEXT_COLOR = "#4B1DF2"
-BALL_COLOR = "#42B5EB"
-LINE_COLOR = "#45E6D0"
-LINE_WIDTH = 3
-
-X_START = 40
-X_END = 1200
+X_START = 40.0
+X_END = 1200.0
 Y_INTERVAL = 60
 BALL_RADIUS = 13
-TIME = 3.0
+LINE_WIDTH = 1.0
+TRAVEL_TIME = 3.0
+
+BACKGROUND_COLOR = arcade.types.Color.from_hex_string("#F5D167")
+TEXT_COLOR = arcade.types.Color.from_hex_string("#4B1DF2")
+BALL_COLOR = arcade.types.Color.from_hex_string("#42B5EB")
+LINE_COLOR = arcade.types.Color.from_hex_string("#45E6D0")
+
+# Each entry is (label, easing function).
+EASING_LIST = [
+    ("LINEAR", Easing.LINEAR),
+    ("QUAD_OUT", Easing.QUAD_OUT),
+    ("QUAD_IN", Easing.QUAD_IN),
+    ("SINE", Easing.SINE),
+    ("QUAD", Easing.QUAD),
+    ("ELASTIC_OUT", Easing.ELASTIC_OUT),
+    ("BACK_IN", Easing.BACK_IN),
+    ("BACK_OUT", Easing.BACK_OUT),
+    ("SINE_IN", Easing.SINE_IN),
+    ("SINE_OUT", Easing.SINE_OUT),
+    ("BOUNCE_OUT", Easing.BOUNCE_OUT),
+]
 
 
 class EasingCircle(arcade.SpriteCircle):
-    """Player class"""
+    """A ball that eases along the x-axis using a specific curve."""
 
-    def __init__(self, radius, color, center_x: float = 0, center_y: float = 0):
-        """Set up the player"""
-
-        # Call the parent init
-        super().__init__(radius, color, center_x=center_x, center_y=center_y)
-
-        self.easing_x_data = None
-        self.easing_y_data = None
-
-    def update(self, delta_time: float = 1 / 60):
-        if self.easing_x_data is not None:
-            done, self.center_x = easing.ease_update(self.easing_x_data, delta_time)
-            if done:
-                x = X_START
-                if self.center_x < WINDOW_WIDTH / 2:
-                    x = X_END
-                ex, ey = easing.ease_position(
-                    self.position,
-                    (x, self.center_y),
-                    rate=180,
-                    ease_function=self.easing_x_data.ease_function,
-                )
-                self.easing_x_data = ex
-
-        if self.easing_y_data is not None:
-            done, self.center_y = easing.ease_update(self.easing_y_data, delta_time)
-            if done:
-                self.easing_y_data = None
+    def __init__(self, radius: int, color: arcade.types.Color,
+                 ease_function: EasingFunction):
+        super().__init__(radius, color)
+        self.ease_function = ease_function
+        self.start_time = 0.0
 
 
 class GameView(arcade.View):
-    """Main application class."""
+    """Main view showing all easing balls."""
 
     def __init__(self):
-        """Initializer"""
-
-        # Call the parent class initializer
         super().__init__()
-
-        # Set the background color
-        self.background_color = Color.from_hex_string(BACKGROUND_COLOR)
-
-        self.ball_list = None
-        self.text_list = []
-        self.lines = None
+        self.background_color = BACKGROUND_COLOR
+        self.ball_list: arcade.SpriteList[EasingCircle] = arcade.SpriteList()
+        self.time_elapsed = 0.0
 
     def setup(self):
-        """Set up the game and initialize the variables."""
+        """Create one ball per easing function."""
+        self.ball_list.clear()
+        self.time_elapsed = 0.0
 
-        # Sprite lists
-        self.ball_list = arcade.SpriteList()
-        self.lines = arcade.shape_list.ShapeElementList()
-        color = Color.from_hex_string(BALL_COLOR)
-        shared_ball_kwargs = dict(radius=BALL_RADIUS, color=color)
-
-        def create_ball(ball_y, ease_function):
-            ball = EasingCircle(**shared_ball_kwargs, center_x=X_START, center_y=ball_y)
-            p1 = ball.position
-            p2 = (X_END, ball_y)
-            ex, ey = easing.ease_position(p1, p2, time=TIME, ease_function=ease_function)
-            ball.ease_function = ease_function
-            ball.easing_x_data = ex
-            ball.easing_y_data = ey
-            return ball
-
-        def create_line(line_y):
-            line = arcade.shape_list.create_line(
-                X_START,
-                line_y - BALL_RADIUS - LINE_WIDTH,
-                X_END,
-                line_y - BALL_RADIUS,
-                line_color,
-                line_width=LINE_WIDTH,
-            )
-            return line
-
-        def create_text(text_string):
-            text = arcade.Text(
-                text_string,
-                x=X_START,
-                y=y - BALL_RADIUS,
-                color=text_color,
-                font_size=24,
-            )
-            return text
-
-        def add_item(item_y, ease_function, text):
-            ball = create_ball(item_y, ease_function)
+        for index, (label, ease_func) in enumerate(EASING_LIST):
+            ball = EasingCircle(BALL_RADIUS, BALL_COLOR, ease_func)
+            ball_y = WINDOW_HEIGHT - (index + 1) * Y_INTERVAL
+            ball.center_x = X_START
+            ball.center_y = ball_y
+            ball.start_time = 0.0
             self.ball_list.append(ball)
-            text = create_text(text)
-            self.text_list.append(text)
-            line = create_line(item_y)
-            self.lines.append(line)
-
-        text_color = Color.from_hex_string(TEXT_COLOR)
-        line_color = Color.from_hex_string(LINE_COLOR)
-
-        y = Y_INTERVAL
-        add_item(y, easing.linear, "Linear")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_out, "Ease out")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_in, "Ease in")
-
-        y += Y_INTERVAL
-        add_item(y, easing.smoothstep, "Smoothstep")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_in_out, "Ease in/out")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_out_elastic, "Ease out elastic")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_in_back, "Ease in back")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_out_back, "Ease out back")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_in_sin, "Ease in sin")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_out_sin, "Ease out sin")
-
-        y += Y_INTERVAL
-        add_item(y, easing.ease_in_out_sin, "Ease in out sin")
 
     def on_draw(self):
-        """Render the screen."""
-
-        # This command has to happen before we start drawing
+        """Render the scene."""
         self.clear()
 
-        self.lines.draw()
+        for index, (label, _ease_func) in enumerate(EASING_LIST):
+            ball_y = WINDOW_HEIGHT - (index + 1) * Y_INTERVAL
 
-        # Draw all the sprites.
+            # Horizontal guide line
+            arcade.draw_line(X_START, ball_y, X_END, ball_y, LINE_COLOR, LINE_WIDTH)
+
+            # Label for this easing function
+            arcade.draw_text(
+                label,
+                X_END + 10,
+                ball_y,
+                color=TEXT_COLOR,
+                font_size=10,
+                anchor_y="center",
+            )
+
+        # Draw all balls
         self.ball_list.draw()
 
-        for text in self.text_list:
-            text.draw()
+        # Instructions
+        arcade.draw_text(
+            "Click to restart",
+            WINDOW_WIDTH // 2,
+            20,
+            color=TEXT_COLOR,
+            font_size=14,
+            anchor_x="center",
+            anchor_y="center",
+        )
 
-    def on_update(self, delta_time):
-        """Movement and game logic"""
+    def on_update(self, delta_time: float):
+        """Update ball positions using the easing functions."""
+        self.time_elapsed += delta_time
 
-        # Call update on all sprites (The sprites don't do much in this
-        # example though.)
-        self.ball_list.update(delta_time)
+        for ball in self.ball_list:
+            eased_x = ease(
+                X_START, X_END,
+                ball.start_time, ball.start_time + TRAVEL_TIME,
+                self.time_elapsed,
+                func=ball.ease_function,
+            )
+            ball.center_x = eased_x
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        """Restart the animation on click."""
+        for ball in self.ball_list:
+            ball.start_time = self.time_elapsed
 
 
 def main():
-    """Main function"""
-    # Create a window class. This is what actually shows up on screen
+    """Main function."""
     window = arcade.Window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE)
-
-    # Create and setup the GameView
     game = GameView()
     game.setup()
-
-    # Show GameView on screen
     window.show_view(game)
-
-    # Start the arcade game loop
     arcade.run()
 
 
