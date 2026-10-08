@@ -39,6 +39,8 @@ class BasicSprite:
             Location of the sprite along the X axis in pixels.
         center_y:
             Location of the sprite along the Y axis in pixels.
+        visible:
+            Whether the sprite is drawn.
     """
 
     __slots__ = (
@@ -63,7 +65,6 @@ class BasicSprite:
         center_x: float = 0,
         center_y: float = 0,
         visible: bool = True,
-        **kwargs: Any,
     ) -> None:
         self._position = (center_x, center_y)
         self._depth = 0.0

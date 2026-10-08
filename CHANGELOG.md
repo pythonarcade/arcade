@@ -48,6 +48,9 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed `InputManager.parse()` raising `AttributeError`, so a saved input configuration couldn't be loaded.
 
 ### Breaking Changes
+- `Sprite`, `BasicSprite`, `SpriteSolidColor`, `SpriteCircle`, `TextureAnimationSprite` and `AnimatedWalkingSprite` raise `TypeError` for keyword arguments they don't accept, instead of silently ignoring them. For example, `Sprite(path, hit_box_algorithm=...)` used to do nothing; set the hit box algorithm when loading the texture instead. `Sprite` now takes `visible` as a named argument.
+  - `SpriteSolidColor`, `SpriteCircle`, `TextureAnimationSprite` and `AnimatedWalkingSprite` now pass extra keyword arguments on to `Sprite`, so arguments such as `angle` and `visible` work. They used to be dropped.
+  - This found arguments that had silently done nothing: tilemap image layers passed `filename` and `hit_box_algorithm`, animated tiles passed `path_or_texture`, and platform tutorial steps 19 and 20 passed `scaling` instead of `scale`, so their bullets were drawn at full size instead of 80%.
 - `arcade.math.get_angle_degrees()` now measures clockwise from straight up, like `Sprite.angle`: 0 is up, 90 is right, 180 is down and -90 is left. It used to measure clockwise from the right, which disagreed with `get_angle_radians()`, which already measured from up ([#2754](https://github.com/pythonarcade/arcade/issues/2754)). The two now always give the same angle in different units. A sprite whose image points up faces a point with `sprite.angle = get_angle_degrees(...)`. For the old value, subtract 90.
   - Fixed the `sprite_rotate_around_tank` example's corrected barrel, which sat 90 degrees off from the mouse, and updated `turn_and_move` for the new angles. `turn_and_move`'s sprite also now stops when moving straight along an axis, which it never did.
 

@@ -512,8 +512,8 @@ class TileMap:
                     Custom classes for animated tiles must subclass TextureAnimationSprite.
                     """
                 )
-            # print(custom_class.__name__)
-            args = {"path_or_texture": image_file, "scale": scaling}
+            # The animation sets the texture
+            args = {"scale": scaling}
             my_sprite = custom_class(**custom_class_args, **args)  # type: ignore
         else:
             if not custom_class:
@@ -737,11 +737,10 @@ class TileMap:
                 """
             )
 
+        # The texture was loaded with the hit box algorithm above
         args = {
-            "filename": image_file,
             "scale": scaling,
             "path_or_texture": my_texture,
-            "hit_box_algorithm": hit_box_algorithm,
         }
 
         my_sprite = custom_class(**custom_class_args, **args)  #  type: ignore
