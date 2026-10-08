@@ -48,7 +48,8 @@ def test_html_text_keeps_its_styles(window):
     assert area.doc.get_style("weight", 0) == "bold"
     assert area.doc.get_style("weight", 6) == "normal"
     # The arguments replace the HTML decoder's own defaults
-    assert area.doc.get_style("font_name", 6) == ("Arial",)
+    # Resolved to the name of the font that was found, as arcade.Text does
+    assert area.doc.get_style("font_name", 6) == "Arial"
     assert area.doc.get_style("font_size", 6) == 20
     assert area.doc.get_style("color", 6) == BLUE
     # A color set in the HTML wins

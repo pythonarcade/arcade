@@ -126,12 +126,32 @@ def _font_file_family(font_name: str) -> str | None:
     return _load_font_file(path)
 
 
+# Font families bundled with Arcade that are loaded the first time they're
+# asked for, by their file name prefix
+_BUNDLED_FAMILIES = {
+    "liberation sans": "Liberation_Sans",
+    "liberation serif": "Liberation_Serif",
+    "liberation mono": "Liberation_Mono",
+}
+
+
+def _load_bundled_family(font_name: str) -> None:
+    """If a font name is a family bundled with Arcade, load all its styles."""
+    prefix = _BUNDLED_FAMILIES.get(font_name.strip().lower())
+    if prefix is None:
+        return
+    for style in ("Regular", "Bold", "Italic", "BoldItalic"):
+        # Each file is only loaded once
+        _load_font_file(resolve(f":system:fonts/ttf/Liberation/{prefix}_{style}.ttf"))
+
+
 def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
     """Resolve a font name, path, or list of them to the name of one font.
 
     Paths to font files are loaded and replaced by the font's family
-    name. The first name pyglet finds is returned, or pyglet's default
-    font if it finds none.
+    name, and the Liberation fonts bundled with Arcade are loaded when
+    they're asked for. The first name pyglet finds is returned, or
+    pyglet's default font if it finds none.
 
     Args:
         font_name: A font name, path to a font file, or a tuple or list
@@ -149,6 +169,8 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
         raise ValueError(f"Couldn't find a font for {font_name!r}")
 
     names = [_font_file_family(font) or font for font in font_list]
+    for name in names:
+        _load_bundled_family(name)
     return pyglet.font.load(names).name
 
 
@@ -321,7 +343,7 @@ class Text:
         font_size: float = 12,
         width: int | None = None,
         align: str = "left",
-        font_name: FontNameOrNames = ("calibri", "arial"),
+        font_name: FontNameOrNames = ("Liberation Sans", "arial"),
         bold: bool | str = False,
         italic: bool | str = False,
         anchor_x: str = "left",
@@ -942,7 +964,7 @@ class TextPool:
             ``anchor_x``).
     """
 
-    def __init__(self, font_name: FontNameOrNames = ("calibri", "arial"), **defaults):
+    def __init__(self, font_name: FontNameOrNames = ("Liberation Sans", "arial"), **defaults):
         self._font_name = font_name
         self._defaults = defaults
         self._cache: dict[str, Text] = {}
@@ -1058,7 +1080,7 @@ def create_text_sprite(
     font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
-    font_name: FontNameOrNames = ("calibri", "arial"),
+    font_name: FontNameOrNames = ("Liberation Sans", "arial"),
     bold: bool | str = False,
     italic: bool = False,
     anchor_x: str = "left",
@@ -1227,7 +1249,7 @@ def draw_text(
     font_size: float = 12.0,
     width: int | None = None,
     align: str = "left",
-    font_name: FontNameOrNames = ("calibri", "arial"),
+    font_name: FontNameOrNames = ("Liberation Sans", "arial"),
     bold: bool | str = False,
     italic: bool = False,
     anchor_x: str = "left",

@@ -23,7 +23,7 @@ class UITextureButtonStyle(UIStyleBase):
     """
 
     font_size: int = 12
-    font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
+    font_name: FontNameOrNames = ("Kenney Future", "Liberation Sans", "arial")
     font_color: RGBA255 = uicolor.WHITE
 
 
@@ -219,7 +219,7 @@ class UIFlatButtonStyle(UIStyleBase):
     """
 
     font_size: int = 12
-    font_name: FontNameOrNames = ("Kenney Future", "arial", "calibri")
+    font_name: FontNameOrNames = ("Kenney Future", "Liberation Sans", "arial")
     font_color: RGBA255 = color.WHITE
     bg: RGBA255 = uicolor.DARK_BLUE_MIDNIGHT_BLUE
     border: RGBA255 | None = None

@@ -321,7 +321,7 @@ Styling options are shown in the table below.
 |``font_name``   |Font name or family for the button text. If a tuple is      |
 |                |supplied then Arcade will attempt to load all of the fonts, |
 |                |prioritizing the first one. Defaults to                     |
-|                |``("calibri", "arial")``.                                   |
+|                |``("Kenney Future", "Liberation Sans", "arial")``.          |
 +----------------+------------------------------------------------------------+
 |``font_color``  |Font color for the button text (foreground). Defaults to    |
 |                |white for normal, hover, and disabled states. Defaults to   |
@@ -372,7 +372,7 @@ flat buttons.
 |``font_name``   |Font name or family for the button text. If a tuple is      |
 |                |supplied then Arcade will attempt to load all of the fonts, |
 |                |prioritizing the first one. Defaults to                     |
-|                |``("calibri", "arial")``.                                   |
+|                |``("Kenney Future", "Liberation Sans", "arial")``.          |
 +----------------+------------------------------------------------------------+
 |``font_color``  |Font color for the button text (foreground). Defaults to    |
 |                |white for normal, hover, and disabled states. Defaults to   |

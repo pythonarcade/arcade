@@ -173,7 +173,8 @@ Fonts
 * **The name of a font** installed on the computer, such as ``"arial"``.
 * **A tuple or list of names.** The first one that's found is used,
   which helps when different computers have different fonts. The default
-  is ``("calibri", "arial")``.
+  is ``("Liberation Sans", "arial")``. Liberation Sans comes with Arcade,
+  so text looks the same on every computer.
 * **The path to a font file**, such as ``"fonts/MyFont.ttf"``, or a
   :ref:`resource handle <resource_handles>`, such as
   ``":resources:fonts/ttf/MyFont.ttf"``. The file is loaded the first
@@ -200,13 +201,13 @@ viewer shows it.
 Fonts that come with Arcade
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Arcade includes the Kenney and Liberation fonts. They aren't loaded
-automatically, so load them before using them:
+Arcade includes the Kenney and Liberation fonts. The Liberation fonts
+are loaded the first time you use one. Load the Kenney fonts before
+using them:
 
 .. code-block:: python
 
     arcade.resources.load_kenney_fonts()
-    arcade.resources.load_liberation_fonts()
 
     text = arcade.Text("Hello", 10, 10, font_name="Kenney Future")
 
