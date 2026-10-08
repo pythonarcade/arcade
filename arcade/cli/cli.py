@@ -12,7 +12,8 @@ class CLI:
         self.description: str = "Arcade Game Library CLI"
 
     def register_command(self, command_class: Type[BaseCommand]) -> None:
-        command = command_class()  # type: ignore BaseCommand has different constructor than it's implementations
+        # BaseCommand has a different constructor than its implementations
+        command = command_class()  # type: ignore[call-arg]
         self.commands[command.name] = command
 
     def create_parser(self) -> argparse.ArgumentParser:

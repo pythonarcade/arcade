@@ -34,10 +34,11 @@ def pixelated_ui():
     (Best Practices: within main function, before creating the window.)
     """
     import pyglet
+    import pyglet.font.base
+    from pyglet.enums import TextureFilter
 
     pyglet.options.text_antialiasing = False
-    pyglet.font.base.Font.texture_min_filter = pyglet.gl.GL_NEAREST
-    pyglet.font.base.Font.texture_mag_filter = pyglet.gl.GL_NEAREST
+    pyglet.font.base.Font.filters = TextureFilter.NEAREST
 
     UIManager._pixelated = True
 

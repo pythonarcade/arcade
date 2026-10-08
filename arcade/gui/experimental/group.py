@@ -52,7 +52,8 @@ class UIRenderGroup(UILayout):
     Defaults to the center of the group."""
     alpha = Property(255)
     """Alpha value (0-255) applied to the whole subtree."""
-    scale = Property(1.0)  # type: ignore  # intentionally shadows UIWidget.scale()
+    # Intentionally shadows UIWidget.scale()
+    scale: Property[float | tuple[float, float]] = Property(1.0)  # type: ignore[assignment]
     """Scale factor applied around ``anchor``.
     Shadows :meth:`UIWidget.scale`, which resizes the rect instead."""
     tint = Property(WHITE)

@@ -1,5 +1,4 @@
 # ruff: noqa: F401
-#  type: ignore
 
 from .inputs import (
     ControllerButtons,

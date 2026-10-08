@@ -210,3 +210,8 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "PyInstaller.*"
 ignore_missing_imports = true
+
+# Only the numpy_sprite example uses it, and it isn't a dependency
+[[tool.mypy.overrides]]
+module = "numpy.*"
+ignore_missing_imports = true

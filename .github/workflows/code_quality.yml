@@ -40,15 +40,12 @@ jobs:
         if: ${{ !cancelled() }}
         run: uv run make.py ruff-check
 
-      # Type checking doesn't fail the check yet: there are existing errors
       - name: Type Checking (MyPy)
         if: ${{ !cancelled() }}
-        continue-on-error: true
         run: uv run make.py mypy
 
       - name: Type Checking (Pyright)
         if: ${{ !cancelled() }}
-        continue-on-error: true
         run: uv run make.py pyright
 
   # This is a second job instead of an extra step because it takes the longest

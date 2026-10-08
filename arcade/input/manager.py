@@ -1,4 +1,3 @@
-# type: ignore
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -31,16 +30,15 @@ class RawInputManager(TypedDict):
     controller_deadzone: float
 
 
-_K = TypeVar("_K")
 _V = TypeVar("_V")
 
 
-def _clean_dicts(to_remove: _V, *dicts_to_clean: dict[_K, set[_V]]) -> None:
+def _clean_dicts(to_remove: _V, *dicts_to_clean: dict[Any, set[_V]]) -> None:
     """Clean a dictionary in-place.
 
     This helps simplify serialization code for controller config.
     """
-    to_discard = []
+    to_discard: list[Any] = []
     for to_clean in dicts_to_clean:
         if to_discard:
             to_discard.clear()
@@ -202,7 +200,7 @@ class InputManager:
             final.new_action(name)
 
             for raw_mapping in raw_action["mappings"]:
-                input_instance = inputs.parse_instance(raw_mapping)
+                input_instance = inputs.parse_mapping_input_enum(raw_mapping)
 
                 final.add_action_input(
                     name,
@@ -215,10 +213,10 @@ class InputManager:
         for raw_axis in raw["axes"]:
             name = raw_axis["name"]
             final.new_axis(name)
-            for raw_mapping in raw_axis["mappings"]:
-                input_instance = inputs.parse_instance(raw_mapping)
+            for raw_axis_mapping in raw_axis["mappings"]:
+                input_instance = inputs.parse_mapping_input_enum(raw_axis_mapping)
 
-                final.add_axis_input(name, input_instance, raw_mapping["scale"])
+                final.add_axis_input(name, input_instance, raw_axis_mapping["scale"])
 
         return final
 
