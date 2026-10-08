@@ -409,7 +409,11 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         super().remove_from_sprite_lists()
         for engine in self.physics_engines:
-            engine.remove_sprite(self)
+            # Only some engines, such as PymunkPhysicsEngine, keep their own
+            # reference to the sprite. The others only use sprite lists.
+            remove_sprite = getattr(engine, "remove_sprite", None)
+            if remove_sprite is not None:
+                remove_sprite(self)
 
         self.physics_engines.clear()
 
