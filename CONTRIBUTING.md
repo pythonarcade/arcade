@@ -45,7 +45,7 @@ Check that you are using a supported version of Python. Inspect the `pyproject.t
 
 The rest of this guide assumes you've already done the following:
 
-1. [Installed Python 3.9+ with pip](https://wiki.python.org/moin/BeginnersGuide/Download)
+1. [Installed Python 3.10+ with pip](https://wiki.python.org/moin/BeginnersGuide/Download)
 2. [Installed git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 3. [Forked the repo on GitHub](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository)
 4. [Cloned your fork locally](https://docs.github.com/en/get-started/quickstart/fork-a-repo#cloning-your-forked-repository)

@@ -829,9 +829,10 @@ Type variable for Shape or subclasses.
 class ShapeElementList(Generic[TShape]):
     """
     A ShapeElementList is a list of shapes that can be drawn together
-    in a back for better performance. ShapeElementLists are suited for
+    in a batch for better performance. ShapeElementLists are suited for
     drawing a large number of shapes that are static. If you need to
-    move a lot of shapes it's better to use pyglet's shape system.
+    move a lot of shapes it's better to use pyglet's shapes
+    (:py:mod:`pyglet.shapes`).
 
     Adding new shapes is fast, but removing them is slow.
 

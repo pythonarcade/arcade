@@ -409,8 +409,8 @@ However, there are a few exceptions. These are described below, especially
 with streaming audio.
 
 .. [#]
-   This can be dangerous for loading graphics and sprite data due to
-   since OpenGL only allows one thread to touch the OpenGL context.
+   This can be dangerous for loading graphics and sprite data, because
+   OpenGL only allows one thread to touch the OpenGL context.
 
 
 .. _loading_performance_sound:
