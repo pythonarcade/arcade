@@ -97,7 +97,7 @@ class Sprite(BasicSprite, PymunkMixin):
         # Movement
         self._velocity = 0.0, 0.0
         self.change_angle: float = 0.0
-        """Change in angle per 1/60th of a second."""
+        """Change in angle, in degrees per frame at 60 FPS."""
 
         # Custom sprite properties
         self._properties: dict[str, Any] | None = None
@@ -188,7 +188,8 @@ class Sprite(BasicSprite, PymunkMixin):
     @property
     def velocity(self) -> Point2:
         """
-        Get or set the velocity of the sprite.
+        Get or set the velocity of the sprite, in pixels per frame at 60 FPS.
+        For example, ``(5, 0)`` moves 300 pixels per second to the right.
 
         The x and y velocity can also be set separately using the
         ``sprite.change_x`` and ``sprite.change_y`` properties.
@@ -205,7 +206,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @property
     def change_x(self) -> float:
-        """Get or set the velocity in the x plane of the sprite."""
+        """Get or set the x velocity, in pixels per frame at 60 FPS."""
         return self.velocity[0]
 
     @change_x.setter
@@ -214,7 +215,7 @@ class Sprite(BasicSprite, PymunkMixin):
 
     @property
     def change_y(self) -> float:
-        """Get or set the velocity in the y plane of the sprite."""
+        """Get or set the y velocity, in pixels per frame at 60 FPS."""
         return self.velocity[1]
 
     @change_y.setter
