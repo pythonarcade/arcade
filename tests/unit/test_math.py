@@ -7,6 +7,7 @@ python -m pytest tests/unit/test_utils.py
 
 import math
 
+import pytest
 from pytest import approx
 
 from arcade.math import (
@@ -94,9 +95,14 @@ def test_rand_angle_spread_deg():
     rand_angle_spread_deg(45.0, 5.0)
 
 
-def test_rand_vec_spread_deg():
-    """Smoke test"""
-    rand_vec_spread_deg(-45.0, 5.0, 3.3)
+@pytest.mark.parametrize("angle", [-45.0, 0.0, 90.0, 200.0])
+def test_rand_vec_spread_deg(angle):
+    # The vector points within the spread of the angle, which is in degrees
+    for _ in range(200):
+        x, y = rand_vec_spread_deg(angle, 5.0, 3.3)
+        assert math.hypot(x, y) == approx(3.3)
+        difference = (math.degrees(math.atan2(y, x)) - angle + 180) % 360 - 180
+        assert abs(difference) <= 5.0 + 1e-9
 
 
 def test_rand_vec_magnitude():

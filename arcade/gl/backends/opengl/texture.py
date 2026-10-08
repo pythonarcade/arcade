@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from ctypes import byref, string_at
+from ctypes import byref
 from typing import TYPE_CHECKING
 
 from pyglet.graphics import core
@@ -517,7 +517,9 @@ class OpenGLTexture2D(Texture2D):
                 gl.GLubyte * (self.width * self.height * self._component_size * self._components)
             )()
             gl.glGetTexImage(gl.GL_TEXTURE_2D, level, self._format, self._type, buffer)
-            return string_at(buffer, len(buffer))
+            # bytes() rather than ctypes.string_at, which can't read 2 GB or more on
+            # Windows: its size is a C long
+            return bytes(buffer)
         elif self._ctx.gl_api == "opengles":
             fbo = self._ctx.framebuffer(color_attachments=[self])
             return fbo.read(components=self._components, dtype=self._dtype)
