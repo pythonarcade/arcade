@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from ctypes import byref, string_at
+from ctypes import byref
 from typing import TYPE_CHECKING
 
 from pyglet.graphics import core
@@ -468,7 +468,9 @@ class OpenGLTextureArray(TextureArray):
                 * (self.width * self.height * self.layers * self._component_size * self._components)
             )()
             gl.glGetTexImage(self._target, level, self._format, self._type, buffer)
-            return string_at(buffer, len(buffer))
+            # bytes() rather than ctypes.string_at, which can't read 2 GB or more on
+            # Windows: its size is a C long
+            return bytes(buffer)
         elif self._ctx.gl_api == "opengles":
             # FIXME: Check if we can attach a layer to the framebuffer. See Texture2D.read()
             raise ValueError("Reading texture array data not supported in GLES yet")

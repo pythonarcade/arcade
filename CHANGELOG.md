@@ -6,6 +6,8 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 ## Unreleased
 
 ### Fixes
+- Fixed `arcade.math.rand_vec_spread_deg()` returning vectors in random directions. It passed the angle in degrees to a function that expects radians, so for example the spread emitters in the `particle_systems` example sprayed everywhere ([#2648](https://github.com/pythonarcade/arcade/issues/2648)).
+- Fixed reading 2 GB or more from an OpenGL texture, texture array, framebuffer or buffer on Windows, which failed because `ctypes.string_at` takes its size as a 32-bit C long there ([#2836](https://github.com/pythonarcade/arcade/issues/2836)).
 - Fixed a player in `PhysicsEnginePlatformer` sliding along when standing across two moving platforms. It moved by both platforms' speeds added together, so it slid until it stood on only one. It now moves with the platform it stands on the most, and isn't moved by a platform it only touches the edge of while standing mostly on something still ([#2782](https://github.com/pythonarcade/arcade/issues/2782)).
 - Fixed the PyInstaller hook bundling Arcade's version file at `arcade/VERSION/VERSION`. Frozen apps printed an error on startup and reported `arcade.VERSION` as `0.0.0`, and builds using `collect_all("arcade")` failed because the hook and `collect_all` put a folder and a file at the same path. The version file is now `arcade/_VERSION`, so it can't be confused with the `arcade.version` module ([#2837](https://github.com/pythonarcade/arcade/issues/2837)).
 - Fixed drawing into a texture atlas losing new drawing when the atlas grows during `render_into()`. Nested rendering and exception exits now restore the previous camera and render region.

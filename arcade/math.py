@@ -285,12 +285,12 @@ def rand_vec_spread_deg(angle: float, half_angle_spread: float, length: float) -
     Returns a random vector, within a spread of the given angle.
 
     Args:
-        angle (float): The angle to spread from
-        half_angle_spread (float): The half angle spread
+        angle (float): The angle to spread from, in degrees
+        half_angle_spread (float): The half angle spread, in degrees
         length (float): The length of the vector
     """
     a = rand_angle_spread_deg(angle, half_angle_spread)
-    vel = Vec2.from_polar(a, length)
+    vel = Vec2.from_polar(math.radians(a), length)
     return vel.x, vel.y
 
 

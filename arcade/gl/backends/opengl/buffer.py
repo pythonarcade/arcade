@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from ctypes import byref, string_at
+from ctypes import POINTER, byref, c_ubyte, cast
 from typing import TYPE_CHECKING
 
 from pyglet.graphics import core
@@ -158,7 +158,9 @@ class OpenGLBuffer(Buffer):
 
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self._glo)
         ptr = gl.glMapBufferRange(gl.GL_ARRAY_BUFFER, offset, size, gl.GL_MAP_READ_BIT)
-        data = string_at(ptr, size=size)
+        # Copy through a ctypes array rather than ctypes.string_at, which can't
+        # read 2 GB or more on Windows: its size is a C long
+        data = bytes(cast(ptr, POINTER(c_ubyte * size)).contents)
         gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER)
         return data
 

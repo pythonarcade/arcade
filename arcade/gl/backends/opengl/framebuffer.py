@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from ctypes import Array, c_int, c_uint, string_at
+from ctypes import Array, c_int, c_uint
 from typing import TYPE_CHECKING
 
 from pyglet.graphics import core
@@ -296,7 +296,9 @@ class OpenGLFramebuffer(Framebuffer):
             if not self.is_default:
                 gl.glReadBuffer(gl.GL_COLOR_ATTACHMENT0)  # Reset to default
 
-        return string_at(data, len(data))
+        # bytes() rather than ctypes.string_at, which can't read 2 GB or more on
+        # Windows: its size is a C long
+        return bytes(data)
 
     def delete(self):
         """
