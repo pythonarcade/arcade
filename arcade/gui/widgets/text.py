@@ -32,7 +32,12 @@ from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIInteractiveWidget, UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.text import FontNameOrNames, _to_text_color, _to_weight
+from arcade.text import (
+    FontNameOrNames,
+    _attempt_font_name_resolution,
+    _to_text_color,
+    _to_weight,
+)
 from arcade.types import LBWH, RGBA255, Color, RGBOrA255
 
 
@@ -92,7 +97,7 @@ class UILabel(UIWidget):
         y: float = 0,
         width: float | None = None,
         height: float | None = None,
-        font_name=("calibri", "arial"),
+        font_name=("Liberation Sans", "arial"),
         font_size: float = 12,
         text_color: RGBOrA255 = arcade.color.WHITE,
         bold: str | bool = False,
@@ -521,7 +526,7 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
         width: float = 100,
         height: float = 25,  # required height for font size 12 + border width 1
         text: str = "",
-        font_name=("Arial",),
+        font_name=("Liberation Sans", "arial"),
         font_size: float = 12,
         text_color: RGBOrA255 = arcade.color.WHITE,
         multiline=False,
@@ -567,7 +572,12 @@ class UIInputText(UIStyledWidget[UIInputTextStyle], UIInteractiveWidget):
         self.doc.set_style(
             0,
             len(text),
-            dict(font_name=font_name, font_size=font_size, color=self._text_color),
+            dict(
+                # Loads font files and bundled fonts, as arcade.Text does
+                font_name=_attempt_font_name_resolution(font_name),
+                font_size=font_size,
+                color=self._text_color,
+            ),
         )
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
@@ -839,7 +849,7 @@ class UITextArea(UIWidget):
         width: float = 400,
         height: float = 40,
         text: str = "",
-        font_name=("arial", "calibri"),
+        font_name=("Liberation Sans", "arial"),
         font_size: float = 12,
         bold=False,
         italic=False,
@@ -869,7 +879,8 @@ class UITextArea(UIWidget):
 
         # pyglet 3 reads "weight" and "style", not "bold" and "italic"
         text_style = dict(
-            font_name=font_name,
+            # Loads font files and bundled fonts, as arcade.Text does
+            font_name=_attempt_font_name_resolution(font_name),
             font_size=font_size,
             color=Color.from_iterable(text_color),
             weight=_to_weight(bold),

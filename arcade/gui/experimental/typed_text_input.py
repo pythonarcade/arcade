@@ -91,7 +91,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
         width: float = 100,
         height: float = 24,
         text: str = "",
-        font_name=("Arial",),
+        font_name=("Liberation Sans", "arial"),
         font_size: float = 12,
         text_color: RGBOrA255 = BLACK,
         error_color: RGBOrA255 = RED,

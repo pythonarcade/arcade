@@ -78,7 +78,7 @@ of the class.
             "normal": UIStyle(),
             "hover": UIStyle(
                 font_size=12,
-                font_name=("calibri", "arial"),
+                font_name=("Kenney Future", "Liberation Sans", "arial"),
                 font_color=arcade.color.WHITE,
                 bg=(21, 19, 21, 255),
                 border=(77, 81, 87, 255),
@@ -86,7 +86,7 @@ of the class.
             ),
             "press": UIStyle(
                 font_size=12,
-                font_name=("calibri", "arial"),
+                font_name=("Kenney Future", "Liberation Sans", "arial"),
                 font_color=arcade.color.BLACK,
                 bg=arcade.color.WHITE,
                 border=arcade.color.WHITE,
@@ -94,7 +94,7 @@ of the class.
             ),
             "disabled": UIStyle(
                 font_size=12,
-                font_name=("calibri", "arial"),
+                font_name=("Kenney Future", "Liberation Sans", "arial"),
                 font_color=arcade.color.WHITE,
                 bg=arcade.color.GRAY,
                 border=None,
@@ -113,12 +113,16 @@ For the UIFlatButton the supported attributes are:
 Name              Type               Default value            Description
 ================ =================== ======================== ==================================
 ``font_size``    ``int``             12                       Size of the text on the button
-``font_name``    ``FontNameOrNames`` ``("calibri", "arial")`` Font of the text
+``font_name``    ``FontNameOrNames`` See below                Font of the text
 ``font_color``   ``RGBA255``         ``arcade.color.WHITE``   Color of text
 ``bg``           ``RGBA255``         ``(21, 19, 21, 255)``    Background color
 ``border``       ``Optional``        ``None``                 Border color
 ``border_width`` ``int``             0                        Border width
 ================ =================== ======================== ==================================
+
+The default ``font_name`` is ``("Kenney Future", "Liberation Sans", "arial")``. Kenney Future
+is used once you load the Kenney fonts with :py:func:`arcade.resources.load_kenney_fonts`, and
+Liberation Sans otherwise.
 
 The style attribute is a dictionary, which maps states such as ``normal``, ``hover``, ``press``,
 and ``disabled`` to an instance of the class's ``UIStyle``.

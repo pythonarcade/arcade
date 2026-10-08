@@ -269,9 +269,12 @@ def load_liberation_fonts() -> None:
              For best performance, you may want to switch to
              :py:class:`arcade.load_font` before release.
 
-    The Liberation fonts are proven, permissively-licensed fonts.[
+    The Liberation fonts are proven, permissively-licensed fonts.
     For previews and additional information, please see
     :ref:`resources-fonts-liberation`.
+
+    Liberation Sans is Arcade's default font, and each family is loaded
+    the first time it's used. Call this to load them all ahead of time.
 
     .. list-table:: ``font_name`` values for :py:class:`arcade.Text`
        :header-rows: 1
