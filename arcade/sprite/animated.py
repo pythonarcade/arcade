@@ -139,6 +139,8 @@ class TextureAnimationSprite(Sprite):
             Initial y position of the sprite.
         scale:
             Initial scale of the sprite.
+        **kwargs:
+            Passed to :py:class:`~arcade.Sprite`, such as ``angle``, ``scale`` or ``visible``.
     """
 
     def __init__(
@@ -153,6 +155,7 @@ class TextureAnimationSprite(Sprite):
             scale=scale,
             center_x=center_x,
             center_y=center_y,
+            **kwargs,
         )
         self._time = 0.0
         self._animation: TextureAnimation | None = None
@@ -229,6 +232,8 @@ class AnimatedWalkingSprite(Sprite):
             Initial x position of the sprite.
         center_y:
             Initial y position of the sprite.
+        **kwargs:
+            Passed to :py:class:`~arcade.Sprite`, such as ``angle``, ``scale`` or ``visible``.
     """
 
     def __init__(
@@ -243,6 +248,7 @@ class AnimatedWalkingSprite(Sprite):
             scale=scale,
             center_x=center_x,
             center_y=center_y,
+            **kwargs,
         )
         self.state = FACE_RIGHT
         self.stand_right_textures: list[Texture] = []

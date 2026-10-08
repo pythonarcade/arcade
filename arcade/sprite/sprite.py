@@ -43,6 +43,8 @@ class Sprite(BasicSprite, PymunkMixin):
             Show the image at this many times its original size.
         angle:
             The initial rotation of the sprite in degrees
+        visible:
+            Whether the sprite is drawn.
     """
 
     __slots__ = (
@@ -68,7 +70,7 @@ class Sprite(BasicSprite, PymunkMixin):
         center_x: float = 0.0,
         center_y: float = 0.0,
         angle: float = 0.0,
-        **kwargs: Any,
+        visible: bool = True,
     ) -> None:
         if isinstance(path_or_texture, Texture):
             _texture = path_or_texture
@@ -87,7 +89,7 @@ class Sprite(BasicSprite, PymunkMixin):
             scale=scale,
             center_x=center_x,
             center_y=center_y,
-            **kwargs,
+            visible=visible,
         )
         PymunkMixin.__init__(self)
 

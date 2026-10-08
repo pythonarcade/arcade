@@ -45,6 +45,8 @@ class SpriteSolidColor(Sprite):
             an RGBA tuple, or an RGB tuple.
         angle:
             Initial angle of the sprite in degrees
+        **kwargs:
+            Passed to :py:class:`~arcade.Sprite`, such as ``angle``, ``scale`` or ``visible``.
     """
 
     __slots__ = ()
@@ -84,6 +86,7 @@ class SpriteSolidColor(Sprite):
             center_x=center_x,
             center_y=center_y,
             angle=angle,
+            **kwargs,
         )
         self.color = Color.from_iterable(color)
 
@@ -143,6 +146,8 @@ class SpriteCircle(Sprite):
             Initial x position of the sprite
         center_y:
             Initial y position of the sprite
+        **kwargs:
+            Passed to :py:class:`~arcade.Sprite`, such as ``angle``, ``scale`` or ``visible``.
     """
 
     # Local weak cache for textures to avoid creating multiple instances with the same configuration
@@ -180,5 +185,5 @@ class SpriteCircle(Sprite):
             self.__class__._texture_cache[cache_key] = texture
 
         # apply results to the new sprite
-        super().__init__(texture, center_x=center_x, center_y=center_y)
+        super().__init__(texture, center_x=center_x, center_y=center_y, **kwargs)
         self.color = Color.from_iterable(color)

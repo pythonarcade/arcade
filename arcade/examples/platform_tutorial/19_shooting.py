@@ -345,7 +345,7 @@ class GameView(arcade.Window):
                 arcade.play_sound(self.shoot_sound)
                 bullet = arcade.Sprite(
                     ":resources:images/space_shooter/laserBlue01.png",
-                    scaling=0.8,
+                    scale=0.8,
                 )
                 if self.player_sprite.facing_direction == RIGHT_FACING:
                     bullet.change_x = 12
