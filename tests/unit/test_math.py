@@ -10,7 +10,10 @@ import math
 import pytest
 from pytest import approx
 
+import arcade
 from arcade.math import (
+    get_angle_degrees,
+    get_angle_radians,
     lerp,
     lerp_2d,
     lerp_angle,
@@ -127,3 +130,42 @@ def test_rotate_around_point_180_reflects_through_source():
     rx, ry = rotate_around_point(source, target, 180.0)
     assert rx == approx(2.0 * source[0] - target[0])
     assert ry == approx(2.0 * source[1] - target[1])
+
+
+@pytest.mark.parametrize(
+    ("x", "y", "expected"),
+    [
+        (0, 10, 0.0),
+        (10, 0, 90.0),
+        (0, -10, 180.0),
+        (-10, 0, -90.0),
+        (10, 10, 45.0),
+        (-10, -10, -135.0),
+    ],
+)
+def test_get_angle_degrees_is_clockwise_from_up(x, y, expected):
+    # Measured from the first point, like Sprite.angle: 0 is up, 90 is right
+    assert get_angle_degrees(5, 7, 5 + x, 7 + y) == approx(expected)
+
+
+@pytest.mark.parametrize(
+    ("x1", "y1", "x2", "y2"),
+    [(0, 0, 10, 0), (0, 0, 0, 10), (3, 4, -2, 9), (-5, 1, -8, -6), (1, 1, 1, -1)],
+)
+def test_get_angle_radians_matches_degrees(x1, y1, x2, y2):
+    # The two functions give the same angle in different units (#2754)
+    assert get_angle_radians(x1, y1, x2, y2) == approx(
+        math.radians(get_angle_degrees(x1, y1, x2, y2))
+    )
+
+
+def test_get_angle_degrees_points_an_up_facing_sprite(window):
+    # A sprite whose image points up, turned by get_angle_degrees, faces the point
+    sprite = arcade.SpriteSolidColor(10, 10, center_x=100, center_y=100)
+    for target in [(200, 100), (100, 300), (40, 20), (180, 190)]:
+        sprite.angle = get_angle_degrees(*sprite.position, *target)
+        # Sprite.angle turns clockwise, so straight up rotated by angle is (sin, cos)
+        facing = (math.sin(sprite.radians), math.cos(sprite.radians))
+        to_target = (target[0] - 100, target[1] - 100)
+        length = math.hypot(*to_target)
+        assert facing == approx((to_target[0] / length, to_target[1] / length))

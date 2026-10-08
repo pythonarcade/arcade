@@ -157,8 +157,9 @@ class GameView(arcade.View):
             self.tank.center_x, self.tank.center_y,
             self.mouse_pos[0], self.mouse_pos[1])
 
-        # Compensate for fact that the barrel sits horzontally rather than virtically
-        mouse_angle -= 90
+        # At an angle of 0 the barrel points down from the tank's center,
+        # so turn it around to point at the mouse
+        mouse_angle -= 180
 
         # Rotate the barrel sprite with one end at the tank's center
         # Subtract the old angle to get the change in angle
@@ -209,8 +210,8 @@ class GameView(arcade.View):
         self._correct = correct
         if correct:
             angle = get_angle_radians(
-                self.tank.center_y, self.tank.center_x,
-                self.mouse_pos[1], self.mouse_pos[0])
+                self.tank.center_x, self.tank.center_y,
+                self.mouse_pos[0], self.mouse_pos[1])
 
             self.barrel.position = (
                 self.barrel.center_x + math.sin(angle) * TANK_BARREL_LENGTH_HALF,

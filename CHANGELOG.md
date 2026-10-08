@@ -46,6 +46,10 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Fixed `arcade.gui.experimental.pixelated_ui()` raising `AttributeError`. It now turns off text anti-aliasing and makes font glyphs use nearest-neighbor filtering, as documented.
 - Fixed `InputManager.parse()` raising `AttributeError`, so a saved input configuration couldn't be loaded.
 
+### Breaking Changes
+- `arcade.math.get_angle_degrees()` now measures clockwise from straight up, like `Sprite.angle`: 0 is up, 90 is right, 180 is down and -90 is left. It used to measure clockwise from the right, which disagreed with `get_angle_radians()`, which already measured from up ([#2754](https://github.com/pythonarcade/arcade/issues/2754)). The two now always give the same angle in different units. A sprite whose image points up faces a point with `sprite.angle = get_angle_degrees(...)`. For the old value, subtract 90.
+  - Fixed the `sprite_rotate_around_tank` example's corrected barrel, which sat 90 degrees off from the mouse, and updated `turn_and_move` for the new angles. `turn_and_move`'s sprite also now stops when moving straight along an axis, which it never did.
+
 ### New Features
 - Added `arcade.sweep_sprite(sprite, dx, dy, sprite_list)`, which checks the whole path of a moving sprite and returns a `SweepInfo` for the first sprite it would hit (the `sprite`, how far along the move as a `fraction` and `distance`, and the surface `normal`), or `None`. Fast sprites can't pass through thin walls this way. A sprite that already overlaps one is an immediate hit. Added the `sprite_bullets_sweep` example comparing it with a plain collision check.
 - Added the `sprite_pixel_demolition` example, a stress test where every pixel of the Arcade logo is a sprite (28,000, or 71,000 with smaller pixels) and exploding bullets knock them loose as debris. Debris can move as Python sprites or on the GPU with a shader (press G), which keeps 60 FPS with 15,000 pieces in flight.

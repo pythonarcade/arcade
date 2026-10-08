@@ -13,8 +13,8 @@ WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Turn and Move Example"
 
-# Image might not be lined up right, set this to offset
-IMAGE_ROTATION = -90
+# The image points down, so turn it around. Angles are measured from up.
+IMAGE_ROTATION = -180
 
 
 class Player(arcade.Sprite):
@@ -61,8 +61,8 @@ class Player(arcade.Sprite):
         dest_y = self._destination_point[1]
 
         # Do math to calculate how to get the sprite to the destination.
-        # Calculation the angle in radians between the start points
-        # and end points. This is the angle the player will travel.
+        # Calculate the angle in degrees from the start point to the
+        # end point, clockwise from up. This is the angle the player will travel.
         target_angle = arcade.math.get_angle_degrees(start_x, start_y, dest_x, dest_y)
         current_angle = self.angle - IMAGE_ROTATION
 
@@ -73,19 +73,19 @@ class Player(arcade.Sprite):
         if  angle_diff < 0.1 or 359.9 < angle_diff:
             self.angle = target_angle + IMAGE_ROTATION
             target_radians = math.radians(target_angle)
-            self.change_x = math.cos(-target_radians) * self.speed
-            self.change_y = math.sin(-target_radians) * self.speed
+            self.change_x = math.sin(target_radians) * self.speed
+            self.change_y = math.cos(target_radians) * self.speed
 
         # Fine-tune our change_x/change_y if we are really close to destination
         # point and just need to set to that location.
         traveling = False
-        if abs(self.center_x - dest_x) < abs(self.change_x * delta_time):
+        if abs(self.center_x - dest_x) <= abs(self.change_x * delta_time):
             self.center_x = dest_x
         else:
             self.center_x += self.change_x * delta_time
             traveling = True
 
-        if abs(self.center_y - dest_y) < abs(self.change_y * delta_time):
+        if abs(self.center_y - dest_y) <= abs(self.change_y * delta_time):
             self.center_y = dest_y
         else:
             self.center_y += self.change_y * delta_time
