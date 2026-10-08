@@ -12,6 +12,7 @@ from __future__ import annotations
 import copy
 import math
 import os
+import warnings
 from collections import OrderedDict
 from collections.abc import Callable
 from pathlib import Path
@@ -149,10 +150,10 @@ class TileMap:
         layer_options:
             Extra parameters for each layer.
         use_spatial_hash:
-            If set to True, this will make moving a sprite
-            in the SpriteList slower, but it will speed up collision detection
-            with items in the SpriteList. Great for doing collision detection
-            with static walls/platforms.
+            Give each layer's SpriteList a spatial hash, which makes collision
+            checks against it much faster, and moving its sprites slower. On by
+            default. For a layer whose sprites move a lot, such as moving
+            platforms, turn it off in ``layer_options``.
         hit_box_algorithm:
             The hit box algorithm to use for the Sprite's in this layer.
         tiled_map:
@@ -179,6 +180,7 @@ class TileMap:
     The available options for this are:
 
     - ``use_spatial_hash`` - A boolean to enable spatial hashing on this layer's SpriteList.
+      On by default. Turn it off for a layer whose sprites move a lot.
     - ``scaling`` - A float providing layer specific Sprite scaling.
     - ``hit_box_algorithm`` - The hit box algorithm to use for the Sprite's in this layer.
     - ``offset`` - A tuple containing X and Y position offsets for the layer
@@ -248,7 +250,7 @@ class TileMap:
         map_file: str | Path = "",
         scaling: float = 1.0,
         layer_options: dict[str, dict[str, Any]] | None = None,
-        use_spatial_hash: bool = False,
+        use_spatial_hash: bool = True,
         hit_box_algorithm: HitBoxAlgorithm | None = None,
         tiled_map: pytiled_parser.TiledMap | None = None,
         offset: Vec2 = Vec2(0, 0),
@@ -315,6 +317,18 @@ class TileMap:
             "custom_class_args": {},
             "texture_atlas": texture_atlas,
         }
+
+        # Unknown options would otherwise be silently ignored, such as a
+        # misspelled "use_spatial_hashing"
+        for layer_name, options in (layer_options or {}).items():
+            unknown = sorted(set(options) - set(global_options))
+            if unknown:
+                warnings.warn(
+                    f"Unknown layer_options for layer {layer_name!r}: {', '.join(unknown)}. "
+                    f"The options are: {', '.join(global_options)}.",
+                    # Point at the code calling load_tilemap(), the usual way in
+                    stacklevel=3,
+                )
 
         for layer in self.tiled_map.layers:
             if (layer.name in self.sprite_lists) or (layer.name in self.object_lists):
@@ -1108,7 +1122,7 @@ def load_tilemap(
     map_file: str | Path,
     scaling: float = 1.0,
     layer_options: dict[str, dict[str, Any]] | None = None,
-    use_spatial_hash: bool = False,
+    use_spatial_hash: bool = True,
     hit_box_algorithm: HitBoxAlgorithm | None = None,
     offset: Vec2 = Vec2(0, 0),
     texture_atlas: DefaultTextureAtlas | None = None,
@@ -1130,10 +1144,10 @@ def load_tilemap(
         scaling:
             The global scaling to apply to all Sprite's within the map.
         use_spatial_hash:
-            If set to True, this will make moving a sprite
-            in the SpriteList slower, but it will speed up collision detection
-            with items in the SpriteList. Great for doing collision detection
-            with static walls/platforms.
+            Give each layer's SpriteList a spatial hash, which makes collision
+            checks against it much faster, and moving its sprites slower. On by
+            default. For a layer whose sprites move a lot, such as moving
+            platforms, turn it off in ``layer_options``.
         hit_box_algorithm:
             The hit box algorithm to use for collision detection.
         layer_options:

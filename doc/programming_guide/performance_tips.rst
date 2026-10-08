@@ -197,20 +197,23 @@ of 3 pixel sprites.
 
 Spatial Hashing and Tiled Maps
 """"""""""""""""""""""""""""""
-There is also a way to enable spatial hashing when loading Tiled maps. For
-each layer you'd like to load with spatial hashing, set a ``"use_spatial_hashing"``
-key in its layer options to ``True``:
+Layers loaded from Tiled maps with :py:func:`arcade.load_tilemap` get a
+spatial hash by default, so collision checks against walls and platforms
+are fast. For a layer whose sprites move a lot, such as moving platforms,
+turn it off with the ``"use_spatial_hash"`` key in its layer options:
 
 .. code-block:: python
 
    layer_options = {
-        "ground": {
-            "use_spatial_hash": True
-        },
-        "non_moving_platforms": {
-            "use_spatial_hash": True
+        "moving_platforms": {
+            "use_spatial_hash": False
         }
    }
+
+   tile_map = arcade.load_tilemap("my_map.json", layer_options=layer_options)
+
+``load_tilemap`` warns about layer option names it doesn't know, such as a
+misspelled ``"use_spatial_hashing"``.
 
 For a runnable example of this, please see :ref:`camera_platform`. Additional
 examples are linked below in :ref:`collision_performance_spatial_hashing_examples`.
