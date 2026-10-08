@@ -520,3 +520,38 @@ def test_sprite_list_rescale_scales_hit_boxes(window):
         assert sprite.hit_box.scale == (2.0, 2.0)
         left, right, bottom, top = sprite.hit_box.get_adjusted_bounds()
         assert right - left == top - bottom == 40.0
+
+
+@pytest.mark.parametrize(
+    "engine_class", [arcade.PhysicsEngineSimple, arcade.PhysicsEnginePlatformer]
+)
+def test_remove_from_sprite_lists_with_registered_engine(engine_class):
+    # These engines have no remove_sprite, which used to raise AttributeError
+    player = arcade.SpriteSolidColor(10, 10)
+    sprites = arcade.SpriteList()
+    sprites.append(player)
+    engine = engine_class(player, walls=arcade.SpriteList())
+    player.register_physics_engine(engine)
+
+    player.remove_from_sprite_lists()
+
+    assert player not in sprites
+    assert player.physics_engines == []
+
+
+def test_remove_from_sprite_lists_calls_engine_remove_sprite():
+    class Engine:
+        def __init__(self):
+            self.removed = []
+
+        def remove_sprite(self, sprite):
+            self.removed.append(sprite)
+
+    sprite = arcade.SpriteSolidColor(10, 10)
+    engine = Engine()
+    sprite.register_physics_engine(engine)
+
+    sprite.remove_from_sprite_lists()
+
+    assert engine.removed == [sprite]
+    assert sprite.physics_engines == []

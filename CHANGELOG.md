@@ -6,6 +6,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 ## Unreleased
 
 ### Fixes
+- Fixed `Sprite.remove_from_sprite_lists()` raising `AttributeError` for a sprite registered with `register_physics_engine()` on an engine without a `remove_sprite()` method, such as `PhysicsEngineSimple` or `PhysicsEnginePlatformer`. It now only calls `remove_sprite()` on engines that have it.
 - Fixed a window sized with `arcade.get_display_size()` being bigger than the screen with display scaling, such as Windows set to 125% or 150%. Arcade scales windows up by the display scale, but `get_display_size()` returned the screen's size in pixels, so the window was scaled up twice. It now returns the size in window units on Windows and Linux: at 125%, a 1920x1200 screen gives 1536x960, which fills it exactly. On macOS and the web it's unchanged, as they don't scale windows ([#2791](https://github.com/pythonarcade/arcade/issues/2791)).
 - Fixed `arcade.future.background.ParallaxGroup` raising `ZeroDivisionError` the first time its offset changed after a layer was given a depth of 0. Setting a depth of 0 now raises a `ValueError` right away, which says to use `float("inf")` for a layer that doesn't scroll ([#1551](https://github.com/pythonarcade/arcade/issues/1551)).
 - GUI: Fixed a gap between `UIFlatButton`'s border and the edge of the button, half the border's width, which also showed on `UIDropdown` ([#2868](https://github.com/pythonarcade/arcade/issues/2868)).
