@@ -48,7 +48,7 @@ docstrings & comments explain why in greater detail:
 .. literalinclude:: main.py
     :language: python
     :caption:  Generating Well-Aligned Data to Load onto the GPU
-    :lines: 25-70
+    :lines: 25-72
 
 Allocating the Buffers
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -56,7 +56,7 @@ Allocating the Buffers
 .. literalinclude:: main.py
     :language: python
     :caption: Allocating the Buffers & Loading the Data onto the GPU
-    :lines: 88-116
+    :lines: 90-118
 
 
 Visualization Shaders

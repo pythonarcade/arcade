@@ -13,4 +13,4 @@ Two Player Split Screen
 .. literalinclude:: ../../arcade/examples/camera2d_splitscreen.py
     :caption: camera2d_splitscreen.py
     :linenos:
-    :emphasize-lines: 145-149, 206-228, 251-253, 256-260, 263-292
+    :emphasize-lines: 144-150, 217-239, 245-248, 254-264, 269-271, 273-303, 305-314

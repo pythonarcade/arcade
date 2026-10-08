@@ -114,7 +114,7 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/04_user_control.py
     :caption: 04_user_control.py - User Control
     :linenos:
-    :emphasize-lines: 13-17, 53, 65, 93-121
+    :emphasize-lines: 13-17, 55, 67, 95-123
 
 Run This Chapter
 ~~~~~~~~~~~~~~~~

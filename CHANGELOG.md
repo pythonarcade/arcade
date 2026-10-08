@@ -47,6 +47,7 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Sped up removing many sprites from a large `SpriteList`, such as every bullet that hit something this frame. `SpriteList.remove()`, and so `Sprite.remove_from_sprite_lists()` and `kill()`, used to search the whole list for each sprite. Removals now wait until the list is next used, and many are applied in one pass: removing 100 sprites from 41,000 went from 19 ms to 3.3 ms, and 500 from 166,000 went from 630 ms to 17 ms. Drawing order is kept, and a few removals cost the same as before.
 - Documented choosing a spatial hash cell size (`spatial_hash_cell_size`) in the performance tips and the `SpriteList` docs: about the size of the sprites in the list. With 4 pixel sprites, collision checks were 16 times faster with 8 pixel cells than with the default of 128.
 - Type checking with mypy and pyright now fails the CI check, like formatting and linting. Their existing errors are fixed.
+- Fixed code excerpts in the docs that highlighted or showed the wrong lines, because the example code had changed since their line numbers were set. This covers 62 excerpts: 48 in the platformer, pymunk platformer, menu, card game, compute shader, raycasting and shader toy glow tutorials, and 14 on example pages. Most now highlight the same code they were written for. Where the code was rewritten, they highlight the code that does the same job now.
 
 ## 4.0.0.dev8
 

@@ -204,7 +204,7 @@ later why are those parameters needed.
 
 .. literalinclude:: menu_05.py
     :caption: Editing parameters
-    :lines: 161-168
+    :lines: 187-194
 
 We also need to change accordingly the places where we have used this class i.e
 options and volume ``on_click`` event listener. The layer parameter being set
@@ -212,7 +212,7 @@ options and volume ``on_click`` event listener. The layer parameter being set
 
 .. literalinclude:: menu_05.py
     :caption: Editing arguments
-    :lines: 115-136
+    :lines: 115-162
 
 Now you might be getting a little idea why we have edited the parameters but
  follow on to actually know the reason.
@@ -227,13 +227,13 @@ background color so it appears invisible.
 
 .. literalinclude:: menu_05.py
     :caption: Adding title label
-    :lines: 193-195
+    :lines: 219-221
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding title label to the layout
-    :lines: 238-239
+    :lines: 269-270
 
 
 Adding an Input Field
@@ -246,13 +246,13 @@ the title label.
 
 .. literalinclude:: menu_05.py
     :caption: Adding input field
-    :lines: 197
+    :lines: 223
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding input field to the layout
-    :lines: 240
+    :lines: 271
 
 If you paid attention when we defined the ``input_text`` variable we passed the
 ``text`` parameter with our ``input_text_default`` argument. We basically added
@@ -271,14 +271,14 @@ toggle label.
 
 .. literalinclude:: menu_05.py
     :caption: Adding toggle button
-    :lines: 199-216
+    :lines: 225-242
 
 Adding it to the widget layout. Add this line after you have added the input
 field.
 
 .. literalinclude:: menu_05.py
     :caption: Adding toggle button to the layout
-    :lines: 241
+    :lines: 272
 
 Adding a Dropdown
 ~~~~~~~~~~~~~~~~~
@@ -287,13 +287,13 @@ We add a dropdown by using :py:class:`~arcade.gui.UIDropdown`.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown
-    :lines: 219-221
+    :lines: 246-252
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding dropdown to the layout
-    :lines: 242
+    :lines: 273
 
 If a dropdown has many options, it will automatically scroll when the list
 exceeds the ``max_height`` (default 200px). You can also enable a visible
@@ -309,13 +309,13 @@ Theres a functionality to style the slider, this is also present for
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider
-    :lines: 223-235
+    :lines: 254-266
 
 Adding it to the widget layout.
 
 .. literalinclude:: menu_05.py
     :caption: Adding slider to the layout
-    :lines: 243-244
+    :lines: 274-275
 
 Finishing touches
 ~~~~~~~~~~~~~~~~~

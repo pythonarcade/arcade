@@ -101,7 +101,7 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/10_score.py
     :caption: Multiple Levels
     :linenos:
-    :emphasize-lines: 56-63, 124-131, 149-153, 171-172
+    :emphasize-lines: 56-63, 126-133, 151-155, 173-174
 
 Run This Chapter
 ~~~~~~~~~~~~~~~~

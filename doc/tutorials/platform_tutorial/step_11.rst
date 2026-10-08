@@ -139,7 +139,7 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/11_scene.py
     :caption: Using a Scene
     :linenos:
-    :emphasize-lines: 39-40, 60, 67, 69-70, 78, 90, 97, 106-108, 149-151
+    :emphasize-lines: 39-40, 60, 69, 71-72, 80, 92, 99, 108-110, 151-153
 
 Run This Chapter
 ~~~~~~~~~~~~~~~~
