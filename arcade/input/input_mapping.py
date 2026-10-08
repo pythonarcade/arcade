@@ -1,4 +1,3 @@
-#  type: ignore
 from __future__ import annotations
 
 from arcade.input import inputs

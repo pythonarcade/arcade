@@ -95,3 +95,10 @@ def test_start_finish_render(window):
     # Only allowed to call finish_render once
     with pytest.raises(RuntimeError):
         arcade.finish_render()
+
+
+def test_camera_cannot_be_assigned(window: arcade.Window):
+    # pyglet draws with window.camera, so it has to stay the default camera
+    with pytest.raises(AttributeError, match="world_camera"):
+        window.camera = arcade.Camera2D()
+    assert window.camera is window.default_camera

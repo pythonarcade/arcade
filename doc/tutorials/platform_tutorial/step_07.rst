@@ -14,13 +14,13 @@ To start with, let's go ahead and add a variable in our ``__init__`` function to
 
 .. code-block::
 
-    self.camera = None
+    self.world_camera = None
 
 Next we can go to our setup function, and initialize it like so:
 
 .. code-block::
 
-    self.camera = arcade.Camera2D()
+    self.world_camera = arcade.Camera2D()
 
 Since we're drawing to the entire screen, we can use :py:class:`~arcade.Camera2D`'s default settings.
 In other circumstances, we can create or adjust the camera so it has a different viewport.
@@ -32,7 +32,7 @@ drawing our SpriteLists:
 
 .. code-block::
 
-    self.camera.use()
+    self.world_camera.use()
 
 If you run the game at this point, you might notice that nothing has changed, our game is still one static un-moving
 screen. This is because we are never updating the camera's position. In our platformer game, we want the camera to follow
@@ -47,7 +47,7 @@ consideration.
 
 .. code-block::
 
-    self.camera.position = self.player_sprite.position
+    self.world_camera.position = self.player_sprite.position
 
 Source Code
 ~~~~~~~~~~~

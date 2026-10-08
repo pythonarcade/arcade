@@ -49,7 +49,7 @@ class Lane:
         self.hits = 0
         self.passed = 0
 
-        self.walls = arcade.SpriteList()
+        self.walls: arcade.SpriteList[arcade.SpriteSolidColor] = arcade.SpriteList()
         for x in WALL_X_POSITIONS:
             wall = arcade.SpriteSolidColor(
                 WALL_WIDTH,
@@ -60,7 +60,7 @@ class Lane:
             )
             self.walls.append(wall)
 
-        self.lasers = arcade.SpriteList()
+        self.lasers: arcade.SpriteList[arcade.Sprite] = arcade.SpriteList()
 
     def fire(self):
         """Add a laser at the left edge, at a random height."""

@@ -11,14 +11,15 @@ python -m arcade.examples.easing_example_1
 
 import arcade
 from arcade.anim import ease, Easing
+from arcade.anim.easing import EasingFunction
 
 # --- Constants ---
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Easing Example 1"
 
-X_START = 40
-X_END = 1200
+X_START = 40.0
+X_END = 1200.0
 Y_INTERVAL = 60
 BALL_RADIUS = 13
 LINE_WIDTH = 1.0
@@ -48,8 +49,8 @@ EASING_LIST = [
 class EasingCircle(arcade.SpriteCircle):
     """A ball that eases along the x-axis using a specific curve."""
 
-    def __init__(self, radius: int, color: arcade.types.RGBOrA255,
-                 ease_function: Easing):
+    def __init__(self, radius: int, color: arcade.types.Color,
+                 ease_function: EasingFunction):
         super().__init__(radius, color)
         self.ease_function = ease_function
         self.start_time = 0.0
@@ -61,12 +62,12 @@ class GameView(arcade.View):
     def __init__(self):
         super().__init__()
         self.background_color = BACKGROUND_COLOR
-        self.ball_list: arcade.SpriteList[EasingCircle] | None = None
+        self.ball_list: arcade.SpriteList[EasingCircle] = arcade.SpriteList()
         self.time_elapsed = 0.0
 
     def setup(self):
         """Create one ball per easing function."""
-        self.ball_list = arcade.SpriteList()
+        self.ball_list.clear()
         self.time_elapsed = 0.0
 
         for index, (label, ease_func) in enumerate(EASING_LIST):

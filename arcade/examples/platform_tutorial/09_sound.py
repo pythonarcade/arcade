@@ -51,7 +51,7 @@ class GameView(arcade.Window):
         self.coin_list = None
 
         # A variable to store our camera object
-        self.camera = None
+        self.world_camera = None
 
         # Load sounds
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
@@ -112,7 +112,7 @@ class GameView(arcade.Window):
         )
 
         # Initialize our camera, setting a viewport the size of our window.
-        self.camera = arcade.Camera2D()
+        self.world_camera = arcade.Camera2D()
 
         self.background_color = arcade.csscolor.CORNFLOWER_BLUE
 
@@ -123,7 +123,7 @@ class GameView(arcade.Window):
         self.clear()
 
         # Activate our camera before drawing
-        self.camera.use()
+        self.world_camera.use()
 
         # Draw our sprites
         self.player_list.draw()
@@ -148,7 +148,7 @@ class GameView(arcade.Window):
             arcade.play_sound(self.collect_coin_sound)
 
         # Center our camera on the player
-        self.camera.position = self.player_sprite.position
+        self.world_camera.position = self.player_sprite.position
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""

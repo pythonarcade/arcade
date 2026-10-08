@@ -92,12 +92,11 @@ def main():
 
 
 if __name__ == "__main__":
-    import pyglet
-    # pyglet.options.text_antialiasing = False
-    #
-    from pyglet.graphics.api.gl import GL_NEAREST
-    pyglet.font.base.Font.texture_min_filter = GL_NEAREST
-    pyglet.font.base.Font.texture_mag_filter = GL_NEAREST
+    import pyglet.font.base
+    from pyglet.enums import TextureFilter
+
+    # Keep the pixel font sharp when it's scaled
+    pyglet.font.base.Font.filters = TextureFilter.NEAREST
     resources.load_kenney_fonts()
 
     main()

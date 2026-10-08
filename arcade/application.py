@@ -18,10 +18,10 @@ from arcade.utils import is_pyodide
 if is_pyodide:
     pyglet.options.backend = "webgl"
 
-import pyglet.config
+import pyglet.config.gl
 import pyglet.window.mouse
-from pyglet.config import GraphicsAPI
 from pyglet.display.base import Screen, ScreenMode
+from pyglet.enums import GraphicsAPI
 from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor
 
@@ -223,7 +223,7 @@ class Window(pyglet.window.Window):
             graphics_api = _GL_API_MAP[gl_api]
             if antialiasing:
                 try:
-                    config = pyglet.config.OpenGLUserConfig(
+                    config = pyglet.config.gl.OpenGLUserConfig(
                         major_version=gl_version[0],
                         minor_version=gl_version[1],
                         api=graphics_api,
@@ -243,7 +243,7 @@ class Window(pyglet.window.Window):
                     antialiasing = False
             # If we still don't have a config
             if not config:
-                config = pyglet.config.OpenGLUserConfig(
+                config = pyglet.config.gl.OpenGLUserConfig(
                     major_version=gl_version[0],
                     minor_version=gl_version[1],
                     api=graphics_api,
@@ -1099,7 +1099,9 @@ class Window(pyglet.window.Window):
         """
         return self._ctx._default_camera
 
-    @property
+    # pyglet types this as one of its own cameras, but it needs to be arcade's
+    # DefaultProjector, so the override doesn't match
+    @property  # type: ignore[override]
     def camera(self) -> DefaultProjector:
         """
         Alias for :py:attr:`default_camera`.
@@ -1109,8 +1111,18 @@ class Window(pyglet.window.Window):
         set, so this needs to resolve to the same :py:class:`DefaultProjector`
         to keep pyglet's internal drawing (e.g. :py:class:`~pyglet.text.Label`)
         going through arcade's projection/scissor handling.
+
+        It can't be assigned. To keep your own camera on a window subclass,
+        give it another name, such as ``self.world_camera``.
         """
         return self._ctx._default_camera
+
+    @camera.setter
+    def camera(self, value: object) -> None:
+        raise AttributeError(
+            "Window.camera is the default camera pyglet draws with, and can't be assigned. "
+            "Store your camera under another name, such as self.world_camera."
+        )
 
     @property
     def current_camera(self) -> Projector:

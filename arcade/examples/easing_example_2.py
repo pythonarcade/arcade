@@ -68,7 +68,10 @@ class GameView(arcade.View):
         super().__init__()
         self.background_color = arcade.color.BLACK
 
-        self.ship_sprite: arcade.Sprite | None = None
+        self.ship_sprite = arcade.Sprite(
+            ":resources:images/space_shooter/playerShip1_orange.png",
+            scale=0.5,
+        )
         self.mode = 1
         self.time_elapsed = 0.0
 
@@ -90,10 +93,6 @@ class GameView(arcade.View):
 
     def setup(self):
         """Set up the game."""
-        self.ship_sprite = arcade.Sprite(
-            ":resources:images/space_shooter/playerShip1_orange.png",
-            scale=0.5,
-        )
         self.ship_sprite.center_x = WINDOW_WIDTH / 2
         self.ship_sprite.center_y = WINDOW_HEIGHT / 2
         self.time_elapsed = 0.0
@@ -154,7 +153,7 @@ class GameView(arcade.View):
     def on_update(self, delta_time: float):
         """Update ship angle and/or position based on current mode."""
         self.time_elapsed += delta_time
-        ease_func = MODE_EASING.get(self.mode)
+        ease_func = MODE_EASING.get(self.mode, Easing.LINEAR)
 
         if self.mode == 1:
             # Instant angle — always face the target directly

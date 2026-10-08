@@ -23,12 +23,12 @@ class PerspectiveParallax(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Perspective Parallax")
         self.t = 0.0
-        self.camera = arcade.camera.PerspectiveProjector()
+        self.projector = arcade.camera.PerspectiveProjector()
 
-        self.camera_data = self.camera.view
+        self.camera_data = self.projector.view
         self.camera_data.zoom = 2.0
 
-        self.camera.projection.far = 1000
+        self.projector.projection.far = 1000
 
         self.background_sprites = arcade.SpriteList()
         for index, layer_src in enumerate(LAYERS):
@@ -38,7 +38,7 @@ class PerspectiveParallax(arcade.Window):
 
     def on_draw(self):
         self.clear()
-        with self.camera.activate():
+        with self.projector.activate():
             self.background_sprites.draw(pixelated=True)
 
     def on_update(self, delta_time: float):

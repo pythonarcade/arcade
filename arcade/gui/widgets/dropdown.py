@@ -10,7 +10,7 @@ from arcade.gui.experimental import UIScrollArea
 from arcade.gui.experimental.focus import UIFocusMixin
 from arcade.gui.experimental.scroll_area import UIScrollBar
 from arcade.gui.ui_manager import UIManager
-from arcade.gui.widgets import UILayout, UIWidget
+from arcade.gui.widgets import UILayout, UIWidget, W
 from arcade.gui.widgets.buttons import UIFlatButton
 from arcade.gui.widgets.layout import UIBoxLayout
 
@@ -56,7 +56,7 @@ class _UIDropdownOverlay(UIFocusMixin, UIBoxLayout):
             self._scroll_bar.rect = self._scroll_bar.rect.resize(width=self.SCROLL_BAR_WIDTH)
             super().add(self._scroll_bar)
 
-    def add_option(self, widget: UIWidget) -> UIWidget:
+    def add_option(self, widget: W) -> W:
         """Add an option widget to the options layout."""
         return self._options_layout.add(widget)
 
