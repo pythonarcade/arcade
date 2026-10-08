@@ -191,7 +191,7 @@ Python program:
 .. literalinclude:: shadertoy_demo_3.py
     :caption: Run a shader
     :linenos:
-    :emphasize-lines: 17-20
+    :emphasize-lines: 16-18
 
 Then we can use those uniforms in our shader:
 

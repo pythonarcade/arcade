@@ -52,7 +52,7 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/06_reset.py
     :caption: Resetting
     :linenos:
-    :emphasize-lines: 33, 36, 39, 47, 49-93, 114-115
+    :emphasize-lines: 33, 36, 39, 47, 49-95, 116-117
 
 Run This Chapter
 ~~~~~~~~~~~~~~~~

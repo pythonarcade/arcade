@@ -11,4 +11,4 @@ Sprite: Face Left or Right
 .. literalinclude:: ../../arcade/examples/sprite_face_left_or_right.py
     :caption: sprite_face_left_or_right.py
     :linenos:
-    :emphasize-lines: 23-25, 33-45, 51-55
+    :emphasize-lines: 23-25, 30-32, 38-42, 67-69, 78

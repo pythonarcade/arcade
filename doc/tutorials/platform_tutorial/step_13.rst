@@ -60,4 +60,4 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/13_more_layers.py
     :caption: More Layers
     :linenos:
-    :emphasize-lines: 70-71, 78-83, 152-156
+    :emphasize-lines: 70-75, 84-89, 158-162

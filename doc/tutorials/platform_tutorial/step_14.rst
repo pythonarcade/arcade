@@ -90,4 +90,4 @@ Source Code
 .. literalinclude:: ../../../arcade/examples/platform_tutorial/14_multiple_levels.py
     :caption: Moving the enemies
     :linenos:
-    :emphasize-lines: 57-64, 79-80, 116-119, 173-182
+    :emphasize-lines: 57-64, 79-84, 122-125, 180-189
