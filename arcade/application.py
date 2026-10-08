@@ -32,7 +32,7 @@ from arcade.context import ArcadeContext
 from arcade.gl.provider import get_arcade_context, set_provider
 from arcade.types import LBWH, Color, Rect, RGBANormalized, RGBOrA255
 from arcade.utils import is_raspberry_pi
-from arcade.window_commands import get_display_size, set_window
+from arcade.window_commands import set_window
 
 if TYPE_CHECKING:
     from arcade.camera import Projector
@@ -534,8 +534,9 @@ class Window(pyglet.window.Window):
 
     def center_window(self) -> None:
         """Center the window on your desktop."""
-        # Get the display screen using pyglet
-        screen_width, screen_height = get_display_size()
+        # The screen's size in pixels, like the framebuffer's size and the
+        # location. get_display_size() is in window units instead.
+        screen_width, screen_height = self.screen.width, self.screen.height
 
         window_width, window_height = self.get_framebuffer_size()
         # Center the window

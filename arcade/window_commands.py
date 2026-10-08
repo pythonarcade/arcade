@@ -46,6 +46,11 @@ def get_display_size(screen_id: int = 0) -> tuple[int, int]:
 
     The size of the primary monitor is returned by default.
 
+    The size is in the same units as a :py:class:`~arcade.Window`'s size, so a
+    window this size fills the screen. With display scaling, such as Windows set
+    to 150%, that's smaller than the screen's size in pixels, because Arcade
+    scales windows up to match.
+
     Args:
         screen_id: The screen number
     Returns:
@@ -53,7 +58,17 @@ def get_display_size(screen_id: int = 0) -> tuple[int, int]:
     """
     display = pyglet.display.Display()  # type: ignore  # pending: pyglet fixes import tricks
     screen = display.get_screens()[screen_id]
-    return screen.width, screen.height
+    width, height = screen.width, screen.height
+    # In stretch mode, pyglet multiplies a window's size by the screen's scale
+    # on Windows and Linux. Screen sizes on macOS are already in the same units
+    # as window sizes, and the web doesn't scale windows.
+    if pyglet.options.dpi_scaling == "stretch" and (
+        pyglet.compat_platform == "win32" or pyglet.compat_platform.startswith("linux")
+    ):
+        scale = screen.get_scale()
+        # Round down, so the scaled window isn't bigger than the screen
+        width, height = int(width / scale), int(height / scale)
+    return width, height
 
 
 def get_window() -> Window:
