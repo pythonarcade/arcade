@@ -60,7 +60,7 @@ class Card(arcade.Sprite):
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
         # Call the parent
-        super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
+        super().__init__(self.image_file_name, scale)
 
 
 class MyGame(arcade.Window):

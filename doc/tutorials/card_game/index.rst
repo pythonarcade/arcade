@@ -54,9 +54,8 @@ Next up, we'll create a card class. The card class is a subclass of
 :py:class:`~arcade.Sprite`. It will have attributes for the suit and value of the
 card, and auto-load the image for the card based on that.
 
-We'll use the entire image as the hit box, so we don't need to go through the
-time consuming hit box calculation. Therefore we turn that off. Otherwise loading
-the sprites would take a long time.
+Arcade works out each card's hit box from its image: the outline of the card.
+We'll use the hit box later to see which card the mouse clicks on.
 
 .. literalinclude:: solitaire_02.py
     :caption: Create card sprites
