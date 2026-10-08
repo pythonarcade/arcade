@@ -19,7 +19,7 @@ Requirements
 ------------
 Arcade requires a desktop, laptop, or compatible Single-Board Computer (SBC) with:
 
-#. Python 3.9 or higher
+#. Python 3.10 or higher
 #. Graphics drivers with support for either:
     * OpenGL 3.3+
     * GLES 3.1+ with extensions on SBCs
@@ -30,7 +30,7 @@ unsupported.
 Windows, Linux, and Intel Mac
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Your computer can likely run Arcade if it supports Python 3.9 or higher.
+Your computer can likely run Arcade if it supports Python 3.10 or higher.
 
 In general, even older convertible Windows tablets will work as long as they:
 

@@ -18,6 +18,7 @@ import arcade.gui
 from arcade.gui import UIAnchorLayout, UIImage, UITextArea
 
 arcade.resources.load_kenney_fonts()
+arcade.resources.load_liberation_fonts()
 
 DESCRIPTION = """How to place widgets on the screen?
 
@@ -105,7 +106,7 @@ class LayoutView(arcade.gui.UIView):
         text_area = ScrollableTextArea(
             text=DESCRIPTION,
             text_color=arcade.uicolor.WHITE_CLOUDS,
-            font_name=("Lato", "proxima-nova", "Helvetica Neue", "Arial", "sans-serif"),
+            font_name=("Liberation Sans", "Arial"),
             font_size=12,
             size_hint=(0.5, 0.8),
         )

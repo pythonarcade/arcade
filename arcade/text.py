@@ -1077,10 +1077,8 @@ def create_text_sprite(
     It then creates a sprite referencing the newly created texture, and positions it
     accordingly, and that is final result that is returned from the function.
 
-    If you are providing a custom texture atlas, something important to keep in mind is
-    that the resulting Sprite can only be added to SpriteLists which use that atlas. If
-    it is added to a SpriteList which uses a different atlas, you will likely just see
-    a black box drawn in its place.
+    The sprite can be added to SpriteLists that use any texture atlas, not just the one
+    it was drawn in.
 
     Args:
         text: Initial text to display. Can be an empty string
