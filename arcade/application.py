@@ -20,8 +20,8 @@ if is_pyodide:
 
 import pyglet.config.gl
 import pyglet.window.mouse
-from pyglet.enums import GraphicsAPI
 from pyglet.display.base import Screen, ScreenMode
+from pyglet.enums import GraphicsAPI
 from pyglet.event import EVENT_HANDLE_STATE, EVENT_UNHANDLED
 from pyglet.window import MouseCursor
 
