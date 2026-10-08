@@ -324,36 +324,21 @@ def _move_sprite(
             # print(f"Spot X ({self.player_sprite.center_x}, {self.player_sprite.center_y})"
             #       f" {self.player_sprite.change_y}")
         elif moving_sprite.change_y < 0:
-            # Reset number of jumps
-            # If we collided while moving down, we may be landing on one or more
-            # floor-like sprites. If multiple moving platforms overlap under
-            # the player, only apply the horizontal motion of a single
-            # platform (the one most directly under the player) to avoid
-            # accumulating motion from multiple platforms which can cause
-            # sliding/jitter when the player is between blocks.
-
-            # Prefer platforms (moving sprites) among the collisions.
-            platform_items = [
-                item
-                for item in hit_list_x
-                if getattr(item, "change_x", 0.0) != 0 or getattr(item, "change_y", 0.0) != 0
-            ]
-
-            # Choose the platform with the highest top (closest to the player)
-            chosen_platform = None
-            if platform_items:
-                chosen_platform = max(
-                    platform_items, key=lambda s: getattr(s, "top", float("-inf"))
-                )
-
-            # Nudge the player up until no longer colliding with each collided item
+            # Move straight up out of what we landed on, which also works
+            # for ramps
             for item in hit_list_x:
-                # Move straight up, which also works for ramps
                 _move_out_of_sprite(moving_sprite, item, 1.0, 0.25)
 
-            # Apply horizontal movement from the chosen platform (once)
-            if chosen_platform is not None and getattr(chosen_platform, "change_x", 0.0) != 0:
-                moving_sprite.center_x += chosen_platform.change_x  # type: ignore
+            # Move with what the sprite stands on the most, or if that's a
+            # tie, the highest. Moving with each moving platform it touches
+            # would add their speeds together.
+            def footing(item: SpriteType) -> tuple[float, float]:
+                overlap = min(moving_sprite.right, item.right) - max(moving_sprite.left, item.left)
+                return overlap, item.top
+
+            # NOTE: Not all sprites have velocity
+            standing_on = max(hit_list_x, key=footing)
+            moving_sprite.center_x += getattr(standing_on, "change_x", 0.0)
 
             # print(f"Spot Y ({self.player_sprite.center_x}, {self.player_sprite.center_y})")
         else:
