@@ -249,11 +249,13 @@ class DefaultTextureAtlas(TextureAtlasBase):
             # Entry was GCed during iteration
             if tex_set is None:
                 continue
-            # Corrupt data
-            if len(tex_set) == 0:
-                raise RuntimeError("Empty set in unique textures")
+            # The last texture with this name is dying and its finalizer
+            # hasn't removed the name yet
+            texture = next(iter(tex_set), None)
+            if texture is None:
+                continue
 
-            textures.append(next(iter(tex_set)))
+            textures.append(texture)
 
         return textures
 
@@ -298,6 +300,9 @@ class DefaultTextureAtlas(TextureAtlasBase):
             # Add add references to the duplicate texture
             if not self.has_texture(texture):
                 self._add_texture_ref(texture, create_finalizer=create_finalizer)
+                # Track every texture sharing this name, so the set is only
+                # empty when none of them are alive
+                self._unique_textures[texture.atlas_name].add(texture)
             slot = self._texture_uvs.get_slot_or_raise(texture.atlas_name)
             region = self.get_texture_region_info(texture.atlas_name)
             return slot, region
@@ -550,10 +555,11 @@ class DefaultTextureAtlas(TextureAtlasBase):
 
         # Remove the unique texture if ref counter reaches 0
         if self._unique_texture_ref_count.dec_ref_by_atlas_name(atlas_name) == 0:
-            # Remove the unique texture key to signal we don't have any more
-            refs = self._unique_textures[atlas_name]
-            if len(refs) == 0:
-                del self._unique_textures[atlas_name]
+            # No texture with this name is left. The set may still hold the
+            # dying texture if this finalizer ran before the set's own weak
+            # reference callback, so remove the name regardless. Otherwise a
+            # later texture with the same name would find it with no slot.
+            self._unique_textures.pop(atlas_name, None)
 
             # Reclaim region and uv slot
             del self._texture_regions[atlas_name]
