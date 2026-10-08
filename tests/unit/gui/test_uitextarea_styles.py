@@ -41,7 +41,8 @@ def test_html_text_keeps_its_styles(window):
     area = UITextArea(
         text='<b>bold</b> plain <font color="#ff0000">red</font>',
         document_mode="HTML",
-        font_name=("Arial",),
+        # A bundled font, so the name is the same on every computer
+        font_name=("Liberation Serif",),
         font_size=20,
         text_color=BLUE,
     )
@@ -49,7 +50,7 @@ def test_html_text_keeps_its_styles(window):
     assert area.doc.get_style("weight", 6) == "normal"
     # The arguments replace the HTML decoder's own defaults
     # Resolved to the name of the font that was found, as arcade.Text does
-    assert area.doc.get_style("font_name", 6) == "Arial"
+    assert area.doc.get_style("font_name", 6) == "Liberation Serif"
     assert area.doc.get_style("font_size", 6) == 20
     assert area.doc.get_style("color", 6) == BLUE
     # A color set in the HTML wins
