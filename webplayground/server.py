@@ -20,7 +20,7 @@ bottle.debug(True)
 here = Path(__file__).parent.resolve()
 
 path_arcade = here.parent
-version_file_path = path_arcade / "arcade" / "VERSION"
+version_file_path = path_arcade / "arcade" / "_VERSION"
 VERSION = "unknown"
 with open(version_file_path, "r") as version_file:
     VERSION = version_file.read().rstrip()
