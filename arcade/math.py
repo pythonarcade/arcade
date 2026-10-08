@@ -427,7 +427,12 @@ def rotate_around_point(source: Point2, target: Point2, angle: float):
 
 def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
     """
-    Get the angle in degrees between two points.
+    Get the angle in degrees from the first point to the second.
+
+    The angle is measured clockwise from straight up, like
+    :py:attr:`Sprite.angle <arcade.Sprite.angle>`: 0 is up, 90 is right,
+    180 is down and -90 is left. A sprite whose image points up faces the
+    second point with ``sprite.angle = get_angle_degrees(...)``.
 
     Args:
         x1 (float): x coordinate of the first point
@@ -437,12 +442,16 @@ def get_angle_degrees(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     x_diff = x2 - x1
     y_diff = y2 - y1
-    return -math.degrees(math.atan2(y_diff, x_diff))
+    return math.degrees(math.atan2(x_diff, y_diff))
 
 
 def get_angle_radians(x1: float, y1: float, x2: float, y2: float) -> float:
     """
-    Get the angle in radians between two points.
+    Get the angle in radians from the first point to the second.
+
+    The same angle as :py:func:`get_angle_degrees`, in radians: measured
+    clockwise from straight up, like
+    :py:attr:`Sprite.radians <arcade.Sprite.radians>`.
 
     Args:
         x1 (float): x coordinate of the first point
