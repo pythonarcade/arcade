@@ -369,11 +369,13 @@ class UIFlatButton(UIInteractiveWidget, UIStyledWidget[UIFlatButtonStyle], UITex
 
         # render button border (which is not the widgets border)
         if border_color and border_width:
+            # The outline is centered on the rectangle's edge, so inset it by
+            # half its width to draw it right up to the button's edge
             arcade.draw_lbwh_rectangle_outline(
-                border_width,
-                border_width,
-                self.content_width - 2 * border_width,
-                self.content_height - 2 * border_width,
+                border_width / 2,
+                border_width / 2,
+                self.content_width - border_width,
+                self.content_height - border_width,
                 color=border_color,
                 border_width=border_width,
             )

@@ -6,6 +6,12 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 ## Unreleased
 
 ### Fixes
+- GUI: Fixed a gap between `UIFlatButton`'s border and the edge of the button, half the border's width, which also showed on `UIDropdown` ([#2868](https://github.com/pythonarcade/arcade/issues/2868)).
+- GUI: Passing a single style such as `UIFlatButton.UIStyle()` as a widget's `style` raised a confusing `TypeError` about attribute names. It now raises a `TypeError` saying a dict of styles for each state is needed, and how to start from the widget's `DEFAULT_STYLE` ([#2817](https://github.com/pythonarcade/arcade/issues/2817)).
+- GUI: Fixed `UITextArea`:
+  - With `document_mode="ATTRIBUTED"` or `"HTML"`, the widget's font and color replaced every style set in the text. Styles set in the text now win, and the widget's arguments apply to the rest. In HTML mode they also replace the decoder's own defaults, such as Times New Roman ([#2441](https://github.com/pythonarcade/arcade/issues/2441)).
+  - `bold` and `italic` had no effect, because pyglet 3 reads the `weight` and `style` keys instead.
+  - The text widgets page of the `gui/2_widgets` example now shows its labels in bold.
 - Fixed `arcade.math.rand_vec_spread_deg()` returning vectors in random directions. It passed the angle in degrees to a function that expects radians, so for example the spread emitters in the `particle_systems` example sprayed everywhere ([#2648](https://github.com/pythonarcade/arcade/issues/2648)).
 - Fixed reading 2 GB or more from an OpenGL texture, texture array, framebuffer or buffer on Windows, which failed because `ctypes.string_at` takes its size as a 32-bit C long there ([#2836](https://github.com/pythonarcade/arcade/issues/2836)).
 - Fixed a player in `PhysicsEnginePlatformer` sliding along when standing across two moving platforms. It moved by both platforms' speeds added together, so it slid until it stood on only one. It now moves with the platform it stands on the most, and isn't moved by a platform it only touches the edge of while standing mostly on something still ([#2782](https://github.com/pythonarcade/arcade/issues/2782)).
