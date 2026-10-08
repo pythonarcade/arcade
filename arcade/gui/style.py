@@ -57,6 +57,15 @@ class UIStyledWidget(UIWidget, Generic[StyleRef]):
     style = DictProperty[str, StyleRef]()
 
     def __init__(self, *, style: dict[str, StyleRef], **kwargs):
+        if isinstance(style, UIStyleBase):
+            # A single style would otherwise fail deep inside DictProperty
+            name = type(self).__name__
+            raise TypeError(
+                f"{name} style must be a dict of styles for each state, such as "
+                '{"normal": style, "hover": ..., "press": ..., "disabled": ...}, '
+                f"not a single {type(style).__name__}. To change only some states, "
+                f'start from the defaults: {{**{name}.DEFAULT_STYLE, "normal": style}}'
+            )
         self.style = style
         super().__init__(**kwargs)
 

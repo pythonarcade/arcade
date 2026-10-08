@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 
+import pytest
+
 import arcade
+from arcade.gui import UIFlatButton
 from arcade.gui.style import UIStyleBase
 from arcade.types import Color
 
@@ -59,3 +62,15 @@ def test_defaults_behavior_using_inheritance():
     assert subject.some_color == arcade.color.GREEN
     assert subject.some_str == "Arcade"
     assert subject.some_other_str == "is awesome!"
+
+
+def test_single_style_instead_of_dict_gives_clear_error(window):
+    # A style for each state is needed, so a single style is rejected clearly (#2817)
+    with pytest.raises(TypeError, match="dict of styles for each state"):
+        UIFlatButton(style=UIFlatButton.UIStyle())
+
+
+def test_suggested_fix_for_single_style_works(window):
+    normal = UIFlatButton.UIStyle(font_size=20)
+    button = UIFlatButton(style={**UIFlatButton.DEFAULT_STYLE, "normal": normal})
+    assert button.get_current_style() is normal

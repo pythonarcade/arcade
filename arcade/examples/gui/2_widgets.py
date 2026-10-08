@@ -85,13 +85,13 @@ TEXT_WIDGET_EXPLANATION = textwrap.dedent("""
 Arcade GUI provides three types of text widgets:
 
 
-- {bold True}UILabel{bold False}:
+- {weight "bold"}UILabel{weight "normal"}:
 A simple text widget that can be used to display text.
 
-- {bold True}UIInputText{bold False}:
+- {weight "bold"}UIInputText{weight "normal"}:
 A text widget that can be used to get text input from the user.
 
-- {bold True}UITextArea{bold False}:
+- {weight "bold"}UITextArea{weight "normal"}:
 A text widget that can be used to display text that is too long for a label.
 
 
@@ -101,18 +101,18 @@ This example shows how to use all three types of text widgets.
 A few hints regarding the usage of the text widgets:
 
 
-{bold True}UILabel{bold False}:
+{weight "bold"}UILabel{weight "normal"}:
 
 If you want to display frequently changing text,
 setting a background color will improve performance.
 
 
-{bold True}UIInputText{bold False}:
+{weight "bold"}UIInputText{weight "normal"}:
 
 UIInputText dispatches an event on_change, when the text changes.
 
 
-{bold True}UITextArea{bold False}:
+{weight "bold"}UITextArea{weight "normal"}:
 
 While the widget supports scrolling, there is no scrollbar provided yet.
 Users might oversee content.

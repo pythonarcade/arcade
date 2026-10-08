@@ -8,6 +8,7 @@ from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED
 from pyglet.text import LinearGradient
 from pyglet.text.caret import Caret
 from pyglet.text.document import AbstractDocument
+from pyglet.text.formats.html import HTMLDecoder
 from typing_extensions import override
 
 import arcade
@@ -31,7 +32,7 @@ from arcade.gui.style import UIStyleBase, UIStyledWidget
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIInteractiveWidget, UIWidget
 from arcade.gui.widgets.layout import UIAnchorLayout
-from arcade.text import FontNameOrNames, _to_text_color
+from arcade.text import FontNameOrNames, _to_text_color, _to_weight
 from arcade.types import LBWH, RGBA255, Color, RGBOrA255
 
 
@@ -825,6 +826,8 @@ class UITextArea(UIWidget):
             PLAIN will decode the text as plain text, ATTRIBUTED and HTML will
             decode the text as pyglet documents here
             https://pyglet.readthedocs.io/en/latest/programming_guide/text.html
+            With ATTRIBUTED and HTML, styles set in the text win, and the font,
+            color, bold and italic arguments apply to the rest of it.
         **kwargs: passed to :py:class:`~arcade.gui.UIWidget`.
     """
 
@@ -864,25 +867,36 @@ class UITextArea(UIWidget):
         # Measured in pixels per 'click'
         self.scroll_speed = scroll_speed if scroll_speed is not None else font_size
 
+        # pyglet 3 reads "weight" and "style", not "bold" and "italic"
+        text_style = dict(
+            font_name=font_name,
+            font_size=font_size,
+            color=Color.from_iterable(text_color),
+            weight=_to_weight(bold),
+            style="italic" if italic else "normal",
+        )
+
         self.doc: AbstractDocument
         if document_mode == "PLAIN":
             self.doc = pyglet.text.decode_text(text)
-        elif document_mode == "ATTRIBUTED":
-            self.doc = pyglet.text.decode_attributed(text)
-        elif document_mode == "HTML":
-            self.doc = pyglet.text.decode_html(text)
+            self.doc.set_style(0, len(self.doc.text), text_style)
+        else:
+            if document_mode == "ATTRIBUTED":
+                self.doc = pyglet.text.decode_attributed(text)
+            elif document_mode == "HTML":
+                # The decoder's own defaults (such as Times New Roman) would
+                # otherwise apply wherever the HTML doesn't set a style
+                class _Decoder(HTMLDecoder):
+                    default_style = {**HTMLDecoder.default_style, **text_style}
 
-        self.doc.set_style(
-            0,
-            len(text),
-            dict(
-                font_name=font_name,
-                font_size=font_size,
-                color=Color.from_iterable(text_color),
-                bold=bold,
-                italic=italic,
-            ),
-        )
+                self.doc = _Decoder().decode(text)
+            else:
+                raise ValueError(f"Unknown document_mode: {document_mode!r}")
+            # Styles set in the text win. Only fill in the rest.
+            for attribute, value in text_style.items():
+                runs = self.doc.get_style_runs(attribute).ranges(0, len(self.doc.text))
+                for start, end in [(start, end) for start, end, run in runs if run is None]:
+                    self.doc.set_style(start, end, {attribute: value})
 
         self.layout = pyglet.text.layout.IncrementalTextLayout(
             self.doc,
