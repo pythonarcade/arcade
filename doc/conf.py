@@ -11,6 +11,7 @@ import runpy
 import sys
 
 from docutils import nodes
+from sphinx.domains.python import PythonDomain
 from sphinx.util.docutils import SphinxRole
 
 HERE = Path(__file__).resolve()
@@ -510,6 +511,21 @@ def source_read_handler(_app, doc_name: str, source):
         generate_color_table(_get_dir(_app, "uicolor.py"), source)
 
 
+class ArcadePythonDomain(PythonDomain):
+    """Sphinx's Python domain, except ``type`` in a signature links to Python's.
+
+    When an annotation names a class Sphinx can't find, it falls back to
+    attributes with any name ending in that name, so ``type[W]`` linked to
+    :py:attr:`arcade.types.TiledObject.type`. Returning ``None`` lets
+    intersphinx link Python's ``type`` instead.
+    """
+
+    def resolve_xref(self, env, fromdocname, builder, typ, target, node, contnode):
+        if target == "type" and node.hasattr("refspecific"):
+            return None
+        return super().resolve_xref(env, fromdocname, builder, typ, target, node, contnode)
+
+
 def on_missing_reference(app, env, node, contnode):
     """Link a short name from SHORT_NAMES to its full name."""
     full_name = SHORT_NAMES.get(node.get("reftarget"))
@@ -585,6 +601,7 @@ def setup(app):
     app.connect("autodoc-process-bases", on_autodoc_process_bases)
     # Run before intersphinx, so it can resolve the full names of pyglet objects
     app.connect("missing-reference", on_missing_reference, priority=400)
+    app.add_domain(ArcadePythonDomain, override=True)
     # app.add_transform(Transform)
     app.add_role("resource", ResourceRole())
     # Don't do anything that can fail on this event or it'll kill your build hard
