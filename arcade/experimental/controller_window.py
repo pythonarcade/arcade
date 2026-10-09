@@ -1,9 +1,13 @@
-import warnings
+from __future__ import annotations
 
-from pyglet.input import Controller
+import warnings
+from typing import TYPE_CHECKING
 
 import arcade
-from arcade import ControllerManager
+
+if TYPE_CHECKING:
+    # Importing pyglet.input is slow, so only type checkers do it here
+    from pyglet.input import Controller
 
 
 class _WindowControllerBridge:
@@ -20,6 +24,8 @@ class _WindowControllerBridge:
 
     def __init__(self, window: arcade.Window):
         self.window = window
+
+        from arcade.controller import ControllerManager
 
         self.cm = ControllerManager()
         self.cm.push_handlers(self)

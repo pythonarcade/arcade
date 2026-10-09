@@ -122,7 +122,7 @@ class Game(arcade.Window):
         # with open("out.json", "w") as f:
         #     json.dump(serialized, f)
 
-        self.controller_manager = pyglet.input.ControllerManager()
+        self.controller_manager = arcade.ControllerManager()
         self.controller_manager.set_handlers(self.on_connect, self.on_disconnect)
 
         for index, controller in enumerate(self.controller_manager.get_controllers()):

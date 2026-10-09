@@ -8,7 +8,7 @@ A Python simple, easy to use module for creating 2D games.
 # Error out if we import Arcade with an incompatible version of Python.
 import sys
 import os
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from pathlib import Path
 
@@ -138,8 +138,9 @@ from .draw import draw_lbwh_rectangle_outline
 from .screenshot import get_image
 from .screenshot import get_pixel
 
-# We don't have joysticks game controllers in headless mode
-if not headless:
+# Game controllers are imported on first use, because pyglet lists the
+# input devices when imported. See __getattr__ at the bottom of this file.
+if TYPE_CHECKING:
     from .joysticks import get_game_controllers
     from .joysticks import get_joysticks
     from .controller import ControllerManager
@@ -444,15 +445,24 @@ __all__ = [
 
 __version__ = VERSION
 
-# Piggyback on pyglet's doc run detection
-if not getattr(sys, "is_pyglet_doc_run", False):
-    # Load additional game controller mappings to Pyglet
-    if not headless:
-        try:
-            import pyglet.input.controller
+_LAZY_IMPORTS: dict[str, str] = {}
+# We don't have joysticks game controllers in headless mode
+if not headless:
+    _LAZY_IMPORTS = {
+        "get_joysticks": "joysticks",
+        "get_game_controllers": "joysticks",
+        "joysticks": "joysticks",
+        "ControllerManager": "controller",
+        "get_controllers": "controller",
+        "controller": "controller",
+    }
 
-            mappings_file = resources.resolve(":system:gamecontrollerdb.txt")
-            # TODO: remove string conversion once fixed upstream
-            pyglet.input.controller.add_mappings_from_file(str(mappings_file))
-        except AssertionError:
-            pass
+
+def __getattr__(name: str):
+    module_name = _LAZY_IMPORTS.get(name)
+    if module_name is None:
+        raise AttributeError(f"module 'arcade' has no attribute {name!r}")
+    import importlib
+
+    module = importlib.import_module(f".{module_name}", __name__)
+    return module if name == module_name else getattr(module, name)

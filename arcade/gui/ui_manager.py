@@ -10,10 +10,9 @@
 
 from collections import defaultdict
 from collections.abc import Iterable
-from typing import TypeGuard, TypeVar
+from typing import TYPE_CHECKING, TypeGuard, TypeVar
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
-from pyglet.input import Controller
 from pyglet.math import Vec2
 
 import arcade
@@ -42,6 +41,10 @@ from arcade.gui.events import (
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import UIWidget
 from arcade.types import LBWH, AnchorPoint, Point2, Rect
+
+if TYPE_CHECKING:
+    # Importing pyglet.input is slow, so only type checkers do it here
+    from pyglet.input import Controller
 
 W = TypeVar("W", bound=UIWidget)
 
@@ -496,27 +499,27 @@ class UIManager(EventDispatcher):
 
         self.trigger_render()
 
-    def on_connect(self, controller: Controller):
+    def on_connect(self, controller: "Controller"):
         """Called when a controller is connected."""
         self.dispatch_ui_event(UIControllerConnectEvent(controller))
 
-    def on_disconnect(self, controller: Controller):
+    def on_disconnect(self, controller: "Controller"):
         """Called when a controller is disconnected."""
         self.dispatch_ui_event(UIControllerDisconnectEvent(controller))
 
-    def on_stick_motion(self, controller: Controller, name: str, value: Vec2):
+    def on_stick_motion(self, controller: "Controller", name: str, value: Vec2):
         return self.dispatch_ui_event(UIControllerStickEvent(controller, name, value))
 
-    def on_trigger_motion(self, controller: Controller, name: str, value: float):
+    def on_trigger_motion(self, controller: "Controller", name: str, value: float):
         return self.dispatch_ui_event(UIControllerTriggerEvent(controller, name, value))
 
-    def on_button_press(self, controller: Controller, button: str):
+    def on_button_press(self, controller: "Controller", button: str):
         return self.dispatch_ui_event(UIControllerButtonPressEvent(controller, button))
 
-    def on_button_release(self, controller: Controller, button: str):
+    def on_button_release(self, controller: "Controller", button: str):
         return self.dispatch_ui_event(UIControllerButtonReleaseEvent(controller, button))
 
-    def on_dpad_motion(self, controller: Controller, value: Vec2):
+    def on_dpad_motion(self, controller: "Controller", value: Vec2):
         return self.dispatch_ui_event(UIControllerDpadEvent(controller, value))
 
     @property
