@@ -17,18 +17,20 @@ for y in range(100):
 def add_remove():
     sh = arcade.SpatialHash(CELL_SIZE)
     for sprite in sprites:
-        sh.insert_object_for_box(sprite)
+        sh.add(sprite)
     for sprite in sprites:
-        sh.remove_object(sprite)
-        sh.insert_object_for_box(sprite)
+        sh.remove(sprite)
+        sh.add(sprite)
 
 
 def move():
     sh = arcade.SpatialHash(CELL_SIZE)
     for sprite in sprites:
-        sh.insert_object_for_box(sprite)
+        sh.add(sprite)
     for sprite in sprites:
         sh.move(sprite)
+    # Moves are applied at the next query
+    sh.get_sprites_near_point((0, 0))
 
 
 res_1 = timeit.timeit(add_remove, number=100, globals=globals())

@@ -220,17 +220,23 @@ examples are linked below in :ref:`collision_performance_spatial_hashing_example
 
 The Catch
 """""""""
-Spatial hashing doubles the cost of moving or resizing sprites.
+Spatial hashing makes moving, rotating or resizing sprites cost more.
 
-However, this doesn't mean we can't *ever* move or resize a sprite!
-Instead, it means we have to be careful about when and how much we
-do so. This is because moving and resizing now consists of:
+Moving a sprite only marks it as moved. The next collision check puts
+every moved sprite back in the right grid squares, which means:
 
-#. Remove it from the internal list of every grid square it is currently in
-#. Add it again by re-computing its new location
+#. Working out which grid squares the sprite's hit box now covers
+#. If they changed, removing it from its old squares and adding it to the
+   new ones
 
-If we only move a few sprites in the list now and then, it can work out.
-When in doubt, test it and see if it works for your specific use case.
+So a sprite that moves several times in a frame is only updated once, and
+one that stays in the same squares isn't moved at all. Even so, moving
+5,000 sprites every frame and then checking for a collision took about
+22 ms in a hashed list, compared with 8 ms in an unhashed one.
+
+This doesn't mean we can't *ever* move a sprite in a hashed list! If we
+only move a few sprites now and then, it works out well. When in doubt,
+test it and see if it works for your specific use case.
 
 .. _collision_performance_spatial_hashing_examples:
 
