@@ -85,6 +85,8 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 - Type checking with mypy and pyright now fails the CI check, like formatting and linting. Their existing errors are fixed.
 - Fixed code excerpts in the docs that highlighted or showed the wrong lines, because the example code had changed since their line numbers were set. This covers 62 excerpts: 48 in the platformer, pymunk platformer, menu, card game, compute shader, raycasting and shader toy glow tutorials, and 14 on example pages. Most now highlight the same code they were written for. Where the code was rewritten, they highlight the code that does the same job now.
 - Removed `arcade/experimental/perspective_parallax.py`, an unreferenced demo of `PerspectiveProjector` that didn't show a parallax effect. The `background_parallax` example shows parallax scrolling.
+- Sped up `import arcade` from about 2.7 to 0.9 seconds on Windows ([#1159](https://github.com/pythonarcade/arcade/issues/1159)). Most of the time went to pyglet looking for game controllers when imported. Arcade now imports the controller code the first time `get_controllers()`, `ControllerManager`, `get_joysticks()` or `get_game_controllers()` is used, so the wait happens then instead. Sound still loads at import, so playing the first sound doesn't pause the game.
+  - Arcade's extra controller mappings now load at the same time. Code that calls `pyglet.input.get_controllers()` directly without using Arcade's controller functions first only gets pyglet's own mappings.
 
 ## 4.0.0.dev8
 

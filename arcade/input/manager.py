@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from enum import Enum
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 import pyglet
-from pyglet.input.base import Controller
 from typing_extensions import TypedDict
 
 import arcade
@@ -18,6 +17,10 @@ from arcade.input.input_mapping import (
     serialize_action,
     serialize_axis,
 )
+
+if TYPE_CHECKING:
+    # Importing pyglet.input is slow, so only type checkers do it here
+    from pyglet.input import Controller
 from arcade.input.inputs import InputEnum, InputType
 from arcade.input.raw_dicts import RawAction, RawAxis
 from arcade.types import OneOrIterableOf
@@ -247,7 +250,7 @@ class InputManager:
     def from_existing(
         cls,
         existing: InputManager,
-        controller: pyglet.input.Controller | None = None,
+        controller: Controller | None = None,
     ) -> InputManager:
         """
         Create a new InputManager from an existing one. This does not copy current input values,
