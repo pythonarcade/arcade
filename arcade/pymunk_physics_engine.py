@@ -45,7 +45,7 @@ class PymunkPhysicsEngine:
      .. note:: Arcade would welcome assistance with improving it.
 
                If you are interested, please see Arcade's
-               `CONTRIBUTING.md <CONTRIBUTING.md: https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md>`_
+               `CONTRIBUTING.md <https://github.com/pythonarcade/arcade/blob/development/CONTRIBUTING.md>`_
 
     Args:
         gravity:

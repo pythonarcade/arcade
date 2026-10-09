@@ -51,13 +51,13 @@ For this tutorial, we will use the code from :ref:`platformer_tutorial`.
 
     pip install nuitka
 
-We will be using the code from `this file <https://github.com/pythonarcade/arcade/blob/development/arcade/examples/platform_tutorial/17_views.py>`_.
+We will be using the code from `this file <https://github.com/pythonarcade/arcade/blob/development/arcade/examples/platform_tutorial/20_views.py>`_.
 
 Converting that code to a standalone executable is as easy as:
 
 .. code-block:: bash
 
-    python -m nuitka 17_views.py --standalone --enable-plugin=numpy
+    python -m nuitka 20_views.py --standalone --enable-plugin=numpy
 
 .. note::
 
@@ -67,9 +67,9 @@ Converting that code to a standalone executable is as easy as:
 
 Now sit back and relax. Might as well go and grab a cup of coffee since compilation
 takes time, sometimes maybe up to 2 hours, depending on your machine's specs.
-After the process is finished, two new folders named ``17_views.py.dist`` and
-``17_views.py.build`` will popup. You can safely ignore the build folder for now.
-Just go to the dis folder and run ``17_views.exe`` file , present in there. If there are no
+After the process is finished, two new folders named ``20_views.py.dist`` and
+``20_views.py.build`` will popup. You can safely ignore the build folder for now.
+Just go to the dis folder and run ``20_views.exe`` file , present in there. If there are no
 errors, then the application should work perfectly. 
 
 Congratulations! You have successfully compiled your Python code to a standalone executable!
@@ -87,7 +87,7 @@ etc... In order to bundle them with the application, just use the ``include-data
 
 .. code-block:: bash
 
-    python -m nuitka 17_views.py --standalone --enable-plugin=numpy --include-data-file=C:/Users/Hunter/Desktop/my_game/my_image.png=.
+    python -m nuitka 20_views.py --standalone --enable-plugin=numpy --include-data-file=C:/Users/Hunter/Desktop/my_game/my_image.png=.
 
 This will copy the file named ``my_image.png`` at the specified location to the root of the executable.
 
@@ -95,7 +95,7 @@ To bundle a whole folder:
 
 .. code-block:: bash
 
-    python -m nuitka 17_views.py --standalone --enable-plugin=numpy --include-data-dir=C:/Users/Hunter/Desktop/my_game/assets=.
+    python -m nuitka 20_views.py --standalone --enable-plugin=numpy --include-data-dir=C:/Users/Hunter/Desktop/my_game/assets=.
 
 This will copy the whole folder named ``assets`` at the specified location to the root of the executable.
 
@@ -113,7 +113,7 @@ this is also possible:
 
 .. code-block:: bash
 
-    python -m nuitka 17_views.py --standalone --windows-force-stderr-spec=%PROGRAM%logs.txt --windows-force-stdout-spec=%PROGRAM%output.txt
+    python -m nuitka 20_views.py --standalone --windows-force-stderr-spec=%PROGRAM%logs.txt --windows-force-stdout-spec=%PROGRAM%output.txt
 
 This will automatically create two files, viz ``logs.txt`` and ``output.txt`` in the executable directory which will
 contain the stderr and stdout output respectively!
@@ -128,13 +128,13 @@ The first flag takes a ``.png`` or a ``.ico`` file and sets it as the app icon:
 
 .. code-block:: bash
 
-    python -m nuitka 17_views.py --standalone --windows-icon-from-ico=icon.png
+    python -m nuitka 20_views.py --standalone --windows-icon-from-ico=icon.png
 
 This will set the app icon to icon.png
 
 .. code-block:: bash
 
-    python -m nuitka 17_views.py --standalone --windows-icon-from-exe=C:\Users\Hunter\AppData\Local\Programs\Python\Python310/python.exe
+    python -m nuitka 20_views.py --standalone --windows-icon-from-exe=C:\Users\Hunter\AppData\Local\Programs\Python\Python310/python.exe
 
 This will set the app icon to Python's icon 😉
 

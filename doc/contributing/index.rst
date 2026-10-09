@@ -28,7 +28,7 @@ documentation.
 It doesn't matter whether you've started :ref:`the platformer tutorial <platformer_tutorial>`
 or just happen to be looking around. Let us know if anything looks off.
 
-The best ways to report it are via `Discord <Arcade Discord>`_
+The best ways to report it are via `Discord <Arcade Discord_>`_
 or the `Arcade GitHub`_ repository, but we also have other
 :ref:`community-locations`.
 
@@ -69,7 +69,7 @@ Report Bugs
 
 If you see something weird, let the devs know!
 
-Whether it's via `GitHub <GitHub Issue List>`_ or the `Arcade Discord`_,
+Whether it's via `GitHub <GitHub Issue List_>`_ or the `Arcade Discord`_,
 even a simple screenshot or video capture can help us make Arcade better.
 This includes:
 
@@ -101,5 +101,5 @@ the source of the problem.
    * If not, post a new one
 
 Don't worry too much about posting duplicates. We can always cross-reference
-issues if it's a duplicate. If you're unsure, you can always ask on `Discord <Arcade Discord>`_.
+issues if it's a duplicate. If you're unsure, you can always ask on `Discord <Arcade Discord_>`_.
 

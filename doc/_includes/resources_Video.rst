@@ -15,5 +15,5 @@ examples below may require installing both :ref:`guide-supportedmedia-ffmpeg` an
 
 The links above use the unstable development branch of Arcade to gain access to the latest pyglet
 and Arcade features. If you have questions or want to help develop these examples further, we'd love to hear
-from you. The Arcade `Discord server <Arcade Discord>`_ and `GitHub repository <Arcade GitHub>`_ always welcome
+from you. The Arcade `Discord server <Arcade Discord_>`_ and `GitHub repository <Arcade GitHub_>`_ always welcome
 new community members.

@@ -351,7 +351,7 @@ There is no stop method. Instead, call
 
 .. rubric:: Stopping Permanently
 
-.. _garbage collection: https://devguide.python.org/internals/garbage-collector/
+.. _garbage collection: https://github.com/python/cpython/blob/main/InternalDocs/garbage_collector.md
 
 After you've paused a player, you can stop playback permanently as follows:
 

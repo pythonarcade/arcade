@@ -216,7 +216,7 @@ half of each line may change to reflect your Arcade version, hardware,
 and operating system.
 
 You can copy and paste the output into Discord or GitHub using the
-`markdown formatting for terminal output <help-sharing-code-with-markdown-terminal>`_
+:ref:`markdown formatting for terminal output <help-sharing-with-markdown-terminal>`
 described earlier.
 
 Output like the example below means that something is wrong:
@@ -225,7 +225,7 @@ Output like the example below means that something is wrong:
 
     bash: arcade: command not found
 
-You should still `include the output <help-sharing-with-markdown-terminal>`_
+You should still :ref:`include the output <help-sharing-with-markdown-terminal>`
 as part of a request for help.
 
 If you want to try fixing the problem yourself before getting help,
