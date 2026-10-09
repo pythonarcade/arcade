@@ -17,7 +17,7 @@ class Sampler(ABC):
 
     def __init__(
         self,
-        ctx: "Context",
+        ctx: Context,
         texture: Texture2D,
         *,
         filter=None,  # TODO: Typing, should be tuple[PyGLuint, PyGLuint] | None

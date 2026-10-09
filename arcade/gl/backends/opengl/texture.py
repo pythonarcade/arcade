@@ -296,12 +296,10 @@ class OpenGLTexture2D(Texture2D):
                         )
             except gl.GLException as ex:
                 raise gl.GLException(
-                    (
-                        f"Unable to create texture: {ex} : dtype={self._dtype} "
-                        f"size={self.size} components={self._components} "
-                        f"MAX_TEXTURE_SIZE = {self.ctx.info.MAX_TEXTURE_SIZE}"
-                        f": {ex}"
-                    )
+                    f"Unable to create texture: {ex} : dtype={self._dtype} "
+                    f"size={self.size} components={self._components} "
+                    f"MAX_TEXTURE_SIZE = {self.ctx.info.MAX_TEXTURE_SIZE}"
+                    f": {ex}"
                 )
 
     @property
@@ -654,7 +652,7 @@ class OpenGLTexture2D(Texture2D):
         self._glo.value = 0
 
     @staticmethod
-    def delete_glo(ctx: "Context", glo: gl.GLuint):
+    def delete_glo(ctx: Context, glo: gl.GLuint):
         """
         Destroy the texture.
 
@@ -754,6 +752,7 @@ class OpenGLTexture2D(Texture2D):
         return handle
 
     def __repr__(self) -> str:
-        return "<Texture glo={} size={}x{} components={}>".format(
-            self._glo.value, self._width, self._height, self._components
+        return (
+            f"<Texture glo={self._glo.value} size={self._width}x{self._height} "
+            f"components={self._components}>"
         )

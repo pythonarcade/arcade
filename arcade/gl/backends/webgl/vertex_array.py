@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING, Sequence
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 from arcade.gl import enums
 from arcade.gl.types import BufferDescription, gl_name
@@ -85,19 +86,15 @@ class WebGLVertexArray(VertexArray):
                 buff_descr, attr_descr = descr_attribs[prog_attr.name]
             except KeyError:
                 raise ValueError(
-                    (
-                        f"Program needs attribute '{prog_attr.name}', but is not present in buffer "
-                        f"description. Buffer descriptions: {content}"
-                    )
+                    f"Program needs attribute '{prog_attr.name}', but is not present in buffer "
+                    f"description. Buffer descriptions: {content}"
                 )
 
             if prog_attr.components != attr_descr.components:
                 raise ValueError(
-                    (
-                        f"Program attribute '{prog_attr.name}' has {prog_attr.components} "
-                        f"components while the buffer description has {attr_descr.components} "
-                        " components. "
-                    )
+                    f"Program attribute '{prog_attr.name}' has {prog_attr.components} "
+                    f"components while the buffer description has {attr_descr.components} "
+                    " components. "
                 )
 
             self._ctx._gl.enableVertexAttribArray(prog_attr.location)
@@ -120,11 +117,9 @@ class WebGLVertexArray(VertexArray):
 
             if attrib_type != prog_attr.gl_type:
                 raise ValueError(
-                    (
-                        f"Program attribute '{prog_attr.name}' has type "
-                        f"{gl_name(prog_attr.gl_type)}"
-                        f"while the buffer description has type {gl_name(attr_descr.gl_type)}. "
-                    )
+                    f"Program attribute '{prog_attr.name}' has type "
+                    f"{gl_name(prog_attr.gl_type)}"
+                    f"while the buffer description has type {gl_name(attr_descr.gl_type)}. "
                 )
 
             if attrib_type in float_types or attrib_type in int_types:

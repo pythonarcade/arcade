@@ -3,10 +3,10 @@ Various utility functions for the gl module.
 """
 
 from array import array
-from typing import Any, Union
+from typing import Any
 
 
-def data_to_memoryview(data: Any) -> tuple[int, Union[bytes, memoryview]]:
+def data_to_memoryview(data: Any) -> tuple[int, bytes | memoryview]:
     """
     Attempts to convert the data to a memoryview if needed
 

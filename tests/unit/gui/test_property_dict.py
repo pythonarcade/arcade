@@ -1,5 +1,4 @@
 import gc
-from typing import Dict
 
 from arcade.gui.property import DictProperty, _ObservableDict, bind
 
@@ -65,7 +64,7 @@ def test_dict_property_del():
 
 def test_dict_property_clear():
     class MyDictHolder:
-        data: Dict = DictProperty()
+        data: dict = DictProperty()
 
     obj = MyDictHolder()
     observer = Observer()
@@ -78,7 +77,7 @@ def test_dict_property_clear():
 
 def test_dict_property_pop():
     class MyDictHolder:
-        data: Dict = DictProperty()
+        data: dict = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5
@@ -93,7 +92,7 @@ def test_dict_property_pop():
 
 def test_dict_property_pop_item():
     class MyDictHolder:
-        data: Dict = DictProperty()
+        data: dict = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5
@@ -108,7 +107,7 @@ def test_dict_property_pop_item():
 
 def test_dict_property_set_default():
     class MyDictHolder:
-        data: Dict = DictProperty()
+        data: dict = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5
@@ -123,7 +122,7 @@ def test_dict_property_set_default():
 
 def test_dict_property_update():
     class MyDictHolder:
-        data: Dict = DictProperty()
+        data: dict = DictProperty()
 
     obj = MyDictHolder()
     obj.data["test"] = 5

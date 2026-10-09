@@ -5,7 +5,8 @@ Can run these tests individually with:
 python -m pytest tests/unit/test_utils.py
 """
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from arcade import utils
 

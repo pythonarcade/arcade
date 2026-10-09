@@ -15,7 +15,8 @@ The lower level building blocks live in :mod:`arcade.gui.experimental.transition
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from arcade.anim import Easing
 from arcade.anim.easing import EasingFunction
@@ -187,7 +188,7 @@ class Animation(TransitionBase):
         ease: EasingFunction = Easing.LINEAR,
         delay: float = 0.0,
         **properties: Any,
-    ) -> "Animation":
+    ) -> Animation:
         """Append a segment which runs after the previous one finished.
 
         Accepts the same arguments as the constructor (except ``repeat`` and
@@ -204,7 +205,7 @@ class Animation(TransitionBase):
         self._segments.append(_Segment(dict(properties), float(duration), float(delay), ease))
         return self
 
-    def on_finish(self, callback: Callable[[], Any]) -> "Animation":
+    def on_finish(self, callback: Callable[[], Any]) -> Animation:
         """Register a callback invoked once when the animation completes.
 
         Not invoked when the animation is stopped via :meth:`stop` or

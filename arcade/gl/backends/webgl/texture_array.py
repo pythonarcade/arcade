@@ -322,6 +322,7 @@ class WebGLTextureArray(TextureArray):
         raise NotImplementedError("get_handle is not supported with WebGL")
 
     def __repr__(self) -> str:
-        return "<TextureArray glo={} size={}x{}x{} components={}>".format(
-            self._glo, self._width, self._layers, self._height, self._components
+        return (
+            f"<TextureArray glo={self._glo} "
+            f"size={self._width}x{self._layers}x{self._height} components={self._components}>"
         )

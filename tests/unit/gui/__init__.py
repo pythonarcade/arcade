@@ -1,6 +1,5 @@
 from abc import abstractmethod
 from contextlib import contextmanager
-from typing import List
 
 import arcade
 from arcade.gui.events import UIEvent
@@ -9,7 +8,7 @@ from arcade.gui.events import UIEvent
 class InteractionMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.event_history: List[UIEvent] = []
+        self.event_history: list[UIEvent] = []
 
     def move_mouse(self, x: int | float, y: int | float):
         self.on_mouse_motion(x, y, 0, 0)
@@ -55,7 +54,7 @@ class InteractionMixin:
 
 
 @contextmanager
-def record_ui_events(widget, *names) -> List[UIEvent]:
+def record_ui_events(widget, *names) -> list[UIEvent]:
     events = []
 
     def record(event):

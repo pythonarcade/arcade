@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, Iterable, List, Sequence, Tuple
+from collections.abc import Iterable, Sequence
+from typing import TYPE_CHECKING
 
 import pyglet
 import pyglet.graphics.api
@@ -141,7 +142,7 @@ class WebGLContext(Context):
             self._gl.disable(flag)
 
     @Context.blend_func.setter
-    def blend_func(self, value: Tuple[int, int] | Tuple[int, int, int, int]):
+    def blend_func(self, value: tuple[int, int] | tuple[int, int, int, int]):
         self._blend_func = value
         if len(value) == 2:
             self._gl.blendFunc(*value)
@@ -215,8 +216,8 @@ class WebGLContext(Context):
         geometry_shader: str | None = None,
         tess_control_shader: str | None = None,
         tess_evaluation_shader: str | None = None,
-        common: List[str] | None = None,
-        defines: Dict[str, str] | None = None,
+        common: list[str] | None = None,
+        defines: dict[str, str] | None = None,
         varyings: Sequence[str] | None = None,
         varyings_capture_mode: str = "interleaved",
     ):
@@ -271,14 +272,14 @@ class WebGLContext(Context):
 
     def texture(
         self,
-        size: Tuple[int, int],
+        size: tuple[int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
         wrap_x: int | None = None,
         wrap_y: int | None = None,
-        filter: Tuple[int, int] | None = None,
+        filter: tuple[int, int] | None = None,
         samples: int = 0,
         immutable: bool = False,
         internal_format: int | None = None,
@@ -302,14 +303,14 @@ class WebGLContext(Context):
         )
 
     def depth_texture(
-        self, size: Tuple[int, int], *, data: BufferProtocol | None = None
+        self, size: tuple[int, int], *, data: BufferProtocol | None = None
     ) -> WebGLTexture2D:
         return WebGLTexture2D(self, size, data=data, depth=True)
 
     def framebuffer(
         self,
         *,
-        color_attachments: WebGLTexture2D | List[WebGLTexture2D] | None = None,
+        color_attachments: WebGLTexture2D | list[WebGLTexture2D] | None = None,
         depth_attachment: WebGLTexture2D | None = None,
     ) -> WebGLFramebuffer:
         return WebGLFramebuffer(
@@ -352,14 +353,14 @@ class WebGLContext(Context):
 
     def texture_array(
         self,
-        size: Tuple[int, int, int],
+        size: tuple[int, int, int],
         *,
         components: int = 4,
         dtype: str = "f1",
         data: BufferProtocol | None = None,
         wrap_x: int | None = None,
         wrap_y: int | None = None,
-        filter: Tuple[int, int] | None = None,
+        filter: tuple[int, int] | None = None,
     ) -> WebGLTextureArray:
         return WebGLTextureArray(
             self,
