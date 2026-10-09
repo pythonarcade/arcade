@@ -11,15 +11,8 @@ from .animated import (
     TextureAnimationSprite,
     TextureAnimation,
     TextureKeyframe,
-    AnimatedWalkingSprite,
 )
 from .colored import SpriteSolidColor, SpriteCircle
-from .enums import (
-    FACE_LEFT,
-    FACE_RIGHT,
-    FACE_UP,
-    FACE_DOWN,
-)
 
 
 def load_animated_gif(resource_name: str | Path) -> TextureAnimationSprite:
@@ -76,13 +69,8 @@ __all__ = [
     "TextureAnimationSprite",
     "TextureAnimation",
     "TextureKeyframe",
-    "AnimatedWalkingSprite",
     "load_animated_gif",
     "SpriteSolidColor",
     "SpriteCircle",
-    "FACE_LEFT",
-    "FACE_RIGHT",
-    "FACE_UP",
-    "FACE_DOWN",
     "PymunkMixin",
 ]

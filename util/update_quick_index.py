@@ -100,7 +100,6 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.sprite.colored",
             "arcade.sprite.mixins",
             "arcade.sprite.animated",
-            "arcade.sprite.enums",
         ],
     },
     "sprite_list.rst": {
