@@ -105,6 +105,7 @@ help improve Arcade.
    programming_guide/sound
    programming_guide/textures
    programming_guide/text
+   programming_guide/windows_and_views
    programming_guide/event_loop
    programming_guide/camera
    programming_guide/sections
