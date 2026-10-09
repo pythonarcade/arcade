@@ -322,7 +322,7 @@ Next, we create a ``Player`` class that is a child to :py:class:`~arcade.Sprite`
 class will update the player animation.
 
 The ``__init__`` method loads all of the textures. Here we use Kenney.nl's
-`Toon Characters 1 <https://www.kenney.nl/assets/toon-characters-1>`_ pack.
+`Toon Characters 1 <https://kenney.nl/assets/toon-characters>`_ pack.
 It has six different characters you can choose from with the same layout, so
 it makes changing as simple as changing which line is enabled. There are
 eight textures for walking, and textures for idle, jumping, and falling.

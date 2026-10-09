@@ -63,9 +63,15 @@ except Exception as _:
     announce_templating("FMT_URL_REF_EMBED")
 
 
-def src_kludge(strpath): # pending: post-3.0 cleanup: # evil evil evil evil
-    """We inject what RTD says the canonical domain is up top + the version"""
-    return f"{RTD_EVIL}{strpath}"
+def src_kludge(strpath):
+    """Make a /_static/ path relative to the resources page.
+
+    It's at api_docs/resources.html, so relative paths work both on
+    Read the Docs and in local builds.
+    """
+    if not strpath.startswith("/"):
+        return strpath  # Already a full URL
+    return "../" + strpath.lstrip("/")
 
 MODULE_DIR = Path(__file__).parent.resolve()
 ARCADE_ROOT = MODULE_DIR.parent

@@ -10,7 +10,7 @@ you may want to skip to :ref:`requirements_gles` below.
 OpenGL ES
 ---------
 
-`OpenGL ES <gles_def>`_ ("embeddedable subset") is a special
+`OpenGL ES <gles_def_>`_ ("embeddedable subset") is a special
 variant of OpenGL tailored for mobile and embedded devices.
 
 Like the standard OpenGL API, it has both feature versions
@@ -27,10 +27,10 @@ Supported Raspberry Pi Configurations
 As of October 2024, the Arcade and `pyglet`_ teams verified the following to
 work:
 
-* `Raspberry Pi 4 <rpi_4>`_ running `Raspberry Pi OS`_
-* `Raspberry Pi 5 <rpi_5>`_ running `Raspberry Pi OS`_
+* `Raspberry Pi 4 <rpi_4_>`_ running `Raspberry Pi OS`_
+* `Raspberry Pi 5 <rpi_5_>`_ running `Raspberry Pi OS`_
 
-Although the `Raspberry Pi 400 <rpi_400>`_  has never been tested, it
+Although the `Raspberry Pi 400 <rpi_400_>`_  has never been tested, it
 *may* work. It uses Raspberry Pi 4 hardware inside a keyboard form factor.
 
 Operating Systems
@@ -86,7 +86,7 @@ The table below lists these newer incompatible Raspberry Pi devices.
    * - Device
      - Type
 
-   * - `Pi Pico`_ (and W version) / `RP2040 <wiki_pi2040>`_
+   * - `Pi Pico`_ (and W version) / `RP2040 <wiki_pi2040_>`_
      - Microcontroller
 
    * - `Pi Pico 2`_ (and W version) / `RP2350`_
@@ -129,7 +129,7 @@ Both Arcade and `pyglet`_ can run via OpenGL ES on devices with either:
 * OpenGL ES 3.2 or higher
 * OpenGL ES 3.1 with certain extensions
 
-To learn more, please see the `pyglet manual page on OpenGL ES <pyglet-opengles>`_.
+To learn more, please see the `pyglet manual page on OpenGL ES <pyglet-opengles_>`_.
 
 .. pending: post-3.0 cleanup # Faster and more reliable than getting the external ref syntax to work
 .. _pyglet-opengles: https://pyglet.readthedocs.io/en/development/programming_guide/opengles.html

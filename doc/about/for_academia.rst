@@ -32,7 +32,7 @@ To learn more about using this template, please consult the following:
 
 Version Considerations
 ----------------------
-Most users will be best served by `Arcade's latest release from PyPI <PyPI>`_
+Most users will be best served by `Arcade's latest release from PyPI <PyPI_>`_
 
 For new games, the features and improved efficiency of Arcade 3 make it the
 best choice. Upgrading existing games is also worthwhile.
@@ -47,10 +47,10 @@ companion :ref:`academia_arcade_book` covered in depth below.
 Arcade Textbook
 ^^^^^^^^^^^^^^^
 
-The creator of Arcade wrote an `Arcade Textbook <Arcade book>`_ which covers Python basics
+The creator of Arcade wrote an `Arcade Textbook <Arcade book_>`_ which covers Python basics
 n greater depth than the main Arcade documentation.
 
-It may be a while before the `Arcade Textbook <Arcade book>`_ is updated for Arcade 3.0. This
+It may be a while before the `Arcade Textbook <Arcade book_>`_ is updated for Arcade 3.0. This
 is a large undertaking due to the number and scale of changes since Arcade 2.6.
 
 
@@ -71,7 +71,10 @@ in a traditional chapter and curriculum structure:
 
 #. Embedded videos covering concepts and past student projects
 #. Lab exercises to help apply chapter material through practice
-#. Translations in `Swedish / Svenska <book_sv>`_ and `German / Deutsche <book_de>`_
+#. Translations in `Swedish / Svenska <book_sv_>`_ and `German / Deutsche <book_de_>`_
+
+.. _book_sv: https://learn.arcade.academy/sv/latest/
+.. _book_de: https://learn.arcade.academy/de/latest/
 
 It also offers gentle, beginner-friendly introductions to topics which can intimidate
 even the graduates of college-level computer science programs:

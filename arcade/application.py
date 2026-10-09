@@ -875,7 +875,7 @@ class Window(pyglet.window.Window):
                  arrows by using features :class:``~arcade.Window`` inherits
                  from the underlying pyglet window class. See the
                  `pyglet overview on cursors
-                 <https://pyglet.readthedocs.io/en/master/programming_guide/mouse.html#changing-the-mouse-cursor>`_
+                 <https://pyglet.readthedocs.io/en/development/programming_guide/mouse.html#changing-the-mouse-cursor>`_
                  for more information.
 
         Args:

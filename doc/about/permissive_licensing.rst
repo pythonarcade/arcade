@@ -19,7 +19,7 @@ Yes, You Can Make Commercial Games!
 
 There is already a commercially available game made with Arcade.
 
-`Spelly Cat`_ is a puzzle game available via Valve Software's `Steam marketplace <Steam>`_.
+`Spelly Cat`_ is a puzzle game available via Valve Software's `Steam marketplace <Steam_>`_.
 It is currently available for Windows and Linux.
 
 .. important:: Arcade is currently a desktop-focused framework.

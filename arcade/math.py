@@ -471,7 +471,7 @@ def quaternion_rotation(axis: Point3, vector: Point3, angle: float) -> tuple[flo
 
     This method of vector rotation is immune to rotation-lock, however it takes a little
     more effort to find the axis of rotation rather than 3 angles of rotation.
-    Ref: https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html.
+    Ref: https://web.archive.org/web/20240207004539/https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
 
     Args:
         axis (tuple[float, float, float]): The unit length vector that will be rotated around

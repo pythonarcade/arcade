@@ -261,9 +261,7 @@ A space-themed typing game by thecodeah.
 .. image:: /images/community/games/space_typer.png
    :width: 75%
 
-`GitHub repo for Space Typer`_
-
-.. _GitHub repo for Space Typer: https://github.com/thecodeah/space-typer
+The source code is no longer online.
 
 
 FlapPy Bird
