@@ -736,7 +736,7 @@ class Text:
         .. tip:: Don't worry about `width` being `None`.
 
             Although a label can be created with a `width=None`:
-            * The underlying :py:mod:`pyglet` label will have bounding dimensions
+            * The underlying pyglet label will have bounding dimensions
             * This rect is for on-screen click and layout purposes, not maximum possible width
         """
         return LRBT(self.left, self.right, self.bottom, self.top)

@@ -1,4 +1,4 @@
-Arcade offers experimental support for video playback through :py:mod:`pyglet` and other libraries.
+Arcade offers experimental support for video playback through pyglet and other libraries.
 
 .. warning:: These features are works-in-progress!
 
@@ -13,7 +13,7 @@ examples below may require installing both :ref:`guide-supportedmedia-ffmpeg` an
 * The `cv2-based video examples <https://github.com/pythonarcade/arcade/blob/development/arcade/future/video/>`_
 * The `cv2-based shadertoy example <https://github.com/pythonarcade/arcade/blob/development/arcade/experimental/shadertoy_video_cv2.py>`_
 
-The links above use the unstable development branch of Arcade to gain access to the latest :py:mod:`pyglet`
+The links above use the unstable development branch of Arcade to gain access to the latest pyglet
 and Arcade features. If you have questions or want to help develop these examples further, we'd love to hear
 from you. The Arcade `Discord server <Arcade Discord>`_ and `GitHub repository <Arcade GitHub>`_ always welcome
 new community members.

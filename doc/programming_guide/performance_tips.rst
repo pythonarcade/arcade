@@ -346,8 +346,8 @@ Advanced users may want to try pyglet's :py:class:`pyglet.sprite.Sprite`.
 Instead of Arcade's :py:class:`~arcade.SpriteList`, pyglet sprites use a
 mix of the following classes:
 
-* :py:class:`pyglet.graphics.Batch`
-* :py:class:`pyglet.graphics.Group`
+* :py:class:`pyglet.graphics.draw.Batch`
+* :py:class:`pyglet.graphics.draw.Group`
 
 Both pyglet's sprites, groups, and batches are much closer to OpenGL's
 low-level components and will require investing time to learn their features.
@@ -368,7 +368,7 @@ To improve performance:
    text again, but changing the text, font, size, or style does.
 #. To change several layout properties at once, do it in a
    ``with text:`` block, so the text is laid out once.
-#. Add many ``Text`` objects to a pyglet :py:class:`~pyglet.graphics.Batch`
+#. Add many ``Text`` objects to a pyglet :py:class:`~pyglet.graphics.draw.Batch`
    and draw them with one call.
 #. If you prefer ``draw_text`` style code, use :py:class:`arcade.TextPool`.
 #. For text that doesn't change but moves, rotates, or scales, use

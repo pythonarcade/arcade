@@ -27,11 +27,11 @@ Point3 = tuple[AsFloat, AsFloat, AsFloat] | Vec3
 #: * An ordinary :py:class:`tuple` of 2 or 3 values, either:
 #:
 #:   * :py:class:`int`
-#    * :py:class:`float`
+#:   * :py:class:`float`
 #:
-#: This works the same way as :py:attr:`arcade.types.RGBOrA255` to
+#: This works the same way as :py:data:`~arcade.types.color.RGBOrA255` to
 #: annotate RGB tuples, RGBA tuples, and :py:class:`tuple` or a
-#: :py:class:`Color` instances.
+#: :py:class:`~arcade.types.Color` instances.
 Point = Point2 | Point3
 
 PointList = Sequence[Point]

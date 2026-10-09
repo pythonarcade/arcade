@@ -22,7 +22,7 @@ This module **does not** aim to be a perfect copy of any other graphics API.
 
    This module assumes you are familiar with low-level graphics programming!
 
-Instead, it takes inspiration from ModernGL_ to build on :py:mod:`pyglet.gl`
+Instead, it takes inspiration from ModernGL_ to build on ``pyglet.gl``
 with more :py:mod:`ctypes` bindings.
 
 
@@ -149,10 +149,10 @@ To maximize hardware support, it requires at least one of the following:
 * GLES with certain extensions
 
 It avoids binary dependencies by using Python's built-in :py:mod:`ctypes`
-module via both :py:mod:`pyglet` and Arcade's added OpenGL bindings.
+module via both pyglet and Arcade's added OpenGL bindings.
 
 This ensures Arcade can run on most desktop and laptop hardware from the past
-decade, just like :py:mod:`pyglet`. This portability trades away a bit of speed
+decade, just like pyglet. This portability trades away a bit of speed
 and context-handling flexibility compared to ModernGL_.
 
 Future Backends

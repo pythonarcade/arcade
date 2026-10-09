@@ -202,7 +202,7 @@ class PymunkPhysicsEngine:
                 pass :py:attr:`MOMENT_INF` or ``float('inf')`` to "lock"
                 its angle).
 
-                See :py:attr:`pymunk.Shape.moment_of_inertia` to learn more.
+                See :py:attr:`pymunk.Shape.moment` to learn more.
 
             body_type:
                 :py:attr:`DYNAMIC` (default), :py:attr:`KINEMATIC`, or
@@ -402,7 +402,7 @@ class PymunkPhysicsEngine:
                 pass :py:attr:`MOMENT_INF` or ``float('inf')`` to "lock"
                 its angle).
 
-                See :py:attr:`pymunk.Shape.moment_of_inertia` to learn more.
+                See :py:attr:`pymunk.Shape.moment` to learn more.
 
             body_type:
                 :py:attr:`DYNAMIC` (default), :py:attr:`KINEMATIC`, or

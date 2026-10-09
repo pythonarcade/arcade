@@ -80,7 +80,16 @@ API_FILE_TO_TITLE_AND_MODULES = {
             "arcade.types.box",
         ],
         # Type aliases, which the parser below can't find
-        "data": ["arcade.types.numbers.AsFloat"],
+        "data": [
+            "arcade.types.numbers.AsFloat",
+            "arcade.types.vector_like.Point",
+            "arcade.types.vector_like.Point2",
+            "arcade.types.vector_like.Point3",
+            "arcade.types.vector_like.Point2List",
+            "arcade.types.color.RGBA255",
+            "arcade.types.color.RGBOrA255",
+            "arcade.types.OneOrIterableOf",
+        ],
     },
     "resources.rst": {
         "title": "Resources",
