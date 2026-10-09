@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pyglet
 from pyglet.media import Source
+from pyglet.media.codecs import MediaDecoder
 
 from arcade.resources import resolve
 from arcade.utils import is_pyodide
@@ -63,9 +64,15 @@ class Sound:
          streaming:
             If ``True``, attempt to load data from ``file_path`` via
             via :ref:`streaming <sound-loading-modes>`.
+         decoder:
+            A specific :py:class:`pyglet.media.codecs.MediaDecoder` to use.
+            If ``None``, pyglet selects a decoder automatically. When a decoder
+            is provided, no other decoders are tried.
     """
 
-    def __init__(self, file_name: str | Path, streaming: bool = False):
+    def __init__(
+        self, file_name: str | Path, streaming: bool = False, *, decoder: MediaDecoder | None = None
+    ):
         self.file_name: str = ""
         file_name = resolve(file_name)
 
@@ -73,7 +80,7 @@ class Sound:
             raise FileNotFoundError(f"The sound file '{file_name}' is not a file or can't be read.")
         self.file_name = str(file_name)
 
-        self.source: Source = media.load_audio(self.file_name, streaming=streaming)
+        self.source: Source = media.load_audio(self.file_name, streaming=streaming, decoder=decoder)
         """
         The :py:class:`pyglet.media.Source` object that holds the audio data.
         """
@@ -219,7 +226,9 @@ class Sound:
         return player.time
 
 
-def load_sound(path: str | Path, streaming: bool = False) -> Sound:
+def load_sound(
+    path: str | Path, streaming: bool = False, *, decoder: MediaDecoder | None = None
+) -> Sound:
     """Load a file as a :py:class:`Sound` data object.
 
     .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
@@ -233,6 +242,9 @@ def load_sound(path: str | Path, streaming: bool = False) -> Sound:
         streaming: Boolean for determining if we stream the sound or
             load it all into memory. Set to ``True`` for long sounds to
             save memory, ``False`` for short sounds to speed playback.
+        decoder: A specific :py:class:`pyglet.media.codecs.MediaDecoder` to use.
+            If ``None``, pyglet selects a decoder automatically. When a decoder
+            is provided, no other decoders are tried.
 
     Returns:
         A :ref:`playable <sound-basics-playing>` instance of a
@@ -246,7 +258,7 @@ def load_sound(path: str | Path, streaming: bool = False) -> Sound:
 
     file_name = str(path)
     try:
-        return Sound(file_name, streaming)
+        return Sound(file_name, streaming, decoder=decoder)
     except Exception as ex:
         raise FileNotFoundError(
             f'Unable to load sound file: "{file_name}". Exception: {ex}'

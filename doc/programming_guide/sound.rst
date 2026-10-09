@@ -99,6 +99,9 @@ Both provide a :py:class:`Sound` instance and accept the same arguments:
      - :py:class:`bool`
      - * ``True`` streams from disk
        * ``False`` loads the whole file
+   * - ``decoder`` (keyword-only)
+     - :py:class:`pyglet.media.codecs.MediaDecoder` **|** ``None``
+     - A specific decoder, or ``None`` for automatic selection
 
 The simplest option is to use :py:func:`arcade.load_sound`:
 
@@ -123,6 +126,24 @@ directly:
 
     # For music files and ambiance tracks, streaming=True is usually best
     streaming_music_file = Sound(":resources:music/1918.mp3", streaming=True)
+
+To select a decoder explicitly, pass a
+:py:class:`pyglet.media.codecs.MediaDecoder` instance as ``decoder`` to either
+loader. For example, pyglet includes a WAV decoder:
+
+.. code-block:: python
+
+    import arcade
+    from pyglet.media.codecs.wave import WaveDecoder
+
+    sound = arcade.load_sound(":resources:sounds/hurt1.wav", decoder=WaveDecoder())
+
+You can also pass your own ``MediaDecoder`` subclass without subclassing
+:py:class:`Sound` or registering the decoder globally. The selected decoder
+receives the resolved file path and the ``streaming`` setting. If it fails,
+pyglet does not fall back to other decoders. Any dependencies required by the
+decoder must already be installed; passing a decoder does not add support for
+its formats automatically.
 
 To learn more, please see the following:
 

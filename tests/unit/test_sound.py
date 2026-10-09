@@ -1,11 +1,68 @@
+import wave
 from pathlib import Path
 
 import pytest
+from pyglet.media.codecs.base import StaticSource, StreamingSource
+from pyglet.media.codecs.wave import WAVEDecodeException, WaveDecoder
 
 import arcade
 
 frame_count = 0
 player = None
+
+
+@pytest.mark.parametrize("load", [arcade.Sound, arcade.load_sound])
+@pytest.mark.parametrize("streaming", [False, True])
+@pytest.mark.parametrize("path_kind", ["path", "resource"])
+def test_sound_explicit_decoder(load, streaming, path_kind, tmp_path, mocker):
+    if path_kind == "path":
+        # An explicit decoder must work without a registered file extension.
+        path = tmp_path / "sound.custom"
+        with wave.open(str(path), "wb") as audio:
+            audio.setparams((1, 1, 8000, 80, "NONE", "not compressed"))
+            audio.writeframes(b"\x80" * 80)
+    else:
+        path = ":resources:sounds/laser1.wav"
+
+    decoder = WaveDecoder()
+    decode = mocker.spy(decoder, "decode")
+    sound = load(path, streaming, decoder=decoder)
+
+    decode.assert_called_once()
+    assert decode.call_args.args == (sound.file_name, None)
+    assert decode.call_args.kwargs["streaming"] is streaming
+    assert Path(sound.file_name).is_file()
+    assert sound.source.duration > 0
+    assert sound.source.audio_format.channels > 0
+    assert isinstance(sound.source, StreamingSource if streaming else StaticSource)
+
+    source = sound.source.get_queue_source()
+    audio_data = source.get_audio_data(1024)
+    assert audio_data is not None
+    assert audio_data.length > 0
+    if path_kind == "path":
+        assert sound.source.duration == pytest.approx(0.01)
+        assert sound.source.audio_format.sample_rate == 8000
+        assert audio_data.data == b"\x80" * 80
+
+
+@pytest.mark.parametrize("load", [arcade.Sound, arcade.load_sound])
+@pytest.mark.parametrize("streaming", [False, True])
+def test_sound_explicit_decoder_failure(load, streaming, mocker):
+    decoder = WaveDecoder()
+    error = WAVEDecodeException("Explicit decoder failed")
+    decode = mocker.patch.object(decoder, "decode", side_effect=error)
+
+    # This valid WAV would load successfully if automatic decoders were tried.
+    expected_error = WAVEDecodeException if load is arcade.Sound else FileNotFoundError
+    with pytest.raises(expected_error, match="Explicit decoder failed") as exc:
+        load(":resources:sounds/laser1.wav", streaming, decoder=decoder)
+
+    decode.assert_called_once()
+    if load is arcade.Sound:
+        assert exc.value is error
+    else:
+        assert exc.value.__cause__ is error
 
 
 def test_sound_normal_load_and_playback(window):
