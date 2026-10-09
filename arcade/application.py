@@ -1186,11 +1186,13 @@ class Window(pyglet.window.Window):
         """
         Set the currently active view.
 
-        This will hide the current view
-        and show the new view in the next frame.
+        Before returning, this calls :py:meth:`~arcade.View.on_hide_view`
+        on the view that was showing, if any, then
+        :py:meth:`~arcade.View.on_show_view` on the new view. From then on,
+        the new view gets the window's events, and the next frame is
+        drawn by it.
 
-        This is not a blocking call. It will simply point to the new view
-        and return immediately.
+        See :ref:`windows_and_views` to learn more.
 
         Calling this function is the same as setting the
         :py:attr:`arcade.Window.current_view` attribute.
@@ -1536,14 +1538,23 @@ class View:
         pass
 
     def on_show_view(self) -> None:
-        """Called once when the view is shown.
+        """Called each time the view is shown by :py:meth:`arcade.Window.show_view`.
+
+        A view can be shown more than once, so put one-time setup in
+        ``__init__``, and things that should happen each time the view
+        appears here, such as starting music.
 
         .. seealso:: :py:meth:`~arcade.View.on_hide_view`
         """
         pass
 
     def on_hide_view(self) -> None:
-        """Called once when this view is hidden."""
+        """Called each time the view stops being shown.
+
+        This happens when the window shows another view, or
+        :py:meth:`arcade.Window.hide_view` is called. Use it to undo what
+        :py:meth:`on_show_view` did, such as stopping music.
+        """
         pass
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> bool | None:
