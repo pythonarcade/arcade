@@ -46,11 +46,6 @@ learn more:
 * :ref:`intro_learning_resources` covers the documentation types
 * :ref:`how-to-get-help` if you're unsure where to start
 
-.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
-.. raw:: html
-
-   <br/>
-
 More than Open Source
 ---------------------
 
@@ -59,11 +54,6 @@ Arcade makes sure licensing concerns stay out of your way:
 * Arcade's code uses the :ref:`permissive_mit`
 * :ref:`The built-in resources <resources>` don't require attribution
 * Remixing :ref:`example code <example-code>` is encouraged
-
-.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
-.. raw:: html
-
-   <br/>
 
 This ensures you are free to create, including :ref:`commercial projects <faq_commercial>`.
 
@@ -78,18 +68,8 @@ to reach the team or ask for help:
 * The `Arcade Discord`_ server
 * The `Arcade GitHub`_ repo
 
-.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
-.. raw:: html
-
-   <br/>
-
 See :ref:`how-to-contribute` to learn how you can
 help improve Arcade.
-
-.. pending: #2433 https://github.com/pythonarcade/arcade/issues/2433
-.. raw:: html
-
-   <br/>
 
 .. The main table of contents defining the sidebar navigation
    This content is not part of the main page itself.

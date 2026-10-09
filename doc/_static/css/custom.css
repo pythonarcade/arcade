@@ -122,10 +122,6 @@ title + list appear like other categories */
 .toctree-wrapper a:hover {
     text-decoration: underline;
 }
-#the-python-arcade-library ul {
-    margin-top: 0;
-    margin-bottom: 0;
-}
 .heading-icon {
     columns: 2;
     position: relative;
