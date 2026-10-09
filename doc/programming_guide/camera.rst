@@ -1,7 +1,68 @@
 Camera
 ======
 
-This is a rough overview of how the Cameras work. Updating and improving this documentation is on the roadmap.
+A camera chooses which part of your game world is drawn, and how big. Most
+games only need :py:class:`arcade.Camera2D`.
+
+Using Camera2D
+--------------
+
+Create a camera, and call its ``use()`` method before drawing. Everything
+drawn after that is seen through the camera. A second camera that never
+moves is handy for the score and other text that should stay put:
+
+.. code-block:: python
+
+    class GameView(arcade.View):
+
+        def __init__(self):
+            super().__init__()
+            self.camera = arcade.Camera2D()
+            self.gui_camera = arcade.Camera2D()
+
+        def on_draw(self):
+            self.clear()
+            self.camera.use()
+            self.scene.draw()        # The game world, which scrolls
+            self.gui_camera.use()
+            self.score_text.draw()   # The score, which stays put
+
+**Following the player.** The camera's ``position`` is the point in the world
+at the center of the window:
+
+.. code-block:: python
+
+    def on_update(self, delta_time):
+        self.camera.position = self.player_sprite.position
+
+        # Or move part of the way each frame, for a smoother follow
+        self.camera.position = arcade.math.lerp_2d(
+            self.camera.position, self.player_sprite.position, 0.1
+        )
+
+**Zooming.** ``self.camera.zoom = 2.0`` draws everything twice as big, and
+``0.5`` half as big.
+
+**Mouse positions.** Mouse events give positions in the window. To find the
+point in the world under the mouse, use ``unproject()``:
+
+.. code-block:: python
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        world_x, world_y, _ = self.camera.unproject((x, y))
+
+**Resizing the window.** Update the cameras in ``on_resize``. The world
+camera keeps its position. The GUI camera needs ``position=True``, so the
+bottom left of the window stays at (0, 0):
+
+.. code-block:: python
+
+    def on_resize(self, width, height):
+        self.camera.match_window()
+        self.gui_camera.match_window(position=True)
+
+For complete programs, see :ref:`camera_platform`, :ref:`camera2d_splitscreen`
+and :ref:`minimap`. The rest of this page explains how cameras work.
 
 Key Concepts
 ------------
