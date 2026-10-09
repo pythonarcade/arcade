@@ -187,7 +187,8 @@ class UIScrollArea(UILayout):
     (fill the width of the scroll area, grow to the natural content height)
     like ``UIBoxLayout``.
 
-    Scrolling is supported via mouse wheel, :class:`UIScrollBar` and, while
+    Scrolling is supported via mouse wheel,
+    :class:`~arcade.gui.experimental.scroll_area.UIScrollBar` and, while
     the mouse hovers the widget, the keyboard
     (arrow keys, PageUp/PageDown, Home/End).
 

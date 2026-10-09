@@ -103,7 +103,7 @@ any object that supports the
 `buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_.
 The classes most useful to end users are:
 
-* :py:meth:`arcade.gl.Buffer <arcade.gl.Buffer.write>`
+* :py:meth:`arcade.gl.Buffer <arcade.gl.buffer.Buffer.write>`
 * :py:meth:`arcade.gl.Texture2D <arcade.gl.Texture2D.write>`
 
 This functionality can be used for displaying the results of

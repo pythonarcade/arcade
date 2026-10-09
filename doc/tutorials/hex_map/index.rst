@@ -4,7 +4,7 @@ Working with Hexagonal Tilemaps
 ===============================
 
 This tutorial covers how to load and display hexagonal tilemaps in Arcade using
-the `Tiled`_ map editor and Arcade's :mod:`arcade.hexagon` module.
+the `Tiled`_ map editor and Arcade's ``arcade.hexagon`` module.
 
 You don't need to understand all the math behind hexagonal grids to follow this
 tutorial, but if you're building something with hexes,

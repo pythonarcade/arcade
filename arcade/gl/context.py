@@ -692,11 +692,11 @@ class Context(ABC):
         Set or get the point size. Default is `1.0`.
 
         Point size changes the pixel size of rendered points. The min and max values
-        are limited by :py:attr:`~arcade.gl.context.Limits.POINT_SIZE_RANGE`.
+        are limited by ``ctx.info.POINT_SIZE_RANGE``.
         This value usually at least ``(1, 100)``, but this depends on the drivers/vendors.
 
         If variable point size is needed you can enable
-        :py:attr:`~arcade.gl.Context.PROGRAM_POINT_SIZE` and write to ``gl_PointSize``
+        ``ctx.PROGRAM_POINT_SIZE`` and write to ``gl_PointSize``
         in the vertex or geometry shader.
 
         .. Note::
@@ -967,7 +967,7 @@ class Context(ABC):
 
         Note that ``size`` is a 3-tuple where the last value is the number  of layers.
 
-        See :py:meth:`~arcade.gl.Context.texture` for arguments.
+        See :py:meth:`~arcade.gl.context.Context.texture` for arguments.
         """
         raise NotImplementedError("The enabled graphics backend does not support this method.")
 

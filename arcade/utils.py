@@ -172,7 +172,7 @@ def grow_sequence(
     * ``True`` if we should :py:meth:`append <list.append>`
     * ``False`` if we should :py:meth:`extend <list.extend>`
 
-    This includes both the :py:class:`callable` function and your own custom
+    This includes both the :py:func:`callable` function and your own custom
     functions. For example:
 
     .. code-block:: python
@@ -193,7 +193,7 @@ def grow_sequence(
 
     Args:
         destination:
-            A :py:func:`list` or other :py:class:`~typing.MutableSequence`
+            A :py:class:`list` or other :py:class:`~typing.MutableSequence`
             to append to or extend.
         source:
             A value source we'll use to grow the ``destination``

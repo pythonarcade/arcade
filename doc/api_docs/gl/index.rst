@@ -33,36 +33,36 @@ The low-level API primitives and their reference implementation include:
    :header-rows: 1
 
    * - Primitive
-     - Base (:py:mod:`arcade.gl`)
-     - OpenGL Reference Subclass (:py:mod:`arcade.gl.backends.opengl`)
+     - Base (``arcade.gl``)
+     - OpenGL Reference Subclass (``arcade.gl.backends.opengl``)
 
    * - GPU programs (shaders)
      - :py:class:`program.Program <arcade.gl.program.Program>`
-     - :py:class:`~arcade.gl.backends.opengl.program.Program`
+     - ``Program``
 
    * - low-level texture objects [#textureTypes]_
-     - :py:class:`arcade.gl.texture.Texture`
-     - :py:class:`~arcade.gl.backends.opengl.texture.Texture`
+     - :py:class:`arcade.gl.Texture2D`
+     - ``Texture``
 
    * - framebuffers
      - :py:class:`arcade.gl.framebuffer.Framebuffer`
-     - :py:class:`~arcade.gl.backends.opengl.framebuffer.Framebuffer`
+     - ``Framebuffer``
 
    * - queries
      - :py:class:`arcade.gl.query.Query`
-     - :py:class:`~arcade.gl.backends.opengl.query.Query`
+     - ``Query``
 
    * - buffers
      - :py:class:`arcade.gl.buffer.Buffer`
-     - :py:class:`~arcade.gl.backends.opengl.buffer.Buffer`
+     - ``Buffer``
 
    * - vertex arrays/geometry
      - :py:class:`arcade.gl.vertex_array.VertexArray`
-     - :py:class:`~arcade.gl.backends.opengl.vertex_array.VertexArray`
+     - ``VertexArray``
 
    * - Compute shaders [#macOS]_
-     - :py:class:`arcade.gl.compute_shader.ComputerShader`
-     - :py:class:`~arcade.gl.backends.opengl.compute_shader.ComputerShader`
+     - ``arcade.gl.compute_shader.ComputeShader``
+     - ``ComputeShader``
 
 Usage Reference
 ^^^^^^^^^^^^^^^
@@ -70,7 +70,7 @@ Usage Reference
 .. list-table::
 
    * - Reference Backend
-     - :py:mod:`arcade.gl.backends.opengl`
+     - ``arcade.gl.backends.opengl``
 
    * - Abstraction examples
      - See the `experimental examples`_ folder in the GitHub repo
@@ -78,7 +78,7 @@ Usage Reference
 .. _experimental examples: https://github.com/pythonarcade/arcade/tree/development/arcade/experimental
 
 .. [#macOS] Compute shaders are not available on all platforms (see :ref:`arcade-api-gl-mac_no_compute_shaders`)
-.. [#textureTypes] Most users want :py:class:`arcade.texture.Texture` (see :ref:`arcade-api-gl-two_texture_types`)
+.. [#textureTypes] Most users want :py:class:`arcade.Texture` (see :ref:`arcade-api-gl-two_texture_types`)
 
 
 Graphics API Gotchas
@@ -119,11 +119,11 @@ class. If you are still unsure, consult the table below:
      - Target Audience
      - Contents
 
-   * - :py:mod:`arcade.texture`
+   * - ``arcade.texture``
      - Everyday users
      - Friendly texture object suitable for implementing gameplay
 
-   * - :py:mod:`arcade.gl.backends` ``texture`` submodules
+   * - ``arcade.gl.backends`` ``texture`` submodules
      - Platform-specific internals
      - Low-level abstractions which handle platform-specific behavior for:
 
@@ -141,7 +141,7 @@ Current Backends
 OpenGL Backend
 """"""""""""""
 
-The current implemented backend is the OpenGL/GLES wrapper in :py:mod:`arcade.gl.backends.opengl`.
+The current implemented backend is the OpenGL/GLES wrapper in ``arcade.gl.backends.opengl``.
 
 To maximize hardware support, it requires at least one of the following:
 
@@ -172,19 +172,19 @@ environments compared to the archived `arcade-web`_ protoype.
 Adding Backends
 """""""""""""""
 
-A new backend requires adding a submodule in :py:mod:`arcade.gl.backends`
+A new backend requires adding a submodule in ``arcade.gl.backends``
 which handles any initialization tasks to implement the following:
 
 * concreted versions of the classes in :ref:`arcade-api-gl-usage`
-* exposes a concrete implementation of :py:class:`~arcade.gl.provider.BaseProvider`
+* exposes a concrete implementation of ``arcade.gl.provider.BaseProvider``
 
 Note that all resources are created through the
-:py:class:`arcade.gl.Context` / :py:class:`arcade.ArcadeContext`.
+:py:class:`arcade.gl.context.Context` / :py:class:`arcade.ArcadeContext`.
 An instance of this type should be accessible the window
 (:py:attr:`arcade.Window.ctx`).
 
 This API can also be used with pyglet by creating an instance
-of :py:class:`arcade.gl.Context` after the window creation.
+of :py:class:`arcade.gl.context.Context` after the window creation.
 The :py:class:`arcade.ArcadeContext` on the other hand
 extends the default Context with Arcade-specific helper methods
 and should only be used by arcade.
@@ -200,6 +200,7 @@ and should only be used by arcade.
    framebuffer
    query
    program
+   compute_shader
    sampler
    exceptions
    types

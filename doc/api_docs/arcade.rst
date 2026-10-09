@@ -34,10 +34,12 @@ for the Python Arcade library. See also:
     api/geometry
     api/game_controller
     api/joysticks
+    api/input
     api/window
     api/sound
     api/advanced_cameras
     api/path_finding
+    api/hexagon
     api/isometric
     api/earclip
     api/anim

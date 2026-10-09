@@ -5,7 +5,7 @@ Animations
 
 .. admonition:: Experimental API
 
-    The GUI animation stack lives in :py:mod:`arcade.gui.experimental` and
+    The GUI animation stack lives in ``arcade.gui.experimental`` and
     may change within minor version updates without a deprecation period.
     Import the names from there, e.g.
     ``from arcade.gui.experimental import UIAnimatedGroup, rel``.
@@ -267,7 +267,7 @@ Under the hood, animations implement the
 :py:class:`~arcade.gui.experimental.TransitionBase` protocol and are ticked
 via :py:meth:`~arcade.gui.experimental.UIAnimatedGroup.add_transition`. The
 low level building blocks in
-:py:mod:`arcade.gui.experimental.transition` remain available for custom
+``arcade.gui.experimental.transition`` remain available for custom
 behavior:
 
 - :py:class:`~arcade.gui.experimental.TransitionAttr` - tween a single attribute

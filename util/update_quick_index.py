@@ -180,6 +180,15 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "use_declarations_in": ["arcade.controller"],
     },
     "joysticks.rst": {"title": "Joystick", "use_declarations_in": ["arcade.joysticks"]},
+    "input.rst": {
+        "title": "Input Manager",
+        "use_declarations_in": [
+            "arcade.input.manager",
+            "arcade.input.input_mapping",
+            "arcade.input.inputs",
+            "arcade.input.raw_dicts",
+        ],
+    },
     "window.rst": {
         "title": "Window and View",
         "use_declarations_in": [
@@ -191,6 +200,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
     },
     "sound.rst": {"title": "Sound", "use_declarations_in": ["arcade.sound"]},
     "path_finding.rst": {"title": "Pathfinding", "use_declarations_in": ["arcade.paths"]},
+    "hexagon.rst": {"title": "Hexagon Grids", "use_declarations_in": ["arcade.hexagon"]},
     "isometric.rst": {
         "title": "Isometric Map (incomplete)",
         "use_declarations_in": ["arcade.isometric"],
@@ -280,6 +290,7 @@ API_FILE_TO_TITLE_AND_MODULES = {
         "use_declarations_in": [
             "arcade.future.light.lights",
             "arcade.future.video.video_player",
+            "arcade.future.texture_render_target",
         ],
     },
 }

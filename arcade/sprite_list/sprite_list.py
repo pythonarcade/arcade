@@ -1583,7 +1583,8 @@ class SpriteListBufferData(SpriteListData):
         x, y and z positions. These are the center positions
         for each sprite.
 
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        This buffer is attached to the
+        :py:attr:`~arcade.sprite_list.sprite_list.SpriteListData.geometry`
         instance with name ``in_pos``.
         """
         return self._storage_pos_angle
@@ -1595,7 +1596,8 @@ class SpriteListBufferData(SpriteListData):
 
         The buffer contains 32 bit float width and height values.
 
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        This buffer is attached to the
+        :py:attr:`~arcade.sprite_list.sprite_list.SpriteListData.geometry`
         instance with name ``in_size``.
         """
         return self._storage_size
@@ -1608,7 +1610,8 @@ class SpriteListBufferData(SpriteListData):
         This buffer contains a series of 32 bit floats representing
         the RGBA color for each sprite. 4 x floats = RGBA.
 
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        This buffer is attached to the
+        :py:attr:`~arcade.sprite_list.sprite_list.SpriteListData.geometry`
         instance with name ``in_color``.
         """
         return self._storage_color
@@ -1626,7 +1629,8 @@ class SpriteListBufferData(SpriteListData):
         and rebuild a texture atlas without having to rebuild every
         single spritelist.
 
-        This buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        This buffer is attached to the
+        :py:attr:`~arcade.sprite_list.sprite_list.SpriteListData.geometry`
         instance with name ``in_texture``.
 
         Note that it should ideally an unsigned integer, but due to
@@ -1649,7 +1653,8 @@ class SpriteListBufferData(SpriteListData):
         the number of sprites. Rely on ``len(spritelist)`` for the
         correct length.
 
-        This index buffer is attached to the :py:attr:`~arcade.SpriteList.geometry`
+        This index buffer is attached to the
+        :py:attr:`~arcade.sprite_list.sprite_list.SpriteListData.geometry`
         instance and will be automatically be applied the the input buffers
         when rendering or transforming.
         """

@@ -15,12 +15,12 @@ IntRectParams = tuple[int, int, int, int]
 
 
 class RectKwargs(TypedDict):
-    """Annotates a plain :py:class:`dict` of :py:class:`Rect` arguments.
+    """Annotates a plain :py:class:`dict` of :py:class:`~arcade.Rect` arguments.
 
     This is only meaningful as a type annotation during type checking.
-    For example, the :py:meth:`Rect.kwargs <arcade.types.Rect.kwargs>`
-    property returns an ordinary will actually be a :py:class:`dict`
-    of :py:class:`Rect` field names to :py:class:`float` values.
+    For example, the :py:meth:`Rect.kwargs <arcade.Rect.kwargs>`
+    property returns an ordinary :py:class:`dict`
+    of :py:class:`~arcade.Rect` field names to :py:class:`float` values.
 
     To learn more, please see:
 
@@ -426,7 +426,7 @@ class Rect(NamedTuple):
         return LRBT(left, right, bottom, top)
 
     def __and__(self, other: Rect) -> Rect | None:
-        """Shorthand for :py:meth:`rect.intersection(other) <interesection>`.
+        """Shorthand for :py:meth:`rect.intersection(other) <intersection>`.
 
         Args:
             other: Another :py:class:`Rect` instance.

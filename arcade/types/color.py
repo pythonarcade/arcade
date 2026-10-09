@@ -102,7 +102,7 @@ class Color(RGBA255):
 
     Regardless of the source format, all color channels must be between
     0 and 255, inclusive. If any channel is outside this range, creation
-    will fail with a :py:class:`~arcade.utils.ByteRangeError`, which is a
+    will fail with a :py:class:`~arcade.exceptions.ByteRangeError`, which is a
     type of :py:class:`ValueError`.
 
     .. _colour: https://pypi.org/project/colour/
@@ -368,7 +368,7 @@ class Color(RGBA255):
 
         If any input channels aren't normalized (between ``0.0`` and
         ``1.0``), this method will raise a
-        :py:class:`~arcade.utils.NormalizedRangeError` you can handle as
+        :py:class:`~arcade.exceptions.NormalizedRangeError` you can handle as
         a :py:class:`ValueError`.
 
         Examples::

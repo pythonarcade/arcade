@@ -59,8 +59,8 @@ class UIManager(EventDispatcher):
     through the widget tree.
 
     If used within a view :py:meth:`UIManager.enable()` should be called from
-    :py:meth:`View.on_show_view()` and :py:meth:`UIManager.disable()` should be
-    called from :py:meth:`View.on_hide_view()`
+    :py:meth:`~arcade.View.on_show_view` and :py:meth:`UIManager.disable()` should be
+    called from :py:meth:`~arcade.View.on_hide_view`
 
     Supports `size_hint` to grow/shrink direct children dependent on window size.
     Supports `size_hint_min` to ensure size of direct children (e.g. UIBoxLayout).
@@ -288,7 +288,7 @@ class UIManager(EventDispatcher):
                     child._do_render(surface, force)
 
     def enable(self) -> None:
-        """Registers handler functions (`on_...`) to :py:attr:`arcade.gui.UIElement`
+        """Registers handler functions (``on_...``) to the window
 
         on_draw is not registered, to provide full control about draw order,
         so it has to be called by the devs themselves.

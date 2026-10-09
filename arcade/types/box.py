@@ -17,9 +17,8 @@ class BoxKwargs(TypedDict):
     """Annotates a plain :py:class:`dict` of :py:class:`Box` arguments.
 
     This is only meaningful as a type annotation during type checking.
-    For example, the :py:meth:`Box.kwargs <arcade.types.Box.kwargs>`
-    property returns an ordinary will actually be a :py:class:`dict`
-    of :py:class:`Box` field names to :py:class:`float` values.
+    It describes an ordinary :py:class:`dict` of :py:class:`Box` field
+    names to :py:class:`float` values.
 
     To learn more, please see:
 
@@ -57,7 +56,6 @@ class Box(NamedTuple):
     * :py:func:`.XYZWHD`
     * :py:func:`.LRBTNF`
     * :py:func:`.LBNWHD`
-    * :py:meth:`.from_kwargs`
 
     """
 
@@ -332,7 +330,7 @@ class Box(NamedTuple):
         )
 
     def __and__(self, other: Box) -> Box | None:
-        """Shorthand for :py:meth:`Box.intersection(other) <interesection>`.
+        """Shorthand for :py:meth:`Box.intersection(other) <intersection>`.
 
         Args:
             other: Another :py:class:`Box` instance.

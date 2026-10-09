@@ -57,7 +57,7 @@ class PymunkPhysicsEngine:
             objects.
 
             * Override this for objects by passing different value
-              :`add_sprite` or :py:meth:`add_spritelist`
+              :`add_sprite` or :py:meth:`add_sprite_list`
             * See :py:attr:`pymunk.Space.damping` to learn more
 
         maximum_incline_on_ground:
@@ -120,8 +120,7 @@ class PymunkPhysicsEngine:
     objects by setting their positions and velocities directly:
 
     * :py:meth:`set_velocity`
-    * :py:meth:`set_velocity_horizontal`
-    * :py:meth:`set_velocity_vertical`
+    * :py:meth:`set_horizontal_velocity`
     * :py:meth:`set_position`
 
 

@@ -763,13 +763,13 @@ class PhysicsEnginePlatformer:
            * - Movement Axis
              - :py:class:`~arcade.sprite.sprite.Sprite` Attributes to Set
            * - X (side to side)
-             - * :py:attr:`~arcade.sprite.sprite.Sprite.change_x`
-               * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_left`
-               * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_right`
+             - * :py:attr:`~arcade.Sprite.change_x`
+               * :py:attr:`~arcade.Sprite.boundary_left`
+               * :py:attr:`~arcade.Sprite.boundary_right`
            * - Y (up and down)
-             - * :py:attr:`~arcade.sprite.sprite.Sprite.change_y`
-               * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_bottom`
-               * :py:attr:`~arcade.sprite.sprite.Sprite.boundary_top`
+             - * :py:attr:`~arcade.Sprite.change_y`
+               * :py:attr:`~arcade.Sprite.boundary_bottom`
+               * :py:attr:`~arcade.Sprite.boundary_top`
 
         For a working example, please see :ref:`sprite_moving_platforms`.
         """
@@ -940,7 +940,7 @@ class PhysicsEnginePlatformer:
     def increment_jump_counter(self) -> None:
         """Update jump tracking if multi-jump is enabled.
 
-        If :py:attr:`allow_multi_jumps` is ``True``, calling this adds
+        If :py:attr:`allow_multi_jump` is ``True``, calling this adds
         ``1`` to :py:attr:`jumps_since_ground`. Otherwise, it does
         nothing.
         """

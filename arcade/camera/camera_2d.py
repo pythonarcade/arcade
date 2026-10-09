@@ -586,7 +586,7 @@ class Camera2D:
     def move_by(self, change: Point2) -> Point2:
         """
         Move the camera in world space along the XY axes by the provided change.
-        If you want to drag the camera with a mouse :py:func:`camera2D.drag_by`
+        If you want to drag the camera with a mouse :py:meth:`drag_by`
         is the method to use.
 
         Args:
@@ -611,7 +611,7 @@ class Camera2D:
         move right. So a user moving the mouse right expects the camera to move
         left.
 
-        The simplest use case is with the Window/View's :py:func:`on_mouse_drag`
+        The simplest use case is with the Window/View's :py:meth:`~arcade.Window.on_mouse_drag`
         .. code-block:: python
 
             def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):

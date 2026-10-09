@@ -17,14 +17,14 @@ T = TypeVar("T")
 class UITypedTextInput(UIInputText, Generic[T]):
     """A text box which auto-converts to and from a :py:class:`type`.
 
-    The simplest usage is passing a :py:func:`type` which supports
+    The simplest usage is passing a :py:class:`type` which supports
     :py:func:`repr` and allows a single :py:class:`str` as an argument:
 
     .. code-block:: python
 
        self.float_input = UITypedTextInput(float, text="0.0")
 
-    In the example above, setting :py:attr:`self.float_input.text` to
+    In the example above, setting ``self.float_input.text`` to
     ``"string"`` will:
 
     #. Set both the text and the caret to the ``error_color`` passed at
@@ -33,7 +33,7 @@ class UITypedTextInput(UIInputText, Generic[T]):
 
     To stop error propagation, pass
     You can customize your conversion to and from strings by overriding
-    the following arguments with custom :py:class:`callable` objects:
+    the following arguments with custom :py:func:`callable` objects:
 
     .. list-table::
        :header-rows: 1
@@ -189,9 +189,9 @@ class UITypedTextInput(UIInputText, Generic[T]):
     def text(self) -> str:
         """Get/set the text of the widget.
 
-        In addition to basic behavior from :py:class:`UITextWidget`,
+        In addition to basic behavior from :py:class:`~arcade.gui.UITextWidget`,
         this also performs validation. To silence error propagation
-        from validation, set :py:attr:`emit_parse_exceptions` to
+        from validation, set ``emit_parse_exceptions`` to
         ``False``.
         """
         return self.doc.text

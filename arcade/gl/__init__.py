@@ -8,7 +8,7 @@ should be done through methods in a context.
 
 * Arcade users should access :py:attr:`arcade.Window.ctx` exposing an
   :py:class:`arcade.ArcadeContext`
-* Pyglet users can instantiate an :py:class:`arcade.gl.Context` for the window or
+* Pyglet users can instantiate an :py:class:`arcade.gl.context.Context` for the window or
   extend this class with more features if needed.
 
 .. warning:: This module contains the low level rendering API for arcade

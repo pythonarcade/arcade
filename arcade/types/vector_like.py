@@ -50,10 +50,10 @@ class AnchorPoint:
 
     Each is a :py:class:`~pyglet.math.Vec2` with axis values between
     ``0.0`` and ``1.0``. They can be used as arguments to
-    :py:meth:`Rect.uv_to_position <arcade.types.Rect.uv_to_position>`
+    :py:meth:`Rect.uv_to_position <arcade.Rect.uv_to_position>`
     to help calculate:
 
-    * a pixel offset inside a :py:class:`~arcade.types.Rect`
+    * a pixel offset inside a :py:class:`~arcade.Rect`
     * an absolute screen positions in pixels
 
     Advanced users may also find them useful when working with
