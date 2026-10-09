@@ -1,9 +1,50 @@
 import array
 import math
+from itertools import chain
 
 from arcade import gl
 from arcade.types import Color, Point2, Point2List, RGBOrA255
 from arcade.window_commands import get_window
+
+
+def _bad_point_error(point_list: Point2List) -> ValueError | None:
+    """Return an error naming the first point that isn't 2 numbers, if any.
+
+    Only called after something went wrong, so it can be slow.
+    """
+    for index, point in enumerate(point_list):
+        try:
+            x, y = point
+            array.array("f", (x, y))
+        except (TypeError, ValueError, OverflowError):
+            return ValueError(
+                f"point_list[{index}] is {point!r}, but each point must be 2 numbers, "
+                "such as (x, y)"
+            )
+    return None
+
+
+def _flatten_points(point_list: Point2List) -> array.array:
+    """Flatten 2D points into an array of floats: x0, y0, x1, y1, ...
+
+    Raises a ValueError naming the first point that isn't 2 numbers.
+    Checking costs one length comparison, so it doesn't slow down drawing.
+    """
+    try:
+        data = array.array("f", tuple(chain.from_iterable(point_list)))
+    except (TypeError, ValueError, OverflowError) as error:
+        raise (_bad_point_error(point_list) or error) from None
+    # A point with 1 or 3 numbers would shift every number after it
+    if len(data) != 2 * len(point_list):
+        raise _bad_point_error(point_list) or ValueError("Each point must be 2 numbers")
+    return data
+
+
+def _check_points_after(error: Exception, point_list: Point2List) -> None:
+    """Raise a clearer error than ``error`` if a point isn't 2 numbers."""
+    clearer = _bad_point_error(point_list)
+    if clearer is not None:
+        raise clearer from None
 
 
 def get_points_for_thick_line(
@@ -72,7 +113,7 @@ def _generic_draw_line_strip(
 
     # Translate Python objects into types Arcade's Buffer objects accept
     color_array = array.array("B", rgba * num_vertices)
-    vertex_array = array.array("f", tuple(item for sublist in point_list for item in sublist))
+    vertex_array = _flatten_points(point_list)
     geometry.num_vertices = num_vertices
 
     # Double buffer sizes until they can hold all our data

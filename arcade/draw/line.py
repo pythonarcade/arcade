@@ -4,7 +4,12 @@ from arcade import gl
 from arcade.types import Color, Point2, Point2List, RGBOrA255
 from arcade.window_commands import get_window
 
-from .helpers import _generic_draw_line_strip, get_points_for_thick_line
+from .helpers import (
+    _check_points_after,
+    _flatten_points,
+    _generic_draw_line_strip,
+    get_points_for_thick_line,
+)
 
 
 def draw_line_strip(point_list: Point2List, color: RGBOrA255, line_width: float = 1) -> None:
@@ -26,14 +31,18 @@ def draw_line_strip(point_list: Point2List, color: RGBOrA255, line_width: float 
         triangle_point_list: list[Point2] = []
         # FIXME: This needs a lot of improvement
         last_point = None
-        for point in point_list:
-            if last_point is not None:
-                points = get_points_for_thick_line(
-                    last_point[0], last_point[1], point[0], point[1], line_width
-                )
-                reordered_points = points[1], points[0], points[2], points[3]
-                triangle_point_list.extend(reordered_points)
-            last_point = point
+        try:
+            for point in point_list:
+                if last_point is not None:
+                    points = get_points_for_thick_line(
+                        last_point[0], last_point[1], point[0], point[1], line_width
+                    )
+                    reordered_points = points[1], points[0], points[2], points[3]
+                    triangle_point_list.extend(reordered_points)
+                last_point = point
+        except (TypeError, ValueError, IndexError) as error:
+            _check_points_after(error, point_list)
+            raise
         _generic_draw_line_strip(triangle_point_list, color, gl.TRIANGLE_STRIP)
 
 
@@ -110,7 +119,7 @@ def draw_lines(point_list: Point2List, color: RGBOrA255, line_width: float = 1) 
     # Validate & normalize to a pass the shader an RGBA float uniform
     color_normalized = Color.from_iterable(color).normalized
 
-    line_pos_array = array.array("f", (v for point in point_list for v in point))
+    line_pos_array = _flatten_points(point_list)
     num_points = len(point_list)
     if num_points == 0:
         return
