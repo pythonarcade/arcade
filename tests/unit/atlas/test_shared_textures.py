@@ -70,3 +70,36 @@ def test_name_removed_even_if_set_still_holds_texture(ctx):
     (later,) = _shared_textures(1)
     atlas.add(later)
     assert atlas.get_texture_id(later) is not None
+
+
+def test_add_while_last_shared_texture_is_collected(ctx, monkeypatch):
+    # Python 3.14's garbage collector exposed this in CI: a texture added while
+    # the last other texture with its name was being collected found the name
+    # gone, and raised KeyError
+    data = ImageData(PIL.Image.new("RGBA", (8, 8), (255, 255, 255, 255)))
+    atlas = DefaultTextureAtlas((32, 32))
+    dying = Texture(data)
+    atlas.add(dying)
+    name = dying.atlas_name
+
+    # Garbage that only the cycle collector frees, like a texture held by a
+    # sprite and sprite list that point at each other
+    cycle: list = [dying]
+    cycle.append(cycle)
+    del dying, cycle
+
+    # Collect it at the moment the new texture's reference is being added
+    add_texture_ref = atlas._add_texture_ref
+
+    def collect_then_add(texture, create_finalizer=True):
+        gc.collect()
+        add_texture_ref(texture, create_finalizer=create_finalizer)
+
+    monkeypatch.setattr(atlas, "_add_texture_ref", collect_then_add)
+
+    texture = Texture(data)
+    assert texture.atlas_name == name
+    slot, region = atlas.add(texture)
+    assert atlas.has_unique_texture(texture)
+    assert region == atlas.get_texture_region_info(name)
+    assert atlas.get_image_region_info(data.hash) is not None

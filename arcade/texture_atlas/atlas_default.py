@@ -295,8 +295,13 @@ class DefaultTextureAtlas(TextureAtlasBase):
             create_finalizer:
                 If a finalizer should be created
         """
-        # Quickly handle a texture already having a unique texture in the atlas
-        if self.has_unique_texture(texture):
+        # Quickly handle a texture already having a unique texture in the atlas.
+        # Hold a live texture with the same name while adding this one: if
+        # the last one were collected during these calls, its finalizer would
+        # free the name's slot under us.
+        shared = self._unique_textures.get(texture.atlas_name)
+        living = next(iter(shared), None) if shared else None
+        if living is not None:
             # Add add references to the duplicate texture
             if not self.has_texture(texture):
                 self._add_texture_ref(texture, create_finalizer=create_finalizer)
