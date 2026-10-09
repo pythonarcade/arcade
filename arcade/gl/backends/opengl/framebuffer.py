@@ -52,7 +52,7 @@ class OpenGLFramebuffer(Framebuffer):
 
     def __init__(
         self,
-        ctx: "Context",
+        ctx: Context,
         *,
         color_attachments: OpenGLTexture2D | list[OpenGLTexture2D],
         depth_attachment: OpenGLTexture2D | None = None,
@@ -352,7 +352,7 @@ class OpenGLFramebuffer(Framebuffer):
             )
 
     def __repr__(self):
-        return "<Framebuffer glo={}>".format(self._glo.value)
+        return f"<Framebuffer glo={self._glo.value}>"
 
 
 class OpenGLDefaultFrameBuffer(DefaultFrameBuffer, OpenGLFramebuffer):
@@ -373,7 +373,7 @@ class OpenGLDefaultFrameBuffer(DefaultFrameBuffer, OpenGLFramebuffer):
     is_default = True
     """Is this the default framebuffer? (window buffer)"""
 
-    def __init__(self, ctx: "Context"):
+    def __init__(self, ctx: Context):
         super().__init__(ctx)
 
         value = c_int()

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Iterable
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from arcade.gl import Context
@@ -67,7 +68,7 @@ class Program(ABC):
         self._ctx.stats.incr("program")
 
     @property
-    def ctx(self) -> "Context":
+    def ctx(self) -> Context:
         """The context this program belongs to."""
         return self._ctx
 

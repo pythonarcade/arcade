@@ -56,7 +56,7 @@ class Buffer(ABC):
         return self._size
 
     @property
-    def ctx(self) -> "Context":
+    def ctx(self) -> Context:
         """The context this resource belongs to."""
         return self._ctx
 

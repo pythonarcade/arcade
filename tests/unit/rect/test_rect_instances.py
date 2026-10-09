@@ -1,4 +1,5 @@
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from pyglet.math import Vec2
 
@@ -95,7 +96,7 @@ def test_views():
 class SubclassedRect(Rect): ...
 
 
-ALL_ZEROES = tuple((0 for _ in Rect._fields))
+ALL_ZEROES = tuple(0 for _ in Rect._fields)
 
 
 def _formats_correctly(func: Callable[[Any], str], starts_with_format: str, instance: Any) -> bool:

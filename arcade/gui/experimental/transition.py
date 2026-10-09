@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Any, Callable, List, Optional, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 from pyglet.event import EventDispatcher
 
@@ -105,7 +106,7 @@ class TransitionAttr(EventTransitionBase):
         mutation_function: Callable[[Any, str, float], None] = setattr,
     ):
         super().__init__(duration=duration, delay=delay)
-        self._start: Optional[float] = start
+        self._start: float | None = start
         self._end = end
         self._attribute = attribute
 
@@ -188,7 +189,7 @@ class TransitionParallel(TransitionBase):
 
     def __init__(self, *transactions: TransitionBase):
         super().__init__()
-        self._transitions: List[TransitionBase] = list(transactions)
+        self._transitions: list[TransitionBase] = list(transactions)
 
     def add(self, transition: T) -> T:
         self._transitions.append(transition)
@@ -219,7 +220,7 @@ class TransitionChain(TransitionBase):
 
     def __init__(self, *transactions: TransitionBase):
         super().__init__()
-        self._transitions: List[TransitionBase] = list(transactions)
+        self._transitions: list[TransitionBase] = list(transactions)
 
     def add(self, transition: T) -> T:
         self._transitions.append(transition)

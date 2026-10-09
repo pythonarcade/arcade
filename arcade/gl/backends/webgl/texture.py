@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from pyodide.ffi import to_js
 
@@ -168,7 +168,7 @@ class WebGLTexture2D(Texture2D):
         return self._ctx
 
     @property
-    def glo(self) -> Optional[WebGLTexture]:
+    def glo(self) -> WebGLTexture | None:
         return self._glo
 
     @property
@@ -377,6 +377,7 @@ class WebGLTexture2D(Texture2D):
         raise NotImplementedError("get_handle is not supported with WebGL")
 
     def __repr__(self) -> str:
-        return "<Texture glo={} size={}x{} components={}>".format(
-            self._glo, self._width, self._height, self._components
+        return (
+            f"<Texture glo={self._glo} size={self._width}x{self._height} "
+            f"components={self._components}>"
         )

@@ -235,7 +235,7 @@ class WebGLFramebuffer(Framebuffer):
             )
 
     def __repr__(self):
-        return "<Framebuffer glo={}>".format(self._glo)
+        return f"<Framebuffer glo={self._glo}>"
 
 
 class WebGLDefaultFrameBuffer(DefaultFrameBuffer, WebGLFramebuffer):  # type: ignore

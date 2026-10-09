@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import importlib
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from arcade.context import ArcadeContext
 
     from .context import Context, Info
 
-_current_provider: Optional[BaseProvider] = None
+_current_provider: BaseProvider | None = None
 
 
 def set_provider(provider_name: str):

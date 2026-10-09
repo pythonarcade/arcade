@@ -118,7 +118,7 @@ class Easing:
     @staticmethod
     def SINE_IN(t: float) -> float:
         """http://easings.net/#easeInSine"""
-        return 1 - cos((t * pi / 2))
+        return 1 - cos(t * pi / 2)
 
     @staticmethod
     def SINE_OUT(t: float) -> float:

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import weakref
-from typing import TYPE_CHECKING, Any, Iterable, cast
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Any, cast
 
 from arcade.gl import enums
 from arcade.gl.exceptions import ShaderException
@@ -352,7 +353,7 @@ class WebGLProgram(Program):
         status = ctx._gl.getProgramParameter(glo, enums.LINK_STATUS)
         if not status:
             log = ctx._gl.getProgramInfoLog(glo)
-            raise ShaderException("Program link error: {}".format(log))
+            raise ShaderException(f"Program link error: {log}")
 
     def __repr__(self):
-        return "<Program id={}>".format(self._glo)
+        return f"<Program id={self._glo}>"
