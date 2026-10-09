@@ -14,6 +14,7 @@ For help, see the following:
 
 import os
 import subprocess
+import sys
 from contextlib import contextmanager
 from pathlib import Path
 from shutil import rmtree, which
@@ -216,6 +217,8 @@ def docs_full():
     run_doc([SPHINX_BUILD, DOC_DIR, "build", "-W"])
     print()
     print("Build finished")
+    # Sphinx doesn't check plain links, such as a figure's :target:
+    run_doc([sys.executable, "util/check_internal_links.py", "build"])
 
 
 @app.command(rich_help_panel="Docs")
