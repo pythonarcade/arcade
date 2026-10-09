@@ -1,5 +1,3 @@
-:orphan:
-
 .. _minimap:
 
 Mini-Map

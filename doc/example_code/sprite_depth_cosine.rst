@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_depth_cosine:
 
 Sprite Depth Controlled by a Cosine Wave

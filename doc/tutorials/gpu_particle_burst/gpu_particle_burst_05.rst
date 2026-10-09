@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gpu_particle_burst_05:
 
 gpu_particle_burst_05.py Full Listing

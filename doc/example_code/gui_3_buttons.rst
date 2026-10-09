@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_3_buttons:
 
 GUI Advanced Buttons

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _array_backed_grid:
 
 Array-Backed Grid

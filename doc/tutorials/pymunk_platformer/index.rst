@@ -641,3 +641,32 @@ And, of course, don't forget to draw the ladders:
 
 * :ref:`pymunk_demo_platformer_12`
 * :ref:`pymunk_demo_platformer_12_diff`
+
+.. Pages linked from this page. Listing them puts them in the
+   sidebar under this page, which shows readers where they are.
+
+.. toctree::
+   :hidden:
+
+   pymunk_demo_platformer_02
+   pymunk_demo_platformer_02_diff
+   pymunk_demo_platformer_03
+   pymunk_demo_platformer_03_diff
+   pymunk_demo_platformer_04
+   pymunk_demo_platformer_04_diff
+   pymunk_demo_platformer_05
+   pymunk_demo_platformer_05_diff
+   pymunk_demo_platformer_06
+   pymunk_demo_platformer_06_diff
+   pymunk_demo_platformer_07
+   pymunk_demo_platformer_07_diff
+   pymunk_demo_platformer_08
+   pymunk_demo_platformer_08_diff
+   pymunk_demo_platformer_09
+   pymunk_demo_platformer_09_diff
+   pymunk_demo_platformer_10
+   pymunk_demo_platformer_10_diff
+   pymunk_demo_platformer_11
+   pymunk_demo_platformer_11_diff
+   pymunk_demo_platformer_12
+   pymunk_demo_platformer_12_diff

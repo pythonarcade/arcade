@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_push_out:
 
 Push a Sprite Out of Walls

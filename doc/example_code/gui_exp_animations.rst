@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_exp_animations:
 
 GUI Animations

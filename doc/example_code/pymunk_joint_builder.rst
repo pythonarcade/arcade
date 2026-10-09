@@ -1,5 +1,3 @@
-:orphan:
-
 .. _pymunk_joint_builder:
 
 Pymunk Physics Engine - Joint Builder

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _maze_depth_first:
 
 Creating a Depth First Maze

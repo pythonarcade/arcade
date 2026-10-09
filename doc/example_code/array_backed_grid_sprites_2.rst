@@ -1,5 +1,3 @@
-:orphan:
-
 .. _array_backed_grid_sprites_2:
 
 Grid Using Sprites v2

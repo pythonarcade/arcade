@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_5_uicolor_picker:
 
 GUI UIColor Picker

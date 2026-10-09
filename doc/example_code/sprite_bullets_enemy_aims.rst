@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_bullets_enemy_aims:
 
 Have Enemies Aim at Player

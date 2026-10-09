@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_move_scrolling:
 
 Move with a Scrolling Screen - Centered

@@ -275,3 +275,13 @@ On other sites:
 * Here is a decent learn-by-example tutorial for making shaders: https://www.shadertoy.com/view/Md23DV
 * Here's a video tutorial that steps through how to do an explosion: https://www.youtube.com/watch?v=xDxAnguEOn8
 
+.. Pages linked from this page. Listing them puts them in the
+   sidebar under this page, which shows readers where they are.
+
+.. toctree::
+   :hidden:
+
+   cyber_fuji_2020
+   star_nest
+   flame
+   fractal_pyramid

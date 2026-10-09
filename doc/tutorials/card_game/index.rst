@@ -569,3 +569,31 @@ adding animation to 'slide' a dropped card to its position, sound, better graphi
 and more. Or this could be adapted to a different card game.
 
 Hopefully this is enough to get you started on your own game.
+
+.. Pages linked from this page. Listing them puts them in the
+   sidebar under this page, which shows readers where they are.
+
+.. toctree::
+   :hidden:
+
+   solitaire_01
+   solitaire_02
+   solitaire_02_diff
+   solitaire_03
+   solitaire_03_diff
+   solitaire_04
+   solitaire_04_diff
+   solitaire_05
+   solitaire_05_diff
+   solitaire_06
+   solitaire_06_diff
+   solitaire_07
+   solitaire_07_diff
+   solitaire_08
+   solitaire_08_diff
+   solitaire_09
+   solitaire_09_diff
+   solitaire_10
+   solitaire_10_diff
+   solitaire_11
+   solitaire_11_diff

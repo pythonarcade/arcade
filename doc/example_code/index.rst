@@ -164,6 +164,12 @@ Player Movement
 
    :ref:`sprite_move_controller`
 
+.. figure:: images/thumbs/controller.png
+   :figwidth: 170px
+   :target: controller.html
+
+   :ref:`controller`
+
 .. figure:: images/thumbs/dual_stick_shooter.png
    :figwidth: 170px
    :target: dual_stick_shooter.html
@@ -312,7 +318,7 @@ Games with Levels
 
 .. figure:: images/thumbs/sprite_collect_coins_diff_levels.gif
    :figwidth: 170px
-   :target: example-sprite-collect-coins-diff-levels.html
+   :target: sprite_collect_coins_diff_levels.html
 
    :ref:`example-sprite-collect-coins-diff-levels`
 
@@ -567,7 +573,7 @@ Basic Platformers
 
 .. figure:: images/thumbs/11_animate_character.png
    :figwidth: 170px
-   :target: platformer_tutorial.html
+   :target: ../tutorials/platform_tutorial/index.html
 
    :ref:`platformer_tutorial`
 
@@ -664,13 +670,13 @@ Graphical User Interface
 
 .. figure:: images/thumbs/gui_own_widgets.png
    :figwidth: 170px
-   :target: gui_own_widgets.html
+   :target: ../programming_guide/gui/own_widgets.html
 
    :ref:`gui_own_widgets`
 
 .. figure:: images/thumbs/gui_own_layout.png
    :figwidth: 170px
-   :target: gui_own_layout.html
+   :target: ../programming_guide/gui/own_layout.html
 
    :ref:`gui_own_layout`
 
@@ -692,6 +698,24 @@ Experimental Widgets
    :target: gui_exp_hidden_password.html
 
    :ref:`gui_exp_hidden_password`
+
+.. figure:: images/thumbs/gui_exp_scroll_area.png
+   :figwidth: 170px
+   :target: gui_exp_scroll_area.html
+
+   :ref:`gui_exp_scroll_area`
+
+.. figure:: images/thumbs/gui_exp_animations.png
+   :figwidth: 170px
+   :target: gui_exp_animations.html
+
+   :ref:`gui_exp_animations`
+
+.. figure:: images/thumbs/gui_exp_animations_2.png
+   :figwidth: 170px
+   :target: gui_exp_animations_2.html
+
+   :ref:`gui_exp_animations_2`
 
 
 .. note::
@@ -776,7 +800,7 @@ Using PyMunk for Physics
 
 .. figure:: images/thumbs/pymunk_platformer.png
    :figwidth: 170px
-   :target: pymunk_platformer_tutorial.html
+   :target: ../tutorials/pymunk_platformer/index.html
 
    :ref:`pymunk_platformer_tutorial`
 
@@ -889,7 +913,7 @@ Odds and Ends
 
 .. figure:: images/thumbs/performance_statistics.png
    :figwidth: 170px
-   :target: performance_statistics_example.html
+   :target: performance_statistics.html
 
    :ref:`performance_statistics_example`
 
@@ -919,37 +943,37 @@ Tutorials
 
 .. figure:: /tutorials/platform_tutorial/intro_screen.png
    :figwidth: 170px
-   :target: /tutorials/platform_tutorial/index.html
+   :target: ../tutorials/platform_tutorial/index.html
 
    :ref:`platformer_tutorial`
 
 .. figure:: images/thumbs/solitaire_11.png
    :figwidth: 170px
-   :target: /tutorials/card_game/index.html
+   :target: ../tutorials/card_game/index.html
 
    :ref:`solitaire_tutorial`
 
 .. figure:: images/thumbs/crt_filter.png
    :figwidth: 170px
-   :target: /tutorials/crt_filter/index.html
+   :target: ../tutorials/crt_filter/index.html
 
    :ref:`crt_filter`
 
 .. figure:: images/thumbs/raycasting_tutorial.png
    :figwidth: 170px
-   :target: /tutorials/raycasting/index.html
+   :target: ../tutorials/raycasting/index.html
 
    :ref:`raycasting_tutorial`
 
 .. figure:: images/thumbs/pymunk_platformer_tutorial.png
    :figwidth: 170px
-   :target: /tutorials/pymunk_platformer/index.html
+   :target: ../tutorials/pymunk_platformer/index.html
 
    :ref:`pymunk_platformer_tutorial`
 
 .. figure:: images/thumbs/shader_toy_tutorial.png
    :figwidth: 170px
-   :target: /tutorials/shader_toy_glow/index.html
+   :target: ../tutorials/shader_toy_glow/index.html
 
    :ref:`shader_toy_tutorial_glow`
 
@@ -974,4 +998,134 @@ Stress Tests
 
    :ref:`sprite_pixel_demolition`
 
+.. Pages linked from this page. Listing them puts them in the
+   sidebar under this page, which shows readers where they are.
 
+.. toctree::
+   :hidden:
+
+   starting_template
+   template_platformer
+   happy_face
+   drawing_primitives
+   drawing_text
+   drawing_text_objects
+   drawing_text_objects_batch
+   bouncing_rectangle
+   shapes
+   radar_sweep
+   snow
+   shape_list_demo
+   lines_buffered
+   shape_list_demo_skylines
+   gradients
+   sprite_collect_coins
+   sprite_move_keyboard
+   sprite_move_keyboard_better
+   sprite_move_keyboard_accel
+   sprite_move_angle
+   sprite_face_left_or_right
+   sprite_move_controller
+   controller
+   dual_stick_shooter
+   turn_and_move
+   sprite_rotate_around_tank
+   sprite_push_out
+   sprite_collect_coins_move_down
+   sprite_collect_coins_move_bouncing
+   sprite_bouncing_coins
+   sprite_collect_coins_move_circle
+   sprite_collect_rotating
+   sprite_rotate_around_point
+   easing_example_1
+   easing_example_2
+   follow_path
+   sprite_follow_simple
+   sprite_follow_simple_2
+   line_of_sight
+   astar_pathfinding
+   sprite_health
+   sprite_properties
+   sprite_change_coins
+   sprite_depth_cosine
+   sprite_collect_coins_diff_levels
+   sprite_rooms
+   sprite_bullets
+   sprite_bullets_aimed
+   sprite_bullets_periodic
+   sprite_bullets_random
+   sprite_bullets_enemy_aims
+   sprite_explosion_bitmapped
+   sprite_explosion_particles
+   sprite_bullets_sweep
+   sprite_laser_mirrors
+   sound_demo
+   sound_speed_demo
+   music_control_demo
+   resizable_window
+   full_screen_example
+   sprite_collect_coins_background
+   background_parallax
+   sprite_move_scrolling
+   sprite_move_scrolling_box
+   sprite_move_scrolling_shake
+   camera_platform
+   camera2d_splitscreen
+   view_screens_minimal
+   view_instructions_and_game_over
+   view_pause_screen
+   transitions
+   sections_demo_1
+   sections_demo_2
+   sections_demo_3
+   sprite_move_walls
+   sprite_no_coins_on_walls
+   sprite_move_animation
+   sprite_moving_platforms
+   sprite_enemies_in_platformer
+   sprite_tiled_map
+   sprite_tiled_map_with_levels
+   maze_recursive
+   maze_depth_first
+   procedural_caves_cellular
+   procedural_caves_bsp
+   gui_0_basic_setup
+   gui_1_layouts
+   gui_2_widgets
+   gui_3_buttons
+   gui_4_with_camera
+   gui_5_uicolor_picker
+   gui_6_size_hints
+   interactive_sprite_widget
+   gui_exp_hidden_password
+   gui_exp_scroll_area
+   gui_exp_animations
+   gui_exp_animations_2
+   array_backed_grid
+   array_backed_grid_buffered
+   array_backed_grid_sprites_1
+   array_backed_grid_sprites_2
+   tetris
+   conway_alpha
+   pymunk_box_stacks
+   pymunk_pegboard
+   pymunk_demo_top_down
+   pymunk_joint_builder
+   minimap
+   light_demo
+   transform_feedback
+   game_of_life_fbo
+   perspective
+   depth_of_field
+   normal_mapping
+   spritelist_interaction_visualize_dist_los
+   asteroid_smasher
+   slime_invaders
+   timer
+   performance_statistics
+   text_loc_example
+   particle_fireworks
+   particle_systems
+   stress_test_draw_moving
+   stress_test_collision
+   sprite_pixel_demolition

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_collect_rotating:
 
 Animated Sprites

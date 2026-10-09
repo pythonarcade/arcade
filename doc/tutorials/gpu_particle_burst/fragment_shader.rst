@@ -1,5 +1,3 @@
-:orphan:
-
 .. _fragment_shader:
 
 fragment_shader.glsl Full Listing

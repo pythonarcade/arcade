@@ -1,5 +1,3 @@
-:orphan:
-
 .. _drawing_text:
 
 Slow but Easy Text Drawing

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _camera2d_splitscreen:
 
 Two Player Split Screen

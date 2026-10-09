@@ -1,5 +1,3 @@
-:orphan:
-
 .. _timer:
 
 On-Screen Timer

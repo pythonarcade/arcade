@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_4_with_camera:
 
 GUI with Camera

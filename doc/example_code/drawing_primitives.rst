@@ -1,5 +1,3 @@
-:orphan:
-
 .. _drawing_primitives:
 
 Drawing Primitives

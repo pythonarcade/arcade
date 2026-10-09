@@ -1,5 +1,3 @@
-:orphan:
-
 .. _procedural_caves_bsp:
 
 Procedural Caves - Binary Space Partitioning

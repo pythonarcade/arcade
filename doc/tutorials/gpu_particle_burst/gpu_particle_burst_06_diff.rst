@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gpu_particle_burst_06_diff:
 
 gpu_particle_burst_06.py Diff

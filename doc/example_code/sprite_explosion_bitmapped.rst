@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_explosion_bitmapped:
 
 Sprite Explosions Bitmapped

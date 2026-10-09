@@ -1,5 +1,3 @@
-:orphan:
-
 .. _vertex_shader_v2_diff:
 
 vertex_shader_v2.glsl Diff

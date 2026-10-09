@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_pixel_demolition:
 
 Pixel Demolition

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _view_screens_minimal:
 
 Minimal Views Example

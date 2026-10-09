@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_2_widgets:
 
 GUI Widget Gallery

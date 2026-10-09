@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_change_coins:
 
 Change coins

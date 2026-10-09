@@ -1,5 +1,3 @@
-:orphan:
-
 .. _pymunk_demo_platformer_10_diff:
 
 pymunk_demo_platformer_10.py Diff

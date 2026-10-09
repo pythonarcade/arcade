@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_move_keyboard:
 
 Move By Keyboard

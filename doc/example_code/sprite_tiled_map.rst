@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_tiled_map:
 
 Work with loading in a Tiled map file

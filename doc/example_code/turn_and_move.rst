@@ -1,5 +1,3 @@
-:orphan:
-
 .. _turn_and_move:
 
 Move to Mouse Click

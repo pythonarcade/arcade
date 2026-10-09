@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_collect_coins_move_circle:
 
 Collect Coins that are Moving in a Circle

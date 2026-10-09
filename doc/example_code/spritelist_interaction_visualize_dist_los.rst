@@ -1,5 +1,3 @@
-:orphan:
-
 .. _spritelist_interaction_visualize_dist_los:
 
 GPU Based Line of Sight

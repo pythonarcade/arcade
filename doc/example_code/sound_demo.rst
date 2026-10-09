@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sound_demo:
 
 Sound Demo

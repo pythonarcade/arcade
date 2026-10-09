@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_bouncing_coins:
 
 Sprite Bouncing Coins

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _pymunk_pegboard:
 
 Pymunk Physics Engine - Pegboard

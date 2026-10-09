@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_explosion_particles:
 
 Sprite Explosions Particles

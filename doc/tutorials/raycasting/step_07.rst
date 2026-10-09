@@ -1,5 +1,3 @@
-:orphan:
-
 .. _raycasting_step_07:
 
 Step 7 Python

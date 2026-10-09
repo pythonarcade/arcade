@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_collect_coins_background:
 
 Using a Background Image

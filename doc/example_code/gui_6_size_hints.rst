@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_6_size_hints:
 
 GUI Size Hints

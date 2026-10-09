@@ -1,5 +1,3 @@
-:orphan:
-
 .. _01_views:
 
 01_views.py Full Listing

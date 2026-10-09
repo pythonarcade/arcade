@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_exp_scroll_area:
 
 GUI Scroll Area

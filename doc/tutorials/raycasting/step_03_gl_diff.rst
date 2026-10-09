@@ -1,5 +1,3 @@
-:orphan:
-
 .. _raycasting_step_03_gl_diff:
 
 step_03.glsl Diff

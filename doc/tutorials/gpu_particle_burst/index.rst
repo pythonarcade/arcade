@@ -431,3 +431,32 @@ Program Listings
 * :ref:`vertex_shader_v5` |larr| Where we are right now
 * :ref:`vertex_shader_v5_diff` |larr| What we changed to get here
 
+.. Pages linked from this page. Listing them puts them in the
+   sidebar under this page, which shows readers where they are.
+
+.. toctree::
+   :hidden:
+
+   gpu_particle_burst_01
+   gpu_particle_burst_02
+   vertex_shader_v1
+   fragment_shader
+   gpu_particle_burst_02_diff
+   gpu_particle_burst_03
+   vertex_shader_v2
+   vertex_shader_v2_diff
+   gpu_particle_burst_03_diff
+   gpu_particle_burst_04
+   gpu_particle_burst_04_diff
+   gpu_particle_burst_05
+   gpu_particle_burst_05_diff
+   gpu_particle_burst_06
+   vertex_shader_v3
+   vertex_shader_v3_diff
+   gpu_particle_burst_06_diff
+   gpu_particle_burst_07
+   vertex_shader_v4
+   vertex_shader_v4_diff
+   gpu_particle_burst_07_diff
+   vertex_shader_v5
+   vertex_shader_v5_diff

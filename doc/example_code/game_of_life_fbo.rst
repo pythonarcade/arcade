@@ -1,5 +1,3 @@
-:orphan:
-
 .. _game_of_life_fbo:
 
 Game of Life with Frame Buffers

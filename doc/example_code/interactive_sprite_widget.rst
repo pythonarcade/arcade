@@ -1,5 +1,3 @@
-:orphan:
-
 .. _interactive_sprite_widget:
 
 Interactive Sprite Widget

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _star_nest:
 
 star_nest.glsl Full Listing

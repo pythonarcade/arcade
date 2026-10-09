@@ -1,5 +1,3 @@
-:orphan:
-
 .. _cyber_fuji_2020:
 
 cyber_fuji_2020.glsl Full Listing
