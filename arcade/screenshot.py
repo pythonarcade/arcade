@@ -57,6 +57,20 @@ def get_image(
         image = arcade.get_image()
         image.save('screenshot.png')
 
+    To take a screenshot when a key is pressed, set a flag in
+    ``on_key_press`` and save the image in ``on_draw``::
+
+        def on_key_press(self, key, modifiers):
+            if key == arcade.key.F12:
+                self.take_screenshot = True
+
+        def on_draw(self):
+            self.clear()
+            # ... draw everything ...
+            if self.take_screenshot:
+                arcade.get_image().save('screenshot.png')
+                self.take_screenshot = False
+
     Args:
         x: Start (left) x location
         y: Start (bottom) y location
