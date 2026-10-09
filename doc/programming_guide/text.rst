@@ -196,7 +196,14 @@ file name:
     text = arcade.Text("Hello", 10, 10, font_name="My Font")
 
 The name is set inside the font file. Your operating system's font
-viewer shows it.
+viewer shows it, though some add the style, such as
+``"Grand Hotel, Regular"`` for a font named ``"Grand Hotel"``. If you're
+not sure of the name, use the file's path as ``font_name`` instead.
+
+Many free fonts, such as most on `Google Fonts <https://fonts.google.com/>`_,
+use the SIL Open Font License, which lets you ship them with your game.
+Include the font's license file with it. For more about fonts, see pyglet's
+:doc:`text guide <pyglet:programming_guide/text>`.
 
 Fonts that come with Arcade
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
