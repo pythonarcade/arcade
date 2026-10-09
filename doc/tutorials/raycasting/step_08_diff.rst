@@ -1,5 +1,3 @@
-:orphan:
-
 .. _raycasting_step_08_diff:
 
 step_08.py Diff

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _solitaire_10:
 
 solitaire_10.py Full Listing

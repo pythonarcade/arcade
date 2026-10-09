@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_exp_hidden_password:
 
 GUI Hidden Password

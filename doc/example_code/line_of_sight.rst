@@ -1,5 +1,3 @@
-:orphan:
-
 .. _line_of_sight:
 
 Line of Sight

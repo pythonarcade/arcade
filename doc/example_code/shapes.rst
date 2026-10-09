@@ -1,5 +1,3 @@
-:orphan:
-
 .. _shapes-slow:
 
 Bouncing Shapes

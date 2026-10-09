@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_health:
 
 Hit Points and Health Bars

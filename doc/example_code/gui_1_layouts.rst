@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_1_layouts:
 
 GUI Layouts

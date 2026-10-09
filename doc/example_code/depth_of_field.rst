@@ -1,5 +1,3 @@
-:orphan:
-
 .. _depth_of_field:
 
 Depth of Field Blur

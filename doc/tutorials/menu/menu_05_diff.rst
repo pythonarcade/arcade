@@ -1,5 +1,3 @@
-:orphan:
-
 .. _menu_05_diff:
 
 menu_05.py Diff

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _light_demo:
 
 Lighting Demo

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _raycasting_step_01:
 
 Step 1

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_rooms:
 
 Moving Between Different Rooms

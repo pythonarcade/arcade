@@ -1,5 +1,3 @@
-:orphan:
-
 .. _fractal_pyramid:
 
 fractal_pyramid.glsl Full Listing

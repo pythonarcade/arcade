@@ -1,5 +1,3 @@
-:orphan:
-
 .. _controller:
 
 How To Get Connected Controllers

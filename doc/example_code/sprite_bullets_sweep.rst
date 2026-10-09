@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_bullets_sweep:
 
 Fast Bullets and Thin Walls

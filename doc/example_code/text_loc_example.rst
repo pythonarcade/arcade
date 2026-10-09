@@ -1,5 +1,3 @@
-:orphan:
-
 .. _text_loc_example:
 
 Text Localization

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _pymunk_demo_platformer_03:
 
 pymunk_demo_platformer_03.py Full Listing

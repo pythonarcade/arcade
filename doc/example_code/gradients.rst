@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gradients:
 
 Gradients Example

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _happy_face:
 
 Happy Face

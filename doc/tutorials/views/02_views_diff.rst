@@ -1,5 +1,3 @@
-:orphan:
-
 .. _02_views_diff:
 
 02_views.py Diff

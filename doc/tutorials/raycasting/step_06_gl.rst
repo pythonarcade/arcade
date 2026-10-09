@@ -1,5 +1,3 @@
-:orphan:
-
 .. _raycasting_step_06_gl:
 
 Step 6 GLSL

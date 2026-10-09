@@ -1,5 +1,3 @@
-:orphan:
-
 .. _solitaire_03_diff:
 
 solitaire_03.py Diff

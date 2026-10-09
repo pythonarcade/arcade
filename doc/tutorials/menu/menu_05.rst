@@ -1,5 +1,3 @@
-:orphan:
-
 .. _menu_05:
 
 menu_05.py Full Listing

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _music_control_demo:
 
 Music Control Demo

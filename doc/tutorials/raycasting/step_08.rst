@@ -1,5 +1,3 @@
-:orphan:
-
 .. _raycasting_step_08:
 
 Step 8 Python

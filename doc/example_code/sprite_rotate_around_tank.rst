@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_rotate_around_tank:
 
 Move By Keyboard, Fire Towards Mouse

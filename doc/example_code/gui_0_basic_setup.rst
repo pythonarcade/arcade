@@ -1,5 +1,3 @@
-:orphan:
-
 .. _gui_0_basic_setup:
 
 GUI Basic Setup

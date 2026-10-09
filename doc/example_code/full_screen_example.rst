@@ -1,5 +1,3 @@
-:orphan:
-
 .. _full_screen_example:
 
 Full Screen Example

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _easing_example_2:
 
 Easing Example 2

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_laser_mirrors:
 
 Lasers and Mirrors

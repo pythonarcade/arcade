@@ -1,5 +1,3 @@
-:orphan:
-
 .. _resizable_window:
 
 Resizable Window

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _sprite_follow_simple:
 
 Sprites That Follow The Player

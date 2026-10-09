@@ -182,3 +182,17 @@ our view.
 
 * :ref:`04_views` |larr| Full listing of where we are right now
 * :ref:`04_views_diff` |larr| What we changed to get here
+
+.. Pages linked from this page. Listing them puts them in the
+   sidebar under this page, which shows readers where they are.
+
+.. toctree::
+   :hidden:
+
+   01_views
+   02_views
+   02_views_diff
+   03_views
+   03_views_diff
+   04_views
+   04_views_diff

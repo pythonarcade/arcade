@@ -1,5 +1,3 @@
-:orphan:
-
 .. _view_pause_screen:
 
 Using Views for a Pause Screen

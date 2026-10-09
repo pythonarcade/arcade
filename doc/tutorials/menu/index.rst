@@ -333,3 +333,19 @@ Program Listings
 
 * :ref:`menu_05` |larr| Where we are right now
 * :ref:`menu_05_diff` |larr| What we changed to get here
+
+.. Pages linked from this page. Listing them puts them in the
+   sidebar under this page, which shows readers where they are.
+
+.. toctree::
+   :hidden:
+
+   menu_01
+   menu_02
+   menu_02_diff
+   menu_03
+   menu_03_diff
+   menu_04
+   menu_04_diff
+   menu_05
+   menu_05_diff

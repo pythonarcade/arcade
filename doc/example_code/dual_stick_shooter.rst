@@ -1,5 +1,3 @@
-:orphan:
-
 .. _dual_stick_shooter:
 
 Dual Stick Shooter

@@ -1,5 +1,3 @@
-:orphan:
-
 .. _vertex_shader_v4:
 
 vertex_shader_v4.glsl Full Listing
