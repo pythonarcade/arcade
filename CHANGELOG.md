@@ -7,6 +7,10 @@ Arcade [PyPi Release History](https://pypi.org/project/arcade/#history) page.
 
 ### Fixes
 - Fixed `DefaultTextureAtlas` raising `KeyError` when a texture was added while the garbage collector freed the last other texture with the same image and transform. The collector could run in the middle of adding the new texture, and the freed texture's finalizer removed the slot the new one was about to share. It showed up in CI on Python 3.14, whose garbage collector runs at different times, when loading a tile map.
+- Fixed blocky, uneven text on scaled (HiDPI) displays, such as Windows set to 125% or 150%. Arcade's windows use pyglet's `"stretch"` scaling, so text was rasterized at the window's size and then stretched to fill the larger framebuffer, giving strokes of uneven width. It looked worse after the default font changed to Liberation Sans, which shows the stretching more than Calibri did. `Text`, `draw_text` and GUI text now lay their glyphs out at the framebuffer's resolution and draw them back at the same size, so they're sharp. Nothing changes at a scale of 100%.
+  - Positions and sizes on `Text`, such as `x`, `content_width` and `left`, are still in window units. The pyglet label in `Text.label` uses framebuffer pixels on a scaled display.
+  - Text can come out a few percent wider, because the font is hinted for the larger size.
+  - `create_text_sprite` is unchanged; its texture is the size of the text in window units.
 - Fixed `DefaultTextureAtlas` losing track of textures that share an image, such as every `SpriteSolidColor` size, which share one white image:
   - Once the first texture with a given image was freed while another was still in use, resizing the atlas, which happens when it fills up, raised `RuntimeError: Empty set in unique textures` and left the atlas half-resized.
   - If the last texture's finalizer ran before Python had cleared it from the atlas's records, the atlas kept the texture's name after freeing its slot. Adding another texture with that image then raised `Texture '...' not found in UVData`. This showed up as an occasional CI failure.
