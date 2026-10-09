@@ -10,8 +10,8 @@ class RawBindBase(TypedDict):
     """General base for raw axis or action binds.
 
     Anything matching this can be passed to
-    :py:func:`~arcade.future.input.inputs.parse_mapping_input_enum` to
-    extract a corresponding :py:class:`~arcade.future.input.inputs.InputEnum`
+    :py:func:`~arcade.input.inputs.parse_mapping_input_enum` to
+    extract a corresponding :py:class:`~arcade.input.inputs.InputEnum`
     value.
 
     For specific raw types, see:
@@ -35,14 +35,14 @@ class RawAxisMapping(RawBindBase):
 
 
 class RawAction(TypedDict):
-    """Annotates the raw form for :py:class:`ActionMapping`."""
+    """Annotates the raw form for :py:class:`~arcade.input.ActionMapping`."""
 
     name: str
     mappings: list[RawActionMapping]
 
 
 class RawAxis(TypedDict):
-    """Annotates the raw form for :py:class:`AxisMapping`."""
+    """Annotates the raw form for :py:class:`~arcade.input.AxisMapping`."""
 
     name: str
     mappings: list[RawAxisMapping]

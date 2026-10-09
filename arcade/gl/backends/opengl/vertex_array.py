@@ -453,7 +453,7 @@ class OpenGLGeometry(Geometry):
     for very flexible rendering pipelines and saves the user from a lot of manual
     bookkeeping.
 
-    Geometry objects should be created through :py:meth:`arcade.gl.Context.geometry`
+    Geometry objects should be created through :py:meth:`arcade.gl.context.Context.geometry`
 
     Args:
         ctx:

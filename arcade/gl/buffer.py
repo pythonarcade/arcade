@@ -26,7 +26,7 @@ class Buffer(ABC):
     types. See :ref:`prog-guide-gl-buffer-protocol-typing` for more
     information.
 
-    .. warning:: Buffer objects should be created using :py:meth:`arcade.gl.Context.buffer`
+    .. warning:: Buffer objects should be created using :py:meth:`arcade.gl.context.Context.buffer`
 
     Args:
         ctx:

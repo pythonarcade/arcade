@@ -18,7 +18,8 @@ class TextureArray(ABC):
     A texture can also be created with different datatypes such as
     float, integer or unsigned integer.
 
-    The best way to create a texture instance is through :py:meth:`arcade.gl.Context.texture`
+    The best way to create a texture instance is through
+    :py:meth:`arcade.gl.context.Context.texture`
 
     Supported ``dtype`` values are::
 
@@ -402,7 +403,7 @@ class TextureArray(ABC):
         """Write byte data into layers of the texture.
 
         The ``data`` value can be either an
-        :py:class:`arcade.gl.Buffer` or anything that implements the
+        :py:class:`arcade.gl.buffer.Buffer` or anything that implements the
         `Buffer Protocol <https://docs.python.org/3/c-api/buffer.html>`_.
 
         The latter category includes ``bytes``, ``bytearray``,
@@ -413,7 +414,7 @@ class TextureArray(ABC):
 
         Args:
             data:
-                :class:`~arcade.gl.Buffer` or buffer protocol object with data to write.
+                :class:`~arcade.gl.buffer.Buffer` or buffer protocol object with data to write.
             level:
                 The texture level to write (LoD level, now layer)
             viewport:

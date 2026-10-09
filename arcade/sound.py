@@ -110,8 +110,8 @@ class Sound:
 
         Args:
             volume: Volume (``0.0`` is silent, ``1.0`` is loudest).
-            pan: Left / right channel balance (``-1`` is left,  ``0.0`` is
-                center, and ``1.0`` is right).
+            pan: Left / right channel balance, from ``-1.0`` (left) through
+                ``0.0`` (center) to ``1.0`` (right).
             loop: ``True`` attempts to restart playback after finishing.
             speed: Change the speed (and pitch) of the sound. Default speed is
                 ``1.0``.
@@ -276,7 +276,7 @@ def play_sound(
 
     The ``sound`` must be a loaded :py:class:`Sound` object. If you
     pass a path or :py:class:`str`, the function will raise a
-    :py:class:`TypeError.`
+    :py:class:`TypeError`.
 
     .. important:: A :py:class:`Sound` with ``streaming=True`` loses features!
 
@@ -311,8 +311,8 @@ def play_sound(
     Args:
         sound: A :py:class:`Sound` instance or ``None``.
         volume: From ``0.0`` (silent) to ``1.0`` (max volume).
-        pan: The left / right ear balance (``-1`` is left, ``0`` is center,
-        and ``1`` is right)
+        pan: The left / right ear balance, from ``-1`` (left) through
+            ``0`` (center) to ``1`` (right).
         loop: ``True`` makes playback restart each time it reaches the end.
         speed: How fast to play. Slower than ``1.0`` deepens sound while
             values higher than ``1.0`` raise the pitch.

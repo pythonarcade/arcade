@@ -61,7 +61,7 @@ class Scene:
 
     * :py:meth:`.add_sprite`, which adds sprites to layers by name
     * :py:meth:`.Scene.from_tilemap`, which creates a scene from a
-      :py:class:`~arcade.tilemap.TileMap` already loaded from tiled data
+      :py:class:`~arcade.tilemap.tilemap.TileMap` already loaded from tiled data
     * Fine-grained convenience methods for adding, deleting, and reordering
       sprite lists
     * Flexible but slow general convenience methods
@@ -110,13 +110,13 @@ class Scene:
     @classmethod
     def from_tilemap(cls, tilemap: TileMap) -> "Scene":
         """
-        Create a new Scene from a :py:class:`~arcade.tilemap.TileMap` object.
+        Create a new Scene from a :py:class:`~arcade.tilemap.tilemap.TileMap` object.
 
         The SpriteLists will use the layer names and ordering as defined in the
         Tiled file.
 
         Args:
-            tilemap: The :py:class:`~arcade.tilemap.TileMap`
+            tilemap: The :py:class:`~arcade.tilemap.tilemap.TileMap`
                 object to create the scene from.
         """
         scene = cls()

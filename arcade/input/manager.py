@@ -75,8 +75,7 @@ class InputManager:
     you intend to have multiple controllers connected to your game, each controller should have it's
     own InputManager.
 
-    For runnable examples of how to use this, please see Arcdade's
-    :ref:`built-in InputManager examples <input_manager_examples>`.
+    For a runnable example, see ``arcade/examples/sprite_move_input_manager.py``.
 
     Args:
         controller:
@@ -165,9 +164,10 @@ class InputManager:
 
         This does not include current values of inputs, but rather the structure of the
         InputManager. Including:
-          - Actions: All registered actions
-          - Axes: All registered axis inputs
-          - Current Mappings: All current mappings of underlying inputs to actions/axis
+
+        - Actions: All registered actions
+        - Axes: All registered axis inputs
+        - Current Mappings: All current mappings of underlying inputs to actions/axis
 
         The output dictionary of this function can be passed to :meth:`arcade.InputManager.parse` to
         create a new InputManager from a serialized one.

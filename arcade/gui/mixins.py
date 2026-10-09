@@ -60,7 +60,7 @@ class UIMouseFilterMixin(UIWidget):
     """:class:`UIMouseFilterMixin` can be used to catch all mouse events which occur
     inside this widget.
 
-    Useful for window like widgets, :class:`UIMouseEvents` should not trigger
+    Useful for window like widgets, mouse events should not trigger
     effects which are under the widget.
     """
 

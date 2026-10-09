@@ -843,7 +843,7 @@ class Text:
         .. warning:: Cameras affect text drawing!
 
             If you want to draw a custom GUI that doesn't move with the
-            game world, you will need a second :py:class:`~arcade.Camera`
+            game world, you will need a second :py:class:`~arcade.Camera2D`
             instance. For information on how to do this, see
             :ref:`sprite_move_scrolling`.
         """
@@ -1113,7 +1113,7 @@ def create_text_sprite(
             Valid options: ``"left"``, ``"center"``, ``"right"``.
         font_name: A font name, path to a font file, or list of names
         bold: Whether to draw the text as bold, and if a string,
-              how bold. See :py:attr:`arcade.gui.widgets.text.bold` to learn more.
+              how bold. See :py:attr:`arcade.Text.bold` to learn more.
         italic: Whether to draw the text as italic
         anchor_x: How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"
@@ -1295,7 +1295,7 @@ def draw_text(
             Valid options: ``"left"``, ``"center"``, ``"right"``.
         font_name: A font name, path to a font file, or list of names
         bold: Whether to draw the text as bold, and if a string,
-              how bold. See :py:attr:`arcade.gui.widgets.text.bold` to learn more.
+              how bold. See :py:attr:`arcade.Text.bold` to learn more.
         italic: Whether to draw the text as italic
         anchor_x: How to calculate the anchor point's x coordinate.
                   Options: "left", "center", or "right"

@@ -11,7 +11,7 @@ class Query(ABC):
     """
     A query object to perform low level measurements of OpenGL rendering calls.
 
-    The best way to create a program instance is through :py:meth:`arcade.gl.Context.query`
+    The best way to create a program instance is through :py:meth:`arcade.gl.context.Context.query`
 
     Example usage::
 

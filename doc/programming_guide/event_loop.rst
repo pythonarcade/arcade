@@ -7,10 +7,10 @@ Introduction
 Python Arcade provides three simple methods to integrate with the event loop.
 All three methods are exposed to be overridden in :py:class:`arcade.Window`
 and :py:class:`arcade.View`. For advanced use cases it is possible to add own
-handler via :py:func:`arcade.Window.push_handlers`.
+handler via :py:meth:`~pyglet.event.EventDispatcher.push_handlers`.
 
-:py:func:`on_draw`
-^^^^^^^^^^^^^^^^^^
+:py:meth:`~arcade.Window.on_draw`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Provides a hook to render to the window. After the ``on_draw`` event, the window
 will draw to the screen. By default, this attempts to occur every 1/60 seconds
@@ -26,8 +26,8 @@ possible and will raise an error.
 After every draw event camera state will be reset. This means that non-default
 cameras must be reused on every draw event.
 
-:py:func:`on_update`
-^^^^^^^^^^^^^^^^^^^^
+:py:meth:`~arcade.Window.on_update`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 provides a hook to update state which needs to happen at a roughly regular interval.
 The update event is not strictly paired to the draw event, but they share the same
@@ -36,8 +36,8 @@ The event also provides a ``delta_time`` argument which is the time elapsed sinc
 last ``on_update`` event. You can change the rate at which ``on_update`` is called with
 the ``update_rate`` argument when initializing your :py:class:`arcade.Window`.
 
-:py:func:`on_fixed_update`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+:py:meth:`~arcade.Window.on_fixed_update`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 provides a hook to update state which must happen with an exactly regular interval.
 Because Arcade can't ensure the event is actually fired regularly it stores how

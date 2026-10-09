@@ -278,7 +278,7 @@ class BufferDescription:
         normalized: Iterable[str] | None = None,
         instanced: bool = False,
     ):
-        #: The :py:class:`~arcade.gl.Buffer` this description object describes
+        #: The :py:class:`~arcade.gl.buffer.Buffer` this description object describes
         self.buffer = buffer  # type: Buffer
         #: List of string attributes
         self.attributes = attributes

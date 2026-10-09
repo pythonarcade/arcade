@@ -226,7 +226,7 @@ class DefaultTextureAtlas(TextureAtlasBase):
     def textures(self) -> list[Texture]:
         """
         All textures instance added to the atlas regardless
-        of their internal state. See :py:meth:`unique_textures``
+        of their internal state. See :py:attr:`unique_textures`
         for textures with unique image data and transformation.
         """
         return list(self._textures)

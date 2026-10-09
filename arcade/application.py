@@ -1109,7 +1109,8 @@ class Window(pyglet.window.Window):
 
         pyglet looks up ``Window.camera`` (rather than ``default_camera``)
         as the fallback camera for batch draws with no camera explicitly
-        set, so this needs to resolve to the same :py:class:`DefaultProjector`
+        set, so this needs to resolve to the same
+        :py:class:`~arcade.camera.default.DefaultProjector`
         to keep pyglet's internal drawing (e.g. :py:class:`~pyglet.text.Label`)
         going through arcade's projection/scissor handling.
 

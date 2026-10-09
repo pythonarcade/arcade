@@ -23,7 +23,7 @@ class ReadOnlySpatialHash(Protocol[SpriteType_co]):
     #. It is then manipulated outside the original context with a broader type
 
     Advanced users who want more information on the specifics should see the
-    comments of :py:class:`~arcade.sprite_list.SpriteList`.
+    comments of :py:class:`~arcade.SpriteList`.
     """
 
     @abstractmethod
@@ -51,7 +51,7 @@ class ReadOnlySpatialHash(Protocol[SpriteType_co]):
         """
         Return sprites in the same buckets as the given rectangle.
 
-        .. tip:: Use :py:mod:`arcade.types.rect`'s helper functions to create
+        .. tip:: Use the helper functions in ``arcade.types.rect`` to create
           rectangle objects!
 
         Args:

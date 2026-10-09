@@ -280,7 +280,7 @@ class BasicSprite:
 
         See :py:attr:`.scale_x` and :py:attr:`.scale_y` for individual access.
 
-        See :py:meth:`.scale_multiply_uniform` for uniform scaling.
+        See :py:meth:`.multiply_scale` for uniform scaling.
 
         .. note:: Negative scale values are supported.
 
@@ -729,7 +729,7 @@ class BasicSprite:
 
         Internally, this function does the following:
 
-        1. Multiply the x & y of the sprite's :py:attr:`~scale_xy`
+        1. Multiply the x & y of the sprite's :py:attr:`scale`
            attribute by the corresponding part from ``factors_xy``.
         2. Scale the x & y of the difference between the sprite's
            position and ``point`` by the corresponding component from

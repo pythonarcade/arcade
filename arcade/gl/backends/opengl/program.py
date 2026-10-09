@@ -43,7 +43,8 @@ class OpenGLProgram(Program):
     Transform feedback also supported when output attributes
     names are passed in the varyings parameter.
 
-    The best way to create a program instance is through :py:meth:`arcade.gl.Context.program`
+    The best way to create a program instance is through
+    :py:meth:`arcade.gl.context.Context.program`
 
     Args:
         ctx:

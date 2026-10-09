@@ -20,7 +20,7 @@ class Framebuffer(ABC):
     The advantage of using texture attachments is the ability we get
     to keep working on the contents of the framebuffer.
 
-    The best way to create framebuffer is through :py:meth:`arcade.gl.Context.framebuffer`::
+    The best way to create framebuffer is through :py:meth:`arcade.gl.context.Context.framebuffer`::
 
         # Create a 100 x 100 framebuffer with one attachment
         ctx.framebuffer(color_attachments=[ctx.texture((100, 100), components=4)])
@@ -176,7 +176,7 @@ class Framebuffer(ABC):
     @property
     def depth_mask(self) -> bool:
         """
-        Get or set the depth mask (default: ``True``).
+        Get or set the depth mask. Defaults to ``True``.
 
         It determines if depth values should be written
         to the depth texture when depth testing is enabled.

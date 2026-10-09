@@ -107,28 +107,28 @@ class Sprite(BasicSprite, PymunkMixin):
         """
         :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
         uses this as the left boundary for moving
-        :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        :py:attr:`~arcade.PhysicsEnginePlatformer.platforms`.
         """
 
         self.boundary_right: float | None = None
         """
         :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
         uses this as the right boundary for moving
-        :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        :py:attr:`~arcade.PhysicsEnginePlatformer.platforms`.
         """
 
         self.boundary_top: float | None = None
         """
         :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
         uses this as the top boundary for moving
-        :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        :py:attr:`~arcade.PhysicsEnginePlatformer.platforms`.
         """
 
         self.boundary_bottom: float | None = None
         """
         :py:class:`~arcade.physics_engines.PhysicsEnginePlatformer`
         uses this as the top boundary for moving
-        :py:attr:`~arcade.physics_engines.PhysicsEnginePlatformer.platforms`.
+        :py:attr:`~arcade.PhysicsEnginePlatformer.platforms`.
         """
 
         self.cur_texture_index: int = 0

@@ -55,7 +55,7 @@ class UIRenderGroup(UILayout):
     # Intentionally shadows UIWidget.scale()
     scale: Property[float | tuple[float, float]] = Property(1.0)  # type: ignore[assignment]
     """Scale factor applied around ``anchor``.
-    Shadows :meth:`UIWidget.scale`, which resizes the rect instead."""
+    Shadows :meth:`~arcade.gui.UIWidget.scale`, which resizes the rect instead."""
     tint = Property(WHITE)
     """Color multiplier applied to the whole subtree."""
     offset_x = Property(0.0)

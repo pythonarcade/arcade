@@ -200,7 +200,7 @@ class UIAnchorLayout(UILayout):
 
 class UIBoxLayout(UILayout):
     """Place widgets next to each other. Depending on the
-    :py:class:`~arcade.gui.UIBoxLayout.vertical` attribute, the widgets are
+    ``vertical`` attribute, the widgets are
     placed top to bottom or left to right.
 
     .. hint::

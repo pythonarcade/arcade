@@ -547,10 +547,11 @@ ChildGetter = Callable[[Any], Any]
 
 class AliasProperty(Property[P]):
     """A property that transparently delegates reads, writes, and listener
-    registration to a named :class:`Property` on a child object.
+    registration to a named :class:`~arcade.gui.Property` on a child object.
 
     This lets a parent widget expose a child's property as its own, so callers
-    can use :func:`bind` / :func:`unbind` on the parent without knowing about
+    can use :func:`~arcade.gui.bind` / :func:`~arcade.gui.unbind` on the parent without
+    knowing about
     the child:
 
     .. code-block:: python
@@ -570,7 +571,7 @@ class AliasProperty(Property[P]):
             returns the child object owning the real property.  A plain
             attribute-name string (e.g. ``"_label"``) is also accepted as a
             convenience shorthand for ``lambda self: getattr(self, "_label")``.
-        child_prop_name: The attribute name of the :class:`Property` on the
+        child_prop_name: The attribute name of the :class:`~arcade.gui.Property` on the
             child class to delegate to.
     """
 
