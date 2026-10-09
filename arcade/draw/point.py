@@ -1,9 +1,8 @@
-import array
-
 from arcade.types import Color, Point2List, RGBOrA255
 from arcade.types.rect import XYWH
 from arcade.window_commands import get_window
 
+from .helpers import _flatten_points
 from .rect import draw_rect_filled
 
 
@@ -66,7 +65,7 @@ def draw_points(point_list: Point2List, color: RGBOrA255, size: float = 1.0) -> 
     num_points = len(point_list)
     if num_points == 0:
         return
-    point_array = array.array("f", (v for point in point_list for v in point))
+    point_array = _flatten_points(point_list)
 
     # Resize buffer
     data_size = num_points * 8
