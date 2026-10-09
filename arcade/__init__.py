@@ -141,7 +141,6 @@ from .screenshot import get_pixel
 # Game controllers are imported on first use, because pyglet lists the
 # input devices when imported. See __getattr__ at the bottom of this file.
 if TYPE_CHECKING:
-    from .joysticks import get_game_controllers
     from .joysticks import get_joysticks
     from .controller import ControllerManager
     from .controller import get_controllers
@@ -162,13 +161,8 @@ from .sound import load_sound
 from .sound import play_sound
 from .sound import stop_sound
 
-from .sprite import FACE_DOWN
-from .sprite import FACE_LEFT
-from .sprite import FACE_RIGHT
-from .sprite import FACE_UP
 from .sprite import TextureAnimationSprite
 from .sprite import load_animated_gif
-from .sprite import AnimatedWalkingSprite
 from .sprite import TextureAnimation
 from .sprite import TextureKeyframe
 from .sprite import PyMunk
@@ -283,16 +277,11 @@ __all__ = [
     "PSControllerButtons",
     "XBoxControllerButtons",
     "AStarBarrierList",
-    "AnimatedWalkingSprite",
     "TextureAnimationSprite",
     "TextureAnimation",
     "TextureKeyframe",
     "ArcadeContext",
     "ControllerManager",
-    "FACE_DOWN",
-    "FACE_LEFT",
-    "FACE_RIGHT",
-    "FACE_UP",
     "MOUSE_BUTTON_LEFT",
     "MOUSE_BUTTON_MIDDLE",
     "MOUSE_BUTTON_RIGHT",
@@ -361,8 +350,6 @@ __all__ = [
     "draw_line_strip",
     "draw_lines",
     "draw_lrbt_rectangle_filled",
-    "draw_lrbt_rectangle_filled",
-    "draw_lrbt_rectangle_outline",
     "draw_lrbt_rectangle_outline",
     "draw_parabola_filled",
     "draw_parabola_outline",
@@ -388,7 +375,6 @@ __all__ = [
     "get_distance_between_sprites",
     "get_sprites_in_rect",
     "get_controllers",
-    "get_game_controllers",
     "get_image",
     "get_joysticks",
     "get_pixel",
@@ -450,7 +436,6 @@ _LAZY_IMPORTS: dict[str, str] = {}
 if not headless:
     _LAZY_IMPORTS = {
         "get_joysticks": "joysticks",
-        "get_game_controllers": "joysticks",
         "joysticks": "joysticks",
         "ControllerManager": "controller",
         "get_controllers": "controller",
