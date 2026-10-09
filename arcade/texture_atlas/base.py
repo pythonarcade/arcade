@@ -132,7 +132,7 @@ class TextureAtlasBase(abc.ABC):
         Returns:
             texture_id, AtlasRegion tuple
         Raises:
-            AllocatorException: If there are no room for the texture
+            pyglet.graphics.atlas.AllocatorException: If there are no room for the texture
         """
         ...
 

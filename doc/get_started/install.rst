@@ -68,7 +68,7 @@ can always :ref:`ask for help. <how-to-get-help>`.
 Raspberry Pi and Other ARM SBCs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Arcade and :py:mod:`pyglet` teams have verified the Raspberry Pi 4 and 5
+The Arcade and pyglet teams have verified the Raspberry Pi 4 and 5
 as working. The Raspberry Pi 400 will also likely work, but other Pi models will not.
 
 To learn more, please see:

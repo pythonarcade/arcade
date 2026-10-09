@@ -158,7 +158,7 @@ class Sound:
         return player
 
     def stop(self, player: media.AudioPlayer) -> None:
-        """Stop and :py:meth:`~pyglet.media.player.Player.delete` ``player``.
+        """Stop and :py:meth:`~pyglet.media.player.AudioPlayer.delete` ``player``.
 
         All references to it in the internal table for
         :py:class:`pyglet.media.Source` will be deleted.
@@ -300,7 +300,7 @@ def play_sound(
 
        * - Yes
          - N/A
-         - A pyglet :py:class:`~pyglet.media.player.Player`
+         - A pyglet :py:class:`~pyglet.media.player.AudioPlayer`
 
     To learn more about the ``streaming`` keyword and restrictions, please see:
 

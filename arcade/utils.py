@@ -35,7 +35,7 @@ is_pyodide = True if sys.platform == "emscripten" else False
 
 
 class Chain(Generic[_T]):
-    """A reusable OOP version of :py:class:`itertools.chain`.
+    """A reusable OOP version of :py:func:`itertools.chain`.
 
     In some cases (physics engines), we need to iterate over multiple
     sequences of objects repeatedly. This class provides a way to do so
@@ -166,7 +166,7 @@ def grow_sequence(
     * an abbreviation for repetitive if-blocks in config and settings menus
 
     The default ``append_if`` value is the :py:func:`.is_str_or_noniterable`
-    function in this module. You can pass any :py:func:`~typing.Callable`
+    function in this module. You can pass any :py:data:`~typing.Callable`
     which returns:
 
     * ``True`` if we should :py:meth:`append <list.append>`

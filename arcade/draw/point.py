@@ -16,7 +16,7 @@ def draw_point(x: float, y: float, color: RGBOrA255, size: float = 1.0) -> None:
     To draw more rounded shapes, please see:
 
     * :py:func:`arcade.draw_circle_filled`
-    * :py:func:`pyglet.shapes.Circle`
+    * :py:class:`pyglet.shapes.Circle`
 
     Args:
         x:
@@ -41,7 +41,7 @@ def draw_points(point_list: Point2List, color: RGBOrA255, size: float = 1.0) -> 
     To draw more rounded shapes, please see:
 
     * :py:func:`arcade.draw_circle_filled`
-    * :py:func:`pyglet.shapes.Circle`
+    * :py:class:`pyglet.shapes.Circle`
 
     Args:
         point_list:

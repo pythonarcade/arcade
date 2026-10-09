@@ -107,7 +107,7 @@ Batches
 ~~~~~~~
 
 Drawing many ``Text`` objects one at a time adds up. If you add them to a
-pyglet :py:class:`~pyglet.graphics.Batch`, one call draws all of them:
+pyglet :py:class:`~pyglet.graphics.draw.Batch`, one call draws all of them:
 
 .. code-block:: python
 

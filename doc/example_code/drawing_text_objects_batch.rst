@@ -10,7 +10,7 @@ The Fastest Text Drawing: pyglet Batches
 
 This example demonstrates the most efficient way to render
 :py:class:`arcade.Text` objects: adding them to pyglet's
-:py:class:`~pyglet.graphics.Batch`. Otherwise, it is the
+:py:class:`~pyglet.graphics.draw.Batch`. Otherwise, it is the
 same as the :ref:`drawing_text_objects` example.
 
 For a much simpler and slower approach,  see :ref:`drawing_text`.

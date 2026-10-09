@@ -60,10 +60,10 @@ class UILabel(UIWidget):
         y: y position (default anchor is bottom-left).
         width: Width of the label. Defaults to text width if not
             specified. See
-            :py:meth:`~pyglet.text.layout.TextLayout.content_width`.
+            :py:attr:`~pyglet.text.layout.TextLayout.content_width`.
         height: Height of the label. Defaults to text height if not
             specified. See
-            :py:meth:`~pyglet.text.layout.TextLayout.content_height`.
+            :py:attr:`~pyglet.text.layout.TextLayout.content_height`.
         font_name: A list of fonts to use. Arcade will start at the
             beginning of the tuple and keep trying to load fonts until
             success.

@@ -159,6 +159,9 @@ copy_media(REPO_LOCAL_ROOT / "doc/_static/", OUT_STATIC, {"filetiles": ("*.png",
 
 
 autodoc_inherit_docstrings = False
+# Show default values as written in the source, such as ``cls=UIWidget``.
+# Their repr (``<class ...>``) breaks Sphinx's signature parsing.
+autodoc_preserve_defaults = True
 autodoc_default_options = {
     "members": True,
     # 'member-order': 'groupwise',
@@ -247,7 +250,40 @@ pygments_style = "default"  # will use "sphinx" or the theme's default
 
 # Warn about all references where the target cannot be found.
 # This is important to always enable to catch broken doc or api links
-# nitpicky = True
+nitpicky = True
+nitpick_ignore_regex = [
+    # Type variables, such as SpriteType, W and T in generic signatures.
+    # They aren't documented, so there's nothing to link to.
+    (r"py:(class|obj)", r"(.*\.)?([A-Z]|[A-Z]\w*_co|_?\w+_contra|SpriteType|TShape|SupportsRichComparisonT|StyleRef)"),
+    # Private names (with a leading underscore) that appear in signatures
+    (r"py:(class|obj|meth)", r"(.*\.)?_\w+"),
+]
+nitpick_ignore = [
+    # Not in pyglet's docs
+    ("py:class", "pyglet.media.codecs.MediaDecoder"),
+]
+
+# Short names that type annotations use, because the module imports them
+# only for type checking. on_missing_reference below links them.
+SHORT_NAMES = {
+    "Controller": "pyglet.input.Controller",
+    "Vec2": "pyglet.math.Vec2",
+    "Vec3": "pyglet.math.Vec3",
+    "Mat4": "pyglet.math.Mat4",
+    "AbstractDocument": "pyglet.text.document.AbstractDocument",
+    # arcade.tilemap imports pytiled_parser's Color under this name
+    "Color": "pytiled_parser.common_types.Color",
+    "Image.Image": "PIL.Image.Image",
+    "Path": "pathlib.Path",
+    "Point": "arcade.types.vector_like.Point",
+    "Point2": "arcade.types.vector_like.Point2",
+    "Point3": "arcade.types.vector_like.Point3",
+    "Point2List": "arcade.types.vector_like.Point2List",
+    "RGBA255": "arcade.types.color.RGBA255",
+    "sh.SpatialHash": "arcade.SpatialHash",
+    "sh.ReadOnlySpatialHash": "arcade.sprite_list.spatial_hash.ReadOnlySpatialHash",
+    "pytiled_parser.TiledMap": "pytiled_parser.tiled_map.TiledMap",
+}
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -308,18 +344,20 @@ html_baseurl = "https://api.arcade.academy/"
 # Configuration for intersphinx enabling linking other projects
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    # As of January 25th, pyglet's 2.1.X branch is on this URL and their
-    # development build on readthedocs is for their in-progress 3.0.0 alpha.
-    "pyglet": ("https://pyglet.readthedocs.io/en/latest/", None),
+    # Arcade uses pyglet 3, which is on pyglet's development docs. Their
+    # "latest" docs are for pyglet 2.1.
+    "pyglet": ("https://pyglet.readthedocs.io/en/development/", None),
     "PIL": ("https://pillow.readthedocs.io/en/stable", None),
     "pymunk": ("https://www.pymunk.org/en/latest/", None),
+    "pytiled_parser": ("https://pytiled-parser.readthedocs.io/en/latest/", None),
+    "typing_extensions": ("https://typing-extensions.readthedocs.io/en/latest/", None),
 }
 
 # These will be joined as one block and prepended to every source file.
 # Substitutions for |version| and |release| are predefined by Sphinx.
 PROLOG_PARTS = [
     # ".. include:: /links.rst",
-    ".. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.Player`",
+    ".. |pyglet Player| replace:: pyglet :py:class:`~pyglet.media.player.AudioPlayer`",
     ".. _Arcade's License File on GitHub: {FMT_URL_REF_BASE}/license.rst",
     (  # Allows explaining how to copy anywhere in the doc.
         ".. |Example Copy Button| raw:: html\n\n"
@@ -472,6 +510,19 @@ def source_read_handler(_app, doc_name: str, source):
         generate_color_table(_get_dir(_app, "uicolor.py"), source)
 
 
+def on_missing_reference(app, env, node, contnode):
+    """Link a short name from SHORT_NAMES to its full name."""
+    full_name = SHORT_NAMES.get(node.get("reftarget"))
+    if node.get("refdomain") != "py" or full_name is None:
+        return None
+    node["reftarget"] = full_name
+    # Arcade's own names resolve here. Other libraries' are resolved by
+    # intersphinx, which handles this event after us.
+    return env.get_domain("py").resolve_xref(
+        env, node["refdoc"], app.builder, node["reftype"], full_name, node, contnode
+    )
+
+
 def on_autodoc_process_bases(app, name, obj, options, bases):
     """We don't care about the `object` base class, so remove it from the list of bases."""
     bases[:] = [base for base in bases if base is not object]
@@ -532,6 +583,8 @@ def setup(app):
     app.connect("autodoc-process-docstring", inspect_docstring_for_member)
     app.connect("autodoc-process-signature", strip_init_return_typehint, -1000)
     app.connect("autodoc-process-bases", on_autodoc_process_bases)
+    # Run before intersphinx, so it can resolve the full names of pyglet objects
+    app.connect("missing-reference", on_missing_reference, priority=400)
     # app.add_transform(Transform)
     app.add_role("resource", ResourceRole())
     # Don't do anything that can fail on this event or it'll kill your build hard
