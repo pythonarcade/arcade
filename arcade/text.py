@@ -16,6 +16,8 @@ from pyglet.enums import Style, Weight
 # Pyright can't figure out the dynamic backend imports in pyglet.graphics
 # right now. Maybe can fix in future Pyglet version
 from pyglet.graphics import Batch, Group  # type: ignore
+from pyglet.graphics.state import State
+from pyglet.math import Mat4, Vec3
 from pyglet.text import LinearGradient
 
 import arcade
@@ -172,6 +174,42 @@ def _attempt_font_name_resolution(font_name: FontNameOrNames) -> str:
     for name in names:
         _load_bundled_family(name)
     return pyglet.font.load(names).name
+
+
+class _ScaleViewState(State):
+    """Scale the view matrix while a label draws.
+
+    On a scaled (HiDPI) display, :py:class:`Text` lays its label out at the
+    framebuffer's resolution, so the glyphs aren't stretched and blurred.
+    This scales the label back down to window coordinates.
+    """
+
+    sets_state = True
+    unsets_state = True
+
+    def __init__(self, ctx: Any, scale: float) -> None:
+        self.ctx = ctx
+        self.scale = scale
+        self._saved_view: Mat4 | None = None
+
+    def set_state(self, draw_ctx: Any) -> None:
+        self._saved_view = view = self.ctx.view_matrix
+        self.ctx.view_matrix = view @ Mat4.from_scale(Vec3(self.scale, self.scale, 1.0))
+
+    def unset_state(self, draw_ctx: Any) -> None:
+        if self._saved_view is not None:
+            self.ctx.view_matrix = self._saved_view
+
+    # Equal states let a batch draw labels with the same scale together
+    def __eq__(self, other: object) -> bool:
+        return (
+            isinstance(other, _ScaleViewState)
+            and other.ctx is self.ctx
+            and other.scale == self.scale
+        )
+
+    def __hash__(self) -> int:
+        return hash((id(self.ctx), self.scale))
 
 
 def _draw_pyglet_label(label: pyglet.text.Label) -> None:
@@ -395,6 +433,10 @@ class Text:
         self._resolved_font_name: str | None = None
         # The clock tick this text was last drawn by draw_text, if it was
         self._draw_text_tick = -1
+        # Framebuffer pixels per window unit. On a scaled (HiDPI) display
+        # the label is laid out at this scale, so its glyphs are drawn at
+        # the screen's resolution instead of stretched.
+        self._scale = 1.0
 
         self._initialized = False
         try:
@@ -402,6 +444,10 @@ class Text:
         except NoArcadeWindowError:
             # No window yet, so create the label when it's first used
             pass
+
+    def _render_scale(self, window: Any) -> float:
+        """How many framebuffer pixels to lay the label out per window unit."""
+        return window.get_pixel_ratio()
 
     @property
     def label(self) -> pyglet.text.Label:
@@ -426,10 +472,25 @@ class Text:
         Deferred initialization when lazy loaded
         """
         # NOTE: Give the user a clear error message stating that the window is not created yet
-        arcade.get_window()
+        window = arcade.get_window()
 
         self._arguments["font_name"] = _attempt_font_name_resolution(self._arguments["font_name"])  # type: ignore
-        self._label = pyglet.text.Label(**self._arguments)  # type: ignore
+        arguments: dict[str, Any] = self._arguments
+        self._scale = scale = self._render_scale(window)
+        if scale != 1:
+            # Lay the label out in framebuffer pixels, then scale it back
+            # down to window units while it draws
+            arguments = dict(arguments)
+            arguments["x"] = arguments["x"] * scale
+            arguments["y"] = arguments["y"] * scale
+            for key in ("width", "height"):
+                if arguments.get(key):
+                    arguments[key] = round(arguments[key] * scale)
+            arguments["dpi"] = (arguments.get("dpi") or 96) * scale
+            group = Group(parent=arguments.get("group"))
+            group.set_state(_ScaleViewState(window.ctx, 1 / scale))
+            arguments["group"] = group
+        self._label = pyglet.text.Label(**arguments)  # type: ignore
         self._resolved_font_name = self._label.font_name
         self._initialized = True
 
@@ -532,10 +593,11 @@ class Text:
     @property
     def x(self) -> float:
         """Get or set the x position of the label."""
-        return self.label.x
+        return self.label.x / self._scale
 
     @x.setter
     def x(self, x: float) -> None:
+        x = x * self._scale
         if self.label.x == x:
             return
         self.label.x = x
@@ -543,10 +605,11 @@ class Text:
     @property
     def y(self) -> float:
         """Get or set the y position of the label."""
-        return self.label.y
+        return self.label.y / self._scale
 
     @y.setter
     def y(self, y: float):
+        y = y * self._scale
         if self.label.y == y:
             return
         self.label.y = y
@@ -669,13 +732,15 @@ class Text:
         If you are looking for the physical size if the text, see
         :py:attr:`~arcade.Text.content_width`
         """
-        return self.label.width
+        width = self.label.width
+        return None if width is None else round(width / self._scale)
 
     @width.setter
     def width(self, width: int):
-        if self.label.width == width:
+        scaled = None if width is None else round(width * self._scale)
+        if self.label.width == scaled:
             return
-        self._layout_label().width = width
+        self._layout_label().width = scaled
 
     @property
     def height(self) -> int | None:
@@ -686,48 +751,50 @@ class Text:
         If you are looking for the physical size if the text, see
         :py:attr:`~arcade.Text.content_height`
         """
-        return self.label.height
+        height = self.label.height
+        return None if height is None else round(height / self._scale)
 
     @height.setter
     def height(self, value: int):
-        if self.label.height == value:
+        scaled = None if value is None else round(value * self._scale)
+        if self.label.height == scaled:
             return
-        self._layout_label().height = value
+        self._layout_label().height = scaled
 
     @property
     def size(self):
         """Get the size of the label."""
-        return self.label.width, self.label.height
+        return self.width, self.height
 
     @property
     def content_width(self) -> int:
         """Get the pixel width of the text contents."""
-        return self.label.content_width
+        return round(self.label.content_width / self._scale)
 
     @property
     def content_height(self) -> int:
         """Get the pixel height of the text content."""
-        return self.label.content_height
+        return round(self.label.content_height / self._scale)
 
     @property
     def left(self) -> float:
         """Pixel location of the left content border."""
-        return self.label.left
+        return self.label.left / self._scale
 
     @property
     def right(self) -> float:
         """Pixel location of the right content border."""
-        return self.label.right
+        return self.label.right / self._scale
 
     @property
     def top(self) -> float:
         """Pixel location of the top content border."""
-        return self.label.top
+        return self.label.top / self._scale
 
     @property
     def bottom(self) -> float:
         """Pixel location of the bottom content border."""
-        return self.label.bottom
+        return self.label.bottom / self._scale
 
     @property
     def rect(self) -> Rect:
@@ -744,7 +811,7 @@ class Text:
     @property
     def content_size(self) -> tuple[int, int]:
         """Get the pixel width and height of the text contents."""
-        return self.label.content_width, self.label.content_height
+        return self.content_width, self.content_height
 
     @property
     def align(self) -> str:
@@ -888,14 +955,16 @@ class Text:
         This is faster than setting x and y position separately
         because the underlying geometry only needs to change position once.
         """
-        return self.label.x, self.label.y
+        label = self.label
+        return label.x / self._scale, label.y / self._scale
 
     @position.setter
     def position(self, point: Point):
         # Starting with Pyglet 2.0b2 label positions take a z parameter.
         x, y, *z = point
         label = self.label
-        position = (x, y, z[0] if z else label.z)
+        scale = self._scale
+        position = (x * scale, y * scale, z[0] if z else label.z)
         if label.position == position:
             return
         label.position = position
@@ -1074,6 +1143,18 @@ class TextPool:
         del self._cache[key]
 
 
+class _UnscaledText(Text):
+    """A Text laid out in window units even on a scaled (HiDPI) display.
+
+    :py:func:`create_text_sprite` draws text into a texture the size of the
+    text in window units, so laying it out at a higher resolution would only
+    be scaled back down.
+    """
+
+    def _render_scale(self, window: Any) -> float:
+        return 1.0
+
+
 def create_text_sprite(
     text: str,
     color: RGBOrA255 | LinearGradient = arcade.color.WHITE,
@@ -1123,7 +1204,7 @@ def create_text_sprite(
         texture_atlas: The texture atlas to use for the
             newly created texture. The default global atlas will be used if this is None.
     """
-    text_object = Text(
+    text_object = _UnscaledText(
         text,
         x=0,
         y=0,
