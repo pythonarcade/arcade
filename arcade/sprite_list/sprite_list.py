@@ -1072,6 +1072,50 @@ class SpriteList(SpriteSequence[SpriteType]):
             blend=self._blend,
         )
 
+    def draw_range(
+        self,
+        start: int = 0,
+        stop: int | None = None,
+        *,
+        filter: PyGLenum | OpenGlFilter | None = None,
+        pixelated: bool | None = None,
+        blend_function: BlendFunction | None = None,
+    ) -> None:
+        """Draw the sprites selected by ``sprite_list[start:stop]``.
+
+        The bounds follow Python slicing: ``stop`` is exclusive, negative
+        indices count from the end, and out-of-range bounds are clipped.
+        The sprites keep their list order, without creating a temporary list.
+
+        Args:
+            start: Index of the first sprite to draw.
+            stop: Exclusive end index. ``None`` draws to the end of the list.
+            filter: Optional OpenGL texture filter, as in :meth:`draw`.
+            pixelated: Whether to use pixelated rendering, as in :meth:`draw`.
+            blend_function: Optional OpenGL blend function, as in :meth:`draw`.
+
+        Raises:
+            ValueError: A custom texture-storage shader does not support the
+                ``sprite_start`` uniform required for a nonzero start index.
+        """
+        start, stop, _ = slice(start, stop).indices(len(self.sprite_list))
+        if stop <= start or not self._visible or self.alpha_normalized == 0.0:
+            return
+
+        self._init_deferred()
+        self._write_sprite_buffers_to_gpu()
+        self.data.render(
+            atlas=self._atlas,  # type: ignore
+            count=stop - start,
+            first=start,
+            color=self._color,
+            default_texture_filter=self.DEFAULT_TEXTURE_FILTER,
+            filter=filter,
+            pixelated=pixelated,
+            blend_function=blend_function,
+            blend=self._blend,
+        )
+
     def draw_hit_boxes(
         self, color: RGBOrA255 = (0, 0, 0, 255), line_thickness: float = 1.0
     ) -> None:
@@ -1498,6 +1542,7 @@ class SpriteListData:
         count: int,
         color: tuple[float, float, float, float],
         default_texture_filter: OpenGlFilter,
+        first: int = 0,
         filter: PyGLenum | OpenGlFilter | None = None,
         pixelated: bool | None = None,
         blend_function: BlendFunction | None = None,
@@ -1746,6 +1791,7 @@ class SpriteListBufferData(SpriteListData):
         count: int,
         color: tuple[float, float, float, float],
         default_texture_filter: OpenGlFilter,
+        first: int = 0,
         filter: PyGLenum | OpenGlFilter | None = None,
         pixelated: bool | None = None,
         blend_function: BlendFunction | None = None,
@@ -1809,6 +1855,7 @@ class SpriteListBufferData(SpriteListData):
             self.program,
             mode=self.ctx.POINTS,
             vertices=count,
+            first=first,
         )
 
         # Leave global states to default
@@ -1954,6 +2001,7 @@ class SpriteListTextureData(SpriteListData):
         count: int,
         color: tuple[float, float, float, float],
         default_texture_filter: OpenGlFilter,
+        first: int = 0,
         filter: PyGLenum | OpenGlFilter | None = None,
         pixelated: bool | None = None,
         blend_function: BlendFunction | None = None,
@@ -1962,6 +2010,14 @@ class SpriteListTextureData(SpriteListData):
         """Render the sprite list using the provided shader program."""
         if not self.program:
             raise ValueError("Attempting to render without shader program.")
+
+        if first:
+            try:
+                self.program["sprite_start"]
+            except KeyError:
+                raise ValueError(
+                    "Range drawing requires a sprite_start uniform in the shader."
+                ) from None
 
         prev_blend_func = self.ctx.blend_func
         if blend:
@@ -2016,10 +2072,14 @@ class SpriteListTextureData(SpriteListData):
         self._storage_texture_id.use(5)
         self._storage_index.use(6)
 
-        self._geometry.render(
-            self.program,
-            instances=count,
-        )
+        if first:
+            self.program["sprite_start"] = first
+        try:
+            self._geometry.render(self.program, instances=count)
+        finally:
+            if first:
+                # The program is shared with other lists and ordinary draw calls.
+                self.program["sprite_start"] = 0
 
         # Leave global states to default
         if blend:
