@@ -133,6 +133,35 @@ class SpriteSequence(Collection[SpriteType_co]):
         ...
 
     @abstractmethod
+    def draw_range(
+        self,
+        start: int = 0,
+        stop: int | None = None,
+        *,
+        filter: PyGLenum | OpenGlFilter | None = None,
+        pixelated: bool | None = None,
+        blend_function: BlendFunction | None = None,
+    ) -> None:
+        """Draw the sprites selected by ``sprite_list[start:stop]``.
+
+        The bounds follow Python slicing: ``stop`` is exclusive, negative
+        indices count from the end, and out-of-range bounds are clipped.
+        The sprites keep their list order, without creating a temporary list.
+
+        Args:
+            start: Index of the first sprite to draw.
+            stop: Exclusive end index. ``None`` draws to the end of the list.
+            filter: Optional OpenGL texture filter, as in :meth:`draw`.
+            pixelated: Whether to use pixelated rendering, as in :meth:`draw`.
+            blend_function: Optional OpenGL blend function, as in :meth:`draw`.
+
+        Raises:
+            ValueError: A custom texture-storage shader does not support the
+                ``sprite_start`` uniform required for a nonzero start index.
+        """
+        ...
+
+    @abstractmethod
     def draw_hit_boxes(
         self, color: RGBOrA255 = (0, 0, 0, 255), line_thickness: float = 1.0
     ) -> None:
@@ -1081,23 +1110,6 @@ class SpriteList(SpriteSequence[SpriteType]):
         pixelated: bool | None = None,
         blend_function: BlendFunction | None = None,
     ) -> None:
-        """Draw the sprites selected by ``sprite_list[start:stop]``.
-
-        The bounds follow Python slicing: ``stop`` is exclusive, negative
-        indices count from the end, and out-of-range bounds are clipped.
-        The sprites keep their list order, without creating a temporary list.
-
-        Args:
-            start: Index of the first sprite to draw.
-            stop: Exclusive end index. ``None`` draws to the end of the list.
-            filter: Optional OpenGL texture filter, as in :meth:`draw`.
-            pixelated: Whether to use pixelated rendering, as in :meth:`draw`.
-            blend_function: Optional OpenGL blend function, as in :meth:`draw`.
-
-        Raises:
-            ValueError: A custom texture-storage shader does not support the
-                ``sprite_start`` uniform required for a nonzero start index.
-        """
         start, stop, _ = slice(start, stop).indices(len(self.sprite_list))
         if stop <= start or not self._visible or self.alpha_normalized == 0.0:
             return

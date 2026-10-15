@@ -45,7 +45,7 @@ def test_render_control(offscreen, storage_backend):
     ],
 )
 def test_slice_bounds(offscreen, storage_backend, start, stop, expected):
-    sprites = make_sprites(lazy=True)
+    sprites: arcade.SpriteSequence[arcade.Sprite] = make_sprites(lazy=True)
     sprites.draw_range(start, stop)
     for i, color in enumerate(COLORS):
         assert offscreen.read_pixel(10 + 10 * i, 10) == (color[:3] if i in expected else (0, 0, 0))
