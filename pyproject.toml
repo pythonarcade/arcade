@@ -104,6 +104,7 @@ lint.exclude = [
     "arcade/examples/*",
 ]
 lint.ignore = [
+    "UP035", # pending #2985
     "E731", # E731 do not assign a lambda expression, use a def
     "E741", # E741 Ambiguous variable name
     # F811: redefinition
