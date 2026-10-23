@@ -19,7 +19,7 @@ Requirements
 ------------
 Arcade requires a desktop, laptop, or compatible Single-Board Computer (SBC) with:
 
-#. |min_py_fullname_plus| or higher
+#. |min_py_fullname| or higher
 #. Graphics drivers with support for either:
     * OpenGL 3.3+
     * GLES 3.1+ with extensions on SBCs
