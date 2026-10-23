@@ -114,7 +114,7 @@ requirements may work.
 
 Standard Python
 ^^^^^^^^^^^^^^^
-Arcade requires Python 3.10 or higher.
+Arcade requires |min_py_fullname| or higher.
 
 In practice, this means running Linux. In theory, it may be possible to run Arcade
 on an ARM-specific version of Windows, but nobody has tried this before.
