@@ -4,7 +4,7 @@ description = "Arcade Game Development Library"
 readme = "README.md"
 authors = [{ name = "Paul Vincent Craven", email = "paul@cravenfamily.com" }]
 license = { file = "license.rst" }
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -20,7 +20,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "pillow>=11.3.0",
+    "pillow~=13.0",
     "pytiled-parser~=2.2.9",
     "pyglet==3.0.dev11",
 ]
@@ -104,6 +104,7 @@ lint.exclude = [
     "arcade/examples/*",
 ]
 lint.ignore = [
+    "UP035", # pending #2985
     "E731", # E731 do not assign a lambda expression, use a def
     "E741", # E741 Ambiguous variable name
     # F811: redefinition
