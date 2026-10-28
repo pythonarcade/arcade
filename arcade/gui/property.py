@@ -403,9 +403,15 @@ class _ObservableDict(dict):
             return dict.setdefault(self, *args)
 
     @override
-    def update(self, *args):
+    def update(self, /, *args, **kwargs):
         with self._dispatch():
-            dict.update(self, *args)
+            dict.update(self, *args, **kwargs)
+
+    @override
+    def __ior__(self, other):
+        with self._dispatch():
+            dict.__ior__(self, other)
+        return self
 
 
 K = TypeVar("K")
