@@ -86,8 +86,6 @@ class OpenGLTexture2D(Texture2D):
             Wrap mode x
         wrap_y:
             Wrap mode y
-        target:
-            The texture type (Ignored. Legacy)
         depth:
             creates a depth texture if `True`
         samples:
