@@ -1,10 +1,13 @@
 from array import array
 
+from PIL import Image, ImageDraw
+
 import arcade
 from arcade.gl import Buffer, BufferDescription, Geometry, Program
+from arcade.hitbox import algo_bounding_box
 from arcade.math import Vec2
 from arcade.texture_atlas.base import TextureAtlasBase
-from arcade.types import Rect
+from arcade.types import RGBOrA255, Rect
 
 
 class NinePatchTexture:
@@ -98,6 +101,61 @@ class NinePatchTexture:
             self._init_deferred()
         except Exception:
             pass
+
+    @staticmethod
+    def from_rounded_rect(
+        background_color: RGBOrA255,
+        radius: int = 0,
+        border_color: RGBOrA255 | None = None,
+        border_width: int = 0,
+        *,
+        atlas: TextureAtlasBase | None = None,
+    ) -> "NinePatchTexture":
+        """Create a 9-patch of a rounded rectangle with an optional border.
+
+        The texture is generated with Pillow and is just large enough to hold
+        the rounded corners and the border, leaving a single stretchable pixel
+        in the middle.
+
+        Args:
+            background_color: The fill color of the rectangle
+            radius: The corner radius in pixels
+            border_color: The color of the border. No border is drawn if
+                ``None`` or if ``border_width`` is 0.
+            border_width: The width of the border in pixels
+            atlas: Specify an atlas other than Arcade's default texture
+                atlas
+        """
+        if radius < 0:
+            raise ValueError("Radius must be a positive integer")
+        if border_width < 0:
+            raise ValueError("Border width must be a positive integer")
+
+        # Corners of the inner rect start after the border, so both must fit
+        inset = radius + border_width
+        size = 2 * inset + 1
+
+        im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(im)
+        if border_color and border_width:
+            draw.rounded_rectangle((0, 0, size - 1, size - 1), radius=radius, fill=border_color)
+            draw.rounded_rectangle(
+                (border_width, border_width, size - 1 - border_width, size - 1 - border_width),
+                radius=radius,
+                fill=background_color,
+            )
+        else:
+            draw.rounded_rectangle((0, 0, size - 1, size - 1), radius=radius, fill=background_color)
+
+        texture = arcade.Texture(im, hit_box_algorithm=algo_bounding_box)
+        return NinePatchTexture(
+            left=inset,
+            right=inset,
+            bottom=inset,
+            top=inset,
+            texture=texture,
+            atlas=atlas,
+        )
 
     def initialize(self) -> None:
         """
