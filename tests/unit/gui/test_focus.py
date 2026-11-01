@@ -1,7 +1,8 @@
 from pyglet.math import Vec2
 
-from arcade.gui import UIFlatButton
+from arcade.gui import UIBoxLayout, UIFlatButton, UISpace
 from arcade.gui.experimental.focus import UIFocusGroup
+from arcade.gui.experimental.scroll_area import UIScrollArea
 
 
 def test_focus_group_no_focus_set_by_default(ui):
@@ -81,3 +82,42 @@ def test_nested_groups_dpad(ui):
     assert btn_1_2.focused is False
     assert btn_2_1.focused is False
     assert btn_2_2.focused is True
+
+
+def test_focus_scrolls_scroll_area(ui):
+    group = ui.add(UIFocusGroup())
+    scroll_area = group.add(UIScrollArea(width=300, height=300))
+    box = scroll_area.add(UIBoxLayout())
+    buttons = [box.add(UIFlatButton(width=100, height=50)) for _ in range(10)]
+    # second pass aligns the children to the resized canvas
+    ui.execute_layout()
+    ui.execute_layout()
+    group.detect_focusable_widgets()
+
+    group.set_focus(buttons[-1])
+    assert scroll_area.scroll_y == -200
+
+    group.focus_next()  # wraps around to the first button
+    assert group.focused_widget is buttons[0]
+    assert scroll_area.scroll_y == 0
+
+
+def test_focus_scrolls_nested_scroll_areas(ui):
+    group = ui.add(UIFocusGroup())
+    outer = group.add(UIScrollArea(width=300, height=300))
+    outer_box = outer.add(UIBoxLayout())
+    # spacer pushes the inner scroll area below the outer viewport
+    outer_box.add(UISpace(width=100, height=400))
+    inner = outer_box.add(UIScrollArea(width=300, height=100))
+    inner_box = inner.add(UIBoxLayout())
+    buttons = [inner_box.add(UIFlatButton(width=100, height=50)) for _ in range(4)]
+    # nested canvases need one pass per level to settle
+    for _ in range(3):
+        ui.execute_layout()
+    group.detect_focusable_widgets()
+
+    group.set_focus(buttons[-1])
+
+    # inner area shows its last 100px, outer area shows the inner area
+    assert inner.scroll_y == -100
+    assert outer.scroll_y == -200
