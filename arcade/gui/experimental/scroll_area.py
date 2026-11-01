@@ -191,6 +191,8 @@ class UIScrollArea(UILayout):
     :class:`~arcade.gui.experimental.scroll_area.UIScrollBar` and, while
     the mouse hovers the widget, the keyboard
     (arrow keys, PageUp/PageDown, Home/End).
+    Inside a :class:`~arcade.gui.experimental.focus.UIFocusGroup`, the
+    scroll area also follows the focused widget, see :py:meth:`scroll_to_widget`.
 
     .. note::
         Content containing labels may finish sizing only during the first
@@ -406,6 +408,26 @@ class UIScrollArea(UILayout):
             scroll_range = int(self.content_height - self.surface.height)
             scroll_range = min(0, scroll_range)  # clip to 0 if content is smaller than surface
             self.scroll_y = max(scroll_range, min(0.0, self.scroll_y))
+
+    def scroll_to_widget(self, widget: UIWidget):
+        rect = widget.rect
+        # visible part of the canvas, in canvas coordinates
+        visible_top = self.surface.height + self.scroll_y
+        visible_bottom = visible_top - self.content_height
+        visible_left = -self.scroll_x
+        visible_right = visible_left + self.content_width
+
+        if rect.top > visible_top:
+            self.scroll_y = rect.top - self.surface.height
+        elif rect.bottom < visible_bottom:
+            self.scroll_y = rect.bottom - self.surface.height + self.content_height
+
+        if rect.left < visible_left:
+            self.scroll_x = -rect.left
+        elif rect.right > visible_right:
+            self.scroll_x = self.content_width - rect.right
+
+        self._clamp_scroll()
 
     def _scroll_by_key(self, symbol: int) -> bool:
         """Scroll on arrow keys, PageUp/PageDown, Home and End.

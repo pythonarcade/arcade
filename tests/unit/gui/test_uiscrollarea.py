@@ -135,3 +135,64 @@ def test_scroll_speed_via_constructor(ui):
     default_area = UIScrollArea()
     assert default_area.scroll_speed == UIScrollArea.scroll_speed
     assert default_area.invert_scroll is UIScrollArea.invert_scroll
+
+
+@pytest.fixture
+def settled_scroll_setup(scroll_setup):
+    """scroll_setup after a second layout pass.
+
+    The first pass resizes the canvas, children align to the new canvas only in the next pass.
+    Rows span from y=450..500 (row 0) down to y=0..50 (row 9), the viewport shows y=200..500.
+    """
+    ui, scroll_area, box = scroll_setup
+    ui.execute_layout()
+    return scroll_setup
+
+
+def test_scroll_to_widget_below(settled_scroll_setup):
+    ui, scroll_area, box = settled_scroll_setup
+
+    scroll_area.scroll_to_widget(box.children[-1])
+
+    assert scroll_area.scroll_y == -200
+
+
+def test_scroll_to_widget_above(settled_scroll_setup):
+    ui, scroll_area, box = settled_scroll_setup
+    scroll_area.scroll_y = -200
+
+    scroll_area.scroll_to_widget(box.children[0])
+
+    assert scroll_area.scroll_y == 0
+
+
+def test_scroll_to_widget_scrolls_minimal_distance(settled_scroll_setup):
+    ui, scroll_area, box = settled_scroll_setup
+
+    # row 6 spans y=150..200, just below the viewport
+    scroll_area.scroll_to_widget(box.children[6])
+
+    assert scroll_area.scroll_y == -50
+
+
+def test_scroll_to_visible_widget_does_not_scroll(settled_scroll_setup):
+    ui, scroll_area, box = settled_scroll_setup
+
+    scroll_area.scroll_to_widget(box.children[2])
+
+    assert scroll_area.scroll_y == 0
+
+
+def test_scroll_to_widget_horizontal(ui):
+    scroll_area = ui.add(UIScrollArea(width=300, height=300))
+    box = scroll_area.add(UIBoxLayout(vertical=False))
+    for _ in range(10):
+        box.add(UIDummy(width=50, height=100))
+    ui.execute_layout()
+    ui.execute_layout()
+
+    scroll_area.scroll_to_widget(box.children[-1])
+    assert scroll_area.scroll_x == -200
+
+    scroll_area.scroll_to_widget(box.children[0])
+    assert scroll_area.scroll_x == 0
