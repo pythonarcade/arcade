@@ -3,10 +3,9 @@ from __future__ import annotations
 from collections.abc import Generator
 from contextlib import contextmanager
 from math import atan2, cos, degrees, pow, radians, sin
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 from pyglet.math import Vec2, Vec3
-from typing_extensions import Self
 
 from arcade.camera.data_types import (
     DEFAULT_FAR,

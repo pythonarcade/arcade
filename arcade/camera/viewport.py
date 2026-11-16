@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 from pyglet.math import Mat4, Vec2, Vec3
-from typing_extensions import Self
 
 from arcade.camera.data_types import DEFAULT_FAR, DEFAULT_NEAR_ORTHO
 from arcade.types import LBWH, Point, Rect
