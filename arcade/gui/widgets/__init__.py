@@ -11,7 +11,7 @@ from weakref import WeakKeyDictionary
 
 from pyglet.event import EVENT_HANDLED, EVENT_UNHANDLED, EventDispatcher
 from pyglet.math import Vec2
-from typing_extensions import Self
+from typing import Self
 
 import arcade
 from arcade import LBWH, Rect, Sprite, Texture

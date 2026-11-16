@@ -22,9 +22,7 @@ from __future__ import annotations
 
 import random
 from collections.abc import Iterable
-from typing import Final, TypeVar
-
-from typing_extensions import Self
+from typing import Final, Self, TypeVar
 
 from arcade.exceptions import ByteRangeError, IntOutsideRangeError, NormalizedRangeError
 

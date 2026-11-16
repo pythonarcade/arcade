@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from math import cos, hypot, radians, sin
-from typing import Any
+from typing import Any, Self
 
 from PIL.Image import Image
-from typing_extensions import Self
 
 from arcade.types import EMPTY_POINT_LIST, Point2, Point2List
 
