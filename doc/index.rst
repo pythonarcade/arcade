@@ -115,6 +115,7 @@ help improve Arcade.
    programming_guide/opengl_notes
    programming_guide/gles_raspi_and_sbc
    programming_guide/performance_tips
+   programming_guide/debugging
    programming_guide/headless
 
 .. toctree::
