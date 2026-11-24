@@ -10,7 +10,7 @@ class MyWindow(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.center_window()
         self.background_color = arcade.color.ALMOND
-        
+
         # GL geometry that will be used to pass pixel coordinates to the shader
         # It has the same dimensions as the screen
         self.quad_fs = arcade.gl.geometry.quad_2d_fs()
@@ -23,7 +23,7 @@ class MyWindow(arcade.Window):
         self.fbo.clear(color=arcade.color.ALMOND)
         with self.fbo:
             arcade.draw_circle_filled(
-                SCREEN_WIDTH / 2, 
+                SCREEN_WIDTH / 2,
                 SCREEN_HEIGHT / 2,
                 100,
                 arcade.color.AFRICAN_VIOLET
@@ -36,7 +36,7 @@ class MyWindow(arcade.Window):
             in vec2 in_vert;
             void main()
             {
-                gl_Position = vec4(in_vert, 0., 1.);
+                gl_Position = vec4(in_vert, 0.0, 1.0);
             }
             """,
             fragment_shader="""
@@ -63,8 +63,9 @@ class MyWindow(arcade.Window):
             self.tex.use(0)
 
             # Run the shader and render to the framebuffer
-            self.quad_fs.render(self.prog)
-        
+            with self.ctx.enabled(self.ctx.BLEND):
+                self.quad_fs.render(self.prog)
+
         # Copy the framebuffer to the screen to display
         self.ctx.copy_framebuffer(self.fbo, self.ctx.screen)
 
