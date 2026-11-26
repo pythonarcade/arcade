@@ -205,13 +205,15 @@ class HexTile:
         raise ValueError(msg)
 
 
+def _from_qr(q: float, r: float) -> HexTile:
+    # Deriving s from q and r keeps q + r + s at exactly 0. Computing s on its own
+    # can leave the sum a rounding error away from 0, which HexTile rejects.
+    return HexTile(q, r, -q - r)
+
+
 def lerp(a: HexTile, b: HexTile, t: float) -> HexTile:
     """Perform a linear interpolation between two hexagons."""
-    return HexTile(
-        a.q * (1.0 - t) + b.q * t,
-        a.r * (1.0 - t) + b.r * t,
-        a.s * (1.0 - t) + b.s * t,
-    )
+    return _from_qr(a.q * (1.0 - t) + b.q * t, a.r * (1.0 - t) + b.r * t)
 
 
 def distance(a: HexTile, b: HexTile) -> int:
@@ -223,8 +225,8 @@ def line(a: HexTile, b: HexTile) -> list[HexTile]:
     """Return a list of hexagons between two hexagons."""
     n = distance(a, b)
     # epsilon to nudge points by to falling on an edge
-    a_nudge = HexTile(a.q + 1e-06, a.r + 1e-06, a.s - 2e-06)
-    b_nudge = HexTile(b.q + 1e-06, b.r + 1e-06, b.s - 2e-06)
+    a_nudge = _from_qr(a.q + 1e-06, a.r + 1e-06)
+    b_nudge = _from_qr(b.q + 1e-06, b.r + 1e-06)
     step = 1.0 / max(n, 1)
     return [round(lerp(a_nudge, b_nudge, step * i)) for i in range(n + 1)]
 
