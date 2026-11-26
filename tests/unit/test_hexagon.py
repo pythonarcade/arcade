@@ -127,6 +127,29 @@ def test_hex_line_draw():
     ] == line(HexTile(0, 0, 0), HexTile(1, -5, 4))
 
 
+def test_hex_line_draw_far_apart():
+    # The interpolated points used to be rejected by HexTile, because
+    # q + r + s came out a rounding error away from 0
+    a = HexTile(22, 47, -69)
+    b = HexTile(-42, -18, 60)
+    hexes = line(a, b)
+    assert hexes[0] == a
+    assert hexes[-1] == b
+    assert len(hexes) == a.distance_to(b) + 1
+    assert all(hexes[i].distance_to(hexes[i + 1]) == 1 for i in range(len(hexes) - 1))
+
+    far = HexTile(5000, -1234, -3766)
+    assert line(HexTile(0, 0, 0), far)[-1] == far
+
+
+def test_hex_lerp_keeps_cube_sum():
+    a = HexTile(22, 47, -69)
+    b = HexTile(-42, -18, 60)
+    for i in range(11):
+        h = a.lerp_between(b, i / 10)
+        assert h.q + h.r + h.s == 0
+
+
 def test_layout():
     h = HexTile(3, 4, -7)
     flat = Layout(flat_orientation, Vec2(10.0, 15.0), Vec2(35.0, 71.0))
