@@ -7,10 +7,10 @@ from collections.abc import Callable
 from contextlib import contextmanager, suppress
 from enum import Enum
 from inspect import ismethod
-from typing import Any, Generic, TypeVar, cast
+from typing import Any, Generic, Self, TypeVar, cast, overload
 from weakref import WeakKeyDictionary, ref
 
-from typing_extensions import Self, overload, override
+from typing_extensions import override
 
 P = TypeVar("P")
 
