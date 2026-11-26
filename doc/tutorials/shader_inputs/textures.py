@@ -10,7 +10,7 @@ class MyWindow(arcade.Window):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
         self.center_window()
         self.background_color = arcade.color.ALMOND
-        
+
         # GL geometry that will be used to pass pixel coordinates to the shader
         # It has the same dimensions as the screen
         self.quad_fs = arcade.gl.geometry.quad_2d_fs()
@@ -53,8 +53,8 @@ class MyWindow(arcade.Window):
             {
                 // Set pixel color as a combination of the two textures
                 fragColor = mix(
-                    texture(t0, uv), 
-                    texture(t1, uv), 
+                    texture(t0, uv),
+                    texture(t1, uv),
                     smoothstep(0.0, 1.0, uv.x));
                 // Set the alpha based on time
                 fragColor.w = sin(time);
@@ -77,7 +77,7 @@ class MyWindow(arcade.Window):
         # Draw a simple circle
         self.clear()
         arcade.draw_circle_filled(
-            SCREEN_WIDTH / 2, 
+            SCREEN_WIDTH / 2,
             SCREEN_HEIGHT / 2,
             100,
             arcade.color.AFRICAN_VIOLET
@@ -93,7 +93,8 @@ class MyWindow(arcade.Window):
         # Run the shader and render to screen
         # The shader code is run once for each pixel coordinate in quad_fs
         # and the fragColor output added to the screen
-        self.quad_fs.render(self.prog)
+        with self.ctx.enabled(self.ctx.BLEND):
+            self.quad_fs.render(self.prog)
 
 
 app = MyWindow()
