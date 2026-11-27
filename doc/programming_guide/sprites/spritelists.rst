@@ -72,6 +72,22 @@ Here's a minimal example:
     :linenos:
 
 
+Drawing a Range of Sprites
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use :py:meth:`~arcade.SpriteList.draw_range` to draw part of a list without
+creating another sprite list. The bounds work like a Python slice: the end
+index is exclusive, negative indices count from the end, and bounds are
+clipped to the list length. Sprites retain their existing drawing order.
+
+.. code-block:: python
+
+    sprites.draw_range(10, 20)  # Draw sprites at indices 10 through 19.
+    sprites.draw_range(-5)      # Draw the last five sprites.
+
+The method accepts the same texture filtering and blending options as
+:py:meth:`~arcade.SpriteList.draw`.
+
 Using Images with Sprites
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 

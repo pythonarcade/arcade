@@ -17,6 +17,8 @@ uniform sampler2D size_data;
 uniform sampler2D color_data;
 uniform sampler2D texture_id_data;
 uniform isampler2D index_data;
+// First logical sprite index for a partial draw.
+uniform int sprite_start;
 
 // How much half-pixel offset to apply to the UVs.
 // 0.0 is no offset, 1.0 is half a pixel offset
@@ -34,7 +36,7 @@ out vec4 v_color;
 void main() {
     // Reading per-instance data from textures.
     // First we need take the index texture into account to get the correct rendering order.
-    int index = getInstanceIndex(index_data, gl_InstanceID);
+    int index = getInstanceIndex(index_data, gl_InstanceID + sprite_start);
     vec4 pos_rot = getInstancePosRot(pos_data, index);
     vec2 size = getInstanceSize(size_data, index);  
     vec4 color = getInstanceColor(color_data, index);
