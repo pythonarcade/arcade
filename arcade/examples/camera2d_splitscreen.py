@@ -3,7 +3,7 @@ A simple example that demonstrates using multiple cameras to allow a split
 screen using Arcade's 3.0 Camera2D.
 
 The left screen follows the player that is controlled by WASD, and the right
-follows the player controlled by the keyboard.
+follows the player controlled by the arrow keys.
 
 If Python and Arcade are installed, this example can be run
 from the command line with:
