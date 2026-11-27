@@ -11,6 +11,7 @@ from arcade.gui.events import (
     UIEvent,
     UIKeyPressEvent,
 )
+from arcade.gui.experimental.scroll_area import UIScrollArea
 from arcade.gui.property import ListProperty, Property, bind
 from arcade.gui.surface import Surface
 from arcade.gui.widgets import FocusMode, UIWidget
@@ -174,6 +175,19 @@ class UIFocusMixin(UIWidget):
             self.focused_widget.focused = False
         widget.focused = True
         self._focused_widget = widget
+        self._scroll_into_view(widget)
+
+    @staticmethod
+    def _scroll_into_view(widget: UIWidget):
+        """Scroll all scroll areas containing the widget, so it becomes visible."""
+        target = widget
+        parent = widget.parent
+        while isinstance(parent, UIWidget):
+            if isinstance(parent, UIScrollArea):
+                parent.scroll_to_widget(target)
+                # outer scroll areas only see this scroll area, not its content
+                target = parent
+            parent = parent.parent
 
     def focus_up(self):
         widget = self.focused_widget
